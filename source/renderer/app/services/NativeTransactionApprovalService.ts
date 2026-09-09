@@ -5,6 +5,7 @@ import type {
   NativePreparedApproval,
 } from '../../../common/transactions/nativePlan';
 import { nativeApprovalBindingDigest } from '../../../common/transactions/nativePlan';
+import { parseConwayTransactionEnvelope } from '../../../common/cardano/transactionEnvelope';
 import {
   bindNativeTransactionExecutor,
   cancelNativeTransactionApproval,
@@ -16,7 +17,8 @@ import {
 type Execute = (
   passphrase: string | undefined,
   signal: AbortSignal,
-  markSubmitting: () => Promise<void>
+  markSubmitting: () => Promise<void>,
+  requestId: string
 ) => Promise<NativeApprovalResult>;
 type Attempt = {
   prepared: NativePreparedApproval;
@@ -49,6 +51,7 @@ const executeNativeTransaction = async (
       ? 'signing'
       : 'waiting-for-device'
   );
+  let submitting = false;
   try {
     return await attempt.execute(
       request.passphrase,
@@ -60,18 +63,36 @@ const executeNativeTransaction = async (
         );
         if (committed.status !== 'submission-authorized')
           throw new Error('Native transaction submission was cancelled');
+        submitting = true;
         await reportWalletApprovalProgress(request.requestId, 'submitting', 0);
-      }
+      },
+      request.requestId
     );
   } catch (error) {
+    if (submitting) {
+      const transactionIds: string[] = [];
+      for (const item of attempt.prepared.items)
+        if (item.kind === 'exact-cbor')
+          transactionIds.push(
+            parseConwayTransactionEnvelope(Buffer.from(item.cbor, 'hex'))
+              .transactionId
+          );
+      return Object.freeze({
+        status: 'submission-unknown',
+        transactionIds: Object.freeze(transactionIds),
+      });
+    }
+    let code: unknown;
+    if (error && typeof error === 'object' && 'code' in error)
+      code = error.code;
+    else if (error instanceof Error) code = error.message;
     return Object.freeze({
       status: 'rejected',
       errorCode:
-        error &&
-        typeof error === 'object' &&
-        'code' in error &&
-        error.code === 'wrong_encryption_passphrase'
-          ? 'wrong_encryption_passphrase'
+        code === 'wrong_encryption_passphrase' ||
+        code === 'TxSignError.UserDeclined' ||
+        code === 'TxSignError.ProofGeneration'
+          ? code
           : 'failed',
     });
   }

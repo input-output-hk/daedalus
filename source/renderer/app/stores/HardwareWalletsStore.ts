@@ -99,8 +99,8 @@ import type {
   CreateExternalTransactionResponse,
   CoinSelectionsResponse,
   VotingDataType,
+  ConstructTransactionData,
 } from '../api/transactions/types';
-import type { ConstructTransactionData } from '../api/transactions/types';
 import type { NativeTransactionAction } from '../../../common/transactions/nativePlan';
 import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
 import {
@@ -142,6 +142,7 @@ export type TxSignRequestTypes = {
     unsignedTransaction: string;
     isCollateralPreparation: boolean;
     signedTransaction?: string;
+    payment?: Readonly<{ address: string; amount: string }>;
   };
 };
 export type ByronEncodeSignedTransactionRequest = {
@@ -385,7 +386,7 @@ export default class HardwareWalletsStore extends Store {
   isAddressChecked = false;
   @observable
   isAddressCorrect: boolean | null | undefined = null;
-  @observable
+  @observable.ref
   // @ts-ignore ts-migrate(2739) FIXME: Type '{}' is missing the following properties from... Remove this comment to see the full error message
   tempAddressToVerify: TempAddressToVerify = {};
   @observable
@@ -514,12 +515,23 @@ export default class HardwareWalletsStore extends Store {
     const current = this.getDappConnectorCapability(walletId);
     if (current) return current;
     const connection = this.hardwareWalletsConnectionData[walletId];
-    const storedPath = connection?.device.path;
-    const path =
-      storedPath && this.connectedHardwareWalletsDevices.has(storedPath)
-        ? storedPath
-        : connection?.path;
-    const connected = path && this.connectedHardwareWalletsDevices.get(path);
+    const storedPaths = [connection?.device.path, connection?.path];
+    const connectedAtStoredPath = storedPaths
+      .map((path) => path && this.connectedHardwareWalletsDevices.get(path))
+      .find((device) => device && !device.disconnected);
+    const matchingLedgers = [
+      ...this.connectedHardwareWalletsDevices.values(),
+    ].filter(
+      (device) =>
+        !device.disconnected &&
+        device.deviceType === DeviceTypes.LEDGER &&
+        connection?.device.deviceType === DeviceTypes.LEDGER &&
+        device.deviceModel === connection.device.deviceModel
+    );
+    const connected =
+      connectedAtStoredPath ||
+      (matchingLedgers.length === 1 ? matchingLedgers[0] : undefined);
+    const path = connected?.path;
     if (
       path &&
       connected &&
@@ -696,6 +708,12 @@ export default class HardwareWalletsStore extends Store {
     )
       throw new Error('Hardware exact transaction is not enabled');
 
+    if (
+      preparation.exact.capability.vendor === DeviceTypes.LEDGER &&
+      preparation.exact.capability.rowId === 'ledger-native'
+    )
+      await this.refreshDappConnectorCapability(walletId);
+
     const connection = find(
       this.hardwareWalletsConnectionData,
       (connectionData) => connectionData.id === walletId
@@ -862,7 +880,7 @@ export default class HardwareWalletsStore extends Store {
       snapshot,
       0,
       false,
-      this.getDappTransactionCapability(walletId)
+      this.getNativeTransactionCapability(walletId)
     );
     if (preparation.status !== 'ready')
       throw new Error('Hardware exact transaction is not enabled');
@@ -912,10 +930,21 @@ export default class HardwareWalletsStore extends Store {
       },
     });
     if (submission.status === 'rejected' || submission.status === 'expired')
-      throw new Error(`Transaction submission ${submission.status}`);
+      return Object.freeze({
+        status: 'rejected' as const,
+        errorCode: submission.status,
+      });
+    if (submission.status !== 'submitted' && submission.status !== 'in_ledger')
+      return Object.freeze({
+        status: 'submission-unknown' as const,
+        transactionIds: Object.freeze([submission.transaction_id]),
+      });
     if (exactPayment.isCollateralPreparation)
       await this.stores.collateral.trackPreparation(submission.transaction_id);
-    return { id: submission.transaction_id };
+    return Object.freeze({
+      status: 'submitted' as const,
+      transactionIds: Object.freeze([submission.transaction_id]),
+    });
   };
   @action
   setTransactionPendingState = (isTransactionPending: boolean) => {
@@ -1042,6 +1071,14 @@ export default class HardwareWalletsStore extends Store {
             status: 'rejected' as const,
             errorCode: submission.status,
           });
+        if (
+          submission.status !== 'submitted' &&
+          submission.status !== 'in_ledger'
+        )
+          return Object.freeze({
+            status: 'submission-unknown' as const,
+            transactionIds: Object.freeze([submission.transaction_id]),
+          });
         return Object.freeze({
           status: 'submitted' as const,
           transactionIds: Object.freeze([submission.transaction_id]),
@@ -1085,6 +1122,7 @@ export default class HardwareWalletsStore extends Store {
       const result = await this.stores.walletApproval.nativeTransactions.run({
         walletId,
         ownerSignal: owner.signal,
+        payment: exactPayment.payment,
         prepare: async () => {
           const prepared = await this.prepareExactPayment(walletId);
           hardwarePreparation = prepared.preparation;
@@ -1151,19 +1189,13 @@ export default class HardwareWalletsStore extends Store {
             }
           );
           await markSubmitting();
-          const submitted = await this.submitExactPayment(walletId);
-          return Object.freeze({
-            status: 'submitted' as const,
-            transactionIds: Object.freeze([submitted.id]),
-          });
+          return this.submitExactPayment(walletId);
         },
       });
-      if (result.status !== 'submitted')
-        throw new Error(
-          'errorCode' in result
-            ? result.errorCode
-            : 'Transaction was not submitted'
-        );
+      if (result.status !== 'submitted') {
+        this.setTransactionPendingState(false);
+        return;
+      }
       transaction = { id: result.transactionIds[0] };
     } else {
       if (!this.walletSendLease) await this.acquireWalletSendLease(walletId);
@@ -1326,7 +1358,8 @@ export default class HardwareWalletsStore extends Store {
 
   updateTxSignRequest = (
     coinSelection: CoinSelectionsResponse,
-    isCollateralPreparation = false
+    isCollateralPreparation = false,
+    payment?: Readonly<{ address: string; amount: string }>
   ) => {
     runInAction('HardwareWalletsStore:: set exact payment request', () => {
       if (!coinSelection.unsignedTransaction)
@@ -1336,6 +1369,7 @@ export default class HardwareWalletsStore extends Store {
         exactPayment: {
           unsignedTransaction: coinSelection.unsignedTransaction,
           isCollateralPreparation,
+          ...(payment ? { payment } : {}),
         },
       };
     });
@@ -2109,6 +2143,7 @@ export default class HardwareWalletsStore extends Store {
         networkId: hardwareWalletsNetworkConfig.networkId,
         protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
       });
+      if (this.tempAddressToVerify !== params) return;
 
       if (derivedAddress === address.id) {
         logger.debug('[HW-DEBUG] HWStore - Address successfully verified', {
@@ -2133,7 +2168,7 @@ export default class HardwareWalletsStore extends Store {
               this.isAddressDerived = true;
             }
           );
-          this.showAddress(params);
+          await this.showAddress(params);
         }
 
         this.analytics.sendEvent(
@@ -2152,6 +2187,7 @@ export default class HardwareWalletsStore extends Store {
         );
       }
     } catch (error) {
+      if (this.tempAddressToVerify !== params) return;
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('[HW-DEBUG] HWStore - Verifying address error');
 
@@ -2197,8 +2233,6 @@ export default class HardwareWalletsStore extends Store {
           this.isAddressCorrect = false;
         });
       }
-
-      throw error;
     }
   };
 
@@ -2230,35 +2264,21 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] - SHOW Address');
     const { address, path, isTrezor } = params;
 
-    try {
-      await showAddressChannel.request({
-        devicePath: path,
-        isTrezor,
-        addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-        spendingPathStr: address.spendingPath,
-        stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
-        networkId: hardwareWalletsNetworkConfig.networkId,
-        protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
-      });
-      runInAction(
-        'HardwareWalletsStore:: Address show process finished',
-        () => {
-          this.isAddressChecked = true;
-          this.isListeningForDevice = true;
-          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
-        }
-      );
-    } catch (error) {
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.debug('[HW-DEBUG] HWStore - Show address error');
-      runInAction('HardwareWalletsStore:: Showing address failed', () => {
-        this.isAddressChecked = false;
-        this.isAddressCorrect = false;
-        this.isListeningForDevice = true;
-        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
-      });
-      throw error;
-    }
+    await showAddressChannel.request({
+      devicePath: path,
+      isTrezor,
+      addressType: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+      spendingPathStr: address.spendingPath,
+      stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`,
+      networkId: hardwareWalletsNetworkConfig.networkId,
+      protocolMagic: hardwareWalletsNetworkConfig.protocolMagic,
+    });
+    if (this.tempAddressToVerify !== params) return;
+    runInAction('HardwareWalletsStore:: Address show process finished', () => {
+      this.isAddressChecked = true;
+      this.isListeningForDevice = true;
+      this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
+    });
   };
   @action
   setAddressVerificationCheckStatus = (

@@ -10,34 +10,38 @@
     margin-top: 24px;
     min-width: 0;
   }
+
   h2 {
     color: var(--theme-dialog-fullsize-title-text-color);
     font-family: var(--font-semibold);
     font-size: 16px;
     margin-bottom: 8px;
   }
+
   h3 {
     font-family: var(--font-semibold);
     font-size: 14px;
   }
+
   code {
     font-family: var(--font-mono);
     font-size: 12px;
     overflow-wrap: anywhere;
     user-select: text;
   }
+
   button:focus,
   summary:focus,
   h2:focus {
     outline: 2px solid var(--theme-dialog-fullsize-text-highlight-color);
     outline-offset: 2px;
   }
-  :global(.Dialog_contentWrapper) {
-    box-sizing: border-box;
-    min-width: 0;
-    width: 100%;
-  }
 }
+
+.component :global(.flat:not(:disabled)) {
+  color: var(--theme-dialog-fullsize-text-color);
+}
+
 .component :global(.Dialog_title) h1 {
   font-family: var(--font-semibold);
   font-size: 22px;
@@ -47,48 +51,92 @@
 
 .identity {
   display: grid;
-  grid-template-columns: 1fr auto;
   gap: 4px 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
   min-width: 0;
 }
+
+.identity bdi,
+.identity strong {
+  overflow-wrap: anywhere;
+}
+
 .identity strong {
   grid-column: 1 / -1;
 }
+
 .riskStrip {
-  border: 1px solid var(--theme-dialog-fullsize-text-color);
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.riskStrip > div {
   border-radius: 8px;
   display: flex;
-  gap: 24px;
-  justify-content: space-between;
-  margin-top: 16px;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
   padding: 12px 16px;
 }
-.riskStrip div {
-  display: flex;
-  flex-direction: column;
-}
-.riskStrip span {
+
+.riskStrip span,
+.riskStrip small {
   font-size: 12px;
 }
+
+.fee {
+  background: var(--theme-transaction-review-outgoing-background);
+  border: 1px solid var(--theme-transaction-review-outgoing-color);
+  color: var(--theme-transaction-review-outgoing-color);
+}
+
+.collateralRisk {
+  background: var(--theme-transaction-review-warning-background);
+  border: 1px solid var(--theme-transaction-review-warning-color);
+  color: var(--theme-transaction-review-warning-color);
+}
+
 .impactGrid,
 .columns {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
+
 .impactCard,
 .entryCard,
 .actionCard {
-  background: var(--theme-dialog-fullsize-field-background-color);
-  border: 1px solid var(--theme-dialog-fullsize-text-color);
-  border-radius: 8px;
+  border-radius: 10px;
   min-width: 0;
   padding: 16px;
 }
+
 .impactCard h3 {
   font-size: 12px;
   text-transform: uppercase;
 }
+
+.outgoing {
+  background: var(--theme-transaction-review-outgoing-background);
+  border: 1px solid var(--theme-transaction-review-outgoing-color);
+  color: var(--theme-transaction-review-outgoing-color);
+}
+
+.incoming {
+  background: var(--theme-transaction-review-incoming-background);
+  border: 1px solid var(--theme-transaction-review-incoming-color);
+  color: var(--theme-transaction-review-incoming-color);
+}
+
+.outgoingText {
+  color: var(--theme-transaction-review-outgoing-color);
+}
+
+.incomingText {
+  color: var(--theme-transaction-review-incoming-color);
+}
+
 .primaryAmount {
   font-family: var(--font-medium);
   font-size: 24px;
@@ -96,36 +144,200 @@
   overflow-wrap: anywhere;
   user-select: text;
 }
-.amount {
+
+.amount,
+.assetAmount {
   font-family: var(--font-medium);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
   user-select: text;
 }
+
 .calculation {
   margin-top: 8px;
 }
+
+.grossFlowHelp {
+  margin: 24px 0 8px;
+}
+
+.entryStack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.entrySection {
+  min-width: 0;
+}
+
+.entrySection > summary {
+  align-items: center;
+  background: var(--theme-dialog-fullsize-field-background-color);
+  border: 1px solid var(--theme-dialog-fullsize-text-color);
+  border-radius: 8px;
+  color: var(--theme-dialog-fullsize-title-text-color);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--font-semibold);
+  min-height: 36px;
+  overflow-wrap: anywhere;
+  padding: 8px 12px;
+}
+
+.entrySection > summary::before {
+  content: '▸';
+  flex: none;
+  margin-right: 8px;
+}
+
+.entrySection[open] > summary::before {
+  content: '▾';
+}
+
+.entrySection > summary::marker {
+  content: '';
+}
+
+.warningGroup > summary {
+  background: var(--theme-transaction-review-warning-background);
+  border-color: var(--theme-transaction-review-warning-color);
+  color: var(--theme-transaction-review-warning-color);
+}
+
 .entryGrid {
   display: grid;
-  gap: 16px;
+  gap: 12px;
+  margin-top: 12px;
 }
+
+.entryCard,
+.actionCard {
+  background: var(--theme-dialog-fullsize-field-background-color);
+  border: 1px solid var(--theme-dialog-fullsize-text-color);
+}
+
 .entryCard header {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
+  gap: 12px;
   justify-content: space-between;
 }
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
 .badge {
   border: 1px solid currentColor;
   border-radius: 12px;
   font-size: 12px;
   padding: 1px 8px;
+  white-space: nowrap;
 }
+
+.valueRows {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.valueRows > .amount {
+  justify-self: end;
+}
+
+.assetRow {
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  width: fit-content;
+}
+
+.assetRow[open] {
+  width: 100%;
+}
+
+.assetRow > summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-width: 0;
+  padding: 6px 10px;
+}
+
+.assetRow > summary::marker {
+  font-size: 10px;
+}
+
+.assetRow > summary > * {
+  max-width: 100%;
+}
+
+.assetRow > summary bdi {
+  overflow-wrap: break-word;
+}
+
+.assetRow > summary code {
+  white-space: nowrap;
+}
+
+.assetRow .assetAmount {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.assetDetails {
+  border-top: 1px solid currentColor;
+  min-width: 0;
+  padding: 10px;
+}
+
+.assetDetails p {
+  overflow-wrap: anywhere;
+}
+
+.moreAssets {
+  min-width: 0;
+}
+
+.moreAssets > summary {
+  cursor: pointer;
+  font-family: var(--font-semibold);
+}
+
+.moreAssets .assetRow {
+  margin-top: 8px;
+}
+
+.address {
+  margin-top: 12px;
+  min-width: 0;
+}
+
+.address > summary {
+  overflow-wrap: anywhere;
+}
+
+.address > summary strong {
+  color: inherit;
+  font-family: var(--font-semibold);
+}
+
 .fullText {
   display: block;
   margin: 8px 0;
+  overflow-wrap: anywhere;
   white-space: normal;
-  word-break: break-all;
 }
+
 .copy {
   background: none;
   border: 1px solid currentColor;
@@ -135,19 +347,13 @@
   font: inherit;
   padding: 4px 8px;
 }
-.assetRow {
-  border-top: 1px solid var(--theme-dialog-fullsize-text-color);
-  margin-top: 8px;
-  padding-top: 8px;
-}
-.assetRow > code {
-  display: block;
-}
+
 .actionCard {
   display: flex;
   flex-direction: column;
   margin-top: 8px;
 }
+
 .notice,
 .warning,
 .refusal {
@@ -156,18 +362,105 @@
   margin-top: 16px;
   padding: 12px 16px;
 }
+
 .warning {
-  background: var(--theme-background-color-error);
+  background: var(--theme-transaction-review-warning-background);
+  border-color: var(--theme-transaction-review-warning-color);
+  color: var(--theme-transaction-review-warning-color);
 }
+
 .refusal {
   color: var(--theme-color-error);
 }
+
 .refusal code {
   display: block;
 }
+
+.result {
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  margin: 0 0 24px;
+  padding: 16px;
+}
+
+.result h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.resultSuccess {
+  background: var(--theme-transaction-review-incoming-background);
+}
+
+.resultPending {
+  background: var(--theme-dialog-fullsize-field-background-color);
+}
+
+.receiptState,
+.receiptActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: space-between;
+}
+
+.receiptFacts {
+  display: grid;
+  gap: 8px 24px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 16px 0;
+}
+
+.receiptFacts dd {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.reviewedDetails > summary {
+  cursor: pointer;
+  font-family: var(--font-semibold);
+  margin-bottom: 16px;
+}
+
+.resultFailure {
+  background: var(--theme-transaction-review-outgoing-background);
+  border-color: var(--theme-color-error);
+}
+
+.resultUnknown {
+  background: var(--theme-transaction-review-warning-background);
+}
+
+.resultIds {
+  margin-top: 16px;
+  min-width: 0;
+}
+
+.resultIds ol {
+  display: grid;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding-left: 24px;
+}
+
+.resultIds li {
+  min-width: 0;
+}
+
+.resultIds li span,
+.resultIds li code {
+  display: block;
+}
+
+.resultIds li code {
+  margin: 4px 0;
+}
+
 .checked {
   font-family: var(--font-semibold);
 }
+
 .acknowledgements label {
   align-items: flex-start;
   display: flex;
@@ -179,22 +472,27 @@
   flex: none;
   margin-top: 4px;
 }
+
 .technical {
   min-width: 0;
 }
+
 .item + .item {
   border-top: 1px solid var(--theme-dialog-fullsize-text-color);
   margin-top: 32px;
   padding-top: 24px;
 }
+
 .footer {
   border-top: 1px solid var(--theme-dialog-fullsize-text-color);
   padding: 12px 0;
 }
+
 .footer label {
   display: block;
   font-family: var(--font-semibold);
 }
+
 .footer input {
   background: var(--theme-dialog-fullsize-field-background-color);
   border: 1px solid var(--theme-dialog-fullsize-text-color);
@@ -206,19 +504,25 @@
   padding: 8px 12px;
   width: 100%;
 }
+
 .error {
   color: var(--theme-color-error);
   overflow-wrap: anywhere;
 }
 
-@media (max-width: 640px) {
-  .impactGrid,
+@media (max-width: 1000px) {
   .columns {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+@media (max-width: 800px) {
+  .impactGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .riskStrip {
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
-    gap: 8px;
   }
 }

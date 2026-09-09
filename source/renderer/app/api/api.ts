@@ -3346,20 +3346,22 @@ const _createAddressFromServerData = action(
   }
 );
 
-const _conditionToTxState = (condition: string) => {
+export const _conditionToTxState = (condition: string) => {
   switch (condition) {
     case 'pending':
       return TransactionStates.PENDING;
-
-    case 'expired':
-      return TransactionStates.FAILED;
-
-    default:
+    case 'in_ledger':
       return TransactionStates.OK;
+    case 'expired':
+      return TransactionStates.EXPIRED;
+    case 'failed':
+      return TransactionStates.FAILED;
+    default:
+      return TransactionStates.SUBMISSION_UNKNOWN;
   }
 };
 
-const _createTransactionFromServerData = action(
+export const _createTransactionFromServerData = action(
   'AdaApi::_createTransactionFromServerData',
   (data: Transaction) => {
     const {
@@ -3376,6 +3378,7 @@ const _createTransactionFromServerData = action(
       withdrawals,
       status,
       metadata,
+      certificates = [],
     } = data;
 
     const state = _conditionToTxState(status);
@@ -3402,7 +3405,7 @@ const _createTransactionFromServerData = action(
       })
     );
 
-    const isVoteTx = data.certificates.find(
+    const isVoteTx = certificates.find(
       (c) => c.certificate_type === 'cast_vote'
     );
     const otherTxType =
@@ -3438,6 +3441,13 @@ const _createTransactionFromServerData = action(
       },
       state,
       metadata,
+      amountIsKnown: true,
+      hasCertificates: certificates.length > 0,
+      hasOnlyAda:
+        inputs.length > 0 &&
+        outputs.length > 0 &&
+        inputs.every(({ assets }) => !assets || assets.length === 0) &&
+        outputs.every(({ assets }) => !assets || assets.length === 0),
     });
   }
 );

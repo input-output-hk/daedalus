@@ -459,11 +459,13 @@ const create = () => {
       },
     };
   });
+  const reportedResults: unknown[] = [];
   const consent = ({
     request: jest.fn(async (pending: ConsentRequest<unknown>) =>
       pending.execute(pending.payload, new AbortController().signal, 'secret', {
         requestId: 'approval',
         reportProgress: jest.fn(),
+        reportResult: (result) => reportedResults.push(result),
       })
     ),
   } as unknown) as Cip30BrokerOptions['consent'];
@@ -490,6 +492,7 @@ const create = () => {
     consent,
     dispatch,
     executeWallet,
+    reportedResults,
     sessions,
     setGuestCurrent: (value: boolean) => {
       guestCurrent = value;
@@ -632,6 +635,9 @@ describe('Cip30Broker', () => {
         request('api.cip103.submitTxs', [transactions])
       )
     ).resolves.toEqual({ status: 'fulfilled', value: transactionIds });
+    expect(
+      fixture.reportedResults[fixture.reportedResults.length - 1]
+    ).toEqual({ status: 'submitted', transactionIds });
 
     expect(fixture.sessions.currentForGuest(9)?.enabledExtensions).toEqual([
       103,
@@ -697,11 +703,42 @@ describe('Cip30Broker', () => {
         value: [firstId, { code: 2, info: 'Transaction submission failed' }],
       },
     });
+    expect(fixture.reportedResults[fixture.reportedResults.length - 1]).toEqual(
+      {
+        status: 'partial',
+        transactionIds: [firstId],
+        failedIndex: 1,
+        errorCode: 'failed',
+      }
+    );
     expect(
       fixture.executeWallet.mock.calls
         .map(([walletRequest]) => walletRequest.operation)
         .filter((operation) => operation === 'submit-transaction')
     ).toHaveLength(2);
+
+    fixture.setFailedSubmissionIndexes([0]);
+    const secondId = parseConwayTransactionEnvelope(
+      Buffer.from(transactions[1], 'hex')
+    ).transactionId;
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.cip103.submitTxs', [transactions])
+      )
+    ).resolves.toMatchObject({
+      status: 'rejected',
+      rejection: {
+        type: 'cip103-submit-error',
+        value: [{ code: 2, info: 'Transaction submission failed' }, secondId],
+      },
+    });
+    expect(fixture.reportedResults[fixture.reportedResults.length - 1]).toEqual(
+      {
+        status: 'submission-unknown',
+        transactionIds: [secondId],
+      }
+    );
     fixture.cleanup();
   });
 
@@ -981,6 +1018,15 @@ describe('Cip30Broker', () => {
         status: 'fulfilled',
         value: transactionSignature.bodyHash,
       });
+      expect(
+        fixture.reportedResults[fixture.reportedResults.length - 1]
+      ).toEqual({
+        status:
+          status === 'submitted' || status === 'in_ledger'
+            ? 'submitted'
+            : 'submission-unknown',
+        transactionIds: [transactionSignature.bodyHash],
+      });
     }
 
     fixture.setSubmission('00'.repeat(32));
@@ -991,13 +1037,24 @@ describe('Cip30Broker', () => {
         value: { code: -2, info: 'Internal error' },
       },
     });
-    fixture.setSubmission(transactionSignature.bodyHash, 'rejected');
-    await expect(
-      fixture.broker.handle(event, submitRequest)
-    ).resolves.toMatchObject({
-      status: 'rejected',
-      rejection: { type: 'tx-send-error', value: { code: 2 } },
-    });
+    expect(fixture.reportedResults[fixture.reportedResults.length - 1]).toEqual(
+      {
+        status: 'submission-unknown',
+        transactionIds: [transactionSignature.bodyHash],
+      }
+    );
+    for (const status of ['rejected', 'expired'] as const) {
+      fixture.setSubmission(transactionSignature.bodyHash, status);
+      await expect(
+        fixture.broker.handle(event, submitRequest)
+      ).resolves.toMatchObject({
+        status: 'rejected',
+        rejection: { type: 'tx-send-error', value: { code: 2 } },
+      });
+      expect(
+        fixture.reportedResults[fixture.reportedResults.length - 1]
+      ).toEqual({ status: 'rejected', errorCode: 'failed' });
+    }
     fixture.setSubmission(transactionSignature.bodyHash);
     fixture.setSubmissionFailure(true);
     await expect(
@@ -1006,6 +1063,12 @@ describe('Cip30Broker', () => {
       status: 'rejected',
       rejection: { type: 'tx-send-error', value: { code: 2 } },
     });
+    expect(fixture.reportedResults[fixture.reportedResults.length - 1]).toEqual(
+      {
+        status: 'submission-unknown',
+        transactionIds: [transactionSignature.bodyHash],
+      }
+    );
     fixture.setSubmissionFailure(false);
     (fixture.consent.request as jest.Mock).mockRejectedValueOnce({
       type: 'tx-send-error',

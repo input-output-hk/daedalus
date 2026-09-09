@@ -28,6 +28,7 @@ class WalletTransactionsPage extends Component<Props> {
       deleteTransactionRequest,
       defaultFilterOptions,
       populatedFilterOptions,
+      selectedTransaction,
     } = this.props.stores.transactions;
     const {
       currentTimeFormat,
@@ -54,6 +55,11 @@ class WalletTransactionsPage extends Component<Props> {
       <WalletTransactions
         activeWallet={activeWallet}
         transactions={allFiltered}
+        selectedTransactionId={
+          selectedTransaction?.walletId === activeWallet?.id
+            ? selectedTransaction.transactionId
+            : undefined
+        }
         filterOptions={filterOptions || {}}
         defaultFilterOptions={defaultFilterOptions}
         populatedFilterOptions={populatedFilterOptions}

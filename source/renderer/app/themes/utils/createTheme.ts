@@ -249,6 +249,23 @@ export const createDaedalusComponentsTheme = (
 ): Record<string, any> => {
   const { colors, fonts } = themeParts;
   const { background, border, error, focus, text } = colors;
+  const transactionReviewBackground = chroma(background.secondary.regular);
+  const transactionReviewColor = (
+    hue: string,
+    darken: number,
+    brighten: number
+  ) => {
+    const color =
+      transactionReviewBackground.luminance() > 0.5
+        ? chroma(hue).darken(darken)
+        : chroma(hue).brighten(brighten);
+    if (chroma.contrast(color, transactionReviewBackground) >= 4.5)
+      return color;
+    return chroma.contrast('black', transactionReviewBackground) >
+      chroma.contrast('white', transactionReviewBackground)
+      ? chroma('black')
+      : chroma('white');
+  };
   return {
     aboutWindow: {
       '--theme-about-window-background-color': `${chroma(
@@ -1404,6 +1421,32 @@ export const createDaedalusComponentsTheme = (
       '--theme-topbar-wallet-name-color': `${text.secondary}`,
       '--theme-topbar-wallet-info-color': `${text.secondary}`,
       '--theme-topbar-logo-color': `${text.primary}`,
+    },
+    transactionApproval: {
+      '--theme-transaction-review-outgoing-color': `${transactionReviewColor(
+        '#ea4c5b',
+        1.0,
+        1.0
+      )}`,
+      '--theme-transaction-review-outgoing-background': `${chroma(
+        '#ea4c5b'
+      ).alpha(0.08)}`,
+      '--theme-transaction-review-incoming-color': `${transactionReviewColor(
+        '#2dc06c',
+        1.6,
+        0.4
+      )}`,
+      '--theme-transaction-review-incoming-background': `${chroma(
+        '#2dc06c'
+      ).alpha(0.08)}`,
+      '--theme-transaction-review-warning-color': `${transactionReviewColor(
+        '#f2a218',
+        1.7,
+        0.4
+      )}`,
+      '--theme-transaction-review-warning-background': `${chroma(
+        '#f2a218'
+      ).alpha(0.08)}`,
     },
     transactions: {
       '--theme-transactions-header-background-color': `${background.primary.regular}`,

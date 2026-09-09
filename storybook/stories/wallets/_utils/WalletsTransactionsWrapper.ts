@@ -124,7 +124,7 @@ export default class WalletsTransactionsWrapper extends Component<
           new Date(),
           new BigNumber(13),
           new BigNumber(1),
-          TransactionStates.FAILED
+          TransactionStates.EXPIRED
         ),
       ],
       renderingManyTransactions: generateMultipleTransactions(500),
@@ -297,7 +297,7 @@ export default class WalletsTransactionsWrapper extends Component<
           new Date(),
           new BigNumber(13),
           new BigNumber(1),
-          TransactionStates.FAILED,
+          TransactionStates.EXPIRED,
           false,
           false,
           true,

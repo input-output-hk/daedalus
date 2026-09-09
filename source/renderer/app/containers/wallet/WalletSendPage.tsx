@@ -4,6 +4,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
+  LOVELACES_PER_ADA,
 } from '../../config/numbersConfig';
 import WalletSendForm, {
   FormData,
@@ -19,7 +20,6 @@ import {
   WithAnalyticsTrackerProps,
 } from '../../components/analytics/withAnalytics';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
-import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 
 type Props = InjectedProps & WithAnalyticsTrackerProps;
 
@@ -114,7 +114,8 @@ class WalletSendPage extends Component<Props> {
     if (isHardwareWallet) {
       this.props.stores.hardwareWallets.updateTxSignRequest(
         coinSelection,
-        this.props.stores.collateral.preparationFormActive
+        this.props.stores.collateral.preparationFormActive,
+        { address: data.receiver, amount }
       );
       this.props.actions.hardwareWallets.sendMoney.trigger();
       return;

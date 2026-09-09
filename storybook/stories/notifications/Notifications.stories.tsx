@@ -17,6 +17,23 @@ import { NOTIFICATION_DEFAULT_DURATION } from '../../../source/renderer/app/conf
 storiesOf('Common / Notifications', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs) // ====== Stories ======
+  .add('Transaction confirmed', () => (
+    <Notification
+      isVisible
+      clickToClose={false}
+      onClose={action('Dismiss confirmation')}
+      actions={[
+        {
+          label: 'View transaction',
+          primary: false,
+          autoFocus: false,
+          onClick: action('View confirmed transaction'),
+        },
+      ]}
+    >
+      Transaction confirmed on the Cardano blockchain
+    </Notification>
+  ))
   .add(
     'General',
     withState(

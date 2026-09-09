@@ -1231,6 +1231,14 @@ export const YELLOW_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color': '#2d2d2d1a',
   },
+  transactionApproval: {
+    '--theme-transaction-review-outgoing-color': '#b20732',
+    '--theme-transaction-review-outgoing-background': '#ea4c5b14',
+    '--theme-transaction-review-incoming-color': '#000000',
+    '--theme-transaction-review-incoming-background': '#2dc06c14',
+    '--theme-transaction-review-warning-color': '#000000',
+    '--theme-transaction-review-warning-background': '#f2a21814',
+  },
 };
 
 const YELLOW_THEME_PARAMS: CreateThemeParams = {

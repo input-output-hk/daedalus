@@ -351,8 +351,61 @@ describe('HardwareWalletService', () => {
         },
       })
     ).rejects.toThrow('Hardware exact transaction is not enabled');
-    expect(ledger).toHaveBeenCalledTimes(1);
-    expect(trezor).toHaveBeenCalledTimes(1);
+    for (const native of [exact, trezorExact]) {
+      const vendor = native.capability.vendor;
+      const nativeRequest = {
+        walletId,
+        vendor,
+        ...(vendor === 'ledger' ? { ledgerPath: 'ledger-path' } : {}),
+        exact: {
+          ...native,
+          capability: { ...native.capability, rowId: `${vendor}-native` },
+        },
+      };
+      await expect(request(nativeRequest)).resolves.toEqual({
+        witnessSetCbor: 'a0',
+        signedTransactionCbor: transactionCbor.toString('hex'),
+      });
+      await expect(
+        request({
+          ...nativeRequest,
+          exact: {
+            ...nativeRequest.exact,
+            capability: {
+              ...nativeRequest.exact.capability,
+              productEnabled: false,
+            },
+          },
+        })
+      ).rejects.toThrow('Hardware exact transaction is not enabled');
+      await expect(
+        request({
+          ...nativeRequest,
+          exact: {
+            ...nativeRequest.exact,
+            capability: {
+              ...native.capability,
+              rowId: `${vendor}-uncertified`,
+            },
+          },
+        })
+      ).rejects.toThrow('Hardware exact transaction is not enabled');
+    }
+    await expect(
+      request({
+        vendor: 'unknown',
+        exact: {
+          ...trezorExact,
+          capability: {
+            ...trezorExact.capability,
+            vendor: 'unknown',
+            rowId: 'unknown-native',
+          },
+        },
+      })
+    ).rejects.toThrow('Hardware exact transaction is not enabled');
+    expect(ledger).toHaveBeenCalledTimes(2);
+    expect(trezor).toHaveBeenCalledTimes(2);
   });
 
   it('rejects uncertified packaged message rows before device invocation', async () => {

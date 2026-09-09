@@ -66,6 +66,7 @@ const request = (
       ? { kind: 'hardware' as const, vendor: 'ledger' as const }
       : { kind: 'none' as const },
   requestId: 'storybook-review',
+  walletId: 'aa'.repeat(20),
   kind,
   origin: 'https://example.test',
   walletName: 'Storybook wallet',
@@ -93,6 +94,7 @@ const batchRequest = (
   blocked = false
 ): BatchPresentation => ({
   requestId: 'storybook-batch-review',
+  walletId: 'aa'.repeat(20),
   kind,
   authorization:
     kind === 'batch-sign'
@@ -163,7 +165,7 @@ const batchRequest = (
     })),
   },
 });
-const Approval = ({
+function Approval({
   request: approval,
   deciding = false,
   onApprove,
@@ -173,18 +175,20 @@ const Approval = ({
   deciding?: boolean;
   onApprove: (passphrase?: string) => void;
   onReject: () => void;
-}) => (
-  <WalletApprovalContainer
-    request={approval}
-    assetDetails={{}}
-    deciding={deciding}
-    phase={deciding ? 'waiting-for-device' : 'ready'}
-    activeItemIndex={deciding ? 1 : undefined}
-    submissionAuthorized={false}
-    onApprove={onApprove}
-    onReject={onReject}
-  />
-);
+}) {
+  return (
+    <WalletApprovalContainer
+      request={approval}
+      assetDetails={{}}
+      deciding={deciding}
+      phase={deciding ? 'waiting-for-device' : 'ready'}
+      activeItemIndex={deciding ? 1 : undefined}
+      submissionAuthorized={false}
+      onApprove={onApprove}
+      onReject={onReject}
+    />
+  );
+}
 
 storiesOf('dApps / TransactionRequest', module)
   .addDecorator((story) => (

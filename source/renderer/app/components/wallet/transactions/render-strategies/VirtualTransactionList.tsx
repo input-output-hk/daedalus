@@ -45,6 +45,12 @@ class VirtualTransactionList extends Component<Props> {
     window.addEventListener('resize', this.onResize);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.rows === this.props.rows) return;
+    this.rowHeights = this.estimateRowHeights(this.props.rows);
+    if (this.list) this.list.recomputeRowHeights(0);
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
   }
@@ -65,6 +71,16 @@ class VirtualTransactionList extends Component<Props> {
     if (!list) return;
     list.recomputeRowHeights(startIndex);
   });
+
+  revealTransaction = (tx: WalletTransaction): boolean => {
+    const txIndex = this.findIndexForTx(tx);
+    if (!this.list || txIndex < 0) return false;
+    const row = this.props.rows[txIndex];
+    this.rowHeights[txIndex] = this.estimateHeightOfTxExpandedRow(row, tx);
+    this.list.recomputeRowHeights(txIndex);
+    this.list.scrollToRow(txIndex);
+    return true;
+  };
 
   /**
    * Calculates the number of lines of the addresses and id from the first expanded tx
