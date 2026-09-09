@@ -26,7 +26,7 @@ When(/^the trusted UI opens the dApp route for wallet "([^"]*)"$/, function (
   walletId
 ) {
   const current = this.context.routeService.observeTrustedRoute(
-    `file:///app/index.html#/wallets/${encodeURIComponent(walletId)}/dapps`
+    `file:///app/index.html#/apps/${encodeURIComponent(walletId)}`
   );
   if (!this.context.firstRoute) this.context.firstRoute = current;
 });

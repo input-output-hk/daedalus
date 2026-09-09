@@ -78,6 +78,21 @@
     },
     "killSwitchPackageSha256": "ff1571e5275d897027b125cdc3f0d6357ebdc5256d4906157cfbfe0d12f9d169"
   },
+  "liveFlowFollowup": {
+    "source": ".agent/plans/dapp-browser-cip30/task-plans/task-902.md",
+    "liqwidMainnet": {
+      "deposit": {
+        "result": "pass",
+        "transactionId": "a0fe9a932fd0380dec3d8850960e61ed6dea1427519418f4850a6fa01021b44a"
+      },
+      "withdrawal": {
+        "result": "pass",
+        "transactionId": "95914affa53386d068c04e28da4c686f00bfb58f85947c58479a857e1b1a2e09"
+      }
+    },
+    "nativeSelfTransfers": "operator-reported pass",
+    "finalPackagePhysicalRetest": "deferred to task-903-a by explicit user decision"
+  },
   "review": {
     "independentReviewer": false,
     "disposition": "approved for the operator-directed single-user pilot only"

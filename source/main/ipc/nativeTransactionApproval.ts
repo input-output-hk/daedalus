@@ -24,6 +24,10 @@ import type {
 import { isFlight } from '../config';
 import { consentCoordinator } from './walletApproval';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import {
+  awaitIpcResponse,
+  currentWindowSender,
+} from './lib/currentWindowSender';
 
 const channel = new MainIpcChannel<
   WalletTransactionApprovalRendererRequest,
@@ -177,15 +181,17 @@ const requestNative = async (
       execute: async (_payload, signal, passphrase, context) => {
         if (signal.aborted) throw nativeFailure('cancelled');
         const result = parseNativeApprovalResult(
-          await executor.request(
-            {
-              type: 'execute',
-              attemptId: raw.attemptId,
-              requestId: context.requestId,
-              bindingDigest,
-              ...(passphrase === undefined ? {} : { passphrase }),
-            },
-            sender
+          await awaitIpcResponse(
+            executor.request(
+              {
+                type: 'execute',
+                attemptId: raw.attemptId,
+                requestId: context.requestId,
+                bindingDigest,
+                ...(passphrase === undefined ? {} : { passphrase }),
+              },
+              currentWindowSender.sender
+            )
           )
         );
         if (signal.aborted && !attempt.submissionAuthorized)
