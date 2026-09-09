@@ -96,6 +96,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Pending',
     description: 'Transactions CSV value - Status Pending',
   },
+  valueStatusExpired: {
+    id: 'wallet.transactions.csv.value.statusExpired',
+    defaultMessage: '!!!Expired',
+    description: 'Transactions CSV value - Status Expired',
+  },
+  valueStatusFailed: {
+    id: 'wallet.transactions.csv.value.statusFailed',
+    defaultMessage: '!!!Failed',
+    description: 'Transactions CSV value - Status Failed',
+  },
+  valueStatusUnknown: {
+    id: 'wallet.transactions.csv.value.statusUnknown',
+    defaultMessage: '!!!Submission status unknown',
+    description: 'Transactions CSV value - Submission status unknown',
+  },
   filenamePrefix: {
     id: 'wallet.transactions.csv.filenamePrefix',
     defaultMessage: '!!!Transactions',
@@ -167,17 +182,19 @@ const transactionsCsvGenerator = async ({
       addresses,
       state,
       assets,
+      amountIsKnown,
     }: WalletTransaction) => {
       const valueType =
         type === TransactionTypes.EXPEND
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
-      const valueTotal = formattedWalletAmount(amount, false);
+      const valueTotal =
+        amountIsKnown === false ? '' : formattedWalletAmount(amount, false);
       let valueSentAmount = '';
       let valueDepositAmount = '';
       let valueTransactionFee = '';
 
-      if (type === TransactionTypes.EXPEND) {
+      if (type === TransactionTypes.EXPEND && amountIsKnown !== false) {
         const amountWithoutFees = -amount.minus(-fee);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
         valueSentAmount = formattedWalletAmount(amountWithoutFees, false);
@@ -199,10 +216,14 @@ const transactionsCsvGenerator = async ({
         })
         .join(', ');
       const valueDateTime = date ? date.toISOString() : '';
-      const valueStatus =
-        state === 'pending'
-          ? intl.formatMessage(messages.valueStatusPending)
-          : intl.formatMessage(messages.valueStatusConfirmed);
+      const statusMessages = {
+        pending: messages.valueStatusPending,
+        in_ledger: messages.valueStatusConfirmed,
+        expired: messages.valueStatusExpired,
+        failed: messages.valueStatusFailed,
+        'submission-unknown': messages.valueStatusUnknown,
+      };
+      const valueStatus = intl.formatMessage(statusMessages[state]);
       const valueAddressesFrom = !includes(addresses.from, null)
         ? addresses.from.join(', ')
         : ' ';

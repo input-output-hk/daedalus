@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import Notification from '../../components/notifications/Notification';
 import successIcon from '../../assets/images/success-small.inline.svg';
@@ -10,12 +10,19 @@ import type {
   NotificationId,
 } from '../../types/notificationTypes';
 import type { NotificationDataProps } from '../../components/notifications/Notification';
+import { messages as transactionApprovalMessages } from '../../components/transactions/TransactionApprovalDialog.messages';
 
 const ICONS = {
   successIcon,
   spinnerIcon,
 };
 const messages = defineMessages({
+  transactionConfirmed: {
+    id: 'notification.transactionConfirmed',
+    defaultMessage: '!!!Transaction confirmed on the Cardano blockchain',
+    description:
+      'Shown once when a dismissed submission is subsequently confirmed.',
+  },
   downloadLogsProgress: {
     id: 'notification.downloadLogsProgress',
     defaultMessage: '!!!Preparing logs for download',
@@ -91,6 +98,8 @@ const messages = defineMessages({
 @inject('stores', 'actions')
 @observer
 class NotificationsContainer extends Component<InjectedProps> {
+  static contextTypes = { intl: intlShape.isRequired };
+
   static defaultProps = {
     actions: null,
     stores: null,
@@ -102,6 +111,12 @@ class NotificationsContainer extends Component<InjectedProps> {
   }
 
   notificationsConfig: Array<NotificationConfig> = [
+    {
+      id: 'transactionConfirmed',
+      actionToListenAndOpen: this.props.actions.transactions
+        .transactionConfirmed,
+      duration: 8000,
+    },
     {
       id: 'downloadLogsProgress',
       actionToListenAndOpen: this.props.actions.profile.downloadLogs,
@@ -157,8 +172,7 @@ class NotificationsContainer extends Component<InjectedProps> {
         .copyAssetParamNotification,
     },
   ];
-  // @ts-ignore ts-migrate(2740) FIXME: Type '{ downloadLogsProgress: { icon: string; hasE... Remove this comment to see the full error message
-  notificationsData: Record<NotificationId, NotificationDataProps> = {
+  notificationsData: Partial<Record<NotificationId, NotificationDataProps>> = {
     downloadLogsProgress: {
       icon: 'spinner',
       hasEllipsis: true,
@@ -199,6 +213,26 @@ class NotificationsContainer extends Component<InjectedProps> {
             <Notification
               key={id}
               {...data}
+              actions={
+                id === 'transactionConfirmed' && isVisible
+                  ? [
+                      {
+                        label: this.context.intl.formatMessage(
+                          transactionApprovalMessages.viewTransaction
+                        ),
+                        primary: false,
+                        autoFocus: false,
+                        onClick: () => {
+                          stores.transactions.openTransaction(
+                            labelValues.walletId,
+                            labelValues.transactionId
+                          );
+                          closeNotification.trigger({ id });
+                        },
+                      },
+                    ]
+                  : data.actions
+              }
               onClose={() =>
                 closeNotification.trigger({
                   id,

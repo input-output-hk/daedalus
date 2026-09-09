@@ -45,6 +45,7 @@ type Props = {
   closeOnOverlayClick?: boolean;
   primaryButtonAutoFocus?: boolean;
   fullSize?: boolean;
+  wide?: boolean;
   scrollWrapperRef?: ElementRef<any> | null | undefined;
 };
 const defaultActionOptions = {
@@ -67,6 +68,7 @@ export default class Dialog extends Component<Props> {
       primaryButtonAutoFocus,
       defaultThemeOverrides,
       fullSize,
+      wide,
       scrollWrapperRef,
     } = this.props;
     const { items, direction } = Array.isArray(actions)
@@ -74,7 +76,14 @@ export default class Dialog extends Component<Props> {
       : { ...defaultActionOptions, ...actions };
     let themeOverrides;
     if (defaultThemeOverrides) themeOverrides = dialogOverrides;
-    else if (fullSize) themeOverrides = dialogFullSizeOverride;
+    else if (fullSize)
+      themeOverrides = {
+        ...dialogFullSizeOverride,
+        modal: classnames(
+          dialogFullSizeOverride.modal,
+          wide && dialogFullSizeOverride.wideModal
+        ),
+      };
     const classActionsClasses = classnames([
       styles.actions,
       styles[`${direction}Direction`],

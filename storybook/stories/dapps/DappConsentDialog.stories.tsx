@@ -15,6 +15,7 @@ storiesOf('dApps / Consent', module)
     <DappConsentDialog
       request={{
         requestId: 'cip95-disclosure',
+        walletId: 'aa'.repeat(20),
         kind: 'key-disclosure',
         origin: 'https://example.dapp.test',
         walletName: 'My wallet',
@@ -31,6 +32,7 @@ storiesOf('dApps / Consent', module)
     <DappConsentDialog
       request={{
         requestId: 'cip104-disclosure',
+        walletId: 'aa'.repeat(20),
         kind: 'key-disclosure',
         origin: 'https://example.dapp.test',
         walletName: 'My wallet',

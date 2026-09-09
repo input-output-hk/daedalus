@@ -283,6 +283,7 @@ export type DappConsentKind =
   | 'batch-submit';
 type DappConsentIdentity = Readonly<{
   requestId: string;
+  walletId: string;
   origin: string;
   walletName: string;
   networkName: string;
@@ -319,6 +320,7 @@ export type NativeTransactionAcknowledgement =
 export type NativeTransactionPresentation = Readonly<{
   kind: 'native-transaction';
   requestId: string;
+  walletId: string;
   attemptId: string;
   walletName: string;
   networkName: string;
@@ -340,6 +342,9 @@ export type NativeTransactionPresentation = Readonly<{
 export type WalletApprovalPresentation =
   | DappConsentPresentation
   | NativeTransactionPresentation;
+export type WalletApprovalResult =
+  | NativeApprovalResult
+  | Readonly<{ status: 'signed'; transactionIds: readonly string[] }>;
 export type WalletApprovalProgressPhase =
   | 'signing'
   | 'waiting-for-device'
@@ -353,7 +358,11 @@ export type WalletApprovalRenderMainRequest =
       itemIndex?: number;
       submissionAuthorized: boolean;
     }>
-  | Readonly<{ type: 'terminal'; requestId: string }>;
+  | Readonly<{
+      type: 'terminal';
+      requestId: string;
+      result?: WalletApprovalResult;
+    }>;
 export type WalletApprovalRenderRendererResponse = Readonly<{
   requestId: string;
   approved: boolean;

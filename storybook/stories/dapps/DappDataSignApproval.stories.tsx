@@ -10,6 +10,7 @@ type Request = Extract<DappConsentPresentation, { kind: 'data-sign' }>;
 
 const request = (utf8Preview: string | null): Request => ({
   requestId: 'data-sign-request',
+  walletId: 'aa'.repeat(20),
   kind: 'data-sign',
   origin: 'https://example.dapp.test',
   walletName: 'My wallet',

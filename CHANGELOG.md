@@ -16,6 +16,8 @@
 
 ### Fixes
 
+- Native transactions: retain submission, failure, cancellation, and uncertain-outcome feedback until dismissed, including transaction IDs. Distinguish explicit hardware-wallet refusal from other failures, and prevent late address-verification results from affecting a later operation.
+
 - Collateral: preserve preferred collateral during native payment/delegation selection and fee estimation, with fallback when ordinary inputs cannot balance the request. Keep CIP-30 inventory complete with collateral last, and accept valid spending/collateral input overlap.
 
 - dApp connector: derive pinned Plutus language views from authenticated protocol parameters, allowing valid script-data commitments (including Liqwid transactions) to complete review while rejecting missing cost models and commitment mismatches.

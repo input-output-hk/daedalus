@@ -1,10 +1,12 @@
 /** @jest-environment node */
 import cbor from 'cbor';
+import { parseWalletApprovalRender } from '../ipc/walletApproval';
 
 import {
   createNativePlanReviewDisplay,
   nativeApprovalBindingDigest,
   nativeTransactionPlanDigest,
+  parseNativeApprovalResult,
   parseNativePreparedApproval,
   parseNativeTransactionPlan,
 } from './nativePlan';
@@ -73,6 +75,52 @@ describe('native transaction plan', () => {
     ).toThrow('coin is not conserved');
   });
 
+  it('validates native-plan evidence before presenting it for approval', () => {
+    const planCbor = plan();
+    const planItem = {
+      kind: 'native-plan',
+      planCbor,
+      planDigest: nativeTransactionPlanDigest(planCbor),
+      display: createNativePlanReviewDisplay(
+        parseNativeTransactionPlan(planCbor)
+      ),
+    };
+    const request = {
+      kind: 'native-transaction',
+      requestId: 'request',
+      walletId: 'aa'.repeat(20),
+      attemptId: 'attempt',
+      walletName: 'Savings',
+      networkName: 'Preview',
+      action: 'payment',
+      authorization: { kind: 'software' },
+      collection: 'single',
+      acknowledgements: ['flight-mainnet-funds'],
+      items: [planItem],
+    };
+    const message = parseWalletApprovalRender({ type: 'present', request });
+    expect(message).toMatchObject({
+      request: {
+        walletId: request.walletId,
+        items: [
+          {
+            display: { walletChange: { coin: '-200000', assets: [] } },
+          },
+        ],
+        acknowledgements: ['flight-mainnet-funds'],
+      },
+    });
+    expect(() =>
+      parseWalletApprovalRender({
+        type: 'present',
+        request: {
+          ...request,
+          items: [{ ...planItem, planDigest: '00'.repeat(32) }],
+        },
+      })
+    ).toThrow();
+  });
+
   it('binds the exact plan, wallet, network, action, and authorization', () => {
     const planCbor = plan();
     const prepared = parseNativePreparedApproval({
@@ -94,5 +142,61 @@ describe('native transaction plan', () => {
     expect(
       nativeApprovalBindingDigest({ ...prepared, authorization: 'ledger' })
     ).not.toBe(digest);
+  });
+
+  it('accepts only normalized native approval outcomes', () => {
+    const submitted = parseNativeApprovalResult({
+      status: 'submitted',
+      transactionIds: ['66'.repeat(32)],
+    });
+    expect(submitted).toEqual({
+      status: 'submitted',
+      transactionIds: ['66'.repeat(32)],
+    });
+    expect(
+      parseNativeApprovalResult({
+        status: 'partial',
+        transactionIds: ['77'.repeat(32)],
+        failedIndex: 1,
+        errorCode: 'submit_failed',
+      })
+    ).toEqual({
+      status: 'partial',
+      transactionIds: ['77'.repeat(32)],
+      failedIndex: 1,
+      errorCode: 'submit_failed',
+    });
+    expect(() =>
+      parseNativeApprovalResult({
+        status: 'partial',
+        transactionIds: ['not-a-transaction-id'],
+        failedIndex: 0,
+        errorCode: 'raw device exception: secret',
+      })
+    ).toThrow('Invalid native approval result');
+    expect(() =>
+      parseNativeApprovalResult({
+        status: 'partial',
+        transactionIds: [],
+        failedIndex: 0,
+        errorCode: 'failed',
+      })
+    ).toThrow('Invalid native approval result');
+    expect(() =>
+      parseNativeApprovalResult({
+        status: 'rejected',
+        errorCode: 'failed',
+        privateBody: 'must-not-cross',
+      })
+    ).toThrow('Invalid native approval fields');
+    expect(
+      parseNativeApprovalResult({
+        status: 'rejected',
+        errorCode: 'TxSignError.UserDeclined',
+      })
+    ).toEqual({
+      status: 'rejected',
+      errorCode: 'TxSignError.UserDeclined',
+    });
   });
 });

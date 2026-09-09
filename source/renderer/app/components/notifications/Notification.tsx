@@ -3,6 +3,8 @@ import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
+import { intlShape } from 'react-intl';
+import globalMessages from '../../i18n/global-messages';
 import styles from './Notification.scss';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import NotificationActions from './NotificationActions';
@@ -26,6 +28,8 @@ type Props = NotificationDataProps & {
   index?: number;
 };
 export default class Notification extends Component<Props> {
+  static contextTypes = { intl: intlShape.isRequired };
+
   static defaultProps = {
     clickToClose: true,
     hasCloseButton: true,
@@ -48,6 +52,7 @@ export default class Notification extends Component<Props> {
       themeOverride,
     } = this.props;
     const isClickToClose = clickToClose && !actions;
+    const Container = isClickToClose ? 'button' : 'div';
     const notificationMessageStyles = classNames([
       styles.component,
       isVisible ? styles.isVisible : null,
@@ -63,11 +68,14 @@ export default class Notification extends Component<Props> {
       hasSpinner ? styles.spinnerIcon : null,
     ]);
     return (
-      <div
+      <Container
         className={notificationMessageStyles}
-        onClick={() => isClickToClose && onClose && onClose()}
-        role="link"
-        aria-hidden
+        type={isClickToClose ? 'button' : undefined}
+        onClick={isClickToClose ? onClose : undefined}
+        role={isClickToClose ? undefined : 'status'}
+        aria-live="polite"
+        aria-hidden={!isVisible}
+        tabIndex={isClickToClose && !isVisible ? -1 : undefined}
         style={{
           zIndex: 9999999 + (index || 0),
         }}
@@ -76,21 +84,30 @@ export default class Notification extends Component<Props> {
           <Fragment>
             {icon && <SVGInline svg={icon} className={iconStyles} />}
 
-            <div className={messageStyles}>{children}</div>
+            <span className={messageStyles}>{children}</span>
 
             {!!actions && <NotificationActions actions={actions} />}
 
-            {hasCloseButton && (
-              <button
-                className={styles.closeButton}
-                onClick={() => onClose && onClose()}
-              >
-                <SVGInline svg={closeCross} />
-              </button>
-            )}
+            {hasCloseButton &&
+              (isClickToClose ? (
+                <span className={styles.closeButton} aria-hidden="true">
+                  <SVGInline svg={closeCross} />
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.closeButton}
+                  aria-label={this.context.intl.formatMessage(
+                    globalMessages.close
+                  )}
+                  onClick={() => onClose && onClose()}
+                >
+                  <SVGInline svg={closeCross} />
+                </button>
+              ))}
           </Fragment>
         )}
-      </div>
+      </Container>
     );
   }
 }

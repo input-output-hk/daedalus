@@ -7,6 +7,7 @@ import NativeTransactionApprovalService from './NativeTransactionApprovalService
 export type NativeTransactionOperation = Readonly<{
   walletId: string;
   ownerSignal: AbortSignal;
+  payment?: Readonly<{ address: string; amount: string }>;
   prepare: () => Promise<NativePreparedApproval>;
   execute: (
     prepared: NativePreparedApproval,
@@ -24,7 +25,11 @@ type WalletSendLock = <T>(
 export default class NativeTransactionService {
   constructor(
     private readonly withWalletSendLock: WalletSendLock,
-    private readonly approval = new NativeTransactionApprovalService()
+    private readonly approval = new NativeTransactionApprovalService(),
+    private readonly onExecute?: (
+      requestId: string,
+      payment: NativeTransactionOperation['payment']
+    ) => void
   ) {}
 
   async run(
@@ -41,10 +46,21 @@ export default class NativeTransactionService {
       return Object.freeze({ status: 'rejected', errorCode: 'cancelled' });
     return this.approval.request(
       prepared,
-      (passphrase, signal, markSubmitting) =>
-        this.withWalletSendLock(operation.walletId, () =>
-          operation.execute(prepared, passphrase, signal, markSubmitting)
-        ),
+      (passphrase, signal, markSubmitting, requestId) =>
+        this.withWalletSendLock(operation.walletId, () => {
+          if (signal.aborted)
+            return Promise.resolve({
+              status: 'rejected' as const,
+              errorCode: 'cancelled',
+            });
+          this.onExecute?.(requestId, operation.payment);
+          return operation.execute(
+            prepared,
+            passphrase,
+            signal,
+            markSubmitting
+          );
+        }),
       operation.ownerSignal
     );
   }

@@ -11,6 +11,76 @@
     width: 100% !important;
   }
 
+  .modal.wideModal {
+    box-sizing: border-box;
+    display: flex;
+    max-height: calc(100vh - 48px) !important;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1120px !important;
+    padding: 24px 32px !important;
+    width: calc(100vw - 64px) !important;
+
+    :global {
+      .Dialog_dialogWrapper {
+        min-height: 0;
+        width: 100%;
+      }
+
+      .Dialog_title {
+        align-self: stretch;
+        max-width: none;
+        text-align: left;
+      }
+
+      .Dialog_contentWrapper {
+        min-height: 0;
+        margin-right: 0;
+        overflow-y: auto;
+        padding-right: 12px;
+        scrollbar-gutter: stable;
+      }
+
+      .Dialog_actions {
+        gap: 16px;
+
+        button {
+          min-height: 44px;
+          width: 50%;
+
+          & + button {
+            margin-left: 0;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 760px) {
+    .modal.wideModal {
+      padding: 16px !important;
+      width: calc(100vw - 24px) !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .modal.wideModal :global(.Dialog_actions) {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-height: 720px) {
+    .modal.wideModal {
+      max-height: calc(100vh - 24px) !important;
+      padding-bottom: 16px !important;
+      padding-top: 16px !important;
+    }
+  }
+
   .dialogWrapper {
     position: static;
   }

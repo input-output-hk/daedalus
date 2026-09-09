@@ -35,6 +35,7 @@ jest.mock(
 
 const identity = {
   requestId: 'request',
+  walletId: 'aa'.repeat(20),
   origin: 'https://dapp.test',
   walletName: 'Wallet',
   networkName: 'Preview',

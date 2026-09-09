@@ -96,6 +96,8 @@ class App extends Component<{
                     key={walletApproval.current.requestId}
                     assetDetails={stores.assets.details}
                     request={walletApproval.current}
+                    result={walletApproval.result}
+                    receipts={walletApproval.receiptDetails}
                     deciding={walletApproval.deciding}
                     phase={walletApproval.phase}
                     activeItemIndex={walletApproval.activeItemIndex}
@@ -104,6 +106,8 @@ class App extends Component<{
                     onApprove={walletApproval.approve}
                     onReject={walletApproval.reject}
                     onCancel={walletApproval.cancel}
+                    onDismiss={walletApproval.dismissResult}
+                    onViewTransaction={walletApproval.viewTransaction}
                   />
                 )}
                 <RTSFlagsRecommendationOverlayContainer />

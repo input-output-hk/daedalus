@@ -1593,6 +1593,7 @@ export class HardwareWalletService {
             ? 'ledger-8.0.0-candidate'
             : 'trezor-connect-9.7.2';
         if (
+          (vendor !== 'ledger' && vendor !== 'trezor') ||
           vendor !== capability.vendor ||
           capability.matrixRevision !== HARDWARE_CONNECTOR_MATRIX_REVISION ||
           capability.artifactId !== artifactId ||
@@ -1600,7 +1601,8 @@ export class HardwareWalletService {
           !capability.staticGatesPassed ||
           !capability.physicalCertified ||
           !capability.productEnabled ||
-          !dappLaunchPolicy.hardwareConnectorEnabled(capability.rowId)
+          (capability.rowId !== `${vendor}-native` &&
+            !dappLaunchPolicy.hardwareConnectorEnabled(capability.rowId))
         )
           throw new Error('Hardware exact transaction is not enabled');
         const restored = restoreExactTransaction(exact);

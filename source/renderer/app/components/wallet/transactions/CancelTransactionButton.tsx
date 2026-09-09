@@ -12,8 +12,8 @@ const messages = defineMessages({
   },
   removeLabel: {
     id: 'wallet.transaction.failed.removeTransactionButton',
-    defaultMessage: '!!!Remove failed transaction',
-    description: 'Label for the remove failed transaction button',
+    defaultMessage: '!!!Remove expired transaction',
+    description: 'Label for removing a transaction that expired before confirmation',
   },
 });
 type Props = {

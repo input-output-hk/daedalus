@@ -60,10 +60,14 @@ export const consentCoordinator = new ConsentCoordinator({
       )
     );
   },
-  terminal: async (requestId) => {
+  terminal: async (requestId, result) => {
     await awaitIpcResponse(
       renderChannel.request(
-        { type: 'terminal', requestId },
+        {
+          type: 'terminal',
+          requestId,
+          ...(result === undefined ? {} : { result }),
+        },
         currentWindowSender.sender
       )
     );

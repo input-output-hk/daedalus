@@ -17,6 +17,22 @@ class SimpleTransactionList extends Component<Props> {
   static defaultProps = {
     onOpenExternalLink: () => {},
   };
+  root: HTMLDivElement | null | undefined;
+
+  revealTransaction = (transactionId: string): boolean => {
+    if (!this.root) return false;
+    this.forceUpdate(() => {
+      const row = document.getElementById(`tx-${transactionId}`);
+      if (
+        row instanceof HTMLElement &&
+        this.root?.contains(row) &&
+        row.scrollIntoView
+      ) {
+        row.scrollIntoView({ block: 'center' });
+      }
+    });
+    return true;
+  };
   onListScroll = (
     context: ScrollContextType,
     evt: React.SyntheticEvent<HTMLElement>
@@ -37,6 +53,9 @@ class SimpleTransactionList extends Component<Props> {
         {(context) => (
           <div
             className={styles.component}
+            ref={(element) => {
+              this.root = element;
+            }}
             onScroll={(evt) => this.onListScroll(context, evt)}
           >
             {rows.map((

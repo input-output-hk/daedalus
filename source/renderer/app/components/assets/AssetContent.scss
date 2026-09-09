@@ -77,10 +77,38 @@
 }
 .review {
   align-items: stretch;
+  min-width: 0;
 
+  dl {
+    min-width: 0;
+    padding-left: 0;
+  }
+
+  dt,
   dd {
+    display: block;
+    margin-left: 0;
     max-height: none;
+    min-width: 0;
     overflow: visible;
+    overflow-wrap: anywhere;
+    text-align: left;
+    white-space: normal;
+    width: 100%;
+  }
+
+  dd:not(:first-of-type) {
+    margin-top: 10px;
+  }
+
+  .assetParam,
+  .reviewCopy,
+  .value,
+  .blankValue {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    width: 100%;
   }
 
   .copyIcon {

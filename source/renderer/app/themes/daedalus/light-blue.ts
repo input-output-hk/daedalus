@@ -1245,6 +1245,14 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color': '#5e60661a',
   },
+  transactionApproval: {
+    '--theme-transaction-review-outgoing-color': '#ffffff',
+    '--theme-transaction-review-outgoing-background': '#ea4c5b14',
+    '--theme-transaction-review-incoming-color': '#48d47f',
+    '--theme-transaction-review-incoming-background': '#2dc06c14',
+    '--theme-transaction-review-warning-color': '#ffb532',
+    '--theme-transaction-review-warning-background': '#f2a21814',
+  },
 };
 
 const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {

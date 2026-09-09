@@ -627,6 +627,21 @@
         "id": "wallet.transactions.csv.value.statusPending"
       },
       {
+        "defaultMessage": "!!!Expired",
+        "description": "Transactions CSV value - Status Expired",
+        "id": "wallet.transactions.csv.value.statusExpired"
+      },
+      {
+        "defaultMessage": "!!!Failed",
+        "description": "Transactions CSV value - Status Failed",
+        "id": "wallet.transactions.csv.value.statusFailed"
+      },
+      {
+        "defaultMessage": "!!!Submission status unknown",
+        "description": "Transactions CSV value - Submission status unknown",
+        "id": "wallet.transactions.csv.value.statusUnknown"
+      },
+      {
         "defaultMessage": "!!!Transactions",
         "description": "Transactions CSV \"Transactions\" filename",
         "id": "wallet.transactions.csv.filenamePrefix"
@@ -2261,6 +2276,11 @@
         "id": "transaction.approval.returned"
       },
       {
+        "defaultMessage": "!!!Inputs and outputs show whole UTxOs, including returned assets. Your net change is shown above.",
+        "description": "Explains why gross input and output values can be larger than the net wallet change.",
+        "id": "transaction.approval.grossFlowHelp"
+      },
+      {
         "defaultMessage": "!!!Inputs — consumed",
         "id": "transaction.approval.inputs"
       },
@@ -2273,8 +2293,19 @@
         "id": "transaction.approval.referenceInputs"
       },
       {
-        "defaultMessage": "!!!Collateral — conditional if scripts fail",
-        "id": "transaction.approval.collateralEntries"
+        "defaultMessage": "!!!Collateral is at risk only if script execution fails.",
+        "description": "Explains the condition under which collateral can be lost.",
+        "id": "transaction.approval.collateralHelp"
+      },
+      {
+        "defaultMessage": "!!!Collateral inputs — conditional spending",
+        "description": "Heading for collateral inputs inspected during signing.",
+        "id": "transaction.approval.collateralInputs"
+      },
+      {
+        "defaultMessage": "!!!Collateral return — if scripts fail",
+        "description": "Heading for collateral returned after failed script execution.",
+        "id": "transaction.approval.collateralReturn"
       },
       {
         "defaultMessage": "!!!Input {value}",
@@ -2283,6 +2314,21 @@
       {
         "defaultMessage": "!!!Output {value}",
         "id": "transaction.approval.output"
+      },
+      {
+        "defaultMessage": "!!!Reference input {value}",
+        "description": "Title for one read-only transaction reference input.",
+        "id": "transaction.approval.referenceInput"
+      },
+      {
+        "defaultMessage": "!!!Collateral input {value}",
+        "description": "Title for one conditional collateral input.",
+        "id": "transaction.approval.collateralInput"
+      },
+      {
+        "defaultMessage": "!!!Collateral return {value}",
+        "description": "Title for one collateral return output.",
+        "id": "transaction.approval.collateralReturnEntry"
       },
       {
         "defaultMessage": "!!!This wallet",
@@ -2295,6 +2341,11 @@
       {
         "defaultMessage": "!!!Script",
         "id": "transaction.approval.script"
+      },
+      {
+        "defaultMessage": "!!!Returned to this wallet",
+        "description": "Ownership badge for a normal output controlled by the reviewed wallet.",
+        "id": "transaction.approval.returnedToWallet"
       },
       {
         "defaultMessage": "!!!Ownership unknown",
@@ -2319,6 +2370,11 @@
       {
         "defaultMessage": "!!!Copy transaction input",
         "id": "transaction.approval.copyOutpoint"
+      },
+      {
+        "defaultMessage": "!!!Full transaction input",
+        "description": "Disclosure label for the complete transaction input identity.",
+        "id": "transaction.approval.fullOutpoint"
       },
       {
         "defaultMessage": "!!!Datum attached",
@@ -2409,11 +2465,11 @@
         "id": "transaction.approval.submissionGuidance"
       },
       {
-        "defaultMessage": "!!!Waiting for hardware wallet…",
+        "defaultMessage": "!!!Waiting for approval on your hardware wallet…",
         "id": "transaction.approval.waiting"
       },
       {
-        "defaultMessage": "!!!Signing…",
+        "defaultMessage": "!!!Signing transaction…",
         "id": "transaction.approval.signing"
       },
       {
@@ -2421,8 +2477,233 @@
         "id": "transaction.approval.submitting"
       },
       {
+        "defaultMessage": "!!!Done",
+        "description": "Closes a completed native transaction approval result.",
+        "id": "transaction.approval.result.done"
+      },
+      {
+        "defaultMessage": "!!!Transaction submitted",
+        "description": "Heading shown after the transaction was submitted.",
+        "id": "transaction.approval.result.submittedTitle"
+      },
+      {
+        "defaultMessage": "!!!Submission acknowledged. Waiting for blockchain confirmation.",
+        "description": "Submission receipt status before the wallet observes blockchain inclusion.",
+        "id": "transaction.approval.result.submittedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction failed",
+        "description": "Heading for a failed transaction approval.",
+        "id": "transaction.approval.result.rejectedTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction could not be completed. Check your transaction history before trying again.",
+        "description": "Generic failure copy that does not attribute the failure to the user.",
+        "id": "transaction.approval.result.rejectedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction declined on device",
+        "description": "Heading used only when the hardware wallet explicitly reports user refusal.",
+        "id": "transaction.approval.result.deviceRejectedTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction was declined on the hardware wallet. No transaction was submitted.",
+        "description": "Copy used only for the normalized hardware-wallet user-declined code.",
+        "id": "transaction.approval.result.deviceRejectedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction cancelled",
+        "description": "Heading shown after transaction approval was cancelled.",
+        "id": "transaction.approval.result.cancelledTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction was cancelled before submission. No transaction was submitted.",
+        "description": "Explains that cancellation happened before submission.",
+        "id": "transaction.approval.result.cancelledMessage"
+      },
+      {
+        "defaultMessage": "!!!Submission status unknown",
+        "description": "Heading shown when Daedalus cannot determine whether submission succeeded.",
+        "id": "transaction.approval.result.submissionUnknownTitle"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not determine whether the transaction was submitted. Check your transaction history before trying again to avoid duplicate payments or additional fees.",
+        "description": "Warns against retrying while transaction submission status is uncertain.",
+        "id": "transaction.approval.result.submissionUnknownMessage"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted",
+        "description": "Heading for a partially submitted transaction batch.",
+        "id": "transaction.approval.result.partialTitle"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted, but item {failedItem} failed. Review the transaction IDs before trying again.",
+        "description": "Partial batch result. failedItem is the one-based item number that failed.",
+        "id": "transaction.approval.result.partialMessage"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted before the batch was cancelled at item {failedItem}. Review the transaction IDs before trying again.",
+        "description": "Partial batch result when the remaining submission was cancelled.",
+        "id": "transaction.approval.result.partialCancelledMessage"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted, but item {failedItem} was declined on the hardware wallet. Review the transaction IDs before trying again.",
+        "description": "Partial batch result used only for normalized hardware-wallet refusal.",
+        "id": "transaction.approval.result.partialDeviceRejectedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction IDs",
+        "description": "Heading for returned transaction IDs, including when submission status is unknown.",
+        "id": "transaction.approval.result.transactionIds"
+      },
+      {
+        "defaultMessage": "!!!Transaction {value}",
+        "description": "One-based label for a returned submitted transaction ID.",
+        "id": "transaction.approval.result.transactionId"
+      },
+      {
+        "defaultMessage": "!!!Copy transaction ID",
+        "description": "Copies a returned transaction ID to the clipboard.",
+        "id": "transaction.approval.result.copyTransactionId"
+      },
+      {
+        "defaultMessage": "!!!Transaction receipt",
+        "description": "Completed transaction approval view, including sign-only results.",
+        "id": "transaction.approval.result.receiptTitle"
+      },
+      {
+        "defaultMessage": "!!!Transaction failed",
+        "description": "Receipt heading for a definite failed transaction.",
+        "id": "transaction.approval.result.failedTitle"
+      },
+      {
+        "defaultMessage": "!!!The wallet backend reports this transaction failed. Check your transaction history before trying again.",
+        "description": "Definite failure rather than a lost connection or unknown submission.",
+        "id": "transaction.approval.result.failedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction status updates",
+        "description": "Batch receipt where the backend reports different terminal outcomes.",
+        "id": "transaction.approval.result.updatedTitle"
+      },
+      {
+        "defaultMessage": "!!!Check the status of each transaction below before submitting again.",
+        "description": "Does not describe a mixed-outcome batch as wholly confirmed or failed.",
+        "id": "transaction.approval.result.updatedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction confirmed",
+        "description": "Receipt heading after the backend reports blockchain inclusion.",
+        "id": "transaction.approval.result.confirmedTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction is recorded on the Cardano blockchain.",
+        "description": "Confirmation observed by the wallet backend, not device approval.",
+        "id": "transaction.approval.result.confirmedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction signed",
+        "description": "Receipt heading for a sign-only dApp request.",
+        "id": "transaction.approval.result.signedTitle"
+      },
+      {
+        "defaultMessage": "!!!The signature was returned to the dApp. Signing does not mean the transaction was submitted or confirmed.",
+        "description": "Makes the sign-only boundary explicit without claiming submission.",
+        "id": "transaction.approval.result.signedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction expired",
+        "description": "Receipt heading for a transaction reported expired by the backend.",
+        "id": "transaction.approval.result.expiredTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction expired before confirmation. Check your transaction history before trying again.",
+        "description": "Definitive expiry, not an elapsed-time guess or a connection error.",
+        "id": "transaction.approval.result.expiredMessage"
+      },
+      {
+        "defaultMessage": "!!!View transaction",
+        "description": "Opens and expands this transaction in wallet history.",
+        "id": "transaction.approval.result.viewTransaction"
+      },
+      {
+        "defaultMessage": "!!!Reviewed transaction details",
+        "description": "Expands the original authorization facts below a completed receipt.",
+        "id": "transaction.approval.result.reviewedDetails"
+      },
+      {
+        "defaultMessage": "!!!Amount transferred",
+        "description": "Explicit payment amount matched to a reviewed output; not change or fee.",
+        "id": "transaction.approval.result.transferAmount"
+      },
+      {
+        "defaultMessage": "!!!Network fee",
+        "description": "Actual transaction fee, shown separately from transferred amount.",
+        "id": "transaction.approval.result.networkFee"
+      },
+      {
+        "defaultMessage": "!!!Net wallet change",
+        "description": "Net effect on wallet funds, distinct from the payment principal.",
+        "id": "transaction.approval.result.walletChange"
+      },
+      {
+        "defaultMessage": "!!!Transfer within this wallet",
+        "description": "Used only when normal input and output ownership establish a self-transfer.",
+        "id": "transaction.approval.result.withinWallet"
+      },
+      {
+        "defaultMessage": "!!!Submitted · Awaiting confirmation",
+        "description": "Individual transaction status before blockchain inclusion is observed.",
+        "id": "transaction.approval.result.awaitingConfirmation"
+      },
+      {
+        "defaultMessage": "!!!Confirmed",
+        "description": "Individual transaction status after blockchain inclusion.",
+        "id": "transaction.approval.result.confirmedStatus"
+      },
+      {
+        "defaultMessage": "!!!Expired",
+        "description": "Individual transaction status after a definitive backend expiry.",
+        "id": "transaction.approval.result.expiredStatus"
+      },
+      {
+        "defaultMessage": "!!!Failed",
+        "description": "Individual transaction status after a definitive backend rejection.",
+        "id": "transaction.approval.result.failedStatus"
+      },
+      {
+        "defaultMessage": "!!!Confirmations: {count}",
+        "description": "Block confirmation count provided by the backend.",
+        "id": "transaction.approval.result.confirmations"
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Cancels an in-flight hardware approval before submission authorization.",
+        "id": "transaction.approval.cancel"
+      },
+      {
         "defaultMessage": "!!!{value} base units — decimals unknown",
         "id": "transaction.approval.baseUnits"
+      },
+      {
+        "defaultMessage": "!!!{value} base units",
+        "description": "Exact signed native asset quantity before decimal conversion.",
+        "id": "transaction.approval.rawUnits"
+      },
+      {
+        "defaultMessage": "!!!Asset details",
+        "description": "Accessible label for expanding exact native asset identity.",
+        "id": "transaction.approval.assetDetails"
+      },
+      {
+        "defaultMessage": "!!!{title} ({count})",
+        "description": "Expandable transaction entry group heading with entry count.",
+        "id": "transaction.approval.entrySection"
+      },
+      {
+        "defaultMessage": "!!!+{count} more assets",
+        "description": "Disclosure label for additional assets in a gross UTxO value.",
+        "id": "transaction.approval.moreAssets"
       },
       {
         "defaultMessage": "!!!Unnamed token",
@@ -2910,6 +3191,11 @@
   },
   {
     "descriptors": [
+      {
+        "defaultMessage": "!!!Transaction confirmed on the Cardano blockchain",
+        "description": "Shown once when a dismissed submission is subsequently confirmed.",
+        "id": "notification.transactionConfirmed"
+      },
       {
         "defaultMessage": "!!!Preparing logs for download",
         "description": "Notification for download logs in progress in the Loading and Settings pages.",
@@ -8376,8 +8662,8 @@
         "id": "wallet.transaction.pending.cancelTransactionButton"
       },
       {
-        "defaultMessage": "!!!Remove failed transaction",
-        "description": "Label for the remove failed transaction button",
+        "defaultMessage": "!!!Remove expired transaction",
+        "description": "Label for removing a transaction that expired before confirmation",
         "id": "wallet.transaction.failed.removeTransactionButton"
       }
     ],
@@ -8501,11 +8787,6 @@
         "id": "wallet.transaction.type.card"
       },
       {
-        "defaultMessage": "!!!{typeOfTransaction} transaction",
-        "description": "Transaction type shown for {currency} transactions.",
-        "id": "wallet.transaction.type"
-      },
-      {
         "defaultMessage": "!!!Exchange",
         "description": "Transaction type shown for money exchanges between currencies.",
         "id": "wallet.transaction.type.exchange"
@@ -8554,6 +8835,11 @@
         "defaultMessage": "!!!{transactionsType} received",
         "description": "Label \"{transactionsType} received\" for the transaction.",
         "id": "wallet.transaction.received"
+      },
+      {
+        "defaultMessage": "!!!Transfer within this wallet",
+        "description": "Title for a pure ADA transfer whose input and output addresses are verified as belonging to this wallet.",
+        "id": "wallet.transaction.type.selfTransfer"
       },
       {
         "defaultMessage": "!!!Delegation Transaction",
@@ -8606,9 +8892,19 @@
         "id": "wallet.transaction.deposit"
       },
       {
-        "defaultMessage": "!!!Transaction amount",
-        "description": "Transaction amount.",
-        "id": "wallet.transaction.transactionAmount"
+        "defaultMessage": "!!!Net wallet change",
+        "description": "Label for an amount representing the net ADA balance change of the wallet.",
+        "id": "wallet.transaction.netWalletChange"
+      },
+      {
+        "defaultMessage": "!!!Amount transferred",
+        "description": "Label for a known intended ADA payment amount, distinct from fees and change.",
+        "id": "wallet.transaction.amountTransferred"
+      },
+      {
+        "defaultMessage": "!!!Unavailable",
+        "description": "Shown when a transaction amount is not known.",
+        "id": "wallet.transaction.amountUnavailable"
       },
       {
         "defaultMessage": "!!!Multiple tokens",
@@ -8656,44 +8952,49 @@
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel"
       },
       {
-        "defaultMessage": "!!!This transaction was submitted to the Cardano network, but it expired, so it failed. Transactions on the Cardano network have a ‘time to live’ attribute, which passed before the network processed the transaction. Please, remove it to release the funds (UTXOs) used by this transaction to use those funds in another transaction.",
-        "description": "Note to cancel a transaction that has been failed",
+        "defaultMessage": "!!!This transaction expired before the Cardano network confirmed it. Remove it to release its inputs for another transaction.",
+        "description": "Note explaining an expired transaction",
         "id": "wallet.transaction.failed.cancelFailedTxnNote"
       },
       {
-        "defaultMessage": "!!!Why should I cancel failed transactions?",
-        "description": "Link to support article for removing a failed transaction",
+        "defaultMessage": "!!!Why should I remove an expired transaction?",
+        "description": "Link to support information about expired transactions",
         "id": "wallet.transaction.failed.cancelFailedTxnSupportArticle"
       },
       {
-        "defaultMessage": "!!!Transaction confirmed",
-        "description": "Transaction state \"confirmed\"",
-        "id": "wallet.transaction.state.confirmed"
+        "defaultMessage": "!!!The submission was rejected and is not expected to confirm. Review the transaction before trying again.",
+        "description": "Note explaining a rejected transaction submission.",
+        "id": "wallet.transaction.failed.rejectedTxnNote"
       },
       {
-        "defaultMessage": "!!!Transaction pending",
-        "description": "Transaction state \"pending\"",
-        "id": "wallet.transaction.state.pending"
-      },
-      {
-        "defaultMessage": "!!!Transaction failed",
-        "description": "Transaction state \"failed\"",
-        "id": "wallet.transaction.state.failed"
+        "defaultMessage": "!!!Daedalus could not determine whether this transaction reached the network. Check transaction history before retrying to avoid a duplicate payment.",
+        "description": "Warning shown when the outcome of submission is unknown.",
+        "id": "wallet.transaction.submissionUnknown.note"
       },
       {
         "defaultMessage": "!!!Confirmed",
-        "description": "Transaction state \"confirmed\"",
-        "id": "wallet.transaction.state.confirmedHeading"
+        "description": "Transaction state \"confirmed\".",
+        "id": "wallet.transaction.state.confirmed"
       },
       {
-        "defaultMessage": "!!!Pending",
-        "description": "Transaction state \"pending\"",
-        "id": "wallet.transaction.state.pendingHeading"
+        "defaultMessage": "!!!Submitted · Awaiting confirmation",
+        "description": "Transaction state \"pending\".",
+        "id": "wallet.transaction.state.pending"
+      },
+      {
+        "defaultMessage": "!!!Expired",
+        "description": "Transaction state \"expired before confirmation\".",
+        "id": "wallet.transaction.state.expired"
       },
       {
         "defaultMessage": "!!!Failed",
-        "description": "Transaction state \"failed\"",
-        "id": "wallet.transaction.state.failedHeading"
+        "description": "Transaction state \"submission rejected\".",
+        "id": "wallet.transaction.state.failed"
+      },
+      {
+        "defaultMessage": "!!!Submission status unknown",
+        "description": "Transaction state used when Daedalus cannot determine whether submission reached the network.",
+        "id": "wallet.transaction.state.submissionUnknown"
       }
     ],
     "path": "source/renderer/app/components/wallet/transactions/Transaction.tsx"

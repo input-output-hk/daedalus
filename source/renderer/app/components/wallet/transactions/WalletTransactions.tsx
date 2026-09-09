@@ -45,6 +45,7 @@ type Props = {
   getAsset: (...args: Array<any>) => any;
   isInternalAddress: (...args: Array<any>) => any;
   onCopyAssetParam: (...args: Array<any>) => any;
+  selectedTransactionId?: string;
 };
 type State = {
   isScrolling: boolean;
@@ -95,6 +96,7 @@ class WalletTransactions extends Component<Props, State> {
       getAsset,
       isInternalAddress,
       onCopyAssetParam,
+      selectedTransactionId,
     } = this.props;
     // Guard against potential null values
     if (!filterOptions || !activeWallet) return null;
@@ -137,6 +139,7 @@ class WalletTransactions extends Component<Props, State> {
           isRenderingAsVirtualList
           isInternalAddress={isInternalAddress}
           onCopyAssetParam={onCopyAssetParam}
+          selectedTransactionId={selectedTransactionId}
         />
       );
     }

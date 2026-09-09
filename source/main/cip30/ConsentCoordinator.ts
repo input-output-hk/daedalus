@@ -3,7 +3,11 @@ import type { DappCip30Rejection } from '../../common/cip30/errors';
 import type {
   WalletApprovalPresentation,
   WalletApprovalProgressPhase,
+  WalletApprovalResult,
 } from '../../common/ipc/api';
+import { parseWalletApprovalResult } from '../../common/ipc/walletApproval';
+import { parseNativeApprovalResult } from '../../common/transactions/nativePlan';
+import type { NativeApprovalResult } from '../../common/transactions/nativePlan';
 
 export type NativeTransactionFailure = Readonly<{
   type: 'native-transaction-error';
@@ -33,7 +37,7 @@ export type ConsentIdentity =
 
 type ConsentPresentation = WalletApprovalPresentation extends infer Presentation
   ? Presentation extends WalletApprovalPresentation
-    ? Omit<Presentation, 'requestId'>
+    ? Omit<Presentation, 'requestId' | 'walletId'>
     : never
   : never;
 export type ConsentRequest<T> = Readonly<{
@@ -53,6 +57,7 @@ export type ConsentRequest<T> = Readonly<{
         phase: WalletApprovalProgressPhase,
         itemIndex?: number
       ) => void;
+      reportResult: (result: WalletApprovalResult) => void;
     }>
   ) => Promise<T>;
 }>;
@@ -74,6 +79,7 @@ type PendingConsent<T = unknown> = {
         phase: WalletApprovalProgressPhase,
         itemIndex?: number
       ) => void;
+      reportResult: (result: WalletApprovalResult) => void;
     }>
   ) => Promise<T>;
   readonly resolve: (value: T) => void;
@@ -82,6 +88,7 @@ type PendingConsent<T = unknown> = {
   state: 'queued' | 'presented' | 'executing' | 'settled';
   staleRejection?: ConsentFailure;
   timer?: ReturnType<typeof setTimeout>;
+  result?: WalletApprovalResult;
 };
 
 export type ConsentCoordinatorOptions = Readonly<{
@@ -92,7 +99,7 @@ export type ConsentCoordinatorOptions = Readonly<{
     itemIndex: number | undefined,
     submissionAuthorized: boolean
   ) => Promise<void>;
-  terminal: (requestId: string) => Promise<void>;
+  terminal: (requestId: string, result?: WalletApprovalResult) => Promise<void>;
   setGuestHidden: (hidden: boolean) => void;
   inactivityTimeoutMs?: number;
 }>;
@@ -133,6 +140,33 @@ const isConsentFailure = (value: unknown): value is ConsentFailure => {
     ].includes(value.type) && 'value' in value
   );
 };
+const transactionIds = (
+  presentation: WalletApprovalPresentation
+): readonly string[] => {
+  if (
+    presentation.kind === 'transaction-sign' ||
+    presentation.kind === 'transaction-submit'
+  )
+    return Object.freeze([presentation.review.transactionId]);
+  if (
+    presentation.kind === 'batch-sign' ||
+    presentation.kind === 'batch-submit'
+  )
+    return Object.freeze(
+      presentation.review.items.map(
+        ({ transaction }) => transaction.transactionId
+      )
+    );
+  return Object.freeze([]);
+};
+
+const isTransactionPresentation = (
+  presentation: WalletApprovalPresentation
+): boolean =>
+  presentation.kind === 'transaction-sign' ||
+  presentation.kind === 'transaction-submit' ||
+  presentation.kind === 'batch-sign' ||
+  presentation.kind === 'batch-submit';
 
 export class ConsentCoordinator {
   private readonly queue: PendingConsent[] = [];
@@ -153,6 +187,7 @@ export class ConsentCoordinator {
     const presentation = freezeValue({
       ...request.presentation,
       requestId,
+      walletId: identity.walletId,
     }) as WalletApprovalPresentation;
     const payload = freezeValue(request.payload);
     return new Promise<T>((resolve, reject) => {
@@ -199,6 +234,18 @@ export class ConsentCoordinator {
           .progress(active.requestId, phase, itemIndex, active.submission)
           .catch(() => undefined);
       },
+      reportResult: (result: WalletApprovalResult) => {
+        if (
+          active.state !== 'executing' ||
+          !isTransactionPresentation(active.presentation)
+        )
+          return;
+        try {
+          active.result = parseWalletApprovalResult(result);
+        } catch {
+          active.result = undefined;
+        }
+      },
     });
     active
       .execute(
@@ -209,14 +256,27 @@ export class ConsentCoordinator {
       )
       .then((value) => {
         if (active.state !== 'settled')
-          this.finish(active, active.staleRejection, value);
-      })
-      .catch((error) => {
-        if (active.state !== 'settled')
           this.finish(
             active,
-            isConsentFailure(error) ? error : active.declined
+            active.presentation.kind === 'native-transaction'
+              ? undefined
+              : active.staleRejection,
+            value
           );
+      })
+      .catch((error) => {
+        if (active.state === 'settled') return;
+        let failure = active.declined;
+        if (isConsentFailure(error)) failure = error;
+        else if (active.presentation.kind === 'native-transaction')
+          failure = Object.freeze({
+            type: 'native-transaction-error',
+            value: Object.freeze({
+              code: 'failed',
+              info: 'Native transaction execution failed',
+            }),
+          });
+        this.finish(active, failure);
       });
   }
 
@@ -338,10 +398,93 @@ export class ConsentCoordinator {
     if (pending.state === 'settled') return;
     pending.state = 'settled';
     this.clearTimer(pending);
+
+    let settledRejection = rejection;
+    let displayedResult: WalletApprovalResult | undefined;
+    let nativeResult: NativeApprovalResult | undefined;
+    if (pending.presentation.kind === 'native-transaction') {
+      if (settledRejection) {
+        try {
+          nativeResult = parseNativeApprovalResult({
+            status: 'rejected',
+            errorCode:
+              settledRejection.type === 'native-transaction-error'
+                ? settledRejection.value.code
+                : 'failed',
+          });
+        } catch {
+          settledRejection = Object.freeze({
+            type: 'native-transaction-error',
+            value: Object.freeze({
+              code: 'failed',
+              info: 'Invalid native transaction failure',
+            }),
+          });
+          nativeResult = Object.freeze({
+            status: 'rejected',
+            errorCode: 'failed',
+          });
+        }
+      } else {
+        try {
+          nativeResult = parseNativeApprovalResult(value);
+        } catch {
+          settledRejection = Object.freeze({
+            type: 'native-transaction-error',
+            value: Object.freeze({
+              code: 'failed',
+              info: 'Invalid native transaction result',
+            }),
+          });
+          nativeResult = Object.freeze({
+            status: 'rejected',
+            errorCode: 'failed',
+          });
+        }
+      }
+    } else if (isTransactionPresentation(pending.presentation)) {
+      if (pending.result) {
+        displayedResult = pending.result;
+      } else if (
+        !settledRejection &&
+        (pending.presentation.kind === 'transaction-sign' ||
+          pending.presentation.kind === 'batch-sign')
+      ) {
+        displayedResult = Object.freeze({
+          status: 'signed',
+          transactionIds: transactionIds(pending.presentation),
+        });
+      } else {
+        displayedResult = Object.freeze({
+          status: 'rejected',
+          errorCode:
+            settledRejection === pending.declined ? 'user_declined' : 'failed',
+        });
+      }
+    }
+
+    if (settledRejection) pending.reject(settledRejection);
+    else pending.resolve((nativeResult ?? value) as T);
+
+    displayedResult =
+      displayedResult ??
+      (nativeResult?.status === 'rejected' &&
+      nativeResult.errorCode === 'wrong_encryption_passphrase'
+        ? undefined
+        : nativeResult);
+    if (displayedResult) {
+      this.options
+        .terminal(pending.requestId, displayedResult)
+        .catch(() => undefined)
+        .finally(() => {
+          if (this.active === pending) this.active = undefined;
+          this.advance();
+        });
+      return;
+    }
+
     if (this.active === pending) this.active = undefined;
     this.options.terminal(pending.requestId).catch(() => undefined);
-    if (rejection) pending.reject(rejection);
-    else pending.resolve(value as T);
     this.advance();
   }
 }

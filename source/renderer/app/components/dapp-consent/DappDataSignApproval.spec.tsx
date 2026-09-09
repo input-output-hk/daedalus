@@ -8,6 +8,7 @@ import DappDataSignApproval from './DappDataSignApproval';
 
 const request = (utf8Preview: string | null) => ({
   requestId: 'request',
+  walletId: 'aa'.repeat(20),
   kind: 'data-sign' as const,
   origin: 'https://dapp.test/<script>',
   walletName: 'Wallet',
