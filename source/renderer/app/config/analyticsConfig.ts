@@ -1,6 +1,6 @@
 import { Network } from '../../../common/types/environment.types';
 
-export const ANALYTICS_API_ENDPOINT = 'https://matomo.cw.iog.io/matomo.php';
+export const ANALYTICS_API_ENDPOINT = 'https://matomo.k8s.iog.io/matomo.php';
 export const PRIVACY_POLICY_LINK =
   'https://static.iohk.io/terms/iog-privacy-policy.pdf';
 
