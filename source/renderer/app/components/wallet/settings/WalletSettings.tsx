@@ -13,6 +13,7 @@ import {
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
+import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import UndelegateWalletButton from './UndelegateWalletButton';
 import DelegateWalletButton from './DelegateWalletButton';
 import UndelegateWalletDialogContainer from '../../../containers/wallet/dialogs/settings/UndelegateWalletDialogContainer';
@@ -96,6 +97,23 @@ export const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: "!!!You still don't have password",
     description: "You still don't have password set message.",
   },
+  singleAddressModeLabel: {
+    id: 'wallet.settings.singleAddressMode.label',
+    defaultMessage: '!!!Single-address mode',
+    description: 'Label for the single-address mode wallet setting.',
+  },
+  singleAddressModeDescription: {
+    id: 'wallet.settings.singleAddressMode.description',
+    defaultMessage:
+      '!!!Use this wallet’s first receiving address for receiving payments and automatically selected wallet outputs, including change. Existing funds and explicitly entered recipient addresses are unchanged.',
+    description: 'Description of the single-address mode wallet setting.',
+  },
+  singleAddressModePrivacyWarning: {
+    id: 'wallet.settings.singleAddressMode.privacyWarning',
+    defaultMessage:
+      '!!!Reusing one address makes payments easier to link. Other receiving addresses are also linked through this wallet’s stake key.',
+    description: 'Privacy warning for the single-address mode wallet setting.',
+  },
 });
 type Props = {
   walletId: string;
@@ -137,6 +155,9 @@ type Props = {
   locale: Locale;
   isSpendingPasswordSet: boolean;
   isHardwareWallet: boolean;
+  singleAddressMode: boolean;
+  isSingleAddressModeDisabled: boolean;
+  onSingleAddressModeChange: (enabled: boolean) => void;
 };
 type State = {
   isFormBlocked: boolean;
@@ -289,6 +310,9 @@ class WalletSettings extends Component<Props, State> {
       icoPublicKeyQRCodeDialogContainer,
       deleteWalletDialogContainer,
       unpairWalletDialogContainer,
+      singleAddressMode,
+      isSingleAddressModeDisabled,
+      onSingleAddressModeChange,
     } = this.props;
     const { isFormBlocked } = this.state;
     // Set Japanese locale to moment. Default is en-US
@@ -354,6 +378,30 @@ class WalletSettings extends Component<Props, State> {
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>
+
+        {!isLegacy && (
+          <BorderedBox className={styles.singleAddressModeBox}>
+            <div className={styles.title}>
+              {intl.formatMessage(messages.singleAddressModeLabel)}
+            </div>
+            <div className={styles.contentBox}>
+              <div>
+                <p>
+                  {intl.formatMessage(messages.singleAddressModeDescription)}
+                </p>
+                <p>
+                  {intl.formatMessage(messages.singleAddressModePrivacyWarning)}
+                </p>
+              </div>
+              <NormalSwitch
+                checked={singleAddressMode}
+                disabled={isSingleAddressModeDisabled}
+                label={intl.formatMessage(messages.singleAddressModeLabel)}
+                onChange={onSingleAddressModeChange}
+              />
+            </div>
+          </BorderedBox>
+        )}
 
         {isDialogOpen(ChangeSpendingPasswordDialog)
           ? changeSpendingPasswordDialog

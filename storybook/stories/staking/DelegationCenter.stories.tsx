@@ -50,6 +50,7 @@ const wallets = [
   new Wallet({
     id: 'wallet1',
     addressPoolGap: 20,
+    singleAddressMode: true,
     name: 'Main wallet',
     amount: new BigNumber(100100),
     availableAmount: new BigNumber(100100),
@@ -104,6 +105,7 @@ const wallets = [
   new Wallet({
     id: 'wallet2',
     addressPoolGap: 20,
+    singleAddressMode: true,
     name: 'Spending money',
     amount: new BigNumber(100100),
     availableAmount: new BigNumber(100100),
@@ -158,6 +160,7 @@ const wallets = [
   new Wallet({
     id: 'wallet3',
     addressPoolGap: 20,
+    singleAddressMode: true,
     name: 'Spending money 2',
     amount: new BigNumber(10100.2),
     availableAmount: new BigNumber(10100.2),
@@ -211,6 +214,7 @@ const wallets = [
   new Wallet({
     id: 'wallet4',
     addressPoolGap: 20,
+    singleAddressMode: true,
     name: 'Savings',
     amount: new BigNumber(5001000),
     availableAmount: new BigNumber(5001000),
@@ -255,6 +259,7 @@ const wallets = [
   new Wallet({
     id: 'wallet5',
     addressPoolGap: 20,
+    singleAddressMode: true,
     name: 'Savings 2',
     amount: new BigNumber(5001000),
     availableAmount: new BigNumber(5001000),
@@ -299,6 +304,7 @@ const wallets = [
   new Wallet({
     id: 'wallet6',
     addressPoolGap: 20,
+    singleAddressMode: true,
     name: 'Spending money 3',
     amount: new BigNumber(10100.2),
     availableAmount: new BigNumber(10100.2),

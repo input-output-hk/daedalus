@@ -1072,12 +1072,21 @@ export default class WalletsStore extends Store {
     spendingPassword: string;
   }) => {
     const { transferFundsSourceWalletId, transferFundsTargetWalletId } = this;
-    const targetWalletAddresses = await this.getWalletAddressesRequest.execute({
-      walletId: transferFundsTargetWalletId,
-      queryParams: {
-        state: 'unused',
-      },
-    }).promise;
+    const targetWallet = this.getWalletById(transferFundsTargetWalletId);
+    if (!targetWallet) throw new Error('Transfer target wallet required');
+    const targetWalletAddresses =
+      !targetWallet.isLegacy && targetWallet.singleAddressMode
+        ? [
+            await this.stores.addresses.getAutomaticReceivingAddress(
+              transferFundsTargetWalletId
+            ),
+          ]
+        : await this.getWalletAddressesRequest.execute({
+            walletId: transferFundsTargetWalletId,
+            queryParams: {
+              state: 'unused',
+            },
+          }).promise;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,

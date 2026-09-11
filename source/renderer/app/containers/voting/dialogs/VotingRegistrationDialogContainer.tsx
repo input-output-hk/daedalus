@@ -250,7 +250,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
       voting,
     } = this.props.stores;
     const { calculateTransactionFee } = transactions;
-    const { getAddressesByWalletId } = addresses;
+    const { getAutomaticReceivingAddress } = addresses;
     const { getWalletById } = wallets;
     const {
       selectCoins,
@@ -268,7 +268,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
 
     try {
       const selectedWallet = getWalletById(this.selectedWalletId);
-      const [address] = await getAddressesByWalletId(this.selectedWalletId);
+      const address = await getAutomaticReceivingAddress(this.selectedWalletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
       let fee;
       let votingData;

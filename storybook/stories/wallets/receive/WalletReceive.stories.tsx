@@ -21,30 +21,42 @@ storiesOf('Wallets / Receive', module)
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   .add('Receive - sequential', ({ locale }: { locale: string }) => {
     const showDialog = boolean('showDialog', false);
+    const singleAddressMode = boolean('singleAddressMode', true);
+    const canonicalAddress = Object.assign(generateAddress(true), {
+      spendingPath: "1852'/1815'/0'/0/0",
+    });
+    const canonicalAvailable = boolean('canonicalAvailable', true);
     return (
       <VerticalFlexContainer>
         <WalletReceiveSequential
-          walletAddresses={[
-            ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
-              generateAddress(true)
-            ),
-            ...Array.from(Array(number('Addresses', 10))).map(() =>
-              generateAddress()
-            ),
-          ]}
+          walletAddresses={
+            singleAddressMode
+              ? canonicalAvailable
+                ? [canonicalAddress]
+                : []
+              : [
+                  ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
+                    generateAddress(true)
+                  ),
+                  ...Array.from(Array(number('Addresses', 10))).map(() =>
+                    generateAddress()
+                  ),
+                ]
+          }
           onShareAddress={action('onShareAddress')}
           onCopyAddress={action('onCopyAddress')}
           // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
           currentLocale={locale}
           showUsed={boolean('showUsed', false)}
+          singleAddressMode={singleAddressMode}
           onToggleUsedAddresses={action('onToggleUsedAddresses')}
           onToggleSubMenus={onToggleSubMenus}
           isShowingSubMenus
         />
         {showDialog && (
           <WalletReceiveDialog
-            address={generateAddress()}
+            address={canonicalAddress}
             onCopyAddress={action('onCopyAddress')}
             onDownloadPDF={action('onDownloadPDF')}
             onSaveQRCodeImage={action('onSaveQRCodeImage')}
@@ -86,6 +98,7 @@ storiesOf('Wallets / Receive', module)
             isShowingSubMenus
             onToggleUsedAddresses={action('onToggleUsedAddresses')}
             showUsed={boolean('showUsed', false)}
+            singleAddressMode={false}
           />
           <WalletReceiveDialog
             address={generateAddress()}

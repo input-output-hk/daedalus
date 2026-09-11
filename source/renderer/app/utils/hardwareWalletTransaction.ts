@@ -320,24 +320,20 @@ export const bindPaymentChange = async (
     remaining.delete(index);
     if (!output.derivationPath) continue;
     const path = output.derivationPath;
+    const role = Number(path[3]);
+    const childIndex = Number(path[4]);
     if (
       path.length !== 5 ||
       path[0] !== '1852H' ||
       path[1] !== '1815H' ||
       path[2] !== '0H' ||
-      path[3] !== '1' ||
+      (path[3] !== '1' && !(path[3] === '0' && path[4] === '0')) ||
       !/^(0|[1-9][0-9]*)$/u.test(path[4]) ||
-      !Number.isSafeInteger(Number(path[4])) ||
-      Number(path[4]) >= 0x80000000
+      !Number.isSafeInteger(childIndex) ||
+      childIndex >= 0x80000000
     )
       throw new Error('Invalid payment change path');
-    const paymentPath = [
-      0x8000073c,
-      0x80000717,
-      0x80000000,
-      1,
-      Number(path[4]),
-    ];
+    const paymentPath = [0x8000073c, 0x80000717, 0x80000000, role, childIndex];
     const stakePath = [0x8000073c, 0x80000717, 0x80000000, 2, 0];
     const paymentKey = await derive(paymentPath, accountXpub);
     const stakeKey = await derive(stakePath, accountXpub);

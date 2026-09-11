@@ -7,9 +7,11 @@ export const updateWallet = (
   {
     walletId,
     name,
+    singleAddressMode,
   }: {
     walletId: string;
-    name: string;
+    name?: string;
+    singleAddressMode?: boolean;
   }
 ): Promise<AdaWallet> =>
   request(
@@ -20,6 +22,9 @@ export const updateWallet = (
     },
     {},
     {
-      name,
+      ...(name === undefined ? {} : { name }),
+      ...(singleAddressMode === undefined
+        ? {}
+        : { single_address_mode: singleAddressMode }),
     }
   );

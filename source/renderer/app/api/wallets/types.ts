@@ -32,6 +32,7 @@ export type Output = {
 export type AdaWallet = {
   id: string;
   address_pool_gap: number;
+  single_address_mode: boolean;
   balance: {
     available: WalletBalance;
     total: WalletBalance;
@@ -182,12 +183,18 @@ export type RestoreLegacyWalletRequest = {
   spendingPassword: string;
 };
 export type RestoreExportedByronWalletRequest = ExportedByronWallet;
-export type UpdateWalletRequest = {
-  walletId: string;
-  name: string;
-  isLegacy: boolean;
-  isHardwareWallet?: boolean;
-};
+export type UpdateWalletRequest =
+  | {
+      walletId: string;
+      isLegacy: true;
+      name: string;
+    }
+  | {
+      walletId: string;
+      isLegacy: false;
+      name?: string;
+      singleAddressMode?: boolean;
+    };
 export type ImportWalletFromKeyRequest = {
   filePath: string;
   spendingPassword: string;

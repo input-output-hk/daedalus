@@ -122,7 +122,8 @@ const assets = (
 };
 const output = (
   exact: HardwareExactTransaction,
-  value: HardwareExactTransaction['transaction']['outputs'][number]
+  value: HardwareExactTransaction['transaction']['outputs'][number],
+  outputIndex?: number
 ) => {
   const encoded = bytesForSpan(
     exact.transaction.envelope.cbor,
@@ -153,7 +154,7 @@ const output = (
   if (!isHex(value.address, Math.ceil(value.address.length / 2)))
     exactFail('address');
   const owned = exact.ownedOutputs.find(
-    (candidate) => candidate.address === value.address
+    (candidate) => candidate.outputIndex === outputIndex
   );
   const rawAddress = Buffer.from(value.address, 'hex');
   const addressType = rawAddress[0] >> 4;
@@ -855,7 +856,9 @@ export const toExactTrezorSignTransactionRequest = (
     inputs: exact.transaction.inputs.normal.map((input) =>
       exactInput(input, 'normal', owned)
     ),
-    outputs: exact.transaction.outputs.map((entry) => output(exact, entry)),
+    outputs: exact.transaction.outputs.map((entry, index) =>
+      output(exact, entry, index)
+    ),
     fee: exact.transaction.fee.toString(),
     protocolMagic: exact.network.networkMagic,
     networkId: exact.network.networkId,

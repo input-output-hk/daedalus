@@ -720,7 +720,26 @@ describe('verified payment change', () => {
     amount: { quantity: 410_080_283, unit: WalletUnits.LOVELACE as const },
     derivationPath: ['1852H', '1815H', '0H', '1', '0'],
   };
-  const payment = () =>
+  const canonicalAddress = Buffer.concat([
+    Buffer.from([0]),
+    childHash(0, 0),
+    childHash(2, 0),
+  ]);
+  const encodedCanonicalAddress = bech32.encode(
+    'addr_test',
+    bech32.toWords(canonicalAddress),
+    1000
+  );
+  const canonicalPaymentOutput = {
+    ...paymentOutput,
+    address: encodedCanonicalAddress,
+  };
+  const canonicalChangeOutput = {
+    ...changeOutput,
+    address: encodedCanonicalAddress,
+    derivationPath: ['1852H', '1815H', '0H', '0', '0'],
+  };
+  const paymentFor = (ownedAddress: Buffer) =>
     exactTransaction(
       cbor
         .encodeCanonical([
@@ -730,8 +749,8 @@ describe('verified payment change', () => {
             [
               1,
               [
-                [changeAddress, 410_080_283],
-                [changeAddress, 5_000_000],
+                [ownedAddress, 410_080_283],
+                [ownedAddress, 5_000_000],
               ],
             ],
             [2, 174_565],
@@ -742,6 +761,7 @@ describe('verified payment change', () => {
         ])
         .toString('hex')
     );
+  const payment = () => paymentFor(changeAddress);
 
   beforeEach(() => {
     jest
@@ -777,6 +797,60 @@ describe('verified payment change', () => {
     ).toBe(true);
     expect(bound.signers).toEqual([]);
     expect(request.additionalWitnessPaths || []).toEqual([]);
+  });
+
+  it('binds canonical external change for Ledger and Trezor without hiding the recipient', async () => {
+    const original = paymentFor(canonicalAddress);
+    const bound = await bindPaymentChange(
+      original,
+      [canonicalPaymentOutput, canonicalChangeOutput],
+      account.toString('hex')
+    );
+    const path = [0x8000073c, 0x80000717, 0x80000000, 0, 0];
+    expect(bound.ownedOutputs).toEqual([
+      expect.objectContaining({ outputIndex: 0, paymentPath: path }),
+    ]);
+    expect(bound.bodyHash).toBe(original.bodyHash);
+    expect(
+      bound.transaction.envelope.cbor.equals(original.transaction.envelope.cbor)
+    ).toBe(true);
+    const ledger = toExactLedgerSignTransactionRequest(bound);
+    expect(ledger.tx.outputs.map((output) => output.destination.type)).toEqual([
+      'device_owned',
+      'third_party',
+    ]);
+    expect(ledger.tx.outputs[0]).toMatchObject({
+      destination: { params: { params: { spendingPath: path } } },
+    });
+    const trezor = toExactTrezorSignTransactionRequest({
+      ...bound,
+      capability: trezorReadyCapability,
+    });
+    expect(trezor.outputs[0]).toMatchObject({
+      addressParameters: { path },
+    });
+    expect(trezor.outputs[1]).toMatchObject({
+      address: encodedCanonicalAddress,
+    });
+    expect(ledger.additionalWitnessPaths || []).toEqual([]);
+  });
+
+  it('rejects noncanonical external and nonpayment roles', async () => {
+    const original = paymentFor(canonicalAddress);
+    for (const derivationPath of [
+      ['1852H', '1815H', '0H', '0', '1'],
+      ['1852H', '1815H', '0H', '2', '0'],
+    ])
+      await expect(
+        bindPaymentChange(
+          original,
+          [
+            canonicalPaymentOutput,
+            { ...canonicalChangeOutput, derivationPath },
+          ],
+          account.toString('hex')
+        )
+      ).rejects.toThrow('Invalid payment change path');
   });
 
   it('rejects a different change path, address, network, or amount before signing', async () => {
