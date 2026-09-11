@@ -14,6 +14,7 @@ import {
 } from './formatters';
 import { WALLET_ASSETS_ENABLED } from '../config/walletsConfig';
 import { filterAssets } from './assets';
+import type { TransactionState } from '../api/transactions/types';
 
 const messages = defineMessages({
   columnID: {
@@ -96,12 +97,26 @@ const messages = defineMessages({
     defaultMessage: '!!!Pending',
     description: 'Transactions CSV value - Status Pending',
   },
+  valueStatusFailed: {
+    id: 'wallet.transactions.csv.value.statusFailed',
+    defaultMessage: '!!!Failed',
+    description: 'Transactions CSV value - Status Failed',
+  },
   filenamePrefix: {
     id: 'wallet.transactions.csv.filenamePrefix',
     defaultMessage: '!!!Transactions',
     description: 'Transactions CSV "Transactions" filename',
   },
 });
+const statusMessages: Record<
+  TransactionState,
+  typeof messages.valueStatusPending
+> = {
+  pending: messages.valueStatusPending,
+  in_ledger: messages.valueStatusConfirmed,
+  expired: messages.valueStatusFailed,
+};
+
 type Params = {
   desktopDirectoryPath: string;
   intl: intlShape;
@@ -199,10 +214,7 @@ const transactionsCsvGenerator = async ({
         })
         .join(', ');
       const valueDateTime = date ? date.toISOString() : '';
-      const valueStatus =
-        state === 'pending'
-          ? intl.formatMessage(messages.valueStatusPending)
-          : intl.formatMessage(messages.valueStatusConfirmed);
+      const valueStatus = intl.formatMessage(statusMessages[state]);
       const valueAddressesFrom = !includes(addresses.from, null)
         ? addresses.from.join(', ')
         : ' ';

@@ -1606,6 +1606,7 @@
   "wallet.transactions.csv.column.withdrawals": "引き出し",
   "wallet.transactions.csv.filenamePrefix": "トランザクション",
   "wallet.transactions.csv.value.statusConfirmed": "承認済み",
+  "wallet.transactions.csv.value.statusFailed": "失敗しました",
   "wallet.transactions.csv.value.statusPending": "保留中",
   "wallet.transactions.csv.value.type.received": "入金",
   "wallet.transactions.csv.value.type.sent": "送金",
