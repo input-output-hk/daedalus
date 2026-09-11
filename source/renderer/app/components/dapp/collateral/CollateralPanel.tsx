@@ -51,6 +51,15 @@ export function CollateralPanel({
     !failed &&
     (state === 'not-ready' || state === 'charged' || state === 'stale');
   const canClear = !!preference?.preferredInputs.length;
+  if (
+    !corrupt &&
+    !failed &&
+    (state === 'checking' ||
+      state === 'ready' ||
+      state === 'in-use' ||
+      state === 'will-be-spent')
+  )
+    return null;
 
   return (
     <section className={styles.component} aria-labelledby="collateral-title">

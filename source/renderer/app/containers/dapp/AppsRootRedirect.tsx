@@ -8,8 +8,11 @@ import { buildRoute } from '../../utils/routing';
 type Props = { stores?: InjectedProps['stores'] };
 
 const AppsRootRedirect = ({ stores }: Props) => {
+  const activeWallet = stores!.wallets.active;
   const wallet =
-    stores!.wallets.activeDappWallet || stores!.wallets.eligibleDappWallets[0];
+    activeWallet && !activeWallet.isLegacy
+      ? activeWallet
+      : stores!.wallets.allWallets[0];
   return (
     <Redirect
       to={
