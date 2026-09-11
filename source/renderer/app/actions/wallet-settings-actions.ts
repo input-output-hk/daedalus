@@ -16,6 +16,10 @@ export default class WalletSettingsActions {
     field: string;
     value: string;
   }> = new Action();
+  setSingleAddressMode: Action<{
+    walletId: string;
+    enabled: boolean;
+  }> = new Action();
   updateSpendingPassword: Action<{
     walletId: string;
     oldPassword: string;

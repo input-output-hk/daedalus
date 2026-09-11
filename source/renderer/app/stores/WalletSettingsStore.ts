@@ -17,6 +17,8 @@ export default class WalletSettingsStore extends Store {
   @observable
   updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);
   @observable
+  isSingleAddressModeUpdating = false;
+  @observable
   updateSpendingPasswordRequest: Request<boolean> = new Request(
     this.api.ada.updateSpendingPassword
   );
@@ -54,6 +56,9 @@ export default class WalletSettingsStore extends Store {
       this._cancelEditingWalletField
     );
     walletSettingsActions.updateWalletField.listen(this._updateWalletField);
+    walletSettingsActions.setSingleAddressMode.listen(
+      this._setSingleAddressMode
+    );
     walletSettingsActions.updateSpendingPassword.listen(
       this._updateSpendingPassword
     );
@@ -200,6 +205,48 @@ export default class WalletSettingsStore extends Store {
       'Changed wallet settings',
       field
     );
+  };
+  @action
+  _setSingleAddressMode = async ({
+    walletId,
+    enabled,
+  }: {
+    walletId: string;
+    enabled: boolean;
+  }): Promise<void> => {
+    const wallet = this.stores.wallets.getWalletById(walletId);
+    if (
+      !wallet ||
+      wallet.isLegacy ||
+      this.isSingleAddressModeUpdating ||
+      this.updateWalletRequest._isWaitingForResponse
+    )
+      return;
+
+    this.isSingleAddressModeUpdating = true;
+    this.updateWalletRequest.reset();
+    try {
+      const updated = await this.stores.transactions.withWalletSendLock(
+        walletId,
+        () =>
+          this.updateWalletRequest.execute({
+            walletId,
+            isLegacy: false,
+            singleAddressMode: enabled,
+          }).promise
+      );
+      if (!updated) return;
+      // @ts-ignore ts-migrate(1320) Request is intentionally thenable.
+      await this.stores.wallets.walletsRequest.patch((result) => {
+        const target = result.find(({ id }) => id === walletId);
+        if (target) target.singleAddressMode = updated.singleAddressMode;
+      });
+      this.stores.wallets.refreshWalletsData();
+    } finally {
+      runInAction('finish single address mode update', () => {
+        this.isSingleAddressModeUpdating = false;
+      });
+    }
   };
   @action
   _exportToFile = async (params: WalletExportToFileParams) => {

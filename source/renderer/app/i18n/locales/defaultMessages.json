@@ -122,6 +122,11 @@
         "id": "global.errors.fieldIsRequired"
       },
       {
+        "defaultMessage": "!!!The receiving address is not available. Wait for the wallet to load and try again.",
+        "description": "Error shown when the canonical receiving address is unavailable.",
+        "id": "global.errors.receivingAddressUnavailable"
+      },
+      {
         "defaultMessage": "!!!{actual} of {required} words entered",
         "description": "Info message displayed above mnemonic inputs about actual vs. required words entered",
         "id": "global.info.knownMnemonicWordCount"
@@ -7720,6 +7725,16 @@
         "defaultMessage": "!!!Privacy warning: Please note that all of your receiving addresses include your stake key. When you share a receiving address, the recipient can search the blockchain using your stake key to locate all addresses associated with your wallet, and also discover your wallet balance and transaction history.",
         "description": "Privacy warning on the wallet \"Receive page\"",
         "id": "wallet.receive.page.instructions.privacyWarning"
+      },
+      {
+        "defaultMessage": "!!!Receiving address",
+        "description": "Title shown on the Receive page in single-address mode.",
+        "id": "wallet.receive.page.singleAddressTitle"
+      },
+      {
+        "defaultMessage": "!!!Share this address to receive ada or native Cardano tokens. Single-address mode is enabled.",
+        "description": "Instructions shown on the Receive page in single-address mode.",
+        "id": "wallet.receive.page.singleAddressDescription"
       }
     ],
     "path": "source/renderer/app/components/wallet/receive/WalletReceiveSequential.tsx"
@@ -8560,6 +8575,21 @@
         "defaultMessage": "!!!You still don't have password",
         "description": "You still don't have password set message.",
         "id": "wallet.settings.passwordNotSet"
+      },
+      {
+        "defaultMessage": "!!!Single-address mode",
+        "description": "Label for the single-address mode wallet setting.",
+        "id": "wallet.settings.singleAddressMode.label"
+      },
+      {
+        "defaultMessage": "!!!Use this wallet’s first receiving address for receiving payments and automatically selected wallet outputs, including change. Existing funds and explicitly entered recipient addresses are unchanged.",
+        "description": "Description of the single-address mode wallet setting.",
+        "id": "wallet.settings.singleAddressMode.description"
+      },
+      {
+        "defaultMessage": "!!!Reusing one address makes payments easier to link. Other receiving addresses are also linked through this wallet’s stake key.",
+        "description": "Privacy warning for the single-address mode wallet setting.",
+        "id": "wallet.settings.singleAddressMode.privacyWarning"
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/WalletSettings.tsx"

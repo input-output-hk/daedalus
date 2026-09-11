@@ -5,8 +5,6 @@
   runCommand,
   lib,
   devShell ? false,
-  dappPilot ? false,
-  dappPilotEnabled ? dappPilot,
   topologyOverride ? null,
   configOverride ? null,
   genesisOverride ? null,
@@ -29,6 +27,7 @@ let
     preprod = fromCardanoPlayground "preprod";
     preview = fromCardanoPlayground "preview";
   };
+  dappEnabled = network != "mainnet";
 
   smashServers = {
     mainnet = "https://smash.cardano-mainnet.iohk.io";
@@ -106,10 +105,7 @@ let
   };
   mkSpacedName = _: "Daedalus ${installDirectorySuffix}";
 
-  spacedName =
-    if dappPilot
-    then "Daedalus Mainnet dApp Pilot"
-    else mkSpacedName network;
+  spacedName = mkSpacedName network;
 
   frontendBinPath = let
     frontendBin.linux = "daedalus-frontend";
@@ -196,11 +192,7 @@ let
   };
 
   dataDir = let
-    path.linux = "\${XDG_DATA_HOME}/Daedalus/${
-      if dappPilot
-      then "mainnet-dapp-pilot"
-      else network
-    }";
+    path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
     path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
     path.macos64-arm = "\${HOME}/Library/Application Support/${spacedName}";
     path.windows = "\${APPDATA}\\${spacedName}";
@@ -278,26 +270,22 @@ let
       isFlight = network == "mainnet_flight";
       isStaging = envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic";
       nodeImplementation = "cardano";
+      dappSandboxPackageCluster = network;
       dappBrowserPolicy = {
         revision = 1;
-        globalEnabled = os == "windows" || dappPilotEnabled;
-        preferredCatalogEnabled = dappPilotEnabled;
-        diagnosticsEnabled = os == "windows";
+        globalEnabled = dappEnabled;
+        preferredCatalogEnabled = dappEnabled;
+        diagnosticsEnabled = dappEnabled;
         cip104Revision =
-          if dappPilot
-          then 0
-          else 1;
+          if dappEnabled
+          then 1
+          else 0;
         cip142Revision = 0;
-        hardwareConnectorRows =
-          lib.optional dappPilotEnabled "ledger:europa:7.3.1:signData";
+        hardwareConnectorRows = [];
       };
     }
     // lib.optionalAttrs (os == "linux") {
       applicationUpdateMode = "system-package-disabled";
-    }
-    // lib.optionalAttrs dappPilot {
-      dappSandboxPackageCluster = "mainnet-dapp-pilot";
-      electronStoreDir = "${dataDir}${dirSep}electron-store";
     }
     // lib.optionalAttrs (os != "linux") {
       updateRunnerBin = mkBinPath "update-runner";
@@ -428,9 +416,7 @@ let
       '';
 
     legacyStateDir =
-      if
-        !dappPilot
-        && ((network == "mainnet_flight") || (network == "mainnet"))
+      if (network == "mainnet_flight") || (network == "mainnet")
       then legacyDataDir
       else dataDir;
 

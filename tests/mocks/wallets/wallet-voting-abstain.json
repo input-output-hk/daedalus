@@ -1,6 +1,7 @@
 {
   "id": "3333333333333333333333333333333333333333",
   "address_pool_gap": 20,
+  "single_address_mode": true,
   "name": "cv1 fixture voting abstain",
   "balance": {
     "available": {

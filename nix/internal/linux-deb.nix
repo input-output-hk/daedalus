@@ -11,6 +11,7 @@
   sourceDateEpoch,
 }: let
   packageVersion = "${version}+build${toString buildCounter}.git${buildRevShort}-1";
+  packageName = "daedalus-${lib.replaceStrings ["_"] ["-"] cluster}";
   installRoot = "/opt/daedalus/${cluster}";
   commonTemplate = ./linux-deb-common.sh;
   scriptTemplates = {
@@ -144,6 +145,7 @@ in
     for script in preinst postinst prerm postrm; do
       sed \
         -e 's|@CLUSTER@|${cluster}|g' \
+        -e 's|@PACKAGE_NAME@|${packageName}|g' \
         -e "s|@HELPER_SHA@|$helper_sha|g" \
         -e 's|@PACKAGE_VERSION@|${packageVersion}|g' \
         -e 's|@BUILD_REV@|${buildRev}|g' \
@@ -160,7 +162,7 @@ in
     done
 
     cat >"$stage/DEBIAN/control" <<EOF
-    Package: daedalus-${cluster}
+    Package: ${packageName}
     Version: ${packageVersion}
     Section: utils
     Priority: optional

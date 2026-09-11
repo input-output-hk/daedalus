@@ -126,6 +126,7 @@ export enum WalletUnits {
 export type WalletProps = {
   id: string;
   addressPoolGap: number;
+  singleAddressMode: boolean;
   name: string;
   amount: BigNumber;
   availableAmount: BigNumber;
@@ -149,6 +150,8 @@ export default class Wallet {
   id = '';
   @observable
   addressPoolGap: number;
+  @observable
+  singleAddressMode: boolean;
   @observable
   name = '';
   @observable
@@ -197,6 +200,7 @@ export default class Wallet {
       pick(other, [
         'id',
         'addressPoolGap',
+        'singleAddressMode',
         'name',
         'amount',
         'availableAmount',

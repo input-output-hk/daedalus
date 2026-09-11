@@ -411,6 +411,7 @@ export default class AdaApi {
       map(legacyWallets, (legacyAdaWallet) => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0,
+          single_address_mode: false,
           // Not needed for legacy wallets
           delegation: {
             active: {
@@ -467,6 +468,7 @@ export default class AdaApi {
         );
         const extraLegacyWalletProps = {
           address_pool_gap: 0,
+          single_address_mode: false,
           // Not needed for legacy wallets
           delegation: {
             active: {
@@ -928,6 +930,7 @@ export default class AdaApi {
       });
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1820,6 +1823,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1883,6 +1887,7 @@ export default class AdaApi {
       });
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1937,6 +1942,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1991,6 +1997,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -2045,6 +2052,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -2091,6 +2099,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -2173,19 +2182,20 @@ export default class AdaApi {
     logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletId, name, isLegacy } = request;
+    const { walletId, isLegacy } = request;
 
     try {
       let wallet: AdaWallet;
 
-      if (isLegacy) {
+      if (request.isLegacy === true) {
         const response = await updateByronWallet(this.config, {
           walletId,
-          name,
+          name: request.name,
         });
         wallet = {
           ...response,
           address_pool_gap: 0,
+          single_address_mode: false,
           // Not needed for legacy wallets
           delegation: {
             active: {
@@ -2197,7 +2207,8 @@ export default class AdaApi {
       } else {
         wallet = await updateWallet(this.config, {
           walletId,
-          name,
+          name: request.name,
+          singleAddressMode: request.singleAddressMode,
         });
       }
 
@@ -3202,6 +3213,7 @@ export const _createWalletFromServerData = action(
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
+      single_address_mode: singleAddressMode,
       balance,
       name,
       assets,
@@ -3212,6 +3224,12 @@ export const _createWalletFromServerData = action(
       discovery,
       isHardwareWallet = false,
     } = wallet;
+    if (!isLegacy && typeof singleAddressMode !== 'boolean')
+      throw new ApiError({
+        code: 'wallet_internal_error',
+        message:
+          'Missing or invalid single_address_mode in Shelley wallet response',
+      });
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
@@ -3311,6 +3329,7 @@ export const _createWalletFromServerData = action(
     return new Wallet({
       id,
       addressPoolGap,
+      singleAddressMode: isLegacy ? false : singleAddressMode,
       name,
       amount: walletTotalAmount,
       availableAmount: walletAvailableAmount,

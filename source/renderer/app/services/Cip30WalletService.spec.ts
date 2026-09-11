@@ -143,6 +143,8 @@ const create = () => {
     id: 'wallet',
     name: 'Wallet',
     isHardwareWallet: false,
+    isLegacy: false,
+    singleAddressMode: false,
   };
   let connected = true;
   let synced = true;
@@ -155,11 +157,12 @@ const create = () => {
   (prepareHardwareMessage as jest.Mock).mockReturnValue(hardwareMessage);
   const getDappCapabilities = jest.fn(async () => ({ api_version: 1 }));
   const getDappTransactionContext = jest.fn(async () => ({ context: true }));
-  const getAddresses = jest.fn(async () => [
+  let addresses = [
     { id: 'addr-unused-2', used: false, spendingPath: '2' },
     { id: 'addr-used', used: true, spendingPath: '0' },
     { id: 'addr-unused-1', used: false, spendingPath: '1' },
-  ]);
+  ];
+  const getAddresses = jest.fn(async () => addresses);
   const getAccountPublicKey = jest.fn(async () => 'acct_xvk1account');
   const signDappData = jest.fn(async () => ({
     revision: 1 as const,
@@ -268,6 +271,9 @@ const create = () => {
     signDappDataHardware,
     setWallet: (value: Record<string, unknown> | null) => {
       wallet = value;
+    },
+    setAddresses: (value: typeof addresses) => {
+      addresses = value;
     },
     setReady: (value: boolean) => {
       connected = value;
@@ -388,6 +394,81 @@ describe('Cip30WalletService', () => {
       walletId: 'wallet',
       isLegacy: false,
     });
+  });
+
+  it('projects only the canonical address while single-address mode is active', async () => {
+    const fixture = create();
+    const canonical = {
+      id: 'canonical',
+      used: true,
+      spendingPath: "1852'/1815'/0'/0/0",
+    };
+    const shuffled = [
+      { id: 'internal', used: false, spendingPath: "1852'/1815'/0'/1/0" },
+      { id: 'external-1', used: true, spendingPath: "1852'/1815'/0'/0/1" },
+      canonical,
+      { id: 'external-2', used: false, spendingPath: "1852'/1815'/0'/0/2" },
+    ];
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Wallet',
+      isHardwareWallet: false,
+      isLegacy: false,
+      singleAddressMode: true,
+    });
+    fixture.setAddresses(shuffled);
+    await expect(
+      fixture.service.receive(request('addresses'))
+    ).resolves.toMatchObject({
+      value: {
+        used: ['canonical'],
+        unused: [],
+        change: 'canonical',
+      },
+    });
+
+    fixture.setAddresses([
+      { ...canonical, used: false },
+      ...shuffled.slice(0, 2),
+    ]);
+    await expect(
+      fixture.service.receive(request('addresses'))
+    ).resolves.toMatchObject({
+      value: {
+        used: [],
+        unused: ['canonical'],
+        change: 'canonical',
+      },
+    });
+
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Wallet',
+      isHardwareWallet: false,
+      isLegacy: false,
+      singleAddressMode: false,
+    });
+    await expect(
+      fixture.service.receive(request('addresses'))
+    ).resolves.toMatchObject({
+      value: {
+        used: ['external-1'],
+        unused: ['canonical', 'internal'],
+        change: 'internal',
+      },
+    });
+
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Wallet',
+      isHardwareWallet: false,
+      isLegacy: false,
+      singleAddressMode: true,
+    });
+    fixture.setAddresses(shuffled.filter(({ id }) => id !== 'canonical'));
+    await expect(
+      fixture.service.receive(request('addresses'))
+    ).resolves.toEqual({ status: 'rejected', reason: 'internal' });
   });
 
   it('returns the account-zero public key for software and certified hardware', async () => {

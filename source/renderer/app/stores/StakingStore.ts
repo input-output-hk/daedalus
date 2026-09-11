@@ -894,7 +894,7 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
+      const address = await this.stores.addresses.getAutomaticReceivingAddress(
         walletId
       );
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
@@ -947,7 +947,7 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
+      const address = await this.stores.addresses.getAutomaticReceivingAddress(
         walletId
       );
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message

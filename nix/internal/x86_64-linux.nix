@@ -10,16 +10,6 @@ assert targetSystem == "x86_64-linux"; let
   inherit (pkgs) lib;
 
   genClusters = lib.genAttrs installerClusters;
-  pilotCluster = "mainnet-dapp-pilot";
-  pilotLauncherConfig = common.mkLauncherConfigs {
-    cluster = "mainnet";
-    dappPilot = true;
-  };
-  pilotKillSwitchLauncherConfig = common.mkLauncherConfigs {
-    cluster = "mainnet";
-    dappPilot = true;
-    dappPilotEnabled = false;
-  };
 in rec {
   inherit common;
   inherit (common) nodejs yarn yarn2nix offlineCache srcLockfiles srcWithoutNix electronVersion originalPackageJson;
@@ -35,26 +25,6 @@ in rec {
       inherit (sourceLib) buildCounter buildRev buildRevShort;
       sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
     });
-
-  pilotDebInstaller = import ./linux-deb.nix {
-    inherit pkgs lib;
-    cluster = pilotCluster;
-    bundle = pilotSystemPackageBundle;
-    icon = common.launcherConfigs.mainnet.installerConfig.iconPath.base + "/512x512.png";
-    version = originalPackageJson.version;
-    inherit (sourceLib) buildCounter buildRev buildRevShort;
-    sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
-  };
-
-  pilotKillSwitchDebInstaller = import ./linux-deb.nix {
-    inherit pkgs lib;
-    cluster = pilotCluster;
-    bundle = pilotKillSwitchSystemPackageBundle;
-    icon = common.launcherConfigs.mainnet.installerConfig.iconPath.base + "/512x512.png";
-    version = originalPackageJson.version;
-    inherit (sourceLib) buildCounter buildRev buildRevShort;
-    sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
-  };
 
   rpmInstaller = genClusters (cluster:
     import ./linux-rpm.nix {
@@ -344,24 +314,6 @@ in rec {
     meta.mainProgram = "electron";
   };
 
-  mkPilotPackage = launcherConfig:
-    pkgs.stdenv.mkDerivation {
-      name = "daedalus-mainnet-dapp-pilot";
-      dontUnpack = true;
-      buildCommand = ''
-        mkdir -p $out/bin $out/libexec $out/config
-        cp -r ${launcherConfig.configFiles}/. $out/config/
-        ln -sf ${import inputs.nix-bundle-exe {inherit pkgs;} common.daedalus-bridge.mainnet} $out/libexec/bundle-daedalus-bridge
-        ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ )
-        ln -sf ${daedalusJs.mainnet}/share/daedalus $out/libexec/daedalus-js
-        ln -sf ${relocatableElectron} $out/libexec/bundle-electron
-        ( cd $out/libexec/ && ln -sf bundle-electron/bin/* ./ )
-      '';
-    };
-
-  pilotPackage = mkPilotPackage pilotLauncherConfig;
-  pilotKillSwitchPackage = mkPilotPackage pilotKillSwitchLauncherConfig;
-
   mkSystemPackageBundle = package:
     pkgs.stdenv.mkDerivation {
       name = "daedalus-system-package-bundle";
@@ -392,9 +344,6 @@ in rec {
   systemPackageBundle =
     genClusters (cluster:
       mkSystemPackageBundle newPackage.${cluster});
-  pilotSystemPackageBundle = mkSystemPackageBundle pilotPackage;
-  pilotKillSwitchSystemPackageBundle =
-    mkSystemPackageBundle pilotKillSwitchPackage;
 
   # Developer-only Nix-store package. This is not a release artifact or shipping channel.
   newPackage = genClusters (cluster:

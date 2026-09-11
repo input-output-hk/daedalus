@@ -30,43 +30,7 @@
 
   walletFlake =
     (flake-compat {
-      src = pkgs.applyPatches {
-        name = "cardano-wallet-read-only-context-source";
-        src = inputs.cardano-wallet;
-        patches = [
-          (builtins.toFile "cardano-wallet-read-only-context.patch" ''
-            --- a/lib/api/src/Cardano/Wallet/Api/Types/Dapp/Context.hs
-            +++ b/lib/api/src/Cardano/Wallet/Api/Types/Dapp/Context.hs
-            @@ -552,2 +552,3 @@
-            -        unless (length transactions >= 1 && length transactions <= 50)
-            -            $ fail "transactions must contain 1 to 50 entries"
-            +        -- An empty list requests a read-only wallet snapshot.
-            +        unless (length transactions <= 50)
-            +            $ fail "transactions must contain at most 50 entries"
-            @@ -1125,2 +1126,2 @@
-            -        unless (length transactions >= 1 && length transactions <= 50)
-            -            $ Left "transactions must contain 1 to 50 entries"
-            +        unless (length transactions <= 50)
-            +            $ Left "transactions must contain at most 50 entries"
-            --- a/lib/api/test/dapp-context-test.hs
-            +++ b/lib/api/test/dapp-context-test.hs
-            @@ -158,1 +158,11 @@
-                 describe "revision-1 transaction context" $ do
-            +        it "accepts a read-only snapshot without permitting an empty signing batch" $ do
-            +            decodeRequest
-            +                "{\"revision\":1,\"network\":{\"network_id\":0,\"network_magic\":1,\"genesis_hash\":\"0000000000000000000000000000000000000000000000000000000000000000\"},\"transactions\":[]}"
-            +                `shouldSatisfy` isRight
-            +            decodeDappWitnessSignRequest (validWitnessRequest [])
-            +                `shouldSatisfy` isLeft
-            +            validateTransactionContextResponseForRequest
-            +                (ApiDappTransactionContextRequest 1 dappNetwork [])
-            +                (validDappWitnessContext [])
-            +                `shouldSatisfy` isRight
-          '')
-          ../patches/cardano-wallet-collateral-selection.patch
-          ../patches/cardano-wallet-review-ownership.patch
-        ];
-      };
+      src = inputs.cardano-wallet;
     }).defaultNix;
 
   nodeFlake =
@@ -212,12 +176,10 @@
 
   mkLauncherConfigs = {
     devShell ? false,
-    dappPilot ? false,
-    dappPilotEnabled ? dappPilot,
     cluster,
   }:
     import ./launcher-config.nix {
-      inherit devShell dappPilot dappPilotEnabled;
+      inherit devShell;
       inherit cardanoLib;
       inherit (pkgs) runCommand lib jq;
       system = pkgs.stdenv.hostPlatform.system;

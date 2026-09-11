@@ -84,6 +84,7 @@ class WalletSettingsPage extends Component<Props> {
     } = app;
     const {
       updateWalletRequest,
+      isSingleAddressModeUpdating,
       lastUpdatedWalletField,
       walletFieldBeingEdited,
       getWalletsRecoveryPhraseVerificationData,
@@ -94,6 +95,7 @@ class WalletSettingsPage extends Component<Props> {
       cancelEditingWalletField,
       updateWalletField,
       recoveryPhraseVerificationContinue,
+      setSingleAddressMode,
     } = actions.walletSettings;
     const {
       creationDate,
@@ -134,7 +136,19 @@ class WalletSettingsPage extends Component<Props> {
           walletPublicKey={activeWalletPublicKey}
           icoPublicKey={icoPublicKey}
           creationDate={creationDate}
-          isSubmitting={updateWalletRequest.isExecuting}
+          isSubmitting={
+            isSingleAddressModeUpdating || updateWalletRequest.isExecuting
+          }
+          singleAddressMode={activeWallet.singleAddressMode}
+          isSingleAddressModeDisabled={
+            isSingleAddressModeUpdating || updateWalletRequest.isExecuting
+          }
+          onSingleAddressModeChange={(enabled) =>
+            setSingleAddressMode.trigger({
+              walletId: activeWallet.id,
+              enabled,
+            })
+          }
           isInvalid={
             updateWalletRequest.wasExecuted &&
             updateWalletRequest.result === false

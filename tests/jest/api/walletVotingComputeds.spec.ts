@@ -16,6 +16,7 @@ const makeWallet = (votingTarget?: DRepDelegation | null): Wallet =>
   new Wallet({
     id: 'computeds-wallet',
     addressPoolGap: 20,
+    singleAddressMode: true,
     name: 'computeds wallet',
     amount: new BigNumber(0),
     availableAmount: new BigNumber(0),

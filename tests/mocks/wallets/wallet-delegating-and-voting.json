@@ -1,6 +1,7 @@
 {
   "id": "2222222222222222222222222222222222222222",
   "address_pool_gap": 20,
+  "single_address_mode": true,
   "name": "cv1 fixture delegating and voting",
   "balance": {
     "available": {

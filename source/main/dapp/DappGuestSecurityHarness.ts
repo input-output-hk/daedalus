@@ -40,6 +40,7 @@ process.on('unhandledRejection', (error) => unhandledRejections.push(error));
 const fixtureOrigin = 'https://fixture.invalid';
 type HarnessLauncherConfig = {
   cluster?: unknown;
+  isFlight?: unknown;
   dappBrowserPolicy?: unknown;
   dappSandboxPackageCluster?: unknown;
 };
@@ -99,15 +100,21 @@ const createWindow = (
   return window;
 };
 
-const testPackagedPolicy = (value: unknown): void => {
-  const windowsDiagnosticsEnabled = process.platform === 'win32';
-  const packagedPolicy = new DappLaunchPolicy(value);
+const testPackagedPolicy = (config: HarnessLauncherConfig): void => {
+  if (
+    typeof config.cluster !== 'string' ||
+    typeof config.isFlight !== 'boolean'
+  )
+    throw new Error('Invalid packaged policy identity');
+  const expectedEnabled =
+    config.cluster !== 'mainnet' || config.isFlight === true;
+  const packagedPolicy = new DappLaunchPolicy(config.dappBrowserPolicy);
   assert.deepStrictEqual(packagedPolicy.config, {
     revision: DAPP_POLICY_REVISION,
-    globalEnabled: windowsDiagnosticsEnabled,
-    preferredCatalogEnabled: false,
-    diagnosticsEnabled: windowsDiagnosticsEnabled,
-    cip104Revision: 1,
+    globalEnabled: expectedEnabled,
+    preferredCatalogEnabled: expectedEnabled,
+    diagnosticsEnabled: expectedEnabled,
+    cip104Revision: expectedEnabled ? 1 : 0,
     cip142Revision: 0,
     hardwareConnectorRows: [],
   });
@@ -535,7 +542,9 @@ app.whenReady().then(async () => {
       throw new Error('Invalid packaged cluster');
     const installRoot =
       process.env.ENTRYPOINT_DIR ||
-      path.dirname(path.dirname(launcherConfigPath));
+      (process.platform === 'darwin'
+        ? path.resolve(path.dirname(process.execPath), '..', '..')
+        : path.dirname(path.dirname(launcherConfigPath)));
     assert.deepStrictEqual(
       await startDappSandboxAvailabilityCheck({
         isDevelopment: false,
@@ -545,7 +554,7 @@ app.whenReady().then(async () => {
       { status: 'available' }
     );
     process.stderr.write('sandbox available\n');
-    testPackagedPolicy(launcherConfig.dappBrowserPolicy);
+    testPackagedPolicy(launcherConfig);
     process.stderr.write('policy variants passed\n');
     const manifestChannels = await testPrivilegedIpc();
     process.stderr.write('privileged IPC passed\n');

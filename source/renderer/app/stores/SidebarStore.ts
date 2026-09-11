@@ -127,7 +127,7 @@ export default class SidebarStore extends Store {
       boolean | ((...args: Array<any>) => any)
     > = {
       [categories.WALLETS.name]: true,
-      [categories.APPS.name]: true,
+      [categories.APPS.name]: !isMainnet || isFlight,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
       [categories.STAKING.name]: true,

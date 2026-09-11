@@ -2,6 +2,7 @@
 set -eu
 
 cluster='@CLUSTER@'
+package_name='@PACKAGE_NAME@'
 install_root='/opt/daedalus/@CLUSTER@'
 state_dir='/var/lib/daedalus-package/@CLUSTER@'
 profile_path='/etc/apparmor.d/opt.daedalus.@CLUSTER@.electron'

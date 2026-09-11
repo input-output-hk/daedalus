@@ -34,51 +34,50 @@
     linuxPackages = inputs.self.packages.x86_64-linux;
     installerClusters = inputs.self.internal.installerClusters;
 
-    linuxReleaseArtifactsContract =
-      assert !(internal ? unsignedInstaller);
-      assert !(internal ? makeSignedInstaller);
-      assert !(internal ? selfExtractingArchive);
-      assert !(internal ? removeOldNixChroot);
-      assert !(internal ? satisfyOldUpdateRunner);
-      assert !(internal ? newBundle);
-      assert !(builtins.pathExists (inputs.self + "/nix/internal/linux-self-extracting-archive.sh"));
-      assert internal ? systemPackageBundle;
-      assert internal ? debInstaller;
-      assert internal ? rpmInstaller;
-      assert internal ? archInstaller;
-      assert lib.all (
-        cluster:
-          !(builtins.hasAttr "installer-${cluster}" linuxPackages)
-          && !(builtins.hasAttr "makeSignedInstaller-${cluster}" linuxPackages)
-          && builtins.hasAttr "deb-installer-${cluster}" linuxPackages
-          && builtins.hasAttr "rpm-installer-${cluster}" linuxPackages
-          && builtins.hasAttr "arch-installer-${cluster}" linuxPackages
-      )
-      installerClusters;
-      assert !(builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs.installer);
-      assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."deb-installer";
-      assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."rpm-installer";
-      assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."arch-installer";
+    linuxReleaseArtifactsContract = assert !(internal ? unsignedInstaller);
+    assert !(internal ? makeSignedInstaller);
+    assert !(internal ? selfExtractingArchive);
+    assert !(internal ? removeOldNixChroot);
+    assert !(internal ? satisfyOldUpdateRunner);
+    assert !(internal ? newBundle);
+    assert !(builtins.pathExists (inputs.self + "/nix/internal/linux-self-extracting-archive.sh"));
+    assert internal ? systemPackageBundle;
+    assert internal ? debInstaller;
+    assert internal ? rpmInstaller;
+    assert internal ? archInstaller;
+    assert lib.all (
+      cluster:
+        !(builtins.hasAttr "installer-${cluster}" linuxPackages)
+        && !(builtins.hasAttr "makeSignedInstaller-${cluster}" linuxPackages)
+        && builtins.hasAttr "deb-installer-${cluster}" linuxPackages
+        && builtins.hasAttr "rpm-installer-${cluster}" linuxPackages
+        && builtins.hasAttr "arch-installer-${cluster}" linuxPackages
+    )
+    installerClusters;
+    assert !(builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs.installer);
+    assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."deb-installer";
+    assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."rpm-installer";
+    assert builtins.hasAttr "x86_64-linux" inputs.self.hydraJobs."arch-installer";
       pkgs.runCommand "linux-release-artifacts-contract" {} ''
-          set -eu
-          pipeline=${linuxPackages.buildkitePipeline}/bin/buildkite-pipeline
+        set -eu
+        pipeline=${linuxPackages.buildkitePipeline}/bin/buildkite-pipeline
 
-          for cluster in ${lib.escapeShellArgs installerClusters}; do
-            grep -F ".#packages.x86_64-linux.deb-installer-$cluster" "$pipeline"
-            grep -F ".#packages.x86_64-linux.rpm-installer-$cluster" "$pipeline"
-            grep -F ".#packages.x86_64-linux.arch-installer-$cluster" "$pipeline"
-          done
-          grep -F 'artifact upload "csl-daedalus-deb/*.deb"' "$pipeline"
-          grep -F 'artifact upload "csl-daedalus-rpm/*.rpm"' "$pipeline"
-          grep -F 'artifact upload "csl-daedalus-arch/*.pkg.tar.zst"' "$pipeline"
+        for cluster in ${lib.escapeShellArgs installerClusters}; do
+          grep -F ".#packages.x86_64-linux.deb-installer-$cluster" "$pipeline"
+          grep -F ".#packages.x86_64-linux.rpm-installer-$cluster" "$pipeline"
+          grep -F ".#packages.x86_64-linux.arch-installer-$cluster" "$pipeline"
+        done
+        grep -F 'artifact upload "csl-daedalus-deb/*.deb"' "$pipeline"
+        grep -F 'artifact upload "csl-daedalus-rpm/*.rpm"' "$pipeline"
+        grep -F 'artifact upload "csl-daedalus-arch/*.pkg.tar.zst"' "$pipeline"
 
-          if grep -E '\.#packages\.x86_64-linux\.(installer|makeSignedInstaller)-|artifact upload \*/\*|\.bin([^[:alnum:]]|$)' "$pipeline"; then
-            echo 'generic Linux installer, signing, upload, or .bin seam found in Buildkite pipeline' >&2
-            exit 1
-          fi
+        if grep -E '\.#packages\.x86_64-linux\.(installer|makeSignedInstaller)-|artifact upload \*/\*|\.bin([^[:alnum:]]|$)' "$pipeline"; then
+          echo 'generic Linux installer, signing, upload, or .bin seam found in Buildkite pipeline' >&2
+          exit 1
+        fi
 
-          touch "$out"
-        '';
+        touch "$out"
+      '';
 
     linuxDebPackageContract =
       pkgs.runCommand "linux-deb-package-contract" {
@@ -100,7 +99,7 @@
           test ! -e "$root/share/applications"
           test "$(jq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
           test "$(jq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
-          jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0}' \
+          jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorRows":[]}' \
             "$root/config/launcher-config.yaml" >/dev/null
           test "$(jq -r .daedalusBin "$root/config/launcher-config.yaml")" = /opt/daedalus/mainnet/libexec/daedalus-frontend
           test "$(stat -c %a "$root/libexec/bundle-electron/lib/electron/chrome-sandbox")" = 755
@@ -413,7 +412,7 @@
         test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
         test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
         test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
-        yq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0}' \
+        yq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorRows":[]}' \
           "$root/config/launcher-config.yaml" >/dev/null
         NODE_PATH=${node_modules}/node_modules node -e \
           "require('yamljs').parse(require('fs').readFileSync(process.argv[1], 'utf8'))" \
@@ -455,6 +454,103 @@
 
         touch "$out"
       '';
+
+    dappLaunchPolicyContract = let
+      targetSystems = [
+        "x86_64-linux"
+        "x86_64-windows"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      networks = ["mainnet" "mainnet_flight" "preprod" "preview" "selfnode"];
+      expectedEnabled = {
+        mainnet = false;
+        mainnet_flight = true;
+        preprod = true;
+        preview = true;
+        selfnode = true;
+      };
+      expectedPolicy = enabled: {
+        revision = 1;
+        globalEnabled = enabled;
+        preferredCatalogEnabled = enabled;
+        diagnosticsEnabled = enabled;
+        cip104Revision =
+          if enabled
+          then 1
+          else 0;
+        cip142Revision = 0;
+        hardwareConnectorRows = [];
+      };
+      rows =
+        lib.concatMap (
+          targetSystem:
+            lib.concatMap (
+              network:
+                map (devShell: {inherit targetSystem network devShell;}) [false true]
+            )
+            networks
+        )
+        targetSystems;
+      checkedRows =
+        map (
+          {
+            targetSystem,
+            network,
+            devShell,
+          }: let
+            generated = inputs.self.internal.${targetSystem}.common.mkLauncherConfigs {
+              cluster = network;
+              inherit devShell;
+            };
+            launcher = generated.launcherConfig;
+            enabled = expectedEnabled.${network};
+            row = {
+              inherit targetSystem network devShell;
+              policy = launcher.dappBrowserPolicy;
+              cluster = launcher.cluster;
+              isFlight = launcher.isFlight;
+              packageCluster = launcher.dappSandboxPackageCluster;
+            };
+          in
+            assert row.policy == expectedPolicy enabled;
+            assert row.cluster
+            == (
+              if network == "mainnet_flight"
+              then "mainnet"
+              else network
+            );
+            assert row.isFlight == (network == "mainnet_flight");
+            assert row.packageCluster == network; row
+        )
+        rows;
+      linuxInternal = inputs.self.internal.x86_64-linux;
+      removedPilotAttributes = [
+        "pilotDebInstaller"
+        "pilotKillSwitchDebInstaller"
+        "mkPilotPackage"
+        "pilotPackage"
+        "pilotKillSwitchPackage"
+        "pilotSystemPackageBundle"
+        "pilotKillSwitchSystemPackageBundle"
+      ];
+      launcherArguments = builtins.functionArgs linuxInternal.common.mkLauncherConfigs;
+    in
+      assert builtins.length checkedRows == 40;
+      assert lib.all (
+        name: !(builtins.hasAttr name linuxInternal)
+      )
+      removedPilotAttributes;
+      assert !(builtins.hasAttr "dappPilot" launcherArguments);
+      assert !(builtins.hasAttr "dappPilotEnabled" launcherArguments);
+        builtins.deepSeq checkedRows (
+          pkgs.runCommand "dapp-launch-policy-contract" {
+            rowsJson = builtins.toJSON checkedRows;
+            passAsFile = ["rowsJson"];
+          } ''
+            cp "$rowsJsonPath" "$out"
+          ''
+        );
   in {
     checks =
       # The suites that execute the code under test run natively on each OS we
@@ -507,6 +603,7 @@
         linux-rpm-package-contract = linuxRpmPackageContract;
         linux-arch-package-contract = linuxArchPackageContract;
         linux-remaining-launcher-contract = linuxRemainingLauncherContract;
+        dapp-launch-policy-contract = dappLaunchPolicyContract;
       };
   };
 }

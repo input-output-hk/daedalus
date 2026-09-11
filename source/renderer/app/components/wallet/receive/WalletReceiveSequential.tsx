@@ -39,6 +39,18 @@ const messages = defineMessages({
     description:
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
+  singleAddressTitle: {
+    id: 'wallet.receive.page.singleAddressTitle',
+    defaultMessage: '!!!Receiving address',
+    description: 'Title shown on the Receive page in single-address mode.',
+  },
+  singleAddressDescription: {
+    id: 'wallet.receive.page.singleAddressDescription',
+    defaultMessage:
+      '!!!Share this address to receive ada or native Cardano tokens. Single-address mode is enabled.',
+    description:
+      'Instructions shown on the Receive page in single-address mode.',
+  },
 });
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
@@ -48,6 +60,7 @@ type Props = {
   onToggleSubMenus: Record<string, any>;
   showUsed: boolean;
   onToggleUsedAddresses: (...args: Array<any>) => any;
+  singleAddressMode: boolean;
 };
 type State = {
   addressSlice: number;
@@ -148,12 +161,14 @@ class WalletReceiveSequential extends Component<Props, State> {
   getFilteredAddresses = (
     walletAddresses: Array<WalletAddress>
   ): Array<WalletAddress> =>
-    walletAddresses.filter(
-      (address: WalletAddress) => !address.used || this.props.showUsed
-    );
+    this.props.singleAddressMode
+      ? walletAddresses
+      : walletAddresses.filter(
+          (address: WalletAddress) => !address.used || this.props.showUsed
+        );
 
   render() {
-    const { walletAddresses, showUsed } = this.props;
+    const { walletAddresses, showUsed, singleAddressMode } = this.props;
     const { intl } = this.context;
     return (
       <div className={styles.component}>
@@ -161,10 +176,18 @@ class WalletReceiveSequential extends Component<Props, State> {
           <div className={styles.container}>
             <div>
               <h2 className={styles.instructionsTitle}>
-                {intl.formatMessage(messages.instructionsTitle)}
+                {intl.formatMessage(
+                  singleAddressMode
+                    ? messages.singleAddressTitle
+                    : messages.instructionsTitle
+                )}
               </h2>
               <p className={styles.instructionsDescription}>
-                <FormattedHTMLMessage {...messages.instructionsDescription} />
+                {singleAddressMode ? (
+                  intl.formatMessage(messages.singleAddressDescription)
+                ) : (
+                  <FormattedHTMLMessage {...messages.instructionsDescription} />
+                )}
               </p>
               <p className={styles.privacyWarning}>
                 {intl.formatMessage(messages.privacyWarning)}
@@ -172,16 +195,29 @@ class WalletReceiveSequential extends Component<Props, State> {
             </div>
             <div className={styles.addresses}>
               <h3 className={styles.addressesTitle}>
-                {intl.formatMessage(messages.addressesTitle)}
-                <div className={styles.hideUsed}>
-                  <TinySwitch
-                    label={intl.formatMessage(messages.showUsedLabel)}
-                    onChange={this.toggleUsedAddresses}
-                    checked={showUsed}
-                  />
-                </div>
+                {intl.formatMessage(
+                  singleAddressMode
+                    ? messages.singleAddressTitle
+                    : messages.addressesTitle
+                )}
+                {!singleAddressMode && (
+                  <div className={styles.hideUsed}>
+                    <TinySwitch
+                      label={intl.formatMessage(messages.showUsedLabel)}
+                      onChange={this.toggleUsedAddresses}
+                      checked={showUsed}
+                    />
+                  </div>
+                )}
               </h3>
 
+              {singleAddressMode && walletAddresses.length === 0 && (
+                <p className={styles.privacyWarning}>
+                  {intl.formatMessage(
+                    globalMessages.receivingAddressUnavailable
+                  )}
+                </p>
+              )}
               <VirtualAddressesList
                 rows={this.getFilteredAddresses(walletAddresses)}
                 renderRow={this.renderRow}

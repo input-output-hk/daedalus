@@ -22,7 +22,7 @@ const FORBIDDEN_SWITCHES = [
   '--single-process',
 ] as const;
 const WINDOWS_PROGRAM_FILES = 'C:\\Program Files';
-const WINDOWS_PRODUCT_NAMES: Readonly<Record<string, string>> = {
+const DAPP_PRODUCT_NAMES: Readonly<Record<string, string>> = {
   mainnet: 'Daedalus Mainnet',
   mainnet_flight: 'Daedalus Flight',
   preprod: 'Daedalus Pre-Prod',
@@ -99,7 +99,7 @@ type PackageValidation = {
   usernsOnly: boolean;
 };
 
-type WindowsPackageIdentity = {
+type DesktopPackageIdentity = {
   appName: string;
   appPath: string;
   architecture: string;
@@ -142,10 +142,10 @@ const normalizeWindowsPath = (value: string): string =>
   path.win32.normalize(value).toLowerCase();
 
 export const validateWindowsPackageIdentity = (
-  identity: WindowsPackageIdentity,
+  identity: DesktopPackageIdentity,
   cluster: string
 ): boolean => {
-  const productName = WINDOWS_PRODUCT_NAMES[cluster];
+  const productName = DAPP_PRODUCT_NAMES[cluster];
   if (!productName) return false;
   const expectedRoot = path.win32.join(WINDOWS_PROGRAM_FILES, productName);
   return (
@@ -169,22 +169,59 @@ export const validateWindowsPackageIdentity = (
   );
 };
 
-const findWindowsRendererMetric = (
+export const validateDarwinPackageIdentity = (
+  identity: DesktopPackageIdentity,
+  cluster: string
+): boolean => {
+  const productName = DAPP_PRODUCT_NAMES[cluster];
+  if (!productName) return false;
+  const root = identity.installRoot;
+  if (
+    !path.posix.isAbsolute(root) ||
+    path.posix.normalize(root) !== root ||
+    path.posix.basename(root) !== `${productName}.app`
+  )
+    return false;
+  const resourcesPath = path.posix.join(root, 'Contents/Resources');
+  return (
+    identity.isPackaged &&
+    (identity.architecture === 'x64' || identity.architecture === 'arm64') &&
+    identity.appName === productName &&
+    identity.executablePath ===
+      path.posix.join(root, 'Contents/MacOS/Frontend') &&
+    identity.resourcesPath === resourcesPath &&
+    identity.appPath === path.posix.join(resourcesPath, 'app') &&
+    identity.launcherConfigPath ===
+      path.posix.join(resourcesPath, 'launcher-config.yaml')
+  );
+};
+
+const findSandboxedRendererMetric = (
   metrics: readonly ProcessMetric[],
-  rendererPid: number
-): ProcessMetric | undefined =>
-  metrics.find(
+  rendererPid: number,
+  platform: 'darwin' | 'win32'
+): ProcessMetric | undefined => {
+  if (!Number.isSafeInteger(rendererPid) || rendererPid <= 1) return undefined;
+  return metrics.find(
     (metric) =>
       metric.pid === rendererPid &&
       metric.type === 'Tab' &&
       metric.sandboxed === true &&
-      (metric.integrityLevel === 'low' || metric.integrityLevel === 'untrusted')
+      typeof metric.creationTime === 'number' &&
+      Number.isFinite(metric.creationTime) &&
+      metric.creationTime > 0 &&
+      (platform === 'darwin' ||
+        metric.integrityLevel === 'low' ||
+        metric.integrityLevel === 'untrusted')
   );
+};
 
-export const validateWindowsRendererEvidence = (
+export const validateMetricRendererEvidence = (
   metrics: readonly ProcessMetric[],
-  rendererPid: number
-): boolean => Boolean(findWindowsRendererMetric(metrics, rendererPid));
+  rendererPid: number,
+  platform: 'darwin' | 'win32'
+): boolean =>
+  Boolean(findSandboxedRendererMetric(metrics, rendererPid, platform));
 
 const parseStatus = (statusText: string): Record<string, string> => {
   const result: Record<string, string> = {};
@@ -256,10 +293,14 @@ export const validateDappRendererSandbox = (
   webContents: WebContents
 ): boolean => {
   const rendererPid = webContents.getOSProcessId();
-  if (process.platform === 'win32')
-    return validateWindowsRendererEvidence(app.getAppMetrics(), rendererPid);
-  if (process.platform !== 'linux') return false;
   try {
+    if (process.platform === 'darwin' || process.platform === 'win32')
+      return validateMetricRendererEvidence(
+        app.getAppMetrics(),
+        rendererPid,
+        process.platform
+      );
+    if (process.platform !== 'linux') return false;
     const rendererEvidence = readProcEvidence(rendererPid);
     return (
       validateRendererEvidence(
@@ -550,6 +591,93 @@ const validateWindowsProductionPackage = (
   }
 };
 
+const validateDarwinProductionPackage = (
+  cluster: string,
+  configuredInstallRoot?: string
+): PackageValidation => {
+  const unsupportedPackage = {
+    failure: 'unsupported-package' as const,
+    usernsOnly: false,
+  };
+  const installRoot =
+    configuredInstallRoot ||
+    path.resolve(path.dirname(process.execPath), '..', '..');
+  const launcherConfigPath = process.env.LAUNCHER_CONFIG || '';
+  if (
+    !validateDarwinPackageIdentity(
+      {
+        appName: app.getName(),
+        appPath: app.getAppPath(),
+        architecture: process.arch,
+        executablePath: process.execPath,
+        installRoot,
+        isPackaged: app.isPackaged,
+        launcherConfigPath,
+        resourcesPath: process.resourcesPath,
+      },
+      cluster
+    )
+  )
+    return unsupportedPackage;
+
+  try {
+    const productName = DAPP_PRODUCT_NAMES[cluster];
+    const entries: ReadonlyArray<
+      readonly [string, string, 'file' | 'directory']
+    > = [
+      [installRoot, '', 'directory'],
+      [path.posix.join(installRoot, 'Contents'), 'Contents', 'directory'],
+      [
+        path.posix.join(installRoot, 'Contents/MacOS'),
+        'Contents/MacOS',
+        'directory',
+      ],
+      [
+        path.posix.join(installRoot, 'Contents/Resources'),
+        'Contents/Resources',
+        'directory',
+      ],
+      [
+        path.posix.join(installRoot, 'Contents/Resources/app'),
+        'Contents/Resources/app',
+        'directory',
+      ],
+      [
+        path.posix.join(installRoot, 'Contents/MacOS/Frontend'),
+        'Contents/MacOS/Frontend',
+        'file',
+      ],
+      [
+        path.posix.join(installRoot, 'Contents/MacOS', productName),
+        `Contents/MacOS/${productName}`,
+        'file',
+      ],
+      [
+        path.posix.join(installRoot, 'Contents/Resources/helper'),
+        'Contents/Resources/helper',
+        'file',
+      ],
+      [launcherConfigPath, 'Contents/Resources/launcher-config.yaml', 'file'],
+    ];
+    const canonicalRoot = fs.realpathSync(installRoot);
+    if (
+      entries.some(([entryPath, relativePath, kind]) => {
+        const stat = fs.lstatSync(entryPath);
+        return (
+          stat.isSymbolicLink() ||
+          (kind === 'file' ? !stat.isFile() : !stat.isDirectory()) ||
+          fs.realpathSync(entryPath) !==
+            path.posix.join(canonicalRoot, relativePath)
+        );
+      })
+    )
+      return unsupportedPackage;
+    return { failure: null, usernsOnly: false };
+  } catch {
+    return unsupportedPackage;
+  }
+};
+
 const waitForLifecycleFailure = (
   webContents: WebContents,
   window: BrowserWindow
@@ -661,12 +789,13 @@ const runCanary = async (
     if (!Number.isSafeInteger(rendererPid) || rendererPid <= 1)
       throw new Error('invalid renderer pid');
     let rendererStartIdentity: number | string;
-    if (process.platform === 'win32') {
-      const metric = findWindowsRendererMetric(
+    if (process.platform === 'darwin' || process.platform === 'win32') {
+      const metric = findSandboxedRendererMetric(
         app.getAppMetrics(),
-        rendererPid
+        rendererPid,
+        process.platform
       );
-      if (!metric) throw new Error('invalid Windows sandbox evidence');
+      if (!metric) throw new Error('invalid sandbox evidence');
       rendererStartIdentity = metric.creationTime;
     } else {
       const mainEvidence = readProcEvidence(process.pid);
@@ -692,10 +821,11 @@ const runCanary = async (
       canaryWindow.webContents.getOSProcessId() !== rendererPid
     )
       throw new Error('renderer changed');
-    if (process.platform === 'win32') {
-      const finalMetric = findWindowsRendererMetric(
+    if (process.platform === 'darwin' || process.platform === 'win32') {
+      const finalMetric = findSandboxedRendererMetric(
         app.getAppMetrics(),
-        rendererPid
+        rendererPid,
+        process.platform
       );
       if (!finalMetric || finalMetric.creationTime !== rendererStartIdentity)
         throw new Error('renderer instance changed');
@@ -723,7 +853,11 @@ const runCanary = async (
 const checkAvailability = async (
   options: DappSandboxAvailabilityOptions
 ): Promise<DappSandboxAvailability> => {
-  if (process.platform !== 'linux' && process.platform !== 'win32')
+  if (
+    process.platform !== 'darwin' &&
+    process.platform !== 'linux' &&
+    process.platform !== 'win32'
+  )
     return { status: 'unavailable', reason: 'unsupported-host' };
   let argv = process.argv;
   if (process.platform === 'linux') {
@@ -744,7 +878,9 @@ const checkAvailability = async (
   let requireUserNamespace = false;
   if (!options.isDevelopment) {
     const packageValidation =
-      process.platform === 'win32'
+      process.platform === 'darwin'
+        ? validateDarwinProductionPackage(options.cluster, options.installRoot)
+        : process.platform === 'win32'
         ? validateWindowsProductionPackage(options.cluster, options.installRoot)
         : validateProductionPackage(options.cluster, options.installRoot);
     if (packageValidation.failure)

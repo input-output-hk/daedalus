@@ -10,6 +10,7 @@ type Props = {
   checked?: boolean;
   label?: string;
   onChange?: (...args: Array<any>) => any;
+  disabled?: boolean;
 };
 export default class NormalSwitch extends Component<Props> {
   render() {
@@ -19,8 +20,10 @@ export default class NormalSwitch extends Component<Props> {
         themeId={IDENTIFIERS.SWITCH}
         skin={SwitchSkin}
         checked={this.props.checked}
+        disabled={this.props.disabled}
         onChange={this.props.onChange}
         label={this.props.label}
+        aria-label={this.props.label}
       />
     );
   }

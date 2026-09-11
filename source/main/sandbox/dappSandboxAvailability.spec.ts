@@ -2,10 +2,11 @@ import type { ProcessMetric } from 'electron';
 import {
   hasSandboxBypass,
   requireDappSandboxAvailable,
+  validateDarwinPackageIdentity,
+  validateMetricRendererEvidence,
   validatePackageIdentity,
   validateRendererEvidence,
   validateWindowsPackageIdentity,
-  validateWindowsRendererEvidence,
 } from './dappSandboxAvailability';
 const mainEvidence = {
   pid: 10,
@@ -64,6 +65,18 @@ const windowsPackage = {
   launcherConfigPath:
     'C:\\Program Files\\Daedalus Mainnet\\launcher-config.yaml',
   resourcesPath: 'C:\\Program Files\\Daedalus Mainnet\\resources',
+};
+
+const darwinPackage = {
+  appName: 'Daedalus Preview',
+  appPath: '/Applications/Daedalus Preview.app/Contents/Resources/app',
+  architecture: 'arm64',
+  executablePath: '/Applications/Daedalus Preview.app/Contents/MacOS/Frontend',
+  installRoot: '/Applications/Daedalus Preview.app',
+  isPackaged: true,
+  launcherConfigPath:
+    '/Applications/Daedalus Preview.app/Contents/Resources/launcher-config.yaml',
+  resourcesPath: '/Applications/Daedalus Preview.app/Contents/Resources',
 };
 
 const windowsRendererMetric = {
@@ -213,6 +226,7 @@ describe('dApp sandbox availability', () => {
 
   test.each([
     ['mainnet', 'Daedalus Mainnet'],
+    ['mainnet_flight', 'Daedalus Flight'],
     ['preprod', 'Daedalus Pre-Prod'],
     ['preview', 'Daedalus Preview'],
     ['selfnode', 'Daedalus Selfnode'],
@@ -235,6 +249,96 @@ describe('dApp sandbox availability', () => {
   });
 
   test.each([
+    ['x64', '/Applications'],
+    ['arm64', '/Applications'],
+    ['arm64', '/Users/alice/Desktop'],
+  ])('accepts a Darwin %s bundle under %s', (architecture, parent) => {
+    const installRoot = `${parent}/Daedalus Preview.app`;
+    expect(
+      validateDarwinPackageIdentity(
+        {
+          ...darwinPackage,
+          architecture,
+          appPath: `${installRoot}/Contents/Resources/app`,
+          executablePath: `${installRoot}/Contents/MacOS/Frontend`,
+          installRoot,
+          launcherConfigPath: `${installRoot}/Contents/Resources/launcher-config.yaml`,
+          resourcesPath: `${installRoot}/Contents/Resources`,
+        },
+        'preview'
+      )
+    ).toBe(true);
+  });
+
+  test('accepts the Flight Darwin package identity', () => {
+    const installRoot = '/Applications/Daedalus Flight.app';
+    expect(
+      validateDarwinPackageIdentity(
+        {
+          ...darwinPackage,
+          appName: 'Daedalus Flight',
+          appPath: `${installRoot}/Contents/Resources/app`,
+          executablePath: `${installRoot}/Contents/MacOS/Frontend`,
+          installRoot,
+          launcherConfigPath: `${installRoot}/Contents/Resources/launcher-config.yaml`,
+          resourcesPath: `${installRoot}/Contents/Resources`,
+        },
+        'mainnet_flight'
+      )
+    ).toBe(true);
+  });
+
+  test.each([
+    ['unknown cluster', darwinPackage, 'unknown'],
+    ['mismatched product', darwinPackage, 'mainnet'],
+    [
+      'product-named launcher',
+      {
+        ...darwinPackage,
+        executablePath:
+          '/Applications/Daedalus Preview.app/Contents/MacOS/Daedalus Preview',
+      },
+      'preview',
+    ],
+    ['external app path', { ...darwinPackage, appPath: '/tmp/app' }, 'preview'],
+    [
+      'external resources path',
+      { ...darwinPackage, resourcesPath: '/tmp/Resources' },
+      'preview',
+    ],
+    [
+      'external launcher config',
+      { ...darwinPackage, launcherConfigPath: '/tmp/launcher-config.yaml' },
+      'preview',
+    ],
+    [
+      'unpackaged execution',
+      { ...darwinPackage, isPackaged: false },
+      'preview',
+    ],
+    [
+      'relative root',
+      { ...darwinPackage, installRoot: 'Daedalus Preview.app' },
+      'preview',
+    ],
+    [
+      'non-normalized root',
+      {
+        ...darwinPackage,
+        installRoot: '/Applications/../Applications/Daedalus Preview.app',
+      },
+      'preview',
+    ],
+    [
+      'unsupported architecture',
+      { ...darwinPackage, architecture: 'ia32' },
+      'preview',
+    ],
+  ])('rejects a Darwin package with %s', (_name, identity, cluster) => {
+    expect(validateDarwinPackageIdentity(identity, cluster)).toBe(false);
+  });
+
+  test.each([
     {
       name: 'an unsandboxed renderer',
       metric: { ...windowsRendererMetric, sandboxed: false },
@@ -253,21 +357,97 @@ describe('dApp sandbox availability', () => {
     },
   ])('rejects Windows evidence with $name', ({ metric }) => {
     expect(
-      validateWindowsRendererEvidence([metric] as ProcessMetric[], 20)
+      validateMetricRendererEvidence([metric] as ProcessMetric[], 20, 'win32')
     ).toBe(false);
   });
 
   test('accepts native Windows sandbox evidence for the exact renderer', () => {
-    expect(validateWindowsRendererEvidence([windowsRendererMetric], 20)).toBe(
-      true
-    );
     expect(
-      validateWindowsRendererEvidence(
+      validateMetricRendererEvidence([windowsRendererMetric], 20, 'win32')
+    ).toBe(true);
+    expect(
+      validateMetricRendererEvidence(
         [{ ...windowsRendererMetric, integrityLevel: 'untrusted' }],
-        20
+        20,
+        'win32'
       )
     ).toBe(true);
   });
+
+  test('accepts exact Darwin metric evidence without Windows integrity', () => {
+    expect(
+      validateMetricRendererEvidence(
+        [
+          {
+            creationTime: 100.25,
+            pid: 20,
+            sandboxed: true,
+            type: 'Tab',
+          } as ProcessMetric,
+        ],
+        20,
+        'darwin'
+      )
+    ).toBe(true);
+  });
+
+  test.each([
+    ['missing sandbox status', { creationTime: 100.25, pid: 20, type: 'Tab' }],
+    [
+      'false sandbox status',
+      { creationTime: 100.25, pid: 20, sandboxed: false, type: 'Tab' },
+    ],
+    [
+      'wrong PID',
+      { creationTime: 100.25, pid: 21, sandboxed: true, type: 'Tab' },
+    ],
+    [
+      'wrong process type',
+      { creationTime: 100.25, pid: 20, sandboxed: true, type: 'Browser' },
+    ],
+    ['missing timestamp', { pid: 20, sandboxed: true, type: 'Tab' }],
+    [
+      'string timestamp',
+      { creationTime: '100.25', pid: 20, sandboxed: true, type: 'Tab' },
+    ],
+    [
+      'zero timestamp',
+      { creationTime: 0, pid: 20, sandboxed: true, type: 'Tab' },
+    ],
+    [
+      'non-finite timestamp',
+      {
+        creationTime: Number.POSITIVE_INFINITY,
+        pid: 20,
+        sandboxed: true,
+        type: 'Tab',
+      },
+    ],
+  ])('rejects Darwin evidence with %s', (_name, metric) => {
+    expect(
+      validateMetricRendererEvidence([metric] as ProcessMetric[], 20, 'darwin')
+    ).toBe(false);
+  });
+
+  test.each([1, 1.5, Number.NaN])(
+    'rejects invalid renderer PID %p',
+    (rendererPid) => {
+      expect(
+        validateMetricRendererEvidence(
+          [
+            {
+              creationTime: 100.25,
+              pid: rendererPid,
+              sandboxed: true,
+              type: 'Tab',
+            } as ProcessMetric,
+          ],
+          rendererPid,
+          'darwin'
+        )
+      ).toBe(false);
+    }
+  );
 
   test.each([
     {
