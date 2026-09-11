@@ -171,7 +171,7 @@ class WalletSendPage extends Component<Props> {
     // Guard against potential null values
     const wallet = wallets.active;
     if (!wallet) throw new Error('Active wallet required for WalletSendPage.');
-    const { isHardwareWallet, name: walletName } = wallet;
+    const { isHardwareWallet, name: walletName, singleAddressMode } = wallet;
     const walletTokens = wallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
@@ -179,7 +179,9 @@ class WalletSendPage extends Component<Props> {
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
     const isCollateralPreparation = collateral.preparationFormActive;
-    const preparationAddress = addresses.active?.id ?? addresses.all[0]?.id;
+    const preparationAddress = singleAddressMode
+      ? addresses.active?.id
+      : addresses.active?.id ?? addresses.all[0]?.id;
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}

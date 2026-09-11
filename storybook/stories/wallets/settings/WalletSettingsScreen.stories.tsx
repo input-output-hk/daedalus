@@ -227,6 +227,13 @@ export default function (props: { locale: Locale }) {
       activeField={null}
       isInvalid={false}
       isSubmitting={false}
+      singleAddressMode={boolean('Single-address mode', true, basicSettingsId)}
+      isSingleAddressModeDisabled={boolean(
+        'Single-address mode pending',
+        false,
+        basicSettingsId
+      )}
+      onSingleAddressModeChange={action('onSingleAddressModeChange')}
       lastUpdatedField={null}
       nameValidator={() => true}
       onCancel={() => {}}

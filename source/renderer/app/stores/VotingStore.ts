@@ -336,7 +336,7 @@ export default class VotingStore extends Store {
 
   prepareVotingData = async ({ walletId }: { walletId: string }) => {
     try {
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
+      const address = await this.stores.addresses.getAutomaticReceivingAddress(
         walletId
       );
       const addressHex = await this._getHexFromBech32(address.id);
@@ -432,7 +432,7 @@ export default class VotingStore extends Store {
       throw new Error(
         'Selected wallet required before send voting registration.'
       );
-    const [address] = await this.stores.addresses.getAddressesByWalletId(
+    const address = await this.stores.addresses.getAutomaticReceivingAddress(
       walletId
     );
     const selectedWallet = this.stores.wallets.getWalletById(walletId);

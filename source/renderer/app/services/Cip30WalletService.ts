@@ -4,7 +4,9 @@ import type {
   Cip30WalletResponse,
 } from '../../../common/cip30/executor';
 import type { Api } from '../api';
-import type WalletAddress from '../domains/WalletAddress';
+import WalletAddress, {
+  getFirstReceivingAddress,
+} from '../domains/WalletAddress';
 import { bindCip30WalletRenderer } from '../ipc/cip30Wallet';
 import { reportWalletApprovalProgress } from '../ipc/nativeTransactionApproval';
 import type { StoresMap } from '../stores';
@@ -75,14 +77,21 @@ export class Cip30WalletService {
     await this.stores.addresses._getStakeAddress(request.walletId, false);
     if (!this.ready(request)) return this.rejection(request, 'unavailable');
 
+    const wallet = this.currentWallet(request);
+    const canonical =
+      wallet?.singleAddressMode && !wallet.isLegacy
+        ? getFirstReceivingAddress(addresses)
+        : undefined;
     const ordered = [...addresses].sort((left, right) =>
       left.spendingPath.localeCompare(right.spendingPath)
     );
-    const used = ordered.filter(({ used: isUsed }) => isUsed);
-    const unused = ordered.filter(({ used: isUsed }) => !isUsed);
-    const change = unused[unused.length - 1] || ordered[ordered.length - 1];
+    const projected = canonical ? [canonical] : ordered;
+    const used = projected.filter(({ used: isUsed }) => isUsed);
+    const unused = projected.filter(({ used: isUsed }) => !isUsed);
+    const change =
+      canonical || unused[unused.length - 1] || ordered[ordered.length - 1];
     const reward = this.stores.addresses.stakeAddresses[request.walletId];
-    if (!change || !reward)
+    if ((wallet?.singleAddressMode && !canonical) || !change || !reward)
       return Object.freeze({ status: 'rejected', reason: 'internal' });
 
     return Object.freeze({

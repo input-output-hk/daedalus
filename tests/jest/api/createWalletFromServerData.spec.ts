@@ -50,6 +50,35 @@ describe('_createWalletFromServerData voting mapping', () => {
     mockedWarn.mockClear();
   });
 
+  it('requires and preserves the Shelley single-address mode field', () => {
+    const enabled = loadFixture('wallet-voting-drep.json');
+    const wallet = _createWalletFromServerData(enabled);
+    expect(wallet.singleAddressMode).toBe(true);
+
+    const disabled = _createWalletFromServerData({
+      ...enabled,
+      single_address_mode: false,
+    });
+    wallet.update(disabled);
+    expect(wallet.singleAddressMode).toBe(false);
+
+    try {
+      _createWalletFromServerData(({
+        ...enabled,
+        single_address_mode: undefined,
+      } as unknown) as AdaWallet);
+      throw new Error('expected mapping failure');
+    } catch (error) {
+      expect(error).toMatchObject({
+        code: 'wallet_internal_error',
+        values: {
+          message:
+            'Missing or invalid single_address_mode in Shelley wallet response',
+        },
+      });
+    }
+  });
+
   it('maps a voting-only DRep wallet: votingTarget populated, pool id null', () => {
     const wallet = _createWalletFromServerData(
       loadFixture('wallet-voting-drep.json')

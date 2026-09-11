@@ -20,6 +20,7 @@ const buildWallet = (id: string, name: string, isLegacy: boolean): Wallet =>
     name,
     isLegacy,
     addressPoolGap: 20,
+    singleAddressMode: !isLegacy,
     amount: new BigNumber(100),
     availableAmount: new BigNumber(100),
     reward: new BigNumber(0),

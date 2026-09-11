@@ -2,11 +2,14 @@ import { has, find, last, filter, findIndex } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
-import WalletAddress from '../domains/WalletAddress';
+import WalletAddress, {
+  getFirstReceivingAddress,
+} from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
 import { getStakeAddressFromStakeKey } from '../utils/crypto';
 import type { Address, InspectAddressResponse } from '../api/addresses/types';
+import globalMessages from '../i18n/global-messages';
 
 export default class AddressesStore extends Store {
   @observable
@@ -100,14 +103,15 @@ export default class AddressesStore extends Store {
   get active(): WalletAddress | null | undefined {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
+
+    const addresses = this._getAddressesAllRequest(wallet.id).result;
+    if (!addresses) return null;
+    if (!wallet.isLegacy && wallet.singleAddressMode)
+      return getFirstReceivingAddress(addresses) || null;
+
     // If address generated and not used, set as active address
     if (this.lastGeneratedAddress && !this.lastGeneratedAddress.used)
       return this.lastGeneratedAddress;
-
-    // Check if wallet has addresses
-    const addresses = this._getAddressesAllRequest(wallet.id).result;
-
-    if (!addresses) return null;
     // Check if there is any unused address and set last as active
     const unusedAddresses = filter(addresses, (address) => !address.used);
     if (unusedAddresses.length) return last(unusedAddresses);
@@ -215,6 +219,24 @@ export default class AddressesStore extends Store {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     const addresses = await this._getAddressesAllRequest(walletId);
     return addresses || [];
+  };
+  getAutomaticReceivingAddress = async (
+    walletId: string
+  ): Promise<WalletAddress> => {
+    const wallet = this.stores.wallets.getWalletById(walletId);
+    if (!wallet)
+      throw new LocalizableError(globalMessages.receivingAddressUnavailable);
+    const addresses = await this.api.ada.getAddresses({
+      walletId,
+      isLegacy: wallet.isLegacy,
+    });
+    const address =
+      !wallet.isLegacy && wallet.singleAddressMode
+        ? getFirstReceivingAddress(addresses)
+        : addresses[0];
+    if (!address)
+      throw new LocalizableError(globalMessages.receivingAddressUnavailable);
+    return address;
   };
   _getAddressesAllRequest = (
     walletId: string
