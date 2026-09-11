@@ -270,13 +270,16 @@ softwareupdate --install-rosetta
 # Ensure user is in correct groups
 sudo usermod -aG nix-users $USER
 
-# Build the system package
+# Build either system-package format
 nix build -L .#deb-installer-mainnet
+nix build -L .#rpm-installer-mainnet
 ```
 
-The `.deb` installs under `/opt/daedalus/<cluster>`. Privileged lifecycle and
-AppArmor validation must run only on approved disposable hosts; a successful
-Nix build is not installed-sandbox certification.
+Both formats install under `/opt/daedalus/<cluster>`. Privileged lifecycle,
+AppArmor, SELinux, and exact-renderer validation must run only on approved
+disposable hosts; a successful Nix build is not installed-sandbox
+certification. Fedora 43 RPM setup fails closed unless SELinux is enforcing and
+the stock Chrome sandbox policy can label the exact packaged helper path.
 
 ### Windows (WSL2)
 

@@ -47,12 +47,19 @@
 
       debInstaller = genClusters (cluster:
         import ../../packaging/linux/deb.nix (commonPackagingArgs cluster));
+
+      rpmInstaller = genClusters (cluster:
+        import ../../packaging/linux/rpm.nix (commonPackagingArgs cluster));
     in {
       packages =
         lib.listToAttrs (lib.concatMap (cluster: [
           {
             name = "deb-installer-${cluster}";
             value = debInstaller.${cluster};
+          }
+          {
+            name = "rpm-installer-${cluster}";
+            value = rpmInstaller.${cluster};
           }
         ])
         installerClusters);
