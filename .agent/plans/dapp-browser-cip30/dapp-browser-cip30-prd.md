@@ -1544,14 +1544,14 @@ Approval surfaces:
 
 #### Collateral UX States
 
-- `Checking`: node/wallet context is loading.
-- `Ready`: suitable preferred collateral exists; copy says preferred, not locked.
-- `Not ready`: no candidate; show prepare action.
-- `Preparing`: setup transaction awaiting confirmation or chain observation.
-- `In use`: referenced by pending script transaction.
-- `Will be spent`: selected by ordinary coin selection in the reviewed transaction.
-- `Charged`: invalid accepted script consumed collateral.
-- `Stale`: preferred outpoint is missing or rolled back pending reconciliation.
+- `Checking`: node/wallet context is loading; keep the persistent panel hidden.
+- `Ready`: suitable preferred collateral exists; keep the persistent panel hidden.
+- `Not ready`: no candidate; show the panel and prepare action.
+- `Preparing`: setup transaction awaiting confirmation or chain observation; show the panel and cancel action.
+- `In use`: referenced by a pending script transaction; keep the persistent panel hidden.
+- `Will be spent`: selected by ordinary coin selection; keep the persistent panel hidden because transaction review carries the warning.
+- `Charged`: invalid accepted script consumed collateral; show the panel and replacement action.
+- `Stale`: preferred outpoint is missing or rolled back pending reconciliation; show the panel and recovery actions.
 
 #### Copy And Accessibility
 
