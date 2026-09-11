@@ -14,7 +14,8 @@
         then "-${targetSystem}"
         else "";
     in
-      (lib.listToAttrs (lib.concatMap (cluster: [
+      (lib.listToAttrs (lib.concatMap (cluster:
+        [
           {
             name = "daedalus-${cluster}${suffix}";
             value = internal.package.${cluster};
@@ -23,6 +24,8 @@
             name = "installer-${cluster}${suffix}";
             value = internal.unsignedInstaller.${cluster};
           }
+        ]
+        ++ [
           {
             name = "makeSignedInstaller-${cluster}${suffix}";
             value = internal.makeSignedInstaller.${cluster};
