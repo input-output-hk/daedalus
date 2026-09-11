@@ -46,7 +46,7 @@ Use these slash commands to access workflows:
 
 | Layer              | Technology                  |
 |--------------------|-----------------------------|
-| Desktop Framework  | Electron 24.2.0             |
+| Desktop Framework  | Electron 41.3.0             |
 | UI Library         | React 16.14.0               |
 | State Management   | MobX 5.15.7                 |
 | Component Library  | react-polymorph 1.0.4       |

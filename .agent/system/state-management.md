@@ -218,17 +218,29 @@ export type StoresMap = {
   // ... other stores
 };
 
-export const setupStores = (api: Api, actions: ActionsMap): StoresMap => {
-  const stores: Partial<StoresMap> = {};
-  
-  stores.widgets = new WidgetsStore(api, stores as StoresMap, actions);
-  // ... other stores
-  
-  // Setup all stores
-  Object.values(stores).forEach(store => store.setup?.());
-  
-  return stores as StoresMap;
-};
+export const setUpStores = action(
+  (
+    api: Api,
+    actions: ActionsMap,
+    router: RouterStore,
+    analyticsTracker: AnalyticsTracker
+  ): StoresMap => {
+    function createStoreInstanceOf<T extends Store>(
+      StoreSubClass: Class<T>
+    ): T {
+      return new StoreSubClass(api, actions, analyticsTracker);
+    }
+
+    stores = observable({
+      widgets: createStoreInstanceOf(WidgetsStore),
+      // ... other stores
+    });
+
+    // ... router wiring, then initialize every store
+    executeOnEveryStore((store) => store.initialize());
+    return stores;
+  }
+);
 ```
 
 ---

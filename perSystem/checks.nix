@@ -77,6 +77,11 @@
         '';
         storybook = mkJsCheck "daedalus-storybook-build" "yarn storybook:build";
         shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
+        # Documentation drifts silently because prose cannot fail. This asserts
+        # the parts of it that are mechanically decidable: that links resolve,
+        # that scripts named in instructions exist, that dead references stay
+        # dead, and that versions restated in prose match package.json.
+        docs = pkgs.callPackage ../tests/docs.nix {src = inputs.self;};
       };
   };
 }
