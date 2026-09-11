@@ -49,18 +49,24 @@ describe('CollateralPanel', () => {
   afterEach(cleanup);
 
   it.each([
-    ['checking', 'Checking preferred collateral'],
-    ['ready', 'Preferred collateral is ready'],
     ['not-ready', 'No suitable preferred collateral'],
     ['preparing', 'normal confirmed self-transfer'],
-    ['in-use', 'pending transaction'],
-    ['will-be-spent', 'will spend the preferred collateral'],
     ['charged', 'was charged'],
     ['stale', 'no longer available'],
-  ] as const)('represents the %s state', (state, copy) => {
+  ] as const)('represents the actionable %s state', (state, copy) => {
     renderPanel({ preference: preference(state) });
     expect(screen.getByRole('status')).toHaveTextContent(copy);
   });
+
+  it.each(['checking', 'ready', 'in-use', 'will-be-spent'] as const)(
+    'hides the non-actionable %s state',
+    (state) => {
+      renderPanel({ preference: preference(state) });
+      expect(
+        screen.queryByRole('heading', { name: 'Preferred collateral' })
+      ).not.toBeInTheDocument();
+    }
+  );
   it('replaces an unresolved checking state with the failure', () => {
     renderPanel({ preference: undefined, failed: true });
     expect(
@@ -72,7 +78,7 @@ describe('CollateralPanel', () => {
   });
 
   it('explains the preferred 5 ADA convention without implying reservation', () => {
-    renderPanel();
+    renderPanel({ preference: preference('not-ready') });
     expect(screen.getByText(/5 ADA/)).toHaveTextContent(
       'compatibility convention, not a protocol maximum'
     );
@@ -81,7 +87,7 @@ describe('CollateralPanel', () => {
     );
   });
 
-  it('starts preparation and clearing only through explicit actions', () => {
+  it('starts preparation only through an explicit action', () => {
     const onPrepare = jest.fn();
     renderPanel({
       preference: preference('not-ready'),
@@ -89,11 +95,5 @@ describe('CollateralPanel', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Prepare collateral' }));
     expect(onPrepare).toHaveBeenCalledTimes(1);
-
-    cleanup();
-    const onClear = jest.fn();
-    renderPanel({ preference: preference('ready'), onClear });
-    fireEvent.click(screen.getByRole('button', { name: 'Clear preference' }));
-    expect(onClear).toHaveBeenCalledTimes(1);
   });
 });

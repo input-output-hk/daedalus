@@ -56,13 +56,13 @@
       "locked": {
         "lastModified": 1789130723,
         "narHash": "sha256-IM625PwYPRhhqVVGkE2gA+b0zQogGqdGmkpwe0lFCyI=",
-        "owner": "AndrewWestberg",
+        "owner": "se7en-labs-inc",
         "repo": "cardano-wallet",
         "rev": "d4a6ac0f6f30606a13759a73939074a3acf18d6a",
         "type": "github"
       },
       "original": {
-        "owner": "AndrewWestberg",
+        "owner": "se7en-labs-inc",
         "repo": "cardano-wallet",
         "rev": "d4a6ac0f6f30606a13759a73939074a3acf18d6a",
         "type": "github"
