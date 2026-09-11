@@ -50,6 +50,9 @@
 
       rpmInstaller = genClusters (cluster:
         import ../../packaging/linux/rpm.nix (commonPackagingArgs cluster));
+
+      archInstaller = genClusters (cluster:
+        import ../../packaging/linux/arch.nix (commonPackagingArgs cluster));
     in {
       packages =
         lib.listToAttrs (lib.concatMap (cluster: [
@@ -60,6 +63,10 @@
           {
             name = "rpm-installer-${cluster}";
             value = rpmInstaller.${cluster};
+          }
+          {
+            name = "arch-installer-${cluster}";
+            value = archInstaller.${cluster};
           }
         ])
         installerClusters);

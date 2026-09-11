@@ -1,0 +1,246 @@
+{
+  "assertions": {
+    "chromiumProcessTypeRecorded": true,
+    "exactRendererPid": true,
+    "helperContract": true,
+    "mountNamespaceRecorded": true,
+    "noNewPrivs": true,
+    "noSandboxBypass": true,
+    "policyContract": true,
+    "rendererInstanceStable": true,
+    "seccomp": true,
+    "separatePidNamespace": true,
+    "separateUserAndGroupMaps": true,
+    "separateUserNamespace": true,
+    "zeroEffectiveCapabilities": true
+  },
+  "diagnostics": {
+    "rawHostDataExported": false,
+    "sanitized": true,
+    "stderrSummaryRequired": true
+  },
+  "directories": [
+    {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "path": "<INSTALL_ROOT>"
+    },
+    {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "path": "<INSTALL_ROOT>/bin"
+    },
+    {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "path": "<INSTALL_ROOT>/libexec"
+    },
+    {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron/lib"
+    },
+    {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron"
+    },
+    {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron"
+    },
+    {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "path": "<INSTALL_ROOT>/share"
+    }
+  ],
+  "failure": null,
+  "files": {
+    "chromeSandbox": {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "regularFile": true,
+      "sha256": "0abf5cce9b871567e55c1701c9efc64a3db2d8aac028d9ee5ad6b4c7a5e623da",
+      "symlink": false
+    },
+    "electron": {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "regularFile": true,
+      "sha256": "0b7262678c92a74aa22cbbf41b3e8f705fc5a4643cedb0b5a190d77f72e3db03",
+      "symlink": false
+    },
+    "frontend": {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "regularFile": true,
+      "sha256": "33b6a54ceeafba9cc6a554c3b422bf46e689f9bbac04451836843506ac3cbdb6",
+      "symlink": false
+    },
+    "identityManifest": {
+      "group": "root",
+      "mode": "0644",
+      "owner": "root",
+      "regularFile": true,
+      "sha256": "0d1f3207437feacdd63eea1988d991feb8236519316691746ac7894af57f78cf",
+      "symlink": false
+    },
+    "launcher": {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "regularFile": true,
+      "sha256": "a6243b8cf3462f5d16cbf28fc1dc273e69c3909beb02acf7398611aac5912a69",
+      "symlink": false
+    },
+    "probe": {
+      "group": "root",
+      "mode": "0644",
+      "owner": "root",
+      "regularFile": true,
+      "sha256": "0dcd7161ab155c90cac4b27f5303c0030b8f33f478e5bfb9291e96d5f2b09acc",
+      "symlink": false
+    },
+    "wrapper": {
+      "group": "root",
+      "mode": "0755",
+      "owner": "root",
+      "regularFile": true,
+      "sha256": "136f93c6222d177c592d5684027cce7213aee9b7c9651cd75d15fab1bae9222b",
+      "symlink": false
+    }
+  },
+  "host": {
+    "architecture": "x86_64",
+    "buildId": "rolling",
+    "distributionId": "arch",
+    "id": "arch",
+    "kernel": "7.2.2-arch1-1",
+    "kernelRelease": "7.2.2-arch1-1",
+    "sessionType": "tty"
+  },
+  "main": {
+    "argv": [
+      "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+      "<PROBE_ROOT>/main.cjs"
+    ],
+    "maps": {
+      "gid": {
+        "classification": "identity",
+        "sameAsMain": true
+      },
+      "uid": {
+        "classification": "identity",
+        "sameAsMain": true
+      }
+    },
+    "namespaces": {
+      "mnt": {
+        "sameAsMain": true
+      },
+      "pid": {
+        "sameAsMain": true
+      },
+      "user": {
+        "sameAsMain": true
+      }
+    },
+    "pid": "<MAIN_PID>",
+    "pidRelationships": {
+      "parentIsMain": false,
+      "pidMatchesObserved": true
+    },
+    "securityLabel": null,
+    "status": {
+      "CapEff": "0000000000000000",
+      "NoNewPrivs": "0",
+      "Seccomp": "0",
+      "Seccomp_filters": "0"
+    }
+  },
+  "matrix": {
+    "packageFamily": "arch",
+    "policy": "none",
+    "revision": "task-111-matrix-2026-09-02",
+    "row": "arch-2026.09.01",
+    "sandboxClass": "userns-only",
+    "snapshotFingerprint": {
+      "buildId": "rolling",
+      "id": "arch",
+      "kernelRelease": "7.2.2-arch1-1"
+    },
+    "userns": {
+      "available": true,
+      "check": "unshare-Ur"
+    }
+  },
+  "paths": {
+    "chromeSandbox": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/chrome-sandbox",
+    "electron": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+    "frontend": "<INSTALL_ROOT>/libexec/daedalus-frontend",
+    "identityManifest": "<INSTALL_ROOT>/share/daedalus-sandbox-identity.json",
+    "launcher": "<INSTALL_ROOT>/bin/daedalus",
+    "wrapper": "<INSTALL_ROOT>/libexec/electron"
+  },
+  "policy": {
+    "kind": "none",
+    "required": false
+  },
+  "renderer": {
+    "argv": [
+      "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+      "--type=zygote"
+    ],
+    "maps": {
+      "gid": {
+        "classification": "identity",
+        "sameAsMain": false
+      },
+      "uid": {
+        "classification": "identity",
+        "sameAsMain": false
+      }
+    },
+    "namespaces": {
+      "mnt": {
+        "sameAsMain": true
+      },
+      "pid": {
+        "sameAsMain": false
+      },
+      "user": {
+        "sameAsMain": false
+      }
+    },
+    "pid": "<RENDERER_PID>",
+    "pidRelationships": {
+      "parentIsMain": false,
+      "pidMatchesObserved": true
+    },
+    "securityLabel": null,
+    "status": {
+      "CapEff": "0000000000000000",
+      "NoNewPrivs": "1",
+      "Seccomp": "2",
+      "Seccomp_filters": "1"
+    }
+  },
+  "result": "pass",
+  "schemaVersion": 2,
+  "versions": {
+    "chrome": "146.0.7680.188",
+    "electron": "41.3.0"
+  }
+}
