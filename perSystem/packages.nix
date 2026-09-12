@@ -32,13 +32,7 @@
             value = internal.common.daedalus-bridge.${cluster};
           }
         ])
-        inputs.self.internal.installerClusters))
-      // {
-        "buildkitePipeline${suffix}" = import ../nix/internal/buildkite-pipeline.nix {
-          inherit inputs;
-          targetSystem = targetSystem;
-        };
-      };
+        inputs.self.internal.installerClusters));
   in {
     packages =
       if system == "x86_64-linux"

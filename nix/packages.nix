@@ -28,7 +28,6 @@
       inputs.self.internal.installerClusters))
     // {
       default = internal.package.mainnet;
-      "buildkitePipeline${suffix}" = import ./internal/buildkite-pipeline.nix {inherit inputs targetSystem;};
     };
 in
   {
