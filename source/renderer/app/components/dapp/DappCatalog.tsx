@@ -78,6 +78,8 @@ export function DappCatalog({
                 <div className={styles.icon} aria-hidden="true">
                   {entry.iconAsset === 'liqwid' ? (
                     <span className={styles.liqwidIcon} />
+                  ) : entry.iconAsset === 'unfrack' ? (
+                    <span className={styles.unfrackIcon} />
                   ) : (
                     <span className={styles.fallbackIcon}>?</span>
                   )}

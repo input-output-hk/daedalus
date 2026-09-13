@@ -1,14 +1,24 @@
 import {
-  DAPP_CATALOG_REVISION,
   defineDappCatalog,
   dappCatalog,
-  dappCatalogPresentation,
   findDappCatalogEntry,
+  getDappCatalog,
+  getDappCatalogPresentation,
 } from './dappCatalog';
 import type { DappCatalogEntry } from '../types/dapp.types';
+import type { Network } from '../types/environment.types';
 
-const entry = (id: string): DappCatalogEntry => ({
+const entry = (
+  id: string,
+  availableIn: DappCatalogEntry['availableIn'] = [
+    'mainnet',
+    'mainnet_flight',
+    'preprod',
+    'preview',
+  ]
+): DappCatalogEntry => ({
   id,
+  availableIn,
   nameMessageId: `${id}.name`,
   descriptionMessageId: `${id}.description`,
   iconAsset: `${id}.svg`,
@@ -20,36 +30,72 @@ const entry = (id: string): DappCatalogEntry => ({
 });
 
 describe('dapp catalog', () => {
-  it('ships the Mainnet Liqwid Ledger pilot and exposes only presentation fields', () => {
-    expect(DAPP_CATALOG_REVISION).toBe(2);
-    expect(dappCatalog).toEqual([
-      expect.objectContaining({
-        id: 'liqwid-finance',
-        entryUrlByNetworkGenesis: {
-          '5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb':
-            'https://app.liqwid.finance/',
-        },
-        supportedWalletKinds: ['ledger'],
-        supportedExtensions: [],
-      }),
+  it('selects entries by the effective Daedalus variant', () => {
+    const networks: Network[] = [
+      'mainnet',
+      'mainnet_flight',
+      'testnet',
+      'staging',
+      'shelley_qa',
+      'alonzo_purple',
+      'vasil_dev',
+      'preprod',
+      'preview',
+      'selfnode',
+      'development',
+    ];
+    for (const network of networks)
+      expect(getDappCatalog(network, false).map(({ id }) => id)).toEqual(
+        network === 'mainnet' || network === 'mainnet_flight'
+          ? ['liqwid-finance', 'unfrack-it']
+          : network === 'preprod' || network === 'preview'
+          ? ['unfrack-it']
+          : []
+      );
+
+    const injected = defineDappCatalog([
+      entry('supported'),
+      entry('flight', ['mainnet_flight']),
+      entry('disabled', []),
     ]);
-    expect(dappCatalogPresentation).toEqual([
+    expect(
+      getDappCatalog('mainnet', false, injected).map(({ id }) => id)
+    ).toEqual(['supported']);
+    expect(
+      getDappCatalog('mainnet', true, injected).map(({ id }) => id)
+    ).toEqual(['supported', 'flight']);
+    expect(
+      getDappCatalog('preprod', true, injected).map(({ id }) => id)
+    ).toEqual(['supported']);
+  });
+
+  it('rejects malformed catalogs and resolves entries by opaque ID', () => {
+    expect(() => defineDappCatalog([entry('same'), entry('same')])).toThrow(
+      'unique'
+    );
+    const invalid = { ...entry('invalid'), availableIn: undefined };
+    expect(() =>
+      defineDappCatalog([(invalid as unknown) as DappCatalogEntry])
+    ).toThrow('Invalid dApp catalog availability');
+    expect(
+      findDappCatalogEntry(defineDappCatalog([entry('one')]), 'one')
+    ).toEqual(expect.objectContaining({ id: 'one' }));
+    expect(() => findDappCatalogEntry([], 'missing')).toThrow('Unknown');
+  });
+  it('projects only renderer presentation fields', () => {
+    expect(getDappCatalogPresentation('mainnet', false)).toEqual([
       {
         id: 'liqwid-finance',
         nameMessageId: 'dapp.catalog.liqwid.name',
         descriptionMessageId: 'dapp.catalog.liqwid.description',
         iconAsset: 'liqwid',
       },
+      {
+        id: 'unfrack-it',
+        nameMessageId: 'dapp.catalog.unfrack.name',
+        descriptionMessageId: 'dapp.catalog.unfrack.description',
+        iconAsset: 'unfrack',
+      },
     ]);
-  });
-
-  it('rejects duplicate IDs and resolves injected entries by opaque ID', () => {
-    expect(() => defineDappCatalog([entry('same'), entry('same')])).toThrow(
-      'unique'
-    );
-    expect(
-      findDappCatalogEntry(defineDappCatalog([entry('one')]), 'one')
-    ).toEqual(expect.objectContaining({ id: 'one' }));
-    expect(() => findDappCatalogEntry([], 'missing')).toThrow('Unknown');
   });
 });

@@ -57,7 +57,7 @@ import type {
   DappGrant,
   DappScope,
 } from '../../common/types/dapp.types';
-import { dappCatalog } from '../../common/config/dappCatalog';
+import { getDappCatalog } from '../../common/config/dappCatalog';
 import {
   dappLaunchPolicy,
   launcherConfig,
@@ -1504,7 +1504,10 @@ export const handleCip30BrokerRequests = (): void => {
   );
   grants.pruneCatalog(
     new Map(
-      dappCatalog.map((entry) => [entry.id, dappCatalogEntryIdentity(entry)])
+      getDappCatalog(
+        environment.network,
+        launcherConfig.isFlight
+      ).map((entry) => [entry.id, dappCatalogEntryIdentity(entry)])
     )
   );
   connectionService = new DappConnectionService(

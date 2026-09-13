@@ -1,3 +1,5 @@
+import type { Network } from './environment.types';
+
 export type DappScope =
   | 'connection'
   | 'read'
@@ -11,9 +13,16 @@ export type DappScope =
 
 export type DappCatalogEntry = Readonly<{
   id: string;
+  availableIn: readonly (
+    | 'mainnet'
+    | 'mainnet_flight'
+    | 'preprod'
+    | 'preview'
+  )[];
   nameMessageId: string;
   descriptionMessageId: string;
   iconAsset: string;
+  /** Exact genesis keys take precedence; '*' explicitly allows any genesis. */
   entryUrlByNetworkGenesis: Readonly<Record<string, string>>;
   canonicalOrigin: string;
   allowedResourceOrigins: readonly string[];

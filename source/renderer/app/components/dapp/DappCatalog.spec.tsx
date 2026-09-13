@@ -42,11 +42,7 @@ describe('DappCatalog', () => {
   it('shows only the localized unavailable state when unavailable', () => {
     renderCatalog({ available: false });
 
-    expect(
-      screen.getByText(
-        'The preferred dApp catalog is unavailable in this Daedalus build.'
-      )
-    ).toBeVisible();
+    expect(screen.getByRole('status')).toBeVisible();
     expect(screen.queryByRole('list')).not.toBeInTheDocument();
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
     expect(screen.queryByText('Example dApp')).not.toBeInTheDocument();

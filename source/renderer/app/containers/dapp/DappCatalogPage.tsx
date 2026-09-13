@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { dappCatalogPresentation } from '../../../../common/config/dappCatalog';
+import { getDappCatalogPresentation } from '../../../../common/config/dappCatalog';
 import DappCatalog from '../../components/dapp/DappCatalog';
 import CollateralPanel from '../../components/dapp/collateral/CollateralPanel';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -17,6 +17,16 @@ export const dappCatalogMessages = defineMessages({
     defaultMessage: '!!!Borrow, lend, and earn yield on Cardano.',
     description: 'Description of Liqwid Finance in the curated dApp catalog.',
   },
+  unfrackName: {
+    id: 'dapp.catalog.unfrack.name',
+    defaultMessage: '!!!unfrack.it',
+    description: 'Name of unfrack.it in the curated dApp catalog.',
+  },
+  unfrackDescription: {
+    id: 'dapp.catalog.unfrack.description',
+    defaultMessage: '!!!Optimize your Cardano wallet’s UTxOs.',
+    description: 'Description of unfrack.it in the curated dApp catalog.',
+  },
 });
 
 type Props = { stores?: InjectedProps['stores'] };
@@ -25,6 +35,10 @@ type Props = { stores?: InjectedProps['stores'] };
 @observer
 export default class DappCatalogPage extends Component<Props> {
   static contextTypes = { intl: intlShape.isRequired };
+  private readonly entries = getDappCatalogPresentation(
+    global.environment.network,
+    global.isFlight
+  );
   private collateralContext?: string;
 
   componentDidMount(): void {
@@ -48,9 +62,7 @@ export default class DappCatalogPage extends Component<Props> {
   };
 
   launch = (id: string): void => {
-    const entry = dappCatalogPresentation.find(
-      (candidate) => candidate.id === id
-    );
+    const entry = this.entries.find((candidate) => candidate.id === id);
     if (entry)
       this.props.stores!.dapp.launch(
         id,
@@ -67,7 +79,7 @@ export default class DappCatalogPage extends Component<Props> {
     const { intl } = this.context;
     return (
       <DappCatalog
-        entries={dappCatalogPresentation.map((entry) => ({
+        entries={this.entries.map((entry) => ({
           id: entry.id,
           name: intl.formatMessage({ id: entry.nameMessageId }),
           description: intl.formatMessage({

@@ -3,16 +3,16 @@
     "cardano-node": {
       "flake": false,
       "locked": {
-        "lastModified": 1777953209,
-        "narHash": "sha256-+dod+EL73MICgbgflyJnwDlxbCeaBbBLrr2tLX59hAA=",
+        "lastModified": 1787069080,
+        "narHash": "sha256-XlButzvLrHz8LT3xhFGNyjVrxmthFkMGd9JT/dOrf9Q=",
         "owner": "IntersectMBO",
         "repo": "cardano-node",
-        "rev": "97036a66bcf8c89f687ae57a048eecc0389977ef",
+        "rev": "94ec4195f15f1fd290ab647be5e518b4e8b82e39",
         "type": "github"
       },
       "original": {
         "owner": "IntersectMBO",
-        "ref": "11.0.1",
+        "ref": "11.1.0",
         "repo": "cardano-node",
         "type": "github"
       }
@@ -54,17 +54,17 @@
     "cardano-wallet": {
       "flake": false,
       "locked": {
-        "lastModified": 1789130723,
-        "narHash": "sha256-IM625PwYPRhhqVVGkE2gA+b0zQogGqdGmkpwe0lFCyI=",
+        "lastModified": 1789478570,
+        "narHash": "sha256-zgO/F/UEvsuMR//NoP8ARwnRbl/1zTA4KjJI0eRToJQ=",
         "owner": "se7en-labs-inc",
         "repo": "cardano-wallet",
-        "rev": "d4a6ac0f6f30606a13759a73939074a3acf18d6a",
+        "rev": "245c877a80d76138bee87f393fd2d36a75fdad47",
         "type": "github"
       },
       "original": {
         "owner": "se7en-labs-inc",
         "repo": "cardano-wallet",
-        "rev": "d4a6ac0f6f30606a13759a73939074a3acf18d6a",
+        "rev": "245c877a80d76138bee87f393fd2d36a75fdad47",
         "type": "github"
       }
     },

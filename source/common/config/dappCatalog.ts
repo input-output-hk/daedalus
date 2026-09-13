@@ -1,11 +1,12 @@
+import { MAINNET, MAINNET_FLIGHT } from '../types/environment.types';
+import type { Network } from '../types/environment.types';
+
 import type {
   DappCatalogEntry,
   DappCatalogPresentationEntry,
 } from '../types/dapp.types';
 
 export type { DappCatalogPresentationEntry } from '../types/dapp.types';
-
-export const DAPP_CATALOG_REVISION = 2;
 
 export const defineDappCatalog = (
   entries: readonly DappCatalogEntry[]
@@ -15,11 +16,14 @@ export const defineDappCatalog = (
     if (!entry.id || ids.has(entry.id))
       throw new Error('DApp catalog IDs must be unique');
     ids.add(entry.id);
+    if (!Array.isArray(entry.availableIn))
+      throw new Error('Invalid dApp catalog availability');
   }
   return Object.freeze(
     entries.map((entry) =>
       Object.freeze({
         ...entry,
+        availableIn: Object.freeze([...entry.availableIn]),
         entryUrlByNetworkGenesis: Object.freeze({
           ...entry.entryUrlByNetworkGenesis,
         }),
@@ -36,6 +40,7 @@ export const defineDappCatalog = (
 export const dappCatalog = defineDappCatalog([
   {
     id: 'liqwid-finance',
+    availableIn: ['mainnet', 'mainnet_flight'],
     nameMessageId: 'dapp.catalog.liqwid.name',
     descriptionMessageId: 'dapp.catalog.liqwid.description',
     iconAsset: 'liqwid',
@@ -49,16 +54,55 @@ export const dappCatalog = defineDappCatalog([
       'https://public.liqwid.finance',
       'https://v2.api.liqwid.finance',
     ],
-    supportedWalletKinds: ['ledger'],
+    supportedWalletKinds: ['shelley-software', 'ledger', 'trezor'],
+    supportedExtensions: [],
+  },
+  {
+    id: 'unfrack-it',
+    availableIn: ['mainnet', 'mainnet_flight', 'preprod', 'preview'],
+    nameMessageId: 'dapp.catalog.unfrack.name',
+    descriptionMessageId: 'dapp.catalog.unfrack.description',
+    iconAsset: 'unfrack',
+    entryUrlByNetworkGenesis: { '*': 'https://unfrack.it/' },
+    canonicalOrigin: 'https://unfrack.it',
+    allowedResourceOrigins: [
+      'https://fonts.googleapis.com',
+      'https://fonts.gstatic.com',
+      'https://cdn.jsdelivr.net',
+      'https://api.koios.rest',
+      'https://preprod.koios.rest',
+      'https://preview.koios.rest',
+    ],
+    supportedWalletKinds: ['shelley-software', 'ledger', 'trezor'],
     supportedExtensions: [],
   },
 ]);
 
-export const dappCatalogPresentation: readonly DappCatalogPresentationEntry[] = Object.freeze(
-  dappCatalog.map(({ id, nameMessageId, descriptionMessageId, iconAsset }) =>
-    Object.freeze({ id, nameMessageId, descriptionMessageId, iconAsset })
-  )
-);
+export const getDappCatalog = (
+  network: Network,
+  isFlight: boolean,
+  catalog: readonly DappCatalogEntry[] = dappCatalog
+): readonly DappCatalogEntry[] => {
+  const variant = network === MAINNET && isFlight ? MAINNET_FLIGHT : network;
+  return Object.freeze(
+    catalog.filter(({ availableIn }) =>
+      availableIn.some((candidate) => candidate === variant)
+    )
+  );
+};
+
+export const getDappCatalogPresentation = (
+  network: Network,
+  isFlight: boolean
+): readonly DappCatalogPresentationEntry[] =>
+  Object.freeze(
+    getDappCatalog(
+      network,
+      isFlight
+    ).map(({ id, nameMessageId, descriptionMessageId, iconAsset }) =>
+      Object.freeze({ id, nameMessageId, descriptionMessageId, iconAsset })
+    )
+  );
 
 export const findDappCatalogEntry = (
   catalog: readonly DappCatalogEntry[],

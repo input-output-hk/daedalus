@@ -1077,7 +1077,7 @@
         "id": "dapp.catalog.title"
       },
       {
-        "defaultMessage": "!!!Preferred dApps have been compatibility-tested by Daedalus. This does not mean they have been security audited or endorsed.",
+        "defaultMessage": "!!!Apps have been compatibility-tested by Daedalus. This does not mean they have been security audited or endorsed.",
         "description": "Security disclaimer shown above every available catalog.",
         "id": "dapp.catalog.disclaimer"
       },
@@ -3190,6 +3190,16 @@
         "defaultMessage": "!!!Borrow, lend, and earn yield on Cardano.",
         "description": "Description of Liqwid Finance in the curated dApp catalog.",
         "id": "dapp.catalog.liqwid.description"
+      },
+      {
+        "defaultMessage": "!!!unfrack.it",
+        "description": "Name of unfrack.it in the curated dApp catalog.",
+        "id": "dapp.catalog.unfrack.name"
+      },
+      {
+        "defaultMessage": "!!!Optimize your Cardano wallet’s UTxOs.",
+        "description": "Description of unfrack.it in the curated dApp catalog.",
+        "id": "dapp.catalog.unfrack.description"
       }
     ],
     "path": "source/renderer/app/containers/dapp/DappCatalogPage.tsx"

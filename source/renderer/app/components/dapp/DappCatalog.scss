@@ -96,6 +96,16 @@
     height: 40px;
     width: 40px;
   }
+
+  // UnFrack.It icon by Adam K. Dean / DripDropz, unchanged:
+  // https://raw.githubusercontent.com/Crypto2099/unfrackit/74fc4868ea63301e325dd64dcbb572c56dcfae00/public/favicon.png
+  // https://creativecommons.org/licenses/by/4.0/
+  .unfrackIcon {
+    background: url('../../assets/images/dapp/unfrack.png') center / contain
+      no-repeat;
+    height: 40px;
+    width: 40px;
+  }
 }
 
 .fallbackIcon {
