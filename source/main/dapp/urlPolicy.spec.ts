@@ -10,6 +10,7 @@ import {
 
 const entry: DappCatalogEntry = {
   id: 'example',
+  availableIn: ['preprod'],
   nameMessageId: 'dapp.example.name',
   descriptionMessageId: 'dapp.example.description',
   iconAsset: 'example.svg',

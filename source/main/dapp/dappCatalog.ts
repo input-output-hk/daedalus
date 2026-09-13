@@ -35,6 +35,7 @@ export const dappCatalogEntryIdentity = (entry: DappCatalogEntry): string =>
     .update(
       JSON.stringify({
         id: entry.id,
+        availableIn: [...entry.availableIn].sort(),
         nameMessageId: entry.nameMessageId,
         descriptionMessageId: entry.descriptionMessageId,
         iconAsset: entry.iconAsset,
@@ -58,8 +59,10 @@ export const resolveCatalogLaunch = (
 ): ResolvedCatalogLaunch => {
   if (!entry || typeof entry.id !== 'string' || entry.id === '')
     throw new Error('Invalid dApp catalog entry');
-
-  const entryUrl = parseDappUrl(entry.entryUrlByNetworkGenesis[networkGenesis]);
+  const entryUrl = parseDappUrl(
+    entry.entryUrlByNetworkGenesis[networkGenesis] ??
+      entry.entryUrlByNetworkGenesis['*']
+  );
   const canonicalOrigin = canonicalizeDappOrigin(entry.canonicalOrigin);
   if (entryUrl.origin !== canonicalOrigin)
     throw new Error('DApp catalog origin mismatch');

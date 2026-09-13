@@ -231,6 +231,8 @@
   "dapp.catalog.open": "DAppセッションが開いています。",
   "dapp.catalog.title": "アプリ",
   "dapp.catalog.unavailable": "このDaedalusビルドでは、推奨DAppカタログを利用できません。",
+  "dapp.catalog.unfrack.description": "CardanoウォレットのUTxOを最適化します。",
+  "dapp.catalog.unfrack.name": "unfrack.it",
   "dapp.collateral.cancelPreparation": "準備をキャンセル",
   "dapp.collateral.charged": "失敗したスクリプトトランザクションで優先担保が徴収されました。代替の担保を準備できます。",
   "dapp.collateral.checking": "優先担保を確認中…",

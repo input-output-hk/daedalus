@@ -2,10 +2,12 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import type { DappCapability, DappGrant } from '../../common/types/dapp.types';
+import { dappCatalog, getDappCatalog } from '../../common/config/dappCatalog';
 import {
   DAPP_POLICY_REVISION,
   DappLaunchPolicy,
 } from '../dapp/DappLaunchPolicy';
+import { dappCatalogEntryIdentity } from '../dapp/dappCatalog';
 import { CapabilityService } from './CapabilityService';
 import {
   DAPP_GRANT_SCHEMA_VERSION,
@@ -236,6 +238,50 @@ describe('main-owned dApp authority stores', () => {
     const walletGrant = grants.put(grant());
     grants.removeWallet(walletGrant.walletId);
     expect(grants.list()).toEqual([]);
+  });
+
+  it('prunes grants against the catalog selected for the running variant', () => {
+    const grants = repository();
+    const [liqwid, unfrack] = dappCatalog;
+    const liqwidGrant = grants.put(
+      grant({
+        origin: liqwid.canonicalOrigin,
+        launch: {
+          kind: 'catalog',
+          catalogEntryId: liqwid.id,
+          catalogEntryIdentity: dappCatalogEntryIdentity(liqwid),
+        },
+      })
+    );
+    const unfrackGrant = grants.put(
+      grant({
+        origin: unfrack.canonicalOrigin,
+        launch: {
+          kind: 'catalog',
+          catalogEntryId: unfrack.id,
+          catalogEntryIdentity: dappCatalogEntryIdentity(unfrack),
+        },
+      })
+    );
+    const diagnostics = grants.put(
+      grant({
+        origin: 'https://diagnostics.example',
+        launch: { kind: 'diagnostics' },
+      })
+    );
+
+    grants.pruneCatalog(
+      new Map(
+        getDappCatalog('preprod', false).map((catalogEntry) => [
+          catalogEntry.id,
+          dappCatalogEntryIdentity(catalogEntry),
+        ])
+      )
+    );
+
+    expect(grants.find(identity(liqwidGrant))).toBeUndefined();
+    expect(grants.find(identity(unfrackGrant))).toEqual(unfrackGrant);
+    expect(grants.find(identity(diagnostics))).toEqual(diagnostics);
   });
 
   it('keeps capabilities ephemeral and rejects every stale identity', async () => {

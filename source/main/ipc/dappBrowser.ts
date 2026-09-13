@@ -20,6 +20,7 @@ import type {
 import {
   dappCatalog,
   findDappCatalogEntry,
+  getDappCatalog,
 } from '../../common/config/dappCatalog';
 import type { DappCatalogEntry } from '../../common/types/dapp.types';
 import { dappLaunchPolicy, launcherConfig } from '../config';
@@ -84,7 +85,11 @@ export class DappBrowserController {
   ) {
     this.manager = manager;
     this.policy = policy;
-    this.catalog = catalog;
+    this.catalog = getDappCatalog(
+      environment.network,
+      launcherConfig.isFlight,
+      catalog
+    );
     this.onState = onState;
     this.routeLease = new DappRouteLeaseService(networkGenesis, () => {
       this.manager.close('route-changed').catch(() => undefined);
