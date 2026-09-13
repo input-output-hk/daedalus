@@ -1,3 +1,4 @@
+import { dappCatalog } from '../../common/config/dappCatalog';
 import type { DappBrowserManager } from '../dapp/DappBrowserManager';
 import type { DappCatalogEntry } from '../dapp/dappCatalog';
 import { DappLaunchPolicy } from '../dapp/DappLaunchPolicy';
@@ -5,10 +6,13 @@ import { DappBrowserController } from './dappBrowser';
 
 jest.mock('../config', () => ({
   dappLaunchPolicy: { allows: () => false },
-  launcherConfig: { nodeConfig: { network: { genesisHash: 'genesis' } } },
+  launcherConfig: {
+    isFlight: false,
+    nodeConfig: { network: { genesisHash: 'genesis' } },
+  },
 }));
 jest.mock('../environment', () => ({
-  environment: { isDev: false },
+  environment: { isDev: false, network: 'preprod' },
 }));
 jest.mock('./lib/MainIpcChannel', () => ({
   MainIpcChannel: jest.fn(() => ({ onRequest: jest.fn() })),
@@ -16,6 +20,7 @@ jest.mock('./lib/MainIpcChannel', () => ({
 
 const entry: DappCatalogEntry = {
   id: 'example',
+  availableIn: ['preprod'],
   nameMessageId: 'dapp.example.name',
   descriptionMessageId: 'dapp.example.description',
   iconAsset: 'example.svg',
@@ -42,6 +47,13 @@ describe('DappBrowserController', () => {
     launch: jest.fn(() => Promise.resolve()),
     launchDiagnostics: jest.fn(() => Promise.resolve()),
     close: jest.fn(() => Promise.resolve()),
+  });
+  const { launcherConfig } = jest.requireMock('../config');
+  const { environment } = jest.requireMock('../environment');
+
+  afterEach(() => {
+    launcherConfig.isFlight = false;
+    environment.network = 'preprod';
   });
 
   it('stages diagnostics until the exact wallet route commits and consumes it once', async () => {
@@ -182,6 +194,77 @@ describe('DappBrowserController', () => {
     await expect(
       controller.open({ catalogId: 'unknown', localName: 'Unknown' })
     ).rejects.toThrow('Unknown dApp catalog entry');
+  });
+
+  it('rejects catalog entries hidden from the running variant', async () => {
+    const manager = makeManager();
+    const hidden = {
+      ...entry,
+      id: 'hidden',
+      availableIn: ['mainnet'] as const,
+    };
+    const controller = new DappBrowserController(
+      (manager as unknown) as DappBrowserManager,
+      'genesis',
+      enabledPolicy(),
+      [entry, hidden]
+    );
+    controller.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/apps/wallet-a'
+    );
+
+    await expect(
+      controller.open({ catalogId: 'hidden', localName: 'Hidden' })
+    ).rejects.toThrow('Unknown dApp catalog entry');
+    expect(manager.launch).not.toHaveBeenCalled();
+  });
+
+  it('enforces bundled visibility for Preprod and normalized Mainnet Flight', async () => {
+    const preprodManager = makeManager();
+    const preprod = new DappBrowserController(
+      (preprodManager as unknown) as DappBrowserManager,
+      'preprod-genesis',
+      enabledPolicy(),
+      dappCatalog
+    );
+    preprod.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/apps/wallet-a'
+    );
+    await expect(
+      preprod.open({
+        catalogId: 'liqwid-finance',
+        localName: 'Liqwid Finance',
+      })
+    ).rejects.toThrow('Unknown dApp catalog entry');
+    expect(preprodManager.launch).not.toHaveBeenCalled();
+    await preprod.open({ catalogId: 'unfrack-it', localName: 'unfrack.it' });
+    expect(preprodManager.launch).toHaveBeenCalledWith(
+      dappCatalog[1],
+      'preprod-genesis',
+      'unfrack.it'
+    );
+
+    environment.network = 'mainnet';
+    launcherConfig.isFlight = true;
+    const flightManager = makeManager();
+    const flight = new DappBrowserController(
+      (flightManager as unknown) as DappBrowserManager,
+      'mainnet-genesis',
+      enabledPolicy(),
+      dappCatalog
+    );
+    flight.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/apps/wallet-a'
+    );
+    await flight.open({
+      catalogId: 'liqwid-finance',
+      localName: 'Liqwid Finance',
+    });
+    expect(flightManager.launch).toHaveBeenCalledWith(
+      dappCatalog[0],
+      'mainnet-genesis',
+      'Liqwid Finance'
+    );
   });
 
   it('reports state only after a successful launch and when explicitly closed', async () => {

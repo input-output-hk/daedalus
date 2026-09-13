@@ -2,18 +2,10 @@ import React from 'react';
 import { Provider } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
 import { fireEvent, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import type { Network } from '../../../../common/types/environment.types';
+import translations from '../../i18n/locales/en-US.json';
 import DappCatalogPage from './DappCatalogPage';
-
-jest.mock('../../../../common/config/dappCatalog', () => ({
-  dappCatalogPresentation: [
-    {
-      id: 'catalog-id',
-      nameMessageId: 'catalog.name',
-      descriptionMessageId: 'catalog.description',
-      iconAsset: 'cardano',
-    },
-  ],
-}));
 
 jest.mock(
   '../../components/dapp/DappCatalog',
@@ -26,29 +18,35 @@ jest.mock(
       return (
         <>
           {props.beforeEntries}
-          <button
-            type="button"
-            onClick={() => props.onLaunch(props.entries[0].id)}
-          >
-            {props.entries[0].name}:{props.entries[0].description}
-          </button>
+          {props.entries.map((entry) => (
+            <button
+              key={entry.id}
+              type="button"
+              onClick={() => props.onLaunch(entry.id)}
+            >
+              {entry.name}:{entry.description}
+            </button>
+          ))}
         </>
       );
     }
 );
 
 describe('DappCatalogPage', () => {
-  it('localizes presentation entries and launches with an opaque ID', () => {
+  const originalNetwork = global.environment.network;
+  const originalIsFlight = global.isFlight;
+
+  afterEach(() => {
+    global.environment.network = originalNetwork;
+    global.isFlight = originalIsFlight;
+  });
+
+  const renderPage = (network: Network) => {
+    global.environment.network = network;
+    global.isFlight = false;
     const launch = jest.fn();
-    const refresh = jest.fn();
     render(
-      <IntlProvider
-        locale="en"
-        messages={{
-          'catalog.name': 'Catalog name',
-          'catalog.description': 'Catalog description',
-        }}
-      >
+      <IntlProvider locale="en-US" messages={translations}>
         <Provider
           stores={{
             dapp: {
@@ -60,7 +58,7 @@ describe('DappCatalogPage', () => {
               close: jest.fn(),
             },
             collateral: {
-              refresh,
+              refresh: jest.fn(),
               snapshot: undefined,
               isLoading: false,
               actionFailed: false,
@@ -77,9 +75,19 @@ describe('DappCatalogPage', () => {
         </Provider>
       </IntlProvider>
     );
+    return launch;
+  };
 
-    fireEvent.click(screen.getByRole('button', { name: /Catalog name/ }));
-    expect(launch).toHaveBeenCalledWith('catalog-id', 'Catalog name');
-    expect(refresh).toHaveBeenCalledTimes(1);
+  it('shows Mainnet entries and launches unfrack.it by opaque ID', () => {
+    const launch = renderPage('mainnet');
+    expect(screen.getByText(/Liqwid Finance/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /unfrack\.it/ }));
+    expect(launch).toHaveBeenCalledWith('unfrack-it', 'unfrack.it');
+  });
+
+  it('shows only unfrack.it on Preprod', () => {
+    renderPage('preprod');
+    expect(screen.queryByText(/Liqwid Finance/)).not.toBeInTheDocument();
+    expect(screen.getByText(/unfrack\.it/)).toBeInTheDocument();
   });
 });

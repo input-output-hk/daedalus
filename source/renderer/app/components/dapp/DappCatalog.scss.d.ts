@@ -12,3 +12,4 @@ export const liqwidIcon: string;
 export const openStatus: string;
 export const status: string;
 export const unavailable: string;
+export const unfrackIcon: string;
