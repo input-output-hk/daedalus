@@ -74,7 +74,7 @@ const messages = defineMessages({
   warningPopOverAvailableUnverified: {
     id: 'assets.warning.availableUnverified',
     defaultMessage:
-      '!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.',
+      '!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.',
     description:
       'Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.',
   },
@@ -87,14 +87,14 @@ const messages = defineMessages({
   unverifiedDecimals: {
     id: 'assets.settings.dialog.unverifiedDecimals',
     defaultMessage:
-      '!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.',
+      '!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.',
     description:
       'Sentence beside the decimal places field in the Asset settings dialog, shown when the issuer published a decimal place count that could not be verified against the minting policy.',
   },
   warningPopOverNotUsingUnverified: {
     id: 'assets.warning.notUsingUnverified',
     defaultMessage:
-      '!!!Your setting differs from the {recommendedDecimals} decimal places this token’s issuer publishes. That figure could not be checked against the token’s minting policy.',
+      '!!!Your setting differs from the {recommendedDecimals, plural, one {# decimal place} other {# decimal places}} this token’s issuer publishes. That figure could not be checked against the token’s minting policy.',
     description:
       'Asset settings pop over content, for a setting that differs from a published decimal place count that could not be verified.',
   },

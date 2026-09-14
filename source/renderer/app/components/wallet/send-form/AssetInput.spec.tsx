@@ -268,6 +268,13 @@ describe('AssetInput', () => {
       );
     });
 
+    it('reads correctly for a token with one decimal place', () => {
+      const { label } = renderAssetInput(1);
+      expect(label()).toHaveTextContent(
+        'Enter an amount in TEST, to 1 decimal place.'
+      );
+    });
+
     it('falls back to the fingerprint when the issuer published no ticker', () => {
       const { label } = renderAssetInput(undefined, NUMBER_OPTIONS[0].value, {
         name: 'Test Coin',

@@ -192,6 +192,18 @@ describe('AssetSettingsDialog', () => {
       );
     });
 
+    it('agrees with a published count of one', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: null,
+        recommendedDecimals: 1,
+        recommendedDecimalsVerified: false,
+      });
+      expect(screen.getByTestId('unverified-decimals')).toHaveTextContent(
+        'publishes 1 decimal place.'
+      );
+    });
+
     it('appears whether or not the user has already chosen a value', async () => {
       await openDialogFor({
         ...withDecimalPlacesToken,
@@ -219,6 +231,19 @@ describe('AssetSettingsDialog', () => {
       );
     });
 
+    it('agrees with a published count of one when a setting contradicts it', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: 2,
+        recommendedDecimals: 1,
+        recommendedDecimalsVerified: false,
+      });
+      expect(screen.getByTestId('warning-icon')).toHaveAttribute(
+        'aria-label',
+        'Your setting differs from the 1 decimal place this token’s issuer publishes. That figure could not be checked against the token’s minting policy.'
+      );
+    });
+
     it('offers them rather than recommending them when there is no setting', async () => {
       await openDialogFor({
         ...withDecimalPlacesToken,
@@ -229,6 +254,19 @@ describe('AssetSettingsDialog', () => {
       expect(screen.getByTestId('warning-icon')).toHaveAttribute(
         'aria-label',
         'This token’s issuer publishes 6 decimal places. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.'
+      );
+    });
+
+    it('agrees with a published count of one when there is no setting', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: null,
+        recommendedDecimals: 1,
+        recommendedDecimalsVerified: false,
+      });
+      expect(screen.getByTestId('warning-icon')).toHaveAttribute(
+        'aria-label',
+        'This token’s issuer publishes 1 decimal place. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.'
       );
     });
   });

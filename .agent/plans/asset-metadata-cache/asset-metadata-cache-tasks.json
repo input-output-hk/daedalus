@@ -1023,7 +1023,7 @@
      "id": "task-025",
      "title": "Translations pass over the new strings",
      "description": "Extract and check the strings added by the migration notice, the settings-dialog advisory and the amount-field label.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 3.0,
      "dependencies": [
@@ -1031,18 +1031,26 @@
       "task-022"
      ],
      "targetPaths": [
+      "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
+      "source/renderer/app/components/assets/AssetSettingsDialog.spec.tsx",
+      "source/renderer/app/components/wallet/send-form/messages.ts",
+      "source/renderer/app/components/wallet/send-form/AssetInput.spec.tsx",
+      "source/renderer/app/i18n/locales/defaultMessages.json",
       "source/renderer/app/i18n/locales/en-US.json",
       "source/renderer/app/i18n/locales/ja-JP.json",
       "translations/messages.json"
      ],
      "implementationNotes": [
       "Ids are shaped namespace.context.messageKey, every message carries a description, and every new defaultMessage is prefixed !!!. The convention is set out in .agent/skills/i18n-messaging/SKILL.md, which is accurate.",
-      "The new ids sit under the existing assets.* namespace alongside assets.warning.available and assets.warning.notUsing.",
-      "yarn i18n:manage is a required check and is what regenerates the three files. Do not hand-edit them."
+      "The eleven new ids sit under assets.*, wallet.send.form.assetInput.* and wallet.tokens.*, each beside the messages of the surface it belongs to rather than all under one namespace.",
+      "yarn i18n:manage regenerates defaultMessages.json and translations/messages.json from source. It adds keys it does not find in a language file and never rewrites one it does, so a changed English default has to be applied to en-US.json and ja-JP.json by hand as well.",
+      "Four messages interpolate a count into an unpluralised noun and render '1 decimal places'. They take the ICU plural form already used eleven times in this file.",
+      "A message that already has a Japanese translation is not edited: changing the English default leaves the Japanese in place and stale, and nothing in the toolchain detects it."
      ],
      "acceptance": [
-      "yarn i18n:manage reports no missing or unused message",
-      "Every new message has a description"
+      "yarn i18n:manage leaves the tracked artifacts unchanged",
+      "Every message this branch adds has a description, an id of the documented shape, the !!! marker in source, and a reader",
+      "A published count of one renders '1 decimal place' on all four surfaces that name one"
      ]
     }
    ]

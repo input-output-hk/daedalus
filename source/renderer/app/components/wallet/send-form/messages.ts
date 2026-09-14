@@ -60,7 +60,7 @@ export default defineMessages({
   assetInputDecimalUnitsLabel: {
     id: 'wallet.send.form.assetInput.decimalUnitsLabel',
     defaultMessage:
-      '!!!Enter an amount in {unit}, to {decimals} decimal places.',
+      '!!!Enter an amount in {unit}, to {decimals, plural, one {# decimal place} other {# decimal places}}.',
     description:
       'Label under the token amount field in the wallet send form, for a token whose decimal places are known, stating the unit and the precision the field accepts.',
   },

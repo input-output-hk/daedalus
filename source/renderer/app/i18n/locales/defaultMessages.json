@@ -907,7 +907,7 @@
         "id": "assets.settings.dialog.default"
       },
       {
-        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.",
+        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.",
         "description": "Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.",
         "id": "assets.warning.availableUnverified"
       },
@@ -917,12 +917,12 @@
         "id": "assets.settings.dialog.refreshMetadata"
       },
       {
-        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.",
+        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.",
         "description": "Sentence beside the decimal places field in the Asset settings dialog, shown when the issuer published a decimal place count that could not be verified against the minting policy.",
         "id": "assets.settings.dialog.unverifiedDecimals"
       },
       {
-        "defaultMessage": "!!!Your setting differs from the {recommendedDecimals} decimal places this token’s issuer publishes. That figure could not be checked against the token’s minting policy.",
+        "defaultMessage": "!!!Your setting differs from the {recommendedDecimals, plural, one {# decimal place} other {# decimal places}} this token’s issuer publishes. That figure could not be checked against the token’s minting policy.",
         "description": "Asset settings pop over content, for a setting that differs from a published decimal place count that could not be verified.",
         "id": "assets.warning.notUsingUnverified"
       }
@@ -7122,7 +7122,7 @@
         "id": "wallet.send.form.assetInput.denominationChangedNotice"
       },
       {
-        "defaultMessage": "!!!Enter an amount in {unit}, to {decimals} decimal places.",
+        "defaultMessage": "!!!Enter an amount in {unit}, to {decimals, plural, one {# decimal place} other {# decimal places}}.",
         "description": "Label under the token amount field in the wallet send form, for a token whose decimal places are known, stating the unit and the precision the field accepts.",
         "id": "wallet.send.form.assetInput.decimalUnitsLabel"
       },
