@@ -563,13 +563,12 @@
      "id": "task-015",
      "title": "Renderer-side channel clients",
      "description": "The three RendererIpcChannel instances, constructed from the same constants.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 1.5,
      "dependencies": [
       "task-013"
      ],
-     "targetPath": "source/renderer/app/ipc/assetMetadataChannel.ts",
      "implementationNotes": [
       "Copy source/renderer/app/ipc/governanceChannel.ts:8-10 exactly, including the reversed type parameter order relative to the main side.",
       "Nothing else belongs in this file. It is a declaration, not a layer."
@@ -581,9 +580,8 @@
       "yarn compile passes"
      ],
      "targetPaths": [
-      "source/renderer/app/api/assets/index.ts",
-      "source/renderer/app/ipc/assetMetadata.ipc.ts",
-      "source/renderer/app/ipc/assetImage.ipc.ts"
+      "source/renderer/app/ipc/assetMetadataChannel.ts",
+      "source/renderer/app/ipc/assetMetadataChannel.spec.ts"
      ]
     },
     {
