@@ -6,16 +6,23 @@
  *
  * @jest-environment node
  */
+import crypto from 'crypto';
+import blake2b from 'blake2b';
 import * as cbor from 'cbor';
 import {
   assetKeyHash,
+  attestationPayload,
   attestingKeyHashes,
   decodeNativeScript,
   evaluateNativeScript,
+  isPropertyAttested,
   nativeScriptPolicyId,
+  verifyAttestationSignature,
   verifyPolicyBinding,
+  verifyRegistryProperty,
 } from './assetVerification';
 import type { NativeScript } from './assetVerification';
+import type { RegistryProperty } from './assetRegistryClient';
 
 // c76ef54…42544544, the worked example in the plan documents.
 const BTED = {
@@ -385,5 +392,434 @@ describe('verifyPolicyBinding', () => {
         signedBy(AT_LEAST.publicKey)
       )
     ).toMatchObject({ bound: true, satisfied: true });
+  });
+});
+
+// The five signed properties of the worked example, captured from the live
+// registry on 2026-09-14.
+const BTED_PROPERTIES: Record<
+  string,
+  { value: unknown; sequenceNumber: number; signature: string }
+> = {
+  name: {
+    value: 'BitEd Token',
+    sequenceNumber: 0,
+    signature:
+      '9a5e7bb00e1b4e2c9d4d40d894ba6f019400ca2f4138f65d5d8bd7ef9c5a9143f837428c29c40af9757da139e37d8eced1973e9d029700c9d46073ab22476e09',
+  },
+  ticker: {
+    value: 'BTED',
+    sequenceNumber: 0,
+    signature:
+      '68a722e7aa51d7d36baae9cbaadbf7c632f41596e2ed4030a4bacd58643a81d6ed8cb6f79b585e63c58e9df6b2f88f5a9d66248ad0eb624c86709e0abe40cd0a',
+  },
+  url: {
+    value: 'https://bit-ed.org/',
+    sequenceNumber: 0,
+    signature:
+      '778698a32b1a8dbc9f4cf74dd26f5f6ca159d4460a2b687927573104ccfe4bde3267060cc1e4ceb696405d074fd97b69d6961b946ad8dcb6b467a6cf4fe34708',
+  },
+  description: {
+    value:
+      'The BitEd Token (BTED) is a governance token built on the Cardano Blockchain. BitEd an organization seeking to improve education for children globally. Charitable projects receiving donations will be voted on by token holders. BitEd will make a by-weekly donation and use the tokens to maximize donations to selected projects. No one project will receive multiple donations.',
+    sequenceNumber: 0,
+    signature:
+      '2b478f17b2336f49d936d4556b1d854c635fe5afc55f9e279bbeb938d78ebe3985a62596050efad75f1ca4cfd3c681e2a2bfc4aa6984793cc8486ec855cb9b04',
+  },
+  decimals: {
+    value: 0,
+    sequenceNumber: 0,
+    signature:
+      '622bf53a1ba2891cf75c6b44394cad40597213a854de0d2dbcc0d1cd31767776afdcb069b744bf54dec4e3f3486d1ba5872dae07ead7288900acc5b684b0b10b',
+  },
+};
+
+const propertyOf = (
+  name: string,
+  overrides: Partial<RegistryProperty> = {}
+): RegistryProperty => {
+  const source = BTED_PROPERTIES[name];
+  return {
+    value: source.value,
+    sequenceNumber: source.sequenceNumber,
+    signatures: [{ signature: source.signature, publicKey: BTED.publicKey }],
+    ...overrides,
+  };
+};
+
+const hash32 = (bytes: Uint8Array): Buffer => {
+  const input = new Uint8Array(bytes.length);
+  input.set(bytes);
+  return Buffer.from(blake2b(32).update(input).digest());
+};
+
+// The ed25519 group order. Adding it to S leaves a signature that is
+// arithmetically equivalent and non-canonical.
+const GROUP_ORDER = BigInt(
+  '7237005577332262213973186563042994240857116359379907606001950938285454250989'
+);
+
+const withScalarPlusOrder = (signature: string): string | null => {
+  const bytes = Buffer.from(signature, 'hex');
+  let scalar = BigInt(0);
+  for (let index = 31; index >= 0; index -= 1) {
+    scalar = (scalar << BigInt(8)) | BigInt(bytes[32 + index]);
+  }
+  const shifted = scalar + GROUP_ORDER;
+  if (shifted >= BigInt(1) << BigInt(256)) return null;
+  const out = Buffer.alloc(32);
+  let remaining = shifted;
+  for (let index = 0; index < 32; index += 1) {
+    out[index] = Number(remaining & BigInt(0xff));
+    remaining >>= BigInt(8);
+  }
+  return Buffer.concat([bytes.subarray(0, 32), out]).toString('hex');
+};
+
+describe('attestationPayload', () => {
+  it.each(Object.keys(BTED_PROPERTIES))(
+    'produces a payload the live %s signature verifies',
+    (name) => {
+      const { value, sequenceNumber, signature } = BTED_PROPERTIES[name];
+      const payload = attestationPayload(
+        BTED.subject,
+        name,
+        value,
+        sequenceNumber
+      );
+      expect(payload).toHaveLength(32);
+      expect(
+        verifyAttestationSignature(payload, signature, BTED.publicKey)
+      ).toBe(true);
+    }
+  );
+
+  it('hashes the subject and the property name as CBOR text, not as raw UTF-8', () => {
+    const real = attestationPayload(BTED.subject, 'ticker', 'BTED', 0);
+    const rawSubject = hash32(
+      Buffer.concat([
+        hash32(Buffer.from(BTED.subject, 'utf8')),
+        hash32(cbor.encode('ticker')),
+        hash32(cbor.encode('BTED')),
+        hash32(cbor.encode(0)),
+      ])
+    );
+    const rawName = hash32(
+      Buffer.concat([
+        hash32(cbor.encode(BTED.subject)),
+        hash32(Buffer.from('ticker', 'utf8')),
+        hash32(cbor.encode('BTED')),
+        hash32(cbor.encode(0)),
+      ])
+    );
+    expect(real.equals(rawSubject)).toBe(false);
+    expect(real.equals(rawName)).toBe(false);
+  });
+
+  it('signs a logo over the decoded bytes rather than the base64 text', () => {
+    const png = Buffer.from('89504e470d0a1a0a0000000d49484452', 'hex');
+    const base64 = png.toString('base64');
+    const decodedForm = hash32(
+      Buffer.concat([
+        hash32(cbor.encode(BTED.subject)),
+        hash32(cbor.encode('logo')),
+        hash32(cbor.encode(png)),
+        hash32(cbor.encode(0)),
+      ])
+    );
+    const textForm = hash32(
+      Buffer.concat([
+        hash32(cbor.encode(BTED.subject)),
+        hash32(cbor.encode('logo')),
+        hash32(cbor.encode(base64)),
+        hash32(cbor.encode(0)),
+      ])
+    );
+    const payload = attestationPayload(BTED.subject, 'logo', base64, 0);
+    expect(payload.equals(decodedForm)).toBe(true);
+    expect(payload.equals(textForm)).toBe(false);
+  });
+
+  it('encodes every other property from the value as it arrives', () => {
+    const payload = attestationPayload(BTED.subject, 'ticker', 'BTED', 0);
+    expect(
+      payload.equals(
+        hash32(
+          Buffer.concat([
+            hash32(cbor.encode(BTED.subject)),
+            hash32(cbor.encode('ticker')),
+            hash32(cbor.encode('BTED')),
+            hash32(cbor.encode(0)),
+          ])
+        )
+      )
+    ).toBe(true);
+  });
+
+  it('refuses a logo value that is not a string', () => {
+    expect(attestationPayload(BTED.subject, 'logo', 42, 0)).toBeNull();
+  });
+
+  it('refuses a sequence number that is not an integer', () => {
+    expect(attestationPayload(BTED.subject, 'ticker', 'BTED', 1.5)).toBeNull();
+    expect(
+      attestationPayload(BTED.subject, 'ticker', 'BTED', Number.NaN)
+    ).toBeNull();
+  });
+});
+
+describe('verifyAttestationSignature', () => {
+  const payloadFor = (name: string) =>
+    attestationPayload(
+      BTED.subject,
+      name,
+      BTED_PROPERTIES[name].value,
+      BTED_PROPERTIES[name].sequenceNumber
+    );
+
+  it('rejects a signature whose scalar has had the group order added to it', () => {
+    const real = BTED_PROPERTIES.decimals.signature;
+    const malleable = withScalarPlusOrder(real);
+    // If S + L had overflowed, the case would compare a signature with itself
+    // and pass without asserting anything.
+    expect(malleable).not.toBeNull();
+    expect(malleable).not.toBe(real);
+    expect(
+      verifyAttestationSignature(payloadFor('decimals'), real, BTED.publicKey)
+    ).toBe(true);
+    expect(
+      verifyAttestationSignature(
+        payloadFor('decimals'),
+        malleable,
+        BTED.publicKey
+      )
+    ).toBe(false);
+  });
+
+  it('rejects a tampered value', () => {
+    const payload = attestationPayload(BTED.subject, 'name', 'BitEd Tokeo', 0);
+    expect(
+      verifyAttestationSignature(
+        payload,
+        BTED_PROPERTIES.name.signature,
+        BTED.publicKey
+      )
+    ).toBe(false);
+  });
+
+  it('rejects a tampered sequence number', () => {
+    const payload = attestationPayload(BTED.subject, 'name', 'BitEd Token', 1);
+    expect(
+      verifyAttestationSignature(
+        payload,
+        BTED_PROPERTIES.name.signature,
+        BTED.publicKey
+      )
+    ).toBe(false);
+  });
+
+  it('rejects a signature valid for a different property of the same subject', () => {
+    expect(
+      verifyAttestationSignature(
+        payloadFor('name'),
+        BTED_PROPERTIES.ticker.signature,
+        BTED.publicKey
+      )
+    ).toBe(false);
+  });
+
+  it('rejects a signature valid for the same property of a different subject', () => {
+    const payload = attestationPayload(
+      BOTH_BOUNDS.subject,
+      'name',
+      'BitEd Token',
+      0
+    );
+    expect(
+      verifyAttestationSignature(
+        payload,
+        BTED_PROPERTIES.name.signature,
+        BTED.publicKey
+      )
+    ).toBe(false);
+  });
+
+  it('rejects malformed inputs without throwing', () => {
+    const payload = payloadFor('name');
+    const real = BTED_PROPERTIES.name.signature;
+    expect(
+      verifyAttestationSignature(payload, real.slice(0, 126), BTED.publicKey)
+    ).toBe(false);
+    expect(
+      verifyAttestationSignature(
+        payload,
+        `${real.slice(0, 126)}zz`,
+        BTED.publicKey
+      )
+    ).toBe(false);
+    expect(
+      verifyAttestationSignature(payload, real, BTED.publicKey.slice(0, 62))
+    ).toBe(false);
+    expect(
+      verifyAttestationSignature(payload, 'ff'.repeat(64), BTED.publicKey)
+    ).toBe(false);
+    expect(verifyAttestationSignature(payload, real, 'ff'.repeat(32))).toBe(
+      false
+    );
+  });
+});
+
+describe('isPropertyAttested', () => {
+  it('attests a property whose signature verifies', () => {
+    expect(isPropertyAttested(BTED.subject, 'name', propertyOf('name'))).toBe(
+      true
+    );
+  });
+
+  it('attests when one of two signatures verifies', () => {
+    expect(
+      isPropertyAttested(
+        BTED.subject,
+        'name',
+        propertyOf('name', {
+          signatures: [
+            { signature: 'ff'.repeat(64), publicKey: BTED.publicKey },
+            {
+              signature: BTED_PROPERTIES.name.signature,
+              publicKey: BTED.publicKey,
+            },
+          ],
+        })
+      )
+    ).toBe(true);
+  });
+
+  it('does not attest when only a junk signature is present', () => {
+    expect(
+      isPropertyAttested(
+        BTED.subject,
+        'name',
+        propertyOf('name', {
+          signatures: [
+            { signature: 'ff'.repeat(64), publicKey: BTED.publicKey },
+          ],
+        })
+      )
+    ).toBe(false);
+  });
+
+  it('does not attest a property with no signatures', () => {
+    expect(
+      isPropertyAttested(
+        BTED.subject,
+        'name',
+        propertyOf('name', { signatures: [] })
+      )
+    ).toBe(false);
+  });
+});
+
+describe('verifyRegistryProperty', () => {
+  it('returns all three steps true for the worked example', () => {
+    expect(
+      verifyRegistryProperty(
+        BTED.subject,
+        BTED.policy,
+        'decimals',
+        propertyOf('decimals')
+      )
+    ).toEqual({
+      bound: true,
+      satisfied: true,
+      attested: true,
+      verified: true,
+    });
+  });
+
+  it('reports an unbound policy without claiming the signature went unchecked', () => {
+    expect(
+      verifyRegistryProperty(BTED.subject, null, 'name', propertyOf('name'))
+    ).toEqual({
+      bound: false,
+      satisfied: false,
+      attested: true,
+      verified: false,
+    });
+  });
+
+  // The middle class the plan documents, a genuine signature from a key set the
+  // policy does not satisfy, cannot be taken from the registry: it would need a
+  // second policy hashing to the same policy id. It is built here instead, with
+  // a freshly generated key that actually signs the payload.
+  const synthetic = (requiredKeyHash?: string) => {
+    const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+    const rawPublicKey = publicKey
+      .export({ format: 'der', type: 'spki' })
+      .subarray(-32);
+    const signerKeyHash = assetKeyHash(rawPublicKey.toString('hex'));
+    const scriptBytes = cbor.encode([
+      0,
+      Buffer.from(requiredKeyHash ?? signerKeyHash, 'hex'),
+    ]);
+    const subject = `${nativeScriptPolicyId(scriptBytes)}42544544`;
+    const payload = attestationPayload(subject, 'ticker', 'TEST', 0);
+    return {
+      subject,
+      policy: `8201${scriptBytes.toString('hex')}`,
+      property: {
+        value: 'TEST',
+        sequenceNumber: 0,
+        signatures: [
+          {
+            signature: crypto.sign(null, payload, privateKey).toString('hex'),
+            publicKey: rawPublicKey.toString('hex'),
+          },
+        ],
+      },
+    };
+  };
+
+  it('verifies a freshly signed property whose key the script requires', () => {
+    const { subject, policy, property } = synthetic();
+    expect(verifyRegistryProperty(subject, policy, 'ticker', property)).toEqual(
+      {
+        bound: true,
+        satisfied: true,
+        attested: true,
+        verified: true,
+      }
+    );
+  });
+
+  it('refuses a genuine signature from a key the script does not require', () => {
+    const { subject, policy, property } = synthetic('bb'.repeat(28));
+    expect(verifyRegistryProperty(subject, policy, 'ticker', property)).toEqual(
+      {
+        bound: true,
+        satisfied: false,
+        attested: true,
+        verified: false,
+      }
+    );
+  });
+
+  it('reports a tampered signature as bound and satisfied but not attested', () => {
+    expect(
+      verifyRegistryProperty(
+        BTED.subject,
+        BTED.policy,
+        'name',
+        propertyOf('name', {
+          signatures: [
+            { signature: 'ff'.repeat(64), publicKey: BTED.publicKey },
+          ],
+        })
+      )
+    ).toEqual({
+      bound: true,
+      satisfied: true,
+      attested: false,
+      verified: false,
+    });
   });
 });

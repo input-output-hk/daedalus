@@ -1,8 +1,21 @@
+import crypto from 'crypto';
 import blake2b from 'blake2b';
 import * as cbor from 'cbor';
-import type { RegistrySignature } from './assetRegistryClient';
+import type {
+  RegistryProperty,
+  RegistrySignature,
+} from './assetRegistryClient';
 
 const POLICY_ID_HEX_LENGTH = 56;
+const SIGNATURE_HEX_LENGTH = 128;
+const PAYLOAD_DIGEST_BYTES = 32;
+
+/**
+ * The twelve-byte DER SubjectPublicKeyInfo header for an ed25519 key. Node's
+ * crypto accepts a key object rather than raw bytes, and this is the whole of
+ * the conversion.
+ */
+const ED25519_SPKI_PREFIX = Buffer.from('302a300506032b6570032100', 'hex');
 const KEY_HASH_BYTES = 28;
 const PUBLIC_KEY_HEX_LENGTH = 64;
 const HEX_PATTERN = /^[0-9a-fA-F]*$/;
@@ -58,11 +71,14 @@ const isHex = (value: string): boolean =>
 
 // blake2b guards its input with a realm-sensitive `instanceof Uint8Array`, so
 // the array is built here rather than handed over as a Buffer.
-const digest = (size: number, bytes: Uint8Array): string => {
+const digestBytes = (size: number, bytes: Uint8Array): Uint8Array => {
   const input = new Uint8Array(bytes.length);
   input.set(bytes);
-  return Buffer.from(blake2b(size).update(input).digest()).toString('hex');
+  return blake2b(size).update(input).digest();
 };
+
+const digest = (size: number, bytes: Uint8Array): string =>
+  Buffer.from(digestBytes(size, bytes)).toString('hex');
 
 export const assetKeyHash = (publicKey: string): string | null => {
   if (
@@ -253,5 +269,161 @@ export const verifyPolicyBinding = (
     satisfied: evaluateNativeScript(script, attestingKeyHashes(signatures)),
     script,
     policyId: actualPolicyId,
+  };
+};
+
+/**
+ * The registry's attestation payload:
+ *
+ *   blake2b256( blake2b256(CBOR(subject))
+ *            || blake2b256(CBOR(propertyName))
+ *            || blake2b256(CBOR(value))
+ *            || blake2b256(CBOR(sequenceNumber)) )
+ *
+ * The subject and the property name are CBOR text strings before they are
+ * hashed. Hashing them as raw UTF-8 reproduces no signature in the registry.
+ *
+ * `logo` is the one property whose value is not encoded as it arrives: it is
+ * base64 text on the wire and is signed as a CBOR byte string over the decoded
+ * bytes. Confirmed against a live 77,392-character logo, where the base64-text
+ * form does not verify and the decoded-bytes form does.
+ */
+export const attestationPayload = (
+  subject: string,
+  propertyName: string,
+  value: unknown,
+  sequenceNumber: number
+): Buffer | null => {
+  if (typeof subject !== 'string' || typeof propertyName !== 'string') {
+    return null;
+  }
+  // A float encodes to different CBOR bytes than an integer, so a sequence
+  // number that is not one would produce a payload that silently never
+  // verifies.
+  if (!Number.isInteger(sequenceNumber)) return null;
+  let encodedValue: Buffer;
+  try {
+    if (propertyName === 'logo') {
+      if (typeof value !== 'string') return null;
+      encodedValue = cbor.encode(Buffer.from(value, 'base64'));
+    } else {
+      encodedValue = cbor.encode(value);
+    }
+    return Buffer.from(
+      digestBytes(
+        PAYLOAD_DIGEST_BYTES,
+        Buffer.concat([
+          digestBytes(PAYLOAD_DIGEST_BYTES, cbor.encode(subject)),
+          digestBytes(PAYLOAD_DIGEST_BYTES, cbor.encode(propertyName)),
+          digestBytes(PAYLOAD_DIGEST_BYTES, encodedValue),
+          digestBytes(PAYLOAD_DIGEST_BYTES, cbor.encode(sequenceNumber)),
+        ])
+      )
+    );
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Node's built-in verifier, which is strict: it rejects a signature whose
+ * scalar S has had the group order added to it. `cardano-crypto.js` accepts
+ * one, so it is not used for this, and Node's adds nothing to the dependency
+ * tree.
+ */
+export const verifyAttestationSignature = (
+  payload: Buffer,
+  signature: string,
+  publicKey: string
+): boolean => {
+  if (
+    typeof signature !== 'string' ||
+    signature.length !== SIGNATURE_HEX_LENGTH ||
+    !isHex(signature)
+  ) {
+    return false;
+  }
+  if (
+    typeof publicKey !== 'string' ||
+    publicKey.length !== PUBLIC_KEY_HEX_LENGTH ||
+    !isHex(publicKey)
+  ) {
+    return false;
+  }
+  try {
+    const key = crypto.createPublicKey({
+      key: Buffer.concat([ED25519_SPKI_PREFIX, Buffer.from(publicKey, 'hex')]),
+      format: 'der',
+      type: 'spki',
+    });
+    return crypto.verify(null, payload, key, Buffer.from(signature, 'hex'));
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * A property is attested when any one of its signatures verifies. 104
+ * properties in the registry carry more than one, and an attestation is a set
+ * rather than a single signature.
+ */
+export const isPropertyAttested = (
+  subject: string,
+  propertyName: string,
+  property: RegistryProperty
+): boolean => {
+  if (!property || !Array.isArray(property.signatures)) return false;
+  const payload = attestationPayload(
+    subject,
+    propertyName,
+    property.value,
+    property.sequenceNumber
+  );
+  if (!payload) return false;
+  return property.signatures.some((signature) =>
+    verifyAttestationSignature(
+      payload,
+      signature?.signature,
+      signature?.publicKey
+    )
+  );
+};
+
+export type PropertyVerificationResult = {
+  bound: boolean;
+  satisfied: boolean;
+  attested: boolean;
+  verified: boolean;
+};
+
+/**
+ * All three steps for one property. Each field reports its own fact and none is
+ * short-circuited, because `attested: false` because a signature is wrong and
+ * `attested: false` because nobody looked are different sentences and the
+ * advisory shown to a user has to tell them apart.
+ *
+ * `verified` is the conjunction and is the only field to test for a verdict. It
+ * is computed here from the bytes and is never read from a field of a registry
+ * response.
+ */
+export const verifyRegistryProperty = (
+  subject: string,
+  policy: string | null | undefined,
+  propertyName: string,
+  property: RegistryProperty
+): PropertyVerificationResult => {
+  const binding = verifyPolicyBinding(
+    subject,
+    policy,
+    property?.signatures ?? []
+  );
+  const bound = binding.bound === true;
+  const satisfied = binding.bound === true && binding.satisfied;
+  const attested = isPropertyAttested(subject, propertyName, property);
+  return {
+    bound,
+    satisfied,
+    attested,
+    verified: bound && satisfied && attested,
   };
 };

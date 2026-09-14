@@ -355,7 +355,7 @@
      "id": "task-009",
      "title": "Verification step three: the attestation payload and ed25519, gated on the corpus",
      "description": "Verify the ed25519 signature over the registry's attestation payload for a property, sequence number included. The exact payload construction is read from the registry's own implementation rather than re-derived, and the module is not accepted until it verifies the full policy-bound corpus with zero failures.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 12.0,
      "dependencies": [
