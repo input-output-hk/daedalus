@@ -834,7 +834,7 @@
      "id": "task-029",
      "title": "Manual refresh for one subject in the asset settings dialog",
      "description": "The seven-day refresh window in task-010 is set from a measured registry change rate of about one change every 9.6 days. It is the right default and it is wrong for the user who knows an issuer published something today. One control, one subject, no bulk refresh.",
-     "status": "pending",
+     "status": "completed",
      "priority": "low",
      "estimatedHours": 2.5,
      "dependencies": [

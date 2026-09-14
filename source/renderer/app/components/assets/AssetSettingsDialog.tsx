@@ -78,6 +78,12 @@ const messages = defineMessages({
     description:
       'Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.',
   },
+  refreshMetadata: {
+    id: 'assets.settings.dialog.refreshMetadata',
+    defaultMessage: '!!!Check the token registry again',
+    description:
+      'Label for the control in the Asset settings dialog that asks the metadata cache to read the token registry again for this one token.',
+  },
   unverifiedDecimals: {
     id: 'assets.settings.dialog.unverifiedDecimals',
     defaultMessage:
@@ -97,6 +103,13 @@ type Props = {
   asset: AssetToken;
   onSubmit: (...args: Array<any>) => any;
   onCancel: (...args: Array<any>) => any;
+  /**
+   * Asks the cache to read the registry again for this one token, ignoring the
+   * refresh window. Answers nothing: whatever it finds arrives as a new row and
+   * the dialog re-renders with it, and offline it finds nothing and says so
+   * nowhere.
+   */
+  onRefresh?: (asset: AssetToken) => void;
 };
 type State = {
   decimals: number | null | undefined;
@@ -156,7 +169,7 @@ class AssetSettingsDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onCancel, onSubmit, asset } = this.props;
+    const { onCancel, onSubmit, onRefresh, asset } = this.props;
     const {
       decimals: savedDecimals,
       recommendedDecimals,
@@ -293,6 +306,16 @@ class AssetSettingsDialog extends Component<Props, State> {
                   recommendedDecimals,
                 })}
               </p>
+            )}
+            {onRefresh && (
+              <button
+                className={styles.refreshButton}
+                type="button"
+                data-testid="refresh-metadata"
+                onClick={() => onRefresh(asset)}
+              >
+                {intl.formatMessage(messages.refreshMetadata)}
+              </button>
             )}
           </div>
         </div>

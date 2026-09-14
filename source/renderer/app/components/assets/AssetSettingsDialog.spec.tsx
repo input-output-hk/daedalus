@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 
 import React from 'react';
 import noop from 'lodash/noop';
-import { cleanup, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import createTestBed from 'tests/_utils/TestBed';
 import {
@@ -12,9 +12,14 @@ import {
 
 import AssetSettingsDialog from './AssetSettingsDialog';
 
-const openDialogFor = async (asset) => {
+const openDialogFor = async (asset, onRefresh?: (asset: any) => void) => {
   createTestBed(
-    <AssetSettingsDialog asset={asset} onSubmit={noop} onCancel={noop} />
+    <AssetSettingsDialog
+      asset={asset}
+      onSubmit={noop}
+      onCancel={noop}
+      onRefresh={onRefresh}
+    />
   );
   await waitFor(() => screen.getByText('Number of decimal places'));
 };
@@ -68,6 +73,68 @@ describe('AssetSettingsDialog', () => {
         recommendedDecimalsVerified: true,
       });
       expect(screen.queryByTestId('warning-icon')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('the refresh control', () => {
+    it('asks about the one token the dialog is open on', async () => {
+      const onRefresh = jest.fn();
+      const asset = {
+        ...withDecimalPlacesToken,
+        decimals: null,
+        recommendedDecimals: 6,
+        recommendedDecimalsVerified: false,
+      };
+      await openDialogFor(asset, onRefresh);
+
+      fireEvent.click(screen.getByTestId('refresh-metadata'));
+
+      expect(onRefresh).toHaveBeenCalledTimes(1);
+      expect(onRefresh).toHaveBeenCalledWith(asset);
+    });
+
+    it('is offered for a token whose published value verified too', async () => {
+      await openDialogFor(
+        {
+          ...withDecimalPlacesToken,
+          decimals: 6,
+          recommendedDecimals: 6,
+          recommendedDecimalsVerified: true,
+        },
+        jest.fn()
+      );
+      expect(screen.getByTestId('refresh-metadata')).toBeInTheDocument();
+    });
+
+    it('keeps rendering the cached row when a refresh answers nothing', async () => {
+      // Offline behaves as it does everywhere else in this design: the control
+      // does nothing visible and the row stays.
+      const onRefresh = jest.fn();
+      await openDialogFor(
+        {
+          ...withDecimalPlacesToken,
+          decimals: null,
+          recommendedDecimals: 6,
+          recommendedDecimalsVerified: false,
+        },
+        onRefresh
+      );
+
+      fireEvent.click(screen.getByTestId('refresh-metadata'));
+
+      expect(screen.getByText('Number of decimal places')).toBeInTheDocument();
+      expect(screen.getByTestId('unverified-decimals')).toBeInTheDocument();
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
+    it('is absent where nothing can act on it', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: null,
+        recommendedDecimals: 6,
+        recommendedDecimalsVerified: false,
+      });
+      expect(screen.queryByTestId('refresh-metadata')).not.toBeInTheDocument();
     });
   });
 

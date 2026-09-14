@@ -72,9 +72,14 @@ const imageWaiters = new Map<
  * Subjects it has no row for come back under `unresolved`, and resolution for
  * them is scheduled in the main process, so the answer is never behind a
  * request to the registry.
+ *
+ * `refresh` asks the main process to schedule these subjects whether or not
+ * their refresh window has elapsed and whether or not they are inside a retry
+ * backoff. It does not change what comes back now, only what is fetched next.
  */
 export const requestAssetMetadata = (
-  subjects: Array<string>
+  subjects: Array<string>,
+  options: { refresh?: boolean } = {}
 ): Promise<AssetMetadataMainResponse> =>
   new Promise((resolve) => {
     const requestId = uuidv4();
@@ -83,6 +88,7 @@ export const requestAssetMetadata = (
       .request({
         requestId,
         subjects,
+        refresh: options.refresh === true,
       })
       .then((response) => deliver(metadataWaiters, response))
       // A rejected response arrives without an id, so it cannot be handed to the

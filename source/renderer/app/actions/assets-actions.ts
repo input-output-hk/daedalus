@@ -10,6 +10,9 @@ export default class AssetsActions {
     decimals: number;
   }> = new Action();
   unsetEditedAsset: Action<any> = new Action();
+  onAssetSettingsRefresh: Action<{
+    asset: AssetToken;
+  }> = new Action();
   onOpenAssetSend: Action<{
     uniqueId: string;
   }> = new Action();

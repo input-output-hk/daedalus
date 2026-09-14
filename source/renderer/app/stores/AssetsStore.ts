@@ -6,6 +6,7 @@ import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { ellipsis } from '../utils/strings';
 import { assetFingerprint } from '../utils/assetFingerprint';
+import { getAssetTokenFromToken } from '../utils/assets';
 import { resolveAssetDecimals } from '../utils/assetDecimals';
 import {
   onAssetMetadataUpdate,
@@ -61,7 +62,7 @@ export default class AssetsStore extends Store {
   @observable
   activeAsset: string | null | undefined = null;
   @observable
-  editedAsset: AssetToken | null | undefined = null;
+  _editedAsset: AssetToken | null | undefined = null;
   @observable
   insertingAssetUniqueId: string | null | undefined = null;
   @observable
@@ -91,6 +92,7 @@ export default class AssetsStore extends Store {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AssetsS... Remove this comment to see the full error message
     const { assets: assetsActions, wallets: walletsActions } = this.actions;
     assetsActions.setEditedAsset.listen(this._onEditedAssetSet);
+    assetsActions.onAssetSettingsRefresh.listen(this._onAssetSettingsRefresh);
     assetsActions.onAssetSettingsSubmit.listen(this._onAssetSettingsSubmit);
     assetsActions.unsetEditedAsset.listen(this._onEditedAssetUnset);
     assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
@@ -136,6 +138,18 @@ export default class AssetsStore extends Store {
     if (resolved) return resolved;
     return this._unresolvedAsset(subject, policyId, assetName);
   };
+
+  /**
+   * The token the settings dialog was opened on, overlaid with whatever the
+   * cache knows now. Held as the row handed over and merged on read rather than
+   * frozen at open time, so a row arriving on the update channel, including one
+   * a manual refresh asked for, reaches a dialog that is still open.
+   */
+  @computed
+  get editedAsset(): AssetToken | null | undefined {
+    if (!this._editedAsset) return this._editedAsset;
+    return getAssetTokenFromToken(this._editedAsset, this.getAsset);
+  }
 
   @computed
   get favorites(): Record<string, any> {
@@ -193,8 +207,11 @@ export default class AssetsStore extends Store {
     return Array.from(subjects);
   };
 
-  _requestMetadata = async (subjects: Array<string>) => {
-    const response = await requestAssetMetadata(subjects);
+  _requestMetadata = async (
+    subjects: Array<string>,
+    options: { refresh?: boolean } = {}
+  ) => {
+    const response = await requestAssetMetadata(subjects, options);
     if (!response || response.entries.length === 0) return;
     runInAction('AssetsStore::mergeAssetMetadata', () => {
       response.entries.forEach((entry) => {
@@ -287,7 +304,20 @@ export default class AssetsStore extends Store {
 
   @action
   _onEditedAssetSet = ({ asset }: { asset: AssetToken }) => {
-    this.editedAsset = asset;
+    this._editedAsset = asset;
+  };
+
+  /**
+   * One subject, the one the dialog is open on. The signature takes a single
+   * asset rather than a list, so widening this into a bulk refresh is a change
+   * to the signature rather than to an argument. Nothing here enumerates the
+   * cache, and there is nothing to enumerate it with.
+   */
+  _onAssetSettingsRefresh = async ({ asset }: { asset: AssetToken }) => {
+    const { policyId, assetName } = asset;
+    await this._requestMetadata([subjectOf(policyId, assetName)], {
+      refresh: true,
+    });
   };
   @action
   _onAssetSettingsSubmit = async ({
@@ -297,7 +327,7 @@ export default class AssetsStore extends Store {
     asset: AssetToken;
     decimals: number;
   }) => {
-    this.editedAsset = null;
+    this._editedAsset = null;
     const { policyId, assetName } = asset;
     this._localDecimals.set(subjectOf(policyId, assetName), decimals);
 
@@ -312,7 +342,7 @@ export default class AssetsStore extends Store {
   };
   @action
   _onEditedAssetUnset = () => {
-    this.editedAsset = null;
+    this._editedAsset = null;
   };
   @action
   _onOpenAssetSend = ({ uniqueId }: { uniqueId: string }) => {

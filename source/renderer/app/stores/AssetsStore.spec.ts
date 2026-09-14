@@ -178,6 +178,7 @@ describe('AssetsStore', () => {
           unsetEditedAsset: { listen: jest.fn() },
           onOpenAssetSend: { listen: jest.fn() },
           onCopyAssetParam: { listen: jest.fn() },
+          onAssetSettingsRefresh: { listen: jest.fn() },
           onToggleFavorite: { listen: jest.fn() },
         },
         wallets: {
@@ -346,6 +347,58 @@ describe('AssetsStore', () => {
     });
   });
 
+  describe('the settings dialog', () => {
+    it('overlays the cache onto the token it was opened on', () => {
+      const { store } = makeStore();
+      const opened = tokenFor(SUBJECT);
+      (store as any)._onEditedAssetSet({ asset: opened });
+      expect(store.editedAsset.metadata).toBeNull();
+
+      (store as any)._onMetadataResolved({ entries: [entry()] });
+
+      // The row arriving on the update channel reaches a dialog that is open,
+      // which is what makes a refresh control worth pressing.
+      expect(store.editedAsset.metadata.ticker).toBe('BTED');
+      expect(store.editedAsset.uniqueId).toBe(SUBJECT);
+      // The quantity is the token's own and is not taken from the cache, which
+      // holds no quantity for anything. Compared by value rather than by
+      // identity because the observable field deep-converts what it is given.
+      expect(store.editedAsset.quantity).toEqual(opened.quantity);
+      expect(store.editedAsset.policyId).toBe(POLICY);
+    });
+
+    it('is nothing when no asset is being edited', () => {
+      const { store } = makeStore();
+      expect(store.editedAsset).toBeNull();
+    });
+
+    it('asks about exactly one subject when a refresh is requested', async () => {
+      const { store } = makeStore();
+      await (store as any)._onAssetSettingsRefresh({
+        asset: { policyId: POLICY, assetName: ASSET_NAME },
+      });
+      expect(requestAssetMetadata).toHaveBeenCalledTimes(1);
+      expect(requestAssetMetadata).toHaveBeenCalledWith([SUBJECT], {
+        refresh: true,
+      });
+    });
+
+    it('merges what a refresh answers with', async () => {
+      const { store } = makeStore();
+      requestAssetMetadata.mockResolvedValue({
+        requestId: 'r',
+        entries: [entry({ ticker: 'REFRESHED' })],
+        unresolved: [],
+      });
+      await (store as any)._onAssetSettingsRefresh({
+        asset: { policyId: POLICY, assetName: ASSET_NAME },
+      });
+      expect(store.getAsset(POLICY, ASSET_NAME).metadata.ticker).toBe(
+        'REFRESHED'
+      );
+    });
+  });
+
   describe('setup', () => {
     const actionsFor = () => ({
       assets: {
@@ -354,6 +407,7 @@ describe('AssetsStore', () => {
         unsetEditedAsset: { listen: jest.fn() },
         onOpenAssetSend: { listen: jest.fn() },
         onCopyAssetParam: { listen: jest.fn() },
+        onAssetSettingsRefresh: { listen: jest.fn() },
         onToggleFavorite: { listen: jest.fn() },
       },
       wallets: {

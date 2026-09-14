@@ -191,9 +191,21 @@ export class AssetMetadataResolver {
    * Subjects are claimed synchronously, before the work is queued, so a second
    * call arriving in the same tick does not schedule the same subject twice.
    */
-  request(subjects: Array<string>): Array<AssetMetadataRow> {
+  request(
+    subjects: Array<string>,
+    options: { force?: boolean } = {}
+  ): Array<AssetMetadataRow> {
     const rows = this.readCached(subjects);
-    const claimed = this._claim(this._due(subjects, rows));
+    // A forced read skips the refresh window and the retry backoff, and skips
+    // them by not consulting them rather than by clearing the columns they are
+    // read from. Clearing `updated_at` before the fetch would leave a row that
+    // looks never-updated if the fetch then failed, and every render afterwards
+    // would re-schedule it.
+    const due =
+      options.force === true
+        ? subjects.filter((subject) => !this._claimed.has(subject))
+        : this._due(subjects, rows);
+    const claimed = this._claim(due);
     if (claimed.length > 0) {
       this._pending = this._pending.then(async () => {
         try {

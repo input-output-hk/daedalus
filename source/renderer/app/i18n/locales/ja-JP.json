@@ -78,6 +78,7 @@
   "assets.settings.dialog.description": "<p>ブロックチェーンでは、ネイティブトークンは少数なしの整数（書式なしの金額）で表現されます。Daedalusで表示する金額書式用として、小数点以下の桁数を変更することができます。</p><p>この設定は、このネイティブトークンを保有しているすべてのDaedalusウォレットに適用されます。</p>",
   "assets.settings.dialog.formattedAmount.label": "書式化した金額",
   "assets.settings.dialog.recommended": "（推奨）",
+  "assets.settings.dialog.refreshMetadata": "!!!Check the token registry again",
   "assets.settings.dialog.title": "ネイティブトークンの設定",
   "assets.settings.dialog.unformattedAmount.label": "書式なしの金額",
   "assets.settings.dialog.unverifiedDecimals": "!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.",

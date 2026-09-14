@@ -78,6 +78,7 @@
   "assets.settings.dialog.description": "<p>Native tokens are represented as integer numbers without decimal places  on the blockchain (unformatted amount). You can change the number of required decimal places for the amount format in Daedalus.</p><p>These settings will be applied to all your  Daedalus wallets that contain this native token.</p>",
   "assets.settings.dialog.formattedAmount.label": "Formatted amount",
   "assets.settings.dialog.recommended": "(recommended)",
+  "assets.settings.dialog.refreshMetadata": "Check the token registry again",
   "assets.settings.dialog.title": "Native token settings",
   "assets.settings.dialog.unformattedAmount.label": "Unformatted amount",
   "assets.settings.dialog.unverifiedDecimals": "This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.",

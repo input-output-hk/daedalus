@@ -584,6 +584,122 @@ describe('refreshing', () => {
   });
 });
 
+describe('a forced refresh', () => {
+  const seedFresh = async () => {
+    await resolverWith(transportFor(() => [bted()])).resolve([BTED.subject]);
+  };
+
+  const backOff = () => {
+    database.writeResolutions(
+      [
+        {
+          subject: BTED.subject,
+          state: 'failed',
+          failureCount: 3,
+          retryAfter: NOW + 60_000,
+        },
+      ],
+      NOW
+    );
+  };
+
+  it('fetches a subject inside its retry backoff, where an ordinary read does not', async () => {
+    await seedFresh();
+    backOff();
+
+    // The complement first, so the case is about the flag rather than about a
+    // resolver that ignores the window for everything.
+    const ordinary = transportFor(() => [bted()]);
+    const first = resolverWith(ordinary);
+    first.request([BTED.subject]);
+    await first.pending();
+    expect(ordinary.calls).toBe(0);
+
+    const forced = transportFor(() => [bted()]);
+    const second = resolverWith(forced);
+    second.request([BTED.subject], { force: true });
+    await second.pending();
+    expect(forced.calls).toBe(1);
+  });
+
+  it('fetches a row that is well inside its refresh window', async () => {
+    await seedFresh();
+
+    const transport = transportFor(() => [bted()]);
+    const resolver = resolverWith(transport);
+    resolver.request([BTED.subject], { force: true });
+    await resolver.pending();
+    expect(transport.calls).toBe(1);
+  });
+
+  it('keeps the row values and restamps it when nothing has risen', async () => {
+    await seedFresh();
+    database.writeMetadata(
+      [
+        {
+          subject: BTED.subject,
+          policyId: BTED.subject.slice(0, 56),
+          assetName: BTED.subject.slice(56),
+          ticker: 'BTED',
+          name: 'BitEd Token',
+          decimals: 0,
+          verified: true,
+          metadata: storedRow().metadata,
+          source: 'registry',
+          sequenceNumber: 0,
+          slot: null,
+        },
+      ],
+      NOW - 5_000
+    );
+    expect(storedRow().updatedAt).toBe(NOW - 5_000);
+
+    const resolver = resolverWith(transportFor(() => [bted()]));
+    resolver.request([BTED.subject], { force: true });
+    await resolver.pending();
+
+    // The values and the stamp are asserted separately, so a refresh that
+    // rewrote the row with identical content is still distinguishable from one
+    // that only restamped it.
+    expect(storedRow()).toMatchObject({
+      ticker: 'BTED',
+      decimals: 0,
+      verified: true,
+      sequenceNumber: 0,
+    });
+    expect(storedRow().updatedAt).toBe(NOW);
+  });
+
+  it('rewrites the row and runs verification again when the sequence number rises', async () => {
+    await seedFresh();
+    expect(storedRow()).toMatchObject({ verified: true, decimals: 0 });
+
+    // The stored verdict is true. The new content carries a higher sequence
+    // number, which the old signature does not cover, so the verdict has to move
+    // to false. A refresh that carried the stored verdict across would leave it
+    // true and pass every other case here.
+    const resolver = resolverWith(
+      transportFor(() => [bted({ sequenceNumber: 1 })])
+    );
+    resolver.request([BTED.subject], { force: true });
+    await resolver.pending();
+
+    expect(storedRow()).toMatchObject({ sequenceNumber: 1, verified: false });
+  });
+
+  it('leaves the cached row in place when the transport is unavailable', async () => {
+    await seedFresh();
+    const broken = failingTransport();
+    const resolver = resolverWith(broken);
+
+    expect(resolver.request([BTED.subject], { force: true })).toHaveLength(1);
+    await resolver.pending();
+
+    expect(broken.calls).toBeGreaterThan(0);
+    expect(storedRow()).toMatchObject({ ticker: 'BTED', verified: true });
+  });
+});
+
 describe('timers', () => {
   afterEach(() => {
     jest.useRealTimers();

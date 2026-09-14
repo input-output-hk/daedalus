@@ -138,7 +138,9 @@ export class AssetMetadataChannelHandlers {
     const requestId = request?.requestId;
     const subjects = cleanSubjects(request?.subjects);
     try {
-      const rows = this._resolver.request(subjects);
+      const rows = this._resolver.request(subjects, {
+        force: request?.refresh === true,
+      });
       const withImage = new Set(
         this._database.readImageSubjects(rows.map((row) => row.subject))
       );

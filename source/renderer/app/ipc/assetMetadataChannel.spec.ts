@@ -98,6 +98,17 @@ describe('assetMetadataChannel', () => {
       );
     });
 
+    it('asks for an ordinary read unless a refresh is asked for', () => {
+      requestAssetMetadata([FIRST]);
+      expect(sent[0].message.refresh).toBe(false);
+    });
+
+    it('carries the refresh flag to the main process when one is asked for', () => {
+      requestAssetMetadata([FIRST], { refresh: true });
+      expect(sent[0].message.refresh).toBe(true);
+      expect(sent[0].message.subjects).toEqual([FIRST]);
+    });
+
     it('mints a different id for every request', () => {
       requestAssetMetadata([FIRST]);
       requestAssetMetadata([SECOND]);

@@ -341,6 +341,48 @@ describe('assetMetadataChannel', () => {
     });
   });
 
+  describe('a refresh request', () => {
+    it('asks the resolver to ignore the window, and an ordinary read does not', async () => {
+      const handlers = handlersWith(
+        stubTransport(async () => ({ ok: false, reason: 'network' }))
+      );
+      const resolver = (handlers as any)._resolver;
+      const asked: Array<Record<string, unknown>> = [];
+      resolver.request = (subjects: Array<string>, options = {}) => {
+        asked.push({ subjects, options });
+        return [];
+      };
+
+      await handlers.readMetadata({ requestId: 'r-1', subjects: [SUBJECT] });
+      await handlers.readMetadata({
+        requestId: 'r-2',
+        subjects: [SUBJECT],
+        refresh: true,
+      });
+
+      expect(asked).toEqual([
+        { subjects: [SUBJECT], options: { force: false } },
+        { subjects: [SUBJECT], options: { force: true } },
+      ]);
+    });
+
+    it('answers a refresh from the cache, without waiting for the fetch', async () => {
+      writeRow(SUBJECT);
+      const handlers = handlersWith(
+        stubTransport(() => new Promise(() => {}) as any)
+      );
+
+      const response = await handlers.readMetadata({
+        requestId: 'r-3',
+        subjects: [SUBJECT],
+        refresh: true,
+      });
+
+      expect(response.requestId).toBe('r-3');
+      expect(response.entries.map((entry) => entry.subject)).toEqual([SUBJECT]);
+    });
+  });
+
   describe('push', () => {
     it('sends the rows a resolve produced without a second request', async () => {
       const handlers = handlersWith(

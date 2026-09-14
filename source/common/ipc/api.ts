@@ -566,6 +566,10 @@ export type GovernanceDRepAnchorMainResponse = DRepAnchorResult;
 export const ASSET_METADATA_CHANNEL = 'ASSET_METADATA_CHANNEL';
 export type AssetMetadataRendererRequest = AssetIpcCorrelated<{
   subjects: Array<string>;
+  // A read the refresh window and the retry backoff do not apply to, for a user
+  // who knows an issuer published something today. Still a read: it answers from
+  // the cache and schedules the fetch behind the answer.
+  refresh?: boolean;
 }>;
 export type AssetMetadataMainResponse = AssetIpcCorrelated<{
   entries: Array<AssetMetadataEntry>;
