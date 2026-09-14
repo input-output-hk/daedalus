@@ -71,6 +71,73 @@ describe('AssetSettingsDialog', () => {
     });
   });
 
+  describe('the advisory beside the decimal places field', () => {
+    const sentence =
+      'This token’s issuer publishes 6 decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own.';
+
+    it('appears for a published value that could not be verified', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: null,
+        recommendedDecimals: 6,
+        recommendedDecimalsVerified: false,
+      });
+      expect(screen.getByTestId('unverified-decimals')).toHaveTextContent(
+        sentence
+      );
+    });
+
+    it('does not appear for a published value that verified', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: 6,
+        recommendedDecimals: 6,
+        recommendedDecimalsVerified: true,
+      });
+      expect(
+        screen.queryByTestId('unverified-decimals')
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not appear when the issuer published no decimal places', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: null,
+        recommendedDecimals: null,
+        recommendedDecimalsVerified: false,
+      });
+      expect(
+        screen.queryByTestId('unverified-decimals')
+      ).not.toBeInTheDocument();
+    });
+
+    it('appears for an unverified published zero', async () => {
+      // The disagreement verdict is suppressed for this combination, which is
+      // why the sentence has its own condition rather than reusing it.
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: null,
+        recommendedDecimals: 0,
+        recommendedDecimalsVerified: false,
+      });
+      expect(screen.getByTestId('unverified-decimals')).toHaveTextContent(
+        'publishes 0 decimal places'
+      );
+    });
+
+    it('appears whether or not the user has already chosen a value', async () => {
+      await openDialogFor({
+        ...withDecimalPlacesToken,
+        decimals: 2,
+        recommendedDecimals: 6,
+        recommendedDecimalsVerified: false,
+      });
+      expect(screen.getByTestId('unverified-decimals')).toHaveTextContent(
+        sentence
+      );
+    });
+  });
+
   describe('when the published decimal places could not be verified', () => {
     it('puts a setting that contradicts them more weakly', async () => {
       await openDialogFor({

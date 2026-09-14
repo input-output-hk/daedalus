@@ -78,6 +78,13 @@ const messages = defineMessages({
     description:
       'Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.',
   },
+  unverifiedDecimals: {
+    id: 'assets.settings.dialog.unverifiedDecimals',
+    defaultMessage:
+      '!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.',
+    description:
+      'Sentence beside the decimal places field in the Asset settings dialog, shown when the issuer published a decimal place count that could not be verified against the minting policy.',
+  },
   warningPopOverNotUsingUnverified: {
     id: 'assets.warning.notUsingUnverified',
     defaultMessage:
@@ -175,6 +182,14 @@ class AssetSettingsDialog extends Component<Props, State> {
       },
     ];
 
+    // A different question from the disagreement below: that one is about two
+    // numbers differing, this one is about one number nobody could check, and it
+    // holds whether or not the user has chosen anything and whether or not the
+    // published figure is zero.
+    const hasUnverifiedDecimals =
+      typeof recommendedDecimals === 'number' &&
+      recommendedDecimalsVerified !== true;
+
     const disagreement = decimalSettingDisagreement({
       recommendedDecimals,
       decimals: savedDecimals,
@@ -268,6 +283,18 @@ class AssetSettingsDialog extends Component<Props, State> {
             optionRenderer={this.optionRenderer}
             selectionRenderer={this.selectionRenderer}
           />
+          <div className={styles.decimalsFooter}>
+            {hasUnverifiedDecimals && (
+              <p
+                className={styles.unverifiedDecimals}
+                data-testid="unverified-decimals"
+              >
+                {intl.formatMessage(messages.unverifiedDecimals, {
+                  recommendedDecimals,
+                })}
+              </p>
+            )}
+          </div>
         </div>
       </Dialog>
     );

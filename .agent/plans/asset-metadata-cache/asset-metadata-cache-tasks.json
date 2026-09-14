@@ -803,7 +803,7 @@
      "id": "task-022",
      "title": "State in the settings dialog when published decimals could not be verified",
      "description": "One place, one sentence: beside the decimal places field in the asset settings dialog, saying that the issuer's published decimal places for this token could not be verified against its minting policy and are therefore not applied automatically.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 3.0,
      "dependencies": [

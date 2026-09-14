@@ -80,6 +80,7 @@
   "assets.settings.dialog.recommended": "(recommended)",
   "assets.settings.dialog.title": "Native token settings",
   "assets.settings.dialog.unformattedAmount.label": "Unformatted amount",
+  "assets.settings.dialog.unverifiedDecimals": "This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.",
   "assets.warning.available": "The recommended value for decimal place configuration for this native token is {recommendedDecimals} decimal places. ",
   "assets.warning.availableUnverified": "This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.",
   "assets.warning.notUsing": "You are not using the recommended decimal place configuration for this native token.",

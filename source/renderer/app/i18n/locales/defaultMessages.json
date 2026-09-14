@@ -912,6 +912,11 @@
         "id": "assets.warning.availableUnverified"
       },
       {
+        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.",
+        "description": "Sentence beside the decimal places field in the Asset settings dialog, shown when the issuer published a decimal place count that could not be verified against the minting policy.",
+        "id": "assets.settings.dialog.unverifiedDecimals"
+      },
+      {
         "defaultMessage": "!!!Your setting differs from the {recommendedDecimals} decimal places this token’s issuer publishes. That figure could not be checked against the token’s minting policy.",
         "description": "Asset settings pop over content, for a setting that differs from a published decimal place count that could not be verified.",
         "id": "assets.warning.notUsingUnverified"
