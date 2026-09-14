@@ -82,6 +82,13 @@ class AssetInput extends Component<Props> {
 
     const { quantity, metadata, decimals } = asset;
     const ticker = get(metadata, 'ticker', null);
+    // A ledger quantity is an integer and decimal places are presentation
+    // only, so a field whose decimal places are unknown, or known to be zero,
+    // is denominated in raw units. A decimal separator typed into it means
+    // nothing, and the submit path strips it rather than interpreting it, so
+    // the field must not accept one in the first place.
+    const areDecimalsKnown = decimals != null;
+    const isInRawUnits = !areDecimalsKnown || decimals === 0;
     const assetField = assetFields[uniqueId];
     const inputFieldStyle = this.generateInputFieldStyle();
     return (
@@ -125,19 +132,8 @@ class AssetInput extends Component<Props> {
             error={assetField.error}
             skin={AmountInputSkin}
             style={inputFieldStyle}
-            onKeyPress={(evt: React.KeyboardEvent<EventTarget>) => {
-              if (decimals === 0) {
-                const { charCode } = evt;
-
-                if (charCode === 190 || charCode === 110 || charCode === 46) {
-                  evt.persist();
-                  evt.preventDefault();
-                  evt.stopPropagation();
-                }
-              }
-
-              handleSubmitOnEnter(evt);
-            }}
+            onKeyPress={handleSubmitOnEnter}
+            allowOnlyIntegers={isInRawUnits}
             allowSigns={false}
             autoFocus={autoFocus}
           />

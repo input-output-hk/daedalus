@@ -129,7 +129,7 @@
      "id": "task-003",
      "title": "Stop the amount field accepting a decimal separator when decimal places are unknown",
      "description": "components/wallet/send-form/AssetInput.tsx:116 passes decimalPlaces={decimals}, and decimals is undefined for every asset the user has never configured (domains/Asset.ts:18). With decimalPlaces undefined the react-polymorph NumericInput accepts a decimal separator, and WalletSendForm.tsx:235 then strips it with formattedAmountToNaturalUnits (utils/formatters.ts:163-167), so entering 1.5 produces a natural-unit amount of 15. On the Cardano ledger every quantity is an integer and decimal places are presentation only, so raw units are the correct display for an asset whose decimals are unknown and a separator typed into that field is meaningless input. Make the input path consistent with the confirmation dialog, which already shows both representations honestly.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 4.0,
      "dependencies": [],
