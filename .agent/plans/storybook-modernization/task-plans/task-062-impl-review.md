@@ -57,12 +57,12 @@ Verification run:
   that are not imports returns nothing, so no `storiesOf` call, `.add` call, title or label moved.
 - Line counts of the moved files are unchanged, 44 for `Epochs` and 444 for `WalletSettingsScreen`,
   so every `path:line` reference later tasks carry still resolves.
-- Module-graph reachability walked from `storybook/stories/index.ts` across relative imports, on the
-  pre-change tree and on the post-change tree. Before: 84 convention-matching files, 83 reached.
-  After: 69 convention-matching files, 68 reached. The single unreached file is
-  `storybook/stories/staking/Legacy.stories.tsx` on both sides, which is the dead file the barrel
-  never loaded and `task-002` deletes. Nothing fell out of the graph, which is the part the
-  registration extraction on its own does not answer.
+- A module-graph walk from `storybook/stories/index.ts` across relative imports covered the
+  pre-change tree and the post-change tree. Before: 84 convention-matching files, 83 reached.
+  After: 69 convention-matching files, 68 reached. The single unreached file on both sides is
+  `storybook/stories/staking/Legacy.stories.tsx`, the dead file the barrel never loaded and
+  `task-002` deletes. Nothing fell out of the graph, which is the part the registration extraction
+  on its own does not answer.
 - `grep` for unresolved-module warnings over the `storybook` check log: none, so webpack resolved
   every specifier rather than tolerating a missing one.
 
@@ -101,7 +101,7 @@ Non-blocking observations:
   would have built the pre-change source and returned green, and the check ran only after
   `git status --short` showed 15 `R` entries.
 - `_support/AddWallet.ts` and `_support/Status.ts` are import-only barrels rather than support
-  modules, so the directory names them loosely. This is the plan's recorded judgement, both files
+  modules, so the directory names them loosely. This is the plan's recorded judgment, both files
   are listed in the task, and `task-010` deletes the barrel they belong to. It stays an observation.
 - The host `yarn compile` is red for four errors at `source/renderer/app/utils/crypto.ts:107`,
   `:109` and `source/renderer/app/utils/dataSerialization.ts:309`, and the implementation reported

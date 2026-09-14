@@ -41,7 +41,7 @@ Repo-Verified Findings Used To Shape The Plan:
 - Confirmed `tsconfig.json` declares no `include`, so every `.ts` and `.tsx` file is in the
   `tsc --noEmit` program and a dangling importer cannot hide.
 - Confirmed `.eslintrc` has no rule keyed on a story filename glob and `.prettierignore` selects by
-  extension, so neither tool changes behaviour when a file leaves the convention.
+  extension, so neither tool changes behavior when a file leaves the convention.
 - Confirmed `perSystem/checks.nix:16-31` copies a prebuilt `node_modules` into the sandbox and
   `:53`, `:79` are the `compile` and `storybook` checks, so the flake checks reproduce CI exactly.
 - Recorded that the host `yarn compile` is red for four pre-existing errors at
@@ -104,7 +104,7 @@ Plan Updates In Response To Critique:
   no baseline artifact exists to diff against, that the substitute is a before-and-after extraction
   scoped to this change alone, and that the `task-001` baseline supersedes it when it lands.
 - Added the failure response for both checks: a differing extraction means a registering file was
-  edited and the edit is reverted rather than the sidebar accepted; a red check means a specifier
+  edited, and the edit is reverted rather than the sidebar accepted; a red check means a specifier
   gained the wrong number of levels.
 - Stated the commit shape and why the change cannot be split into two green commits.
 - Added rollback to the risk register.

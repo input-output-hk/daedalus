@@ -9,9 +9,9 @@
 
 `task-062` has no dependencies and gates `task-010`, the phase 2 change that replaces the
 hand-maintained barrel at `storybook/main.ts:8` with a glob. Until the 15 files stop matching
-`*.stories.*` the glob cannot land: at the pinned 6.4.22 it would silently auto-title them and
+`*.stories.*` the glob cannot land. At the pinned 6.4.22 it would silently auto-title them and
 register their named exports, moving the phase 1 sidebar baseline that every later phase diffs
-against, and at 8.6 and 10.6 it is a hard `build-storybook` failure. Doing it first also keeps the
+against; at 8.6 and 10.6 it is a hard `build-storybook` failure. Doing it first also keeps the
 cost flat, because the file is renamed before `task-020`, `task-021`, `task-035` and `task-044`
 rewrite its contents.
 
@@ -93,7 +93,7 @@ Verified at `76db6d336`, 2026-09-14, against the working tree, not against the P
 - Exactly 15 of those 84 register nothing, and they are exactly the 15 in `targetPaths`. Classifying
   every one of the 84 by whether it contains `storiesOf(` or a line beginning `export default`
   gives 69 with a `storiesOf` call, 14 with neither, and 1 with a default export that is not a meta
-  object. No sixteenth file is drifting toward the same shape.
+  object. No sixteenth file has drifted into the shape since the PRD was written.
 - The one default export is
   `storybook/stories/wallets/settings/WalletSettingsScreen.stories.tsx:139`,
   `export default function (props: { locale: Locale }) {`. It is an anonymous React component. It
@@ -140,7 +140,7 @@ Verified at `76db6d336`, 2026-09-14, against the working tree, not against the P
 - `tsconfig.json` declares no `include` and excludes only `node_modules`, so every `.ts` and `.tsx`
   file in the tree is in the `tsc --noEmit` program. A dangling importer cannot hide.
 - `.eslintrc` contains no rule keyed on a `stories` or `storybook` filename glob, so no lint rule
-  changes behaviour when a file leaves the convention.
+  changes behavior when a file leaves the convention.
 - `.prettierignore` selects by extension under `storybook/`, not by filename, so the moved files
   stay formatted.
 - CI runs `yarn compile` and `yarn storybook:build` as `perSystem/checks.nix:53` and `:79`, both
@@ -208,7 +208,7 @@ Tracking:
    because every file moves down exactly one directory. Two cases are not a mechanical prefix and
    are edited by hand:
    - `../_support/utils` in the five staking files becomes `../../_support/utils`. Prefixing it
-     blindly would give `../../_support/utils` by luck in the staking case but the intent is the
+     blindly would give `../../_support/utils` by luck in the staking case, but the intent is the
      corpus-wide helper, so it is stated rather than derived.
    - The sibling imports in `AddWallet.ts` and `Status.ts` go from `./X.stories` to `../X.stories`.
 
@@ -379,9 +379,8 @@ number of levels.
 
 ## Self-Review
 
-- The finding that earns the rest of the plan is the classification over all 84 convention-matching
-  files, because it confirms the set is exactly 15 and no sixteenth file has appeared since the PRD
-  was written.
+- The classification over all 84 convention-matching files confirms the set is exactly 15 and no
+  sixteenth file has appeared since the PRD was written.
 - The plan states where the host toolchain disagrees with CI and names the flake check as the
   verification of record rather than reporting the host run.
 - Scope held to renames, the import rewrites they force, and the two tracking entries this change
