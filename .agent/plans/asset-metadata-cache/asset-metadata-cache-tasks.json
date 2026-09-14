@@ -394,7 +394,7 @@
      "id": "task-010",
      "title": "Resolver: sequence cache read, fetch, verify and write",
      "description": "The one module that owns the order of operations. It answers from the database, schedules what is missing, fetches in batches, verifies before writing, and emits the rows that resolved.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 7.0,
      "dependencies": [

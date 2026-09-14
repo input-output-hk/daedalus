@@ -1,0 +1,603 @@
+/**
+ * The resolver against a real database file and a stubbed transport: answering
+ * from disk, deciding what is due, verifying per property, writing, refreshing
+ * and emitting.
+ *
+ * @jest-environment node
+ */
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { openAssetMetadataDatabase } from './assetMetadataDb';
+import type { AssetMetadataDatabase } from './assetMetadataDb';
+import {
+  ASSET_METADATA_REFRESH_MS,
+  AssetMetadataResolver,
+} from './assetMetadataResolver';
+import type {
+  RegistryTransport,
+  RegistryTransportResult,
+} from './assetRegistryClient';
+
+jest.mock('../config', () => ({
+  launcherConfig: { metadataUrl: 'https://tokens.example' },
+  MOCK_TOKEN_METADATA_SERVER_URL: 'http://127.0.0.1',
+  MOCK_TOKEN_METADATA_SERVER_PORT: 41531,
+  stateDirectoryPath: '/nonexistent',
+}));
+
+jest.mock('../environment', () => ({ environment: { isSelfnode: false } }));
+
+jest.mock('../utils/logging', () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
+const BTED = {
+  subject: 'c76ef5451f551f3c06d48c46b153cb35221b507683b2e413122661b942544544',
+  policy:
+    '820182018282051a0303eb448200581c39a1df51147b6de6689a4727846962fb6540c3a3c7859a1a79b9420f',
+  publicKey: '5817526d712f71e33a31ac3429fb7ce70b3e17e727044d9a2a51493e7894ba48',
+  tickerSignature:
+    '68a722e7aa51d7d36baae9cbaadbf7c632f41596e2ed4030a4bacd58643a81d6ed8cb6f79b585e63c58e9df6b2f88f5a9d66248ad0eb624c86709e0abe40cd0a',
+  decimalsSignature:
+    '622bf53a1ba2891cf75c6b44394cad40597213a854de0d2dbcc0d1cd31767776afdcb069b744bf54dec4e3f3486d1ba5872dae07ead7288900acc5b684b0b10b',
+  nameSignature:
+    '9a5e7bb00e1b4e2c9d4d40d894ba6f019400ca2f4138f65d5d8bd7ef9c5a9143f837428c29c40af9757da139e37d8eced1973e9d029700c9d46073ab22476e09',
+};
+
+const OTHER_SUBJECT = `${'a'.repeat(56)}beef`;
+const NOW = 1_700_000_000_000;
+
+type Overrides = {
+  decimalsValue?: unknown;
+  decimalsSignature?: string;
+  tickerSignature?: string;
+  policy?: string | null;
+  sequenceNumber?: number;
+  omitDecimals?: boolean;
+};
+
+const bted = (overrides: Overrides = {}) => {
+  const sequenceNumber = overrides.sequenceNumber ?? 0;
+  const entry: Record<string, unknown> = {
+    subject: BTED.subject,
+    policy: overrides.policy === undefined ? BTED.policy : overrides.policy,
+    name: {
+      value: 'BitEd Token',
+      sequenceNumber,
+      signatures: [
+        { signature: BTED.nameSignature, publicKey: BTED.publicKey },
+      ],
+    },
+    ticker: {
+      value: 'BTED',
+      sequenceNumber,
+      signatures: [
+        {
+          signature: overrides.tickerSignature ?? BTED.tickerSignature,
+          publicKey: BTED.publicKey,
+        },
+      ],
+    },
+    url: {
+      value: 'https://bit-ed.org/',
+      sequenceNumber,
+      signatures: [{ signature: 'ff'.repeat(64), publicKey: BTED.publicKey }],
+    },
+  };
+  if (!overrides.omitDecimals) {
+    entry.decimals = {
+      value:
+        overrides.decimalsValue === undefined ? 0 : overrides.decimalsValue,
+      sequenceNumber,
+      signatures: [
+        {
+          signature: overrides.decimalsSignature ?? BTED.decimalsSignature,
+          publicKey: BTED.publicKey,
+        },
+      ],
+    };
+  }
+  return entry;
+};
+
+const transportFor = (
+  answer: (subjects: Array<string>) => Array<Record<string, unknown>>
+): RegistryTransport & { calls: number } => {
+  const stub = {
+    calls: 0,
+    async post(_url: string, body: string): Promise<RegistryTransportResult> {
+      stub.calls += 1;
+      const { subjects } = JSON.parse(body);
+      return {
+        ok: true,
+        status: 200,
+        body: JSON.stringify({ subjects: answer(subjects) }),
+      };
+    },
+  };
+  return stub;
+};
+
+const failingTransport = (): RegistryTransport & { calls: number } => {
+  const stub = {
+    calls: 0,
+    async post(): Promise<RegistryTransportResult> {
+      stub.calls += 1;
+      return { ok: false, reason: 'network' };
+    },
+  };
+  return stub;
+};
+
+let directory: string;
+let database: AssetMetadataDatabase;
+
+const resolverWith = (
+  transport: RegistryTransport,
+  extra: Record<string, unknown> = {}
+) =>
+  new AssetMetadataResolver({
+    database,
+    transport,
+    endpoint: 'https://tokens.example',
+    now: () => NOW,
+    retryBackoffMs: 0,
+    ...extra,
+  });
+
+beforeEach(() => {
+  directory = fs.mkdtempSync(path.join(os.tmpdir(), 'asset-resolver-'));
+  database = openAssetMetadataDatabase(
+    path.join(directory, 'cache', 'assets.sqlite')
+  );
+});
+
+afterEach(() => {
+  database.close();
+  fs.rmSync(directory, { recursive: true, force: true });
+});
+
+const storedRow = (subject = BTED.subject) =>
+  database.readMetadata([subject])[0];
+
+describe('reading', () => {
+  it('answers a cached subject without touching the transport', async () => {
+    const transport = transportFor(() => [bted()]);
+    const resolver = resolverWith(transport);
+    await resolver.resolve([BTED.subject]);
+    expect(transport.calls).toBe(1);
+
+    const rows = resolver.readCached([BTED.subject]);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].ticker).toBe('BTED');
+    expect(transport.calls).toBe(1);
+  });
+
+  it('answers absent for an uncached subject and schedules a fetch', async () => {
+    const transport = transportFor(() => [bted()]);
+    const resolver = resolverWith(transport);
+    expect(resolver.request([BTED.subject])).toEqual([]);
+    await resolver.pending();
+    expect(transport.calls).toBe(1);
+    expect(storedRow().ticker).toBe('BTED');
+  });
+
+  it('makes no call for an empty subject list', async () => {
+    const transport = transportFor(() => []);
+    const resolver = resolverWith(transport);
+    expect(resolver.readCached([])).toEqual([]);
+    expect(resolver.request([])).toEqual([]);
+    await resolver.pending();
+    expect(transport.calls).toBe(0);
+  });
+
+  it('answers from disk with the transport unavailable', async () => {
+    const good = transportFor(() => [bted()]);
+    await resolverWith(good).resolve([BTED.subject]);
+
+    const broken = failingTransport();
+    const resolver = resolverWith(broken);
+    expect(resolver.readCached([BTED.subject])).toHaveLength(1);
+    expect(broken.calls).toBe(0);
+  });
+});
+
+describe('the due rule', () => {
+  it('does not fetch a subject whose row is fresh', async () => {
+    const transport = transportFor(() => [bted()]);
+    await resolverWith(transport).resolve([BTED.subject]);
+
+    const second = transportFor(() => [bted()]);
+    const resolver = resolverWith(second);
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(second.calls).toBe(0);
+  });
+
+  it('fetches either side of the refresh boundary and not before it', async () => {
+    const writeAt = (age: number) => {
+      database.writeMetadata(
+        [
+          {
+            subject: BTED.subject,
+            policyId: BTED.subject.slice(0, 56),
+            assetName: BTED.subject.slice(56),
+            ticker: 'OLD',
+            name: null,
+            decimals: null,
+            verified: false,
+            metadata: null,
+            source: 'registry',
+            sequenceNumber: 0,
+            slot: null,
+          },
+        ],
+        NOW - age
+      );
+    };
+
+    writeAt(ASSET_METADATA_REFRESH_MS - 1);
+    const fresh = transportFor(() => [bted()]);
+    const a = resolverWith(fresh);
+    a.request([BTED.subject]);
+    await a.pending();
+    expect(fresh.calls).toBe(0);
+
+    writeAt(ASSET_METADATA_REFRESH_MS + 1);
+    const stale = transportFor(() => [bted()]);
+    const b = resolverWith(stale);
+    b.request([BTED.subject]);
+    await b.pending();
+    expect(stale.calls).toBe(1);
+  });
+
+  it('does not fetch a subject inside its retry-after window', async () => {
+    database.writeResolutions(
+      [
+        {
+          subject: BTED.subject,
+          state: 'unregistered',
+          retryAfter: NOW + 60_000,
+          failureCount: 1,
+        },
+      ],
+      NOW
+    );
+    const transport = transportFor(() => [bted()]);
+    const resolver = resolverWith(transport);
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(transport.calls).toBe(0);
+  });
+
+  it('fetches a subject whose retry-after window has passed', async () => {
+    database.writeResolutions(
+      [
+        {
+          subject: BTED.subject,
+          state: 'failed',
+          retryAfter: NOW - 1,
+          failureCount: 1,
+        },
+      ],
+      NOW
+    );
+    const transport = transportFor(() => [bted()]);
+    const resolver = resolverWith(transport);
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(transport.calls).toBe(1);
+  });
+
+  it('asks once when two requests for the same subject overlap', async () => {
+    const transport = transportFor(() => [bted()]);
+    const resolver = resolverWith(transport);
+    resolver.request([BTED.subject]);
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(transport.calls).toBe(1);
+  });
+});
+
+describe('verification and the verified column', () => {
+  it('writes a verified decimals value', async () => {
+    const resolver = resolverWith(transportFor(() => [bted()]));
+    await resolver.resolve([BTED.subject]);
+    expect(storedRow()).toMatchObject({
+      ticker: 'BTED',
+      name: 'BitEd Token',
+      decimals: 0,
+      verified: true,
+      source: 'registry',
+      slot: null,
+    });
+  });
+
+  it('keeps an unverified decimals value and marks the row unverified', async () => {
+    const resolver = resolverWith(
+      transportFor(() => [bted({ decimalsSignature: 'ff'.repeat(64) })])
+    );
+    await resolver.resolve([BTED.subject]);
+    expect(storedRow()).toMatchObject({ decimals: 0, verified: false });
+  });
+
+  it('stays verified when a ticker signature fails but decimals does not', async () => {
+    const resolver = resolverWith(
+      transportFor(() => [bted({ tickerSignature: 'ff'.repeat(64) })])
+    );
+    await resolver.resolve([BTED.subject]);
+    expect(storedRow()).toMatchObject({ ticker: 'BTED', verified: true });
+  });
+
+  it('is unverified when there is no decimals property to verify', async () => {
+    const resolver = resolverWith(
+      transportFor(() => [bted({ omitDecimals: true })])
+    );
+    await resolver.resolve([BTED.subject]);
+    expect(storedRow()).toMatchObject({ decimals: null, verified: false });
+  });
+
+  it('is unverified when the entry carries no policy', async () => {
+    const resolver = resolverWith(transportFor(() => [bted({ policy: null })]));
+    await resolver.resolve([BTED.subject]);
+    expect(storedRow()).toMatchObject({ verified: false, ticker: 'BTED' });
+  });
+
+  it('drops a decimals value the schema cannot hold and keeps the row', async () => {
+    const resolver = resolverWith(
+      transportFor(() => [bted({ decimalsValue: 21 })])
+    );
+    await resolver.resolve([BTED.subject]);
+    expect(storedRow()).toMatchObject({
+      decimals: null,
+      ticker: 'BTED',
+      verified: false,
+    });
+  });
+
+  it('records url and description in the metadata column', async () => {
+    const resolver = resolverWith(transportFor(() => [bted()]));
+    await resolver.resolve([BTED.subject]);
+    expect(JSON.parse(storedRow().metadata)).toEqual({
+      url: 'https://bit-ed.org/',
+    });
+  });
+});
+
+describe('writing, emitting and failure', () => {
+  it('emits the rows it wrote, once', async () => {
+    const onResolved = jest.fn();
+    const resolver = resolverWith(
+      transportFor(() => [bted()]),
+      { onResolved }
+    );
+    await resolver.resolve([BTED.subject]);
+    expect(onResolved).toHaveBeenCalledTimes(1);
+    expect(onResolved.mock.calls[0][0]).toHaveLength(1);
+    expect(onResolved.mock.calls[0][0][0].subject).toBe(BTED.subject);
+  });
+
+  it('does not emit when nothing resolved', async () => {
+    const onResolved = jest.fn();
+    const resolver = resolverWith(
+      transportFor(() => []),
+      { onResolved }
+    );
+    await resolver.resolve([OTHER_SUBJECT]);
+    expect(onResolved).not.toHaveBeenCalled();
+  });
+
+  it('records an omitted subject as unregistered', async () => {
+    const resolver = resolverWith(transportFor(() => []));
+    await resolver.resolve([OTHER_SUBJECT]);
+    expect(database.readResolutions([OTHER_SUBJECT])[0]).toMatchObject({
+      state: 'unregistered',
+      attemptedAt: NOW,
+    });
+  });
+
+  it('records a failed batch and writes no metadata', async () => {
+    const transport = failingTransport();
+    const resolver = resolverWith(transport);
+    await resolver.resolve([BTED.subject]);
+    expect(database.readMetadata([BTED.subject])).toEqual([]);
+    expect(database.readResolutions([BTED.subject])[0]).toMatchObject({
+      state: 'failed',
+    });
+    expect(transport.calls).toBe(2);
+  });
+
+  it('does not propagate a throwing consumer', async () => {
+    const resolver = resolverWith(
+      transportFor(() => [bted()]),
+      {
+        onResolved: () => {
+          throw new Error('consumer exploded');
+        },
+      }
+    );
+    await expect(resolver.resolve([BTED.subject])).resolves.toBeDefined();
+    expect(storedRow().ticker).toBe('BTED');
+  });
+});
+
+describe('refreshing', () => {
+  const makeStale = () => {
+    const row = storedRow();
+    database.writeMetadata(
+      [
+        {
+          subject: row.subject,
+          policyId: row.policyId,
+          assetName: row.assetName,
+          ticker: row.ticker,
+          name: row.name,
+          decimals: row.decimals,
+          verified: row.verified,
+          metadata: row.metadata,
+          source: row.source,
+          sequenceNumber: row.sequenceNumber,
+          slot: row.slot,
+        },
+      ],
+      NOW - ASSET_METADATA_REFRESH_MS - 1
+    );
+  };
+
+  const seed = async () => {
+    await resolverWith(transportFor(() => [bted()])).resolve([BTED.subject]);
+    makeStale();
+  };
+
+  it('rewrites when a sequence number has risen', async () => {
+    await seed();
+    const onResolved = jest.fn();
+    const resolver = resolverWith(
+      transportFor(() => [
+        {
+          ...bted({ sequenceNumber: 1 }),
+          ticker: {
+            value: 'NEWTICK',
+            sequenceNumber: 1,
+            signatures: [
+              { signature: 'ff'.repeat(64), publicKey: BTED.publicKey },
+            ],
+          },
+        },
+      ]),
+      { onResolved }
+    );
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(storedRow()).toMatchObject({ ticker: 'NEWTICK', sequenceNumber: 1 });
+    expect(onResolved).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps its values and restamps when nothing has risen, without emitting', async () => {
+    await seed();
+    const onResolved = jest.fn();
+    const resolver = resolverWith(
+      transportFor(() => [
+        {
+          ...bted(),
+          ticker: {
+            value: 'CHANGED-WITHOUT-BUMP',
+            sequenceNumber: 0,
+            signatures: [
+              { signature: 'ff'.repeat(64), publicKey: BTED.publicKey },
+            ],
+          },
+        },
+      ]),
+      { onResolved }
+    );
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(storedRow()).toMatchObject({ ticker: 'BTED', updatedAt: NOW });
+    expect(onResolved).not.toHaveBeenCalled();
+  });
+
+  it('does not accept a lower sequence number', async () => {
+    const resolver = resolverWith(
+      transportFor(() => [bted({ sequenceNumber: 5 })])
+    );
+    await resolver.resolve([BTED.subject]);
+    makeStale();
+
+    const second = resolverWith(
+      transportFor(() => [
+        {
+          ...bted({ sequenceNumber: 1 }),
+          ticker: {
+            value: 'DOWNGRADE',
+            sequenceNumber: 1,
+            signatures: [
+              { signature: 'ff'.repeat(64), publicKey: BTED.publicKey },
+            ],
+          },
+        },
+      ])
+    );
+    second.request([BTED.subject]);
+    await second.pending();
+    expect(storedRow()).toMatchObject({ ticker: 'BTED', sequenceNumber: 5 });
+  });
+
+  it('rewrites a stored row whose sequence number is null', async () => {
+    database.writeMetadata(
+      [
+        {
+          subject: BTED.subject,
+          policyId: BTED.subject.slice(0, 56),
+          assetName: BTED.subject.slice(56),
+          ticker: 'OLD',
+          name: null,
+          decimals: null,
+          verified: false,
+          metadata: null,
+          source: 'registry',
+          sequenceNumber: null,
+          slot: null,
+        },
+      ],
+      NOW - ASSET_METADATA_REFRESH_MS - 1
+    );
+    const resolver = resolverWith(transportFor(() => [bted()]));
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(storedRow()).toMatchObject({ ticker: 'BTED', sequenceNumber: 0 });
+  });
+
+  it('lets a registry response replace a chain row regardless of sequence', async () => {
+    database.writeMetadata(
+      [
+        {
+          subject: BTED.subject,
+          policyId: BTED.subject.slice(0, 56),
+          assetName: BTED.subject.slice(56),
+          ticker: null,
+          name: 'From the chain',
+          decimals: null,
+          verified: false,
+          metadata: null,
+          source: 'chain',
+          sequenceNumber: null,
+          slot: 99,
+        },
+      ],
+      NOW - ASSET_METADATA_REFRESH_MS - 1
+    );
+    const resolver = resolverWith(transportFor(() => [bted()]));
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(storedRow()).toMatchObject({
+      source: 'registry',
+      ticker: 'BTED',
+      slot: null,
+    });
+  });
+});
+
+describe('timers', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('schedules nothing after a resolve has finished', async () => {
+    const transport = transportFor(() => [bted()]);
+    const resolver = resolverWith(transport);
+    await resolver.resolve([BTED.subject]);
+    expect(transport.calls).toBe(1);
+
+    jest.useFakeTimers();
+    jest.advanceTimersByTime(24 * 60 * 60 * 1000);
+    await Promise.resolve();
+    expect(transport.calls).toBe(1);
+  });
+});
