@@ -11,7 +11,6 @@ import DelegationCenterNoWallets from '../../../source/renderer/app/components/s
 import { StakePoolsStory } from './_support/StakePools';
 import { StakingRewardsStory } from './_support/Rewards';
 import { StakingDelegationCenterStory } from './_support/DelegationCenter';
-import { StakingEpochsStory } from './_support/Epochs';
 import { StakingDelegationSteps } from './_support/DelegationSteps';
 import {
   Step1ConfigurationDialogStory,
@@ -33,7 +32,6 @@ const pageNames = {
   'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
-  epochs: 'Epochs',
 };
 
 const decorator = (story, context) => {
@@ -126,9 +124,6 @@ storiesOf('Decentralization / Staking', module)
   })
   .add(pageNames.rewards, StakingRewardsStory, {
     id: 'rewards',
-  })
-  .add(pageNames.epochs, StakingEpochsStory, {
-    id: 'epochs',
   })
   .add(
     'Delegation Wizard',

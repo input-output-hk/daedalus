@@ -9,7 +9,6 @@ export const ROUTES = {
     DELEGATION_CENTER: '/staking/delegation-center',
     STAKE_POOLS: '/staking/stake-pools',
     REWARDS: '/staking/rewards',
-    EPOCHS: '/staking/epochs',
     INFO: '/staking/info',
   },
   PROFILE: {

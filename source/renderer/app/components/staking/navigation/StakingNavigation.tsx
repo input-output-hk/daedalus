@@ -21,11 +21,6 @@ const messages = defineMessages({
     description:
       'Label for the "Rewards" nav button in the staking navigation.',
   },
-  epochs: {
-    id: 'staking.navigation.epochs',
-    defaultMessage: '!!!Epochs',
-    description: 'Label for the "Epochs" nav button in the staking navigation.',
-  },
   info: {
     id: 'staking.navigation.info',
     defaultMessage: '!!!Info',
@@ -61,10 +56,7 @@ class StakingNavigation extends Component<Props> {
       {
         id: 'rewards',
         label: intl.formatMessage(messages.rewards),
-      }, // {
-      //   id: 'epochs',
-      //   label: intl.formatMessage(messages.epochs),
-      // },
+      },
     ];
 
     if (showInfoTab) {

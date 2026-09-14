@@ -17,7 +17,6 @@ import DisplaySettingsPage from './containers/settings/categories/DisplaySetting
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import Staking from './containers/staking/Staking';
 import DelegationCenterPage from './containers/staking/DelegationCenterPage';
-import StakingEpochsPage from './containers/staking/StakingEpochsPage';
 import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakePoolsListPage from './containers/staking/StakePoolsListPage';
@@ -191,11 +190,6 @@ export const Routes = withRouter(() => (
               pageTitle="Staking Rewards"
               path={ROUTES.STAKING.REWARDS}
               component={StakingRewardsPage}
-            />
-            <TrackedRoute
-              pageTitle="Staking Epochs"
-              path={ROUTES.STAKING.EPOCHS}
-              component={StakingEpochsPage}
             />
             {IS_STAKING_INFO_PAGE_AVAILABLE && (
               <TrackedRoute

@@ -122,7 +122,7 @@
      "id": "task-004",
      "title": "Remove the /staking/epochs screen",
      "description": "Locked decision 14. The route is live at Routes.tsx:196-200, the navigation item that would reach it is commented out at StakingNavigation.tsx:64-67, and ROUTES.STAKING.PAGE is a goToRoute target rather than a Switch binding (Staking.tsx:71-78), so nothing can land on the path. The route, the container, the components, the story and the dummy fixtures all go.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 4.0,
      "dependencies": [
@@ -149,7 +149,11 @@
       "Delete in one commit: the binding at Routes.tsx:196-200 and the import at Routes.tsx:20; ROUTES.STAKING.EPOCHS at routes-config.ts:13, whose only reader is Routes.tsx:198; containers/staking/StakingEpochsPage.tsx; the seven files under components/staking/epochs/, five components plus a stylesheet and helpers.ts; the commented navigation item at StakingNavigation.tsx:64-67 and the messages.epochs entry at :24-28 that was its only reader; both dummy JSON fixtures, which nothing else imports; and storybook/stories/staking/_support/Epochs.tsx with the import at Staking.stories.tsx:17 and the registration at :172.",
       "No barrel entry changes. storybook/stories/index.ts reaches this story only through staking/Staking.stories.tsx, so removing that import and registration is the equivalent edit.",
       "Regenerate the translation artifacts in the same commit. The i18n check at perSystem/checks.nix:64-76 snapshots source/renderer/app/i18n/locales and translations/messages.json, runs yarn i18n:manage and fails when the result differs from what is committed. Twelve message ids go: the eleven under staking.epochs.* and staking.navigation.epochs.",
-      "This removes two knob call sites from the phase 4 staking tranche, the date knob at _support/Epochs.tsx:13 and the number knob at :28."
+      "This removes two knob call sites from the phase 4 staking tranche, the date knob at _support/Epochs.tsx:13 and the number knob at :28.",
+      "Line references in this entry drifted before it was executed and were corrected rather than followed. The route binding is at Routes.tsx:195-199 and ROUTES.STAKING.EPOCHS at routes-config.ts:12, both moved by task-005 removing the /redeem-itn-wallets binding and its constant first. The story import and registration are at Staking.stories.tsx:14 and :130-132, moved by task-002 removing 88 lines from that file.",
+      "Four tracked i18n artifacts are regenerated, not the three this entry lists. source/renderer/app/i18n/locales/defaultMessages.json is in the same snapshotted directory as en-US.json and ja-JP.json and carries both the twelve removed ids and four path entries naming the deleted component files. No acceptance criterion listed here catches it; the i18n check at perSystem/checks.nix:64-76 does.",
+      "All twelve ids carry real translations in both locales, contrary to the pattern in task-003 where the six removed ids were !!!-prefixed placeholders in both. The Japanese strings are genuine translator output and go with the screen. They remain in git history and return with a revert.",
+      "source/renderer/app/i18n/locales/babeledit-project.babel still names the eleven staking.epochs.* ids and is left alone. It is a frozen snapshot last touched in 2022, carrying 1950 ids against the 1612 in en-US.json and missing ids added since, and yarn i18n:manage does not write it. The i18n check copies it unchanged and passes. Reconciling it is a separate piece of work and not this task."
      ],
      "acceptance": [
       "grep over source/, storybook/ and tests/ returns no reference to StakingEpochs, ROUTES.STAKING.EPOCHS or either dummy JSON fixture",
