@@ -5312,41 +5312,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!slot",
-        "description": "\"slot\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.slot.label"
-      },
-      {
-        "defaultMessage": "!!!transactions",
-        "description": "\"transactions\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.transactions.label"
-      },
-      {
-        "defaultMessage": "!!!MPC phase",
-        "description": "\"MPC phase\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.mpc.phase.label"
-      },
-      {
-        "defaultMessage": "!!!commitments",
-        "description": "\"commitments\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.commitments.label"
-      },
-      {
-        "defaultMessage": "!!!openings",
-        "description": "\"openings\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.openings.label"
-      },
-      {
-        "defaultMessage": "!!!shares",
-        "description": "\"shares\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.shares.label"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/legacy/StakingChartTooltip.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Delegation center",
         "description": "Label for the \"Delegation\" nav button in the staking navigation.",
         "id": "staking.navigation.delegation_center"

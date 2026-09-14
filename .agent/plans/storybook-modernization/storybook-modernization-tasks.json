@@ -96,7 +96,7 @@
      "id": "task-003",
      "title": "Delete the orphaned legacy staking story and its eight components",
      "description": "Locked decision 5. storybook/stories/staking/Legacy.stories.tsx is unreachable from the barrel, so its two registrations never appear in the sidebar and storybook:build never loads it. It is also the only reference in the repository to source/renderer/app/components/staking/legacy/.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 2.0,
      "dependencies": [
@@ -108,8 +108,10 @@
      ],
      "implementationNotes": [
       "Confirm the components are unreferenced before deleting: grep for each of the eight component names across source/, storybook/ and tests/.",
-      "The directory carries .scss and .scss.d.ts files alongside each component; delete them together.",
-      "tsc is the only thing that has been compiling these files, because tsconfig.json declares no include and only excludes node_modules."
+      "The directory carries a .scss stylesheet alongside each component plus the _stakingConfig.scss partial, 17 tracked files in all. The .scss.d.ts files are not among them: .gitignore:141 ignores *.scss.d.ts and typed-scss-modules generates them through the precompile script, so none is tracked anywhere in the repository and none is part of this commit. Note also that two partials are named _stakingConfig.scss. Only the copy inside legacy/ goes; source/renderer/app/components/staking/_stakingConfig.scss at the parent level has at least five surviving importers and is untouched.",
+      "tsc is the only thing that has been compiling these files, because tsconfig.json declares no include and only excludes node_modules.",
+      "This task changes four tracked i18n artifacts, which the entry did not previously say. StakingChartTooltip.tsx is the only file in the directory calling defineMessages, and its six ids under staking.chart.tooltip.* appear in translations/messages.json, i18n/locales/defaultMessages.json, en-US.json and ja-JP.json. The i18n check at perSystem/checks.nix:64-76 regenerates and requires no diff, so removing the component without regenerating leaves a required check red. Regenerate in the same commit; all six carry the !!! untranslated prefix in both locales, so no translation is lost.",
+      "Refinement to locked decision 5, which records five components as referenced by nothing at all. Measured: legacy/Staking.tsx is referenced by nothing, and BlockGenerationInfo, StakingSwitch and StakingSystemState are referenced only by it, with StakingSystemStateElement referenced only by StakingSystemState. It is one dead subtree rooted at an unreferenced file rather than five isolated files. Same conclusion, and it is what a reviewer re-running the per-component greps will see."
      ],
      "acceptance": [
       "yarn storybook:build, yarn compile and yarn lint pass",
