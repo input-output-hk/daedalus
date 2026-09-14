@@ -596,6 +596,7 @@
      "dependencies": [
       "task-001",
       "task-002",
+      "task-005",
       "task-014",
       "task-015"
      ],
@@ -877,7 +878,7 @@
       "task-019"
      ],
      "targetPaths": [
-      "source/renderer/app/components/wallet/widgets/AssetInput.tsx",
+      "source/renderer/app/components/wallet/send-form/AssetInput.tsx",
       "source/renderer/app/i18n/locales/en-US.json"
      ],
      "implementationNotes": [
@@ -904,7 +905,7 @@
       "task-039"
      ],
      "targetPaths": [
-      "source/renderer/app/components/wallet/widgets/AssetInput.tsx",
+      "source/renderer/app/components/wallet/send-form/AssetInput.tsx",
       "source/renderer/app/components/wallet/WalletSendForm.tsx",
       "source/renderer/app/i18n/locales/en-US.json"
      ],
