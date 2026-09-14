@@ -184,7 +184,11 @@ sorts them, and this branch takes two of the tiers.
 ## Non-Goals
 
 - Changing any formatting option. `arrowParens`, print width, quote style and
-  trailing commas stay as they are. The open `arrowParens` question is
+  trailing commas stay as they are. `.prettierrc` does gain `printWidth`,
+  `tabWidth`, `useTabs` and `endOfLine`, all at the values already in force and
+  verified to reformat nothing, because prettier's CLI reads `.editorconfig` by
+  default and those are the four options it can reach. Writing down a value that
+  is already in effect is not a change to it. The open `arrowParens` question is
   deliberately excluded so a style decision and a version artefact never appear
   in the same diff.
 - Reformatting the tree. The prettier change is expected to produce zero file
@@ -280,43 +284,43 @@ sorts them, and this branch takes two of the tiers.
 
 Formatter parity:
 
-- [ ] `package.json` names `prettier` at `3.6.2`, and `yarn.lock` resolves to it
-- [ ] The prettier commit touches only `package.json` and `yarn.lock`
-- [ ] `yarn prettier:check` and `nix fmt -- --ci` both exit 0 on a clean checkout
-- [ ] `yarn prettier:format` produces an empty diff
+- [x] `package.json` names `prettier` at `3.6.2`, and `yarn.lock` resolves to it
+- [x] The prettier commit touches only `package.json` and `yarn.lock`
+- [x] `yarn prettier:check` and `nix fmt -- --ci` both exit 0 on a clean checkout
+- [x] `yarn prettier:format` produces an empty diff
 - [ ] No script or document passes `--loglevel`
-- [ ] `perSystem/formatter.nix` sets no `programs.prettier.settings`, and the
+- [x] `perSystem/formatter.nix` sets no `programs.prettier.settings`, and the
       generated treefmt config passes no `--config` for prettier
-- [ ] A check fails, naming both versions, when the prettier in `package.json`
+- [x] A check fails, naming both versions, when the prettier in `package.json`
       and the prettier treefmt runs differ
 
 Crypto assurance:
 
-- [ ] The 24 published BIP39 English vectors are committed as a fixture with
+- [x] The 24 published BIP39 English vectors are committed as a fixture with
       their upstream source recorded
-- [ ] The fixture's entry count is asserted, so removing a vector fails the
+- [x] The fixture's entry count is asserted, so removing a vector fails the
       suite rather than quietly reducing coverage
-- [ ] Every vector is asserted for entropy to mnemonic and for mnemonic to seed
-- [ ] Seed assertions run against both the Node and the browser pbkdf2
+- [x] Every vector is asserted for entropy to mnemonic and for mnemonic to seed
+- [x] Seed assertions run against both the Node and the browser pbkdf2
       resolution
-- [ ] `secureRandomBytes` exists as a first-party module, throws when no
+- [x] `secureRandomBytes` exists as a first-party module, throws when no
       platform CSPRNG is present, and never falls back to a weaker source
-- [ ] `secureRandomBytes` rejects all-zero output and a repeated draw
-- [ ] `generateMnemonic` takes its entropy from `secureRandomBytes` by explicit
+- [x] `secureRandomBytes` rejects all-zero output and a repeated draw
+- [x] `generateMnemonic` takes its entropy from `secureRandomBytes` by explicit
       argument, not from a bip39 default
-- [ ] A provenance test proves the words shown to the user decode back to
+- [x] A provenance test proves the words shown to the user decode back to
       exactly the bytes the platform CSPRNG produced, with nothing transformed,
       truncated or discarded on the way
-- [ ] Lint rejects `Math.random`, `Buffer.allocUnsafe`, and
+- [x] Lint rejects `Math.random`, `Buffer.allocUnsafe`, and
       `bip39.generateMnemonic` called anywhere but the entropy module
-- [ ] Coverage of `crypto.ts` and `entropy.ts` is thresholded, so deleting a
+- [x] Coverage of `crypto.ts` and `entropy.ts` is thresholded, so deleting a
       test fails the build
-- [ ] The crypto assertions are a separately named check inside `required`
-- [ ] A recorded paper wallet certificate restores to its known phrase, and the
+- [x] The crypto assertions are a separately named check inside `required`
+- [x] A recorded paper wallet certificate restores to its known phrase, and the
       assertion does not depend on the scrambling code existing
-- [ ] No crypto scenario carries `@skip` or `@wip`, and none is left skipped by
+- [x] No crypto scenario carries `@skip` or `@wip`, and none is left skipped by
       deleting the coverage rather than moving it
-- [ ] Every assertion above has been observed to fail when the thing it protects
+- [x] Every assertion above has been observed to fail when the thing it protects
       is broken
 - [ ] All of the above are committed and green **before** any tier 2 bump
 
@@ -407,6 +411,12 @@ package a second time, so it cannot itself drift from what the formatter runs.
 executes; `perSystem` must take `config` in its argument set, which
 `perSystem/checks.nix` does not do today.
 
+Implemented with a deviation from the sketch below: the pinned version is read
+with `builtins.readFile ../package.json` at evaluation time rather than with
+`jq` at build time. That drops the `jq` dependency, avoids taking a dependency
+on the whole flake source through `${inputs.self}`, and lets the failure message
+embed the pinned version directly.
+
 ```nix
 prettier-version-parity =
   pkgs.runCommand "daedalus-prettier-version-parity" {
@@ -448,9 +458,20 @@ already a subset of them. Scope is decided by `.prettierignore`, which prettier
 applies to explicitly passed paths. This is documented prettier behaviour and
 the same mechanism that makes `yarn prettier "**/*.*"` correct.
 
-The residual risk is that a future prettier could stop applying `.prettierignore`
-to explicit paths, at which point treefmt would begin formatting every Markdown
-file in the tree, `CHANGELOG.md` included. That would be a loud diff on the
+Measured after the removal, and larger than this section originally assumed.
+treefmt now hands prettier 1969 files rather than 1955; the 14 are the locale,
+newsfeed and e2e document files the deleted `excludes` had covered, which
+prettier declines through `.prettierignore`. More significant, the directory
+entries in `settings.global.excludes` do not exclude directory contents at all:
+treefmt matches prettier against all 326 tracked files under `.agent`, and
+against `CHANGELOG.md`. `prettier --file-info` reports `ignored: true` for every
+one of them, so `.prettierignore` is the only thing holding that line, and it
+was the only thing holding it before this change too.
+
+The residual risk is therefore not hypothetical bookkeeping. If a future prettier
+stopped applying `.prettierignore` to explicit paths, treefmt would begin
+formatting every Markdown file in the tree, `CHANGELOG.md` and this plan
+included. That would be a loud diff on the
 first `nix fmt` after such a bump rather than a silent corruption, and the
 parity check makes any prettier version move deliberate. Naming it once is the
 proportionate response; a duplicated exclude list is what this change removes.
@@ -743,8 +764,10 @@ formatter. That is the intended outcome.
 
 1. **Should `check:all` run the Nix formatter instead of `yarn prettier:check`?**
    **Decided on 2026-08-27: yes.** CI gates on `required`, which collects every
-   derivation in `checks.x86_64-linux`: `treefmt`, `lint`, `compile`,
-   `stylelint`, `i18n`, `storybook`, `shellcheck`, `jest` and `cucumber-unit`.
+   derivation in `checks.x86_64-linux`, which is a longer list than this document
+   originally recorded: `treefmt`, `lint`, `compile`, `stylelint`, `i18n`,
+   `storybook`, `shellcheck`, `jest`, `cucumber-unit`, `bundle-integrity`,
+   `drt-clippy`, `watchdog-clippy` and `watchdog-test`.
    Nothing in CI runs `yarn check:all` or `yarn prettier:check`. So `check:all`
    is already a local mirror of the required set, and the formatter was the one
    member it mirrored with the wrong tool. The accepted cost is that
@@ -791,6 +814,18 @@ Append-only. New entries go at the end.
 | 2026-08-27 | Open Question 5 decided: retire paper wallet creation, keep restore, prove restore with a recorded certificate vector rather than a round trip. Creation code removal is a separate branch, because it deletes an IPC channel and roughly 1,900 lines across 24 files. |
 | 2026-08-27 | Restore vector captured and verified deterministic. Recorded in Technical Design. Captured now because it cannot be captured once the scrambling code is gone. |
 | 2026-08-27 | Root-owned `node_modules/.cache/storybook/10.5.10` cleared, so `yarn build:electron` is no longer aborting on dev shell entry. The task-015 blocker is lifted. |
+| 2026-08-27 | Phase 1 complete. prettier moved to 3.6.2, the three `--loglevel` scripts renamed, lockfile regenerated in the Nix dev shell. `yarn prettier:check` exits 0, `nix fmt -- --ci` reports 0 changed, and `yarn prettier:format` leaves only `package.json` and `yarn.lock` changed. The premise held; no re-measure was needed. |
+| 2026-08-27 | Phase 1 verified green in CI. `ci/hydra-build:required`, `ci/hydra-build:nonrequired`, `ci/eval`, Jest on Windows and Cargo on Windows all SUCCESS on the prettier bump, so `checks.treefmt` passes with prettier 3.6.2. |
+| 2026-08-27 | Phase 2 complete. treefmt reads `.prettierrc`, the inert prettier include and exclude lists are gone, `prettier-version-parity` is in the required set and verified failing as well as passing, and `check:all` runs `nix fmt -- --ci` through a new `fmt:check` script. |
+| 2026-08-27 | Finding while measuring task-005: `settings.global.excludes` directory entries are inert, and `.prettierignore` is the sole gate on prettier's scope. Recorded under Why removing the prettier `includes` block is safe. Not acted on. |
+| 2026-08-27 | `.prettierrc` pinned the four options `.editorconfig` can reach. Measured: prettier's CLI honours `.editorconfig` by default, `.prettierrc` overrides it, and the four keys are `indent_style`, `indent_size`, `max_line_length` and `end_of_line`. With the pins, `indent_size = 4` reformats nothing; without them it puts 1488 files out of conformance. Non-Goals updated. |
+| 2026-08-27 | Measured what fixing `settings.global.excludes` would buy, without doing it: suffixing the ten directory entries with `/**` drops treefmt's emitted set from 1969 files to 1639 and takes `.agent` matches from 326 to 0, with `nix fmt -- --ci` still reporting 0 changed. Awaiting a decision. |
+| 2026-08-27 | Phase 3 started. BIP39 vector fixture committed with provenance pinned to an upstream commit, and the conformance baseline measured: 24/24 on every axis, both pbkdf2 resolutions. |
+| 2026-08-27 | Vector suite landed. 90 assertions, all 24 vectors on both pbkdf2 resolutions plus the entropy mapping, blake2b224, bech32 and both stake address branches. Verified failing under four separate injections before being trusted. |
+| 2026-08-27 | Entropy module landed and wired in. Deviation: `jest.setup.js` was needed, because `jest-environment-jsdom` at this version provides no `globalThis.crypto`. That is also a prediction about the `bip39` 3.1.0 bump, which needs the same global through `@noble/hashes`. |
+| 2026-08-27 | Provenance test landed, verified against three separate weakenings of `crypto.ts`. Three published vectors use all-zero entropy, which `secureRandomBytes` refuses; asserted as refusals rather than excepted from the guard. |
+| 2026-08-27 | Phase 3 complete. Lint restrictions, the `crypto-vectors` check with its coverage floor, and the paper wallet restore vector all landed and were verified failing as well as passing. No crypto scenario is skipped. |
+| 2026-08-27 | `settings.global.excludes` fixed with `/**` suffixes, on Adam's decision. Emitted set 1976 to 1645, prettier matches under `.agent` 326 to 0, 0 changed, and alejandra and rustfmt still match all 35 `.nix` and 33 `.rs` files. |
 | 2026-08-27 | Scope widened, and the decision to exclude source changes reversed. Investigation found wallet entropy sourced from a `bip39` default that this branch's own bump replaces, and a crypto scenario skipped since 2021 hiding a throwing `generateMnemonic(9)`. Phase 3 becomes a crypto assurance phase, beginning by asserting current conformance against the published BIP39 vectors and ending with controls that make a later weakening conspicuous. Status In Progress. |
 
 ---

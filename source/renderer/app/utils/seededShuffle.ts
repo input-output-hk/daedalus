@@ -15,6 +15,7 @@ function mulberry32(seed: number): () => number {
 }
 
 export function generateCohortSeed(): number {
+  // eslint-disable-next-line no-restricted-properties
   return Math.floor(Math.random() * 4294967296) >>> 0;
 }
 

@@ -9,6 +9,7 @@ import * as unorm from 'unorm';
 import CardanoCrypto from 'rust-cardano-crypto';
 import validWords from '../../../common/config/crypto/valid-words.en';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
+import { secureRandomBytes } from './entropy';
 
 /**
   CS = ENT / 32
@@ -51,7 +52,11 @@ export const generateMnemonic = (ms: number | null | undefined = 15) => {
       ent = 128;
   }
 
-  return bip39.generateMnemonic(ent, null, validWords);
+  // The entropy source is passed explicitly rather than left to bip39's
+  // default. That default is a transitive dependency's choice: 3.0.4 used the
+  // `randombytes` package, 3.1.0 uses `@noble/hashes`. Naming it here means a
+  // version bump cannot change where the seed for a wallet comes from.
+  return bip39.generateMnemonic(ent, secureRandomBytes, validWords);
 };
 export const scramblePaperWalletMnemonic = (
   passphrase: string,
