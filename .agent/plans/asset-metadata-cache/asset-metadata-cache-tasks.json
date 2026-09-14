@@ -895,7 +895,7 @@
      "id": "task-040",
      "title": "Snapshot decimals per asset row and block on a mid-edit denomination change",
      "description": "The amount signed is a pure function of the display string, with no record of its denomination: WalletSendForm.tsx:231-236 runs formattedAmountToNaturalUnits over the field value and utils/formatters.ts:156-169 strips separators. AssetInput is an @observer reading decimals live (AssetInput.tsx:77-83), so a resolution arriving mid-edit changes the meaning of what is on screen. A field holding 1500000 typed as raw units, resolved to six decimals, then touched once, submits 1500000000000.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 8.0,
      "dependencies": [

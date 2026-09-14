@@ -59,17 +59,29 @@ const buildForm = () =>
     }
   );
 
+/**
+ * `decimals` is the row's snapshotted denomination and is what the component
+ * obeys. `assetDecimals` is what the asset itself currently says, which the row
+ * deliberately ignores; it defaults to the snapshot so that every case that does
+ * not care about the difference reads as it did before the snapshot existed.
+ */
 const renderAssetInput = (
   decimals: number | null | undefined,
   numberFormat: string = NUMBER_OPTIONS[0].value,
-  metadata?: Record<string, unknown> | null
+  metadata?: Record<string, unknown> | null,
+  options: {
+    assetDecimals?: number | null;
+    hasDenominationChanged?: boolean;
+  } = {}
 ) => {
   const form = buildForm();
   const field = form.$(fieldName);
+  const assetDecimals =
+    'assetDecimals' in options ? options.assetDecimals : decimals;
   const asset =
     metadata === undefined
-      ? buildAsset(decimals)
-      : buildAsset(decimals, metadata);
+      ? buildAsset(assetDecimals)
+      : buildAsset(assetDecimals, metadata);
   // A fresh element each time. `AssetInput` is an `@observer`, so mobx-react
   // gives it a shallow prop comparison; re-rendering the identical element with
   // a mutated plain asset would be skipped. In the application the lookup is a
@@ -88,17 +100,24 @@ const renderAssetInput = (
             handleSubmitOnEnter={() => {}}
             clearAssetFieldValue={() => {}}
             autoFocus={false}
+            decimals={rowDecimals}
+            hasDenominationChanged={options.hasDenominationChanged === true}
           />
         </DiscreetModeFeatureProvider>
       </BrowserLocalStorageBridge>
     </TestDecorator>
   );
+  let rowDecimals = decimals;
   const { rerender } = render(tree());
   return {
     field,
     asset,
     input: screen.getByTestId(`assetInput:${uniqueId}`),
     label: () => screen.getByTestId(`assetUnitLabel:${uniqueId}`),
+    setDecimals: (next: number | null | undefined) => {
+      rowDecimals = next;
+      rerender(tree());
+    },
     rerender: () => rerender(tree()),
   };
 };
@@ -272,15 +291,14 @@ describe('AssetInput', () => {
     });
 
     it('moves with the denomination it describes, in the same render', () => {
-      const { asset, input, field, label, rerender } =
-        renderAssetInput(undefined);
+      const { input, field, label, setDecimals } = renderAssetInput(undefined);
       expect(label()).toHaveTextContent('Enter a whole number of TEST units');
       type(input, ['1', '1.', '1.5']);
       expect(field.value).toEqual('1');
 
-      // The resolution the cache pushes, driven by hand.
-      asset.decimals = 6;
-      rerender();
+      // The row's denomination moving, which after the snapshot is the prop and
+      // not the asset.
+      setDecimals(6);
 
       expect(label()).toHaveTextContent(
         'Enter an amount in TEST, to 6 decimal places.'
@@ -290,6 +308,56 @@ describe('AssetInput', () => {
       field.clear();
       type(input, ['2', '2.', '2.5']);
       expect(field.value).toEqual('2.500000');
+    });
+  });
+
+  describe('the snapshotted denomination', () => {
+    it('obeys the snapshot and not the asset it is handed', () => {
+      // The asset says six decimal places. The row was added when they were
+      // unknown, so the row is in raw units and stays there.
+      const { field, input, label } = renderAssetInput(
+        null,
+        NUMBER_OPTIONS[0].value,
+        undefined,
+        { assetDecimals: 6 }
+      );
+      type(input, ['1500000', '1500000.', '1500000.5']);
+      expect(field.value).toEqual('1500000');
+      expect(formattedAmountToNaturalUnits(field.value)).toEqual('1500000');
+      expect(label()).toHaveTextContent('Enter a whole number of TEST units');
+    });
+
+    it('renders the balance in the snapshotted denomination too', () => {
+      // 900000000 raw units, drawn as raw units because the row is in raw units,
+      // whatever the asset has since resolved to.
+      const { input } = renderAssetInput(
+        null,
+        NUMBER_OPTIONS[0].value,
+        undefined,
+        {
+          assetDecimals: 6,
+        }
+      );
+      expect(input).toBeInTheDocument();
+      expect(screen.getByText('900,000,000 TEST')).toBeInTheDocument();
+    });
+
+    it('says nothing about a denomination change on its own', () => {
+      renderAssetInput(6);
+      expect(
+        screen.queryByTestId(`assetDenominationNotice:${uniqueId}`)
+      ).not.toBeInTheDocument();
+    });
+
+    it('names the token in the notice when a change cleared the amount', () => {
+      renderAssetInput(6, NUMBER_OPTIONS[0].value, undefined, {
+        hasDenominationChanged: true,
+      });
+      const notice = screen.getByTestId(`assetDenominationNotice:${uniqueId}`);
+      expect(notice).toHaveTextContent(
+        'The decimal places published for TEST changed while you were entering an amount'
+      );
+      expect(notice).toHaveTextContent('Enter it again');
     });
   });
 });

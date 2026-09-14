@@ -27,6 +27,18 @@ type Props = {
   handleSubmitOnEnter: (...args: Array<any>) => any;
   clearAssetFieldValue: (...args: Array<any>) => any;
   autoFocus: boolean;
+  /**
+   * The decimal places this row is denominated in, snapshotted when the row was
+   * added. Deliberately a prop and not a read of the asset: the asset's value
+   * can change under an open field, and the whole point of the snapshot is that
+   * the row does not move with it.
+   */
+  decimals: number | null | undefined;
+  /**
+   * Whether a resolution moved this asset's decimal places while the field held
+   * an amount. The amount was cleared and the row says why.
+   */
+  hasDenominationChanged: boolean;
 };
 const INPUT_FIELD_PADDING_DELTA = 10;
 
@@ -74,6 +86,8 @@ class AssetInput extends Component<Props> {
       handleSubmitOnEnter,
       clearAssetFieldValue,
       autoFocus,
+      decimals,
+      hasDenominationChanged,
     } = this.props;
     const asset = getAssetByUniqueId(uniqueId);
 
@@ -81,7 +95,10 @@ class AssetInput extends Component<Props> {
       return false;
     }
 
-    const { quantity, metadata, decimals } = asset;
+    // Everything in this row is drawn in the snapshotted denomination, the
+    // balance beside the field included, so the amount a user compares against
+    // is in the units the field is accepting.
+    const { quantity, metadata } = asset;
     const ticker = get(metadata, 'ticker', null);
     // The unit the field is denominated in, for the label below it. A published
     // ticker where there is one, and otherwise the fingerprint in the same
@@ -154,6 +171,17 @@ class AssetInput extends Component<Props> {
             allowSigns={false}
             autoFocus={autoFocus}
           />
+          {hasDenominationChanged && (
+            <div
+              className={styles.denominationNotice}
+              data-testid={`assetDenominationNotice:${uniqueId}`}
+            >
+              {intl.formatMessage(
+                messages.assetInputDenominationChangedNotice,
+                { unit }
+              )}
+            </div>
+          )}
           <div
             className={styles.unitLabel}
             data-testid={`assetUnitLabel:${uniqueId}`}

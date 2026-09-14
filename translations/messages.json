@@ -7097,6 +7097,11 @@
         "id": "wallet.send.form.assetInput.rawUnitsLabel"
       },
       {
+        "defaultMessage": "!!!The decimal places published for {unit} changed while you were entering an amount, so the amount has been cleared. Enter it again in the units this field now accepts.",
+        "description": "Notice on a token row in the wallet send form, shown when the decimal places for that token changed while an amount was already entered and the amount was cleared as a result.",
+        "id": "wallet.send.form.assetInput.denominationChangedNotice"
+      },
+      {
         "defaultMessage": "!!!Enter an amount in {unit}, to {decimals} decimal places.",
         "description": "Label under the token amount field in the wallet send form, for a token whose decimal places are known, stating the unit and the precision the field accepts.",
         "id": "wallet.send.form.assetInput.decimalUnitsLabel"
