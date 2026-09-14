@@ -11,10 +11,10 @@
 no Storybook configuration and no barrel, so it cannot collide with any other task in this phase.
 The task entry calls it independent of every other task in the phase, and that holds.
 
-It is taken now because the tasks ahead of it in the phase order, `task-002`, `task-003` and
-`task-004`, are blocked on a permission this environment does not grant: each one removes a file
-from the working tree, and file removal is refused here. `task-005` removes lines from two files
-that both survive, so it is unaffected.
+It is taken ahead of its position in the phase order because the three tasks before it, `task-002`,
+`task-003` and `task-004`, are still open, and `task-005` shares no file with any of them. The only
+overlap is `Routes.tsx`, which `task-004` also edits, four lines above this binding; that is a line
+number to re-derive rather than a dependency, and it is recorded under Risks.
 
 ## Interaction Mode
 

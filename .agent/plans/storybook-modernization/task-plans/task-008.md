@@ -11,9 +11,8 @@
 work rather than part of it, and locked decision 11 requires it to land as its own commit precisely
 so that anything it disturbs is attributable to it and to nothing else.
 
-It is taken now because it is one of the four tasks in this phase that can be completed in this
-environment. `task-002`, `task-003`, `task-004` and `task-007` each remove a file from the working
-tree, and file removal is refused here.
+It is taken ahead of its position in the phase order because it shares no file with any other task
+in the phase. `tsconfig.json` is named by no other entry in the graph.
 
 ## Interaction Mode
 

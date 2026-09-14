@@ -11,12 +11,11 @@
 `DaedalusMenu` addon with Storybook globals, so the count is what tells that task and the five
 hand-finish tranches how much per-file work the change to context carries.
 
-It is taken now because `task-002`, `task-003`, `task-004` and `task-007` are blocked on a
-permission this environment does not grant: each removes a file from the working tree and file
-removal is refused here. The task entry anticipates this case directly, saying the count is taken
-after `task-002` and `task-003` land or is adjusted for the deleted files. It is adjusted, and the
-adjustment for `task-007` is given as well because that task also removes a module the count
-includes.
+It is taken ahead of its position in the phase order, while `task-002`, `task-003`, `task-004` and
+`task-007` are still open. The task entry provides for that directly: the count is taken after
+`task-002` and `task-003` land, or is adjusted for the deleted files. It is adjusted, and the
+adjustments for `task-004` and `task-007` are given as well, because both also remove modules the
+count includes.
 
 ## Interaction Mode
 

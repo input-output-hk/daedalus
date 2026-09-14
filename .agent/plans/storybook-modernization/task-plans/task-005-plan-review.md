@@ -65,9 +65,9 @@ Blocking gaps:
 Non-blocking observations:
 - The plan should say that `task-004` edits the same file a few lines above, so whichever lands
   second re-derives its line numbers. Both are in this phase and both are single commits.
-- Nothing states why the task is being taken out of the phase order. It is, because the three tasks
-  ahead of it are blocked on file removal, and a reader six months from now will want that on the
-  record rather than inferring it from the commit dates.
+- Nothing states why the task is being taken out of the phase order. It is, and the reason it can be
+  is that it shares no file with the three tasks ahead of it. A reader six months from now will want
+  that on the record rather than inferring it from the commit dates.
 
 Outcome: Requires revision before approval
 

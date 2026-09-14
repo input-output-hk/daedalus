@@ -10,9 +10,8 @@
 `task-006.dependencies` is `[task-001]`, and `task-001` is complete, so the sidebar baseline this
 change is measured against exists. Nothing in the graph depends on `task-006`.
 
-It is taken ahead of its phase position because `task-002`, `task-003` and `task-004` are blocked on
-a permission this environment does not grant: each removes a file from the working tree and file
-removal is refused here. `task-006` adds one file and edits two, so it is unaffected.
+It is taken ahead of its position in the phase order because `task-002`, `task-003` and `task-004`
+are still open and `task-006` shares no file with any of them. Its only dependency is satisfied.
 
 Doing it before phase 3 matters more than its position suggests. The dialog and its fixture are
 currently expressed as a prop to another component's story. The `storiesof-to-csf` codemod has no
