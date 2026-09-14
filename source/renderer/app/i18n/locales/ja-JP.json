@@ -1537,6 +1537,8 @@
   "wallet.token.picker.maxTokensWarning": "最大{maxTokens}のトランザクション上限に達しています。別のトークンを加えるには、リストから1つ削除する必要があります。",
   "wallet.token.picker.noResults": "検索クエリと一致する結果はありません",
   "wallet.token.picker.title": "トークンを追加する",
+  "wallet.tokens.decimalPlacesNotice": "!!!For tokens whose decimal places an issuer has published and proved, amounts are now entered in those units rather than in the whole units the ledger holds: one and a half of a six-decimal token is now 1.5 and not 1500000. Balances for those tokens are shown the same way. A decimal place setting you have chosen yourself still overrides both.",
+  "wallet.tokens.decimalPlacesNotice.dismiss": "!!!Got it",
   "wallet.tokens.list.column.amount": "金額",
   "wallet.tokens.list.column.token": "トークン",
   "wallet.tokens.list.favorites.title": "お気に入り",

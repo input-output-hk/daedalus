@@ -331,6 +331,12 @@ export default class LocalStorageApi {
     LocalStorageApi.set(keys.SMASH_SERVER, smashServerUrl);
   unsetSmashServer = (): Promise<void> =>
     LocalStorageApi.unset(keys.SMASH_SERVER);
+  getDecimalPlacesNoticeAcknowledged = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.DECIMAL_PLACES_NOTICE, false);
+  setDecimalPlacesNoticeAcknowledged = async (): Promise<void> =>
+    LocalStorageApi.set(keys.DECIMAL_PLACES_NOTICE, true);
+  unsetDecimalPlacesNoticeAcknowledged = (): Promise<void> =>
+    LocalStorageApi.unset(keys.DECIMAL_PLACES_NOTICE);
   getStakingInfoWasOpen = (): Promise<boolean> =>
     LocalStorageApi.get(keys.STAKING_INFO_WAS_OPEN, false);
   setStakingInfoWasOpen = async (): Promise<void> =>

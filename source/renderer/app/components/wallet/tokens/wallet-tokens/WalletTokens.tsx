@@ -27,12 +27,32 @@ const messages = defineMessages({
     description:
       'Syncing transactions message shown during async wallet restore in the wallet send form.',
   },
+  decimalPlacesNotice: {
+    id: 'wallet.tokens.decimalPlacesNotice',
+    defaultMessage:
+      '!!!For tokens whose decimal places an issuer has published and proved, amounts are now entered in those units rather than in the whole units the ledger holds: one and a half of a six-decimal token is now 1.5 and not 1500000. Balances for those tokens are shown the same way. A decimal place setting you have chosen yourself still overrides both.',
+    description:
+      'One-time notice on the token list, shown after the update that began applying verified decimal places, explaining that the amount field for those tokens now takes issuer units.',
+  },
+  decimalPlacesNoticeDismiss: {
+    id: 'wallet.tokens.decimalPlacesNotice.dismiss',
+    defaultMessage: '!!!Got it',
+    description:
+      'Label for the button that dismisses the one-time notice on the token list.',
+  },
 });
 type Props = {
   assets: Array<AssetToken>;
   currentLocale: string;
   intl: intlShape.isRequired;
   isLoadingAssets: boolean;
+  /**
+   * Whether this profile has already been told that verified decimal places are
+   * applied on their own. Held per profile in browser storage, so dismissing it
+   * survives a restart.
+   */
+  isDecimalPlacesNoticeAcknowledged?: boolean;
+  onAcknowledgeDecimalPlacesNotice?: () => void;
   onAssetSettings: (...args: Array<any>) => any;
   onCopyAssetParam: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
@@ -55,10 +75,16 @@ const WalletTokens = observer((props: Props) => {
     tokenFavorites,
     onToggleFavorite,
     isLoadingAssets,
+    isDecimalPlacesNoticeAcknowledged = true,
+    onAcknowledgeDecimalPlacesNotice,
     ...listProps
   } = props;
   const { isRestoring } = props.wallet;
   const hasTokens = assets.length || isLoadingAssets;
+  // Held tokens, from the wallet rather than from the metadata cache: a profile
+  // with nothing to send has no habit to correct, whatever the cache knows.
+  const showsDecimalPlacesNotice =
+    !isDecimalPlacesNoticeAcknowledged && assets.length > 0;
   const favoriteTokensList = useMemo(
     () => assets.filter(({ uniqueId }) => tokenFavorites[uniqueId]),
     [assets, tokenFavorites, searchValue]
@@ -124,6 +150,24 @@ const WalletTokens = observer((props: Props) => {
 
   return (
     <div className={styles.component}>
+      {showsDecimalPlacesNotice && (
+        <div
+          className={styles.decimalPlacesNotice}
+          data-testid="decimalPlacesNotice"
+        >
+          <p className={styles.decimalPlacesNoticeText}>
+            {intl.formatMessage(messages.decimalPlacesNotice)}
+          </p>
+          <button
+            className={styles.decimalPlacesNoticeDismiss}
+            type="button"
+            data-testid="decimalPlacesNotice:dismiss"
+            onClick={onAcknowledgeDecimalPlacesNotice}
+          >
+            {intl.formatMessage(messages.decimalPlacesNoticeDismiss)}
+          </button>
+        </div>
+      )}
       {hasTokens && (
         <div className={styles.searchContainer}>
           <WalletTokensSearch

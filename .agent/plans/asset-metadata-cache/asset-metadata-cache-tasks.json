@@ -763,7 +763,7 @@
      "id": "task-021",
      "title": "One-time notice, leading with the send input rather than the balance",
      "description": "Applying verified decimal places changes only how an unchanged integer is drawn, because ledger quantities are integers and decimal places are presentation. No balance moves. What changes is the interpretation of the send amount field, which flips from raw units to issuer units at the same moment, so the notice leads with that.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 5.0,
      "dependencies": [

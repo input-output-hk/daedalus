@@ -27,7 +27,8 @@ const WalletTokensPage = inject(
       actions.assets;
     const { open } = actions.dialogs;
     const { active: activeWallet } = wallets;
-    const { currentLocale } = profile;
+    const { currentLocale, isDecimalPlacesNoticeAcknowledged } = profile;
+    const { acknowledgeDecimalPlacesNotice } = actions.profile;
     const openAssetSettingsDialog = useCallback(
       ({ asset }: OpenAssetSettingsDialogArgs) => {
         setEditedAsset.trigger({
@@ -62,6 +63,10 @@ const WalletTokensPage = inject(
         onExternalLinkClick={app.openExternalLink}
         tokenFavorites={favorites}
         wallet={activeWallet}
+        isDecimalPlacesNoticeAcknowledged={isDecimalPlacesNoticeAcknowledged}
+        onAcknowledgeDecimalPlacesNotice={
+          acknowledgeDecimalPlacesNotice.trigger
+        }
       />
     );
   })

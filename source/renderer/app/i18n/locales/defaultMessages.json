@@ -7235,6 +7235,16 @@
         "defaultMessage": "!!!Tokens",
         "description": "Favorites list title label",
         "id": "wallet.tokens.list.tokens.title"
+      },
+      {
+        "defaultMessage": "!!!For tokens whose decimal places an issuer has published and proved, amounts are now entered in those units rather than in the whole units the ledger holds: one and a half of a six-decimal token is now 1.5 and not 1500000. Balances for those tokens are shown the same way. A decimal place setting you have chosen yourself still overrides both.",
+        "description": "One-time notice on the token list, shown after the update that began applying verified decimal places, explaining that the amount field for those tokens now takes issuer units.",
+        "id": "wallet.tokens.decimalPlacesNotice"
+      },
+      {
+        "defaultMessage": "!!!Got it",
+        "description": "Label for the button that dismisses the one-time notice on the token list.",
+        "id": "wallet.tokens.decimalPlacesNotice.dismiss"
       }
     ],
     "path": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.tsx"

@@ -1537,6 +1537,8 @@
   "wallet.token.picker.maxTokensWarning": "You have already reached a maximum of {maxTokens} tokens for your transaction. To add another token you need to remove one from a list.",
   "wallet.token.picker.noResults": "Results do not match search query",
   "wallet.token.picker.title": "Add tokens",
+  "wallet.tokens.decimalPlacesNotice": "For tokens whose decimal places an issuer has published and proved, amounts are now entered in those units rather than in the whole units the ledger holds: one and a half of a six-decimal token is now 1.5 and not 1500000. Balances for those tokens are shown the same way. A decimal place setting you have chosen yourself still overrides both.",
+  "wallet.tokens.decimalPlacesNotice.dismiss": "Got it",
   "wallet.tokens.list.column.amount": "Amount",
   "wallet.tokens.list.column.token": "Token",
   "wallet.tokens.list.favorites.title": "Favorites",

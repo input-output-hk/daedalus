@@ -13,6 +13,9 @@ export const STORAGE_KEYS: Record<string, StorageKey> = {
   CURRENCY_ACTIVE: 'CURRENCY-ACTIVE',
   CURRENCY_SELECTED: 'CURRENCY-SELECTED',
   DATA_LAYER_MIGRATION_ACCEPTANCE: 'DATA-LAYER-MIGRATION-ACCEPTANCE',
+  // Whether this profile has been told that verified decimal places are now
+  // applied on their own. Once per profile, not once per token.
+  DECIMAL_PLACES_NOTICE: 'DECIMAL-PLACES-NOTICE',
   DISCREET_MODE_ENABLED: 'DISCREET-MODE-ENABLED',
   DOWNLOAD_MANAGER: 'DOWNLOAD-MANAGER',
   DREP_FAVORITES: 'DREP-FAVORITES',

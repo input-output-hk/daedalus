@@ -23,4 +23,5 @@ export default class ProfileActions {
   }> = new Action();
   finishInitialScreenSettings: Action<any> = new Action();
   acknowledgeRTSModeRecommendation: Action<any> = new Action();
+  acknowledgeDecimalPlacesNotice: Action<any> = new Action();
 }
