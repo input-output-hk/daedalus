@@ -197,7 +197,7 @@
      "id": "task-005",
      "title": "Compute CIP-14 asset fingerprints locally",
      "description": "fingerprint is today a field of the assets endpoint response (api/assets/types.ts:18), so dropping that endpoint drops the only source of the identifier the token row renders most prominently (Asset.tsx:199-203). CIP-14 is computable from the policy id and the asset name with packages already in the tree.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 4.0,
      "dependencies": [],
