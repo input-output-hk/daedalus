@@ -315,7 +315,7 @@
      "id": "task-008",
      "title": "Verification steps one and two: policy binding and key binding",
      "description": "Decode the policy field into a native script, prove that the script hashes to the subject's policy id, and prove that the script requires the key hash of the public key that signed the property under consideration.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 6.0,
      "dependencies": [
