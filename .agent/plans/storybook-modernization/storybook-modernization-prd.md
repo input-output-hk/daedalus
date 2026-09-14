@@ -34,9 +34,9 @@ an empty package. No upstream fix reaches the repository, and no currently maint
 installed.
 
 All 73 `storiesOf()` calls across 69 files use an API removed in Storybook 8.0.0 with no feature flag
-and no compatibility shim. All 394 direct knob call sites use an addon whose last release, 8.0.1, peers on
+and no compatibility shim. All 396 direct knob call sites use an addon whose last release, 8.0.1, peers on
 four `@storybook/*` packages that stopped being published at Storybook 9. Ten files use
-`@dump247/storybook-state`, last published 2022-06-12. The conversion cost grows with every story
+`@dump247/storybook-state`, last published 2019-06-22. The conversion cost grows with every story
 added and is unavoidable under every tooling option surveyed.
 
 Coverage has drifted in a way no check can see. `storybook/main.ts:8` declares a single entry,
@@ -166,7 +166,7 @@ rebuilt at execution time.
 **1. Route: land on 8.6.x, convert there, then bump to 10.6.x.**
 8.6.x is the only line where the `storiesof-to-csf` codemod and a working `@storybook/addon-knobs`
 build coexist (`research/02-storybook-upgrade-path.md` sections 7 and 8). Landing there means the
-shape conversion gets tooling and the 394 knob call sites stay untouched while it happens, so the
+shape conversion gets tooling and the 396 knob call sites stay untouched while it happens, so the
 two largest pieces of work are separated instead of landing together. The alternative was to convert
 on the pinned 6.4.22, which would have required first proving by spike that 6.4.22 indexes a glob of
 CSF files and honors `args` and `globalTypes`. That route rests on an assumption; this one rests on
@@ -372,7 +372,8 @@ sidebar panels nobody asked for.
 Cleanup and preparation, on the pinned 6.4.22:
 
 - [ ] Capture a baseline of the sidebar tree before anything changes: 53 panel titles, 15 top-level
-      groups and 272 registrations, so post-conversion labels can be diffed rather than remembered
+      groups and 272 registrations across the 84 story files, 267 of them under `storybook/stories`
+      and 5 in the colocated files, so post-conversion labels can be diffed rather than remembered
 - [ ] Delete the four flag-disabled story sets and their barrel entries: 5 registrations in
       `wallets/paperWallets/PaperWallets.stories.tsx`, 1 in
       `wallets/legacyWallets/LegacyNotification.stories.tsx`, 2 in
@@ -629,17 +630,20 @@ export const Basic = (args) => <Button {...args} />;
 Basic.args = { label: 'hello' };
 ```
 
-Four types account for 384 of the 394 sites: `boolean` 180, `number` 100, `text` 55, `select` 49. The
-remaining ten are `date` 3, `radios` 3, `button` 2, `object` 1, `optionsKnob` 1. Three of those carry
+The 396 sites are every knob call under `storybook/stories`, support modules included, plus the two
+in the colocated story files under `source/`. Four types account for 386 of them: `boolean` 182,
+`number` 100, `text` 55, `select` 49. The remaining ten are `date` 3, `radios` 3, `button` 2,
+`object` 1, `optionsKnob` 1. Three of those carry
 judgment rather than a rename: `date` knobs return a timestamp number while the `date` control
 returns a `Date`, so the call site adjusts; `optionsKnob` maps to `check`, `inline-check`, `radio` or
 `select` depending on its `display` config; and `button` has no arg equivalent at all, because args
 are values and not actions, so each of the two sites is either dropped or moved into the story body.
 
-Position matters more than type. Measuring indentation over `storybook/stories`, 204 of 394 knob call
-sites sit at eight spaces or deeper, meaning they are nested inside a callback, a mapped list or JSX
-rather than at the top of a story body. `research/02-storybook-upgrade-path.md` reports the same 204
-of 394, counted the same way: only files that import the symbol.
+Position matters more than type. 204 of the 396 knob call sites sit at an indentation of eight
+spaces or deeper, meaning they are nested inside a callback, a mapped list or JSX rather than at the
+top of a story body; the other 192 sit at the top of a story body and are a two-line mechanical
+edit. `research/02-storybook-upgrade-path.md` reports the same 204, against its own scope of the 394
+sites under `storybook/stories`.
 
 Two further undercounts sit on top of that. `storybook/stories/loading/_support/loadingKnobs.ts`
 wraps five knob functions, and those wrappers are called at **44 further sites across 7 files** under
@@ -648,8 +652,8 @@ deletions remove **30** direct sites: `wallets/_utils/defaultWalletProps.tsx` 15
 `legacyWallets/TransferFunds.stories.tsx` 6, `staking/CountdownParty.stories.tsx` 5,
 `legacyWallets/LegacyNotification.stories.tsx` 2, `staking/Epochs.stories.tsx` 2.
 
-Net phase 4 surface after the phase 1 deletions is 394 less those 30, so **364 direct plus 44
-indirect, about 408**. At the rate `storybook-modernization-tasks.json` carries, that is roughly 15
+Net phase 4 surface after the phase 1 deletions is 396 less those 30, so **366 direct plus 44
+indirect, about 410**. At the rate `storybook-modernization-tasks.json` carries, that is roughly 15
 hours of previously unbudgeted work, and it compounds with the rate question in the effort section.
 A nested knob has no mechanical arg equivalent: the value must be hoisted to the story's signature
 and threaded down, which changes the surrounding code. There is no tooling for either half. One of
@@ -868,8 +872,8 @@ once against the final API rather than twice.
    the DaedalusMenu replacement, the codemod pass, five hand-finish tranches by domain, the sidebar
    label diff, and the removal of the `StoryWrapper` prop pass-through. Knobs and `withState` are not
    touched. Each story body is edited once, for both its shape and its context reads.
-4. **Knobs and story state, on 8.6.x, in tranches by domain.** 364 direct knob call sites after the
-   deletions plus 44 indirect through `loading/_support/loadingKnobs.ts`, of which 204 of the 394
+4. **Knobs and story state, on 8.6.x, in tranches by domain.** 366 direct knob call sites after the
+   deletions plus 44 indirect through `loading/_support/loadingKnobs.ts`, of which 204 of the 396
    measured before the deletions sit nested rather than at the top of a story body, and the 17
    local-wrapper sites introduced in phase 2, with the knob and state rewrites done together in the
    8 files that carry both. Delete `@storybook/addon-knobs` and the local wrapper when the last call
@@ -894,7 +898,7 @@ once against the final API rather than twice.
 **That figure is provisional.** Two things move it, both known before any work starts.
 
 - The knob reconciliation above adds roughly **15 hours** to phase 4, because the surface is about
-  408 sites rather than the 350 the task graph's tranches were rated against.
+  410 sites rather than the 350 the task graph's tranches were rated against.
 - `task-050`'s own acceptance includes "task-052 is re-estimated against it", and task-052 is 36
   hours already inside the 527. The estimate contains a task whose job is to correct part of the
   estimate.
@@ -943,9 +947,9 @@ equivalent.
 
 ## Testing Strategy
 
-Roughly 257 existing story registrations are being rewritten and 90 to 120 new ones written, in a
-repository with no visual regression coverage and no working end-to-end suite. What each check does
-and does not prove therefore matters.
+257 existing story registrations are being rewritten, the 272 baseline less the 15 the phase 1
+deletions remove, and 90 to 120 new ones written, in a repository with no visual regression coverage
+and no working end-to-end suite. What each check does and does not prove therefore matters.
 
 **`yarn storybook:build` (`perSystem/checks.nix:78`).** Required, wrapped `x86_64-linux` only. It is
 the acceptance gate for every landing, not just the final one. What it proves is that every component
@@ -1163,6 +1167,33 @@ tasks gained `yarn storybook:build` in their acceptance, which was previously
 carried only by the additive tranches.
 
 No implementation has started.
+
+### 2026-09-14 — Counts reconciled across the plan and the research notes
+
+Every count in this document, in `prompt.md`, in the five research notes and in the task graph was
+re-measured against the repository at `ec6954d9a`. The two package publish dates were taken from the
+npm registry.
+
+Three legitimate scopes had been mixed without being named, which is what made the figures look
+contradictory. Measured over the 84 story files, there are 64 knob-importing files and 364 knob call
+sites. Measured over every file under `storybook/stories`, support modules included, there are 71
+files and 394 sites. Measured over the whole corpus, which adds the four colocated story files under
+`source/`, there are 75 files and 396 sites. This document uses the whole-corpus figures, because the
+conversion has to reach the support modules the stories import, and each note now states the scope
+it is measuring.
+
+Corrections: knob call sites 396, not 394, the difference being the two `boolean` calls in
+`features/discreet-mode/ui/DiscreetValue.story.tsx`; `boolean` 182, not 180, for the same reason; the
+net phase 4 surface 366 direct plus 44 indirect, about 410; `@dump247/storybook-state@1.6.1`
+published 2019-06-22 and `@storybook/addon-knobs@8.0.1` published 2024-06-19, both of which had been
+recorded as the registry's package-level `modified` timestamp rather than the version publish time.
+`research/04-tooling-alternatives.md` carried 82 story files, 279 registrations and 382 knob sites,
+none of which reproduce; they are now 84, 272 and 396. `research/03-react-upgrade-gate.md` carried 72
+knob-importing files, which reproduces under no scope, and now reads 75.
+
+Story registrations stand at 272 across the 84 story files, 267 of them under `storybook/stories`.
+A raw grep returns more: three `moment().add()` chains and two `Set.add()` calls in the support
+module `governance/_utils/drepPopulation.ts` are not story registrations.
 
 ---
 

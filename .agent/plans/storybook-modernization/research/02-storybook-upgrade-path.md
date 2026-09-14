@@ -39,8 +39,8 @@ From `package.json` at the measured commit:
 | `@storybook/addon-actions` | 6.4.22 | 9.0.8 | 2025-06-10 | Published as an empty package, "please don't use it anymore" |
 | `@storybook/addons` | 6.4.22 | 7.6.17 | 2024-02-20 | Removed at 8 |
 | `@storybook/manager-webpack5` | 6.4.22 | 6.5.16 | 2023-01-26 | Absorbed into the framework package at 7 |
-| `@storybook/addon-knobs` | 6.4.0 | 8.0.1 | 2024-11-20 | Unusable from 9 |
-| `@dump247/storybook-state` | 1.6.1 | 1.6.1 | 2022-06-12 | Unmaintained |
+| `@storybook/addon-knobs` | 6.4.0 | 8.0.1 | 2024-06-19 | Unusable from 9 |
+| `@dump247/storybook-state` | 1.6.1 | 1.6.1 | 2019-06-22 | Unmaintained |
 | `storybook-addon-swc` | 1.1.7 | 1.2.0 | 2023-04-18 | Declared but never registered |
 
 Four of the ten pinned packages have no version at all in the target line. That is the upgrade in
@@ -58,14 +58,19 @@ Estate measured under `storybook/stories`:
 | `.add()` story registrations | 267 |
 | `.addDecorator()` calls | 92 |
 | Files importing `@storybook/addon-knobs` | 71 |
-| Knob call sites (counted only in files importing that symbol) | 394 |
+| Knob-importing files across the whole corpus | 75 | 
+| Knob call sites under `storybook/stories` | 394 |
+| Knob call sites across the whole corpus | 396 | 
 | Files importing `@dump247/storybook-state` | 10 |
 | `withState()` call sites | 17 |
 | Files importing `@storybook/addon-actions` | 64 |
 | Files importing `linkTo` from `@storybook/addon-links` | 6 |
 
-Knob call sites by type: `boolean` 180, `number` 100, `text` 55, `select` 49, `date` 3, `radios` 3,
-`button` 2, `object` 1, `optionsKnob` 1.
+Knob call sites by type, under `storybook/stories`: `boolean` 180, `number` 100, `text` 55,
+`select` 49, `date` 3, `radios` 3, `button` 2, `object` 1, `optionsKnob` 1. The whole-corpus figure
+adds the two `boolean` sites in `source/renderer/app/features/discreet-mode/ui/DiscreetValue.story.tsx`,
+giving `boolean` 182 and a total of 396. Every count in this note is measured under
+`storybook/stories` unless it says otherwise.
 
 Two configuration details drive work later in this note. `storybook/main.ts` sets
 `stories: ['../storybook/stories/index.ts']`, a single barrel of side-effect imports rather than a
@@ -170,7 +175,7 @@ The addon moved out of the monorepo to `storybookjs/addon-knobs`, whose README o
 Knobs (deprecated)".
 
 Deprecation is not where support ends. The last knobs release is 8.0.1, published
-2024-11-20, and it peers on `@storybook/manager-api@^8.0.0`, `@storybook/theming@^8.0.0`,
+2024-06-19, and it peers on `@storybook/manager-api@^8.0.0`, `@storybook/theming@^8.0.0`,
 `@storybook/components@^8.0.0` and `@storybook/core-events@^8.0.0`. Storybook 9 consolidated
 all four of those into the `storybook` package under new paths (`storybook/manager-api`,
 `storybook/theming`, and so on) and stopped publishing them. So knobs works on Storybook 8 and is
@@ -231,7 +236,7 @@ for either half.
 
 ## 4. @dump247/storybook-state
 
-Version 1.6.1 was published on 2022-06-12 and is still the latest. Four years without a release, and
+Version 1.6.1 was published on 2019-06-22 and is still the latest. Seven years without a release, and
 the package predates the Storybook 7 architecture entirely. It is not going to gain Storybook 9 or 10
 support.
 

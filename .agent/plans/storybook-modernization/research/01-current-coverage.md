@@ -8,6 +8,10 @@ turned out to be wrong, the corrected value and the predicate behind it are give
 
 ## 1. Summary of the migration surface
 
+Every count in this note is measured over the 84 story files, not over every file under
+`storybook/stories`. The support modules those stories import carry knob calls of their own, so the
+whole-corpus knob figures are higher and are given alongside the story-file ones below.
+
 | Measure | Value |
 |---|--:|
 | Story files (`*.stories.ts(x)` and `*.story.tsx`) | 84 |
@@ -426,7 +430,7 @@ Knob abbreviations: `wK` `withKnobs`, `bool` `boolean`, `num` `number`, `sel` `s
 | `.add()` | 69 | 272 |
 | `.addDecorator()` | 67 | 99 |
 | `.addParameters()` | 0 | 0 |
-| `@storybook/addon-knobs` imported | 64 | 364 knob calls |
+| `@storybook/addon-knobs` imported | 64 | 364 knob calls, in story files only; 75 files and 396 calls once the support modules are counted |
 | `@storybook/addon-actions` imported | 58 | 495 `action()` calls |
 | `@storybook/addon-links` imported | 2 story files, 4 support modules, `storybook/main.ts` | 7 |
 | `@dump247/storybook-state` imported | 9 story files, 1 support module | 10 |
@@ -452,7 +456,7 @@ Knob types in use, by number of files importing each and by call sites:
 | `object` | 1 | 1 |
 | `optionsKnob` | 1 | 1 |
 
-Four knob types account for 355 of the 364 call sites: `boolean`, `number`, `text` and `select`.
+Four knob types account for 355 of the 364 call sites in story files: `boolean`, `number`, `text` and `select`.
 The remaining nine call sites are `date` (3), `radios` (2), `button` (2), `object` (1) and
 `optionsKnob` (1), each with a direct argument-type equivalent.
 
@@ -682,7 +686,7 @@ import, which makes a two-step route available.
 **Knobs and `@dump247/storybook-state` have no forward path.** `@storybook/addon-knobs` was
 deprecated in Storybook 6.3 and removed in 7. Its replacement, `argTypes` and `args`, is not a
 drop-in: knobs are called inside the render function and re-read on every render, whereas args are
-declared outside it. Every one of the 364 knob call sites moves out of the story body.
+declared outside it. Every one of the 396 knob call sites in the corpus moves out of the story body.
 `@dump247/storybook-state` is a third-party addon last published for Storybook 5 era APIs; the ten
 files using it need local `useState` or a render-function wrapper instead.
 
@@ -697,7 +701,7 @@ rewrite has to work against the components as they are.
 | Claim | Measured | Note |
 |---|---|---|
 | 82 story files | 84 | 80 under `storybook/stories/`, 4 in `source/` |
-| 72 files import addon-knobs | 64 | of 84 files; 44 import `withKnobs` specifically |
+| 72 files import addon-knobs | 64 | of 84 story files; 44 import `withKnobs` specifically. Across the whole corpus, including the support modules the stories import, it is 75 files and 396 knob calls |
 | 10 files use `withState` | 10 | 9 story files plus `settings/utils/helpers.tsx` |
 | 110 containers | 110 `.tsx`, 105 excluding specs | 132 files in the directory: 110 `.tsx`, 17 `.ts`, 5 `.scss` |
 | 359 components | 359 | `.tsx`, excluding `.spec`, `.stories`, `.story` |

@@ -39,12 +39,12 @@ Any move to a different tool rebuilds all of it. Staying on Storybook rebuilds o
 
 | Measurement | Count | How it was counted |
 |---|---|---|
-| Story files (`.tsx`) | 82 | 78 under `storybook/stories/`, 4 under `source/` |
-| Files calling `storiesOf()` directly | 69 | The other 13 export story functions consumed by a sibling, for example `Staking.stories.tsx:14` imports `StakePoolsStory` from `./StakePools.stories` |
-| Individual stories (`.add()` calls) | 279 | |
-| `.addDecorator()` calls | 99 | |
-| Files importing `@storybook/addon-knobs` | 71 | |
-| Knob call sites | 382 | 178 `boolean`, 99 `number`, 54 `text`, 45 `select`, 3 `date`, 2 `radios`, 1 `object` |
+| Story files | 84 | 80 under `storybook/stories/`, 4 under `source/`, two of those named `.story.tsx` |
+| Files calling `storiesOf()` directly | 69 | The other 15 export story functions consumed by a sibling, for example `Staking.stories.tsx:14` imports `StakePoolsStory` from `./StakePools.stories` |
+| Individual stories (`.add()` calls) | 272 | Excludes three `moment().add()` chains that a raw grep picks up |
+| `.addDecorator()` calls | 99 | 92 under `storybook/stories`, 7 in the colocated files |
+| Files importing `@storybook/addon-knobs` | 75 | 71 under `storybook/stories`, 4 colocated |
+| Knob call sites | 396 | 182 `boolean`, 100 `number`, 55 `text`, 49 `select`, 3 `date`, 3 `radios`, 2 `button`, 1 `object`, 1 `optionsKnob` |
 | Files using `@dump247/storybook-state` | 10 | |
 | Themes / locales / OS profiles | 9 / 2 / 3 | `storybook/stories/_support/config.ts` |
 
@@ -136,7 +136,7 @@ Playwright CT covers automated interaction and visual assertions on components. 
 
 The proposition is: delete `storybook/`, delete the `storybook:build` CI check, rely on Jest plus testing-library for behavior and on the running Electron app for anything visual.
 
-It removes 82 story files, 34KB of `_support` wiring across nine files, a 6KB bespoke addon, and a 142-line webpack configuration carrying Trezor stubs and Node polyfills. It also removes the slowest check in `check:all` and three stale dependencies: `@storybook/addon-knobs` (last published 2024-06-19), `@dump247/storybook-state` (last published 2019-06-22), and `storybook-addon-swc`, which is declared at `package.json:175` and referenced nowhere in the repository.
+It removes 84 story files, 34KB of `_support` wiring across nine files, a 6KB bespoke addon, and a 142-line webpack configuration carrying Trezor stubs and Node polyfills. It also removes the slowest check in `check:all` and three stale dependencies: `@storybook/addon-knobs` (last published 2024-06-19), `@dump247/storybook-state` (last published 2019-06-22), and `storybook-addon-swc`, which is declared at `package.json:175` and referenced nowhere in the repository.
 
 The cost is that it removes the only automated rendering check that exists. After deletion, the complete visual safety net for a wallet that holds real funds would be three things: 51 Jest spec files against 361 components, all in jsdom; an end-to-end suite that cannot execute; and a human remembering to open the Electron app. Verifying that a change did not break the Japanese layout on Windows in the dark-blue theme would require building Daedalus, running a node, navigating to the screen, and doing it again for each of the nine themes. Today it is three clicks.
 
@@ -165,16 +165,16 @@ Lost Pixel is still named as the open source answer by most 2026 comparison arti
 
 ## 8. Migration cost, both directions
 
-The story rewrite is not a differentiator, because it is identical under every option. `storiesOf()` was removed in Storybook 8 (https://storybook.js.org/docs/8/migration-guide/from-older-version), Ladle and react-cosmos never supported it, and no component testing framework has an equivalent. All 82 files change no matter what.
+The story rewrite is not a differentiator, because it is identical under every option. `storiesOf()` was removed in Storybook 8 (https://storybook.js.org/docs/8/migration-guide/from-older-version), Ladle and react-cosmos never supported it, and no component testing framework has an equivalent. All 84 files change no matter what.
 
-The automation is also gone. The `storiesof-to-csf` transform is present in `@storybook/codemod@8.6.18` but absent from both `9.1.20` and `10.6.0`. The practical route is to run `npx @storybook/codemod@8.6.18 storiesof-to-csf` as a one-off conversion pass and then upgrade, rather than expecting the current CLI to offer it. That should be verified early, since the codemod is unmaintained and 279 `.add()` calls with 99 decorator attachments is a lot of surface for a transform to get right.
+The automation is also gone. The `storiesof-to-csf` transform is present in `@storybook/codemod@8.6.18` but absent from both `9.1.20` and `10.6.0`. The practical route is to run `npx @storybook/codemod@8.6.18 storiesof-to-csf` as a one-off conversion pass and then upgrade, rather than expecting the current CLI to offer it. That should be verified early, since the codemod is unmaintained and 272 `.add()` calls with 99 decorator attachments is a lot of surface for a transform to get right.
 
 What does differ between the options is everything else.
 
 | Work item | Storybook 10 | Ladle or react-cosmos |
 |---|---|---|
-| 82 story files to CSF | Required | Required |
-| 382 knob calls to args/controls | Required | Required |
+| 84 story files to CSF | Required | Required |
+| 396 knob calls to args/controls | Required | Required |
 | 10 `withState` usages to hooks | Required | Required |
 | React 16 to 18 upgrade | Not required | **Required first**, across 361 components and 105 containers |
 | webpack config (`main.ts`, 142 lines) | Keep, port CommonJS to ESM | **Rewrite as Vite config** including Trezor replacements and 14 Node fallbacks |
@@ -186,7 +186,7 @@ What does differ between the options is everything else.
 
 The Storybook path also opens a simplification. DaedalusMenu exists because Storybook 6.4 had no first-class way to put a global switcher in the toolbar. Storybook has had one since 6.0 in `globalTypes` with `toolbar` annotations, read back in decorators through `context.globals` (https://storybook.js.org/docs/essentials/toolbars-and-globals). Theme, locale and OS are exactly that shape. Whether to port DaedalusMenu's five files to `storybook/manager-api` or delete them in favor of three `globalTypes` entries is a decision for the implementation plan. The second option removes the custom addon entirely, along with its `sessionStorage` and URL-hash synchronization, because Storybook persists globals itself.
 
-Three smaller items on the Storybook path are cheap but easy to miss. The `start-storybook` and `build-storybook` binaries were replaced by `storybook dev` and `storybook build` in Storybook 7, so the two scripts at `package.json:55-56` change. Storybook 10 is ESM-only, so `main.ts`'s `module.exports` and `require()` calls become ESM. And `@storybook/addon-actions` and `addon-knobs` imports across 71 files become `storybook/actions` and args respectively. Node is not a constraint: the dev shell provides v22.23.1, and Storybook 10.6.0 declares no `engines` floor at all (9.1.20 declared `node >=20`).
+Three smaller items on the Storybook path are cheap but easy to miss. The `start-storybook` and `build-storybook` binaries were replaced by `storybook dev` and `storybook build` in Storybook 7, so the two scripts at `package.json:55-56` change. Storybook 10 is ESM-only, so `main.ts`'s `module.exports` and `require()` calls become ESM. And `@storybook/addon-actions` imports across 64 files and `addon-knobs` imports across 75 become `storybook/actions` and args respectively. Node is not a constraint: the dev shell provides v22.23.1, and Storybook 10.6.0 declares no `engines` floor at all (9.1.20 declared `node >=20`).
 
 ## 9. Recommendation
 
@@ -206,8 +206,8 @@ Visual regression is a follow-on decision, not part of this work. When it is tak
 
 ## 10. The strongest argument against, and the answer
 
-**The argument.** Storybook is the heaviest option by a wide margin, and the modernization keeps Daedalus on a stack that is aging in place: React 16, webpack, legacy decorators, SCSS modules, react-polymorph 1.0.4 which has not been published since 2022-04-14. Every alternative surveyed has moved to React 18 and Vite. Paying for an 82 file rewrite to land on the old stack means paying again later. A React 18 upgrade is coming whether this work happens or not, and at that point Ladle and Vitest browser mode both become available, so the story files would be touched a third time. Better to do React 18 first and then pick a modern tool once, rather than rewrite the stories twice.
+**The argument.** Storybook is the heaviest option by a wide margin, and the modernization keeps Daedalus on a stack that is aging in place: React 16, webpack, legacy decorators, SCSS modules, react-polymorph 1.0.4 which has not been published since 2022-04-14. Every alternative surveyed has moved to React 18 and Vite. Paying for an 84 file rewrite to land on the old stack means paying again later. A React 18 upgrade is coming whether this work happens or not, and at that point Ladle and Vitest browser mode both become available, so the story files would be touched a third time. Better to do React 18 first and then pick a modern tool once, rather than rewrite the stories twice.
 
-**The answer.** The sequencing is right, but the conclusion does not follow, for one reason: the CSF story files are portable, and the workbench is not. CSF is a documented format that Ladle explicitly implements, that react-cosmos can consume with a thin adapter, and that Playwright's gallery pattern maps onto directly. Converting `storiesOf()` to CSF is the prerequisite for every possible future, including leaving Storybook. It is not work that gets thrown away in a later React 18 upgrade; the decorator layer would be revisited, but 279 story definitions written as CSF exports would carry across largely unchanged. Doing React 18 first inverts the risk. It means a major React upgrade across 361 components and 105 container components, carried out with the current safety net: 51 jsdom specs, a dead e2e suite, and a Storybook that cannot be upgraded past 6.4. Modernizing the workbench first is what makes the React 18 upgrade reviewable.
+**The answer.** The sequencing is right, but the conclusion does not follow, for one reason: the CSF story files are portable, and the workbench is not. CSF is a documented format that Ladle explicitly implements, that react-cosmos can consume with a thin adapter, and that Playwright's gallery pattern maps onto directly. Converting `storiesOf()` to CSF is the prerequisite for every possible future, including leaving Storybook. It is not work that gets thrown away in a later React 18 upgrade; the decorator layer would be revisited, but 272 story definitions written as CSF exports would carry across largely unchanged. Doing React 18 first inverts the risk. It means a major React upgrade across 361 components and 105 container components, carried out with the current safety net: 51 jsdom specs, a dead e2e suite, and a Storybook that cannot be upgraded past 6.4. Modernizing the workbench first is what makes the React 18 upgrade reviewable.
 
 The stack aging is a real problem, and it should be tracked as its own piece of work rather than folded into this one. react-polymorph in particular is a single-consumer library last published on 2022-04-14. But it is a different decision from the workbench decision, and coupling them means neither one gets made.

@@ -446,16 +446,17 @@ The two losses, neither on the critical path:
    `ReactDOM.render`, so a component that misbehaves under concurrent rendering will not surface
    it in Storybook.
 2. **`@storybook/addon-knobs` is a dead end regardless of React version.** Its newest release,
-   8.0.1 (2024-06-19), peers `@storybook/*: "^8.0.0"`. There is no Storybook 9 build. So all 72
-   knob-importing story files must move to `args`/`argTypes` to reach Storybook 9, whatever React
-   version we are on. That cost belongs to the Storybook plan, not to this question.
+   8.0.1 (2024-06-19), peers `@storybook/*: "^8.0.0"`. There is no Storybook 9 build. So all 75
+   knob-importing files must move to `args`/`argTypes` to reach Storybook 9, whatever React
+   version we are on. That is 71 under `storybook/stories`, of which 64 are story files and the
+   rest support modules, plus the 4 colocated story files under `source/`. That cost belongs to the Storybook plan, not to this question.
 
 ## 8. Sequencing
 
 The dependency order that falls out of the evidence, with each step independently shippable:
 
 1. **Storybook modernization, on React 16.14.0.** Unblocked today. Storybook 6.4.22 to 9.
-   `storiesOf` to CSF across 80 story files, knobs to controls across 72, remove
+   `storiesOf` to CSF across the 69 files that call it, knobs to controls across 75, remove
    `@dump247/storybook-state` from 10, port DaedalusMenu, swap `storybook-addon-swc` for
    `@storybook/addon-webpack5-compiler-swc`. `@storybook/manager-webpack5` disappears; the manager
    has been prebundled since Storybook 7. Keep `storybook:build` green in
