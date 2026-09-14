@@ -173,7 +173,9 @@ components/wallet/
 ```typescript
 import React from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, injectIntl } from 'react-intl';
+import { Input } from 'react-polymorph/lib/components';
+import { Intl } from '../../types/i18nTypes';
 import styles from './MyComponent.scss';
 
 const messages = defineMessages({
@@ -188,16 +190,14 @@ type Props = {
   onChange: (value: string) => void;
 };
 
-const MyComponent = observer(({ value, onChange }: Props) => {
-  const intl = useContext(IntlContext);
-  
-  return (
+const MyComponent = injectIntl(
+  observer(({ value, onChange, intl }: Props & { intl: Intl }) => (
     <div className={styles.container}>
       <h2>{intl.formatMessage(messages.title)}</h2>
       <Input value={value} onChange={onChange} />
     </div>
-  );
-});
+  ))
+);
 
 export default MyComponent;
 ```
@@ -241,7 +241,6 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple';
 }
 
 .button {
-  composes: button from '../common/Button.scss';
   background: var(--theme-primary-color);
 }
 ```
@@ -293,7 +292,7 @@ yarn themes:update             # Update theme files
 yarn themes:copy               # Copy theme
 ```
 
-For full theme workflow details (createTheme object, validation, interactive CLI tools), see the [theme-management skill](../skills/frontend/theme-management/SKILL.md).
+For full theme workflow details (createTheme object, validation, interactive CLI tools), see the [theme-management skill](../skills/theme-management/SKILL.md).
 
 ---
 
@@ -339,7 +338,7 @@ yarn i18n:check     # Validate translations
 yarn i18n:manage    # Extract and validate
 ```
 
-For full i18n workflow details (message schema, naming conventions, locale management, and `!!!` placeholder handling after `yarn i18n:manage`), see the [i18n-messaging skill](../skills/frontend/i18n-messaging/SKILL.md).
+For full i18n workflow details (message schema, naming conventions, locale management, and `!!!` placeholder handling after `yarn i18n:manage`), see the [i18n-messaging skill](../skills/i18n-messaging/SKILL.md).
 
 ### Supported Locales
 

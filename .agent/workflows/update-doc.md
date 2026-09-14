@@ -83,7 +83,7 @@ Description of the workflow.
 
 \`\`\`bash
 # Primary command
-yarn command-here
+yarn {command}
 \`\`\`
 
 ## Detailed Steps

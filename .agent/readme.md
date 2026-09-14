@@ -103,8 +103,8 @@ durably than an issue and could not be withdrawn.
 
 | Skill                                                                  | Description                             |
 |------------------------------------------------------------------------|-----------------------------------------|
-| [`i18n-messaging`](./skills/frontend/i18n-messaging/SKILL.md)         | Manage react-intl i18n messaging        |
-| [`theme-management`](./skills/frontend/theme-management/SKILL.md)     | CSS variables theme system              |
+| [`i18n-messaging`](./skills/i18n-messaging/SKILL.md)         | Manage react-intl i18n messaging        |
+| [`theme-management`](./skills/theme-management/SKILL.md)     | CSS variables theme system              |
 | [`storybook-creation`](./skills/storybook-creation/SKILL.md)          | Create/update Storybook stories         |
 
 #### General
@@ -113,6 +113,7 @@ durably than an issue and could not be withdrawn.
 |------------------------------------------------------------------------|-----------------------------------------|
 | [`e2e-test-creation`](./skills/e2e-test-creation/SKILL.md)            | Create Cucumber BDD e2e tests           |
 | [`git-commit-formatter`](./skills/git-commit-formatter/SKILL.md)      | Conventional commit formatting          |
+| [`thermo-nuclear-code-quality-review`](./skills/thermo-nuclear-code-quality-review/SKILL.md) | Strict maintainability audit |
 
 ---
 
@@ -185,7 +186,7 @@ Available workflows:
 
 | Layer                 | Technology            | Location                                      |
 |-----------------------|-----------------------|-----------------------------------------------|
-| **Desktop Framework** | Electron 24.2.0       | Root package.json                             |
+| **Desktop Framework** | Electron 41.3.0       | Root package.json                             |
 | **UI Library**        | React 16.14.0         | source/renderer/                              |
 | **State Management**  | MobX 5.15.7           | source/renderer/app/stores/                   |
 | **Component Library** | react-polymorph 1.0.4 | Widgets and forms                             |
@@ -193,7 +194,7 @@ Available workflows:
 | **Routing**           | React Router 5.2.0    | Hash history                                  |
 | **i18n**              | react-intl 2.9.0      | EN, JA locales                                |
 | **Build System**      | Nix + Webpack 5       | flake.nix, webpack configs                    |
-| **Testing**           | Jest + Cucumber       | tests/, *.test.tsx                            |
+| **Testing**           | Jest + Cucumber       | tests/, *.spec.ts                             |
 | **Hardware Wallets**  | Ledger, Trezor        | @cardano-foundation/ledgerjs, @trezor/connect |
 
 ### Key Directories
