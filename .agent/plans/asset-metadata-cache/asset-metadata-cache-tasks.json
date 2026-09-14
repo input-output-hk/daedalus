@@ -536,7 +536,7 @@
      "id": "task-014",
      "title": "Main-side handler and its registration",
      "description": "One module holding the three MainIpcChannel instances and their handlers, registered from source/main/ipc/index.ts.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 3.0,
      "dependencies": [

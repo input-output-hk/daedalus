@@ -513,6 +513,37 @@ describe('reading and writing', () => {
     db.close();
   });
 
+  it('names the subjects that have an image without reading one', () => {
+    const db = openAssetMetadataDatabase(databaseFile);
+    const other = `${'0'.repeat(56)}beef`;
+    db.writeMetadata([
+      metadataWrite(),
+      metadataWrite({
+        subject: other,
+        policyId: '0'.repeat(56),
+        assetName: 'beef',
+      }),
+    ]);
+    db.writeImage(
+      {
+        subject: SUBJECT,
+        mediaType: 'image/png',
+        bytes: new Uint8Array([1, 2, 3]),
+      },
+      1_700_000_000_000
+    );
+    expect(db.readImageSubjects([SUBJECT, other])).toEqual([SUBJECT]);
+    db.close();
+  });
+
+  it('answers with no subjects when nothing has an image', () => {
+    const db = openAssetMetadataDatabase(databaseFile);
+    db.writeMetadata([metadataWrite()]);
+    expect(db.readImageSubjects([SUBJECT])).toEqual([]);
+    expect(db.readImageSubjects([])).toEqual([]);
+    db.close();
+  });
+
   it('stamps updated_at from the clock unless it is given one', () => {
     const db = openAssetMetadataDatabase(databaseFile);
     const before = Date.now();

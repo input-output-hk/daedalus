@@ -117,6 +117,13 @@ const RESOLUTION_SELECT = `SELECT ${RESOLUTION_COLUMNS} FROM asset_resolution WH
 const IMAGE_SELECT =
   'SELECT subject, media_type, bytes, byte_length, fetched_at FROM asset_image WHERE subject = ?';
 
+/**
+ * `subject` is the primary key of `asset_image`, so this is answered from the
+ * index without reading a row. Every other column of the table sits beside a
+ * blob, and asking whether a logo exists must not read one.
+ */
+const IMAGE_SUBJECT_SELECT = 'SELECT subject FROM asset_image WHERE subject IN';
+
 const IMAGE_UPSERT = `
 INSERT INTO asset_image (subject, media_type, bytes, byte_length, fetched_at)
 VALUES (?, ?, ?, ?, ?)
@@ -344,6 +351,13 @@ export class AssetMetadataDatabase {
       });
       return null;
     }
+  }
+
+  /** The subjects of `subjects` that have an image, without reading any. */
+  readImageSubjects(subjects: Array<string>): Array<string> {
+    return this._read(subjects, IMAGE_SUBJECT_SELECT, (row) =>
+      String(row.subject)
+    );
   }
 
   /**
