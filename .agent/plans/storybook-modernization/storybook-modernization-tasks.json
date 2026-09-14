@@ -63,7 +63,7 @@
      "id": "task-002",
      "title": "Delete the four flag-disabled story sets",
      "description": "Locked decision 4. Remove 12 registrations documenting screens no user can reach, and their barrel entries. The components and the feature flags are not touched.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 3.0,
      "dependencies": [
@@ -83,7 +83,7 @@
       "Remove three registrations from staking/Staking.stories.tsx: the countdown panel at :92 and the Info and Info Countdown registrations at :176 and :193.",
       "Remove the barrel entries in the same commit: storybook/stories/wallets/index.ts:17-19 and storybook/stories/index.ts:11.",
       "Flags for the record, all unchanged by this task: stakingConfig.ts:104 IS_STAKING_INFO_PAGE_AVAILABLE, SidebarStore.ts:123 and :124, walletsConfig.ts:44 IS_BYRON_WALLET_MIGRATION_ENABLED.",
-      "This also removes 13 knob call sites that would otherwise be converted in phase 4.",
+      "This also removes 19 knob call sites that would otherwise be converted in phase 4, not the 13 first recorded here. 13 are in the four deleted files: 6 in TransferFunds.stories.tsx, 5 in CountdownParty.stories.tsx, 2 in LegacyNotification.stories.tsx and none in PaperWallets.stories.tsx. The other 6 are in the three registrations removed from staking/Staking.stories.tsx: the date call inside startDateTimeKnob, the number call in the Info story, and four boolean calls in Info Countdown. Measured across the whole corpus the figure reconciles exactly: 396 call sites before this task and 377 after, against the 396 the PRD records.",
       "The voting stories are deliberately not in this set. Locked decision 13 keeps storybook/stories/voting/Voting.stories.tsx and every story rendering a component under source/renderer/app/components/voting/, because the owner judges Catalyst suspended rather than retired. Same observable state as the four sets above, a maintained component tree behind no affordance, different product judgment."
      ],
      "acceptance": [

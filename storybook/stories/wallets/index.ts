@@ -14,8 +14,5 @@ import './settings/WalletSettings.stories';
 import './addWallet/_support/AddWallet';
 import './import/WalletImportFile.stories';
 import './export/WalletExportToFile.stories';
-import './legacyWallets/TransferFunds.stories';
-import './legacyWallets/LegacyNotification.stories';
-import './paperWallets/PaperWallets.stories';
 import './hardwareWallets/HardwareWallets.stories';
 import './setPassword/SetWalletPassword.stories';

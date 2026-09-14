@@ -8,7 +8,6 @@ import './loading';
 import './wallets';
 // Staking
 import './staking/Staking.stories';
-import './staking/CountdownParty.stories';
 // dApps
 import './dapps/TransactionRequest.stories';
 // Voting
