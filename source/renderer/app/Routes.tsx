@@ -22,7 +22,6 @@ import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakePoolsListPage from './containers/staking/StakePoolsListPage';
 import StakingCountdownPage from './containers/staking/StakingCountdownPage';
-import RedeemItnRewardsContainer from './containers/staking/RedeemItnRewardsContainer';
 import Wallet from './containers/wallet/Wallet';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
@@ -206,11 +205,6 @@ export const Routes = withRouter(() => (
               />
             )}
           </Staking>
-          <TrackedRoute
-            pageTitle="Redeem ITN rewards"
-            path={ROUTES.REDEEM_ITN_REWARDS}
-            component={RedeemItnRewardsContainer}
-          />
         </Route>
         <Route path={ROUTES.VOTING.ROOT}>
           <Voting>

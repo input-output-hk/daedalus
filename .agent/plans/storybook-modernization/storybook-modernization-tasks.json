@@ -161,7 +161,7 @@
      "id": "task-005",
      "title": "Delete the dead /redeem-itn-wallets route binding",
      "description": "Locked decision 15. Routes.tsx:209-213 nests the TrackedRoute for ROUTES.REDEEM_ITN_REWARDS inside <Route path={ROUTES.STAKING.ROOT}>, where under react-router 5 it is only evaluated while the location already starts with /staking, so it can never match. The screen is unaffected: Root.tsx:68-70 mounts RedeemItnRewardsContainer when staking.redeemStep is non-null, set from the OS menu item.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 1.0,
      "dependencies": [],
