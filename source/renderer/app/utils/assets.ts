@@ -313,10 +313,3 @@ export const isTokenMissingInWallet = (
 };
 export const tokenHasBalance = (token: Token, amount: BigNumber) =>
   token.quantity.isGreaterThanOrEqualTo(amount);
-export const getUniqueId = ({
-  assetName,
-  policyId,
-}: {
-  assetName: string;
-  policyId: string;
-}) => `${assetName}${policyId}`;

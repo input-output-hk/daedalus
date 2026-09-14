@@ -164,7 +164,7 @@
      "id": "task-004",
      "title": "Delete three dead symbols",
      "description": "Three exported names with no reader. Removing them here keeps them out of the diffs that follow and, in the case of getUniqueId, keeps a conflicting key order out of the new schema's way.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 1.5,
      "dependencies": [],

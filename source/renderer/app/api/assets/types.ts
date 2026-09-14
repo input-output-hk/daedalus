@@ -78,10 +78,6 @@ export type AssetMetadata = {
   logo?: string;
 };
 export type StoredAssetMetadata = Record<string, AssetMetadata>;
-export type GetUnknownAssetRequest = {
-  walletId: string;
-  policyId: string;
-};
 export type GetAssetsRequest = {
   walletId: string;
 };
