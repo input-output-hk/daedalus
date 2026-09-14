@@ -470,7 +470,7 @@
      "id": "task-012",
      "title": "Image eviction under two bounds",
      "description": "At most 2,000 entries and at most 64 MiB in asset_image, evicting the least recently fetched, in the shape already used for DRep anchors at source/main/governance/anchorCache.ts:24-25.",
-     "status": "pending",
+     "status": "completed",
      "priority": "low",
      "estimatedHours": 3.0,
      "dependencies": [

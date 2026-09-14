@@ -22,6 +22,13 @@ export const ASSET_METADATA_DB_VERSION = 1;
  */
 const SUBJECT_CHUNK_SIZE = 500;
 
+/**
+ * The largest single image the table will hold. Declared here rather than in
+ * the image store because `writeImage` enforces it and `enforceImageBounds`
+ * derives its sweep floor from it.
+ */
+export const ASSET_IMAGE_MAX_ENTRY_BYTES = 256 * 1024;
+
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS asset_metadata (
   subject          TEXT    NOT NULL PRIMARY KEY,
@@ -87,6 +94,16 @@ ON CONFLICT (subject) DO UPDATE SET
   sequence_number = excluded.sequence_number,
   slot = excluded.slot,
   updated_at = excluded.updated_at`;
+
+const IMAGE_TOUCH = 'UPDATE asset_image SET fetched_at = ? WHERE subject = ?';
+
+const IMAGE_COUNT = 'SELECT count(*) AS entries FROM asset_image';
+
+const IMAGE_TOTALS =
+  'SELECT count(*) AS entries, coalesce(sum(byte_length), 0) AS bytes FROM asset_image';
+
+const IMAGE_OLDEST_FIRST =
+  'SELECT subject, byte_length FROM asset_image ORDER BY fetched_at ASC';
 
 const RESOLUTION_COLUMNS =
   'subject, state, attempted_at, retry_after, failure_count';
@@ -330,10 +347,22 @@ export class AssetMetadataDatabase {
    * Returns false when the row was not stored. The foreign key means an image
    * can only exist for a subject the cache already knows, so a refusal is a
    * fact about the cache rather than a failure.
+   *
+   * The per-entry cap is enforced here rather than left to a caller, because
+   * the eviction sweep floor is derived from it: below a row count of
+   * total bound over per-entry cap, neither bound can be crossed, and that is
+   * only true if no row can exceed the per-entry cap.
    */
-  writeImage(row: AssetImageWrite, fetchedAt: number = Date.now()): boolean {
+  writeImage(
+    row: AssetImageWrite,
+    fetchedAt: number = Date.now(),
+    maxBytes: number = ASSET_IMAGE_MAX_ENTRY_BYTES
+  ): boolean {
     const db = this._db;
     if (!db) return false;
+    if (!row.bytes || row.bytes.length === 0 || row.bytes.length > maxBytes) {
+      return false;
+    }
     try {
       db.prepare(IMAGE_UPSERT).run(
         row.subject,
@@ -348,6 +377,70 @@ export class AssetMetadataDatabase {
         reason: reasonOf(error),
       });
       return false;
+    }
+  }
+
+  /**
+   * Moves a row to the end of the eviction ordering. Rate-limited by the
+   * caller's interval because SQLite rewrites a whole row on an update, blob
+   * included, so an unconditional touch would write tens of kilobytes per
+   * rendered row per paint.
+   */
+  touchImage(subject: string, fetchedAt: number): boolean {
+    const db = this._db;
+    if (!db) return false;
+    try {
+      return db.prepare(IMAGE_TOUCH).run(fetchedAt, subject).changes > 0;
+    } catch (error) {
+      logger.warn('Asset metadata cache: image touch failed', {
+        reason: reasonOf(error),
+      });
+      return false;
+    }
+  }
+
+  /**
+   * Evicts the least recently fetched until both bounds hold. Returns how many
+   * rows were removed.
+   *
+   * `count(*)` is answered without reading a row; `sum(byte_length)` is not,
+   * because SQLite reads a whole row to reach any column of it and every row
+   * here carries a blob. So the count comes first and the sum is only taken
+   * above the floor, below which neither bound can be crossed.
+   */
+  enforceImageBounds(maxEntries: number, maxTotalBytes: number): number {
+    const db = this._db;
+    if (!db) return 0;
+    try {
+      const floor = Math.floor(maxTotalBytes / ASSET_IMAGE_MAX_ENTRY_BYTES);
+      const entries = Number(db.prepare(IMAGE_COUNT).get()?.entries ?? 0);
+      if (entries <= Math.min(maxEntries, floor)) return 0;
+
+      const totals = db.prepare(IMAGE_TOTALS).get();
+      let count = Number(totals?.entries ?? 0);
+      let bytes = Number(totals?.bytes ?? 0);
+      if (count <= maxEntries && bytes <= maxTotalBytes) return 0;
+
+      const doomed: Array<string> = [];
+      const rows = db.prepare(IMAGE_OLDEST_FIRST).all();
+      for (let index = 0; index < rows.length; index += 1) {
+        if (count <= maxEntries && bytes <= maxTotalBytes) break;
+        doomed.push(String(rows[index].subject));
+        count -= 1;
+        bytes -= Number(rows[index].byte_length);
+      }
+      if (doomed.length === 0) return 0;
+
+      const placeholders = doomed.map(() => '?').join(', ');
+      db.prepare(
+        `DELETE FROM asset_image WHERE subject IN (${placeholders})`
+      ).run(...doomed);
+      return doomed.length;
+    } catch (error) {
+      logger.warn('Asset metadata cache: image eviction failed', {
+        reason: reasonOf(error),
+      });
+      return 0;
     }
   }
 

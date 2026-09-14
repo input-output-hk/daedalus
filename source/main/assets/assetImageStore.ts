@@ -1,6 +1,9 @@
 import { logger } from '../utils/logging';
 import type { AssetImageRow, AssetMetadataDatabase } from './assetMetadataDb';
-import { openAssetMetadataDatabase } from './assetMetadataDb';
+import {
+  ASSET_IMAGE_MAX_ENTRY_BYTES,
+  openAssetMetadataDatabase,
+} from './assetMetadataDb';
 import {
   ASSET_REGISTRY_TIMEOUT_MS,
   assetRegistryEndpoint,
@@ -12,9 +15,28 @@ import type { RegistryTransport } from './assetRegistryClient';
 /**
  * Measured over 400 registry subjects on 2026-09-14: 374 carry a logo, every
  * one a PNG, from 806 bytes to 65,249 with a median of 23,251. The cap is about
- * four times the largest entry seen.
+ * four times the largest entry seen. It lives with the table, because the
+ * eviction sweep floor is derived from it.
  */
-export const ASSET_IMAGE_MAX_BYTES = 256 * 1024;
+export const ASSET_IMAGE_MAX_BYTES = ASSET_IMAGE_MAX_ENTRY_BYTES;
+
+/**
+ * Both bounds, not one. At the measured median entry size they bite at roughly
+ * the same point, which is the intent: the entry bound stops a flood of small
+ * images and the byte bound stops a handful of large ones. The shape is the one
+ * already used for DRep anchors.
+ */
+export const ASSET_IMAGE_MAX_ENTRIES = 2000;
+export const ASSET_IMAGE_MAX_TOTAL_BYTES = 64 * 1024 * 1024;
+
+/**
+ * A read moves a row to the end of the eviction ordering, but SQLite rewrites
+ * a whole row on an update, blob included, so an unconditional touch would
+ * write tens of kilobytes per rendered row per paint. The ordering needs to
+ * separate an image used today from one used last month, so an hour is three
+ * orders of magnitude finer than it needs.
+ */
+export const ASSET_IMAGE_TOUCH_INTERVAL_MS = 60 * 60 * 1000;
 
 const PNG_SIGNATURE = '89504e470d0a1a0a';
 const JPEG_SIGNATURE = 'ffd8ff';
@@ -61,6 +83,8 @@ export type AssetImageStoreOptions = {
   transport?: RegistryTransport;
   endpoint?: string | null;
   now?: () => number;
+  maxEntries?: number;
+  maxTotalBytes?: number;
 };
 
 const logoRequestBody = (subject: string): string =>
@@ -96,6 +120,10 @@ export class AssetImageStore {
 
   private _now: () => number;
 
+  private _maxEntries: number;
+
+  private _maxTotalBytes: number;
+
   // A subject the registry answered without a logo. Deliberately in memory
   // rather than in asset_resolution, which records metadata resolution: one
   // subject's metadata state should not depend on whether its picture exists.
@@ -108,10 +136,20 @@ export class AssetImageStore {
     this._transport = options.transport ?? httpRegistryTransport;
     this._endpoint = options.endpoint;
     this._now = options.now ?? Date.now;
+    this._maxEntries = options.maxEntries ?? ASSET_IMAGE_MAX_ENTRIES;
+    this._maxTotalBytes = options.maxTotalBytes ?? ASSET_IMAGE_MAX_TOTAL_BYTES;
   }
 
   read(subject: string): AssetImageRow | null {
-    return this._db.readImage(subject);
+    const row = this._db.readImage(subject);
+    if (row) this._touch(row);
+    return row;
+  }
+
+  private _touch(row: AssetImageRow): void {
+    const now = this._now();
+    if (now - row.fetchedAt <= ASSET_IMAGE_TOUCH_INTERVAL_MS) return;
+    this._db.touchImage(row.subject, now);
   }
 
   fetch(subject: string): Promise<AssetImageRow | null> {
@@ -119,7 +157,10 @@ export class AssetImageStore {
       return Promise.resolve(null);
     }
     const stored = this._db.readImage(subject);
-    if (stored) return Promise.resolve(stored);
+    if (stored) {
+      this._touch(stored);
+      return Promise.resolve(stored);
+    }
     if (this._withoutImage.has(subject)) return Promise.resolve(null);
     const existing = this._inFlight.get(subject);
     // A token list is thirty components each deciding independently whether to
@@ -174,6 +215,9 @@ export class AssetImageStore {
     if (!this._db.writeImage({ subject, mediaType, bytes }, this._now())) {
       return null;
     }
+    // A write is the only moment a bound can be crossed; a read can only move a
+    // row later in the ordering.
+    this._db.enforceImageBounds(this._maxEntries, this._maxTotalBytes);
     return this._db.readImage(subject);
   }
 }

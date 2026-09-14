@@ -12,6 +12,9 @@ import { openAssetMetadataDatabase } from './assetMetadataDb';
 import type { AssetMetadataDatabase } from './assetMetadataDb';
 import {
   ASSET_IMAGE_MAX_BYTES,
+  ASSET_IMAGE_MAX_ENTRIES,
+  ASSET_IMAGE_MAX_TOTAL_BYTES,
+  ASSET_IMAGE_TOUCH_INTERVAL_MS,
   AssetImageStore,
   detectImageMediaType,
 } from './assetImageStore';
@@ -295,5 +298,192 @@ describe('the foreign key', () => {
   it('reads nothing for an absent subject', () => {
     expect(database.readImage(OTHER_SUBJECT)).toBeNull();
     expect(database.readImage('')).toBeNull();
+  });
+});
+
+describe('eviction', () => {
+  // Bounds are passed in at test size, so a case does not have to write 64 MiB
+  // of blobs. The shipped constants are asserted separately.
+  const IMAGE_BYTES = 100;
+
+  const imageOf = (index: number) =>
+    Buffer.concat([
+      Buffer.from('89504e470d0a1a0a', 'hex'),
+      Buffer.alloc(IMAGE_BYTES - 8, index),
+    ]);
+
+  const subjectOf = (index: number) =>
+    `${index.toString(16).padStart(56, '0')}42544544`;
+
+  const seed = (count: number) => {
+    for (let index = 0; index < count; index += 1) {
+      const subject = subjectOf(index);
+      seedMetadata(subject);
+      database.writeImage(
+        {
+          subject,
+          mediaType: 'image/png',
+          bytes: new Uint8Array(imageOf(index)),
+        },
+        NOW + index
+      );
+    }
+  };
+
+  const survivors = (count: number) =>
+    Array.from({ length: count }, (_value, index) => subjectOf(index)).filter(
+      (subject) => database.readImage(subject) !== null
+    );
+
+  it('evicts the oldest first when the entry bound is crossed', () => {
+    seed(5);
+    expect(database.enforceImageBounds(3, 1_000_000)).toBe(2);
+    expect(survivors(5)).toEqual([subjectOf(2), subjectOf(3), subjectOf(4)]);
+  });
+
+  it('evicts nothing when the table is exactly at the entry bound', () => {
+    seed(3);
+    expect(database.enforceImageBounds(3, 1_000_000)).toBe(0);
+    expect(survivors(3)).toHaveLength(3);
+  });
+
+  it('evicts until the byte bound is satisfied and no further', () => {
+    seed(5);
+    expect(database.enforceImageBounds(1_000, IMAGE_BYTES * 3)).toBe(2);
+    expect(survivors(5)).toEqual([subjectOf(2), subjectOf(3), subjectOf(4)]);
+  });
+
+  it('evicts one when the byte bound admits four of five', () => {
+    seed(5);
+    expect(database.enforceImageBounds(1_000, IMAGE_BYTES * 4)).toBe(1);
+    expect(survivors(5)).toHaveLength(4);
+  });
+
+  it('ends inside both bounds when both are crossed', () => {
+    seed(6);
+    expect(database.enforceImageBounds(4, IMAGE_BYTES * 2)).toBe(4);
+    expect(survivors(6)).toEqual([subjectOf(4), subjectOf(5)]);
+  });
+
+  it('leaves the metadata rows untouched', () => {
+    seed(5);
+    database.enforceImageBounds(1, 1_000_000);
+    expect(survivors(5)).toEqual([subjectOf(4)]);
+    Array.from({ length: 5 }, (_value, index) => subjectOf(index)).forEach(
+      (subject) => {
+        expect(database.readMetadata([subject])).toHaveLength(1);
+      }
+    );
+  });
+
+  it('evicts nothing below the sweep floor, where neither bound can be crossed', () => {
+    seed(5);
+    // The floor is an optimisation and must not change the outcome, so it is
+    // asserted by outcome rather than by instrumenting the query path: below
+    // it, the shipped bounds cannot be crossed and nothing is evicted.
+    expect(
+      database.enforceImageBounds(
+        ASSET_IMAGE_MAX_ENTRIES,
+        ASSET_IMAGE_MAX_TOTAL_BYTES
+      )
+    ).toBe(0);
+    expect(survivors(5)).toHaveLength(5);
+  });
+
+  it('derives the sweep floor from the two shipped constants', () => {
+    expect(
+      Math.floor(ASSET_IMAGE_MAX_TOTAL_BYTES / ASSET_IMAGE_MAX_BYTES)
+    ).toBe(256);
+    expect(ASSET_IMAGE_MAX_ENTRIES).toBe(2000);
+    expect(ASSET_IMAGE_MAX_TOTAL_BYTES).toBe(64 * 1024 * 1024);
+  });
+
+  it('refuses a row over the per-entry cap, which is what the floor rests on', () => {
+    seedMetadata(subjectOf(0));
+    const oversized = Buffer.concat([
+      Buffer.from('89504e470d0a1a0a', 'hex'),
+      Buffer.alloc(ASSET_IMAGE_MAX_BYTES - 7),
+    ]);
+    expect(
+      database.writeImage(
+        {
+          subject: subjectOf(0),
+          mediaType: 'image/png',
+          bytes: new Uint8Array(oversized),
+        },
+        NOW
+      )
+    ).toBe(false);
+    expect(
+      database.writeImage(
+        {
+          subject: subjectOf(0),
+          mediaType: 'image/png',
+          bytes: new Uint8Array(oversized.subarray(0, ASSET_IMAGE_MAX_BYTES)),
+        },
+        NOW
+      )
+    ).toBe(true);
+  });
+
+  it('enforces the bounds after a fetch stores an image', async () => {
+    seed(3);
+    const store = new AssetImageStore({
+      database,
+      transport: answering(PNG),
+      endpoint: 'https://tokens.example',
+      now: () => NOW + 100,
+      maxEntries: 3,
+      maxTotalBytes: 1_000_000,
+    });
+    await store.fetch(SUBJECT);
+    expect(database.readImage(SUBJECT)).not.toBeNull();
+    expect(survivors(3)).toEqual([subjectOf(1), subjectOf(2)]);
+  });
+});
+
+describe('the eviction ordering', () => {
+  const PAST = NOW - 10 * ASSET_IMAGE_TOUCH_INTERVAL_MS;
+
+  it('advances fetched_at on a read of a stale row', () => {
+    database.writeImage(
+      { subject: SUBJECT, mediaType: 'image/png', bytes: new Uint8Array(PNG) },
+      PAST
+    );
+    const store = storeWith(answering(PNG));
+    store.read(SUBJECT);
+    expect(database.readImage(SUBJECT).fetchedAt).toBe(NOW);
+  });
+
+  it('leaves fetched_at alone on a read inside the interval', () => {
+    const recent = NOW - 60_000;
+    database.writeImage(
+      { subject: SUBJECT, mediaType: 'image/png', bytes: new Uint8Array(PNG) },
+      recent
+    );
+    const store = storeWith(answering(PNG));
+    store.read(SUBJECT);
+    expect(database.readImage(SUBJECT).fetchedAt).toBe(recent);
+  });
+
+  it('keeps the recently read row rather than the recently written one', () => {
+    const older = `${'1'.repeat(56)}01`;
+    const newer = `${'2'.repeat(56)}02`;
+    seedMetadata(older);
+    seedMetadata(newer);
+    database.writeImage(
+      { subject: older, mediaType: 'image/png', bytes: new Uint8Array(PNG) },
+      PAST
+    );
+    database.writeImage(
+      { subject: newer, mediaType: 'image/png', bytes: new Uint8Array(PNG) },
+      PAST + 1000
+    );
+
+    // Reading the older one moves it to the end of the ordering.
+    storeWith(answering(PNG)).read(older);
+    expect(database.enforceImageBounds(1, 1_000_000)).toBe(1);
+    expect(database.readImage(older)).not.toBeNull();
+    expect(database.readImage(newer)).toBeNull();
   });
 });
