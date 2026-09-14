@@ -509,7 +509,7 @@
      "id": "task-013",
      "title": "Declare the channels and the shared entry type",
      "description": "Three channel constants with their request and response types in source/common/ipc/api.ts, and the shared AssetMetadataEntry in a new source/common/types/asset-metadata.types.ts.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 2.0,
      "dependencies": [],

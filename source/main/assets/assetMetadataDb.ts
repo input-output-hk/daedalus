@@ -2,6 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { DatabaseSync } from 'node:sqlite';
 import { stateDirectoryPath } from '../config';
+import type {
+  AssetMetadataSource,
+  AssetResolutionState,
+} from '../../common/types/asset-metadata.types';
 import { logger } from '../utils/logging';
 
 const ASSET_METADATA_DIRECTORY_NAME = 'asset-metadata-cache';
@@ -131,13 +135,12 @@ ON CONFLICT (subject) DO UPDATE SET
   retry_after = excluded.retry_after,
   failure_count = excluded.failure_count`;
 
-export type AssetMetadataSource = 'registry' | 'chain';
-
-export type AssetResolutionState =
-  | 'pending'
-  | 'resolved'
-  | 'unregistered'
-  | 'failed';
+// Declared in `source/common/types/asset-metadata.types.ts` and re-exported
+// here under the names this module's callers already use. The renderer needs
+// both unions to read what the cache sends it, and a second copy of a union the
+// schema constrains with a CHECK would be free to drift from the one the engine
+// enforces.
+export type { AssetMetadataSource, AssetResolutionState };
 
 export type AssetMetadataWrite = {
   subject: string;
