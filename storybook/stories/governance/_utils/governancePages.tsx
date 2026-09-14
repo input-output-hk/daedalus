@@ -101,7 +101,6 @@ export function renderGovernancePage(
         totalDRepStake={TOTAL_DREP_STAKE}
         onToggleFavorite={action('onToggleFavorite')}
         onChangeDelegation={action('onChangeDelegation')}
-        onChooseDRep={action('onChooseDRep')}
         onViewDetails={action('onViewDetails')}
       />
     );

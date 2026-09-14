@@ -465,8 +465,7 @@ storiesOf('Governance / DRep Directory', module)
                       favoriteDRepIds={new Set(store.state.favoriteDRepIds)}
                       totalDRepStake={TOTAL_DREP_STAKE}
                       onToggleFavorite={action('onToggleFavorite')}
-                      onChangeDelegation={action('onChangeDelegation')}
-                      onChooseDRep={() =>
+                      onChangeDelegation={() =>
                         store.set({
                           currentContentRoute: ROUTES.GOVERNANCE.DREPS,
                         })
