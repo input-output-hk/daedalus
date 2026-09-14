@@ -57,7 +57,7 @@
      "id": "task-001",
      "title": "Resolve asset names by provenance and stop rendering non-text as text",
      "description": "components/assets/Asset.tsx:177-178 renders `ASCII: ${hexToString(assetName)}` whenever there is no metadata name. hexToString is Buffer.from(hex,'hex').toString() (utils/strings.ts:18-19), which decodes as UTF-8 unconditionally, so an asset whose name is a hash renders the literal prefix followed by replacement characters. Add a printable-ASCII predicate and a resolution order, and drop the prefix.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 3.0,
      "dependencies": [],

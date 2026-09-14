@@ -810,6 +810,11 @@
         "defaultMessage": "!!!You can configure the number of decimal places for this native token.",
         "description": "Asset settings pop over content",
         "id": "assets.assetToken.settings.cogPopOver"
+      },
+      {
+        "defaultMessage": "!!!(minter-chosen name: {name})",
+        "description": "Decoded \"assetName\" param, marked as chosen by the minter rather than published by an issuer.",
+        "id": "assets.assetToken.param.assetNameMinterChosen"
       }
     ],
     "path": "source/renderer/app/components/assets/AssetContent.tsx"
@@ -843,6 +848,16 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!This name is decoded from the asset name chosen by whoever minted this token. No issuer published it, and it does not identify the token. The fingerprint does.",
+        "description": "Tooltip on an asset name that was decoded from the asset name bytes rather than published by an issuer.",
+        "id": "assets.assetToken.minterChosenName"
+      }
+    ],
+    "path": "source/renderer/app/components/assets/Asset.tsx"
   },
   {
     "descriptors": [

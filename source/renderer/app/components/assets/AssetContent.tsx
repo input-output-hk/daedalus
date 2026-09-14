@@ -5,7 +5,7 @@ import { defineMessages, intlShape, injectIntl } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './AssetContent.scss';
-import { hexToString } from '../../utils/strings';
+import { hexToPrintableAsciiString } from '../../utils/strings';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
 import { ASSET_TOKEN_ID_COPY_FEEDBACK } from '../../config/timingConfig';
@@ -26,6 +26,12 @@ const messages = defineMessages({
     id: 'assets.assetToken.param.assetName',
     defaultMessage: '!!!Asset name',
     description: '"assetName" param.',
+  },
+  assetNameMinterChosenAssetParam: {
+    id: 'assets.assetToken.param.assetNameMinterChosen',
+    defaultMessage: '!!!(minter-chosen name: {name})',
+    description:
+      'Decoded "assetName" param, marked as chosen by the minter rather than published by an issuer.',
   },
   nameAssetParam: {
     id: 'assets.assetToken.param.name',
@@ -112,6 +118,11 @@ const AssetContent = observer((props: Props) => {
       handleCopyParam(assetId, param, value);
     };
 
+    // Only the asset name carries a decoded form, and only when every one of
+    // its bytes is printable. The bytes are the minter's, so the decoded form
+    // is labelled as theirs rather than presented as a published name.
+    const decodedAssetName =
+      assetId === 'assetName' ? hexToPrintableAsciiString(value) : null;
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
         <div className={styles.assetParam}>
@@ -119,9 +130,17 @@ const AssetContent = observer((props: Props) => {
             {value}
             <SVGInline svg={icon} className={iconClassnames} />
           </div>
-          {assetId === 'assetName' && (
-            <div className={styles.assetAsciiName}>
-              (ASCII: {hexToString(value)})
+          {decodedAssetName && (
+            <div
+              className={styles.assetAsciiName}
+              data-testid="assetNameMinterChosenParam"
+            >
+              {props.intl.formatMessage(
+                messages.assetNameMinterChosenAssetParam,
+                {
+                  name: decodedAssetName,
+                }
+              )}
             </div>
           )}
         </div>
