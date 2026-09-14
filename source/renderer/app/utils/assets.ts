@@ -2,7 +2,6 @@ import find from 'lodash/find';
 import BigNumber from 'bignumber.js';
 import { filter, escapeRegExp } from 'lodash';
 import Wallet from '../domains/Wallet';
-import Asset from '../domains/Asset';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
@@ -35,84 +34,6 @@ export const filterAssets = (
       (transactionType === TransactionTypes.EXPEND &&
         !isInternalAddress(address))
   );
-export const getZeroToken = ({
-  policyId,
-  assetName,
-  assetNameASCII,
-  uniqueId,
-}: Asset): Token => ({
-  policyId,
-  assetName,
-  assetNameASCII,
-  uniqueId,
-  quantity: new BigNumber(0),
-});
-
-/**
- * Receives an asset and a list of tokens
- * Then retrieves the token with the same uniqueId
- * @param asset - asset details
- * @param tokens - list of Tokens
- * See Asset/Token differences at the beginning of this doc
- */
-export const getToken = (asset: Asset, tokens: Tokens) => {
-  let token = tokens.find(({ uniqueId }) => uniqueId === asset.uniqueId);
-
-  if (!token) {
-    token = getZeroToken(asset);
-  }
-
-  return token;
-};
-
-/**
- * Receives a Token and an Asset
- * then merges them into an AssetToken
- * @param asset - asset details
- * @param token - token details
- * See Asset/Token differences at the beginning of this doc
- */
-export const getAssetToken = (
-  {
-    policyId,
-    assetName,
-    assetNameASCII,
-    fingerprint,
-    metadata,
-    decimals,
-    recommendedDecimals,
-    uniqueId,
-  }: Asset,
-  { quantity, address }: Token
-): AssetToken => ({
-  policyId,
-  assetName,
-  assetNameASCII,
-  quantity,
-  address,
-  fingerprint,
-  metadata,
-  decimals,
-  recommendedDecimals,
-  uniqueId,
-});
-
-/**
- * Receives both the Assets and the Tokens from a wallet
- * then merges them into AssetTokens
- * @param assets - list of asset details
- * @param tokens - list of token details
- * See Asset/Token differences at the beginning of this doc
- */
-export const getAssetTokens = (
-  assets: Array<Asset>,
-  tokens: Tokens
-): Array<AssetToken> =>
-  assets
-    .map((asset) => getAssetToken(asset, getToken(asset, tokens)))
-    .filter((token) => !!token.uniqueId) // @TOKEN TODO - Remove this filter once we can list zero tokens
-    .filter((token) => !token.quantity.isZero());
-
 /**
  * Receives a Token and combines it with the registry data for the same subject.
  *
@@ -284,18 +205,22 @@ export const searchAssets = (
     const { policyId, assetName, assetNameASCII, fingerprint, metadata } =
       asset;
     const { name, ticker, description } = metadata || {};
+    // Only the fields that are text, and only where there is any. `test`
+    // coerces its argument, so an absent field would be searched as the literal
+    // "undefined" and a three-letter search for `und` would match every row the
+    // cache has not resolved. The metadata object itself was in this list and
+    // coerced to "[object Object]"; its three text properties are here in their
+    // own right, so nothing is lost by dropping it.
     const checkList = [
       policyId,
       assetName,
       assetNameASCII,
       fingerprint,
-      metadata,
       name,
       ticker,
       description,
-    ];
+    ].filter((item) => typeof item === 'string');
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | AssetMetadata' is not a... Remove this comment to see the full error message
     return checkList.some((item) => regex.test(item));
   });
 };

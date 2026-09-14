@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { getAssetTokenFromToken, getNonZeroAssetTokens } from './assets';
+import {
+  getAssetTokenFromToken,
+  getNonZeroAssetTokens,
+  searchAssets,
+} from './assets';
 import type { AssetMetadata, Token } from '../api/assets/types';
 
 const policyId = '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7';
@@ -211,5 +215,74 @@ describe('getNonZeroAssetTokens', () => {
       'asset1aaa',
       'asset1bbb',
     ]);
+  });
+});
+
+describe('searchAssets', () => {
+  const unresolvedRow = () =>
+    getAssetTokenFromToken(
+      {
+        policyId: 'a'.repeat(56),
+        assetName: '424f4f4b',
+        uniqueId: `${'a'.repeat(56)}424f4f4b`,
+        quantity: new BigNumber(1),
+      } as Token,
+      () => undefined
+    );
+
+  const resolvedRow = (metadata: AssetMetadata) =>
+    getAssetTokenFromToken(
+      {
+        policyId: 'b'.repeat(56),
+        assetName: '424f4f4b',
+        uniqueId: `${'b'.repeat(56)}424f4f4b`,
+        quantity: new BigNumber(1),
+      } as Token,
+      () => ({
+        fingerprint: 'asset1resolvedrowfingerprint00000000000',
+        metadata,
+      })
+    );
+
+  it('does not match a row through a field it does not have', () => {
+    const rows = [unresolvedRow()];
+    // Every one of these is three letters of a value a missing field coerces
+    // to: "undefined" and "[object Object]".
+    expect(searchAssets('und', rows)).toEqual([]);
+    expect(searchAssets('fin', rows)).toEqual([]);
+    expect(searchAssets('obj', rows)).toEqual([]);
+    expect(searchAssets('ect', rows)).toEqual([]);
+  });
+
+  it('matches a row through a published name, ticker or description', () => {
+    const row = resolvedRow({
+      name: 'Fundamental',
+      description: 'A token for the undecided',
+      ticker: 'FUND',
+    });
+    expect(searchAssets('und', [row])).toHaveLength(1);
+    expect(searchAssets('FUN', [row])).toHaveLength(1);
+    expect(searchAssets('undec', [row])).toHaveLength(1);
+  });
+
+  it('matches an unresolved row through its identity', () => {
+    const row = unresolvedRow();
+    expect(searchAssets('aaaaaa', [row])).toHaveLength(1);
+    expect(searchAssets('424f4f', [row])).toHaveLength(1);
+    expect(searchAssets('BOOK', [row])).toHaveLength(1);
+  });
+
+  it('matches a resolved row through its fingerprint', () => {
+    const row = resolvedRow({
+      name: 'Bookmark',
+      description: '',
+      ticker: 'BM',
+    });
+    expect(searchAssets('asset1resolved', [row])).toHaveLength(1);
+  });
+
+  it('returns everything for a search of fewer than three characters', () => {
+    const rows = [unresolvedRow()];
+    expect(searchAssets('un', rows)).toEqual(rows);
   });
 });

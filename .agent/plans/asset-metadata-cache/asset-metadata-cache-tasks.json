@@ -625,7 +625,7 @@
      "id": "task-017",
      "title": "Move the two enumerating call sites to the holdings-driven form",
      "description": "WalletTokensPage.tsx:42 and WalletSummaryPage.tsx:123 call getAssetTokens(all, walletTokens), which maps over the endpoint's list. The holdings-driven equivalent already exists and is already used in three places.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 4.0,
      "dependencies": [

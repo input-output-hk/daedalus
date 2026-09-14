@@ -119,19 +119,6 @@ export default class AssetsStore extends Store {
 
   // ==================== PUBLIC ==================
   @computed
-  get all(): Array<Asset> {
-    const wallet = this.stores.wallets.active;
-
-    if (!wallet) {
-      return [];
-    }
-
-    const request = this._retrieveAssetsRequest(wallet.id);
-
-    return get(request, 'result.assets', []);
-  }
-
-  @computed
   get details(): Record<string, Asset> {
     const details = {};
     const subjects = new Set([

@@ -33,7 +33,6 @@ import AssetInput from './send-form/AssetInput';
 import { WalletSendConfirmationDialogView } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import { WalletSendConfirmationDialogContainer } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container';
 import styles from './WalletSendForm.scss';
-import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
@@ -97,7 +96,7 @@ type Props = {
   addressValidator: (...args: Array<any>) => any;
   assets: Array<AssetToken>;
   hasAssets: boolean;
-  selectedAsset: Asset | null | undefined;
+  selectedAsset: AssetToken | null | undefined;
   isLoadingAssets: boolean;
   isDialogOpen: (...args: Array<any>) => any;
   isRestoreActive: boolean;
