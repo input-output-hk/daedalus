@@ -118,3 +118,30 @@ Approval bar:
 - Met. `task-062` is complete and `task-010` is unblocked on this dependency.
 
 Decision: approved
+
+Correction: Iteration 1, verification claim
+Timestamp: 2026-09-14T20:26:50Z
+
+What was wrong:
+- The Verification run above, and the second acceptance criterion it answers, treat
+  `nix build .#checks.x86_64-linux.compile` returning exit 0 as proof that no importer was left
+  dangling. It is not. `yarn compile` does not report an unresolvable relative import in this
+  repository.
+
+How it was measured:
+- During `task-006`, a `storybook:build` failed with
+  `Module not found: Error: Can't resolve './UndelegateWallet.stories'` on a tree whose `compile`
+  check had passed. The behaviour was then confirmed deliberately: appending
+  `import './NoSuchModuleProbe.stories';` to a tracked story file and running
+  `nix build .#checks.x86_64-linux.compile` returned exit 0. The probe line was removed afterwards.
+
+What still stands:
+- `task-062`'s conclusion is unaffected. The same run also recorded `storybook:build` green and a
+  module-graph walk from `storybook/stories/index.ts` reaching 68 of 69 convention-matching files,
+  and either of those establishes the property on its own. Only the inference from `compile` was
+  wrong.
+
+What to carry forward:
+- `storybook:build` is the check that catches an unresolvable import, and it catches it only for
+  modules the barrel reaches. Several later task entries state the `compile` inference in their
+  acceptance criteria; it should be read as the `storybook` check doing that work.

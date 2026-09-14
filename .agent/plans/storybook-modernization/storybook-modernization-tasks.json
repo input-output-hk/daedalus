@@ -186,7 +186,7 @@
      "id": "task-006",
      "title": "Restage the wallet settings undelegation story",
      "description": "Locked decision 6. _support/WalletSettingsScreen.tsx:326 renders UndelegateWalletConfirmationDialog inside a box that WalletSettings.tsx:209 returns null for, because walletsConfig.ts:45 sets IS_WALLET_UNDELEGATION_ENABLED false. The component is live and reachable through DelegationCenterPage.tsx:118-119, so only the framing is wrong.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 2.0,
      "dependencies": [

@@ -9,6 +9,7 @@ import './WalletUnpair.stories';
 import './WalletRecoveryPhraseVerification.stories';
 import './WalletPublicKey.stories';
 import './PublicKeyQRCode.stories';
+import './UndelegateWallet.stories';
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets / Settings', module)

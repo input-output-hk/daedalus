@@ -1,22 +1,14 @@
 import React from 'react';
 import { boolean, number, select, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { defineMessages } from 'react-intl';
-import {
-  generateHash,
-  generatePolicyIdHash,
-  generateWallet,
-} from '../../../_support/utils';
-import STAKE_POOLS from '../../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import type { Locale } from '../../../../../source/common/types/locales.types';
 // Screens
 import WalletSettings from '../../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import PublicKeyQRCodeDialog from '../../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
 import WalletPublicKeyDialog from '../../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
-import UndelegateWalletConfirmationDialog from '../../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import WalletSettingsRemoveConfirmationDialog from '../../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
@@ -75,49 +67,6 @@ const recoveryDialogOptions = {
   'Step 3 - Verification successful': 3,
   'Step 4 - Verification failure': 4,
 };
-const assets = {
-  available: [
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      uniqueId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: new BigNumber(200),
-    },
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      uniqueId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: new BigNumber(200),
-    },
-  ],
-  total: [
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      uniqueId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: new BigNumber(200),
-    },
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      uniqueId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: new BigNumber(200),
-    },
-  ],
-};
-const selectedWallet = generateWallet(
-  'Wallet 1',
-  '1000000000',
-  assets,
-  0,
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ relativeStake: number; cost: s... Remove this comment to see the full error message
-  STAKE_POOLS[0]
-);
-
 const getWalletDates = (type: string, status: string) => {
   let date = new Date();
   if (status === 'warning')
@@ -322,34 +271,10 @@ export default function (props: { locale: Locale }) {
           derivationPath={ICO_PUBLIC_KEY_DERIVATION_PATH}
         />
       }
-      undelegateWalletDialogContainer={
-        <UndelegateWalletConfirmationDialog
-          selectedWallet={selectedWallet}
-          stakePoolName={text(
-            'UndelegateWalletConfirmationDialog: Stake Pool Name',
-            'Stake Pool Name'
-          )}
-          stakePoolTicker={text(
-            'UndelegateWalletConfirmationDialog: Stake Pool Ticker',
-            'Stake Pool Ticker'
-          )}
-          onConfirm={action('Undelegate Wallet - onConfirm')}
-          onCancel={action('Undelegate Wallet - onCancel')}
-          onExternalLinkClick={action(
-            'Undelegate Wallet - onExternalLinkClick'
-          )}
-          isSubmitting={boolean(
-            'Undelegate Wallet - submitting',
-            false,
-            undelegateWalletId
-          )}
-          error={null}
-          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-          fees={new BigNumber(10)}
-          hwDeviceStatus="ready"
-          isTrezor={boolean('isTrezor', false)}
-        />
-      }
+      // WalletSettings renders this only from renderUndelegateWalletBox, which
+      // returns null while IS_WALLET_UNDELEGATION_ENABLED is false. The dialog
+      // has its own story in UndelegateWallet.stories.tsx.
+      undelegateWalletDialogContainer={null}
       deleteWalletDialogContainer={
         <WalletSettingsRemoveConfirmationDialog
           walletName={text(
