@@ -335,7 +335,7 @@
      "id": "task-010",
      "title": "Replace the barrel with a glob and rehome its side effects",
      "description": "storybook/main.ts:8 declares stories: ['../storybook/stories/index.ts'], a barrel of side-effect imports. Replace it with a glob over the story file naming conventions, and move the two side effects at storybook/stories/index.ts:1-2, the global SCSS import and the environment import, into preview.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 6.0,
      "dependencies": [
@@ -355,7 +355,11 @@
       "Storybook 6 has supported glob stories entries since 6.0 and loads a storiesOf file found by a glob exactly as the barrel did, because registration is a side effect of loading the module either way.",
       "If 6.4.22's indexer rejects the glob, fold this task and task-011 into phase 3 and verify them at 8.6.x instead. Nothing later in the plan depends on where the glob is verified.",
       "Delete storybook/stories/index.ts only once the side effects are rehomed and the build is green.",
-      "The barrel currently also loads sibling-registering modules; the 15 files that register no stories of their own must still be reachable from the file that registers their exports."
+      "The barrel currently also loads sibling-registering modules; the 15 files that register no stories of their own must still be reachable from the file that registers their exports.",
+      "Why this is a coverage increase rather than a configuration tidy-up, since several later entries carry the opposite inference: yarn compile does not report an unresolvable relative import in this repository, measured during task-006 with a probe and recorded in task-062-impl-review.md. yarn storybook:build does report one, but only for a module the indexer reaches. Under the barrel that was whatever someone remembered to list, which is how Legacy.stories.tsx stayed dead for years with every check green. Under the glob it is the corpus on disk.",
+      "The two side effects this entry asks to move into preview were already there, at preview.tsx:4 and :6. What the task actually requires is to stop loading the barrel duplicates. The two stylesheet imports were not equivalent: the barrel used a plain specifier, which goes through the .scss rule in webpackFinal where css-loader has modules enabled with localIdentName and therefore rewrites every class name in a stylesheet whose entire purpose is to be global; preview.tsx uses an inline style-loader!css-loader!sass-loader chain that bypasses the rule and emits the names unchanged. Deleting the barrel removes the scoped duplicate and keeps the correct one. This is the one change here with a possible visual consequence and it cannot be seen from a build: the symptom to look for is unstyled previews across every story, and the cause would be this line.",
+      "The glob also orphans two of the 15 files task-062 renamed, nodes/status/_support/Status.ts and wallets/addWallet/_support/AddWallet.ts. Both are import-only barrels whose single importer was a sub-barrel removed here, and the story files they reached are matched by the glob directly. task-062 recorded in advance that this task would remove them. The other 13 keep their importers.",
+      "task-001-sidebar-extract.js rooted its reachability walk at the barrel and had to be updated in this task, since that file no longer exists. Its roots are now every file matching the story naming convention under the two directories the globs name. The output format is unchanged and the artifact it produces is byte-identical across this change. Note that the reachability column is now close to tautological for a registering file, because the glob matches all of them; the guarantee it used to provide has moved into the build, which is the point of the phase."
      ],
      "acceptance": [
       "yarn storybook:build, yarn compile and yarn lint pass",

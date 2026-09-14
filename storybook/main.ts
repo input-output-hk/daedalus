@@ -5,7 +5,10 @@ module.exports = {
   core: {
     builder: 'webpack5',
   },
-  stories: ['../storybook/stories/index.ts'],
+  stories: [
+    '../storybook/stories/**/*.stories.@(ts|tsx)',
+    '../source/renderer/app/**/*.@(stories|story).@(ts|tsx)',
+  ],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',

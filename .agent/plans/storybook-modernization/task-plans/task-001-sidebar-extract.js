@@ -30,9 +30,16 @@ const path = require('path');
 
 const ROOT = path.resolve(process.argv[2] || '.');
 const MODE = process.argv[3] || '--all';
-const BARREL = path.join(ROOT, 'storybook/stories/index.ts');
 const EXTS = ['.ts', '.tsx', '.js', '.jsx'];
 const UNIT = String.fromCharCode(1);
+
+/* What the indexer loads. Until task-010 this was one hand-maintained barrel at
+ * storybook/stories/index.ts, and a story file left out of it registered nothing
+ * while every check stayed green. storybook/main.ts now declares two globs, so
+ * the roots are every file matching the story naming convention under the two
+ * directories those globs name. */
+const STORY_FILE = /\.(stories|story)\.(ts|tsx)$/;
+const GLOB_DIRS = ['storybook/stories', 'source/renderer/app'];
 
 function resolveSpec(fromFile, spec) {
   if (!spec.startsWith('.')) return null;
@@ -62,11 +69,9 @@ function parse(file) {
   );
 }
 
-/* Which modules the barrel actually loads. At 6.4.22 storybook/main.ts names one
- * entry, storybook/stories/index.ts, so a story file outside its import closure
- * registers nothing however well formed it is. */
+/* Which modules the indexer loads, and what it therefore registers. */
 const reachable = new Set();
-(function walk(file) {
+function walk(file) {
   if (reachable.has(file)) return;
   reachable.add(file);
   const sf = parse(file);
@@ -88,7 +93,7 @@ const reachable = new Set();
     const r = resolveSpec(file, s);
     if (r && !r.includes('node_modules')) walk(r);
   }
-})(BARREL);
+}
 
 function findFiles(dir, out) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -101,6 +106,14 @@ function findFiles(dir, out) {
     }
   }
   return out;
+}
+
+for (const dir of GLOB_DIRS) {
+  const abs = path.join(ROOT, dir);
+  if (!fs.existsSync(abs)) continue;
+  for (const f of findFiles(abs, [])) {
+    if (STORY_FILE.test(path.basename(f))) walk(f);
+  }
 }
 
 /* File-local constants a label can be written through. Nine of the labels in the
