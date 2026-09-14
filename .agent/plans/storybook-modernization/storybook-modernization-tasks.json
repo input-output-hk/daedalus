@@ -134,7 +134,7 @@
       "source/renderer/app/components/staking/navigation/StakingNavigation.tsx",
       "source/renderer/app/config/stakingCurrentEpoch.dummy.json",
       "source/renderer/app/config/stakingPreviousEpoch.dummy.json",
-      "storybook/stories/staking/Epochs.stories.tsx",
+      "storybook/stories/staking/_support/Epochs.tsx",
       "storybook/stories/staking/Staking.stories.tsx",
       "source/renderer/app/i18n/locales/en-US.json",
       "source/renderer/app/i18n/locales/ja-JP.json",
@@ -144,10 +144,10 @@
       "What users keep: components/staking/delegation-center/DelegationCenterHeader.tsx renders the current epoch with its slot counts, a countdown to the next epoch (:154, :165-172) and the sentence at :43-45 telling the user when a delegation change takes effect. DelegationCenter.tsx:61-67 mounts it at the top of /staking/delegation-center, and it takes its data from the delegation center's own props, so it is independent of the deleted page.",
       "What users lose: nothing visible. The epoch progress bar at StakingEpochs.tsx:124-135 renders on the deleted page alone, and no affordance reaches that page.",
       "This is a stub rather than a suspended feature, which is the distinction from the voting stories kept under decision 13: StakingEpochsPage.tsx:5-6 imports config/stakingPreviousEpoch.dummy.json and config/stakingCurrentEpoch.dummy.json and reads no store at all.",
-      "Delete in one commit: the binding at Routes.tsx:196-200 and the import at Routes.tsx:20; ROUTES.STAKING.EPOCHS at routes-config.ts:13, whose only reader is Routes.tsx:198; containers/staking/StakingEpochsPage.tsx; the seven files under components/staking/epochs/, five components plus a stylesheet and helpers.ts; the commented navigation item at StakingNavigation.tsx:64-67 and the messages.epochs entry at :24-28 that was its only reader; both dummy JSON fixtures, which nothing else imports; and storybook/stories/staking/Epochs.stories.tsx with the import at Staking.stories.tsx:17 and the registration at :172.",
+      "Delete in one commit: the binding at Routes.tsx:196-200 and the import at Routes.tsx:20; ROUTES.STAKING.EPOCHS at routes-config.ts:13, whose only reader is Routes.tsx:198; containers/staking/StakingEpochsPage.tsx; the seven files under components/staking/epochs/, five components plus a stylesheet and helpers.ts; the commented navigation item at StakingNavigation.tsx:64-67 and the messages.epochs entry at :24-28 that was its only reader; both dummy JSON fixtures, which nothing else imports; and storybook/stories/staking/_support/Epochs.tsx with the import at Staking.stories.tsx:17 and the registration at :172.",
       "No barrel entry changes. storybook/stories/index.ts reaches this story only through staking/Staking.stories.tsx, so removing that import and registration is the equivalent edit.",
       "Regenerate the translation artifacts in the same commit. The i18n check at perSystem/checks.nix:64-76 snapshots source/renderer/app/i18n/locales and translations/messages.json, runs yarn i18n:manage and fails when the result differs from what is committed. Twelve message ids go: the eleven under staking.epochs.* and staking.navigation.epochs.",
-      "This removes two knob call sites from the phase 4 staking tranche, the date knob at Epochs.stories.tsx:13 and the number knob at :28."
+      "This removes two knob call sites from the phase 4 staking tranche, the date knob at _support/Epochs.tsx:13 and the number knob at :28."
      ],
      "acceptance": [
       "grep over source/, storybook/ and tests/ returns no reference to StakingEpochs, ROUTES.STAKING.EPOCHS or either dummy JSON fixture",
@@ -185,7 +185,7 @@
     {
      "id": "task-006",
      "title": "Restage the wallet settings undelegation story",
-     "description": "Locked decision 6. WalletSettingsScreen.stories.tsx:326 renders UndelegateWalletConfirmationDialog inside a box that WalletSettings.tsx:209 returns null for, because walletsConfig.ts:45 sets IS_WALLET_UNDELEGATION_ENABLED false. The component is live and reachable through DelegationCenterPage.tsx:118-119, so only the framing is wrong.",
+     "description": "Locked decision 6. _support/WalletSettingsScreen.tsx:326 renders UndelegateWalletConfirmationDialog inside a box that WalletSettings.tsx:209 returns null for, because walletsConfig.ts:45 sets IS_WALLET_UNDELEGATION_ENABLED false. The component is live and reachable through DelegationCenterPage.tsx:118-119, so only the framing is wrong.",
      "status": "pending",
      "priority": "medium",
      "estimatedHours": 2.0,
@@ -193,11 +193,11 @@
       "task-001"
      ],
      "targetPaths": [
-      "storybook/stories/wallets/settings/WalletSettingsScreen.stories.tsx",
-      "storybook/stories/staking/Undelegate.stories.tsx"
+      "storybook/stories/wallets/settings/_support/WalletSettingsScreen.tsx",
+      "storybook/stories/staking/_support/Undelegate.tsx"
      ],
      "implementationNotes": [
-      "Move the registration out of the wallet settings screen framing and present the dialog on its own, the way staking/Undelegate.stories.tsx already presents its siblings.",
+      "Move the registration out of the wallet settings screen framing and present the dialog on its own, the way staking/_support/Undelegate.tsx already presents its siblings.",
       "Keep the story label recognizable against the task-001 baseline, or record the rename deliberately in the diff."
      ],
      "acceptance": [
@@ -281,7 +281,7 @@
      "id": "task-062",
      "title": "Rename the 15 sibling-registering story files out of the convention",
      "description": "Fifteen files match the *.stories.* naming convention and register no stories of their own; they import or re-export siblings. Move them into _support/ and rename them so the phase 2 glob cannot pick them up as indexer inputs. At 6.4.22 the glob would auto-title them and register their named exports, moving the phase 1 sidebar baseline; at 8.6 and 10.6 they are a hard build-storybook failure via NoMetaError collected into MultipleIndexingError.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 4.0,
      "dependencies": [],

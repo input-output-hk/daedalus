@@ -4,7 +4,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
 // Stories
-import { DataLayerMigrationStory } from './DataLayerMigration.stories';
+import { DataLayerMigrationStory } from './_support/DataLayerMigration';
 
 storiesOf('Nodes / Updates', module)
   .addDecorator((story, context) => (

@@ -3,17 +3,17 @@ import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number, boolean, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import StakePools from '../../../source/renderer/app/components/staking/stake-pools/StakePools';
+import StakePools from '../../../../source/renderer/app/components/staking/stake-pools/StakePools';
 import {
   CIRCULATING_SUPPLY,
   INITIAL_DESIRED_POOLS_NUMBER,
-} from '../../../source/renderer/app/config/stakingConfig';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+} from '../../../../source/renderer/app/config/stakingConfig';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import {
   generateHash,
   generatePolicyIdHash,
   generateWallet,
-} from '../_support/utils';
+} from '../../_support/utils';
 
 const assets = {
   available: [

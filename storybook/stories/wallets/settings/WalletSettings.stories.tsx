@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 // Screens
-import WalletSettingsScreen from './WalletSettingsScreen.stories';
+import WalletSettingsScreen from './_support/WalletSettingsScreen';
 import './WalletDelete.stories';
 import './WalletUnpair.stories';
 import './WalletRecoveryPhraseVerification.stories';

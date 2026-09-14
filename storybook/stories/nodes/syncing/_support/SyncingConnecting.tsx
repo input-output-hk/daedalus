@@ -2,11 +2,11 @@ import React from 'react';
 import { boolean, radios, number } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
-import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
+import SyncingConnecting from '../../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import {
   BlockSyncType,
   CardanoNodeStates,
-} from '../../../../source/common/types/cardano-node.types';
+} from '../../../../../source/common/types/cardano-node.types';
 
 const makeProgressValueKnob = ({ name, value }) =>
   number(name, value, {

@@ -8,31 +8,31 @@ import {
   generateHash,
   generatePolicyIdHash,
   generateWallet,
-} from '../../_support/utils';
-import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import type { Locale } from '../../../../source/common/types/locales.types';
+} from '../../../_support/utils';
+import STAKE_POOLS from '../../../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import type { Locale } from '../../../../../source/common/types/locales.types';
 // Screens
-import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
-import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import PublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
-import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
-import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
-import WalletSettingsRemoveConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
-import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
-import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
-import WalletRecoveryPhraseStep3Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
-import WalletRecoveryPhraseStep4Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
+import WalletSettings from '../../../../../source/renderer/app/components/wallet/settings/WalletSettings';
+import ChangeSpendingPasswordDialog from '../../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
+import PublicKeyQRCodeDialog from '../../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyQRCodeDialog';
+import WalletPublicKeyDialog from '../../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
+import UndelegateWalletConfirmationDialog from '../../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
+import WalletSettingsRemoveConfirmationDialog from '../../../../../source/renderer/app/components/wallet/settings/WalletSettingsRemoveConfirmationDialog';
+import WalletRecoveryPhraseStep1Dialog from '../../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
+import WalletRecoveryPhraseStep2Dialog from '../../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
+import WalletRecoveryPhraseStep3Dialog from '../../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep3Dialog';
+import WalletRecoveryPhraseStep4Dialog from '../../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep4Dialog';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   RECOVERY_PHRASE_VERIFICATION_TIMES,
   RECOVERY_PHRASE_VERIFICATION_TYPES,
-} from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
-import ICOPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
+} from '../../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
+import ICOPublicKeyDialog from '../../../../../source/renderer/app/components/wallet/settings/ICOPublicKeyDialog';
 import {
   ICO_PUBLIC_KEY_DERIVATION_PATH,
   WALLET_PUBLIC_KEY_DERIVATION_PATH,
-} from '../../../../source/renderer/app/config/walletsConfig';
-import type { ReactIntlMessage } from '../../../../source/renderer/app/types/i18nTypes';
+} from '../../../../../source/renderer/app/config/walletsConfig';
+import type { ReactIntlMessage } from '../../../../../source/renderer/app/types/i18nTypes';
 
 /* eslint-disable react/display-name  */
 const basicSettingsId = 'Basic Settings';

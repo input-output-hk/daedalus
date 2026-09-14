@@ -11,11 +11,11 @@ import StakingCountdown from '../../../source/renderer/app/components/staking/co
 import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
 import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
-import { StakePoolsStory } from './StakePools.stories';
-import { StakingRewardsStory } from './Rewards.stories';
-import { StakingDelegationCenterStory } from './DelegationCenter.stories';
-import { StakingEpochsStory } from './Epochs.stories';
-import { StakingDelegationSteps } from './DelegationSteps.stories';
+import { StakePoolsStory } from './_support/StakePools';
+import { StakingRewardsStory } from './_support/Rewards';
+import { StakingDelegationCenterStory } from './_support/DelegationCenter';
+import { StakingEpochsStory } from './_support/Epochs';
+import { StakingDelegationSteps } from './_support/DelegationSteps';
 import {
   Step1ConfigurationDialogStory,
   Step2ConfirmationDialogStory,
@@ -23,12 +23,12 @@ import {
   Step3FailureDialogStory,
   NoWalletsDialogDialogStory,
   RedemptionUnavailableDialogDialogStory,
-} from './RedeemItnWallets.stories';
+} from './_support/RedeemItnWallets';
 import {
   StakingUndelegateConfirmationStory,
   StakingUndelegateConfirmationResultStory,
-} from './Undelegate.stories';
-import { StakePoolsTableStory } from './StakePoolsTable.stories';
+} from './_support/Undelegate';
+import { StakePoolsTableStory } from './_support/StakePoolsTable';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date();

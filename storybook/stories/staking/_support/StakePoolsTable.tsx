@@ -2,9 +2,9 @@ import React from 'react';
 import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { FormattedMessage } from 'react-intl';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import { StakePoolsTable } from '../../../source/renderer/app/components/staking/stake-pools/StakePoolsTable';
-import { StakePoolsSearch } from '../../../source/renderer/app/components/staking/stake-pools/StakePoolsSearch';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import { StakePoolsTable } from '../../../../source/renderer/app/components/staking/stake-pools/StakePoolsTable';
+import { StakePoolsSearch } from '../../../../source/renderer/app/components/staking/stake-pools/StakePoolsSearch';
 
 const listTitle = {
   id: 'staking.stakePools.listTitle',

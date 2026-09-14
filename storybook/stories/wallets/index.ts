@@ -11,7 +11,7 @@ import './tokens/WalletTokens.stories';
 import './tokens/WalletTokensList.stories';
 import '../../../source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.stories';
 import './settings/WalletSettings.stories';
-import './addWallet/AddWallet.stories';
+import './addWallet/_support/AddWallet';
 import './import/WalletImportFile.stories';
 import './export/WalletExportToFile.stories';
 import './legacyWallets/TransferFunds.stories';

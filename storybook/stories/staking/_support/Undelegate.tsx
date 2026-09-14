@@ -3,15 +3,15 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
 import { number, boolean } from '@storybook/addon-knobs';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import {
   generateHash,
   generatePolicyIdHash,
   generateWallet,
-} from '../_support/utils';
+} from '../../_support/utils';
 // Screens
-import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
-import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
+import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
+import UndelegateWalletSuccessDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
 
 const assets = {
   available: [

@@ -3,20 +3,20 @@ import { select, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
 // Screens
-import Step1ConfigurationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog';
-import Step2ConfirmationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog';
-import Step3SuccessDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog';
-import Step3FailureDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog';
-import NoWalletsDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog';
-import RedemptionUnavailableDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog';
+import Step1ConfigurationDialog from '../../../../source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog';
+import Step2ConfirmationDialog from '../../../../source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog';
+import Step3SuccessDialog from '../../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog';
+import Step3FailureDialog from '../../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog';
+import NoWalletsDialog from '../../../../source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog';
+import RedemptionUnavailableDialog from '../../../../source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog';
 // Helpers
-import { isValidMnemonic } from '../../../source/common/config/crypto/decrypt';
-import validWords from '../../../source/common/config/crypto/valid-words.en';
+import { isValidMnemonic } from '../../../../source/common/config/crypto/decrypt';
+import validWords from '../../../../source/common/config/crypto/valid-words.en';
 import {
   generateHash,
   generatePolicyIdHash,
   generateWallet,
-} from '../_support/utils';
+} from '../../_support/utils';
 
 const assets = {
   available: [

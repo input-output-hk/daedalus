@@ -3,8 +3,8 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs } from '@storybook/addon-knobs';
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
-import { NoDiskSpaceErrorStory } from './NoDiskSpaceError.stories';
-import { SystemTimeErrorStory } from './SystemTimeError.stories';
+import { NoDiskSpaceErrorStory } from './_support/NoDiskSpaceError';
+import { SystemTimeErrorStory } from './_support/SystemTimeError';
 
 storiesOf('Nodes / Errors', module)
   .addDecorator((story, context) => (

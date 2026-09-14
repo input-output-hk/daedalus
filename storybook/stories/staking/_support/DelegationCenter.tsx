@@ -3,20 +3,20 @@ import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
-import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy';
+import DelegationCenter from '../../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy';
 import Wallet, {
   WalletDelegationStatuses,
-} from '../../../source/renderer/app/domains/Wallet';
+} from '../../../../source/renderer/app/domains/Wallet';
 import {
   RECOVERY_PHRASE_VERIFICATION_STATUSES,
   RECOVERY_PHRASE_VERIFICATION_TYPES,
-} from '../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
+} from '../../../../source/renderer/app/config/walletRecoveryPhraseVerificationConfig';
 import type {
   NextEpoch,
   TipInfo,
-} from '../../../source/renderer/app/api/network/types';
-import { generateHash, generatePolicyIdHash } from '../_support/utils';
+} from '../../../../source/renderer/app/api/network/types';
+import { generateHash, generatePolicyIdHash } from '../../_support/utils';
 
 const walletSyncedStateReady = {
   status: 'ready',
