@@ -1357,6 +1357,8 @@
   "wallet.send.form.asset.adaLabel": "Ada",
   "wallet.send.form.asset.label": "Token",
   "wallet.send.form.asset.updateAdaAmountButton": "UPDATE",
+  "wallet.send.form.assetInput.decimalUnitsLabel": "Enter an amount in {unit}, to {decimals} decimal places.",
+  "wallet.send.form.assetInput.rawUnitsLabel": "Enter a whole number of {unit} units. The decimal places for this token are unknown, so amounts are entered and shown as the ledger holds them.",
   "wallet.send.form.button.addAssetButtonLabel": "+ Add a token",
   "wallet.send.form.button.clearLabel": "Clear",
   "wallet.send.form.button.removeLabel": "Remove",

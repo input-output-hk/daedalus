@@ -9,6 +9,7 @@ import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import AmountInputSkin from '../skins/AmountInputSkin';
 import removeIcon from '../../../assets/images/remove.inline.svg';
 import type { NumberFormat } from '../../../../../common/types/number.types';
+import { ellipsis } from '../../../utils/strings';
 import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
 import { VerticalSeparator } from '../widgets/VerticalSeparator';
@@ -82,6 +83,14 @@ class AssetInput extends Component<Props> {
 
     const { quantity, metadata, decimals } = asset;
     const ticker = get(metadata, 'ticker', null);
+    // The unit the field is denominated in, for the label below it. A published
+    // ticker where there is one, and otherwise the fingerprint in the same
+    // spelling the pill above the field uses, so the two name the same thing.
+    //
+    // Never the decoded asset name: those bytes are chosen by whoever minted the
+    // token and an asset whose name spells an existing ticker is free to exist,
+    // which is the one confusion this label must not introduce.
+    const unit = ticker || ellipsis(get(asset, 'fingerprint', '') || '', 9, 4);
     // A ledger quantity is an integer and decimal places are presentation
     // only, so a field whose decimal places are unknown, or known to be zero,
     // is denominated in raw units. A decimal separator typed into it means
@@ -91,6 +100,14 @@ class AssetInput extends Component<Props> {
     const isInRawUnits = !areDecimalsKnown || decimals === 0;
     const assetField = assetFields[uniqueId];
     const inputFieldStyle = this.generateInputFieldStyle();
+    // Computed from the same local the input's props are, so the label cannot
+    // describe a denomination the field is not accepting.
+    const unitLabel = areDecimalsKnown
+      ? intl.formatMessage(messages.assetInputDecimalUnitsLabel, {
+          unit,
+          decimals,
+        })
+      : intl.formatMessage(messages.assetInputRawUnitsLabel, { unit });
     return (
       <div key={`receiver_asset_${uniqueId}`} className={styles.component}>
         <div className={styles.inputBlock}>
@@ -137,6 +154,12 @@ class AssetInput extends Component<Props> {
             allowSigns={false}
             autoFocus={autoFocus}
           />
+          <div
+            className={styles.unitLabel}
+            data-testid={`assetUnitLabel:${uniqueId}`}
+          >
+            {unitLabel}
+          </div>
           <div className={styles.rightContent} ref={this.rightContentRef}>
             {this.hasAssetValue(assetField) && (
               <div className={styles.clearAssetContainer}>

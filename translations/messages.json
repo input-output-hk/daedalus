@@ -7092,6 +7092,16 @@
         "id": "wallet.send.form.button.clearLabel"
       },
       {
+        "defaultMessage": "!!!Enter a whole number of {unit} units. The decimal places for this token are unknown, so amounts are entered and shown as the ledger holds them.",
+        "description": "Label under the token amount field in the wallet send form, for a token whose decimal places could not be resolved, so the field accepts whole ledger units only.",
+        "id": "wallet.send.form.assetInput.rawUnitsLabel"
+      },
+      {
+        "defaultMessage": "!!!Enter an amount in {unit}, to {decimals} decimal places.",
+        "description": "Label under the token amount field in the wallet send form, for a token whose decimal places are known, stating the unit and the precision the field accepts.",
+        "id": "wallet.send.form.assetInput.decimalUnitsLabel"
+      },
+      {
         "defaultMessage": "!!!This receiver address belongs to the same wallet from which you are sending funds. If you proceed with this transaction, the transferred funds will remain in this wallet, and you will incur transaction fees, as outlined in Estimated fees.",
         "description": "Label for the same wallet tooltip in the wallet send form.",
         "id": "wallet.send.form.sameWalletLabel"

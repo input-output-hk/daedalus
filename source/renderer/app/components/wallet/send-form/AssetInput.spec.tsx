@@ -20,7 +20,14 @@ const assetName = '436f696e74657374';
 const uniqueId = `${policyId}${assetName}`;
 const fieldName = `asset_${uniqueId}`;
 
-const buildAsset = (decimals: number | null | undefined) => ({
+const buildAsset = (
+  decimals: number | null | undefined,
+  metadata: Record<string, unknown> | null = {
+    name: 'Test Coin',
+    description: 'A test coin',
+    ticker: 'TEST',
+  }
+) => ({
   policyId,
   assetName,
   uniqueId,
@@ -28,11 +35,7 @@ const buildAsset = (decimals: number | null | undefined) => ({
   quantity: new BigNumber('900000000'),
   decimals,
   recommendedDecimals: null,
-  metadata: {
-    name: 'Test Coin',
-    description: 'A test coin',
-    ticker: 'TEST',
-  },
+  metadata,
 });
 
 type AssetFormFields = {
@@ -58,12 +61,20 @@ const buildForm = () =>
 
 const renderAssetInput = (
   decimals: number | null | undefined,
-  numberFormat: string = NUMBER_OPTIONS[0].value
+  numberFormat: string = NUMBER_OPTIONS[0].value,
+  metadata?: Record<string, unknown> | null
 ) => {
   const form = buildForm();
   const field = form.$(fieldName);
-  const asset = buildAsset(decimals);
-  render(
+  const asset =
+    metadata === undefined
+      ? buildAsset(decimals)
+      : buildAsset(decimals, metadata);
+  // A fresh element each time. `AssetInput` is an `@observer`, so mobx-react
+  // gives it a shallow prop comparison; re-rendering the identical element with
+  // a mutated plain asset would be skipped. In the application the lookup is a
+  // new function on every container render for the same reason.
+  const tree = () => (
     <TestDecorator>
       <BrowserLocalStorageBridge>
         <DiscreetModeFeatureProvider>
@@ -82,9 +93,13 @@ const renderAssetInput = (
       </BrowserLocalStorageBridge>
     </TestDecorator>
   );
+  const { rerender } = render(tree());
   return {
     field,
+    asset,
     input: screen.getByTestId(`assetInput:${uniqueId}`),
+    label: () => screen.getByTestId(`assetUnitLabel:${uniqueId}`),
+    rerender: () => rerender(tree()),
   };
 };
 
@@ -208,6 +223,73 @@ describe('AssetInput', () => {
       const { field, input } = renderAssetInput(6);
       paste(input, '0.000001');
       expect(formattedAmountToNaturalUnits(field.value)).toEqual('1');
+    });
+  });
+
+  describe('the unit label', () => {
+    it('names whole ledger units when the decimal places are unknown', () => {
+      const { label } = renderAssetInput(undefined);
+      expect(label()).toHaveTextContent('Enter a whole number of TEST units');
+      expect(label()).toHaveTextContent(
+        'decimal places for this token are unknown'
+      );
+    });
+
+    it('names the unit and the precision when the decimal places are known', () => {
+      const { label } = renderAssetInput(6);
+      expect(label()).toHaveTextContent(
+        'Enter an amount in TEST, to 6 decimal places.'
+      );
+    });
+
+    it('reads correctly for a token with zero decimal places', () => {
+      const { label } = renderAssetInput(0);
+      expect(label()).toHaveTextContent(
+        'Enter an amount in TEST, to 0 decimal places.'
+      );
+    });
+
+    it('falls back to the fingerprint when the issuer published no ticker', () => {
+      const { label } = renderAssetInput(undefined, NUMBER_OPTIONS[0].value, {
+        name: 'Test Coin',
+        description: 'A test coin',
+      });
+      // The same ellipsised spelling the pill above the field uses.
+      expect(label()).toHaveTextContent('asset1cvm\u2026kvpa');
+    });
+
+    it('never names the asset the minter called it', () => {
+      // The asset name bytes decode to "Cointest", and no issuer published a
+      // ticker. A label that reached for the decoded name would render a
+      // minter-chosen string as the unit of account.
+      const { label } = renderAssetInput(
+        undefined,
+        NUMBER_OPTIONS[0].value,
+        null
+      );
+      expect(label()).not.toHaveTextContent('Cointest');
+      expect(label()).toHaveTextContent('asset1cvm\u2026kvpa');
+    });
+
+    it('moves with the denomination it describes, in the same render', () => {
+      const { asset, input, field, label, rerender } =
+        renderAssetInput(undefined);
+      expect(label()).toHaveTextContent('Enter a whole number of TEST units');
+      type(input, ['1', '1.', '1.5']);
+      expect(field.value).toEqual('1');
+
+      // The resolution the cache pushes, driven by hand.
+      asset.decimals = 6;
+      rerender();
+
+      expect(label()).toHaveTextContent(
+        'Enter an amount in TEST, to 6 decimal places.'
+      );
+      // Asserted together: a label that moved while the field kept refusing a
+      // separator would be worse than no label at all.
+      field.clear();
+      type(input, ['2', '2.', '2.5']);
+      expect(field.value).toEqual('2.500000');
     });
   });
 });

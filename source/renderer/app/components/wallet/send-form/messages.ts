@@ -43,6 +43,20 @@ export default defineMessages({
     defaultMessage: '!!!Clear',
     description: 'Label for the "Clear" button in the wallet send form.',
   },
+  assetInputRawUnitsLabel: {
+    id: 'wallet.send.form.assetInput.rawUnitsLabel',
+    defaultMessage:
+      '!!!Enter a whole number of {unit} units. The decimal places for this token are unknown, so amounts are entered and shown as the ledger holds them.',
+    description:
+      'Label under the token amount field in the wallet send form, for a token whose decimal places could not be resolved, so the field accepts whole ledger units only.',
+  },
+  assetInputDecimalUnitsLabel: {
+    id: 'wallet.send.form.assetInput.decimalUnitsLabel',
+    defaultMessage:
+      '!!!Enter an amount in {unit}, to {decimals} decimal places.',
+    description:
+      'Label under the token amount field in the wallet send form, for a token whose decimal places are known, stating the unit and the precision the field accepts.',
+  },
   sameWalletLabel: {
     id: 'wallet.send.form.sameWalletLabel',
     defaultMessage:

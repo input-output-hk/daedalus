@@ -868,7 +868,7 @@
      "id": "task-039",
      "title": "Label the send amount field with the unit it is accepting",
      "description": "The unit label on the send amount field is the durable half of the overspend mitigation: the one-time notice is dismissible and the label is not. It was named in three tasks' implementation notes and owned by none, and AssetInput.tsx appears in only one task's target paths in the whole graph.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 4.0,
      "dependencies": [
