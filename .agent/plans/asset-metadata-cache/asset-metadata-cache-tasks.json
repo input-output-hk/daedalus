@@ -238,7 +238,7 @@
      "id": "task-006",
      "title": "Database module: schema, open, version check, point read and write",
      "description": "A node:sqlite database under the state directory holding asset_metadata, asset_image and asset_resolution as specified in the PRD, with the CHECK constraints that make an inconsistent row unwritable.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 6.0,
      "dependencies": [],

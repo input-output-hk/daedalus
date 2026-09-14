@@ -90,6 +90,7 @@ module.exports = {
     // https://github.com/facebook/jest/issues/9430
     '^@iohk-jormungandr/wallet-js$': 'identity-obj-proxy',
     'tests/(.*)': '<rootDir>/tests/$1',
+    '^node:sqlite$': '<rootDir>/tests/jest/shims/nodeSqlite.js',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
