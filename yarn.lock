@@ -19127,15 +19127,6 @@ store2@^2.12.0:
   version "2.13.2"
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.13.2.tgz#01ad8802ca5b445b9c316b55e72645c13a3cd7e3"
 
-storybook-addon-swc@1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/storybook-addon-swc/-/storybook-addon-swc-1.1.7.tgz#5cc82b299377d9cab1d6b7ccb8c8d19b51fd8715"
-  dependencies:
-    "@babel/runtime" "^7.17.2"
-    "@swc/core" "^1.2.152"
-    deepmerge "^4.2.2"
-    swc-loader "^0.1.15"
-
 stream-browserify@3.0.0, stream-browserify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-3.0.0.tgz#22b0a2850cdf6503e73085da1fc7b7d0c2122f2f"

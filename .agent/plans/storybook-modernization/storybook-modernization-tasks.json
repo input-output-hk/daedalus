@@ -152,7 +152,7 @@
       "This removes two knob call sites from the phase 4 staking tranche, the date knob at _support/Epochs.tsx:13 and the number knob at :28.",
       "Line references in this entry drifted before it was executed and were corrected rather than followed. The route binding is at Routes.tsx:195-199 and ROUTES.STAKING.EPOCHS at routes-config.ts:12, both moved by task-005 removing the /redeem-itn-wallets binding and its constant first. The story import and registration are at Staking.stories.tsx:14 and :130-132, moved by task-002 removing 88 lines from that file.",
       "Four tracked i18n artifacts are regenerated, not the three this entry lists. source/renderer/app/i18n/locales/defaultMessages.json is in the same snapshotted directory as en-US.json and ja-JP.json and carries both the twelve removed ids and four path entries naming the deleted component files. No acceptance criterion listed here catches it; the i18n check at perSystem/checks.nix:64-76 does.",
-      "All twelve ids carry real translations in both locales, contrary to the pattern in task-003 where the six removed ids were !!!-prefixed placeholders in both. The Japanese strings are genuine translator output and go with the screen. They remain in git history and return with a revert.",
+      "Japanese translations are deleted by this task, not placeholders. All twelve ids carried real translator output in ja-JP.json as well as real English in en-US.json, contrary to task-003 where the six removed ids were !!!-prefixed in both locales. The twelve, for anyone tracing where they went: staking.epochs.currentEpoch.tableHeader.pool, staking.epochs.currentEpoch.tableHeader.slotsElected, staking.epochs.currentHeading, staking.epochs.no.results, staking.epochs.previousEpoch.tableHeader.pool, staking.epochs.previousEpoch.tableHeader.slotsElected, staking.epochs.previousHeading, staking.epochs.tableBody.of, staking.epochs.tableBody.slots, staking.epochs.tableHeader.performance, staking.epochs.tableHeader.sharedRewards and staking.navigation.epochs. They were removed because the screen they label is unreachable and locked decision 14 removes it, not because they were incomplete. Both translations remain in git history at the commit before this one and return with a revert.",
       "source/renderer/app/i18n/locales/babeledit-project.babel still names the eleven staking.epochs.* ids and is left alone. It is a frozen snapshot last touched in 2022, carrying 1950 ids against the 1612 in en-US.json and missing ids added since, and yarn i18n:manage does not write it. The i18n check copies it unchanged and passes. Reconciling it is a separate piece of work and not this task."
      ],
      "acceptance": [
@@ -215,7 +215,7 @@
      "id": "task-007",
      "title": "Remove the orphaned support modules and the unused dependency",
      "description": "Three support modules under storybook/stories are imported by nothing, storybook-addon-swc is declared at package.json:175 and referenced nowhere in the repository, and storybook/preview-head.html is zero bytes.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 2.0,
      "dependencies": [
@@ -232,7 +232,9 @@
      "implementationNotes": [
       "Re-verify the orphan status after task-002 and task-003, because those deletions may have orphaned further modules under storybook/stories/wallets/_utils/.",
       "Removing storybook-addon-swc from package.json does not change the build: the SWC rule is handwritten in webpackFinal at storybook/main.ts:71.",
-      "yarn.lock changes with the dependency removal and is part of the same commit."
+      "yarn.lock changes with the dependency removal and is part of the same commit.",
+      "Re-verification result, recorded because a null result is still the reason this task depends on task-002 and task-003. The module graph was walked from all four workbench entry points, storybook/main.ts, storybook/preview.tsx, storybook/stories/index.ts and the DaedalusMenu register module main.ts names through require.resolve: 119 files under storybook/, 116 reachable, 3 orphaned. The three are exactly the three named here. task-002, task-003 and task-004 orphaned no additional module, and the three cascade to nothing. Guard for whoever repeats this: storybook/stories/wallets/_utils/HardwareWalletsWrapper.tsx is three characters from HardwareWalletWithNavigationLayout.tsx, is reachable, and stays, along with four other modules in that directory.",
+      "The yarn.lock edit removes only the storybook-addon-swc@1.1.7 block. Two ranges it was the sole requester of are deliberately left, \"@swc/core@^1.2.152\" and swc-loader@^0.1.15, because pruning them also means removing the thirteen @swc/core-*@1.2.175 platform entries behind one of them, and a hand-pruned lockfile is harder to trust than one with a stale tail that the next full yarn install clears. Both are distinct from the pinned direct dependencies the repository uses, @swc/core@1.10.18 and swc-loader@0.1.15, which are untouched. The test that the manifest and the lockfile agree is building .#internal.x86_64-linux.node_modules, which installs with --frozen-lockfile and derives its offline cache from yarn.lock; it rebuilt clean."
      ],
      "acceptance": [
       "grep confirms no importer for each removed module at the time of removal",
