@@ -237,7 +237,7 @@
      "id": "task-008",
      "title": "Set useDefineForClassFields to false in tsconfig.json",
      "description": "Locked decision 11. tsconfig.json:24 sets it true while storybook/main.ts:87 sets it false and jest.config.js sets the SWC equivalent to false, so the type checker is checking against semantics neither runtime uses. MobX 5 requires class fields to use assignment so its prototype setters can intercept them during initialization.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 2.0,
      "dependencies": [],
