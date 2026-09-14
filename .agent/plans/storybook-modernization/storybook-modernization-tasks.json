@@ -39,8 +39,8 @@
     {
      "id": "task-001",
      "title": "Capture the sidebar baseline",
-     "description": "Record the full sidebar tree as it stands before any change: 15 top-level groups, 53 distinct panel titles and 272 registrations with their display labels, 267 under storybook/stories and 5 in the colocated story files. A raw grep for .add( over storybook/stories returns 270; three of those are moment().add() chains at staking/Epochs.stories.tsx:10, staking/Undelegate.stories.tsx:108 and staking/DelegationSteps.stories.tsx:211, and two more sit in the support module governance/_utils/drepPopulation.ts, which registers nothing. Every later label check is a diff against this file, because the codemod sanitizer renames 80 exports and a wrong sidebar label is invisible to every automated check.",
-     "status": "pending",
+     "description": "Record the full sidebar tree as it stands before any change: 15 top-level groups, 53 distinct panel titles and 272 registrations with their display labels, 267 under storybook/stories and 5 in the colocated story files. A raw grep for .add( over storybook/stories returns 272; three of those are moment().add() chains at staking/_support/Epochs.tsx:10, staking/_support/Undelegate.tsx:108 and staking/_support/DelegationSteps.tsx:211, and two more sit in the support module governance/_utils/drepPopulation.ts, which registers nothing. Every later label check is a diff against this file, because the codemod sanitizer renames 80 exports and a wrong sidebar label is invisible to every automated check.",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 3.0,
      "dependencies": [],
