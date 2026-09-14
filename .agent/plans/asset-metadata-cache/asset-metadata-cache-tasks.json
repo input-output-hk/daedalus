@@ -275,7 +275,7 @@
      "id": "task-007",
      "title": "Registry client: batch query, timeout, retry and backoff",
      "description": "POST {metadataUrl}/metadata/query against the host named by launcherConfig.metadataUrl, with the same literal fallback already used at source/main/index.ts:217. Batched, sequential, timed out, and with a recorded retry-after on failure rather than a loop.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 6.0,
      "dependencies": [],
