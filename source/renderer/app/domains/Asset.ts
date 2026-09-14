@@ -18,6 +18,8 @@ export default class Asset {
   decimals: number | null | undefined;
   @observable
   recommendedDecimals: number | null | undefined;
+  @observable
+  recommendedDecimalsVerified: boolean | null | undefined;
 
   @computed
   get assetNameASCII() {
@@ -43,6 +45,7 @@ export default class Asset {
         'metadata',
         'decimals',
         'recommendedDecimals',
+        'recommendedDecimalsVerified',
       ]),
       {
         uniqueId,

@@ -18,6 +18,12 @@ export type Asset = {
   metadata?: AssetMetadata | null;
   policyId: string;
   recommendedDecimals?: number | null;
+  /**
+   * Whether `recommendedDecimals` was cryptographically bound to the token's
+   * minting policy. Only a verified value is applied automatically; an
+   * unverified one is offered in the settings dialog and formats nothing.
+   */
+  recommendedDecimalsVerified?: boolean;
   uniqueId: string;
 };
 

@@ -287,6 +287,65 @@ describe('AssetsStore', () => {
     });
   });
 
+  describe('the decimal places a surface formats with', () => {
+    it('applies a verified registry value with no user setting', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: true })],
+      });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      expect(asset.decimals).toBe(6);
+      expect(asset.recommendedDecimals).toBe(6);
+      expect(asset.recommendedDecimalsVerified).toBe(true);
+    });
+
+    it('never applies an unverified registry value', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: false })],
+      });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      // Raw units: the honest rendering of a denomination nobody attested.
+      expect(asset.decimals).toBeNull();
+      // Still offered to the settings dialog, which is where the user decides.
+      expect(asset.recommendedDecimals).toBe(6);
+      expect(asset.recommendedDecimalsVerified).toBe(false);
+    });
+
+    it('lets a user setting win over a verified registry value', async () => {
+      const { store } = makeStore({ [SUBJECT]: { decimals: 2 } });
+      await (store as any)._setUpLocalDecimals();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: true })],
+      });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      expect(asset.decimals).toBe(2);
+      expect(asset.recommendedDecimals).toBe(6);
+    });
+
+    it('resolves to raw units when the cache has no row at all', () => {
+      const { store } = makeStore();
+      const asset = store.getAsset(OTHER_POLICY, 'beef');
+      expect(asset.decimals).toBeNull();
+      expect(asset.recommendedDecimals).toBeNull();
+      expect(asset.recommendedDecimalsVerified).toBe(false);
+    });
+
+    it('carries the verdict onto the merged row a component receives', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: false })],
+      });
+      const row = getAssetTokenFromToken(
+        tokenFor(SUBJECT) as any,
+        store.getAsset
+      );
+      expect(row.decimals).toBeNull();
+      expect(row.recommendedDecimals).toBe(6);
+      expect(row.recommendedDecimalsVerified).toBe(false);
+    });
+  });
+
   describe('setup', () => {
     const actionsFor = () => ({
       assets: {

@@ -6,6 +6,7 @@ import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { ellipsis } from '../utils/strings';
 import { assetFingerprint } from '../utils/assetFingerprint';
+import { resolveAssetDecimals } from '../utils/assetDecimals';
 import {
   onAssetMetadataUpdate,
   requestAssetMetadata,
@@ -220,14 +221,24 @@ export default class AssetsStore extends Store {
     const fingerprint = this._fingerprintOf(policyId, assetName);
     if (fingerprint === null) return null;
     const metadata = entry ? metadataOf(entry) : null;
+    const recommendedDecimals = entry ? entry.decimals : null;
+    const recommendedDecimalsVerified = entry ? entry.verified : false;
+    // The one place the user's setting and the registry's value meet. Every
+    // surface reads the answer off `decimals` rather than deciding again.
+    const { decimals } = resolveAssetDecimals({
+      userDecimals: this._localDecimals.get(subject),
+      registryDecimals: recommendedDecimals,
+      registryDecimalsVerified: recommendedDecimalsVerified,
+    });
     return new Asset({
       policyId,
       assetName,
       uniqueId: subject,
       fingerprint,
       metadata,
-      decimals: this._localDecimals.get(subject),
-      recommendedDecimals: entry ? entry.decimals : null,
+      decimals,
+      recommendedDecimals,
+      recommendedDecimalsVerified,
     });
   };
 
@@ -248,6 +259,7 @@ export default class AssetsStore extends Store {
       metadata: null,
       decimals: null,
       recommendedDecimals: null,
+      recommendedDecimalsVerified: false,
     });
     this._unresolvedAssets.set(subject, asset);
     return asset;

@@ -692,7 +692,7 @@
      "id": "task-019",
      "title": "Resolve decimal places by provenance",
      "description": "Today api.ts:3386-3388 files the registry value under recommendedDecimals and formats from per-user browser storage, so a six-decimal token transacts as a raw integer until a user opens a dialog. Replace that with an explicit resolution order.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 4.0,
      "dependencies": [
