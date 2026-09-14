@@ -92,7 +92,7 @@
      "id": "task-002",
      "title": "Take merged-token identity from the token, not from the asset lookup",
      "description": "utils/assets.ts:122-140 destructures uniqueId out of getAsset(policyId, assetName) || {}, and getNonZeroAssetTokens at :142-149 then filters on !!token.uniqueId. A token with no cached metadata therefore has no identity and is dropped. Under the current poll this is masked; with a cache that starts cold it empties the send form, the send confirmation and the transaction list.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 3.0,
      "dependencies": [],

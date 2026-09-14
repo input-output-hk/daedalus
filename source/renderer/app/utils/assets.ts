@@ -7,6 +7,7 @@ import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 import { formattedTokenDecimals } from './formatters';
+import { hexToString } from './strings';
 
 export type SortBy = 'token' | 'fingerprint' | 'quantity';
 export type SortDirection = 'asc' | 'desc';
@@ -113,30 +114,38 @@ export const getAssetTokens = (
     .filter((token) => !token.quantity.isZero());
 
 /**
- * Receives a Token
- * and combines with the data from the Asset
- * @param asset - asset details
+ * Receives a Token and combines it with the registry data for the same subject.
+ *
+ * Identity comes from the token and never from the lookup: a token the wallet
+ * holds exists whether or not anything has been cached about it, so taking
+ * `uniqueId` from the lookup would make an unresolved asset disappear from the
+ * send form, the send confirmation and the transaction list. Only `metadata`,
+ * `decimals`, `recommendedDecimals` and `fingerprint` come from the lookup.
+ *
+ * A token built from a transaction response carries neither `uniqueId` nor
+ * `assetNameASCII`, so both are derived here in the same shape the
+ * wallet-balance mapping gives them: the policy id followed by the asset name,
+ * and the asset name decoded with `hexToString`.
+ *
+ * @param token - token details
  * @param getAsset - function that returns an asset
  * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetTokenFromToken = (
-  asset: Token,
+  token: Token,
   getAsset: (...args: Array<any>) => any
 ): AssetToken => {
-  const { policyId, assetName, assetNameASCII, quantity, address } = asset;
-  const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
+  const { policyId, assetName, assetNameASCII, uniqueId } = token;
+  const { fingerprint, metadata, decimals, recommendedDecimals } =
     getAsset(policyId, assetName) || {};
   return {
-    policyId,
-    assetName,
-    assetNameASCII,
-    quantity,
-    address,
+    ...token,
+    uniqueId: uniqueId || `${policyId}${assetName}`,
+    assetNameASCII: assetNameASCII || hexToString(assetName || ''),
     fingerprint,
     metadata,
     decimals,
     recommendedDecimals,
-    uniqueId,
   };
 };
 export const getNonZeroAssetTokens = (
@@ -145,7 +154,6 @@ export const getNonZeroAssetTokens = (
 ): Array<AssetToken> =>
   tokens
     .map((token) => getAssetTokenFromToken(token, getAsset))
-    .filter((token) => !!token.uniqueId)
     .sort(sortAssets('fingerprint', 'asc'));
 
 /**
@@ -164,6 +172,12 @@ export const sortAssets =
     } = asset1;
     const quantity1 = formattedTokenDecimals(unformattedQuantity1, decimals1);
     const { name: name1 } = metadata1 || {};
+    // A token the wallet holds is rendered whether or not anything has been
+    // cached about it, and a fingerprint arrives with the cached row, so the
+    // comparator has to order rows that do not have one yet. Rows without a
+    // fingerprint sort together, ahead of the rest, and keep the order they
+    // arrived in.
+    const sortableFingerprint1 = fingerprint1 || '';
     const {
       quantity: unformattedQuantity2,
       fingerprint: fingerprint2,
@@ -172,6 +186,7 @@ export const sortAssets =
     } = asset2;
     const quantity2 = formattedTokenDecimals(unformattedQuantity2, decimals2);
     const { name: name2 } = metadata2 || {};
+    const sortableFingerprint2 = fingerprint2 || '';
 
     if (sortBy === 'token') {
       if (name1 && !name2) return -1;
@@ -186,18 +201,18 @@ export const sortAssets =
       }
 
       if (sortDirection === 'asc') {
-        return fingerprint1.localeCompare(fingerprint2);
+        return sortableFingerprint1.localeCompare(sortableFingerprint2);
       }
 
-      return fingerprint2.localeCompare(fingerprint1);
+      return sortableFingerprint2.localeCompare(sortableFingerprint1);
     }
 
     if (sortBy === 'fingerprint') {
       if (sortDirection === 'asc') {
-        return fingerprint1.localeCompare(fingerprint2);
+        return sortableFingerprint1.localeCompare(sortableFingerprint2);
       }
 
-      return fingerprint2.localeCompare(fingerprint1);
+      return sortableFingerprint2.localeCompare(sortableFingerprint1);
     }
 
     if (sortBy === 'quantity') {
