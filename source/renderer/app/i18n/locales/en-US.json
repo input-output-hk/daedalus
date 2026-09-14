@@ -1606,6 +1606,7 @@
   "wallet.transactions.csv.column.withdrawals": "Withdrawals",
   "wallet.transactions.csv.filenamePrefix": "Transactions",
   "wallet.transactions.csv.value.statusConfirmed": "Confirmed",
+  "wallet.transactions.csv.value.statusFailed": "Failed",
   "wallet.transactions.csv.value.statusPending": "Pending",
   "wallet.transactions.csv.value.type.received": "Received",
   "wallet.transactions.csv.value.type.sent": "Sent",
