@@ -588,7 +588,7 @@
      "id": "task-016",
      "title": "Rewire AssetsStore to read the cache",
      "description": "details and getAsset keep their signatures and become reads of an observable map fed by the request and update channels. The request machinery that served the endpoint is removed.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 6.0,
      "dependencies": [

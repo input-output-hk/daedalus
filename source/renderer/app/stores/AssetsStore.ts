@@ -1,14 +1,61 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { ellipsis } from '../utils/strings';
-import type { GetAssetsResponse, AssetToken } from '../api/assets/types';
+import { assetFingerprint } from '../utils/assetFingerprint';
+import {
+  onAssetMetadataUpdate,
+  requestAssetMetadata,
+} from '../ipc/assetMetadataChannel';
+import type {
+  AssetMetadata,
+  AssetToken,
+  GetAssetsResponse,
+} from '../api/assets/types';
+import type { AssetMetadataEntry } from '../../../common/types/asset-metadata.types';
 import { EventCategories } from '../analytics';
 
 type WalletId = string;
+
+const subjectOf = (policyId: string, assetName: string): string =>
+  `${policyId}${assetName}`;
+
+/**
+ * The cache stores a ticker, a name and the rest of the registry's properties
+ * separately; the surfaces that render an asset expect one metadata object in
+ * the shape the registry publishes. `name` and `description` are not optional
+ * on that type, so a row the registry published nothing for carries the empty
+ * string, which is falsy and therefore falls through the name resolution to the
+ * decoded asset name rather than rendering as a published name.
+ *
+ * Returns null when the entry carries nothing at all, so that an entry with no
+ * published properties is not mistaken for one with an empty name.
+ */
+const metadataOf = (entry: AssetMetadataEntry): AssetMetadata | null => {
+  const extra = entry.metadata || {};
+  const description =
+    typeof extra.description === 'string' ? extra.description : '';
+  const url = typeof extra.url === 'string' ? extra.url : undefined;
+  const ticker = entry.ticker || undefined;
+  const name = entry.name || '';
+  const decimals = entry.decimals === null ? undefined : entry.decimals;
+
+  if (!name && !ticker && !description && !url && decimals === undefined) {
+    return null;
+  }
+
+  return {
+    name,
+    description,
+    ticker,
+    url,
+    decimals,
+  };
+};
+
 export default class AssetsStore extends Store {
   ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 
@@ -29,6 +76,26 @@ export default class AssetsStore extends Store {
   @observable
   removingAssetUniqueId: string | null | undefined = null;
 
+  // One row per subject the cache has resolved, filled by the request channel
+  // and kept filled by the update channel.
+  @observable
+  _metadata: Map<string, AssetMetadataEntry> = new Map();
+
+  // The per-token decimal setting, which is the user's and not the registry's.
+  @observable
+  _localDecimals: Map<string, number> = new Map();
+
+  // A fingerprint is a pure function of identity, and a blake2b digest per
+  // rendered row per paint is not free.
+  _fingerprints: Map<string, string | null> = new Map();
+
+  // Rows for subjects the cache has nothing for. Nothing about them can change
+  // while they stay unresolved: the moment an entry or a setting arrives, the
+  // map above answers instead.
+  _unresolvedAssets: Map<string, Asset> = new Map();
+
+  _requestedSubjects: Set<string> = new Set();
+
   setup() {
     setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AssetsS... Remove this comment to see the full error message
@@ -43,7 +110,11 @@ export default class AssetsStore extends Store {
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
     walletsActions.unsetActiveAsset.listen(this._unsetActiveAsset);
 
+    onAssetMetadataUpdate(this._onMetadataResolved);
+    this.registerReactions([this._resolveRenderedSubjects]);
+
     this._setUpFavorites();
+    this._setUpLocalDecimals();
   }
 
   // ==================== PUBLIC ==================
@@ -62,15 +133,33 @@ export default class AssetsStore extends Store {
 
   @computed
   get details(): Record<string, Asset> {
-    return this.all.reduce((details, asset) => {
-      const { policyId, assetName } = asset;
-      details[`${policyId}${assetName}`] = asset;
-      return details;
-    }, {});
+    const details = {};
+    const subjects = new Set([
+      ...Array.from(this._metadata.keys()),
+      ...Array.from(this._localDecimals.keys()),
+    ]);
+    subjects.forEach((subject) => {
+      const asset = this._assetFor(subject);
+      if (asset) details[subject] = asset;
+    });
+    return details;
   }
 
-  getAsset = (policyId: string, assetName: string): Asset | null | undefined =>
-    this.details[`${policyId}${assetName}`];
+  /**
+   * A token the wallet holds exists whether or not the cache has heard of it, so
+   * a subject with no row still answers with its identity and its locally
+   * computed fingerprint. Nothing comes back only when the identity cannot
+   * produce one, which means it is not an asset this wallet could hold.
+   */
+  getAsset = (
+    policyId: string,
+    assetName: string
+  ): Asset | null | undefined => {
+    const subject = subjectOf(policyId, assetName);
+    const resolved = this.details[subject];
+    if (resolved) return resolved;
+    return this._unresolvedAsset(subject, policyId, assetName);
+  };
 
   @computed
   get favorites(): Record<string, any> {
@@ -81,6 +170,135 @@ export default class AssetsStore extends Store {
   _setUpFavorites = async () => {
     this.favoritesRequest.execute();
   };
+
+  _setUpLocalDecimals = async () => {
+    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
+    const stored = await this.api.localStorage.getAssetsLocalData();
+    const decimals = Object.keys(stored || {}).reduce((found, subject) => {
+      const value = stored[subject]?.decimals;
+      if (typeof value === 'number') found.push([subject, value]);
+      return found;
+    }, []);
+    if (decimals.length === 0) return;
+    runInAction('AssetsStore::setUpLocalDecimals', () => {
+      decimals.forEach(([subject, value]) => {
+        this._localDecimals.set(subject, value);
+      });
+    });
+  };
+
+  /**
+   * Asks the cache about everything on screen: what the wallet holds and what
+   * the transactions being rendered name, which can include assets the wallet no
+   * longer holds. A subject is asked for once. Whatever the cache cannot answer
+   * now it schedules, and the rows arrive on the update channel.
+   */
+  _resolveRenderedSubjects = () => {
+    const subjects = this._renderedSubjects();
+    const wanted = subjects.filter(
+      (subject) => !this._requestedSubjects.has(subject)
+    );
+    if (wanted.length === 0) return;
+    wanted.forEach((subject) => this._requestedSubjects.add(subject));
+    this._requestMetadata(wanted);
+  };
+
+  _renderedSubjects = (): Array<string> => {
+    const subjects = new Set<string>();
+    const holdings = get(this.stores, 'wallets.active.assets.total', []);
+    holdings.forEach(({ policyId, assetName }) => {
+      subjects.add(subjectOf(policyId, assetName));
+    });
+    const transactions = get(this.stores, 'transactions.all', []);
+    transactions.forEach((transaction) => {
+      (transaction.assets || []).forEach(({ policyId, assetName }) => {
+        subjects.add(subjectOf(policyId, assetName));
+      });
+    });
+    return Array.from(subjects);
+  };
+
+  _requestMetadata = async (subjects: Array<string>) => {
+    const response = await requestAssetMetadata(subjects);
+    if (!response || response.entries.length === 0) return;
+    runInAction('AssetsStore::mergeAssetMetadata', () => {
+      response.entries.forEach((entry) => {
+        this._metadata.set(entry.subject, entry);
+      });
+    });
+  };
+
+  @action
+  _onMetadataResolved = ({
+    entries,
+  }: {
+    entries: Array<AssetMetadataEntry>;
+  }) => {
+    (entries || []).forEach((entry) => {
+      this._metadata.set(entry.subject, entry);
+    });
+  };
+
+  _assetFor = (subject: string): Asset | null => {
+    const entry = this._metadata.get(subject);
+    const policyId = entry ? entry.policyId : subject.slice(0, 56);
+    const assetName = entry ? entry.assetName : subject.slice(56);
+    const fingerprint = this._fingerprintOf(policyId, assetName);
+    if (fingerprint === null) return null;
+    const metadata = entry ? metadataOf(entry) : null;
+    return new Asset({
+      policyId,
+      assetName,
+      uniqueId: subject,
+      fingerprint,
+      metadata,
+      decimals: this._localDecimals.get(subject),
+      recommendedDecimals: entry ? entry.decimals : null,
+    });
+  };
+
+  _unresolvedAsset = (
+    subject: string,
+    policyId: string,
+    assetName: string
+  ): Asset | null => {
+    const existing = this._unresolvedAssets.get(subject);
+    if (existing) return existing;
+    const fingerprint = this._fingerprintOf(policyId, assetName);
+    if (fingerprint === null) return null;
+    const asset = new Asset({
+      policyId,
+      assetName,
+      uniqueId: subject,
+      fingerprint,
+      metadata: null,
+      decimals: null,
+      recommendedDecimals: null,
+    });
+    this._unresolvedAssets.set(subject, asset);
+    return asset;
+  };
+
+  /**
+   * Null rather than a throw for an identity that cannot have a fingerprint: a
+   * policy id of the wrong length or an asset name over the consensus limit is
+   * not an asset any wallet holds, and a render is not the place to discover it.
+   */
+  _fingerprintOf = (policyId: string, assetName: string): string | null => {
+    const subject = subjectOf(policyId, assetName);
+    if (this._fingerprints.has(subject)) {
+      return this._fingerprints.get(subject);
+    }
+    let fingerprint: string | null = null;
+    try {
+      fingerprint = assetFingerprint(policyId, assetName);
+    } catch {
+      fingerprint = null;
+    }
+    this._fingerprints.set(subject, fingerprint);
+    return fingerprint;
+  };
+
   @action
   _onEditedAssetSet = ({ asset }: { asset: AssetToken }) => {
     this.editedAsset = asset;
@@ -95,13 +313,7 @@ export default class AssetsStore extends Store {
   }) => {
     this.editedAsset = null;
     const { policyId, assetName } = asset;
-    const assetDomain = this.getAsset(policyId, assetName);
-
-    if (assetDomain) {
-      assetDomain.update({
-        decimals,
-      });
-    }
+    this._localDecimals.set(subjectOf(policyId, assetName), decimals);
 
     this._refreshAssetsData();
 
