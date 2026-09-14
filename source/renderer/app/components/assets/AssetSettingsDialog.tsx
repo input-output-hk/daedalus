@@ -17,7 +17,10 @@ import {
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
 import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
-import { isNonRecommendedDecimalSettingUsed } from '../wallet/tokens/wallet-token/helpers';
+import {
+  DecimalSettingDisagreement,
+  decimalSettingDisagreement,
+} from '../wallet/tokens/wallet-token/helpers';
 
 const messages = defineMessages({
   title: {
@@ -67,6 +70,20 @@ const messages = defineMessages({
     defaultMessage:
       '!!!You are not using the recommended decimal place configuration for this native token.',
     description: 'Asset settings recommended pop over content',
+  },
+  warningPopOverAvailableUnverified: {
+    id: 'assets.warning.availableUnverified',
+    defaultMessage:
+      '!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.',
+    description:
+      'Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.',
+  },
+  warningPopOverNotUsingUnverified: {
+    id: 'assets.warning.notUsingUnverified',
+    defaultMessage:
+      '!!!Your setting differs from the {recommendedDecimals} decimal places this token’s issuer publishes. That figure could not be checked against the token’s minting policy.',
+    description:
+      'Asset settings pop over content, for a setting that differs from a published decimal place count that could not be verified.',
   },
 });
 type Props = {
@@ -133,7 +150,11 @@ class AssetSettingsDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { onCancel, onSubmit, asset } = this.props;
-    const { decimals: savedDecimals, recommendedDecimals } = asset;
+    const {
+      decimals: savedDecimals,
+      recommendedDecimals,
+      recommendedDecimalsVerified,
+    } = asset;
     const { decimals } = this.state;
     const hasSavedDecimals = typeof savedDecimals === 'number';
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
@@ -154,17 +175,27 @@ class AssetSettingsDialog extends Component<Props, State> {
       },
     ];
 
-    const hasWarning = isNonRecommendedDecimalSettingUsed({
+    const disagreement = decimalSettingDisagreement({
       recommendedDecimals,
       decimals: savedDecimals,
+      recommendedDecimalsVerified,
     });
+    const hasWarning = disagreement !== DecimalSettingDisagreement.None;
+    const isUnattested =
+      disagreement === DecimalSettingDisagreement.WithUnverified;
 
     let warningPopOverMessage;
 
     if (hasWarning) {
-      warningPopOverMessage = hasSavedDecimals
-        ? messages.warningPopOverNotUsing
-        : messages.warningPopOverAvailable;
+      if (hasSavedDecimals) {
+        warningPopOverMessage = isUnattested
+          ? messages.warningPopOverNotUsingUnverified
+          : messages.warningPopOverNotUsing;
+      } else {
+        warningPopOverMessage = isUnattested
+          ? messages.warningPopOverAvailableUnverified
+          : messages.warningPopOverAvailable;
+      }
     }
 
     return (
@@ -213,7 +244,17 @@ class AssetSettingsDialog extends Component<Props, State> {
                       recommendedDecimals,
                     })}
                   >
-                    <span data-testid="warning-icon">
+                    {/*
+                     * The same sentence as the pop-over, on the icon itself. A
+                     * pop-over is mouse-only, so the reason for the mark was
+                     * reachable by hovering and by nothing else.
+                     */}
+                    <span
+                      data-testid="warning-icon"
+                      aria-label={intl.formatMessage(warningPopOverMessage, {
+                        recommendedDecimals,
+                      })}
+                    >
                       <SVGInline
                         className={styles.warningIcon}
                         svg={warningIcon}

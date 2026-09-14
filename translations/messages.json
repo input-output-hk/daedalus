@@ -905,6 +905,16 @@
         "defaultMessage": "!!!(default)",
         "description": "\"default\" for the Asset settings dialog",
         "id": "assets.settings.dialog.default"
+      },
+      {
+        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals} decimal places. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.",
+        "description": "Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.",
+        "id": "assets.warning.availableUnverified"
+      },
+      {
+        "defaultMessage": "!!!Your setting differs from the {recommendedDecimals} decimal places this token’s issuer publishes. That figure could not be checked against the token’s minting policy.",
+        "description": "Asset settings pop over content, for a setting that differs from a published decimal place count that could not be verified.",
+        "id": "assets.warning.notUsingUnverified"
       }
     ],
     "path": "source/renderer/app/components/assets/AssetSettingsDialog.tsx"

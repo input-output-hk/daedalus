@@ -730,7 +730,7 @@
      "id": "task-020",
      "title": "Extend the disagreement helper with verification state",
      "description": "isNonRecommendedDecimalSettingUsed at components/wallet/tokens/wallet-token/helpers.ts:6-24 already renders a disagreement between an explicit setting and the recommended value. It needs to know whether the recommended value was verified, because the two cases are not equally strong.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 3.0,
      "dependencies": [
