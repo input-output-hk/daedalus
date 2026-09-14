@@ -397,7 +397,7 @@
      "id": "task-012",
      "title": "Verify the glob against the baseline",
      "description": "Confirm that the corpus the indexer sees is the corpus on disk. This is the point at which the silent-absence defect that killed Legacy.stories.tsx is fixed.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 2.0,
      "dependencies": [
@@ -408,8 +408,8 @@
       "storybook/main.ts"
      ],
      "implementationNotes": [
-      "Compare the registration count in the running workbench against the baseline minus the 15 deleted registrations, giving 257.",
-      "Add a temporary story file in a directory no barrel ever referenced, confirm it appears, then remove it."
+      "Compare the registration count against the baseline. The expected figure is 258, not the 257 first recorded here. The subtraction behind 257 is right as far as it goes, the task-001 baseline of 272 less the 15 registrations phase 1 removed, 12 in task-002, 2 in task-003 and 1 in task-004. It omits the one registration task-006 added, Wallets / Settings | Undelegate Wallet. 272 - 15 + 1 = 258. Stated here so the next reader does not re-derive 257 from the same subtraction. The count is established by composition rather than read out of a running workbench, which this environment cannot open: task-010 showed the require.context matchers select exactly the 65 convention-following files on disk, and those 65 carry 258 registrations.",
+      "Add a temporary story file in a directory no barrel ever referenced, confirm it appears, then remove it. Two things make this test mean something. Put it under source/renderer/app/components/widgets: that half of the glob holds 1508 tracked files and 4 stories, so it is where an indexing failure would be least visible, and no barrel ever named it. And do not treat a green build as evidence it was indexed, because a file the indexer ignores also builds green. Run it both ways: with the probe valid and present the build must be green, and with an unresolvable import added to that same file it must go red. The green run is what makes the red one attributable to the import rather than to the file. Done here: the matcher selected the path, the extractor count rose 258 to 259, the valid probe built green, the broken one failed with Can't resolve './GlobCheckProbeMissing', and after removal the corpus returned to 258. That is the silent-absence defect shown closed rather than assumed closed."
      ],
      "acceptance": [
       "The indexed registration count equals the expected 257",
