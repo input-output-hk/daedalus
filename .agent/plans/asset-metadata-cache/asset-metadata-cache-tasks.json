@@ -934,7 +934,7 @@
      "id": "task-023",
      "title": "Delete the whole-list spinner and the condition behind it",
      "description": "isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets is computed at four sites: WalletTokensPage.tsx:46, WalletSummaryPage.tsx:129, WalletSendPage.tsx:148 and WalletTransactionsList.tsx:244. WalletTokensList.tsx:135-140 replaces the entire list with one large spinner whenever it is true, so a single unresolved token blanks every resolved one. All four read totalAssets off the cache-derived list this plan deletes, so all four go together or the branch does not compile. Once holdings and metadata are separate the condition is structurally unreachable.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 5.0,
      "dependencies": [
@@ -947,12 +947,19 @@
       "source/renderer/app/containers/wallet/WalletSendPage.tsx",
       "source/renderer/app/components/wallet/transactions/WalletTransactionsList.tsx",
       "source/renderer/app/components/wallet/transactions/Transaction.tsx",
+      "source/renderer/app/components/wallet/transactions/Transaction.scss",
       "source/renderer/app/components/wallet/summary/WalletSummary.tsx",
       "source/renderer/app/components/wallet/WalletSendForm.tsx",
       "source/renderer/app/components/wallet/WalletSendForm.spec.tsx",
       "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.tsx",
+      "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.spec.tsx",
       "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.tsx",
-      "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.tsx"
+      "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.tsx",
+      "storybook/stories/wallets/transactions/Transaction.stories.tsx",
+      "storybook/stories/wallets/summary/WalletSummary.stories.tsx",
+      "storybook/stories/wallets/tokens/WalletTokens.stories.tsx",
+      "storybook/stories/wallets/tokens/WalletTokensList.stories.tsx",
+      "storybook/stories/wallets/send/WalletSend.stories.tsx"
      ],
      "implementationNotes": [
       "Remove the computation at all four sites and the prop each one passes: WalletTokensPage.tsx:46 and :52, WalletSummaryPage.tsx:129 and :182, WalletSendPage.tsx:148 and :170, WalletTransactionsList.tsx:244 and :266.",
@@ -960,7 +967,9 @@
       "Doing one site at a time does not compile. hasRawAssets, totalAssets and totalRawAssets are all derived from the assets list this plan removes, so the four computations and their consumers are one change.",
       "Every row renders immediately with its locally computed fingerprint, its quantity in raw units, and its decoded name where the bytes are printable. Tickers and formatted quantities appear as rows resolve, through the observable map.",
       "There is no state in which the list is empty because metadata has not arrived, which is what makes this deletion safe rather than a regression.",
-      "WalletNoTokens still takes isLoadingAssets. Check whether its remaining use is meaningful once no caller passes a true value, and remove the prop if it is not."
+      "WalletNoTokens is reached only from WalletTokensList when the list is empty, where isLoadingAssets is already false, so its guard suppresses nothing. The prop goes with the rest.",
+      "tsc --noEmit covers storybook/ and eslint lints it, so the five stories that pass the prop are part of the same change: Transaction.stories.tsx:199, WalletSummary.stories.tsx:244, WalletTokens.stories.tsx:153, WalletTokensList.stories.tsx:165 and WalletSend.stories.tsx:313, :341, :371, :401.",
+      "Deleting Transaction.tsx's placeholder branch leaves wallet.transaction.fetchingTokenData with no reader, so the four translation artifacts are regenerated in the same commit and the i18n check is part of the acceptance."
      ],
      "testCases": [
       "With an empty cache and a wallet holding several tokens, every row renders at once",
@@ -968,9 +977,9 @@
       "The transaction list renders its asset rows with no spinner during a cold start"
      ],
      "acceptance": [
-      "yarn test:jest, yarn lint and yarn compile pass",
-      "No spinner appears on the token list, the wallet summary, the send form or the transaction list at any point during a cold start",
-      "grep -rn isLoadingAssets source/ returns nothing, or only WalletNoTokens if that prop is deliberately kept"
+      "compile, lint, stylelint, i18n, jest and cucumber-unit pass from nix build",
+      "No spinner and no placeholder appears on the token list, the wallet summary, the send form or the transaction list for a metadata reason at any point during a cold start",
+      "grep -rn isLoadingAssets source storybook tests returns nothing"
      ]
     },
     {

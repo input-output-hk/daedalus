@@ -8207,11 +8207,6 @@
         "id": "wallet.transaction.tokensReceived"
       },
       {
-        "defaultMessage": "!!!Fetching token data",
-        "description": "\"Fetching token data...\" message.",
-        "id": "wallet.transaction.fetchingTokenData"
-      },
-      {
         "defaultMessage": "!!!This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.",
         "description": "Note to cancel a transaction that has been pending too long",
         "id": "wallet.transaction.pending.cancelPendingTxnNote"

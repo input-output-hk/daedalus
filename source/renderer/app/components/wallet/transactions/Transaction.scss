@@ -1,5 +1,4 @@
 @import '../../../themes/mixins/link';
-@import '../../../themes/mixins/animations';
 
 .component {
   color: var(--theme-transactions-list-item-details-color);
@@ -367,11 +366,6 @@
     > span {
       margin-right: 12px;
       white-space: nowrap;
-
-      &.fetchingTokenData {
-        @include animated-ellipsis($duration: 1500, $width: 16px);
-        --webkit-backface-visibility: hidden;
-      }
     }
   }
 

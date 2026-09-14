@@ -142,10 +142,7 @@ class WalletSendPage extends Component<Props, State> {
     const selectedAsset = activeAsset
       ? this.getAssetByUniqueId(activeAsset, assetTokens)
       : null;
-    const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
-    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
@@ -167,7 +164,6 @@ class WalletSendPage extends Component<Props, State> {
         assets={assetTokens}
         hasAssets={hasAssetsEnabled && hasRawAssets}
         selectedAsset={selectedAsset}
-        isLoadingAssets={isLoadingAssets}
         isDialogOpen={uiDialogs.isOpen}
         isRestoreActive={wallet.isRestoring}
         isHardwareWallet={isHardwareWallet}

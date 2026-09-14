@@ -238,10 +238,6 @@ class WalletTransactionsList extends Component<Props, State> {
     ]);
     const txTokens = tx.assets;
     const assetTokens = getNonZeroAssetTokens(txTokens, getAsset);
-    const totalRawAssets = tx.assets.length;
-    const totalAssets = assetTokens.length;
-    const hasRawAssets = tx.assets.length > 0;
-    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
@@ -263,7 +259,6 @@ class WalletTransactionsList extends Component<Props, State> {
           assetTokens={assetTokens}
           hasAssetsEnabled={hasAssetsEnabled}
           isInternalAddress={isInternalAddress}
-          isLoadingAssets={isLoadingAssets}
           onCopyAssetParam={onCopyAssetParam}
         />
       </div>

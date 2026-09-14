@@ -37,7 +37,6 @@ const renderTokens = (props: Record<string, any> = {}) =>
     <WalletTokens
       assets={held}
       currentLocale="en-US"
-      isLoadingAssets={false}
       onAssetSettings={() => {}}
       onCopyAssetParam={() => {}}
       onExternalLinkClick={() => {}}

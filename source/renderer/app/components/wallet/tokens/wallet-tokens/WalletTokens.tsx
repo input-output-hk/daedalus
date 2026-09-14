@@ -45,7 +45,6 @@ type Props = {
   assets: Array<AssetToken>;
   currentLocale: string;
   intl: intlShape.isRequired;
-  isLoadingAssets: boolean;
   /**
    * Whether this profile has already been told that verified decimal places are
    * applied on their own. Held per profile in browser storage, so dismissing it
@@ -74,13 +73,12 @@ const WalletTokens = observer((props: Props) => {
     intl,
     tokenFavorites,
     onToggleFavorite,
-    isLoadingAssets,
     isDecimalPlacesNoticeAcknowledged = true,
     onAcknowledgeDecimalPlacesNotice,
     ...listProps
   } = props;
   const { isRestoring } = props.wallet;
-  const hasTokens = assets.length || isLoadingAssets;
+  const hasTokens = assets.length > 0;
   // Held tokens, from the wallet rather than from the metadata cache: a profile
   // with nothing to send has no habit to correct, whatever the cache knows.
   const showsDecimalPlacesNotice =

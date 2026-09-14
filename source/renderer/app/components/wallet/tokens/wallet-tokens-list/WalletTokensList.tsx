@@ -8,7 +8,6 @@ import { searchAssets, sortAssets } from '../../../../utils/assets';
 import styles from './WalletTokensList.scss';
 import Wallet from '../../../../domains/Wallet';
 import BorderedBox from '../../../widgets/BorderedBox';
-import LoadingSpinner from '../../../widgets/LoadingSpinner';
 import WalletToken from '../wallet-token/WalletToken';
 import WalletNoTokens from '../wallet-no-tokens/WalletNoTokens';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/ascending... Remove this comment to see the full error message
@@ -23,7 +22,6 @@ type Props = {
   currentLocale: string;
   insertingAssetUniqueId: string | null | undefined;
   intl: intlShape.isRequired;
-  isLoadingAssets: boolean;
   onAssetSettings: (...args: Array<any>) => any;
   onCopyAssetParam: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
@@ -58,7 +56,6 @@ const WalletTokensList = observer((props: Props) => {
     assetSettingsDialogWasOpened,
     insertingAssetUniqueId,
     intl,
-    isLoadingAssets,
     onAssetSettings,
     onCopyAssetParam,
     onExternalLinkClick,
@@ -76,8 +73,7 @@ const WalletTokensList = observer((props: Props) => {
     return [...assets].sort(sortAssets(sortBy, sortDirection));
   }, [assets, sortBy, sortDirection]);
   const filteredAssets = searchAssets(searchValue, sortedAssets) || [];
-  const hasSearch =
-    !isLoadingAssets && !!searchValue && searchValue.trim().length >= 3;
+  const hasSearch = !!searchValue && searchValue.trim().length >= 3;
   const noResults = hasSearch && !filteredAssets.length;
   const viewAllButtonStyles = classnames(['flat', styles.viewAllButton]);
   const hasSorting = filteredAssets.length && filteredAssets.length > 1;
@@ -121,24 +117,16 @@ const WalletTokensList = observer((props: Props) => {
     () => onSortBy('quantity'),
     [sortDirection, sortBy, hasSorting]
   );
-  const hasTokens = assets.length || isLoadingAssets;
-  if (!hasTokens)
+  if (!assets.length)
     return (
       <WalletNoTokens
         numberOfAssets={assets.length}
-        isLoadingAssets={isLoadingAssets}
         onExternalLinkClick={onExternalLinkClick}
       />
     );
   let content;
 
-  if (isLoadingAssets) {
-    content = (
-      <div>
-        <LoadingSpinner big />
-      </div>
-    );
-  } else if (noResults) {
+  if (noResults) {
     content = (
       <p className={styles.noResults}>
         {intl.formatMessage(messages.noResults)}

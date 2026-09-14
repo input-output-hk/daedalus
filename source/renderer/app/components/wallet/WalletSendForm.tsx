@@ -98,7 +98,6 @@ type Props = {
   assets: Array<AssetToken>;
   hasAssets: boolean;
   selectedAsset: AssetToken | null | undefined;
-  isLoadingAssets: boolean;
   isDialogOpen: (...args: Array<any>) => any;
   isRestoreActive: boolean;
   isHardwareWallet: boolean;

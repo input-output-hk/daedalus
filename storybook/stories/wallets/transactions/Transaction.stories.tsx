@@ -196,7 +196,6 @@ storiesOf('Wallets / Transactions', module)
         isShowingMetadata={boolean('isShowingMetadata', false)}
         isDeletingTransaction={boolean('isDeletingTransaction', false)}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
-        isLoadingAssets={boolean('isLoadingAssets', false)}
         currentTimeFormat="hh:mm:ss A"
         walletId={generateHash()}
         assetTokens={assetTokens}

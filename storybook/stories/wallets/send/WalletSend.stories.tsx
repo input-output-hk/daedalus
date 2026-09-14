@@ -310,7 +310,6 @@ storiesOf('Wallets / Send', module)
       selectedAsset={null}
       assets={[]}
       isHardwareWallet
-      isLoadingAssets={boolean('isLoadingAssets', false)}
       onExternalLinkClick={action('onExternalLinkClick')}
       onUnsetActiveAsset={() => {}}
       isAddressFromSameWallet={false}
@@ -338,7 +337,6 @@ storiesOf('Wallets / Send', module)
       isDialogOpen={(view) => view === WalletSendConfirmationDialogView}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
       isHardwareWallet
-      isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets
       selectedAsset={null}
@@ -368,7 +366,6 @@ storiesOf('Wallets / Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
       isHardwareWallet
-      isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets
       selectedAsset={null}
@@ -398,7 +395,6 @@ storiesOf('Wallets / Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
       isHardwareWallet
-      isLoadingAssets={false}
       onExternalLinkClick={action('onExternalLinkClick')}
       hasAssets
       selectedAsset={null}

@@ -120,7 +120,6 @@ describe('wallet/Wallet Send Form', () => {
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
                 isHardwareWallet={false}
-                isLoadingAssets={false}
                 onExternalLinkClick={jest.fn()}
                 hasAssets
                 selectedAsset={null}
@@ -678,7 +677,6 @@ describe('wallet/Wallet Send Form: a denomination that moves under an open row',
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
                 isHardwareWallet={false}
-                isLoadingAssets={false}
                 onExternalLinkClick={jest.fn()}
                 hasAssets
                 selectedAsset={rowAssets[0]}

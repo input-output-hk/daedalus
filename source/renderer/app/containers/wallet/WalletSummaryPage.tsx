@@ -123,10 +123,7 @@ class WalletSummaryPage extends Component<Props> {
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset).sort(
       sortAssets('token', 'asc')
     );
-    const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
-    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
     const onViewAllButtonClick = () => this.handleViewAllButtonClick(wallet.id);
 
@@ -179,7 +176,6 @@ class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          isLoadingAssets={isLoadingAssets}
           // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
           currentLocale={currentLocale}

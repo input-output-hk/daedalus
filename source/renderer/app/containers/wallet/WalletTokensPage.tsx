@@ -45,16 +45,11 @@ const WalletTokensPage = inject(
       throw new Error('Active wallet required for WalletSummaryPage.');
     const walletTokens = activeWallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
-    const totalRawAssets = activeWallet.assets.total.length;
-    const totalAssets = assetTokens.length;
-    const hasRawAssets = activeWallet.assets.total.length > 0;
-    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
     return (
       <WalletTokens
         assets={assetTokens}
         currentLocale={currentLocale}
         insertingAssetUniqueId={insertingAssetUniqueId}
-        isLoadingAssets={isLoadingAssets}
         onAssetSettings={openAssetSettingsDialog}
         onCopyAssetParam={() => {}}
         onOpenAssetSend={onOpenAssetSend.trigger}
