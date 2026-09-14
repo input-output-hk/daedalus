@@ -147,7 +147,6 @@ export default class AssetsStore extends Store {
   };
 
   _setUpLocalDecimals = async () => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
     const stored = await this.api.localStorage.getAssetsLocalData();
     const decimals = Object.keys(stored || {}).reduce((found, subject) => {
       const value = stored[subject]?.decimals;

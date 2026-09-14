@@ -157,3 +157,30 @@ still there and still polling; `task-017` moves the last two readers off it and
 `task-018` takes it away.
 
 Decision: approved
+
+Implementation: Iteration 2
+Timestamp: 2026-09-15T07:45:00Z
+
+A correction to Iteration 1, recorded rather than edited into it.
+
+Iteration 1 added a `@ts-ignore` above the browser-storage read in
+`_setUpLocalDecimals`, copied from the ts-migrate suppressions the file already
+carries on `this.api`. It was not needed: `_onAssetSettingsSubmit` reaches the
+same object on the next line down with no suppression at all, and removing it
+leaves `nix build '.#checks.x86_64-linux.compile'` at exit 0. The rule for this
+work is no new `@ts-ignore`, and the check that catches a copied one is the
+diff rather than the compiler, which is why it survived the first review.
+
+Removed, with `compile`, `lint`, `i18n` and `jest` re-run green: 84 suites, 1252
+tests with 1249 passed and 3 skipped. `git diff` over the whole branch now adds
+no suppression of either kind.
+
+Outcome: corrected
+
+Review of Iteration 2
+Timestamp: 2026-09-15T07:48:00Z
+
+The suppression was unnecessary and is gone, which the compiler confirms rather
+than the reviewer asserting it. Nothing else changed.
+
+Decision: approved
