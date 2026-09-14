@@ -260,7 +260,7 @@
      "id": "task-009",
      "title": "Count the story functions reading theme, locale and OS from props",
      "description": "StoryWrapper.tsx:77-81 passes osName, locale and currentTheme to the story as props. Modern globals arrive through story context, so every one of those story functions changes shape during the conversion. The population has never been counted and the count sizes the per-file work in phase 3.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 2.0,
      "dependencies": [],
@@ -550,7 +550,8 @@
       "Keep the prop pass-through at StoryWrapper.tsx:77-81 alive for now. It is deleted in task-024, in the same change that deletes the last consumer.",
       "General.stories.tsx:97 writes back to the toolbar through updateParam. Under globals that becomes context.globals plus the updateGlobals API, and it is the only write-back site in the corpus.",
       "Delete storybook/addons/DaedalusMenu/ entirely: four TypeScript files and a stylesheet, the daedalusMenu/updateParam and daedalusMenu/paramUpdated channel protocol, the sessionStorage write at DaedalusMenu.tsx:53 and the parent.window.location.hash manipulation at :56-62. Storybook persists and URL-encodes globals itself.",
-      "Remove the require.resolve entry for the local addon from the addons array in storybook/main.ts."
+      "Remove the require.resolve entry for the local addon from the addons array in storybook/main.ts.",
+      "Measured by task-009 at ab7060622: 65 functions and components across 39 story files depend on the StoryWrapper pass-through. 35 name currentTheme, osName or locale, and they do not agree where to read it from: 18 take it from the first render argument written (props) or ({ locale }), 16 from the second written (_, props) or (_, { locale }), and one through this.props in the class component StakingDelegationSteps at storybook/stories/staking/_support/DelegationSteps.tsx:115. The other 30 forward the whole argument by spread without naming any of the three. A globals replacement therefore has to serve two signatures, not one."
      ],
      "acceptance": [
       "All nine themes, both locales and all three OS profiles switch from the toolbar",
@@ -609,7 +610,8 @@
       "common/Widgets.stories.tsx registers 10 stories across 257 lines and exercises nine separate widgets.",
       "navigation/Sidebar.stories.tsx carries 15 @ts-ignore directives, the second highest in the corpus. Carry them across rather than removing them, per locked decision 8.",
       "Leave knobs and withState alone. common/ItemsDropdown.stories.tsx, dapps/TransactionRequest.stories.tsx and notifications/Notifications.stories.tsx carry withState and are converted in phase 4.",
-      "Write down the patterns this tranche settles: decorator placement, where fixture data lives for files that register no stories of their own, and how a display name with punctuation is re-attached."
+      "Write down the patterns this tranche settles: decorator placement, where fixture data lives for files that register no stories of their own, and how a display name with punctuation is re-attached.",
+      "Measured by task-009 at ab7060622: 21 functions across 9 files in this tranche depend on the StoryWrapper prop pass-through, 16 of them naming currentTheme, osName or locale and 5 forwarding the whole argument by spread. This is the largest named-read population in the corpus despite holding its smallest files; storybook/stories/navigation/Sidebar.stories.tsx alone carries 7, all reading currentTheme from the second render argument. None of the 21 sits in a file phase 1 removes."
      ],
      "acceptance": [
       "yarn storybook:build over the converted subset, yarn compile and yarn lint pass",
@@ -636,7 +638,8 @@
      "implementationNotes": [
       "Files that register no stories of their own need the CSF split decided rather than renamed: nodes/errors/NoDiskSpaceError.stories.tsx, nodes/errors/SystemTimeError.stories.tsx, nodes/status/Status.stories.ts, nodes/syncing/SyncingConnecting.stories.tsx, nodes/updates/DataLayerMigration.stories.tsx.",
       "loading/mithril/MithrilPartialSyncDialogue.stories.tsx:30 and nodes/status/Diagnostics.stories.tsx:88 carry comments recording the props dependency; both move to context here.",
-      "nodes/about/About.stories.tsx:12-14 is the one existing container story and its props fixture at nodes/_utils/props.ts is a 19-line literal. Convert it in place; it is replaced by a harness-based story in phase 6."
+      "nodes/about/About.stories.tsx:12-14 is the one existing container story and its props fixture at nodes/_utils/props.ts is a 19-line literal. Convert it in place; it is replaced by a harness-based story in phase 6.",
+      "Measured by task-009 at ab7060622: 11 functions across 8 files in this tranche depend on the StoryWrapper prop pass-through, 9 naming currentTheme, osName or locale and 2 forwarding by spread. loading/mithril/MithrilPartialSyncDialogue.stories.tsx reads osName from the second render argument through a cast, and nodes/status/Diagnostics.stories.tsx reads currentTheme from the first. None of the 11 sits in a file phase 1 removes."
      ],
      "acceptance": [
       "yarn storybook:build, yarn compile and yarn lint pass",
@@ -662,7 +665,8 @@
       "WalletSettingsScreen.stories.tsx exports story functions consumed by wallets/settings/WalletSettings.stories.tsx. Decide once whether the exports become CSF stories in place or stay as fixtures, and apply the same rule to DelegationCenter.stories.tsx in task-021.",
       "The restaged undelegation story from task-006 is in this tranche and must keep its new framing.",
       "wallets/_utils/ holds the wrappers this tranche depends on: WalletsWrapper.tsx, WalletWithNavigationLayout.tsx, HardwareWalletsWrapper.tsx, CreateWalletScreens.tsx, WalletsTransactionsWrapper.ts. They become CSF decorators; their logic does not change.",
-      "wallets/hardwareWallets/HardwareWallets.stories.tsx carries 10 @ts-ignore directives and 10 registrations."
+      "wallets/hardwareWallets/HardwareWallets.stories.tsx carries 10 @ts-ignore directives and 10 registrations.",
+      "Measured by task-009 at ab7060622: 13 functions across 11 files in this tranche depend on the StoryWrapper prop pass-through, 5 naming currentTheme, osName or locale and 8 forwarding by spread. Two of the spread-only forwarders are in wallets/legacyWallets/TransferFunds.stories.tsx, which task-002 deletes, so the figure is 11 once phase 1 completes. The named-read count is unaffected."
      ],
      "acceptance": [
       "yarn storybook:build, yarn compile and yarn lint pass",
@@ -687,7 +691,8 @@
       "The 9 registrations in Staking.stories.tsx that do not use a string-literal name are hand work. Each becomes an explicit named export with an explicit storyName.",
       "Staking.stories.tsx has already lost three registrations in task-002; convert what remains, not what the baseline recorded.",
       "DelegationCenter.stories.tsx registers no stories of its own and exports story functions for a sibling. Apply the rule settled in task-020.",
-      "staking/Epochs.stories.tsx is gone, deleted with the /staking/epochs screen in phase 1, and so are the import at Staking.stories.tsx:17 and the registration at :172. Convert what remains, not what the baseline recorded."
+      "staking/Epochs.stories.tsx is gone, deleted with the /staking/epochs screen in phase 1, and so are the import at Staking.stories.tsx:17 and the registration at :172. Convert what remains, not what the baseline recorded.",
+      "Measured by task-009 at ab7060622: 17 functions across 8 files in this tranche depend on the StoryWrapper prop pass-through, 5 naming currentTheme, osName or locale and 12 forwarding by spread. Ten of the spread-only forwarders are the (_, props) registrations in storybook/stories/staking/Staking.stories.tsx that hand the argument to an imported support component, which are the same lines as the dynamic registrations this task already carries. One more is in storybook/stories/staking/StakingWrapper.tsx, which task-007 deletes, so the figure is 16 once phase 1 completes."
      ],
      "acceptance": [
       "All 9 dynamic registrations have explicit exports and explicit display names matching the baseline",
@@ -712,7 +717,8 @@
      "implementationNotes": [
       "governance/DRepDetail.stories.tsx:67 and governance/DRepDirectory.stories.tsx:248 carry comments recording the props dependency; both move to context here.",
       "These fixtures are reused by the phase 7 container stories for the same screens, so keep them exported and keep them where a screen story can import them.",
-      "voting/Voting.stories.tsx has two storiesOf calls and four decorators; check the codemod split them into two files or one default export as intended."
+      "voting/Voting.stories.tsx has two storiesOf calls and four decorators; check the codemod split them into two files or one default export as intended.",
+      "Measured by task-009 at ab7060622: 3 functions across 3 files in this tranche depend on the StoryWrapper prop pass-through, all of them spreading the whole argument and none naming currentTheme, osName or locale. This tranche holds the largest story files in the corpus and the smallest conversion surface for the globals change. governance/DRepDetail.stories.tsx:67 and governance/DRepDirectory.stories.tsx:248 record in comments that locale is deliberately left to the IntlProvider inside StoryWrapper rather than read as a prop."
      ],
      "acceptance": [
       "yarn storybook:build, yarn compile and yarn lint pass",
@@ -768,7 +774,8 @@
      ],
      "targetPath": "storybook/stories/_support/StoryWrapper.tsx",
      "implementationNotes": [
-      "Deleting it is safe only when the grep for props.currentTheme, props.osName and props.locale across story files returns nothing. Run that grep as part of the change."
+      "Deleting it is safe only when the grep for props.currentTheme, props.osName and props.locale across story files returns nothing. Run that grep as part of the change.",
+      "Measured by task-009 at ab7060622: the pass-through has 65 consumers across 39 story files, 35 naming one of the three values and 30 forwarding the whole argument by spread. The 30 are what makes this task hard to verify: after the pass-through goes they still compile and still lint clean, and they fail only by rendering a component with three props missing, which no required check sees. Counting them to zero is the acceptance, not a green build."
      ],
      "acceptance": [
       "No story file reads theme, locale or OS from props",
