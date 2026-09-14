@@ -114,6 +114,44 @@ export const requestAssetImage = (
       .catch(() => {});
   });
 
+/**
+ * One `data:` URL per subject, for the life of the renderer.
+ *
+ * A token list unmounts and remounts its rows as the user scrolls, sorts and
+ * searches, so a request held by the row that made it is a request per scroll.
+ * The promise is memoised rather than its result, so two rows mounting in the
+ * same frame share one request instead of issuing two and discarding one.
+ *
+ * `null` is remembered as firmly as a URL is. A wallet holding many tokens the
+ * registry has no picture for is the ordinary case, and asking again each time
+ * such a row is drawn is the cost this map exists to avoid.
+ */
+const imageUrls = new Map<string, Promise<string | null>>();
+
+const dataUrl = (mediaType: string, bytes: Uint8Array): string =>
+  `data:${mediaType};base64,${Buffer.from(bytes).toString('base64')}`;
+
+/**
+ * The logo for one subject, as something an `img` can render, or `null` when
+ * there is none. Never rejects: the main handler answers `absent` on every
+ * failure, and a missing picture is not a condition a row should have to handle.
+ */
+export const requestAssetImageUrl = (
+  subject: string
+): Promise<string | null> => {
+  const existing = imageUrls.get(subject);
+  if (existing) return existing;
+  const pending = requestAssetImage(subject).then((response) =>
+    // Narrowed by the literal rather than by truthiness: `strict` is off, so a
+    // check on the absence of a property does not narrow this union at all.
+    response.status === 'present'
+      ? dataUrl(response.mediaType, response.bytes)
+      : null
+  );
+  imageUrls.set(subject, pending);
+  return pending;
+};
+
 /** Subscribes to rows the main process resolves after the fact. */
 export const onAssetMetadataUpdate = (
   handler: (message: AssetMetadataUpdateMainRequest) => void

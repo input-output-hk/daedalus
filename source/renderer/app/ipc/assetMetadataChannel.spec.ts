@@ -12,6 +12,7 @@ import {
   assetMetadataChannel,
   onAssetMetadataUpdate,
   requestAssetImage,
+  requestAssetImageUrl,
   requestAssetMetadata,
 } from './assetMetadataChannel';
 
@@ -61,6 +62,20 @@ const UPDATE_BROADCAST_CHANNEL = 'ASSET_METADATA_UPDATE_CHANNEL-broadcast';
 
 const FIRST = `${'a'.repeat(56)}01`;
 const SECOND = `${'b'.repeat(56)}02`;
+
+/**
+ * `requestAssetImageUrl` memoises per subject for the life of the module, and
+ * the suite has no way to clear it without an export that exists only for
+ * tests. Each case that touches the memo therefore uses a subject of its own.
+ */
+const memoSubject = (name: string) => `${'c'.repeat(56)}${name}`;
+
+const IMAGE_REQUEST_CHANNEL = 'ASSET_IMAGE_CHANNEL-request';
+
+const subjectsSentOn = (channel: string) =>
+  sent
+    .filter((message) => message.channel === channel)
+    .map((message) => message.message.subject);
 
 const metadataResponse = (requestId: string, subject: string) => ({
   requestId,
@@ -248,6 +263,48 @@ describe('assetMetadataChannel', () => {
         requestId: imageId,
         status: 'absent',
       });
+    });
+  });
+
+  describe('requestAssetImageUrl', () => {
+    it('asks once for a subject however many rows want it', async () => {
+      const subject = memoSubject('01');
+      const first = requestAssetImageUrl(subject);
+      const second = requestAssetImageUrl(subject);
+      expect(subjectsSentOn(IMAGE_REQUEST_CHANNEL)).toEqual([subject]);
+
+      const [requestId] = idsSentOn(IMAGE_REQUEST_CHANNEL);
+      answer(IMAGE_RESPONSE_CHANNEL, {
+        requestId,
+        status: 'present',
+        mediaType: 'image/png',
+        bytes: new Uint8Array([137, 80, 78, 71]),
+      });
+
+      const url = 'data:image/png;base64,iVBORw==';
+      await expect(first).resolves.toBe(url);
+      await expect(second).resolves.toBe(url);
+      expect(subjectsSentOn(IMAGE_REQUEST_CHANNEL)).toEqual([subject]);
+    });
+
+    it('asks again for a subject it has not been asked about', () => {
+      requestAssetImageUrl(memoSubject('02'));
+      requestAssetImageUrl(memoSubject('03'));
+      expect(subjectsSentOn(IMAGE_REQUEST_CHANNEL)).toEqual([
+        memoSubject('02'),
+        memoSubject('03'),
+      ]);
+    });
+
+    it('remembers that a subject has no logo and does not ask twice', async () => {
+      const subject = memoSubject('04');
+      const first = requestAssetImageUrl(subject);
+      const [requestId] = idsSentOn(IMAGE_REQUEST_CHANNEL);
+      answer(IMAGE_RESPONSE_CHANNEL, { requestId, status: 'absent' });
+      await expect(first).resolves.toBeNull();
+
+      await expect(requestAssetImageUrl(subject)).resolves.toBeNull();
+      expect(subjectsSentOn(IMAGE_REQUEST_CHANNEL)).toEqual([subject]);
     });
   });
 

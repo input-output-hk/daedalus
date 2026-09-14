@@ -347,6 +347,33 @@ describe('AssetsStore', () => {
     });
   });
 
+  describe('the logo flag', () => {
+    it('carries what the cache says onto the merged row a component receives', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ hasImage: true })],
+      });
+      const row = getAssetTokenFromToken(
+        tokenFor(SUBJECT) as any,
+        store.getAsset
+      );
+      expect(row.hasImage).toBe(true);
+    });
+
+    it('says a subject the cache has no row for has none', () => {
+      const { store } = makeStore();
+      expect(store.getAsset(OTHER_POLICY, 'beef').hasImage).toBe(false);
+    });
+
+    it('says a resolved subject without an image has none', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ hasImage: false })],
+      });
+      expect(store.getAsset(POLICY, ASSET_NAME).hasImage).toBe(false);
+    });
+  });
+
   describe('the settings dialog', () => {
     it('overlays the cache onto the token it was opened on', () => {
       const { store } = makeStore();

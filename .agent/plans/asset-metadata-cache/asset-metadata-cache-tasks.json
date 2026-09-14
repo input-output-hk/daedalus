@@ -986,7 +986,7 @@
      "id": "task-024",
      "title": "Render the asset logo in the token row header",
      "description": "The one surface that makes the image column meaningful. Requests a logo per subject, only for assets the user holds, and only when the row is rendered.",
-     "status": "pending",
+     "status": "completed",
      "priority": "low",
      "estimatedHours": 4.0,
      "dependencies": [
@@ -995,17 +995,28 @@
      ],
      "targetPaths": [
       "source/renderer/app/components/wallet/tokens/wallet-token/WalletTokenHeader.tsx",
-      "source/renderer/app/ipc/assetMetadataChannel.ts"
+      "source/renderer/app/components/wallet/tokens/wallet-token/WalletTokenHeader.scss",
+      "source/renderer/app/components/wallet/tokens/wallet-token/WalletTokenHeader.spec.tsx",
+      "source/renderer/app/ipc/assetMetadataChannel.ts",
+      "source/renderer/app/ipc/assetMetadataChannel.spec.ts",
+      "source/renderer/app/api/assets/types.ts",
+      "source/renderer/app/domains/Asset.ts",
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/stores/AssetsStore.spec.ts"
      ],
      "implementationNotes": [
       "Request over ASSET_IMAGE_CHANNEL, one subject at a time, when a row with hasImage renders. A row without hasImage never asks.",
+      "hasImage reaches AssetMetadataEntry and stops there: AssetsStore._assetFor does not put it on the domain object, so no component can see it. Carrying it is the same four edits task-019 made for recommendedDecimalsVerified.",
+      "At most one request per subject has to outlive the row that made it, because a list unmounts and remounts its rows as it is scrolled. The memo lives in the renderer channel client and holds the promise, so two rows mounting in one frame share one request; the bytes become a data URL there rather than in the component.",
       "Fall back to the existing header layout when there is no image. The logo is an addition to the row, not a slot that shows a placeholder.",
       "Cap the rendered size in CSS. A registry logo has no guaranteed dimensions.",
       "If this task is cut, cut the asset_image table, task-011, task-012 and ASSET_IMAGE_CHANNEL with it rather than leaving them storing bytes nobody reads. The PRD's Status Log records that question as closed by the tracked request, which asks for images directly."
      ],
      "acceptance": [
-      "yarn test:jest, yarn lint and yarn stylelint pass",
-      "Scrolling a list of many tokens issues at most one image request per subject"
+      "compile, lint, stylelint, jest, i18n and cucumber-unit pass from nix build",
+      "Scrolling a list of many tokens issues at most one image request per subject, asserted on the wire",
+      "A row with no logo renders exactly what it renders today, with no placeholder element"
      ]
     },
     {

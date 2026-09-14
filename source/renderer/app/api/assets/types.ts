@@ -24,6 +24,12 @@ export type Asset = {
    * unverified one is offered in the settings dialog and formats nothing.
    */
   recommendedDecimalsVerified?: boolean;
+  /**
+   * Whether the cache holds a logo for this subject. It is not the logo: the
+   * bytes travel on their own channel, one subject at a time, so that a picture
+   * never sits on the path of a name or an amount.
+   */
+  hasImage?: boolean;
   uniqueId: string;
 };
 

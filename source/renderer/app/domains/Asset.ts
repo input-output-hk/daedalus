@@ -20,6 +20,8 @@ export default class Asset {
   recommendedDecimals: number | null | undefined;
   @observable
   recommendedDecimalsVerified: boolean | null | undefined;
+  @observable
+  hasImage: boolean | null | undefined;
 
   @computed
   get assetNameASCII() {
@@ -46,6 +48,7 @@ export default class Asset {
         'decimals',
         'recommendedDecimals',
         'recommendedDecimalsVerified',
+        'hasImage',
       ]),
       {
         uniqueId,

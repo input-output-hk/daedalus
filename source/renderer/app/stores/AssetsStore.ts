@@ -256,6 +256,7 @@ export default class AssetsStore extends Store {
       decimals,
       recommendedDecimals,
       recommendedDecimalsVerified,
+      hasImage: entry ? entry.hasImage : false,
     });
   };
 
@@ -277,6 +278,9 @@ export default class AssetsStore extends Store {
       decimals: null,
       recommendedDecimals: null,
       recommendedDecimalsVerified: false,
+      // Not unknown: the cache holds no row for this subject, so it certainly
+      // holds no logo for it. The value arrives with the row.
+      hasImage: false,
     });
     this._unresolvedAssets.set(subject, asset);
     return asset;
