@@ -181,7 +181,6 @@ describe('AssetsStore', () => {
           onToggleFavorite: { listen: jest.fn() },
         },
         wallets: {
-          refreshWalletsDataSuccess: { once: jest.fn() },
           setActiveAsset: { listen: jest.fn() },
           unsetActiveAsset: { listen: jest.fn() },
         },
@@ -285,6 +284,40 @@ describe('AssetsStore', () => {
       const asset = store.getAsset(OTHER_POLICY, 'beef');
       expect(asset.decimals).toBe(3);
       expect(asset.fingerprint).toBe(assetFingerprint(OTHER_POLICY, 'beef'));
+    });
+  });
+
+  describe('setup', () => {
+    const actionsFor = () => ({
+      assets: {
+        setEditedAsset: { listen: jest.fn() },
+        onAssetSettingsSubmit: { listen: jest.fn() },
+        unsetEditedAsset: { listen: jest.fn() },
+        onOpenAssetSend: { listen: jest.fn() },
+        onCopyAssetParam: { listen: jest.fn() },
+        onToggleFavorite: { listen: jest.fn() },
+      },
+      wallets: {
+        setActiveAsset: { listen: jest.fn() },
+        unsetActiveAsset: { listen: jest.fn() },
+      },
+    });
+
+    it('schedules nothing to repeat', () => {
+      jest.useFakeTimers();
+      const repeating = jest.spyOn(global, 'setInterval');
+      const { store } = makeStore();
+      (store as any).actions = actionsFor();
+
+      store.setup();
+
+      expect(repeating).not.toHaveBeenCalled();
+      // Ten minutes of simulated time, against a poll that used to fire every
+      // sixty seconds.
+      jest.advanceTimersByTime(10 * 60 * 1000);
+      expect(requestAssetMetadata).not.toHaveBeenCalled();
+      repeating.mockRestore();
+      jest.useRealTimers();
     });
   });
 

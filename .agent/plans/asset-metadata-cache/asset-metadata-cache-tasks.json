@@ -653,7 +653,7 @@
      "id": "task-018",
      "title": "Drop the assets endpoint and the one-minute poll",
      "description": "With nothing reading the endpoint's output, remove the poll, the API method, the request module, the response types and the in-memory metadata carry-over.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 4.0,
      "dependencies": [

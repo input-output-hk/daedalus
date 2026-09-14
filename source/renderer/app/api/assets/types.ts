@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
-import AssetDomain from '../../domains/Asset';
 
 /**
  *
  * ASSET
- * Fetched from the Assets API endpoint
+ * The metadata for a subject, resolved from the local cache.
  * It's not attached to a particular wallet or transaction
  * Therefore, it doesn't have `quantity` nor `address`
  *
@@ -12,13 +11,6 @@ import AssetDomain from '../../domains/Asset';
  * Missing data: quantity, address
  *
  */
-export type ApiAsset = {
-  policy_id: string;
-  asset_name: string;
-  fingerprint: string;
-  metadata?: AssetMetadata | null;
-};
-export type ApiAssets = Array<ApiAsset>;
 export type Asset = {
   assetName: string;
   decimals?: number | null;
@@ -76,12 +68,4 @@ export type AssetMetadata = {
   decimals?: number; // [0 .. 255]
   url?: string;
   logo?: string;
-};
-export type StoredAssetMetadata = Record<string, AssetMetadata>;
-export type GetAssetsRequest = {
-  walletId: string;
-};
-export type GetAssetsResponse = {
-  assets: Array<AssetDomain>;
-  total: number;
 };

@@ -10,15 +10,9 @@ import {
   onAssetMetadataUpdate,
   requestAssetMetadata,
 } from '../ipc/assetMetadataChannel';
-import type {
-  AssetMetadata,
-  AssetToken,
-  GetAssetsResponse,
-} from '../api/assets/types';
+import type { AssetMetadata, AssetToken } from '../api/assets/types';
 import type { AssetMetadataEntry } from '../../../common/types/asset-metadata.types';
 import { EventCategories } from '../analytics';
-
-type WalletId = string;
 
 const subjectOf = (policyId: string, assetName: string): string =>
   `${policyId}${assetName}`;
@@ -57,8 +51,6 @@ const metadataOf = (entry: AssetMetadataEntry): AssetMetadata | null => {
 };
 
 export default class AssetsStore extends Store {
-  ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 minute | unit: milliseconds
-
   // REQUESTS
   @observable
   favoritesRequest: Request<Record<string, any>> = new Request(
@@ -69,8 +61,6 @@ export default class AssetsStore extends Store {
   activeAsset: string | null | undefined = null;
   @observable
   editedAsset: AssetToken | null | undefined = null;
-  @observable
-  assetsRequests: Record<WalletId, Request<GetAssetsResponse>> = {};
   @observable
   insertingAssetUniqueId: string | null | undefined = null;
   @observable
@@ -97,7 +87,6 @@ export default class AssetsStore extends Store {
   _requestedSubjects: Set<string> = new Set();
 
   setup() {
-    setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'AssetsS... Remove this comment to see the full error message
     const { assets: assetsActions, wallets: walletsActions } = this.actions;
     assetsActions.setEditedAsset.listen(this._onEditedAssetSet);
@@ -106,7 +95,6 @@ export default class AssetsStore extends Store {
     assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
     assetsActions.onCopyAssetParam.listen(this._onCopyAssetParam);
     assetsActions.onToggleFavorite.listen(this._onToggleFavorite);
-    walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
     walletsActions.unsetActiveAsset.listen(this._unsetActiveAsset);
 
@@ -302,8 +290,6 @@ export default class AssetsStore extends Store {
     const { policyId, assetName } = asset;
     this._localDecimals.set(subjectOf(policyId, assetName), decimals);
 
-    this._refreshAssetsData();
-
     await this.api.localStorage.setAssetLocalData(policyId, assetName, {
       decimals,
     });
@@ -353,35 +339,12 @@ export default class AssetsStore extends Store {
     });
   };
   @action
-  _refreshAssetsData = () => {
-    if (this.stores.networkStatus.isConnected) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'AssetsSt... Remove this comment to see the full error message
-      const { all } = this.stores.wallets;
-
-      for (const wallet of all) {
-        const { id: walletId } = wallet;
-
-        this._retrieveAssetsRequest(walletId).execute({
-          walletId,
-        });
-      }
-    }
-  };
-  @action
   _setActiveAsset = (uniqueId: string) => {
     this.activeAsset = uniqueId;
   };
   @action
   _unsetActiveAsset = () => {
     this.activeAsset = null;
-  };
-  @action
-  _createWalletTokensRequest = (
-    walletId: string
-  ): Request<GetAssetsResponse> => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'AssetsStore... Remove this comment to see the full error message
-    this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
-    return this.assetsRequests[walletId];
   };
   @action
   _onToggleFavorite = async ({
@@ -404,6 +367,4 @@ export default class AssetsStore extends Store {
       `${!isFavorite ? 'Added token to' : 'Removed token from'} favorites`
     );
   };
-  _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
-    this.assetsRequests[walletId] || this._createWalletTokensRequest(walletId);
 }

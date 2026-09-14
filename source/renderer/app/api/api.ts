@@ -231,17 +231,8 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError, { ErrorType } from '../domains/ApiError';
 import { formattedAmountToLovelace } from '../utils/formatters';
-import type {
-  GetAssetsRequest,
-  GetAssetsResponse,
-  ApiAsset,
-  StoredAssetMetadata,
-} from './assets/types';
-import Asset from '../domains/Asset';
-import { getAssets } from './assets/requests/getAssets';
 import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
-import { AssetLocalData } from '../types/localDataTypes';
 import { handleNotEnoughMoneyError } from './errors';
 import { constructTransaction } from './transactions/requests/constructTransaction';
 
@@ -357,9 +348,6 @@ const parseCoinSelectionResponse = ({
 
 export default class AdaApi {
   config: RequestConfig;
-  // We need to preserve all asset metadata during single runtime in order
-  // to avoid losing it in case of Token Metadata Registry server unavailability
-  storedAssetMetadata: StoredAssetMetadata = {};
 
   constructor(isTest: boolean, config: RequestConfig) {
     this.setRequestConfig(config);
@@ -779,44 +767,6 @@ export default class AdaApi {
     //   logger.error('AdaApi::searchHistory error', { error });
     //   throw new GenericApiError(error);
     // }
-  };
-  getAssets = async (request: GetAssetsRequest): Promise<GetAssetsResponse> => {
-    logger.debug('AdaApi::getAssets called', {
-      parameters: request,
-    });
-    const { walletId } = request;
-
-    try {
-      const response = await getAssets(this.config, {
-        walletId,
-      });
-      logger.debug('AdaApi::getAssets success', {
-        assets: response,
-      });
-      const assetsLocalData =
-        await global.daedalus.api.localStorage.getAssetsLocalData();
-      logger.debug('AdaApi::getAssetsLocalData success', {
-        assetsLocalData,
-      });
-      const assets = response.map((asset) =>
-        _createAssetFromServerData(
-          asset,
-          assetsLocalData[asset.policy_id + asset.asset_name] || {},
-          this.storedAssetMetadata
-        )
-      );
-      return new Promise((resolve) =>
-        resolve({
-          assets,
-          total: response.length,
-        })
-      );
-    } catch (error) {
-      logger.error('AdaApi::getAssets error', {
-        error,
-      });
-      throw new ApiError(error);
-    }
   };
   getWithdrawals = async (
     request: GetWithdrawalsRequest
@@ -3364,41 +3314,6 @@ const _createTransactionFromServerData = action(
       },
       state,
       metadata,
-    });
-  }
-);
-
-const _createAssetFromServerData = action(
-  'AdaApi::_createAssetFromServerData',
-  (
-    data: ApiAsset,
-    localData: AssetLocalData,
-    storedAssetMetadata: StoredAssetMetadata
-  ) => {
-    const {
-      policy_id: policyId,
-      asset_name: assetName,
-      fingerprint,
-      metadata,
-    } = data;
-    const uniqueId = `${policyId}${assetName}`;
-    const storedMetadata = storedAssetMetadata[uniqueId];
-    const { decimals } = localData;
-    const { decimals: recommendedDecimals = null } =
-      metadata || storedMetadata || {};
-
-    if (metadata) {
-      storedAssetMetadata[uniqueId] = metadata;
-    }
-
-    return new Asset({
-      policyId,
-      assetName,
-      fingerprint,
-      metadata: metadata || storedMetadata,
-      decimals,
-      recommendedDecimals,
-      uniqueId,
     });
   }
 );
