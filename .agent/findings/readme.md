@@ -17,3 +17,4 @@ looking for.
 | Finding | Scope | Status |
 |---------|-------|--------|
 | [retired-drep-visibility.md](./retired-drep-visibility.md) | Governance, with an upstream fix: a retired DRep leaves the wallet loading forever | Open, not scheduled |
+| [ipc-channel-response-correlation.md](./ipc-channel-response-correlation.md) | IPC: `IpcChannel` resolves on the next response rather than the matching one, and `IpcConversation` next to it already does this correctly | Open, not scheduled |
