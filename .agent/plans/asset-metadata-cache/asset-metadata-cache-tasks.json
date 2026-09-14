@@ -438,7 +438,7 @@
      "id": "task-011",
      "title": "Image store and its on-demand fetch",
      "description": "Registry logos are inline base64 PNG with a median entry of 36,191 bytes and 316 MiB across the corpus. They are fetched one subject at a time, only for assets the user holds, and only when something has decided to render one.",
-     "status": "pending",
+     "status": "completed",
      "priority": "low",
      "estimatedHours": 5.0,
      "dependencies": [

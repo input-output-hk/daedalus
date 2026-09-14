@@ -93,6 +93,18 @@ const RESOLUTION_COLUMNS =
 
 const RESOLUTION_SELECT = `SELECT ${RESOLUTION_COLUMNS} FROM asset_resolution WHERE subject IN`;
 
+const IMAGE_SELECT =
+  'SELECT subject, media_type, bytes, byte_length, fetched_at FROM asset_image WHERE subject = ?';
+
+const IMAGE_UPSERT = `
+INSERT INTO asset_image (subject, media_type, bytes, byte_length, fetched_at)
+VALUES (?, ?, ?, ?, ?)
+ON CONFLICT (subject) DO UPDATE SET
+  media_type = excluded.media_type,
+  bytes = excluded.bytes,
+  byte_length = excluded.byte_length,
+  fetched_at = excluded.fetched_at`;
+
 const RESOLUTION_UPSERT = `
 INSERT INTO asset_resolution (${RESOLUTION_COLUMNS})
 VALUES (?, ?, ?, ?, ?)
@@ -137,6 +149,17 @@ export type AssetResolutionWrite = {
 
 export type AssetResolutionRow = AssetResolutionWrite & {
   attemptedAt: number;
+};
+
+export type AssetImageWrite = {
+  subject: string;
+  mediaType: string;
+  bytes: Uint8Array;
+};
+
+export type AssetImageRow = AssetImageWrite & {
+  byteLength: number;
+  fetchedAt: number;
 };
 
 export const assetMetadataDirectoryPath = (): string =>
@@ -280,6 +303,52 @@ export class AssetMetadataDatabase {
       asInteger(row.slot),
       updatedAt,
     ]);
+  }
+
+  readImage(subject: string): AssetImageRow | null {
+    const db = this._db;
+    if (!db || typeof subject !== 'string' || subject.length === 0) return null;
+    try {
+      const row = db.prepare(IMAGE_SELECT).get(subject);
+      if (!row) return null;
+      return {
+        subject: String(row.subject),
+        mediaType: String(row.media_type),
+        bytes: row.bytes as Uint8Array,
+        byteLength: Number(row.byte_length),
+        fetchedAt: Number(row.fetched_at),
+      };
+    } catch (error) {
+      logger.warn('Asset metadata cache: image read failed', {
+        reason: reasonOf(error),
+      });
+      return null;
+    }
+  }
+
+  /**
+   * Returns false when the row was not stored. The foreign key means an image
+   * can only exist for a subject the cache already knows, so a refusal is a
+   * fact about the cache rather than a failure.
+   */
+  writeImage(row: AssetImageWrite, fetchedAt: number = Date.now()): boolean {
+    const db = this._db;
+    if (!db) return false;
+    try {
+      db.prepare(IMAGE_UPSERT).run(
+        row.subject,
+        row.mediaType,
+        row.bytes,
+        row.bytes.length,
+        fetchedAt
+      );
+      return true;
+    } catch (error) {
+      logger.warn('Asset metadata cache: image write refused', {
+        reason: reasonOf(error),
+      });
+      return false;
+    }
   }
 
   writeResolutions(
