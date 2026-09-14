@@ -1,3 +1,17 @@
+/**
+ * @jest-environment node
+ *
+ * The crypto path touches no DOM. It runs in the Electron renderer, which is
+ * Chromium, and in the main process, which is Node; both are single-realm.
+ * `jest-environment-jsdom` is neither: it injects Node's `Buffer` into a
+ * context whose `Uint8Array` is its own, so `Buffer.from(x) instanceof
+ * Uint8Array` is false there and true in every environment that ships.
+ *
+ * That distinction is not hypothetical here. `blakejs` 1.2.1 dropped the
+ * `input instanceof Buffer` branch that 1.1.0 carried and now relies solely on
+ * `instanceof Uint8Array`, so under jsdom it rejects a Buffer that both real
+ * environments accept.
+ */
 import { secureRandomBytes } from './entropy';
 
 const realCrypto = globalThis.crypto;
