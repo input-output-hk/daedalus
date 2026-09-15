@@ -1669,8 +1669,49 @@ whole corpus verifies with zero failures of any kind.
 
 No implementation has started.
 
+### 2026-09-15: Phases 1 to 6 built
+
+This entry corrects the one above, which said no implementation had started, and
+fills a gap: phases 1 to 4 landed without an entry here.
+
+Phases 1 to 6 of the task graph are complete except for the manual QA, which is
+`blocked` on an operator with all three platforms. Thirty of the forty tasks are
+`completed`, one is `blocked`, and the nine that remain are phase 7, the metadata
+source setting and the chain channel.
+
+What the six phases produced, against this document:
+
+- The four standalone correctness fixes, including the raw-units amount field
+  that used to accept a decimal separator and strip it.
+- The main-process cache: the database, the registry client, policy and key
+  binding, attestation verification, the resolver, and the bounded image table.
+- The three channels, the store rebuilt on them, and the removal of the
+  wallet assets endpoint and its one-minute poll.
+- Verified decimal places applied on their own, with the three mitigations this
+  document required: the unit label under the amount field, the per-row
+  denomination snapshot that clears rather than reinterprets, and the one-time
+  notice.
+- The whole-list spinner and its condition, both now structurally unreachable,
+  and the asset logo, which gives the image table its reader.
+- Coverage across both processes, and a manual QA procedure.
+
+Corrections to this document, recorded rather than edited in:
+
+- Four messages added by phases 4 and 5 interpolated a count into an unpluralised
+  noun and rendered "1 decimal places". They now take the ICU plural form. Two
+  older messages beside them have the same defect and keep it, because changing an
+  English default silently invalidates the Japanese translation for that id.
+- The Testing Strategy's Manual QA list is missing one scenario, and it is the
+  scenario that catches a silent failure: on selfnode the metadata endpoint is
+  chosen in code, because the launcher configuration supplies one for every
+  network except selfnode, and a wrong choice there produces a well-formed answer
+  from the public registry. It is in the manual QA procedure with a discriminator.
+- The `IpcChannel` correlation defect this document names is now also corrected in
+  `.agent/workflows/ipc.md`, along with eleven other divergences between that
+  document and the code, including a table of seven channels that do not exist.
+
 ---
 
-**Status:** Draft
-**Date:** 2026-09-10, updated 2026-09-11, revised 2026-09-14
+**Status:** In Progress
+**Date:** 2026-09-10, updated 2026-09-11, revised 2026-09-14, phases 1 to 6 built 2026-09-15
 **Author:** Se7en Labs
