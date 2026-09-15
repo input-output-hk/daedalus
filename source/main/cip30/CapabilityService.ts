@@ -30,9 +30,7 @@ export class CapabilityService {
     return (
       context.walletKind !== 'byron' &&
       context.backendApiVersion === 1 &&
-      context.networkSupported &&
-      (context.walletKind === 'shelley-software' ||
-        this.deviceAllows(undefined, context))
+      context.networkSupported
     );
   }
 
@@ -64,7 +62,12 @@ export class CapabilityService {
     if (!resolved) throw refused();
 
     const cip = resolved.extension ?? resolved.override;
-    if (cip !== undefined && !this.isSupported(cip, context)) throw refused();
+    if (
+      (resolved.descriptor.requiresDevice &&
+        !this.deviceAllows(cip, context)) ||
+      (cip !== undefined && !this.isSupported(cip, context))
+    )
+      throw refused();
 
     const composition = this.registry.compositionTarget(
       method,

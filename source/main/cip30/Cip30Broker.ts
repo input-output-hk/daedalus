@@ -75,6 +75,7 @@ import {
 import { consentCoordinator } from '../ipc/walletApproval';
 import { executeCip30WalletRequest } from '../ipc/cip30Wallet';
 import { DappTransactionContextServiceError } from '../cardano/DappTransactionContextService';
+import { logger } from '../utils/logging';
 import { CapabilityContext, CapabilityService } from './CapabilityService';
 import { ConsentCoordinator } from './ConsentCoordinator';
 import { Dispatcher, Cip30DispatchRejection } from './Dispatcher';
@@ -1419,6 +1420,16 @@ export class Cip30Broker {
       } else {
         rejection = internal();
       }
+      logger.warn('CIP-30 request rejected', {
+        method: request?.method || 'invalid',
+        dappId:
+          binding.guest.launch.kind === 'catalog'
+            ? binding.guest.launch.catalogEntryId
+            : 'diagnostics',
+        rejectionType: rejection.type,
+        rejectionCode:
+          rejection.type === 'api-error' ? rejection.value.code : undefined,
+      });
       return request
         ? createDappCip30RejectedEnvelope(request.method, rejection)
         : { status: 'rejected', rejection };

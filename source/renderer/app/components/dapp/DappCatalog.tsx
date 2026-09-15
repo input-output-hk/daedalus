@@ -80,6 +80,12 @@ export function DappCatalog({
                     <span className={styles.liqwidIcon} />
                   ) : entry.iconAsset === 'unfrack' ? (
                     <span className={styles.unfrackIcon} />
+                  ) : entry.iconAsset === 'strike' ? (
+                    <span className={styles.strikeIcon} />
+                  ) : entry.iconAsset === 'fluidtokens' ? (
+                    <span className={styles.fluidtokensIcon} />
+                  ) : entry.iconAsset === 'steelswap' ? (
+                    <span className={styles.steelswapIcon} />
                   ) : (
                     <span className={styles.fallbackIcon}>?</span>
                   )}

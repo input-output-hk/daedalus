@@ -605,6 +605,48 @@ describe('Cip30Broker', () => {
     fixture.cleanup();
   });
 
+  it('keeps a disconnected hardware wallet read-only until it reconnects', async () => {
+    const fixture = create();
+    fixture.setWalletKind('ledger');
+    fixture.setHardware(undefined);
+
+    await expect(
+      fixture.broker.handle(event, request('provider.enable'))
+    ).resolves.toMatchObject({ status: 'fulfilled' });
+    await expect(
+      fixture.broker.handle(event, request('api.getExtensions'))
+    ).resolves.toMatchObject({ status: 'fulfilled' });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, dataSignature.payload])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+    });
+
+    fixture.setHardware({
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'ledger:nanoSP:8.0.0:signData',
+      vendor: 'ledger',
+      model: 'nanoSP',
+      appVersion: '8.0.0',
+      certifiedExtensions: [95, 104],
+      physicalCertified: true,
+    });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, dataSignature.payload])
+      )
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: dataSignature.result,
+    });
+    fixture.cleanup();
+  });
+
   it('cuts over CIP-103 negotiation, signing, and submission together', async () => {
     const fixture = create();
     fixture.dispatch.mockRestore();

@@ -147,6 +147,25 @@ describe('CIP-30 extension engine', () => {
     ).toBe(95);
   });
 
+  it('allows disconnected hardware reads while requiring a device to sign', () => {
+    const capabilities = new CapabilityService(new ExtensionRegistry());
+    const disconnected = context({
+      walletKind: 'ledger',
+      device: undefined,
+    });
+
+    expect(capabilities.isBaseSupported(disconnected)).toBe(true);
+    expect(
+      capabilities.requireInvocation('api.getUtxos', [], disconnected)
+        .descriptor.path
+    ).toBe('api.getUtxos');
+    expect(
+      thrownBy(() =>
+        capabilities.requireInvocation('api.signTx', [], disconnected)
+      )
+    ).toEqual({ code: -3, info: 'Refused' });
+  });
+
   it('rechecks Proposed policy and exact hardware evidence at invocation', () => {
     const registry = new ExtensionRegistry();
     const capabilities = new CapabilityService(registry);
