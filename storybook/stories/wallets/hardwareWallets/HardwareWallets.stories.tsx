@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import WalletConnectDialog from '../../../../source/renderer/app/components/wallet/WalletConnectDialog';
 import HardwareWalletsWrapper from '../_utils/HardwareWalletsWrapper';
@@ -29,9 +28,14 @@ const trezorDevice = {
   path: null,
   firmwareVersion: MINIMAL_TREZOR_FIRMWARE_VERSION,
 };
-storiesOf('Wallets / Hardware Wallets', module)
-  .addDecorator(HardwareWalletsWrapper) // ====== Stories ======
-  .add('Hardware wallet connect Ledger step 1', () => (
+
+export default {
+  title: 'Wallets / Hardware Wallets',
+  decorators: [HardwareWalletsWrapper],
+};
+
+export const HardwareWalletConnectLedgerStep1 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
@@ -41,8 +45,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Ledger step 2', () => (
+  ),
+
+  name: 'Hardware wallet connect Ledger step 1',
+};
+
+export const HardwareWalletConnectLedgerStep2 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
@@ -52,8 +61,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Ledger step 3', () => (
+  ),
+
+  name: 'Hardware wallet connect Ledger step 2',
+};
+
+export const HardwareWalletConnectLedgerStep3 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
@@ -63,8 +77,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Ledger step 4', () => (
+  ),
+
+  name: 'Hardware wallet connect Ledger step 3',
+};
+
+export const HardwareWalletConnectLedgerStep4 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
@@ -74,8 +93,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Ledger step 5', () => (
+  ),
+
+  name: 'Hardware wallet connect Ledger step 4',
+};
+
+export const HardwareWalletConnectLedgerStep5 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
@@ -85,8 +109,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Trezor step 1', () => (
+  ),
+
+  name: 'Hardware wallet connect Ledger step 5',
+};
+
+export const HardwareWalletConnectTrezorStep1 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
@@ -96,8 +125,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Trezor step 2', () => (
+  ),
+
+  name: 'Hardware wallet connect Trezor step 1',
+};
+
+export const HardwareWalletConnectTrezorStep2 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
@@ -107,8 +141,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Trezor step 3', () => (
+  ),
+
+  name: 'Hardware wallet connect Trezor step 2',
+};
+
+export const HardwareWalletConnectTrezorStep3 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
@@ -118,8 +157,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Trezor step 4', () => (
+  ),
+
+  name: 'Hardware wallet connect Trezor step 3',
+};
+
+export const HardwareWalletConnectTrezorStep4 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
@@ -129,8 +173,13 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ))
-  .add('Hardware wallet connect Trezor step 5', () => (
+  ),
+
+  name: 'Hardware wallet connect Trezor step 4',
+};
+
+export const HardwareWalletConnectTrezorStep5 = {
+  render: () => (
     <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
@@ -140,4 +189,7 @@ storiesOf('Wallets / Hardware Wallets', module)
       onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
-  ));
+  ),
+
+  name: 'Hardware wallet connect Trezor step 5',
+};

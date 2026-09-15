@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
-import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import { applyEnvironmentOs } from '../../_support/environment';
 import SyncingConnectingMithrilPrompt from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt';
@@ -75,11 +74,18 @@ function ConfirmViewPrompt({
   );
 }
 
-storiesOf('Loading / Mithril / Mithril Partial Sync Dialogue', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
-  .add('Known Epochs Behind', (_args, context) => {
+export default {
+  title: 'Loading / Mithril / Mithril Partial Sync Dialogue',
+
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    ),
+  ],
+};
+
+export const KnownEpochsBehind = {
+  render: (_args, context) => {
     applyStoryOs(context);
     return (
       <SyncingConnectingMithrilPrompt
@@ -87,8 +93,11 @@ storiesOf('Loading / Mithril / Mithril Partial Sync Dialogue', module)
         behindByEpochs={behindByEpochsKnob()}
       />
     );
-  })
-  .add('Known Epochs Behind / Confirm View', (_args, context) => {
+  },
+};
+
+export const KnownEpochsBehindConfirmView = {
+  render: (_args, context) => {
     applyStoryOs(context);
     return (
       <ConfirmViewPrompt
@@ -96,16 +105,13 @@ storiesOf('Loading / Mithril / Mithril Partial Sync Dialogue', module)
         startFails={startFailsKnob()}
       />
     );
-  })
-  // Drives the container's real behind-ness derivation instead of a canned
-  // figure: computeBehindByEpochs anchors on the network tip when known and
-  // otherwise falls back to the Mithril certified snapshot epoch. With the
-  // defaults the snapshot is later than the local tip while no network tip has
-  // resolved yet (early sync / ledger replay), so the epochs figure comes from
-  // the snapshot; raise localTipEpoch to or past mithrilSnapshotEpoch and the
-  // prompt degrades to the "behind the blockchain tip" line (gap <= 0 never
-  // renders as a number).
-  .add('Snapshot Ahead Of Local Tip (Derived)', (_args, context) => {
+  },
+
+  name: 'Known Epochs Behind / Confirm View',
+};
+
+export const SnapshotAheadOfLocalTipDerived = {
+  render: (_args, context) => {
     applyStoryOs(context);
     const localTipEpoch = loadingNumberKnob('localTipEpoch', 412);
     const mithrilSnapshotEpoch = loadingNumberKnob('mithrilSnapshotEpoch', 512);
@@ -122,14 +128,25 @@ storiesOf('Loading / Mithril / Mithril Partial Sync Dialogue', module)
         )}
       />
     );
-  })
-  .add('Unknown Behind', (_args, context) => {
+  },
+
+  name: 'Snapshot Ahead Of Local Tip (Derived)',
+};
+
+export const UnknownBehind = {
+  render: (_args, context) => {
     applyStoryOs(context);
     return (
       <SyncingConnectingMithrilPrompt {...makePromptProps(startFailsKnob())} />
     );
-  })
-  .add('Unknown Behind / Confirm View', (_args, context) => {
+  },
+};
+
+export const UnknownBehindConfirmView = {
+  render: (_args, context) => {
     applyStoryOs(context);
     return <ConfirmViewPrompt startFails={startFailsKnob()} />;
-  });
+  },
+
+  name: 'Unknown Behind / Confirm View',
+};

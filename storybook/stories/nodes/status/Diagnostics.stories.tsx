@@ -1,7 +1,6 @@
 import React from 'react';
 import type { ComponentProps } from 'react';
 import { action } from '@storybook/addon-actions';
-import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import DaedalusDiagnostics from '../../../../source/renderer/app/components/status/DaedalusDiagnostics';
 import MithrilPartialSyncSection from '../../../../source/renderer/app/components/status/MithrilPartialSyncSection';
@@ -75,7 +74,6 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onForceCheckNetworkClock: action('onForceCheckNetworkClock'),
 };
 
-
 // Drives the section's real confirmation seam: mount it, then click the
 // single CTA button its recommendation view renders (no copy-text matching),
 // which runs showConfirmation() → setState({ isShowingConfirmation: true }).
@@ -102,13 +100,26 @@ function AutoOpenedPartialSyncConfirmation() {
   );
 }
 
-storiesOf('Nodes / Diagnostic', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
-  .add('Partial Sync CTA Blocked', () => <DaedalusDiagnostics {...baseProps} />)
-  .add('Partial Sync At Or Past Snapshot', () => (
-    <DaedalusDiagnostics {...baseProps} />
-  ))
-  .add('Partial Sync Confirmation', () => (
-    <AutoOpenedPartialSyncConfirmation />
-  ));
+export default {
+  title: 'Nodes / Diagnostic',
+  decorators: [(story) => <StoryDecorator>{story()}</StoryDecorator>],
+};
+
+export const PartialSyncCtaReady = {
+  render: () => <DaedalusDiagnostics {...baseProps} />,
+  name: 'Partial Sync CTA Ready',
+};
+
+export const PartialSyncCtaBlocked = {
+  render: () => <DaedalusDiagnostics {...baseProps} />,
+
+  name: 'Partial Sync CTA Blocked',
+};
+
+export const PartialSyncAtOrPastSnapshot = () => (
+  <DaedalusDiagnostics {...baseProps} />
+);
+
+export const PartialSyncConfirmation = () => (
+  <AutoOpenedPartialSyncConfirmation />
+);

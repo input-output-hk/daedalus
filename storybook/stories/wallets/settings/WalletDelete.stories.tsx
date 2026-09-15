@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 // Helpers
 import { defineMessages } from 'react-intl';
@@ -39,9 +38,14 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Instruction for recovery word on delete wallet dialog',
   },
 });
-storiesOf('Wallets / Settings', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
-  .add('Delete - Countdown', () => (
+
+export default {
+  title: 'Wallets / Settings',
+  decorators: [(story) => <StoryDecorator>{story()}</StoryDecorator>],
+};
+
+export const DeleteCountdown = {
+  render: () => (
     <div>
       <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
@@ -57,8 +61,13 @@ storiesOf('Wallets / Settings', module)
         isSubmitting={false}
       />
     </div>
-  ))
-  .add('Delete - Accepted & filled incorrectly', () => (
+  ),
+
+  name: 'Delete - Countdown',
+};
+
+export const DeleteAcceptedFilledIncorrectly = {
+  render: () => (
     <div>
       <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
@@ -74,8 +83,13 @@ storiesOf('Wallets / Settings', module)
         isSubmitting={false}
       />
     </div>
-  ))
-  .add('Delete - Accepted & filled correctly', () => (
+  ),
+
+  name: 'Delete - Accepted & filled incorrectly',
+};
+
+export const DeleteAcceptedFilledCorrectly = {
+  render: () => (
     <div>
       <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
@@ -91,8 +105,13 @@ storiesOf('Wallets / Settings', module)
         isSubmitting={false}
       />
     </div>
-  ))
-  .add('Delete - Accepted, filled correctly & submitting', () => (
+  ),
+
+  name: 'Delete - Accepted & filled correctly',
+};
+
+export const DeleteAcceptedFilledCorrectlySubmitting = {
+  render: () => (
     <div>
       <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
@@ -108,4 +127,7 @@ storiesOf('Wallets / Settings', module)
         isSubmitting
       />
     </div>
-  ));
+  ),
+
+  name: 'Delete - Accepted, filled correctly & submitting',
+};

@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 // Helpers
@@ -7,10 +6,13 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 // Components
 import WalletPublicKeyDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyDialog';
 
-storiesOf('Wallets / Settings', module)
-  .addDecorator(WalletsWrapper)
-  .addDecorator(withKnobs)
-  .add('Public Key - Spending Password', () => (
+export default {
+  title: 'Wallets / Settings',
+  decorators: [WalletsWrapper, withKnobs],
+};
+
+export const PublicKeySpendingPassword = {
+  render: () => (
     <WalletPublicKeyDialog
       onRevealPublicKey={action('onRevealPublicKey')}
       onClose={action('onCancel')}
@@ -19,4 +21,7 @@ storiesOf('Wallets / Settings', module)
       error={null}
       walletName={'Test Wallet'}
     />
-  ));
+  ),
+
+  name: 'Public Key - Spending Password',
+};

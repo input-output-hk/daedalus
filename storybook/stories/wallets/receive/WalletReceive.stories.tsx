@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { number, boolean, select } from '@storybook/addon-knobs';
 // Assets and helpers
@@ -16,10 +15,14 @@ const onToggleSubMenus = {
   listen: action('onToggleSubMenus:listen'),
   remove: action('onToggleSubMenus:remove'),
 };
-storiesOf('Wallets / Receive', module)
-  .addDecorator(WalletsWrapper)
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Receive - sequential', ({ locale }: { locale: string }) => {
+
+export default {
+  title: 'Wallets / Receive',
+  decorators: [WalletsWrapper],
+};
+
+export const ReceiveSequential = {
+  render: ({ locale }: { locale: string }) => {
     const showDialog = boolean('showDialog', false);
     return (
       <VerticalFlexContainer>
@@ -61,11 +64,14 @@ storiesOf('Wallets / Receive', module)
         )}
       </VerticalFlexContainer>
     );
-  })
-  .add(
-    'Receive - sequential with address verification',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-    ({ locale }: { locale: string }) => {
+  },
+
+  name: 'Receive - sequential',
+};
+
+export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
+  ReceiveSequentialWithAddressVerification = {
+    render: ({ locale }: { locale: string }) => {
       return (
         <VerticalFlexContainer>
           <WalletReceiveSequential
@@ -112,9 +118,13 @@ storiesOf('Wallets / Receive', module)
           />
         </VerticalFlexContainer>
       );
-    }
-  )
-  .add('Receive - random', () => {
+    },
+
+    name: 'Receive - sequential with address verification',
+  };
+
+export const ReceiveRandom = {
+  render: () => {
     const isSidebarExpanded = boolean('isSidebarExpanded', false);
     const walletHasPassword = boolean('walletHasPassword', false);
     const isSubmitting = boolean('isSubmitting', false);
@@ -143,4 +153,7 @@ storiesOf('Wallets / Receive', module)
         />
       </VerticalFlexContainer>
     );
-  });
+  },
+
+  name: 'Receive - random',
+};

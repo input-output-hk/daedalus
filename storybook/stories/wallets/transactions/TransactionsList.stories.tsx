@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -132,34 +131,40 @@ const getAsset = (
   assetName: string
 ): Asset | null | undefined => assetDetails[`${policyId}${assetName}`];
 
-/* eslint-disable consistent-return */
-storiesOf('Wallets / Transactions', module)
-  .addDecorator(withKnobs)
-  .addDecorator((getStory, props) => {
-    const transactionsOption = select(
-      'Transactions',
-      {
-        'Grouped by days': 'groupedByDays',
-        'Confirmed and pending transactions': 'confirmedAndPendingTransactions',
-        'Rendering many transactions': 'renderingManyTransactions',
-        'Unresolved income addresses': 'unresolvedIncomeAddresses',
-        'Without income addresses': 'withoutIncomeAddresses',
-        'With withdrawal addresses': 'withWithdrawalAddresses',
-      },
-      'groupedByDays'
-    );
-    return (
-      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-      <WalletsTransactionsWrapper
-        {...props}
-        transactionsOption={transactionsOption}
-        getStory={getStory}
-      />
-    );
-  })
-  .addDecorator(WalletsWrapper) // ====== Stories ======
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
-  .add('Transactions List', (_, props: Props) => {
+export default {
+  title: 'Wallets / Transactions',
+
+  decorators: [
+    withKnobs,
+    (getStory, props) => {
+      const transactionsOption = select(
+        'Transactions',
+        {
+          'Grouped by days': 'groupedByDays',
+          'Confirmed and pending transactions':
+            'confirmedAndPendingTransactions',
+          'Rendering many transactions': 'renderingManyTransactions',
+          'Unresolved income addresses': 'unresolvedIncomeAddresses',
+          'Without income addresses': 'withoutIncomeAddresses',
+          'With withdrawal addresses': 'withWithdrawalAddresses',
+        },
+        'groupedByDays'
+      );
+      return (
+        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+        <WalletsTransactionsWrapper
+          {...props}
+          transactionsOption={transactionsOption}
+          getStory={getStory}
+        />
+      );
+    },
+    WalletsWrapper,
+  ],
+};
+
+export const TransactionsList = {
+  render: (_, props: Props) => {
     const {
       defaultFilterOptions,
       filterOptions,
@@ -200,9 +205,11 @@ storiesOf('Wallets / Transactions', module)
         onCopyAssetParam={() => {}}
       />
     );
-  })
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
-  .add('Wallet Tokens Transactions List', (_, props: Props) => {
+  },
+};
+
+export const WalletTokensTransactionsList = {
+  render: (_, props: Props) => {
     const {
       defaultFilterOptions,
       filterOptions,
@@ -244,4 +251,5 @@ storiesOf('Wallets / Transactions', module)
         onCopyAssetParam={() => {}}
       />
     );
-  });
+  },
+};

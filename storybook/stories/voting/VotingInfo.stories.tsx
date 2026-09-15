@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -25,26 +24,47 @@ const votingInfo = {
   onExternalLinkClick: action('onExternalLinkClick'),
 };
 
-storiesOf('Voting / Voting Info', module)
-  .addDecorator((story) => (
-    <StoryDecorator>
-      <VerticalFlexContainer>
-        {story()}
-        <VotingFooterLinks />
-      </VerticalFlexContainer>
-    </StoryDecorator>
-  ))
-  .addDecorator(withKnobs) // ====== Stories ======
-  .add('Snapshot phase', () => (
-    <VotingInfo {...votingInfo} fundPhase={FundPhase.SNAPSHOT} />
-  ))
-  .add('Voting phase', () => (
-    <VotingInfo {...votingInfo} fundPhase={FundPhase.VOTING} />
-  ))
-  .add('Tallying phase', () => (
-    <VotingInfo {...votingInfo} fundPhase={FundPhase.TALLYING} />
-  ))
-  .add('Results phase', () => (
-    <VotingInfo {...votingInfo} fundPhase={FundPhase.RESULTS} />
-  ))
-  .add('API error', () => <VotingInfo {...votingInfo} fundPhase={null} />);
+export default {
+  title: 'Voting / Voting Info',
+
+  decorators: [
+    (story) => (
+      <StoryDecorator>
+        <VerticalFlexContainer>
+          {story()}
+          <VotingFooterLinks />
+        </VerticalFlexContainer>
+      </StoryDecorator>
+    ),
+    withKnobs,
+  ],
+};
+
+export const SnapshotPhase = {
+  render: () => <VotingInfo {...votingInfo} fundPhase={FundPhase.SNAPSHOT} />,
+
+  name: 'Snapshot phase',
+};
+
+export const VotingPhase = {
+  render: () => <VotingInfo {...votingInfo} fundPhase={FundPhase.VOTING} />,
+
+  name: 'Voting phase',
+};
+
+export const TallyingPhase = {
+  render: () => <VotingInfo {...votingInfo} fundPhase={FundPhase.TALLYING} />,
+
+  name: 'Tallying phase',
+};
+
+export const ResultsPhase = {
+  render: () => <VotingInfo {...votingInfo} fundPhase={FundPhase.RESULTS} />,
+
+  name: 'Results phase',
+};
+
+export const ApiError = {
+  render: () => <VotingInfo {...votingInfo} fundPhase={null} />,
+  name: 'API error',
+};

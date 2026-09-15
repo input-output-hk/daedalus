@@ -1,6 +1,5 @@
 import React from 'react';
 import { defineMessages, IntlProvider } from 'react-intl';
-import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number, text, date } from '@storybook/addon-knobs';
@@ -86,38 +85,50 @@ function WidgetPresentationBox({ children }) {
   return <div style={{ padding: 20 }}>{children}</div>;
 }
 
-storiesOf('Common / Widgets', module)
-  .addDecorator((story: any, context: any) => {
-    if (context.name === 'CountdownWidget') {
-      return story();
-    }
+export default {
+  title: 'Common / Widgets',
 
-    const onChangeAction = action('onChange');
-    const state = observable({
-      checked: false,
-      onChange: mobxAction((value, event) => {
-        state.checked = value;
-        onChangeAction(value, event);
-      }),
-    });
-    return (
-      <StoryDecorator propsForChildren={state}>
-        <StoryProvider>
-          <StoryLayout activeSidebarCategory={null} {...context}>
-            {story()}
-          </StoryLayout>
-        </StoryProvider>
-      </StoryDecorator>
-    );
-  })
-  .addDecorator(withKnobs) // ====== Stories ======
-  .add('CountdownWidget', () => (
+  decorators: [
+    (story: any, context: any) => {
+      if (context.name === 'CountdownWidget') {
+        return story();
+      }
+
+      const onChangeAction = action('onChange');
+      const state = observable({
+        checked: false,
+        onChange: mobxAction((value, event) => {
+          state.checked = value;
+          onChangeAction(value, event);
+        }),
+      });
+      return (
+        <StoryDecorator propsForChildren={state}>
+          <StoryProvider>
+            <StoryLayout activeSidebarCategory={null} {...context}>
+              {story()}
+            </StoryLayout>
+          </StoryProvider>
+        </StoryDecorator>
+      );
+    },
+    withKnobs,
+  ],
+};
+
+export const _CountdownWidget = {
+  render: () => (
     <CountdownWidget
       startDateTime={new Date(date('startDateTime')).toISOString()}
       format="DD-HH-mm-ss"
     />
-  ))
-  .add('InlineEditingInput', () => (
+  ),
+
+  name: 'CountdownWidget',
+};
+
+export const _InlineEditingInput = {
+  render: () => (
     <div>
       <div
         style={{
@@ -145,8 +156,13 @@ storiesOf('Common / Widgets', module)
         />
       </div>
     </div>
-  ))
-  .add('BigButtonForDialogs', (_, props) => (
+  ),
+
+  name: 'InlineEditingInput',
+};
+
+export const _BigButtonForDialogs = {
+  render: (_, props) => (
     <div>
       <div
         style={{
@@ -198,25 +214,49 @@ storiesOf('Common / Widgets', module)
         />
       </div>
     </div>
-  ))
-  .add('TinySwitch', () => <TinySwitch />)
-  .add('TinySwitch - short label', (_, props) => (
+  ),
+
+  name: 'BigButtonForDialogs',
+};
+
+export const _TinySwitch = {
+  render: () => <TinySwitch />,
+  name: 'TinySwitch',
+};
+
+export const TinySwitchShortLabel = {
+  render: (_, props) => (
     <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
-  ))
-  .add('ButtonLink', (_, props) => (
+  ),
+
+  name: 'TinySwitch - short label',
+};
+
+export const _ButtonLink = {
+  render: (_, props) => (
     <ButtonLink
       label={intl[props.locale].formatMessage(messages.save)}
       // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       onClick={action('onClick')}
     />
-  ))
-  .add('NormalSwitch', () => (
+  ),
+
+  name: 'ButtonLink',
+};
+
+export const _NormalSwitch = {
+  render: () => (
     <div>
       <NormalSwitch onChange={action('onChange')} />
       <NormalSwitch onChange={action('onChange')} checked />
     </div>
-  ))
-  .add('CollapsibleTextBlock', () => (
+  ),
+
+  name: 'NormalSwitch',
+};
+
+export const CollapsibleTextBlock = {
+  render: () => (
     <WidgetPresentationBox>
       <CollapsibleSection header="Lorem ipsum dolor sit amet">
         <p
@@ -243,14 +283,23 @@ storiesOf('Common / Widgets', module)
         </p>
       </CollapsibleSection>
     </WidgetPresentationBox>
-  ))
-  .add('Separator', () => (
-    <WidgetPresentationBox>
-      <Separator />
-    </WidgetPresentationBox>
-  ))
-  .add('VerticalSeparator', () => (
+  ),
+
+  name: 'CollapsibleTextBlock',
+};
+
+export const _Separator = () => (
+  <WidgetPresentationBox>
+    <Separator />
+  </WidgetPresentationBox>
+);
+
+export const _VerticalSeparator = {
+  render: () => (
     <WidgetPresentationBox>
       <VerticalSeparator />
     </WidgetPresentationBox>
-  ));
+  ),
+
+  name: 'VerticalSeparator',
+};

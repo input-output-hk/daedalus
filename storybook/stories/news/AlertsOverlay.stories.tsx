@@ -1,6 +1,5 @@
 import React from 'react';
 import { defineMessages, IntlProvider } from 'react-intl';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { select, withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -87,12 +86,18 @@ const getAlerts = (locale: string) => [
   }),
 ];
 
-storiesOf('News / Overlays', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    locale: string;}) =... Remove this comment to see the full error message
-  .add('Alerts', (_, props: { locale: string }) => (
+export default {
+  title: 'News / Overlays',
+
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    ),
+  ],
+};
+
+export const Alerts = {
+  render: (_, props: { locale: string }) => (
     <AlertsOverlay
       allAlertsCount={getAlerts(props.locale).length}
       alerts={getAlerts(props.locale)}
@@ -109,10 +114,16 @@ storiesOf('News / Overlays', module)
         dateOptionsIntl[props.locale][0].value
       )}
     />
-  ))
-  .add('RTS Recommendation', () => (
+  ),
+};
+
+export const RtsRecommendation = {
+  render: () => (
     <RTSFlagsRecommendationOverlay
       onConfirm={action('onConfirm')}
       onClose={action('onClose')}
     />
-  ));
+  ),
+
+  name: 'RTS Recommendation',
+};

@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -27,9 +26,13 @@ const getWallet = (
   },
 });
 
-storiesOf('Wallets / Import File', module)
-  .addDecorator(WalletsWrapper)
-  .add('Step 1 - Import File', () => (
+export default {
+  title: 'Wallets / Import File',
+  decorators: [WalletsWrapper],
+};
+
+export const Step1ImportFile = {
+  render: () => (
     <VerticalFlexContainer>
       <WalletImportFileDialog
         isSubmitting={false}
@@ -46,8 +49,13 @@ storiesOf('Wallets / Import File', module)
         onResetExportSourcePath={action('onResetExportSourcePath')}
       />
     </VerticalFlexContainer>
-  ))
-  .add('Step 2 - Wallets', () => {
+  ),
+
+  name: 'Step 1 - Import File',
+};
+
+export const Step2Wallets = {
+  render: () => {
     const statusSelect = select(
       '1st wallet status',
       WalletImportStatuses,
@@ -78,4 +86,7 @@ storiesOf('Wallets / Import File', module)
         />
       </VerticalFlexContainer>
     );
-  });
+  },
+
+  name: 'Step 2 - Wallets',
+};

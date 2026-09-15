@@ -1,6 +1,5 @@
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
-import { storiesOf } from '@storybook/react';
 import type { MithrilBootstrapStatus } from '../../../../source/common/types/watchdog.types';
 import StoryDecorator from '../../_support/StoryDecorator';
 import { ManagedMithrilBootstrap } from '../_support/mithrilHarness';
@@ -52,95 +51,99 @@ const makePercentKnob = (name: string, value: number) =>
     step: 1,
   });
 
-storiesOf('Loading / Mithril / Bootstrap', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
-  .add('Interactive Shell', () => {
-    const status = loadingRadiosKnob('status', statusOptions, 'decision');
-    const validationPreset = loadingSelectKnob(
-      'chainStorageValidationPreset',
-      validationPresetOptions,
-      'valid-custom'
-    );
-    const errorStage = loadingSelectKnob(
-      'errorStage',
-      errorStageOptions,
-      'download'
-    );
-    const selectedDigest = loadingSelectKnob(
-      'selectedSnapshot',
-      snapshotSelectionOptions,
-      'latest'
-    );
-    const snapshotDownloadPercent = makePercentKnob(
-      'snapshotDownloadPercent',
-      47
-    );
-    const ancillaryPercent = makePercentKnob('ancillaryPercent', 62);
-    const elapsedMinutes = loadingNumberKnob('elapsedMinutes', 18, {
-      range: true,
-      min: 0,
-      max: 180,
-      step: 1,
-    });
+export default {
+  title: 'Loading / Mithril / Bootstrap',
 
-    return (
-      <ManagedMithrilBootstrap
-        status={status}
-        snapshots={snapshots}
-        selectedDigest={selectedDigest === 'latest' ? null : selectedDigest}
-        initialStorageLocationConfirmed={loadingBooleanKnob(
-          'storageLocationConfirmed',
-          true
-        )}
-        customChainPath={textOrNull(
-          'customChainPath',
-          '/mnt/fast-ssd/daedalus-chain'
-        )}
-        defaultChainPath={defaultChainPath}
-        defaultChainStorageValidation={defaultChainStorageValidation}
-        latestSnapshotSize={snapshotSize}
-        isFetchingSnapshots={loadingBooleanKnob('isFetchingSnapshots', false)}
-        validationPreset={validationPreset}
-        availableSpaceBytes={Math.round(
-          loadingNumberKnob('availableSpaceGiB', 256) * 1024 * 1024 * 1024
-        )}
-        isChainStorageLoading={loadingBooleanKnob(
-          'isChainStorageLoading',
-          false
-        )}
-        filesDownloaded={Math.round(
-          snapshotFilesTotal * (snapshotDownloadPercent / 100)
-        )}
-        filesTotal={snapshotFilesTotal}
-        snapshotSizeBytes={snapshotSize}
-        ancillaryBytesDownloaded={Math.round(
-          ancillaryBytesTotal * (ancillaryPercent / 100)
-        )}
-        ancillaryBytesTotal={ancillaryBytesTotal}
-        ancillaryProgress={ancillaryPercent}
-        progressItems={getBootstrapProgressItems(status)}
-        bootstrapStartedAt={createBootstrapStartedAt(elapsedMinutes)}
-        error={getErrorPreset(errorStage)}
-      />
-    );
-  })
-  .add('Storage To Decision Routing', () => (
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    ),
+  ],
+};
+
+export const InteractiveShell = () => {
+  const status = loadingRadiosKnob('status', statusOptions, 'decision');
+  const validationPreset = loadingSelectKnob(
+    'chainStorageValidationPreset',
+    validationPresetOptions,
+    'valid-custom'
+  );
+  const errorStage = loadingSelectKnob(
+    'errorStage',
+    errorStageOptions,
+    'download'
+  );
+  const selectedDigest = loadingSelectKnob(
+    'selectedSnapshot',
+    snapshotSelectionOptions,
+    'latest'
+  );
+  const snapshotDownloadPercent = makePercentKnob(
+    'snapshotDownloadPercent',
+    47
+  );
+  const ancillaryPercent = makePercentKnob('ancillaryPercent', 62);
+  const elapsedMinutes = loadingNumberKnob('elapsedMinutes', 18, {
+    range: true,
+    min: 0,
+    max: 180,
+    step: 1,
+  });
+
+  return (
     <ManagedMithrilBootstrap
-      status="decision"
+      status={status}
       snapshots={snapshots}
-      selectedDigest={latestSnapshot.digest}
-      initialStorageLocationConfirmed={false}
-      customChainPath="/mnt/fast-ssd/daedalus-chain"
+      selectedDigest={selectedDigest === 'latest' ? null : selectedDigest}
+      initialStorageLocationConfirmed={loadingBooleanKnob(
+        'storageLocationConfirmed',
+        true
+      )}
+      customChainPath={textOrNull(
+        'customChainPath',
+        '/mnt/fast-ssd/daedalus-chain'
+      )}
       defaultChainPath={defaultChainPath}
       defaultChainStorageValidation={defaultChainStorageValidation}
       latestSnapshotSize={snapshotSize}
-      isFetchingSnapshots={false}
-      validationPreset="valid-custom"
-      availableSpaceBytes={256 * 1024 * 1024 * 1024}
+      isFetchingSnapshots={loadingBooleanKnob('isFetchingSnapshots', false)}
+      validationPreset={validationPreset}
+      availableSpaceBytes={Math.round(
+        loadingNumberKnob('availableSpaceGiB', 256) * 1024 * 1024 * 1024
+      )}
+      isChainStorageLoading={loadingBooleanKnob('isChainStorageLoading', false)}
+      filesDownloaded={Math.round(
+        snapshotFilesTotal * (snapshotDownloadPercent / 100)
+      )}
+      filesTotal={snapshotFilesTotal}
+      snapshotSizeBytes={snapshotSize}
+      ancillaryBytesDownloaded={Math.round(
+        ancillaryBytesTotal * (ancillaryPercent / 100)
+      )}
+      ancillaryBytesTotal={ancillaryBytesTotal}
+      ancillaryProgress={ancillaryPercent}
+      progressItems={getBootstrapProgressItems(status)}
+      bootstrapStartedAt={createBootstrapStartedAt(elapsedMinutes)}
+      error={getErrorPreset(errorStage)}
     />
-  ));
+  );
+};
+
+export const StorageToDecisionRouting = () => (
+  <ManagedMithrilBootstrap
+    status="decision"
+    snapshots={snapshots}
+    selectedDigest={latestSnapshot.digest}
+    initialStorageLocationConfirmed={false}
+    customChainPath="/mnt/fast-ssd/daedalus-chain"
+    defaultChainPath={defaultChainPath}
+    defaultChainStorageValidation={defaultChainStorageValidation}
+    latestSnapshotSize={snapshotSize}
+    isFetchingSnapshots={false}
+    validationPreset="valid-custom"
+    availableSpaceBytes={256 * 1024 * 1024 * 1024}
+  />
+);
 
 function textOrNull(name: string, value: string) {
   const nextValue = loadingSelectKnob(

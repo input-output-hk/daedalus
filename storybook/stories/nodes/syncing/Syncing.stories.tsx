@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { withKnobs } from '@storybook/addon-knobs';
 // Assets and helpers
 import StoryDecorator from '../../_support/StoryDecorator';
@@ -10,10 +9,16 @@ import {
   ConnectivityIssuesSyncingConnectingStory,
 } from './_support/SyncingConnecting';
 
-storiesOf('Nodes / Connecting and Loading', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  )) // ====== Stories ======
-  .add('Connecting', DefaultSyncingConnectingStory)
-  .add('Trouble Connecting', ConnectivityIssuesSyncingConnectingStory)
-  .add('Loading Wallet Data', LoadingWalletDataSyncingConnectingStory);
+export default {
+  title: 'Nodes / Connecting and Loading',
+
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    ),
+  ],
+};
+
+export const Connecting = DefaultSyncingConnectingStory;
+export const TroubleConnecting = ConnectivityIssuesSyncingConnectingStory;
+export const LoadingWalletData = LoadingWalletDataSyncingConnectingStory;

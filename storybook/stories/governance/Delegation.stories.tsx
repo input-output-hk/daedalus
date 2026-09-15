@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import {
   withKnobs,
@@ -438,147 +437,175 @@ const renderGovernanceConfirmationDialog = ({
   />
 );
 
-storiesOf('Governance / Delegation', module)
-  .addDecorator(governanceStoryDecorator)
-  .addDecorator(withKnobs)
-  .add(
-    'Connected flow',
-    withState(
-      {
-        activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
-        activeVotingRoute: ROUTES.GOVERNANCE.DELEGATE,
-        currentContentRoute: ROUTES.GOVERNANCE.DELEGATE,
-      },
-      (store) => {
-        const option = useCurrentVoteKnob();
-        const isVotingSection =
-          store.state.currentContentRoute.indexOf(ROUTES.VOTING.ROOT) === 0;
-        const activeVotingItem = VOTING_NAV_ITEMS.find(
-          ({ id }) => id === store.state.activeVotingRoute
-        );
+export default {
+  title: 'Governance / Delegation',
+  decorators: [governanceStoryDecorator, withKnobs],
+};
 
-        return (
-          <div style={CONNECTED_FLOW_STYLE}>
-            <SidebarLayout
-              sidebar={
-                <Sidebar
-                  menus={EMPTY_SIDEBAR_MENUS}
-                  categories={VOTING_SIDEBAR_CATEGORIES}
-                  activeSidebarCategory={store.state.activeSidebarCategory}
-                  isShowingSubMenus={false}
-                  pathname={store.state.currentContentRoute}
-                  network={TESTNET}
-                  onActivateCategory={(category) => {
-                    action('onActivateCategory')(category);
+export const ConnectedFlow = withState(
+  {
+    activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
+    activeVotingRoute: ROUTES.GOVERNANCE.DELEGATE,
+    currentContentRoute: ROUTES.GOVERNANCE.DELEGATE,
+  },
+  (store) => {
+    const option = useCurrentVoteKnob();
+    const isVotingSection =
+      store.state.currentContentRoute.indexOf(ROUTES.VOTING.ROOT) === 0;
+    const activeVotingItem = VOTING_NAV_ITEMS.find(
+      ({ id }) => id === store.state.activeVotingRoute
+    );
 
-                    if (category === ROUTES.GOVERNANCE.DELEGATE) {
-                      store.set({
-                        activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
-                        activeVotingRoute: ROUTES.GOVERNANCE.DELEGATE,
-                        currentContentRoute: ROUTES.GOVERNANCE.DELEGATE,
-                      });
-                      return;
-                    }
+    return (
+      <div style={CONNECTED_FLOW_STYLE}>
+        <SidebarLayout
+          sidebar={
+            <Sidebar
+              menus={EMPTY_SIDEBAR_MENUS}
+              categories={VOTING_SIDEBAR_CATEGORIES}
+              activeSidebarCategory={store.state.activeSidebarCategory}
+              isShowingSubMenus={false}
+              pathname={store.state.currentContentRoute}
+              network={TESTNET}
+              onActivateCategory={(category) => {
+                action('onActivateCategory')(category);
 
+                if (category === ROUTES.GOVERNANCE.DELEGATE) {
+                  store.set({
+                    activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
+                    activeVotingRoute: ROUTES.GOVERNANCE.DELEGATE,
+                    currentContentRoute: ROUTES.GOVERNANCE.DELEGATE,
+                  });
+                  return;
+                }
+
+                store.set({
+                  activeSidebarCategory: category,
+                  currentContentRoute: category,
+                });
+              }}
+              onAddWallet={action('onAddWallet')}
+              isShelleyActivated
+            />
+          }
+          topbar={<TopBar isShelleyActivated />}
+        >
+          <div style={FLOW_CONTENT_STYLE}>
+            {isVotingSection ? (
+              <div style={FLOW_SECTION_STYLE}>
+                <Navigation
+                  items={VOTING_NAV_ITEMS}
+                  activeItem={activeVotingItem?.label || 'Governance'}
+                  isActiveNavItem={(navItemId: string) =>
+                    navItemId === store.state.activeVotingRoute
+                  }
+                  onNavItemClick={(navItemId: string) => {
+                    action('onNavItemClick')(navItemId);
                     store.set({
-                      activeSidebarCategory: category,
-                      currentContentRoute: category,
+                      activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
+                      activeVotingRoute: navItemId,
+                      currentContentRoute: navItemId,
                     });
                   }}
-                  onAddWallet={action('onAddWallet')}
-                  isShelleyActivated
                 />
-              }
-              topbar={<TopBar isShelleyActivated />}
-            >
-              <div style={FLOW_CONTENT_STYLE}>
-                {isVotingSection ? (
-                  <div style={FLOW_SECTION_STYLE}>
-                    <Navigation
-                      items={VOTING_NAV_ITEMS}
-                      activeItem={activeVotingItem?.label || 'Governance'}
-                      isActiveNavItem={(navItemId: string) =>
-                        navItemId === store.state.activeVotingRoute
-                      }
-                      onNavItemClick={(navItemId: string) => {
-                        action('onNavItemClick')(navItemId);
-                        store.set({
-                          activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
-                          activeVotingRoute: navItemId,
-                          currentContentRoute: navItemId,
-                        });
-                      }}
-                    />
-                    {store.state.activeVotingRoute ===
-                    ROUTES.GOVERNANCE.DELEGATE
-                      ? renderGovernancePanel(option)
-                      : renderCatalystPanel()}
-                  </div>
-                ) : (
-                  renderNonVotingPlaceholder(store.state.activeSidebarCategory)
-                )}
+                {store.state.activeVotingRoute === ROUTES.GOVERNANCE.DELEGATE
+                  ? renderGovernancePanel(option)
+                  : renderCatalystPanel()}
               </div>
-            </SidebarLayout>
+            ) : (
+              renderNonVotingPlaceholder(store.state.activeSidebarCategory)
+            )}
           </div>
-        );
-      }
-    )
-  )
-  .add('Voting power delegation', () => {
+        </SidebarLayout>
+      </div>
+    );
+  }
+);
+
+ConnectedFlow.storyName = 'Connected flow';
+
+export const _VotingPowerDelegation = {
+  render: () => {
     const option = useCurrentVoteKnob();
     return (
       <div style={CENTERED_STORY_STYLE}>{renderGovernancePanel(option)}</div>
     );
-  })
-  .add('Voting power delegation - prefilled from directory', () =>
-    renderPrefilledPanel(useCurrentVoteKnob(), VALID_DREP_ID)
-  )
-  // The two changes of mind that cross vote kinds. A wallet on Abstain or No
-  // Confidence has a delegation already, so the panel above the form states
-  // one thing while the form below it proposes another, and those two have to
-  // read as one screen rather than as a contradiction. Neither was reachable
-  // before: the prefilled story took its current vote from the knob, and the
-  // knob's abstain settings left the form empty.
-  .add('Abstain to a DRep', () =>
-    renderPrefilledPanel('abstain', VERIFIED_CIP129)
-  )
-  .add('No Confidence to a DRep', () =>
-    renderPrefilledPanel('noConfidence', VERIFIED_CIP129)
-  )
-  // And the same two changes in reverse. The directory hands Abstain and No
-  // Confidence to this form as the selected id, the same way it hands over a
-  // DRep, so the form receives the literal strings 'abstain' and
-  // 'no_confidence' where it otherwise receives a bech32 identifier.
-  .add('DRep to Abstain', () => renderPrefilledPanel('drepVerified', 'abstain'))
-  .add('DRep to No Confidence', () =>
-    renderPrefilledPanel('drepVerified', 'no_confidence')
-  )
-  // Choosing what the wallet already has. The form refuses to submit and says
-  // so, and the sentence it says has a branch per vote kind, so both branches
-  // need somewhere to be read.
-  .add('Already delegated to this DRep', () =>
-    renderPrefilledPanel('drepVerified', VERIFIED_CIP129)
-  )
-  .add('Already delegated to Abstain', () =>
-    renderPrefilledPanel('abstain', 'abstain')
-  )
-  // One story per initialization error. The wallet is delegated to one DRep
-  // and the form holds a different one, so nothing on screen contradicts what
-  // the error says. Press Submit to see it.
-  .add('Initialization error - generic', () => renderErrorPanel('generic'))
-  .add('Initialization error - same vote', () => renderErrorPanel('same_vote'))
-  .add('Initialization error - no UTxOs', () =>
-    renderErrorPanel('no_utxos_available')
-  )
-  .add('Initialization error - not enough money', () =>
-    renderErrorPanel('not_enough_money')
-  )
-  // A wallet with no delegation at all. The current-delegation panel renders
-  // nothing here by design, so the form runs straight from the wallet select
-  // to the DRep selection, and the only thing that mentions rewards is the
-  // paragraph at the top of the page.
-  .add('Not delegated yet', () => renderPrefilledPanel('noDelegation'))
-  .add('Confirmation dialog - software wallet', () => {
+  },
+
+  name: 'Voting power delegation',
+};
+
+export const VotingPowerDelegationPrefilledFromDirectory = {
+  render: () => renderPrefilledPanel(useCurrentVoteKnob(), VALID_DREP_ID),
+
+  name: 'Voting power delegation - prefilled from directory',
+};
+
+export const AbstainToADRep = {
+  render: () => renderPrefilledPanel('abstain', VERIFIED_CIP129),
+
+  name: 'Abstain to a DRep',
+};
+
+export const NoConfidenceToADRep = {
+  render: () => renderPrefilledPanel('noConfidence', VERIFIED_CIP129),
+
+  name: 'No Confidence to a DRep',
+};
+
+export const DRepToAbstain = {
+  render: () => renderPrefilledPanel('drepVerified', 'abstain'),
+
+  name: 'DRep to Abstain',
+};
+
+export const DRepToNoConfidence = {
+  render: () => renderPrefilledPanel('drepVerified', 'no_confidence'),
+
+  name: 'DRep to No Confidence',
+};
+
+export const AlreadyDelegatedToThisDRep = {
+  render: () => renderPrefilledPanel('drepVerified', VERIFIED_CIP129),
+
+  name: 'Already delegated to this DRep',
+};
+
+export const AlreadyDelegatedToAbstain = {
+  render: () => renderPrefilledPanel('abstain', 'abstain'),
+
+  name: 'Already delegated to Abstain',
+};
+
+export const InitializationErrorGeneric = {
+  render: () => renderErrorPanel('generic'),
+  name: 'Initialization error - generic',
+};
+
+export const InitializationErrorSameVote = {
+  render: () => renderErrorPanel('same_vote'),
+  name: 'Initialization error - same vote',
+};
+
+export const InitializationErrorNoUTxOs = {
+  render: () => renderErrorPanel('no_utxos_available'),
+
+  name: 'Initialization error - no UTxOs',
+};
+
+export const InitializationErrorNotEnoughMoney = {
+  render: () => renderErrorPanel('not_enough_money'),
+
+  name: 'Initialization error - not enough money',
+};
+
+export const NotDelegatedYet = {
+  render: () => renderPrefilledPanel('noDelegation'),
+  name: 'Not delegated yet',
+};
+
+export const ConfirmationDialogSoftwareWallet = {
+  render: () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
     // Read while the story renders. Inside onSubmit they run only once a
     // transaction has been submitted, so addon-knobs never registers them and
@@ -618,26 +645,50 @@ storiesOf('Governance / Delegation', module)
         />
       </div>
     );
-  })
-  // Abstain and No Confidence reach this dialog exactly as a DRep does, and
-  // are the states most easily missed behind a knob.
-  .add('Hardware wallet - connecting', () =>
-    renderHardwareDialog(HwDeviceStatuses.CONNECTING)
-  )
-  .add('Hardware wallet - verifying', () =>
-    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION)
-  )
-  .add('Hardware wallet - verified', () =>
-    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED)
-  )
-  .add('Hardware wallet - verification failed', () =>
-    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED)
-  )
-  .add('Confirmation dialog - Abstain', () => renderSentinelDialog('abstain'))
-  .add('Confirmation dialog - No Confidence', () =>
-    renderSentinelDialog('no_confidence')
-  )
-  .add('Confirmation dialog - submission fails', () => {
+  },
+
+  name: 'Confirmation dialog - software wallet',
+};
+
+export const HardwareWalletConnecting = {
+  render: () => renderHardwareDialog(HwDeviceStatuses.CONNECTING),
+
+  name: 'Hardware wallet - connecting',
+};
+
+export const HardwareWalletVerifying = {
+  render: () => renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION),
+
+  name: 'Hardware wallet - verifying',
+};
+
+export const HardwareWalletVerified = {
+  render: () =>
+    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED),
+
+  name: 'Hardware wallet - verified',
+};
+
+export const HardwareWalletVerificationFailed = {
+  render: () =>
+    renderHardwareDialog(HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED),
+
+  name: 'Hardware wallet - verification failed',
+};
+
+export const ConfirmationDialogAbstain = {
+  render: () => renderSentinelDialog('abstain'),
+  name: 'Confirmation dialog - Abstain',
+};
+
+export const ConfirmationDialogNoConfidence = {
+  render: () => renderSentinelDialog('no_confidence'),
+
+  name: 'Confirmation dialog - No Confidence',
+};
+
+export const ConfirmationDialogSubmissionFails = {
+  render: () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
     const errorCode = select(
       'Submission error',
@@ -664,8 +715,13 @@ storiesOf('Governance / Delegation', module)
         />
       </div>
     );
-  })
-  .add('Confirmation dialog - hardware wallet', () => {
+  },
+
+  name: 'Confirmation dialog - submission fails',
+};
+
+export const ConfirmationDialogHardwareWallet = {
+  render: () => {
     const voteOption = select('Vote option', voteOptions, VALID_DREP_ID);
     return (
       <div style={CENTERED_STORY_STYLE}>
@@ -700,8 +756,13 @@ storiesOf('Governance / Delegation', module)
         />
       </div>
     );
-  })
-  .add('Unavailable while syncing', () => (
+  },
+
+  name: 'Confirmation dialog - hardware wallet',
+};
+
+export const UnavailableWhileSyncing = {
+  render: () => (
     <div style={CENTERED_STORY_STYLE}>
       <VotingUnavailable
         syncPercentage={number('Sync percentage', 62.45, {
@@ -711,4 +772,7 @@ storiesOf('Governance / Delegation', module)
         })}
       />
     </div>
-  ));
+  ),
+
+  name: 'Unavailable while syncing',
+};

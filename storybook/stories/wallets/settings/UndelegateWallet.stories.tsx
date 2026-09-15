@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
@@ -58,32 +57,37 @@ const selectedWallet = generateWallet(
   STAKE_POOLS[0]
 );
 
-storiesOf('Wallets / Settings', module)
-  .addDecorator(withKnobs)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
-  .add('Undelegate Wallet', () => (
-    <UndelegateWalletConfirmationDialog
-      selectedWallet={selectedWallet}
-      stakePoolName={text(
-        'UndelegateWalletConfirmationDialog: Stake Pool Name',
-        'Stake Pool Name'
-      )}
-      stakePoolTicker={text(
-        'UndelegateWalletConfirmationDialog: Stake Pool Ticker',
-        'Stake Pool Ticker'
-      )}
-      onConfirm={action('Undelegate Wallet - onConfirm')}
-      onCancel={action('Undelegate Wallet - onCancel')}
-      onExternalLinkClick={action('Undelegate Wallet - onExternalLinkClick')}
-      isSubmitting={boolean(
-        'Undelegate Wallet - submitting',
-        false,
-        undelegateWalletId
-      )}
-      error={null}
-      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-      fees={new BigNumber(10)}
-      hwDeviceStatus="ready"
-      isTrezor={boolean('isTrezor', false)}
-    />
-  ));
+export default {
+  title: 'Wallets / Settings',
+  decorators: [
+    withKnobs,
+    (story) => <StoryDecorator>{story()}</StoryDecorator>,
+  ],
+};
+
+export const UndelegateWallet = () => (
+  <UndelegateWalletConfirmationDialog
+    selectedWallet={selectedWallet}
+    stakePoolName={text(
+      'UndelegateWalletConfirmationDialog: Stake Pool Name',
+      'Stake Pool Name'
+    )}
+    stakePoolTicker={text(
+      'UndelegateWalletConfirmationDialog: Stake Pool Ticker',
+      'Stake Pool Ticker'
+    )}
+    onConfirm={action('Undelegate Wallet - onConfirm')}
+    onCancel={action('Undelegate Wallet - onCancel')}
+    onExternalLinkClick={action('Undelegate Wallet - onExternalLinkClick')}
+    isSubmitting={boolean(
+      'Undelegate Wallet - submitting',
+      false,
+      undelegateWalletId
+    )}
+    error={null}
+    // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+    fees={new BigNumber(10)}
+    hwDeviceStatus="ready"
+    isTrezor={boolean('isTrezor', false)}
+  />
+);

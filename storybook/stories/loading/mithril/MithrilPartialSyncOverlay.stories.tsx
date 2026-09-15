@@ -1,7 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
-import { storiesOf } from '@storybook/react';
 import type {
   MithrilPartialSyncError,
   MithrilPartialSyncStatus,
@@ -256,87 +255,108 @@ const interactiveErrorOptions = {
   Finalizing: 'finalizing',
 };
 
-storiesOf('Loading / Mithril / Partial Sync Overlay', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>
-      <LoadingOverlayStoryFrame>
-        {withKnobs(story, context)}
-      </LoadingOverlayStoryFrame>
-    </StoryDecorator>
-  ))
-  .add('Interactive', () => (
-    <MithrilPartialSyncOverlayStory
-      status={loadingRadiosKnob(
-        'status',
-        interactiveStatusOptions,
-        'converting'
-      )}
-      error={
-        interactiveErrorPresets[
-          loadingSelectKnob('errorPreset', interactiveErrorOptions, 'none')
-        ]
-      }
-      canRetry={loadingBooleanKnob('canRetry', false)}
-      canRestartNormally={loadingBooleanKnob('canRestartNormally', false)}
-      canWipeAndFullSync={loadingBooleanKnob('canWipeAndFullSync', false)}
-    />
-  ))
-  .add('Active Progress', () => (
-    <MithrilPartialSyncOverlayStory status="converting" />
-  ))
-  .add('Cancelled', () => (
-    <MithrilPartialSyncOverlayStory
-      status="cancelled"
-      error={cancelledError}
-      canRetry
-      canRestartNormally
-    />
-  ))
-  .add('Cancelling', () => (
-    <MithrilPartialSyncOverlayStory status="cancelling" />
-  ))
-  .add('Failed With Restart Allowed', () => (
-    <MithrilPartialSyncOverlayStory
-      status="failed"
-      error={restartAllowedError}
-      canRetry
-      canRestartNormally
-    />
-  ))
-  .add('Failed With Wipe-Only Recovery', () => (
+export default {
+  title: 'Loading / Mithril / Partial Sync Overlay',
+
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>
+        <LoadingOverlayStoryFrame>
+          {withKnobs(story, context)}
+        </LoadingOverlayStoryFrame>
+      </StoryDecorator>
+    ),
+  ],
+};
+
+export const Interactive = () => (
+  <MithrilPartialSyncOverlayStory
+    status={loadingRadiosKnob('status', interactiveStatusOptions, 'converting')}
+    error={
+      interactiveErrorPresets[
+        loadingSelectKnob('errorPreset', interactiveErrorOptions, 'none')
+      ]
+    }
+    canRetry={loadingBooleanKnob('canRetry', false)}
+    canRestartNormally={loadingBooleanKnob('canRestartNormally', false)}
+    canWipeAndFullSync={loadingBooleanKnob('canWipeAndFullSync', false)}
+  />
+);
+
+export const ActiveProgress = () => (
+  <MithrilPartialSyncOverlayStory status="converting" />
+);
+
+export const _Cancelled = () => (
+  <MithrilPartialSyncOverlayStory
+    status="cancelled"
+    error={cancelledError}
+    canRetry
+    canRestartNormally
+  />
+);
+
+export const _Cancelling = () => (
+  <MithrilPartialSyncOverlayStory status="cancelling" />
+);
+
+export const FailedWithRestartAllowed = () => (
+  <MithrilPartialSyncOverlayStory
+    status="failed"
+    error={restartAllowedError}
+    canRetry
+    canRestartNormally
+  />
+);
+
+export const FailedWithWipeOnlyRecovery = {
+  render: () => (
     <MithrilPartialSyncOverlayStory
       status="failed"
       error={wipeOnlyError}
       canWipeAndFullSync
     />
-  ))
-  .add('Completed', () => (
-    <MithrilPartialSyncOverlayStory
-      status="completed"
-      filesDownloaded={9}
-      filesTotal={9}
-      elapsedSeconds={845}
-      ancillaryComplete
-    />
-  ))
-  .add('Downloading File Count', () => (
-    <MithrilPartialSyncOverlayStory
-      status="downloading"
-      filesDownloaded={4}
-      filesTotal={9}
-    />
-  ))
-  .add('Download Progress Bar (Partial)', () => (
+  ),
+
+  name: 'Failed With Wipe-Only Recovery',
+};
+
+export const _Completed = () => (
+  <MithrilPartialSyncOverlayStory
+    status="completed"
+    filesDownloaded={9}
+    filesTotal={9}
+    elapsedSeconds={845}
+    ancillaryComplete
+  />
+);
+
+export const DownloadingFileCount = () => (
+  <MithrilPartialSyncOverlayStory
+    status="downloading"
+    filesDownloaded={4}
+    filesTotal={9}
+  />
+);
+
+export const DownloadProgressBarPartial = {
+  render: () => (
     <MithrilPartialSyncOverlayStory
       status="downloading"
       filesDownloaded={6}
       filesTotal={9}
     />
-  ))
-  .add('Stopping Node', () => (
-    <MithrilPartialSyncOverlayStory status="stopping-node" />
-  ))
-  .add('Failed - Downloading (All Recovery Actions)', () => (
+  ),
+
+  name: 'Download Progress Bar (Partial)',
+};
+
+export const StoppingNode = () => (
+  <MithrilPartialSyncOverlayStory status="stopping-node" />
+);
+
+export const FailedDownloadingAllRecoveryActions = {
+  render: () => (
     <MithrilPartialSyncOverlayStory
       status="failed"
       error={downloadingError}
@@ -344,8 +364,13 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       canRestartNormally
       canWipeAndFullSync
     />
-  ))
-  .add('Failed - Converting (All Recovery Actions)', () => (
+  ),
+
+  name: 'Failed - Downloading (All Recovery Actions)',
+};
+
+export const FailedConvertingAllRecoveryActions = {
+  render: () => (
     <MithrilPartialSyncOverlayStory
       status="failed"
       error={convertingError}
@@ -353,8 +378,13 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       canRestartNormally
       canWipeAndFullSync
     />
-  ))
-  .add('Failed - Installing (All Recovery Actions)', () => (
+  ),
+
+  name: 'Failed - Converting (All Recovery Actions)',
+};
+
+export const FailedInstallingAllRecoveryActions = {
+  render: () => (
     <MithrilPartialSyncOverlayStory
       status="failed"
       error={installingError}
@@ -362,8 +392,13 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       canRestartNormally
       canWipeAndFullSync
     />
-  ))
-  .add('Failed - Finalizing (All Recovery Actions)', () => (
+  ),
+
+  name: 'Failed - Installing (All Recovery Actions)',
+};
+
+export const FailedFinalizingAllRecoveryActions = {
+  render: () => (
     <MithrilPartialSyncOverlayStory
       status="failed"
       error={finalizingError}
@@ -371,8 +406,13 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
       canRestartNormally
       canWipeAndFullSync
     />
-  ))
-  .add('Completed - Finalize Failed (auto-plays)', () => (
+  ),
+
+  name: 'Failed - Finalizing (All Recovery Actions)',
+};
+
+export const CompletedFinalizeFailedAutoPlays = {
+  render: () => (
     <MithrilPartialSyncOverlayStory
       status="completed"
       filesDownloaded={9}
@@ -384,4 +424,7 @@ storiesOf('Loading / Mithril / Partial Sync Overlay', module)
         return Promise.reject(new Error('finalize failed'));
       }}
     />
-  ));
+  ),
+
+  name: 'Completed - Finalize Failed (auto-plays)',
+};

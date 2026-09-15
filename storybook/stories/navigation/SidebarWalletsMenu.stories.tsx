@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -65,24 +64,31 @@ const wallets = [
     hasNotification: false,
   },
 ];
-storiesOf('Navigation / Wallets Menu', module)
-  .addDecorator(withKnobs)
-  .addDecorator((story) => (
-    <StoryDecorator>
-      <StoryProvider>
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-        >
-          {story()}
-        </div>
-      </StoryProvider>
-    </StoryDecorator>
-  )) // // ====== Stories ======
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Empty', (props: { currentTheme: string }) => (
+
+export default {
+  title: 'Navigation / Wallets Menu',
+
+  decorators: [
+    withKnobs,
+    (story) => (
+      <StoryDecorator>
+        <StoryProvider>
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            {story()}
+          </div>
+        </StoryProvider>
+      </StoryDecorator>
+    ),
+  ],
+};
+
+export const Empty = {
+  render: (props: { currentTheme: string }) => (
     <SidebarWalletsMenu
       wallets={[]}
       onAddWallet={action('addWallet')}
@@ -94,9 +100,11 @@ storiesOf('Navigation / Wallets Menu', module)
       sortBy={WalletSortBy.Date}
       sortOrder={WalletSortOrder.Desc}
     />
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('With Wallets', (props: { currentTheme: string }) => (
+  ),
+};
+
+export const WithWallets = {
+  render: (props: { currentTheme: string }) => (
     <div
       style={{
         display: 'flex',
@@ -145,4 +153,5 @@ storiesOf('Navigation / Wallets Menu', module)
         />
       </div>
     </div>
-  ));
+  ),
+};

@@ -1,7 +1,6 @@
 import React from 'react';
 import type { ComponentProps } from 'react';
 import { action } from '@storybook/addon-actions';
-import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import MithrilPartialSyncConfirmation from '../../../../source/renderer/app/components/status/MithrilPartialSyncConfirmation';
 
@@ -29,19 +28,21 @@ const renderConfirmationStory = (
     );
   };
 
-storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Known Epochs Behind', renderConfirmationStory({ behindByEpochs: 42 }))
-  .add('Unknown Behind', renderConfirmationStory())
-  .add(
-    'At Or Past Snapshot',
-    renderConfirmationStory({ isAtOrPastSnapshot: true })
-  )
-  .add(
-    'Start Error',
-    renderConfirmationStory({
-      behindByEpochs: 42,
-      startError:
-        'Unable to start Mithril sync. Cardano node did not stop in time.',
-    })
-  );
+export default {
+  title: 'Nodes / Diagnostic / Mithril Partial Sync Confirmation',
+  decorators: [(story) => <StoryDecorator>{story()}</StoryDecorator>],
+};
+
+export const KnownEpochsBehind = renderConfirmationStory({
+  behindByEpochs: 42,
+});
+export const UnknownBehind = renderConfirmationStory();
+export const AtOrPastSnapshot = renderConfirmationStory({
+  isAtOrPastSnapshot: true,
+});
+
+export const StartError = renderConfirmationStory({
+  behindByEpochs: 42,
+  startError:
+    'Unable to start Mithril sync. Cardano node did not stop in time.',
+});

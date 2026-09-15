@@ -1,6 +1,5 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import { storiesOf } from '@storybook/react';
 import { boolean, number, select, text } from '@storybook/addon-knobs';
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
@@ -150,11 +149,13 @@ const walletAssets = assets.total.map((assetTotal) => {
   };
 });
 
-/* eslint-disable consistent-return */
-storiesOf('Wallets / Summary', module)
-  .addDecorator(WalletsWrapper)
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Wallet Summary', ({ locale }: { locale: string }) => {
+export default {
+  title: 'Wallets / Summary',
+  decorators: [WalletsWrapper],
+};
+
+export const _WalletSummary = {
+  render: ({ locale }: { locale: string }) => {
     const currencyState = select(
       'Currency state',
       {
@@ -255,4 +256,5 @@ storiesOf('Wallets / Summary', module)
         onViewAllButtonClick={action('onViewAllButtonClick')}
       />
     );
-  });
+  },
+};

@@ -1,10 +1,12 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import SplashNetworkFlight from '../../../../source/renderer/app/components/splash/SplashNetworkFlight';
 import StoryDecorator from '../../_support/StoryDecorator';
 
-storiesOf('Nodes / Splash Network Info', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Flight', () => (
-    <SplashNetworkFlight onClose={() => null} openExternalLink={() => null} />
-  ));
+export default {
+  title: 'Nodes / Splash Network Info',
+  decorators: [(story) => <StoryDecorator>{story()}</StoryDecorator>],
+};
+
+export const Flight = () => (
+  <SplashNetworkFlight onClose={() => null} openExternalLink={() => null} />
+);

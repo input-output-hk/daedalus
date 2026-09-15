@@ -1,12 +1,15 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import ExportWalletToFileDialog from '../../../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
-storiesOf('Wallets / Export to File', module)
-  .addDecorator(WalletsWrapper) // ====== Stories ======
-  .add('default', () => (
+export default {
+  title: 'Wallets / Export to File',
+  decorators: [WalletsWrapper],
+};
+
+export const Default = {
+  render: () => (
     <div>
       <ExportWalletToFileDialog
         walletName="Test Wallet"
@@ -16,8 +19,13 @@ storiesOf('Wallets / Export to File', module)
         onClose={action('onClose')}
       />
     </div>
-  ))
-  .add('submitting', () => (
+  ),
+
+  name: 'default',
+};
+
+export const Submitting = {
+  render: () => (
     <div>
       <ExportWalletToFileDialog
         walletName="Test Wallet"
@@ -27,8 +35,13 @@ storiesOf('Wallets / Export to File', module)
         onClose={action('onClose')}
       />
     </div>
-  ))
-  .add('spending password', () => (
+  ),
+
+  name: 'submitting',
+};
+
+export const SpendingPassword = {
+  render: () => (
     <div>
       <ExportWalletToFileDialog
         walletName="Test Wallet"
@@ -38,4 +51,7 @@ storiesOf('Wallets / Export to File', module)
         onClose={action('onClose')}
       />
     </div>
-  ));
+  ),
+
+  name: 'spending password',
+};

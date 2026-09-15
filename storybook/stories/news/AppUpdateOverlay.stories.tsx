@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { number, withKnobs, radios, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -7,11 +6,16 @@ import AppUpdateOverlay from '../../../source/renderer/app/components/appUpdate/
 import { update, version, availableAppVersion } from './_utils/fakeDataUpdate';
 import { rangeMap } from '../../../source/renderer/app/utils/numbers';
 
-storiesOf('News / Overlays', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .addDecorator(withKnobs)
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Update', (_, { locale }: { locale: string }) => {
+export default {
+  title: 'News / Overlays',
+  decorators: [
+    (story) => <StoryDecorator>{story()}</StoryDecorator>,
+    withKnobs,
+  ],
+};
+
+export const Update = {
+  render: (_, { locale }: { locale: string }) => {
     const scenario = radios(
       'Scenario',
       {
@@ -85,4 +89,5 @@ storiesOf('News / Overlays', module)
         installationProgress={installationProgress}
       />
     );
-  });
+  },
+};

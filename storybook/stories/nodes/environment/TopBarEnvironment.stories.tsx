@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean } from '@storybook/addon-knobs';
 import classNames from 'classnames';
@@ -113,31 +112,42 @@ const topBarProductionEnv = (currentTheme) => (
   </TopBar>
 );
 
-storiesOf('Nodes / Environment', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .addDecorator(withKnobs) // ====== Stories ======
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Testnet', (props: { currentTheme: string }) => (
+export default {
+  title: 'Nodes / Environment',
+
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+    withKnobs,
+  ],
+};
+
+export const Testnet = {
+  render: (props: { currentTheme: string }) => (
     <SidebarLayout
       topbar={topBarTestEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Staging', (props: { currentTheme: string }) => (
+  ),
+};
+
+export const Staging = {
+  render: (props: { currentTheme: string }) => (
     <SidebarLayout
       topbar={topBarStagingEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Production', (props: { currentTheme: string }) => (
+  ),
+};
+
+export const Production = {
+  render: (props: { currentTheme: string }) => (
     <SidebarLayout
       topbar={topBarProductionEnv(props.currentTheme)}
       sidebar={<noscript />}
     />
-  ));
+  ),
+};

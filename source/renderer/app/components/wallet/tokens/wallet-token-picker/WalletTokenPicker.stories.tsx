@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { withKnobs } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../../../../../../../storybook/stories/_support/StoryDecorator';
@@ -56,14 +55,22 @@ const assets = [
     uniqueId: generateHash(),
   },
 ];
-storiesOf('Wallets / Tokens', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .addDecorator(withKnobs)
-  .add('WalletTokenPicker', () => (
+
+export default {
+  title: 'Wallets / Tokens',
+
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+    withKnobs,
+  ],
+};
+
+export const _WalletTokenPicker = {
+  render: () => (
     <WalletTokenPicker
       assets={assets}
       walletName="My Wallet"
@@ -73,4 +80,7 @@ storiesOf('Wallets / Tokens', module)
       onAdd={() => {}}
       onCancel={() => {}}
     />
-  ));
+  ),
+
+  name: 'WalletTokenPicker',
+};

@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { boolean, withKnobs } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 // Screens
@@ -60,47 +59,55 @@ const WALLETS = [
 ];
 const activeWallet: Wallet = WALLETS[0];
 let walletPasswordIsOpen = false;
-storiesOf('Wallets / Set Password', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  ))
-  .add('Set Wallet Password', () => (
-    <>
-      <SetWalletPassword
-        isSetWalletPasswordDialogOpen={false}
-        onSetWalletPassword={() => {
-          walletPasswordIsOpen = !walletPasswordIsOpen;
-        }}
-      />
-      {boolean('isSetWalletPasswordDialogOpen', false) && (
-        <ChangeSpendingPasswordDialog
-          isSpendingPasswordSet={false}
-          currentPasswordValue={''}
-          newPasswordValue={''}
-          repeatedPasswordValue={''}
-          onSave={() => {}}
-          onCancel={() => {}}
-          onDataChange={() => {}}
-          isSubmitting={false}
-          error={undefined}
-          walletName={activeWallet.name}
-          currentLocale={'en-US'}
-        />
-      )}
-    </>
-  ))
-  .add('Change Wallet Password', () => (
-    <ChangeSpendingPasswordDialog
-      isSpendingPasswordSet
-      currentPasswordValue={''}
-      newPasswordValue={''}
-      repeatedPasswordValue={''}
-      onSave={() => {}}
-      onCancel={() => {}}
-      onDataChange={() => {}}
-      isSubmitting={false}
-      error={undefined}
-      walletName={activeWallet.name}
-      currentLocale={'en-US'}
+
+export default {
+  title: 'Wallets / Set Password',
+
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    ),
+  ],
+};
+
+export const _SetWalletPassword = () => (
+  <>
+    <SetWalletPassword
+      isSetWalletPasswordDialogOpen={false}
+      onSetWalletPassword={() => {
+        walletPasswordIsOpen = !walletPasswordIsOpen;
+      }}
     />
-  ));
+    {boolean('isSetWalletPasswordDialogOpen', false) && (
+      <ChangeSpendingPasswordDialog
+        isSpendingPasswordSet={false}
+        currentPasswordValue={''}
+        newPasswordValue={''}
+        repeatedPasswordValue={''}
+        onSave={() => {}}
+        onCancel={() => {}}
+        onDataChange={() => {}}
+        isSubmitting={false}
+        error={undefined}
+        walletName={activeWallet.name}
+        currentLocale={'en-US'}
+      />
+    )}
+  </>
+);
+
+export const ChangeWalletPassword = () => (
+  <ChangeSpendingPasswordDialog
+    isSpendingPasswordSet
+    currentPasswordValue={''}
+    newPasswordValue={''}
+    repeatedPasswordValue={''}
+    onSave={() => {}}
+    onCancel={() => {}}
+    onDataChange={() => {}}
+    isSubmitting={false}
+    error={undefined}
+    walletName={activeWallet.name}
+    currentLocale={'en-US'}
+  />
+);

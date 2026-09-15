@@ -1,6 +1,5 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, number } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -18,23 +17,32 @@ const asset = {
   recommendedDecimals: null,
   metadata: null,
 };
-storiesOf('Assets / AssetSettingsDialog', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .addDecorator(withKnobs) // ====== Stories ======
-  .add('Default', () => (
-    <AssetSettingsDialog
-      asset={asset}
-      // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { policyId: string; assetName: stri... Remove this comment to see the full error message
-      assetAmount={new BigNumber(number('assetAmount', 500))}
-      onSubmit={action('onSubmit')}
-      onCancel={action('onCancel')}
-    />
-  ))
-  .add('With recommended decimal precision', () => (
+
+export default {
+  title: 'Assets / AssetSettingsDialog',
+
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+    withKnobs,
+  ],
+};
+
+export const Default = () => (
+  <AssetSettingsDialog
+    asset={asset}
+    // @ts-ignore ts-migrate(2322) FIXME: Type '{ asset: { policyId: string; assetName: stri... Remove this comment to see the full error message
+    assetAmount={new BigNumber(number('assetAmount', 500))}
+    onSubmit={action('onSubmit')}
+    onCancel={action('onCancel')}
+  />
+);
+
+export const WithRecommendedDecimalPrecision = {
+  render: () => (
     <AssetSettingsDialog
       asset={{
         ...asset,
@@ -45,8 +53,13 @@ storiesOf('Assets / AssetSettingsDialog', module)
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}
     />
-  ))
-  .add('With recommended decimal precision (non-zero)', () => (
+  ),
+
+  name: 'With recommended decimal precision',
+};
+
+export const WithRecommendedDecimalPrecisionNonZero = {
+  render: () => (
     <AssetSettingsDialog
       asset={{
         ...asset,
@@ -58,4 +71,7 @@ storiesOf('Assets / AssetSettingsDialog', module)
       onSubmit={action('onSubmit')}
       onCancel={action('onCancel')}
     />
-  ));
+  ),
+
+  name: 'With recommended decimal precision (non-zero)',
+};

@@ -1,6 +1,5 @@
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
-import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
 import { ManagedMithrilDecisionView } from '../_support/mithrilHarness';
@@ -28,67 +27,75 @@ const snapshotSelectionOptions = {
   'Explicit Snapshot': explicitSnapshot.digest,
 };
 
-storiesOf('Loading / Mithril / Snapshot Picker', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>
-      <LoadingOverlayStoryFrame>
-        {withKnobs(story, context)}
-      </LoadingOverlayStoryFrame>
-    </StoryDecorator>
-  ))
-  .add('Interactive Decision View', () => {
-    const snapshotPreset = loadingRadiosKnob(
-      'snapshotPreset',
-      snapshotPresetOptions,
-      'multiple'
-    );
-    let availableSnapshots = snapshots;
+export default {
+  title: 'Loading / Mithril / Snapshot Picker',
 
-    if (snapshotPreset === 'none') {
-      availableSnapshots = [];
-    } else if (snapshotPreset === 'single') {
-      availableSnapshots = [latestSnapshot];
-    }
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>
+        <LoadingOverlayStoryFrame>
+          {withKnobs(story, context)}
+        </LoadingOverlayStoryFrame>
+      </StoryDecorator>
+    ),
+  ],
+};
 
-    const selectedDigest = loadingSelectKnob(
-      'selectedSnapshot',
-      snapshotSelectionOptions,
-      'latest'
-    );
+export const InteractiveDecisionView = () => {
+  const snapshotPreset = loadingRadiosKnob(
+    'snapshotPreset',
+    snapshotPresetOptions,
+    'multiple'
+  );
+  let availableSnapshots = snapshots;
 
-    return (
-      <ManagedMithrilDecisionView
-        snapshots={availableSnapshots}
-        selectedDigest={selectedDigest === 'latest' ? null : selectedDigest}
-        isFetchingSnapshots={loadingBooleanKnob('isFetchingSnapshots', false)}
-        customChainPath={
-          loadingBooleanKnob('showCustomChainPath', true)
-            ? loadingTextKnob('customChainPath', '/mnt/fast-ssd/daedalus-chain')
-            : null
-        }
-        defaultChainPath={defaultChainPath}
-        includeReturnToStorageAction={loadingBooleanKnob(
-          'includeReturnToStorageAction',
-          true
-        )}
-      />
-    );
-  })
-  .add('Loading Snapshots', () => (
+  if (snapshotPreset === 'none') {
+    availableSnapshots = [];
+  } else if (snapshotPreset === 'single') {
+    availableSnapshots = [latestSnapshot];
+  }
+
+  const selectedDigest = loadingSelectKnob(
+    'selectedSnapshot',
+    snapshotSelectionOptions,
+    'latest'
+  );
+
+  return (
     <ManagedMithrilDecisionView
-      snapshots={[]}
-      selectedDigest={null}
-      isFetchingSnapshots
-      customChainPath="/mnt/fast-ssd/daedalus-chain"
+      snapshots={availableSnapshots}
+      selectedDigest={selectedDigest === 'latest' ? null : selectedDigest}
+      isFetchingSnapshots={loadingBooleanKnob('isFetchingSnapshots', false)}
+      customChainPath={
+        loadingBooleanKnob('showCustomChainPath', true)
+          ? loadingTextKnob('customChainPath', '/mnt/fast-ssd/daedalus-chain')
+          : null
+      }
       defaultChainPath={defaultChainPath}
+      includeReturnToStorageAction={loadingBooleanKnob(
+        'includeReturnToStorageAction',
+        true
+      )}
     />
-  ))
-  .add('No Snapshots Available', () => (
-    <ManagedMithrilDecisionView
-      snapshots={[]}
-      selectedDigest={null}
-      isFetchingSnapshots={false}
-      customChainPath="/mnt/fast-ssd/daedalus-chain"
-      defaultChainPath={defaultChainPath}
-    />
-  ));
+  );
+};
+
+export const LoadingSnapshots = () => (
+  <ManagedMithrilDecisionView
+    snapshots={[]}
+    selectedDigest={null}
+    isFetchingSnapshots
+    customChainPath="/mnt/fast-ssd/daedalus-chain"
+    defaultChainPath={defaultChainPath}
+  />
+);
+
+export const NoSnapshotsAvailable = () => (
+  <ManagedMithrilDecisionView
+    snapshots={[]}
+    selectedDigest={null}
+    isFetchingSnapshots={false}
+    customChainPath="/mnt/fast-ssd/daedalus-chain"
+    defaultChainPath={defaultChainPath}
+  />
+);

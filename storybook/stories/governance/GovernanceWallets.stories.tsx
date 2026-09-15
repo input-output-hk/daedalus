@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -96,14 +95,30 @@ const render = (walletList: WalletDelegationSummary[]) => (
   </GovernanceShell>
 );
 
-storiesOf('Governance / Governance Center', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .add('Every delegation state', () => render(wallets))
-  .add('Nothing delegated yet', () =>
-    render(wallets.filter((w) => w.currentDRep == null))
-  )
-  .add('No wallets', () => render([]));
+export default {
+  title: 'Governance / Governance Center',
+
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+  ],
+};
+
+export const EveryDelegationState = {
+  render: () => render(wallets),
+  name: 'Every delegation state',
+};
+
+export const NothingDelegatedYet = {
+  render: () => render(wallets.filter((w) => w.currentDRep == null)),
+
+  name: 'Nothing delegated yet',
+};
+
+export const NoWallets = {
+  render: () => render([]),
+  name: 'No wallets',
+};

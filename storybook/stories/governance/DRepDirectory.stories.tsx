@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -375,196 +374,205 @@ const resolveDirectoryState = (
   }
 };
 
-// No layout decorator here: the Connected flow story below builds the sidebar
-// and top bar itself, and wrapping the file would nest a second set of chrome
-// inside the first.
-storiesOf('Governance / DRep Directory', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .addDecorator(withKnobs)
-  // Full-app integrated flow: sidebar (Governance category active) + top bar +
-  // the Governance "Directory" tab wrapping the live directory states. Mirrors
-  // the "Voting / Governance > Connected flow" exemplar.
-  .add(
-    'Connected flow',
-    withState(
-      {
-        activeSidebarCategory: ROUTES.GOVERNANCE.ROOT,
-        currentContentRoute: ROUTES.GOVERNANCE.DREPS,
-        favoriteDRepIds: [] as string[],
-      },
-      (store) => {
-        const isGovernanceSection =
-          store.state.currentContentRoute.indexOf(ROUTES.GOVERNANCE.ROOT) === 0;
-        const isVotingCenter =
-          store.state.currentContentRoute === ROUTES.GOVERNANCE.DASHBOARD;
-        const view =
-          store.state.currentContentRoute === ROUTES.GOVERNANCE.FAVORITES
-            ? ('favorites' as const)
-            : ('directory' as const);
-        const { refreshState, entries, error } = resolveDirectoryState(
-          select('Directory state', DIRECTORY_STATE_OPTIONS, 'loaded')
-        );
+export default {
+  title: 'Governance / DRep Directory',
 
-        return (
-          <div style={CONNECTED_FLOW_STYLE}>
-            <SidebarLayout
-              sidebar={
-                <Sidebar
-                  menus={EMPTY_SIDEBAR_MENUS}
-                  categories={GOVERNANCE_SIDEBAR_CATEGORIES}
-                  activeSidebarCategory={store.state.activeSidebarCategory}
-                  isShowingSubMenus={false}
-                  pathname={store.state.currentContentRoute}
-                  network={TESTNET}
-                  onActivateCategory={(category) => {
-                    action('onActivateCategory')(category);
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+    withKnobs,
+  ],
+};
 
-                    if (category === ROUTES.GOVERNANCE.ROOT) {
-                      store.set({
-                        activeSidebarCategory: ROUTES.GOVERNANCE.ROOT,
-                        currentContentRoute: ROUTES.GOVERNANCE.DREPS,
-                      });
-                      return;
-                    }
+export const ConnectedFlow = withState(
+  {
+    activeSidebarCategory: ROUTES.GOVERNANCE.ROOT,
+    currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+    favoriteDRepIds: [] as string[],
+  },
+  (store) => {
+    const isGovernanceSection =
+      store.state.currentContentRoute.indexOf(ROUTES.GOVERNANCE.ROOT) === 0;
+    const isVotingCenter =
+      store.state.currentContentRoute === ROUTES.GOVERNANCE.DASHBOARD;
+    const view =
+      store.state.currentContentRoute === ROUTES.GOVERNANCE.FAVORITES
+        ? ('favorites' as const)
+        : ('directory' as const);
+    const { refreshState, entries, error } = resolveDirectoryState(
+      select('Directory state', DIRECTORY_STATE_OPTIONS, 'loaded')
+    );
 
-                    store.set({
-                      activeSidebarCategory: category,
-                      currentContentRoute: category,
-                    });
-                  }}
-                  onAddWallet={action('onAddWallet')}
-                  isShelleyActivated
-                />
+    return (
+      <div style={CONNECTED_FLOW_STYLE}>
+        <SidebarLayout
+          sidebar={
+            <Sidebar
+              menus={EMPTY_SIDEBAR_MENUS}
+              categories={GOVERNANCE_SIDEBAR_CATEGORIES}
+              activeSidebarCategory={store.state.activeSidebarCategory}
+              isShowingSubMenus={false}
+              pathname={store.state.currentContentRoute}
+              network={TESTNET}
+              onActivateCategory={(category) => {
+                action('onActivateCategory')(category);
+
+                if (category === ROUTES.GOVERNANCE.ROOT) {
+                  store.set({
+                    activeSidebarCategory: ROUTES.GOVERNANCE.ROOT,
+                    currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+                  });
+                  return;
+                }
+
+                store.set({
+                  activeSidebarCategory: category,
+                  currentContentRoute: category,
+                });
+              }}
+              onAddWallet={action('onAddWallet')}
+              isShelleyActivated
+            />
+          }
+          topbar={<TopBar isShelleyActivated />}
+        >
+          {/* The shipping layout, not an arrangement that resembles it.
+              Assembling the tabs and the page by hand here left the
+              windowed lists without the scrolling element that layout
+              publishes, so show-all rendered its first screen of cards and
+              then never learned that anyone had scrolled. */}
+          {isGovernanceSection ? (
+            <GovernanceWithNavigation
+              items={GOVERNANCE_TABS}
+              activeItem={store.state.currentContentRoute}
+              isActiveNavItem={(navItemId: string) =>
+                navItemId === store.state.currentContentRoute
               }
-              topbar={<TopBar isShelleyActivated />}
+              onNavItemClick={(navItemId: string) => {
+                action('onNavItemClick')(navItemId);
+                store.set({ currentContentRoute: navItemId });
+              }}
             >
-              {/* The shipping layout, not an arrangement that resembles it.
-                  Assembling the tabs and the page by hand here left the
-                  windowed lists without the scrolling element that layout
-                  publishes, so show-all rendered its first screen of cards and
-                  then never learned that anyone had scrolled. */}
-              {isGovernanceSection ? (
-                <GovernanceWithNavigation
-                  items={GOVERNANCE_TABS}
-                  activeItem={store.state.currentContentRoute}
-                  isActiveNavItem={(navItemId: string) =>
-                    navItemId === store.state.currentContentRoute
+              {isVotingCenter ? (
+                <GovernanceWallets
+                  wallets={CONNECTED_FLOW_WALLETS}
+                  favoriteDRepIds={new Set(store.state.favoriteDRepIds)}
+                  totalDRepStake={TOTAL_DREP_STAKE}
+                  onToggleFavorite={action('onToggleFavorite')}
+                  onChangeDelegation={action('onChangeDelegation')}
+                  onChooseDRep={() =>
+                    store.set({
+                      currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+                    })
                   }
-                  onNavItemClick={(navItemId: string) => {
-                    action('onNavItemClick')(navItemId);
-                    store.set({ currentContentRoute: navItemId });
-                  }}
-                >
-                  {isVotingCenter ? (
-                    <GovernanceWallets
-                      wallets={CONNECTED_FLOW_WALLETS}
-                      favoriteDRepIds={new Set(store.state.favoriteDRepIds)}
-                      totalDRepStake={TOTAL_DREP_STAKE}
-                      onToggleFavorite={action('onToggleFavorite')}
-                      onChangeDelegation={action('onChangeDelegation')}
-                      onChooseDRep={() =>
-                        store.set({
-                          currentContentRoute: ROUTES.GOVERNANCE.DREPS,
-                        })
-                      }
-                      onViewDetails={action('onViewDetails')}
-                    />
-                  ) : (
-                    renderDirectory(
-                      refreshState,
-                      entries,
-                      error,
-                      DEFAULT_SYNC_STATE,
-                      {
-                        // Without this the directory's "all" list was the
-                        // cohort, so showing all showed the same twenty.
-                        allDReps: POPULATION,
-                        view,
-                        favoriteDRepIds: new Set(store.state.favoriteDRepIds),
-                        onToggleFavorite: (drepId: string) => {
-                          action('onToggleFavorite')(drepId);
-                          store.set({
-                            favoriteDRepIds:
-                              store.state.favoriteDRepIds.includes(drepId)
-                                ? store.state.favoriteDRepIds.filter(
-                                    (id) => id !== drepId
-                                  )
-                                : [...store.state.favoriteDRepIds, drepId],
-                          });
-                        },
-                        onBackToDirectory: () =>
-                          store.set({
-                            currentContentRoute: ROUTES.GOVERNANCE.DREPS,
-                          }),
-                      }
-                    )
-                  )}
-                </GovernanceWithNavigation>
+                  onViewDetails={action('onViewDetails')}
+                />
               ) : (
-                renderNonGovernancePlaceholder(
-                  store.state.activeSidebarCategory
+                renderDirectory(
+                  refreshState,
+                  entries,
+                  error,
+                  DEFAULT_SYNC_STATE,
+                  {
+                    // Without this the directory's "all" list was the
+                    // cohort, so showing all showed the same twenty.
+                    allDReps: POPULATION,
+                    view,
+                    favoriteDRepIds: new Set(store.state.favoriteDRepIds),
+                    onToggleFavorite: (drepId: string) => {
+                      action('onToggleFavorite')(drepId);
+                      store.set({
+                        favoriteDRepIds: store.state.favoriteDRepIds.includes(
+                          drepId
+                        )
+                          ? store.state.favoriteDRepIds.filter(
+                              (id) => id !== drepId
+                            )
+                          : [...store.state.favoriteDRepIds, drepId],
+                      });
+                    },
+                    onBackToDirectory: () =>
+                      store.set({
+                        currentContentRoute: ROUTES.GOVERNANCE.DREPS,
+                      }),
+                  }
                 )
               )}
-            </SidebarLayout>
-          </div>
-        );
-      }
-    )
-  )
-  // The cohort is drawn here by the shipping selection, out of the shared
-  // population, under criteria the panel can change and a seed the reroll
-  // button steps. Nothing about the suggestion is hand-picked.
-  .add(
-    'Loaded',
-    withState({ criteria: DEFAULT_DREP_COHORT_CRITERIA, seed: 1 }, (store) => {
-      const pool = selectDRepCohortPool(
-        POPULATION,
-        store.state.criteria,
-        TOTAL_DREP_STAKE
-      );
-      const cohort = drawDRepCohort(pool, store.state.seed);
+            </GovernanceWithNavigation>
+          ) : (
+            renderNonGovernancePlaceholder(store.state.activeSidebarCategory)
+          )}
+        </SidebarLayout>
+      </div>
+    );
+  }
+);
 
-      return renderCentered(
-        GovernanceRefreshState.Loaded,
-        cohort,
-        null,
-        DEFAULT_SYNC_STATE,
-        {
-          allDReps: POPULATION,
-          cohortCriteria: store.state.criteria,
-          onCohortCriteriaChange: (criteria) => store.set({ criteria }),
-          relaxedCohortCriteria: pool.relaxed,
-          onReroll: () =>
-            store.set({
-              seed: nextDistinctDRepCohortSeed(
-                pool,
-                store.state.seed,
-                new Set(cohort.map((entry) => entry.drepId))
-              ),
-            }),
-        }
-      );
-    })
-  )
-  .add('Empty', () => renderCentered(GovernanceRefreshState.Loaded, []))
-  .add('Error', () =>
-    renderCentered(GovernanceRefreshState.Failed, [], SOCKET_ERROR)
-  )
-  .add('Selfnode unavailable', () =>
-    renderCentered(GovernanceRefreshState.Failed, [], SELFNODE_ERROR)
-  )
-  .add('Loading', () => renderCentered(GovernanceRefreshState.Loading, []))
-  .add('Refreshing', () =>
-    renderCentered(GovernanceRefreshState.Refreshing, baseEntries)
-  )
-  .add('Refresh failed — retained snapshot', () =>
-    renderCentered(GovernanceRefreshState.Loaded, baseEntries, TIMEOUT_ERROR)
-  )
-  .add('Node syncing', () =>
+ConnectedFlow.storyName = 'Connected flow';
+
+export const _Loaded = withState(
+  { criteria: DEFAULT_DREP_COHORT_CRITERIA, seed: 1 },
+  (store) => {
+    const pool = selectDRepCohortPool(
+      POPULATION,
+      store.state.criteria,
+      TOTAL_DREP_STAKE
+    );
+    const cohort = drawDRepCohort(pool, store.state.seed);
+
+    return renderCentered(
+      GovernanceRefreshState.Loaded,
+      cohort,
+      null,
+      DEFAULT_SYNC_STATE,
+      {
+        allDReps: POPULATION,
+        cohortCriteria: store.state.criteria,
+        onCohortCriteriaChange: (criteria) => store.set({ criteria }),
+        relaxedCohortCriteria: pool.relaxed,
+        onReroll: () =>
+          store.set({
+            seed: nextDistinctDRepCohortSeed(
+              pool,
+              store.state.seed,
+              new Set(cohort.map((entry) => entry.drepId))
+            ),
+          }),
+      }
+    );
+  }
+);
+
+export const _Empty = () => renderCentered(GovernanceRefreshState.Loaded, []);
+
+export const _Error = () =>
+  renderCentered(GovernanceRefreshState.Failed, [], SOCKET_ERROR);
+
+export const SelfnodeUnavailable = {
+  render: () =>
+    renderCentered(GovernanceRefreshState.Failed, [], SELFNODE_ERROR),
+
+  name: 'Selfnode unavailable',
+};
+
+export const _Loading = () =>
+  renderCentered(GovernanceRefreshState.Loading, []);
+
+export const _Refreshing = () =>
+  renderCentered(GovernanceRefreshState.Refreshing, baseEntries);
+
+export const RefreshFailedRetainedSnapshot = {
+  render: () =>
+    renderCentered(GovernanceRefreshState.Loaded, baseEntries, TIMEOUT_ERROR),
+
+  name: 'Refresh failed — retained snapshot',
+};
+
+export const NodeSyncing = {
+  render: () =>
     renderCentered(GovernanceRefreshState.Loaded, baseEntries, null, {
       isNodeInSync: false,
       syncProgress: number('Sync progress (%)', 87, {
@@ -573,9 +581,13 @@ storiesOf('Governance / DRep Directory', module)
         range: true,
         step: 1,
       }),
-    })
-  )
-  .add('Node syncing — empty fallback', () =>
+    }),
+
+  name: 'Node syncing',
+};
+
+export const NodeSyncingEmptyFallback = {
+  render: () =>
     renderCentered(GovernanceRefreshState.Loaded, [], null, {
       isNodeInSync: false,
       syncProgress: number('Sync progress (%)', 87, {
@@ -584,54 +596,63 @@ storiesOf('Governance / DRep Directory', module)
         range: true,
         step: 1,
       }),
-    })
-  )
-  // Voting power is what goes missing when the stake distribution fails to
-  // load; the directory has no ranking of its own to lose.
-  .add('Voting power unavailable', () =>
+    }),
+
+  name: 'Node syncing — empty fallback',
+};
+
+export const VotingPowerUnavailable = {
+  render: () =>
     renderCentered(
       GovernanceRefreshState.Loaded,
       baseEntries.map((entry) => ({ ...entry, votingPower: null }))
-    )
-  )
-  // Show-all over a full population: the list windows rather than paging, and
-  // the mix is mainnet's rather than a set chosen to look tidy.
-  .add('Show all — full population', () =>
+    ),
+
+  name: 'Voting power unavailable',
+};
+
+export const ShowAllFullPopulation = {
+  render: () =>
     renderCentered(
       GovernanceRefreshState.Loaded,
       POPULATION_COHORT,
       null,
       DEFAULT_SYNC_STATE,
       { allDReps: POPULATION }
-    )
+    ),
+
+  name: 'Show all — full population',
+};
+
+export const FavoriteToggle = withState(
+  { favoriteDRepIds: [baseEntries[0].drepId] },
+  (store) => (
+    <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
+      {renderDirectory(
+        GovernanceRefreshState.Loaded,
+        baseEntries,
+        null,
+        DEFAULT_SYNC_STATE,
+        {
+          favoriteDRepIds: new Set(store.state.favoriteDRepIds),
+          onToggleFavorite: (drepId: string) => {
+            action('onToggleFavorite')(drepId);
+            store.set({
+              favoriteDRepIds: store.state.favoriteDRepIds.includes(drepId)
+                ? store.state.favoriteDRepIds.filter((id) => id !== drepId)
+                : [...store.state.favoriteDRepIds, drepId],
+            });
+          },
+        }
+      )}
+    </GovernanceShell>
   )
-  .add(
-    'Favorite toggle',
-    withState({ favoriteDRepIds: [baseEntries[0].drepId] }, (store) => (
-      <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
-        {renderDirectory(
-          GovernanceRefreshState.Loaded,
-          baseEntries,
-          null,
-          DEFAULT_SYNC_STATE,
-          {
-            favoriteDRepIds: new Set(store.state.favoriteDRepIds),
-            onToggleFavorite: (drepId: string) => {
-              action('onToggleFavorite')(drepId);
-              store.set({
-                favoriteDRepIds: store.state.favoriteDRepIds.includes(drepId)
-                  ? store.state.favoriteDRepIds.filter((id) => id !== drepId)
-                  : [...store.state.favoriteDRepIds, drepId],
-              });
-            },
-          }
-        )}
-      </GovernanceShell>
-    ))
-  )
-  // Review item 2: the cohort is a random twenty, so a favorite is usually not
-  // in it. Pinned above, they are reachable without switching to Show All.
-  .add('Pinned favorites above the cohort', () => {
+);
+
+FavoriteToggle.storyName = 'Favorite toggle';
+
+export const PinnedFavoritesAboveTheCohort = {
+  render: () => {
     const pinned = buildEntry(101);
     return (
       <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
@@ -647,8 +668,13 @@ storiesOf('Governance / DRep Directory', module)
         )}
       </GovernanceShell>
     );
-  })
-  .add('Pinned favorites — favorite already in the cohort', () => (
+  },
+
+  name: 'Pinned favorites above the cohort',
+};
+
+export const PinnedFavoritesFavoriteAlreadyInTheCohort = {
+  render: () => (
     <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
       {renderDirectory(
         GovernanceRefreshState.Loaded,
@@ -661,10 +687,13 @@ storiesOf('Governance / DRep Directory', module)
         }
       )}
     </GovernanceShell>
-  ))
-  // The table mirrors the stake pools list view: same choice, same default.
-  // Toggle it with the control in the filter row.
-  .add('Table view', () => (
+  ),
+
+  name: 'Pinned favorites — favorite already in the cohort',
+};
+
+export const TableView = {
+  render: () => (
     <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
       {renderDirectory(
         GovernanceRefreshState.Loaded,
@@ -674,8 +703,13 @@ storiesOf('Governance / DRep Directory', module)
         { allDReps: POPULATION, listViewMode: 'table' }
       )}
     </GovernanceShell>
-  ))
-  .add('Favorites view', () => (
+  ),
+
+  name: 'Table view',
+};
+
+export const FavoritesView = {
+  render: () => (
     <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
       {renderDirectory(
         GovernanceRefreshState.Loaded,
@@ -688,8 +722,13 @@ storiesOf('Governance / DRep Directory', module)
         }
       )}
     </GovernanceShell>
-  ))
-  .add('Favorites view — empty', () => (
+  ),
+
+  name: 'Favorites view',
+};
+
+export const FavoritesViewEmpty = {
+  render: () => (
     <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
       {renderDirectory(
         GovernanceRefreshState.Loaded,
@@ -699,10 +738,13 @@ storiesOf('Governance / DRep Directory', module)
         { view: 'favorites' }
       )}
     </GovernanceShell>
-  ))
-  // The favorites treatment for a real verified doNotList entry: status badge
-  // plus inline caption, never an auto-purge.
-  .add('Favorites view — stale favorite', () => (
+  ),
+
+  name: 'Favorites view — empty',
+};
+
+export const FavoritesViewStaleFavorite = {
+  render: () => (
     <GovernanceShell activeTab={ROUTES.GOVERNANCE.DREPS}>
       {renderDirectory(
         GovernanceRefreshState.Loaded,
@@ -715,16 +757,20 @@ storiesOf('Governance / DRep Directory', module)
         }
       )}
     </GovernanceShell>
-  ))
-  // Search shown where it happens: the whole directory, with a query already
-  // in the box. A bare results list left out the search field, the label above
-  // the results and the controls that a user actually reaches search through.
-  .add('Search results', () =>
+  ),
+
+  name: 'Favorites view — stale favorite',
+};
+
+export const SearchResults = {
+  render: () =>
     renderCentered(
       GovernanceRefreshState.Loaded,
       dualIdEntries,
       null,
       DEFAULT_SYNC_STATE,
       { initialSearchQuery: 'Cardano' }
-    )
-  );
+    ),
+
+  name: 'Search results',
+};

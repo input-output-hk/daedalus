@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -290,9 +289,13 @@ const selectedAsset = {
   update: () => {},
 };
 
-storiesOf('Wallets / Send', module)
-  .addDecorator(WalletsWrapper)
-  .add('Send - Send screen', () => (
+export default {
+  title: 'Wallets / Send',
+  decorators: [WalletsWrapper],
+};
+
+export const SendSendScreen = {
+  render: () => (
     <WalletSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -321,8 +324,13 @@ storiesOf('Wallets / Send', module)
       analyticsTracker={analyticsTracker}
       confirmationDialogData={formData}
     />
-  ))
-  .add('Send - Hardware wallet verifying transaction', () => (
+  ),
+
+  name: 'Send - Send screen',
+};
+
+export const SendHardwareWalletVerifyingTransaction = {
+  render: () => (
     <WalletSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -351,8 +359,13 @@ storiesOf('Wallets / Send', module)
       analyticsTracker={analyticsTracker}
       confirmationDialogData={formData}
     />
-  ))
-  .add('Send - Hardware wallet verifying transaction succeeded', () => (
+  ),
+
+  name: 'Send - Hardware wallet verifying transaction',
+};
+
+export const SendHardwareWalletVerifyingTransactionSucceeded = {
+  render: () => (
     <WalletSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -381,8 +394,13 @@ storiesOf('Wallets / Send', module)
       analyticsTracker={analyticsTracker}
       confirmationDialogData={formData}
     />
-  ))
-  .add('Send - Hardware wallet verifying transaction failed', () => (
+  ),
+
+  name: 'Send - Hardware wallet verifying transaction succeeded',
+};
+
+export const SendHardwareWalletVerifyingTransactionFailed = {
+  render: () => (
     <WalletSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -411,78 +429,83 @@ storiesOf('Wallets / Send', module)
       analyticsTracker={analyticsTracker}
       confirmationDialogData={formData}
     />
-  ))
-  .add('Wallet Send Confirmation Dialog With Assets', () => {
-    // @ts-ignore[prop-missing]
-    const wallet: Wallet = {
-      name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
-      amount: new BigNumber(100),
-      isDelegating: true,
-    };
-    return (
-      <div>
-        <WalletSendConfirmationDialogView
-          amount="20.000000"
-          areTermsAccepted={boolean('areTermsAccepted', true)}
-          wallet={wallet}
-          totalAmount={new BigNumber('21.000000')}
-          receiver={generateHash()}
-          selectedAssets={confirmationTokens}
-          assetTokens={confirmationTokens}
-          assetsAmounts={confirmationTokensAmounts}
-          transactionFee="1.000000"
-          hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-          isFlight={boolean('isFlight', false)}
-          isHardwareWallet={boolean('isHardwareWallet', false)}
-          isSubmitting={boolean('isSubmitting', false)}
-          isTrezor={boolean('isTrezor', false)}
-          formattedTotalAmount="21.000000"
-          error={null}
-          onCancel={action('onCancel')}
-          onSubmitCb={action('onSubmitCb')}
-          onTermsCheckboxClick={action('onTermsCheckboxClick')}
-          onCopyAssetParam={action('onCopyAssetParam')}
-          onExternalLinkClick={action('onExternalLinkClick')}
-        />
-      </div>
-    );
-  })
-  .add('Wallet Send Confirmation Dialog With No Assets', () => {
-    // @ts-ignore[prop-missing]
-    const wallet: Wallet = {
-      name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
-      amount: new BigNumber(100),
-      isDelegating: true,
-    };
-    return (
-      <div>
-        <WalletSendConfirmationDialogView
-          wallet={wallet}
-          receiver={generateHash()}
-          amount="20.000000"
-          totalAmount={new BigNumber('21.000000')}
-          transactionFee="1.000000"
-          selectedAssets={[]}
-          assetTokens={confirmationTokens}
-          assetsAmounts={confirmationTokensAmounts}
-          hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-          areTermsAccepted={boolean('areTermsAccepted', true)}
-          isFlight={boolean('isFlight', false)}
-          isTrezor={boolean('isTrezor', false)}
-          isSubmitting={boolean('isSubmitting', false)}
-          isHardwareWallet={boolean('isHardwareWallet', false)}
-          formattedTotalAmount="21.000000"
-          error={
-            new LocalizableError({
-              ...messages.conwayWalletNotDelegatedToDRep,
-            })
-          }
-          onCancel={action('onCancel')}
-          onSubmitCb={action('onSubmitCb')}
-          onTermsCheckboxClick={action('onTermsCheckboxClick')}
-          onCopyAssetParam={action('onCopyAssetParam')}
-          onExternalLinkClick={action('onExternalLinkClick')}
-        />
-      </div>
-    );
-  });
+  ),
+
+  name: 'Send - Hardware wallet verifying transaction failed',
+};
+
+export const WalletSendConfirmationDialogWithAssets = () => {
+  // @ts-ignore[prop-missing]
+  const wallet: Wallet = {
+    name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
+    amount: new BigNumber(100),
+    isDelegating: true,
+  };
+  return (
+    <div>
+      <WalletSendConfirmationDialogView
+        amount="20.000000"
+        areTermsAccepted={boolean('areTermsAccepted', true)}
+        wallet={wallet}
+        totalAmount={new BigNumber('21.000000')}
+        receiver={generateHash()}
+        selectedAssets={confirmationTokens}
+        assetTokens={confirmationTokens}
+        assetsAmounts={confirmationTokensAmounts}
+        transactionFee="1.000000"
+        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+        isFlight={boolean('isFlight', false)}
+        isHardwareWallet={boolean('isHardwareWallet', false)}
+        isSubmitting={boolean('isSubmitting', false)}
+        isTrezor={boolean('isTrezor', false)}
+        formattedTotalAmount="21.000000"
+        error={null}
+        onCancel={action('onCancel')}
+        onSubmitCb={action('onSubmitCb')}
+        onTermsCheckboxClick={action('onTermsCheckboxClick')}
+        onCopyAssetParam={action('onCopyAssetParam')}
+        onExternalLinkClick={action('onExternalLinkClick')}
+      />
+    </div>
+  );
+};
+
+export const WalletSendConfirmationDialogWithNoAssets = () => {
+  // @ts-ignore[prop-missing]
+  const wallet: Wallet = {
+    name: generateWallet('TrueUSD', '15119903750165', walletTokens).name,
+    amount: new BigNumber(100),
+    isDelegating: true,
+  };
+  return (
+    <div>
+      <WalletSendConfirmationDialogView
+        wallet={wallet}
+        receiver={generateHash()}
+        amount="20.000000"
+        totalAmount={new BigNumber('21.000000')}
+        transactionFee="1.000000"
+        selectedAssets={[]}
+        assetTokens={confirmationTokens}
+        assetsAmounts={confirmationTokensAmounts}
+        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+        areTermsAccepted={boolean('areTermsAccepted', true)}
+        isFlight={boolean('isFlight', false)}
+        isTrezor={boolean('isTrezor', false)}
+        isSubmitting={boolean('isSubmitting', false)}
+        isHardwareWallet={boolean('isHardwareWallet', false)}
+        formattedTotalAmount="21.000000"
+        error={
+          new LocalizableError({
+            ...messages.conwayWalletNotDelegatedToDRep,
+          })
+        }
+        onCancel={action('onCancel')}
+        onSubmitCb={action('onSubmitCb')}
+        onTermsCheckboxClick={action('onTermsCheckboxClick')}
+        onCopyAssetParam={action('onCopyAssetParam')}
+        onExternalLinkClick={action('onExternalLinkClick')}
+      />
+    </div>
+  );
+};

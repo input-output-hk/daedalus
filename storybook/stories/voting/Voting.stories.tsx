@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number, select } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -27,7 +26,6 @@ import {
 } from '../_support/utils';
 import { HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
 import { Locale } from '../../../source/common/types/locales.types';
-
 
 const assets = {
   available: [
@@ -77,14 +75,21 @@ const WALLETS = [
 ];
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];
 
-storiesOf('Voting / Voting Registration Wizard', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .addDecorator(withKnobs) // ====== Stories ======
-  .add('Voting Registration - Step 1', () => (
+export default {
+  title: 'Voting / Voting Registration Wizard',
+
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+    withKnobs,
+  ],
+};
+
+export const VotingRegistrationStep1 = {
+  render: () => (
     <VotingRegistrationStepsChooseWallet
       onClose={action('onClose')}
       stepsList={stepsList}
@@ -97,8 +102,13 @@ storiesOf('Voting / Voting Registration Wizard', module)
       isWalletAcceptable={action('isWalletAcceptable')}
       getStakePoolById={action('getStakePoolById')}
     />
-  ))
-  .add('Voting Registration - Step 2', () => (
+  ),
+
+  name: 'Voting Registration - Step 1',
+};
+
+export const VotingRegistrationStep2 = {
+  render: () => (
     <VotingRegistrationStepsRegister
       onClose={action('onClose')}
       onBack={action('onBack')}
@@ -121,8 +131,13 @@ storiesOf('Voting / Voting Registration Wizard', module)
       isTrezor={boolean('isTrezor', false)}
       selectedWallet={WALLETS[0]}
     />
-  ))
-  .add('Voting Registration - Step 3', () => (
+  ),
+
+  name: 'Voting Registration - Step 2',
+};
+
+export const VotingRegistrationStep3 = {
+  render: () => (
     <VotingRegistrationStepsConfirm
       onClose={action('onClose')}
       stepsList={stepsList}
@@ -137,16 +152,26 @@ storiesOf('Voting / Voting Registration Wizard', module)
       onRestart={action('onRestart')}
       transactionError={boolean('transactionError', false)}
     />
-  ))
-  .add('Voting Registration - Step 4', () => (
+  ),
+
+  name: 'Voting Registration - Step 3',
+};
+
+export const VotingRegistrationStep4 = {
+  render: () => (
     <VotingRegistrationStepsEnterPinCode
       onClose={action('onClose')}
       stepsList={stepsList}
       activeStep={4}
       onSetPinCode={action('onSetPinCode')}
     />
-  ))
-  .add('Voting Registration - Step 5', () => (
+  ),
+
+  name: 'Voting Registration - Step 4',
+};
+
+export const VotingRegistrationStep5 = {
+  render: () => (
     <VotingRegistrationStepsQrCode
       onClose={action('onClose')}
       onDownloadPDF={action('onDownloadPDF')}
@@ -154,4 +179,7 @@ storiesOf('Voting / Voting Registration Wizard', module)
       activeStep={5}
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
     />
-  ));
+  ),
+
+  name: 'Voting Registration - Step 5',
+};

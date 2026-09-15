@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -112,14 +111,21 @@ const renderDetail = (
   </GovernanceShell>
 );
 
-storiesOf('Governance / DRep Detail', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .addDecorator(withKnobs)
-  .add('Loaded — with anchor', () => {
+export default {
+  title: 'Governance / DRep Detail',
+
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+    withKnobs,
+  ],
+};
+
+export const LoadedWithAnchor = {
+  render: () => {
     const entry: AppDRepDetail = {
       ...withAnchorEntry,
       drepActivity: number('Remaining epochs (drepActivity)', 34, {
@@ -135,28 +141,38 @@ storiesOf('Governance / DRep Detail', module)
       ) as AppDRepDetail['status'],
     };
     return renderDetail(entry);
-  })
-  .add('Loaded — no anchor', () => renderDetail(withoutAnchorEntry))
-  // An inactive DRep: its voting power is not counted until it votes again, so
-  // the status is the thing a delegator most needs to see here.
-  .add('Loaded — inactive DRep', () =>
+  },
+
+  name: 'Loaded — with anchor',
+};
+
+export const LoadedNoAnchor = {
+  render: () => renderDetail(withoutAnchorEntry),
+  name: 'Loaded — no anchor',
+};
+
+export const LoadedInactiveDRep = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       status: 'inactive',
       drepActivity: 0,
-    })
-  )
-  // The favourite state changes the action at the top of the page, so it needs
-  // a story of its own.
-  .add('Loaded — already a favorite', () =>
+    }),
+
+  name: 'Loaded — inactive DRep',
+};
+
+export const LoadedAlreadyAFavorite = {
+  render: () =>
     renderDetail(withAnchorEntry, GovernanceRefreshState.Loaded, {
       isFavorite: true,
-    })
-  )
-  // Review item 4: a DRep that provided only some of its CIP-119 fields must
-  // not show labelled rows with nothing in them, and must not show a
-  // References block it never populated.
-  .add('Loaded — partial metadata', () =>
+    }),
+
+  name: 'Loaded — already a favorite',
+};
+
+export const LoadedPartialMetadata = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       metadata: {
@@ -168,14 +184,13 @@ storiesOf('Governance / DRep Detail', module)
         references: [],
         additionalFields: [],
       },
-    })
-  )
-  // The vocabulary DReps actually invent, and the shapes that break layouts.
-  // Every key here is either observed on mainnet or a payload the parser has to
-  // refuse: a data URI under a key nobody thought to ban, a URL where nothing
-  // may become clickable, a collection with no key-value shape at all, and a
-  // single unbroken token long enough to push a column off the page.
-  .add('Loaded — additional metadata fields', () =>
+    }),
+
+  name: 'Loaded — partial metadata',
+};
+
+export const LoadedAdditionalMetadataFields = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       metadata: {
@@ -314,25 +329,26 @@ storiesOf('Governance / DRep Detail', module)
           },
         ],
       },
-    })
-  )
-  // What the parser refuses, shown as the empty block it produces. A data URI
-  // under any key, a collection with no key-value shape, and a nested object
-  // all reach the renderer as nothing, so the block does not appear at all
-  // rather than appearing broken.
-  .add('Loaded — additional fields the parser refuses', () =>
+    }),
+
+  name: 'Loaded — additional metadata fields',
+};
+
+export const LoadedAdditionalFieldsTheParserRefuses = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       metadata: {
         ...withAnchorEntry.metadata,
         additionalFields: [],
       },
-    })
-  )
-  // Verified, and empty. The document matched the on-chain hash and turned out
-  // to carry none of the fields a profile is built from, which is a different
-  // fact from having failed to verify and reads differently.
-  .add('Loaded — anchor verified but empty', () =>
+    }),
+
+  name: 'Loaded — additional fields the parser refuses',
+};
+
+export const LoadedAnchorVerifiedButEmpty = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       verifiedName: null,
@@ -344,12 +360,13 @@ storiesOf('Governance / DRep Detail', module)
         references: [],
         additionalFields: [],
       },
-    })
-  )
-  // Verified, and not empty, though every field a profile is built from is
-  // absent. A document may carry only its author's own vocabulary, and that is
-  // still something published.
-  .add('Loaded — only fields no standard defines', () =>
+    }),
+
+  name: 'Loaded — anchor verified but empty',
+};
+
+export const LoadedOnlyFieldsNoStandardDefines = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       verifiedName: null,
@@ -370,22 +387,24 @@ storiesOf('Governance / DRep Detail', module)
           },
         ],
       },
-    })
-  )
-  // Not verified. The wallet holds no content for this anchor, which is what
-  // both a hash mismatch and an unreachable host produce: a DRep registered a
-  // URL and a hash, and nothing matching came back.
-  .add('Loaded — anchor could not be verified', () =>
+    }),
+
+  name: 'Loaded — only fields no standard defines',
+};
+
+export const LoadedAnchorCouldNotBeVerified = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       verifiedName: null,
       metadata: null,
-    })
-  )
-  // The same outcome reached a different way. Our fetcher accepts https alone,
-  // so an ipfs:// anchor is never retrieved at all and the wallet's own attempt
-  // is all there is; when that fails too, the page has a URL nobody can open.
-  .add('Loaded — anchor on an unreachable scheme', () =>
+    }),
+
+  name: 'Loaded — anchor could not be verified',
+};
+
+export const LoadedAnchorOnAnUnreachableScheme = {
+  render: () =>
     renderDetail({
       ...withAnchorEntry,
       verifiedName: null,
@@ -394,14 +413,26 @@ storiesOf('Governance / DRep Detail', module)
         url: 'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi',
         hash: '6a5e200d2f3a1020202020202020202020202020202020202020202020202020',
       },
-    })
-  )
-  .add('Ranking unavailable', () =>
-    renderDetail({ ...withAnchorEntry, votingPower: null })
-  )
-  // The worst case mainnet can currently produce: 3,374 characters of
-  // motivations, a 76-character name with emoji, eight references and an
-  // 80-character reference label, each taken from its own observed maximum.
-  .add('Largest known metadata', () => renderDetail(largestKnownEntry))
-  .add('Loading', () => renderDetail(null, GovernanceRefreshState.Loading))
-  .add('Not found', () => renderDetail(null, GovernanceRefreshState.Loaded));
+    }),
+
+  name: 'Loaded — anchor on an unreachable scheme',
+};
+
+export const RankingUnavailable = {
+  render: () => renderDetail({ ...withAnchorEntry, votingPower: null }),
+
+  name: 'Ranking unavailable',
+};
+
+export const LargestKnownMetadata = {
+  render: () => renderDetail(largestKnownEntry),
+  name: 'Largest known metadata',
+};
+
+export const _Loading = () =>
+  renderDetail(null, GovernanceRefreshState.Loading);
+
+export const NotFound = {
+  render: () => renderDetail(null, GovernanceRefreshState.Loaded),
+  name: 'Not found',
+};

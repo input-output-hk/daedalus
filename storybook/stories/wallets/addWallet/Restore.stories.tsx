@@ -1,7 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
-import { storiesOf } from '@storybook/react';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../../source/renderer/app/config/cryptoConfig';
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -20,9 +19,14 @@ import SuccessDialog from '../../../../source/renderer/app/components/wallet/wal
 type Props = {
   locale: string;
 };
-storiesOf('Wallets / Add Wallet', module)
-  .addDecorator(WalletsWrapper)
-  .add('Restore - Step 1', () => {
+
+export default {
+  title: 'Wallets / Add Wallet',
+  decorators: [WalletsWrapper],
+};
+
+export const RestoreStep1 = {
+  render: () => {
     const walletKindSelect = select(
       'Wallet Kind',
       {
@@ -58,8 +62,13 @@ storiesOf('Wallets / Add Wallet', module)
         walletKindHardware={walletKindSpecificSelect}
       />
     );
-  })
-  .add('Restore - Step 2', () => {
+  },
+
+  name: 'Restore - Step 1',
+};
+
+export const RestoreStep2 = {
+  render: () => {
     const walletKindSelect = select(
       'Wallet Kind',
       WALLET_KINDS,
@@ -97,9 +106,13 @@ storiesOf('Wallets / Add Wallet', module)
         onValidateMnemonics={action('onValidateMnemonics')}
       />
     );
-  })
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: Props) => JSX.Element' i... Remove this comment to see the full error message
-  .add('Restore - Step 3', (props: Props) => {
+  },
+
+  name: 'Restore - Step 2',
+};
+
+export const RestoreStep3 = {
+  render: (props: Props) => {
     const { locale } = props;
     return (
       <ConfigurationDialog
@@ -114,8 +127,13 @@ storiesOf('Wallets / Add Wallet', module)
         currentLocale={locale}
       />
     );
-  })
-  .add('Restore - Step 4', () => {
+  },
+
+  name: 'Restore - Step 3',
+};
+
+export const RestoreStep4 = {
+  render: () => {
     const walletKindSelect = select(
       'Wallet Kind',
       WALLET_KINDS,
@@ -142,4 +160,7 @@ storiesOf('Wallets / Add Wallet', module)
         walletKindYoroi={walletKindSpecificSelect}
       />
     );
-  });
+  },
+
+  name: 'Restore - Step 4',
+};

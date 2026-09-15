@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 // Helpers
 import { defineMessages } from 'react-intl';
@@ -27,9 +26,14 @@ const messages: WalletSettingRemoveMessages = defineMessages({
     description: 'Question if the user really wants to unpair the wallet.',
   },
 });
-storiesOf('Wallets / Settings', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
-  .add('Unpair - Accepted', () => (
+
+export default {
+  title: 'Wallets / Settings',
+  decorators: [(story) => <StoryDecorator>{story()}</StoryDecorator>],
+};
+
+export const UnpairAccepted = {
+  render: () => (
     <div>
       <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
@@ -46,8 +50,13 @@ storiesOf('Wallets / Settings', module)
         isSubmitting={false}
       />
     </div>
-  ))
-  .add('Unpair - Accepted & submitting', () => (
+  ),
+
+  name: 'Unpair - Accepted',
+};
+
+export const UnpairAcceptedSubmitting = {
+  render: () => (
     <div>
       <WalletSettingsActionConfirmationDialog
         walletName="My Wallet"
@@ -64,4 +73,7 @@ storiesOf('Wallets / Settings', module)
         isSubmitting
       />
     </div>
-  ));
+  ),
+
+  name: 'Unpair - Accepted & submitting',
+};

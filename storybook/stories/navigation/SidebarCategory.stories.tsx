@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import SidebarCategory from '../../../source/renderer/app/components/sidebar/SidebarCategory';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../source/renderer/app/a... Remove this comment to see the full error message
@@ -12,19 +11,24 @@ const category = {
   route: 'WALLETS',
   tooltipTextId: 'wallets',
 };
-storiesOf('Navigation / Sidebar', module)
-  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>) // ====== Stories ======
-  .add('Inactive', () => (
-    <SidebarCategory
-      category={category}
-      isActive={false}
-      onClick={action('categoryClicked')}
-    />
-  ))
-  .add('Active', () => (
-    <SidebarCategory
-      category={category}
-      isActive
-      onClick={action('categoryClicked')}
-    />
-  ));
+
+export default {
+  title: 'Navigation / Sidebar',
+  decorators: [(story) => <StoryDecorator>{story()}</StoryDecorator>],
+};
+
+export const Inactive = () => (
+  <SidebarCategory
+    category={category}
+    isActive={false}
+    onClick={action('categoryClicked')}
+  />
+);
+
+export const Active = () => (
+  <SidebarCategory
+    category={category}
+    isActive
+    onClick={action('categoryClicked')}
+  />
+);

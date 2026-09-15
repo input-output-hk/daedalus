@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import {
   withKnobs,
@@ -19,14 +18,19 @@ import StoryDecorator from '../../_support/StoryDecorator';
 // Screens
 import WalletRecoveryPhraseVerificationWidget from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget';
 
-storiesOf('Wallets / Settings', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  )) // ====== Stories ======
-  .add(
-    'Recovery Prase Verification - Widget',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-    (_, { locale }: { locale: string }) => {
+export default {
+  title: 'Wallets / Settings',
+
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    ),
+  ],
+};
+
+export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
+  RecoveryPraseVerificationWidget = {
+    render: (_, { locale }: { locale: string }) => {
       const groupId = 'Recovery Phrase Verification';
       const wordCount = options(
         'Word count',
@@ -95,5 +99,7 @@ storiesOf('Wallets / Settings', module)
           />
         </div>
       );
-    }
-  );
+    },
+
+    name: 'Recovery Prase Verification - Widget',
+  };

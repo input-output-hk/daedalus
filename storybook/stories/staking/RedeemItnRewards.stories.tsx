@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { withKnobs } from '@storybook/addon-knobs';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
@@ -16,23 +15,47 @@ import {
 } from './_support/RedeemItnWallets';
 import { stakingDecorator } from './_support/decorator';
 
-storiesOf('Decentralization / Redeem ITN Rewards', module)
-  .addDecorator(stakingDecorator) // ====== Stories ======
-  .add('Step 1', Step1ConfigurationDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Step 2', Step2ConfirmationDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Step 3 - Success', Step3SuccessDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Step 3 - Failure', Step3FailureDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('No Wallets', NoWalletsDialogDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Redemption Unavailable', RedemptionUnavailableDialogDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  });
+export default {
+  title: 'Decentralization / Redeem ITN Rewards',
+  decorators: [stakingDecorator],
+};
+
+export const Step1 = Step1ConfigurationDialogStory;
+
+Step1.parameters = {
+  id: 'redeem-itn-wallets-story',
+};
+
+export const Step2 = Step2ConfirmationDialogStory;
+
+Step2.parameters = {
+  id: 'redeem-itn-wallets-story',
+};
+
+export const Step3Success = Step3SuccessDialogStory;
+
+Step3Success.storyName = 'Step 3 - Success';
+
+Step3Success.parameters = {
+  id: 'redeem-itn-wallets-story',
+};
+
+export const Step3Failure = Step3FailureDialogStory;
+
+Step3Failure.storyName = 'Step 3 - Failure';
+
+Step3Failure.parameters = {
+  id: 'redeem-itn-wallets-story',
+};
+
+export const NoWallets = NoWalletsDialogDialogStory;
+
+NoWallets.parameters = {
+  id: 'redeem-itn-wallets-story',
+};
+
+export const RedemptionUnavailable = RedemptionUnavailableDialogDialogStory;
+
+RedemptionUnavailable.parameters = {
+  id: 'redeem-itn-wallets-story',
+};

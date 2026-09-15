@@ -1,7 +1,5 @@
 // eslint-disable-file no-unused-vars
 import React from 'react';
-// import { omit } from 'lodash';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean, select, number, withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
@@ -17,52 +15,61 @@ const updateDownloadProgressOptions = {
   max: 100,
   step: 1,
 };
-storiesOf('News / NewsFeed', module)
-  .addDecorator((story, context) => (
-    <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
-  )) // ====== Stories ======
-  .add('Empty', () => (
-    <div>
-      <NewsFeed
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        onGoToRoute={action('onGoToRoute')}
-        isLoadingNews={false}
-        onMarkNewsAsRead={action('onMarkNewsAsRead')}
-        onNewsItemActionClick={action('onNewsItemActionClick')}
-        onClose={action('onClose')}
-        news={new News.NewsCollection([])}
-        isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        onOpenAlert={action('onOpenAlert')}
-        onProceedNewsAction={action('onOpenExternalLink')}
-        onOpenAppUpdate={action('onOpenAppUpdate')}
-        currentDateFormat=" "
-        isUpdatePostponed={false}
-      />
-    </div>
-  ))
-  .add('Fetching', () => (
-    <div>
-      <NewsFeed
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        onGoToRoute={action('onGoToRoute')}
-        isLoadingNews
-        onMarkNewsAsRead={action('onMarkNewsAsRead')}
-        onNewsItemActionClick={action('onNewsItemActionClick')}
-        onClose={action('onClose')}
-        news={new News.NewsCollection([])}
-        isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        onOpenAlert={action('onOpenAlert')}
-        onProceedNewsAction={action('onOpenExternalLink')}
-        onOpenAppUpdate={action('onOpenAppUpdate')}
-        currentDateFormat=" "
-        isUpdatePostponed={false}
-      />
-    </div>
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  .add('Fetched', (_, { locale }: { locale: string }) => {
+
+export default {
+  title: 'News / NewsFeed',
+
+  decorators: [
+    (story, context) => (
+      <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
+    ),
+  ],
+};
+
+export const Empty = () => (
+  <div>
+    <NewsFeed
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+      onGoToRoute={action('onGoToRoute')}
+      isLoadingNews={false}
+      onMarkNewsAsRead={action('onMarkNewsAsRead')}
+      onNewsItemActionClick={action('onNewsItemActionClick')}
+      onClose={action('onClose')}
+      news={new News.NewsCollection([])}
+      isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onOpenAlert={action('onOpenAlert')}
+      onProceedNewsAction={action('onOpenExternalLink')}
+      onOpenAppUpdate={action('onOpenAppUpdate')}
+      currentDateFormat=" "
+      isUpdatePostponed={false}
+    />
+  </div>
+);
+
+export const Fetching = () => (
+  <div>
+    <NewsFeed
+      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+      onGoToRoute={action('onGoToRoute')}
+      isLoadingNews
+      onMarkNewsAsRead={action('onMarkNewsAsRead')}
+      onNewsItemActionClick={action('onNewsItemActionClick')}
+      onClose={action('onClose')}
+      news={new News.NewsCollection([])}
+      isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onOpenAlert={action('onOpenAlert')}
+      onProceedNewsAction={action('onOpenExternalLink')}
+      onOpenAppUpdate={action('onOpenAppUpdate')}
+      currentDateFormat=" "
+      isUpdatePostponed={false}
+    />
+  </div>
+);
+
+export const Fetched = {
+  render: (_, { locale }: { locale: string }) => {
     const displayAppUpdateNewsItem = boolean('displayAppUpdateNewsItem', true);
     const updateDownloadProgress = displayAppUpdateNewsItem
       ? number('updateDownloadProgress', 30, updateDownloadProgressOptions)
@@ -104,4 +111,5 @@ storiesOf('News / NewsFeed', module)
         />
       </div>
     );
-  });
+  },
+};

@@ -1,6 +1,5 @@
 import React from 'react';
 import { observable, runInAction } from 'mobx';
-import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -105,15 +104,22 @@ const sidebarMenusHardware = observable({
   },
 });
 let emptyMenus;
-storiesOf('Navigation / Sidebar', module)
-  .addDecorator((story) => (
-    <StoryProvider>
-      <StoryDecorator>{story()}</StoryDecorator>
-    </StoryProvider>
-  ))
-  .addDecorator(withKnobs) // ====== Stories ======
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('No Category', (_, props: { currentTheme: string }) => (
+
+export default {
+  title: 'Navigation / Sidebar',
+
+  decorators: [
+    (story) => (
+      <StoryProvider>
+        <StoryDecorator>{story()}</StoryDecorator>
+      </StoryProvider>
+    ),
+    withKnobs,
+  ],
+};
+
+export const NoCategory = {
+  render: (_, props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -129,9 +135,11 @@ storiesOf('Navigation / Sidebar', module)
       network="testnet"
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Wallets Category', (_, props: { currentTheme: string }) => (
+  ),
+};
+
+export const WalletsCategory = {
+  render: (_, props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -147,9 +155,11 @@ storiesOf('Navigation / Sidebar', module)
       network="testnet"
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Wallet Selected', (_, props: { currentTheme: string }) => (
+  ),
+};
+
+export const WalletSelected = {
+  render: (_, props: { currentTheme: string }) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
@@ -167,9 +177,11 @@ storiesOf('Navigation / Sidebar', module)
       network="testnet"
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Hardware Wallet Selected', (_, props: { currentTheme: string }) => (
+  ),
+};
+
+export const HardwareWalletSelected = {
+  render: (_, props: { currentTheme: string }) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
@@ -186,9 +198,11 @@ storiesOf('Navigation / Sidebar', module)
       network="testnet"
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
-  ))
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Delegation Category', (_, props: { currentTheme: string }) => (
+  ),
+};
+
+export const DelegationCategory = {
+  render: (_, props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -204,11 +218,12 @@ storiesOf('Navigation / Sidebar', module)
       network="testnet"
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
-  ))
-  .add(
-    'Decentralization Progress Category',
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-    (_, props: { currentTheme: string }) => (
+  ),
+};
+
+export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
+  DecentralizationProgressCategory = {
+    render: (_, props: { currentTheme: string }) => (
       <Sidebar
         menus={emptyMenus}
         categories={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN}
@@ -224,10 +239,11 @@ storiesOf('Navigation / Sidebar', module)
         network="testnet"
         isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       />
-    )
-  )
-  // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
-  .add('Network label', (_, props: { currentTheme: string }) => (
+    ),
+  };
+
+export const NetworkLabel = {
+  render: (_, props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -251,4 +267,7 @@ storiesOf('Navigation / Sidebar', module)
       )}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
-  ));
+  ),
+
+  name: 'Network label',
+};

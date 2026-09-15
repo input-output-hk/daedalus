@@ -1,5 +1,4 @@
 import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 // Assets and helpers
@@ -15,10 +14,13 @@ const cfg = {
   max: 20,
 };
 
-/* eslint-disable consistent-return */
-storiesOf('Wallets / Transactions', module)
-  .addDecorator(WalletsWrapper) // ====== Stories ======
-  .add('UTXO Distribution', () => (
+export default {
+  title: 'Wallets / Transactions',
+  decorators: [WalletsWrapper],
+};
+
+export const UtxoDistribution = {
+  render: () => (
     <WalletUtxo
       walletAmount={
         new BigNumber(
@@ -58,4 +60,7 @@ storiesOf('Wallets / Transactions', module)
       onExternalLinkClick={() => {}}
       pendingTxnsCount={0}
     />
-  ));
+  ),
+
+  name: 'UTXO Distribution',
+};
