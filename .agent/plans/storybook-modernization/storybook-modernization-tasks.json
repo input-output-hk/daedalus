@@ -502,7 +502,7 @@
      "id": "task-014",
      "title": "Run the codemod chain as a dry run over a real tranche",
      "description": "Codemod coverage is currently a prediction derived from reading the transform source and matching its stated preconditions against measured properties of the estate. Turn it into an observation before the hop branch is opened.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 5.0,
      "dependencies": [
@@ -515,8 +515,11 @@
      "implementationNotes": [
       "Run storiesof-to-csf, then csf-hoist-story-annotations, then csf-2-to-3 from the 8.6.x CLI over one real domain, in the scratch worktree.",
       "Record what it actually produced: how many files converted cleanly, how many exports the sanitizer renamed, what the display-name re-attachment looks like, and how much hand correction each file needed.",
-      "Check the 9 dynamic .add() registrations in staking/Staking.stories.tsx are skipped rather than mangled.",
-      "Confirm the transform skips nothing: all 65 storiesOf files under storybook/stories use a string-literal title and none already has a default export."
+      "There are 5 dynamic .add() registrations in staking/Staking.stories.tsx, not 9: task-002 removed the countdown, info and info-countdown pageNames entries and task-004 removed epochs. RESULT, and it is not what this entry predicted: they are not skipped, they are silently dropped. The chain reported 1 ok, 0 errors and produced a file carrying 14 of 19 registrations, losing exactly the five non-literal labels Delegation Center, Pools Index, Pools Index - Loading, Rewards and Stake Pools List. Dropped while the run reports success is worse than skipped, because nothing in the output says a story went missing. Remedy, tested: replace the four pageNames lookups and the one template literal with the string literals they evaluate to before running the chain, and all 19 survive.",
+      "The corpus is 68 storiesOf() calls across 65 files, not 73; 73 was the pre-phase-1 figure and phase 1 removed six calls while task-006 added one. RESULT: no file is skipped for want of a string-literal title and none already has a default export. But three files hold TWO storiesOf calls, nodes/status/Diagnostics.stories.tsx, staking/Staking.stories.tsx and voting/Voting.stories.tsx, and the codemod emits one export default per call, so each produces a file with two default exports, which is not valid TypeScript. Remedy: split each into one file per title before running the chain.",
+      "RESULT over the dry-run tranche, nodes plus settings, 9 files and 28 registrations: storiesof-to-csf 0 errors 9 ok, csf-hoist-story-annotations 0 errors 3 ok 6 unmodified, csf-2-to-3 0 errors 4 ok 5 unmodified. All 28 labels preserved against the task-001 baseline. The codemod attached an explicit storyName to the 5 exports whose sanitized identifier would not round-trip; the other 23 derive correctly. Per-file hand correction cost: zero for 8 of 9, one file split for the ninth.",
+      "DECISION on the kill criterion: not triggered, the codemod is used for the whole corpus. 62 of 65 files convert with zero hand correction and no label loss. Three need a mechanical split first and one of those also needs five labels inlined. The procedure for each tranche is therefore: split any file with more than one storiesOf call, inline any non-literal .add() label, run the chain, then diff the tranche label set against the task-001 baseline. That last step is not optional: it is the only thing that catches a dropped registration.",
+      "RESULT on the four control-flow strings. context.kind and context.story are both still populated at 8.6.18, carrying the title and the story name, so the sites survive the version hop itself. Two of the four cannot break at all: Wallet Add matches no label anywhere in the 258-registration corpus, and neither Empty nor Wallet Add matches any of the 40 registrations across the 16 files WalletsWrapper decorates, so the ternary at WalletsWrapper.tsx:14 already always takes the same branch. The remaining exposure is SettingsWrapper.tsx:29 and :31 and WalletWithNavigationLayout.tsx:32, which read the title and story name dynamically rather than comparing to a literal, so preserved labels keep them working."
      ],
      "acceptance": [
       "A recorded per-file correction cost for one real domain",
