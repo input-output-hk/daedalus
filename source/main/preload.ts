@@ -5,7 +5,13 @@ import { ipcRenderer } from 'electron';
 import electronLog from 'electron-log-daedalus';
 import EventEmitter from 'events';
 import { environment } from './environment';
-import { buildLabel, legacyStateDir, isFlight, smashUrl } from './config';
+import {
+  buildLabel,
+  legacyStateDir,
+  isFlight,
+  smashUrl,
+  koiosUrl,
+} from './config';
 
 const _process = process;
 // Increase maximum event listeners to avoid IPC channel stalling
@@ -38,6 +44,7 @@ process.once('loaded', () => {
     isFlight,
     legacyStateDir,
     smashUrl,
+    koiosUrl,
   });
 
   // Expose require for Spectron!

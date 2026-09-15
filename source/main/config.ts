@@ -68,6 +68,7 @@ export type LauncherConfig = {
   isFlight: boolean;
   isStaging: boolean;
   smashUrl?: string;
+  koiosUrl?: string;
   metadataUrl?: string;
   updateRunnerBin: string;
   watchdogBin: string;
@@ -119,6 +120,7 @@ export const {
   logsPrefix,
   isFlight,
   smashUrl,
+  koiosUrl,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');

@@ -1180,13 +1180,15 @@
      "id": "task-030",
      "title": "Asset metadata source presets, types and URL validator, wired from launcher config",
      "description": "Add the asset equivalent of the SMASH configuration block. source/renderer/app/config/assetsConfig.ts gains ASSET_METADATA_SERVERS_LIST, ASSET_METADATA_SOURCE_TYPES and ASSET_METADATA_URL_VALIDATOR, modeled on SMASH_SERVERS_LIST at config/stakingConfig.ts:12-28, SMASH_SERVER_TYPES at :29-33 and SMASH_URL_VALIDATOR at :43-45. The default Koios URL reaches the renderer the way smashUrl does.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 3.0,
      "dependencies": [],
      "targetPaths": [
       "source/renderer/app/config/assetsConfig.ts",
+      "source/renderer/app/config/assetsConfig.spec.ts",
       "source/renderer/app/types/assetTypes.ts",
+      "declaration.d.ts",
       "nix/internal/launcher-config.nix",
       "source/main/config.ts",
       "source/main/preload.ts"
@@ -1196,7 +1198,8 @@
       "DIRECT is carried from the start and rendered unavailable until task for the local scan lands. It costs a member of an enum now and saves a settings migration later.",
       "koiosServers goes beside smashServers at nix/internal/launcher-config.nix:31-35 and tokenMetadataServers at :37-41, with a per-network URL, and is assigned beside smashUrl at :456. Type it at source/main/config.ts:70 and expose it at source/main/preload.ts:40.",
       "The validator differs from SMASH_URL_VALIDATOR in one respect and only one: Koios serves under a /api/v1 path prefix, so the pattern admits a path segment where the SMASH pattern rejects one. https only, optional port, and the literal direct, all unchanged.",
-      "Do not add a second configuration surface. The launcher value is the default and the stored user value overrides it, which is the same relation metadataUrl already has at source/main/config.ts:71."
+      "Do not add a second configuration surface. The launcher value is the default and the stored user value overrides it, which is the same relation metadataUrl already has at source/main/config.ts:71.",
+      "koiosServers covers mainnet, mainnet_flight, preprod and preview. It carries mainnet_flight where smashServers does not, because Flight is a mainnet client and clustersAvailable maps it to the mainnet environment; there is no instance for selfnode and there cannot be one. koiosUrl is declared in declaration.d.ts as string | undefined so the renderer reads it without the @ts-ignore that stakingConfig.ts:8 needs for smashUrl."
      ],
      "testCases": [
       "The validator accepts the Koios default including its /api/v1 prefix",

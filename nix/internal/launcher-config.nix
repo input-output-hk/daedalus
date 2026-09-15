@@ -34,6 +34,18 @@ let
     preview = "https://preview-smash.world.dev.cardano.org";
   };
 
+  # Koios covers `mainnet_flight` as well, which `smashServers` above does not:
+  # Flight is a mainnet client, `clustersAvailable` maps it to the mainnet
+  # environment, and leaving it out would disable the chain metadata channel
+  # there. There is no instance for a selfnode cluster and there cannot be one,
+  # because that chain exists only on the user's machine.
+  koiosServers = {
+    mainnet = "https://api.koios.rest/api/v1";
+    mainnet_flight = "https://api.koios.rest/api/v1";
+    preprod = "https://preprod.koios.rest/api/v1";
+    preview = "https://preview.koios.rest/api/v1";
+  };
+
   tokenMetadataServers = {
     mainnet = "https://tokens.cardano.org";
     preprod = "https://metadata.world.dev.cardano.org";
@@ -454,6 +466,9 @@ let
       })
       // (lib.optionalAttrs (__hasAttr network smashServers) {
         smashUrl = smashServers.${network};
+      })
+      // (lib.optionalAttrs (__hasAttr network koiosServers) {
+        koiosUrl = koiosServers.${network};
       })
       // (lib.optionalAttrs (mithrilNetworkCfgs ? ${network}) {
         inherit mithrilBin snapshotConverterBin;

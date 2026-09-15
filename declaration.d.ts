@@ -60,6 +60,9 @@ declare global {
   var https: Https;
   var legacyStateDir: string;
   var isFlight: boolean;
+  // Absent on a network the launcher configures no Koios instance for, which
+  // is why the type carries the absence rather than the readers guarding it.
+  var koiosUrl: string | undefined;
   var ipcRenderer: Pick<
     IpcRenderer,
     'on' | 'once' | 'send' | 'removeListener' | 'removeAllListeners'
