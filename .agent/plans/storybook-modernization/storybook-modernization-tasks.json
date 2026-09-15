@@ -852,7 +852,7 @@
      "id": "task-024",
      "title": "Delete the StoryWrapper prop pass-through",
      "description": "StoryWrapper.tsx:77-81 keeps passing osName, locale and currentTheme as props while stories are still reading them. By this point every consumer reads context.globals instead, so the pass-through goes.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 3.0,
      "dependencies": [
@@ -865,7 +865,11 @@
      "targetPath": "storybook/stories/_support/StoryWrapper.tsx",
      "implementationNotes": [
       "Deleting it is safe only when the grep for props.currentTheme, props.osName and props.locale across story files returns nothing. Run that grep as part of the change.",
-      "Measured by task-009 at ab7060622: the pass-through has 65 consumers across 39 story files, 35 naming one of the three values and 30 forwarding the whole argument by spread. The 30 are what makes this task hard to verify: after the pass-through goes they still compile and still lint clean, and they fail only by rendering a component with three props missing, which no required check sees. Counting them to zero is the acceptance, not a green build."
+      "Measured by task-009 at ab7060622: the pass-through has 65 consumers across 39 story files, 35 naming one of the three values and 30 forwarding the whole argument by spread. The 30 are what makes this task hard to verify: after the pass-through goes they still compile and still lint clean, and they fail only by rendering a component with three props missing, which no required check sees. Counting them to zero is the acceptance, not a green build.",
+      "RESULT. StoryWrapper renders <Story /> and the theme, locale and OS reach a story only through its own story context. themeId and the themesIds import went with the pass-through, both having existed only to feed it, and the component comment now describes the frame the wrapper builds rather than the addon mechanism it replaced. Two @ts-ignore in wallets/receive/WalletReceive.stories.tsx and wallets/settings/WalletRecoveryPhraseVerification.stories.tsx described a ({ locale }) story signature the tranches replaced; both removed with compile still at zero, so they suppressed nothing.",
+      "The required grep returns nothing in any story file. Seven spreads of a story argument remain, six into StoryLayout and one into WalletsTransactionsWrapper, each followed by explicit props for what the pass-through used to supply; what the spreads still carry is story and kind, which Storybook provides itself.",
+      "PROBE, because the task-009 census warned that this change fails silently for the 30 consumers that forward their whole argument by spread, and a green compile would look the same either way. Removing currentTheme={currentThemeOf(context)} from the StakePoolsTableStory call in Staking.stories.tsx makes compile report TS2741: Property 'currentTheme' is missing in type '{}' but required in type 'Props', at Staking.stories.tsx:114:6. Restoring it returns the check to exit 0. The compiler is watching these call sites, so its silence about the other 29 is a result rather than an absence. What makes that possible is that the tranches replaced every spread with declared props.",
+      "compile exit 0, lint exit 0, storybook exit 0. Label set 258 entries across 49 titles, identical to the pre-conversion set. The empty-render scan reports zero."
      ],
      "acceptance": [
       "No story file reads theme, locale or OS from props",

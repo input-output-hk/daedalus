@@ -4,7 +4,6 @@ import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
 import {
   themes,
-  themesIds,
   locales,
   osMinWindowHeights,
   themeNames,
@@ -25,13 +24,13 @@ type Props = {
 };
 
 /*
- * The theme, locale and OS selections used to live in this component's own
- * state, pushed in over an addon channel by a hand-written toolbar addon. They
- * are now Storybook globals, declared in preview.tsx and chosen from the
- * toolbar Storybook renders itself, so this component reads them rather than
- * owning them. Storybook persists a global across a reload and encodes it in
- * the story URL, which the hand-written addon did with sessionStorage and a
- * location hash.
+ * The theme, locale and OS selections are Storybook globals, declared in
+ * preview.tsx and chosen from the toolbar Storybook renders itself. This
+ * component reads them and builds the frame each story renders inside:
+ * ThemeManager for the theme variables, WindowSizeManager for the minimum
+ * window height, and IntlProvider for the locale. A story that needs one of the
+ * three by value reads it from its own story context through
+ * _support/globals.ts, rather than being handed it here.
  */
 export default class StoryWrapper extends Component<Props> {
   static defaultProps = {
@@ -43,7 +42,6 @@ export default class StoryWrapper extends Component<Props> {
   render() {
     const { children: Story, themeName, localeName, osName } = this.props;
     const theme = themes[themeName];
-    const themeId = themesIds[themeName];
     const locale = locales[localeName];
     const minScreenHeight = osMinWindowHeights[osName];
     return (
@@ -59,9 +57,7 @@ export default class StoryWrapper extends Component<Props> {
             messages: translations[locale],
           }}
         >
-          {/* Stories are handed the selections as props. Storybook also puts
-              them on the story context, where a story can read them directly. */}
-          <Story osName={osName} locale={locale} currentTheme={themeId} />
+          <Story />
         </IntlProvider>
       </Fragment>
     );

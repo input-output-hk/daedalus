@@ -71,60 +71,59 @@ export const ReceiveSequential = {
   name: 'Receive - sequential',
 };
 
-export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
-  ReceiveSequentialWithAddressVerification = {
-    render: (_args, context) => {
-      const locale = localeOf(context);
-      return (
-        <VerticalFlexContainer>
-          <WalletReceiveSequential
-            walletAddresses={[
-              ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
-                generateAddress(true)
-              ),
-              ...Array.from(Array(number('Addresses', 10))).map(() =>
-                generateAddress()
-              ),
-            ]}
-            onShareAddress={action('onShareAddress')}
-            onCopyAddress={action('onCopyAddress')}
-            // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-            isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
-            currentLocale={locale}
-            onToggleSubMenus={onToggleSubMenus}
-            isShowingSubMenus
-            onToggleUsedAddresses={action('onToggleUsedAddresses')}
-            showUsed={boolean('showUsed', false)}
-          />
-          <WalletReceiveDialog
-            address={generateAddress()}
-            onCopyAddress={action('onCopyAddress')}
-            onDownloadPDF={action('onDownloadPDF')}
-            onSaveQRCodeImage={action('onSaveQRCodeImage')}
-            onClose={action('onClose')}
-            hwDeviceStatus={select(
-              'Address verification state',
-              {
-                Verify: HwDeviceStatuses.VERIFYING_ADDRESS,
-                Verified: HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
-                Errored: HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
-              },
-              HwDeviceStatuses.VERIFYING_ADDRESS
-            )}
-            isHardwareWallet
-            walletName="Ledger Nano S"
-            isAddressDerived={boolean('isAddressDerived', false)}
-            isAddressChecked={boolean('isAddressChecked', false)}
-            onChangeVerificationStatus={action('onChangeVerificationStatus')}
-            onSupportRequestClick={action('onSupportRequestClick')}
-            isTrezor={boolean('isTrezor', false)}
-          />
-        </VerticalFlexContainer>
-      );
-    },
+export const ReceiveSequentialWithAddressVerification = {
+  render: (_args, context) => {
+    const locale = localeOf(context);
+    return (
+      <VerticalFlexContainer>
+        <WalletReceiveSequential
+          walletAddresses={[
+            ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
+              generateAddress(true)
+            ),
+            ...Array.from(Array(number('Addresses', 10))).map(() =>
+              generateAddress()
+            ),
+          ]}
+          onShareAddress={action('onShareAddress')}
+          onCopyAddress={action('onCopyAddress')}
+          // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
+          isAddressValid={() => parseInt(Math.random() * 10, 10) > 3}
+          currentLocale={locale}
+          onToggleSubMenus={onToggleSubMenus}
+          isShowingSubMenus
+          onToggleUsedAddresses={action('onToggleUsedAddresses')}
+          showUsed={boolean('showUsed', false)}
+        />
+        <WalletReceiveDialog
+          address={generateAddress()}
+          onCopyAddress={action('onCopyAddress')}
+          onDownloadPDF={action('onDownloadPDF')}
+          onSaveQRCodeImage={action('onSaveQRCodeImage')}
+          onClose={action('onClose')}
+          hwDeviceStatus={select(
+            'Address verification state',
+            {
+              Verify: HwDeviceStatuses.VERIFYING_ADDRESS,
+              Verified: HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED,
+              Errored: HwDeviceStatuses.VERIFYING_ADDRESS_FAILED,
+            },
+            HwDeviceStatuses.VERIFYING_ADDRESS
+          )}
+          isHardwareWallet
+          walletName="Ledger Nano S"
+          isAddressDerived={boolean('isAddressDerived', false)}
+          isAddressChecked={boolean('isAddressChecked', false)}
+          onChangeVerificationStatus={action('onChangeVerificationStatus')}
+          onSupportRequestClick={action('onSupportRequestClick')}
+          isTrezor={boolean('isTrezor', false)}
+        />
+      </VerticalFlexContainer>
+    );
+  },
 
-    name: 'Receive - sequential with address verification',
-  };
+  name: 'Receive - sequential with address verification',
+};
 
 export const ReceiveRandom = {
   render: () => {
