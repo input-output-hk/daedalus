@@ -1313,7 +1313,7 @@
      "id": "task-033",
      "title": "Koios client: two-call pointer resolution, in bulk, with responses trimmed",
      "description": "asset_info carries no chain point and neither does any other asset endpoint, so resolving a usable pointer always takes a second call. tx_cbor returns block_hash, block_height and absolute_slot AND the raw transaction CBOR in one response, so it replaces tx_info at no extra cost and supplies the bytes the local check runs against.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 6.0,
      "dependencies": [
@@ -1322,7 +1322,9 @@
      ],
      "targetPaths": [
       "source/main/assets/koiosClient.ts",
-      "source/main/assets/assetMetadataResolver.ts"
+      "source/main/assets/koiosClient.spec.ts",
+      "source/main/assets/httpTransport.ts",
+      "source/main/assets/assetRegistryClient.ts"
      ],
      "implementationNotes": [
       "Two calls, always: POST asset_info for minting_tx_hash, then POST tx_cbor for the point and the bytes. Do not add tx_info; tx_cbor is a superset of what it returns for this purpose.",
@@ -1333,7 +1335,10 @@
       "The Koios documentation describes minting_tx_hash as both the first and the latest mint. It matters only for mint_cnt > 1 under an open policy; take whatever the pointer names and let the local check in task-034 confirm or reject it.",
       "The disclosure is real and is not engineered around: a Koios operator learns, keyed to the user's source IP, which NFTs the user holds and roughly when they acquired each one. The operator's HAProxy stick-table type ip rate limiting (research/01-koios-pointer-option.md:67-76) makes the per-IP association a design property of the service.",
       "Carry the research note's operational limits into the client rather than leaving them in the note: a per-IP request ceiling, explicit 429 handling that backs off rather than retries, and fail-closed behavior that leaves rows absent when the ceiling is reached.",
-      "Send subjects only. No wallet identifier, no address, no quantity. The channel is consulted only for subjects the registry did not answer, so fungible holdings never reach it."
+      "Send subjects only. No wallet identifier, no address, no quantity. The channel is consulted only for subjects the registry did not answer, so fungible holdings never reach it.",
+      "minting_tx_metadata is deliberately absent from the select list. The CIP-25 payload is read out of the transaction bytes the local confirmation checks, so asking the index for its own copy would add an unconfirmed input for a value already held. cip68_metadata is requested, because a CIP-68 datum lives at a spendable UTxO and no reading of the mint transaction can produce it.",
+      "The transport moved to source/main/assets/httpTransport.ts because the response cap has to differ: 1 MiB for a registry answer, 8 MiB for a batch of raw transactions. assetRegistryClient re-exports RegistryTransport, RegistryTransportResult and httpRegistryTransport so its callers and its 47 spec cases are unchanged.",
+      "The resolver wiring is not here. It lands in task-035 with the write, which is also where the selected base URL crosses the process boundary."
      ],
      "testCases": [
       "A batch of subjects produces exactly two requests",

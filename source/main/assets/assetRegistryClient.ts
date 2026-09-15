@@ -1,6 +1,3 @@
-import http from 'http';
-import https from 'https';
-import type { ClientRequest, IncomingMessage } from 'http';
 import {
   launcherConfig,
   MOCK_TOKEN_METADATA_SERVER_PORT,
@@ -9,6 +6,8 @@ import {
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
 import type { AssetResolutionWrite } from './assetMetadataDb';
+import { httpTransport } from './httpTransport';
+import type { HttpTransport, HttpTransportResult } from './httpTransport';
 
 export const ASSET_REGISTRY_FALLBACK_URL = 'https://tokens.cardano.org';
 
@@ -69,17 +68,11 @@ export type RegistryEntry = {
   properties: Record<string, RegistryProperty>;
 };
 
-export type RegistryTransportResult =
-  | { ok: true; status: number; body: string }
-  | { ok: false; reason: 'timeout' | 'network' | 'too-large' };
+// Both are the shared transport's, re-exported under the names this module's
+// callers and its spec already use.
+export type RegistryTransportResult = HttpTransportResult;
 
-export interface RegistryTransport {
-  post(
-    url: string,
-    body: string,
-    timeoutMs: number
-  ): Promise<RegistryTransportResult>;
-}
+export type RegistryTransport = HttpTransport;
 
 export type AssetRegistryQueryOptions = {
   endpoint?: string | null;
@@ -219,97 +212,12 @@ const parseEntries = (
   return entries;
 };
 
-const readResponse = (
-  response: IncomingMessage
-): Promise<RegistryTransportResult> =>
-  new Promise((resolve) => {
-    const declared = Number(response.headers['content-length']);
-    if (
-      Number.isFinite(declared) &&
-      declared > ASSET_REGISTRY_MAX_RESPONSE_BYTES
-    ) {
-      response.destroy();
-      resolve({ ok: false, reason: 'too-large' });
-      return;
-    }
-    const chunks: Array<Buffer> = [];
-    let received = 0;
-    response.on('data', (chunk: Buffer) => {
-      received += chunk.length;
-      if (received > ASSET_REGISTRY_MAX_RESPONSE_BYTES) {
-        response.destroy();
-        resolve({ ok: false, reason: 'too-large' });
-        return;
-      }
-      chunks.push(Buffer.from(chunk));
-    });
-    response.on('error', () => resolve({ ok: false, reason: 'network' }));
-    response.on('end', () =>
-      resolve({
-        ok: true,
-        status: response.statusCode ?? 0,
-        body: Buffer.concat(chunks, received).toString('utf8'),
-      })
-    );
-  });
-
-const post = (
-  url: string,
-  body: string,
-  timeoutMs: number
-): Promise<RegistryTransportResult> =>
-  new Promise((resolve) => {
-    let settled = false;
-    let request: ClientRequest | null = null;
-    const settle = (result: RegistryTransportResult) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      if (request) request.destroy();
-      resolve(result);
-    };
-    const timer = setTimeout(
-      () => settle({ ok: false, reason: 'timeout' }),
-      timeoutMs
-    );
-
-    let parsed: URL;
-    try {
-      parsed = new URL(url);
-    } catch {
-      settle({ ok: false, reason: 'network' });
-      return;
-    }
-    // The selfnode mock serves plain HTTP on the loopback address, so the
-    // scheme comes from the configured endpoint rather than being assumed.
-    const agent = parsed.protocol === 'http:' ? http : https;
-
-    request = agent.request(
-      {
-        protocol: parsed.protocol,
-        hostname: parsed.hostname,
-        port: parsed.port || (parsed.protocol === 'http:' ? 80 : 443),
-        path: `${parsed.pathname}${parsed.search}`,
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          accept: 'application/json',
-          'content-length': Buffer.byteLength(body),
-        },
-        timeout: timeoutMs,
-      },
-      (response: IncomingMessage) => {
-        readResponse(response).then(settle, () =>
-          settle({ ok: false, reason: 'network' })
-        );
-      }
-    );
-    request.on('timeout', () => settle({ ok: false, reason: 'timeout' }));
-    request.on('error', () => settle({ ok: false, reason: 'network' }));
-    request.end(body);
-  });
-
-export const httpRegistryTransport: RegistryTransport = { post };
+/**
+ * The registry's transport. `httpTransport` is shared with the pointer client
+ * and the name here is kept because every caller in this module and its spec
+ * uses it.
+ */
+export const httpRegistryTransport: RegistryTransport = httpTransport;
 
 const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => {
@@ -360,10 +268,20 @@ async function sendBatch(
   maySplit: boolean
 ): Promise<BatchOutcome> {
   const body = assetRegistryRequestBody(subjects);
-  let result = await transport.post(url, body, ASSET_REGISTRY_TIMEOUT_MS);
+  let result = await transport.post(
+    url,
+    body,
+    ASSET_REGISTRY_TIMEOUT_MS,
+    ASSET_REGISTRY_MAX_RESPONSE_BYTES
+  );
   if (isRetryable(result)) {
     await delay(retryBackoffMs);
-    result = await transport.post(url, body, ASSET_REGISTRY_TIMEOUT_MS);
+    result = await transport.post(
+      url,
+      body,
+      ASSET_REGISTRY_TIMEOUT_MS,
+      ASSET_REGISTRY_MAX_RESPONSE_BYTES
+    );
   }
 
   if (result.ok === false) {
