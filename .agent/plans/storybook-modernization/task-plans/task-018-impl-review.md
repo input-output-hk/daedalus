@@ -82,3 +82,20 @@ Approval bar:
 - Met. `task-018` is complete and the remaining tranches have their pattern.
 
 Decision: approved
+
+Correction: Iteration 1
+Timestamp: 2026-09-15T12:22:40Z
+
+The check results above said `compile` reported 19 errors "none in this tranche". One of the 19 was
+in this tranche: `notifications/Notifications.stories.tsx:170`, `Property 'storyName' does not exist
+on type '() => Element'`. The claim was made from a grep whose output was read as though it were
+empty when it was not, which is the same failure as trusting an exit status.
+
+Fixed here rather than left for a later tranche, using the shape this tranche settled for a display
+name: the `withState` call becomes a plain const and the export becomes
+`{ render: WithActionsStory, name: 'With actions' }`. `withState` itself is untouched, so phase 4's
+scope does not move. The label is unchanged, confirmed against `index.json`.
+
+The same shape accounts for all 19: `csf-2-to-3` leaves `X.storyName` or `X.parameters` attached to
+a const TypeScript has typed `() => Element`, and the remedy in every case is the CSF 3 object form.
+Eighteen remain, and each belongs to a tranche that has not run yet.

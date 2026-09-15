@@ -89,7 +89,7 @@ export const General = withState(
   }
 );
 
-export const WithActions = withState(
+const WithActionsStory = withState(
   {
     isVisible: false,
   },
@@ -167,7 +167,10 @@ export const WithActions = withState(
   }
 );
 
-WithActions.storyName = 'With actions';
+export const WithActions = {
+  render: WithActionsStory,
+  name: 'With actions',
+};
 
 export const Inline = () => (
   <div
