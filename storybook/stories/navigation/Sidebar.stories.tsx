@@ -12,6 +12,7 @@ import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import { isShelleyTestnetTheme } from '../_support/utils';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
+import { currentThemeOf } from '../_support/globals';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
   CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
@@ -119,7 +120,7 @@ export default {
 };
 
 export const NoCategory = {
-  render: (_, props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -131,15 +132,15 @@ export const NoCategory = {
       onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme={props.currentTheme}
+      currentTheme={currentThemeOf(context)}
       network="testnet"
-      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
     />
   ),
 };
 
 export const WalletsCategory = {
-  render: (_, props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -151,15 +152,15 @@ export const WalletsCategory = {
       onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme={props.currentTheme}
+      currentTheme={currentThemeOf(context)}
       network="testnet"
-      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
     />
   ),
 };
 
 export const WalletSelected = {
-  render: (_, props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[0].route}
@@ -173,15 +174,15 @@ export const WalletSelected = {
       onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme={props.currentTheme}
+      currentTheme={currentThemeOf(context)}
       network="testnet"
-      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
     />
   ),
 };
 
 export const HardwareWalletSelected = {
-  render: (_, props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
@@ -194,15 +195,15 @@ export const HardwareWalletSelected = {
       onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme={props.currentTheme}
+      currentTheme={currentThemeOf(context)}
       network="testnet"
-      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
     />
   ),
 };
 
 export const DelegationCategory = {
-  render: (_, props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -214,16 +215,16 @@ export const DelegationCategory = {
       onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme={props.currentTheme}
+      currentTheme={currentThemeOf(context)}
       network="testnet"
-      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
     />
   ),
 };
 
 export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {    currentTheme: strin... Remove this comment to see the full error message
   DecentralizationProgressCategory = {
-    render: (_, props: { currentTheme: string }) => (
+    render: (_args, context) => (
       <Sidebar
         menus={emptyMenus}
         categories={CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN}
@@ -235,15 +236,15 @@ export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '(props: {  
         onOpenDialog={action('openDialog')}
         onSubmitSupportRequest={() => {}}
         pathname="/"
-        currentTheme={props.currentTheme}
+        currentTheme={currentThemeOf(context)}
         network="testnet"
-        isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+        isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
       />
     ),
   };
 
 export const NetworkLabel = {
-  render: (_, props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
@@ -255,7 +256,7 @@ export const NetworkLabel = {
       onOpenDialog={action('openDialog')}
       onSubmitSupportRequest={() => {}}
       pathname="/"
-      currentTheme={props.currentTheme}
+      currentTheme={currentThemeOf(context)}
       network={select(
         'Netork badge',
         {
@@ -265,7 +266,7 @@ export const NetworkLabel = {
         },
         TESTNET
       )}
-      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
     />
   ),
 

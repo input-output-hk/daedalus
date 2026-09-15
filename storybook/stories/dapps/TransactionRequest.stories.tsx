@@ -8,6 +8,7 @@ import DappTransactionRequest from '../../../source/renderer/app/components/dapp
 import Notification from '../../../source/renderer/app/components/notifications/Notification';
 import StoryProvider, { WALLETS_V2 } from '../_support/StoryProvider';
 import { generateAssetToken } from '../_support/utils';
+import { localeOf } from '../_support/globals';
 
 const allAssets = [
   generateAssetToken(
@@ -166,7 +167,8 @@ export const Request = withState(
 );
 
 export const Notifications = {
-  render: ({ locale }: { locale: string }) => {
+  render: (_args, context) => {
+    const locale = localeOf(context);
     let text1 = 'Opening transaction received via link...';
     let text2 = 'Transaction received via link';
     let actionBtn1 = 'Reject';

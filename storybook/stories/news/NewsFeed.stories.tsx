@@ -8,6 +8,7 @@ import News from '../../../source/renderer/app/domains/News';
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 import { getNewsItem } from './_utils/fakeDataNewsFeed';
+import { localeOf } from '../_support/globals';
 
 const updateDownloadProgressOptions = {
   range: true,
@@ -69,7 +70,8 @@ export const Fetching = () => (
 );
 
 export const Fetched = {
-  render: (_, { locale }: { locale: string }) => {
+  render: (_args, context) => {
+    const locale = localeOf(context);
     const displayAppUpdateNewsItem = boolean('displayAppUpdateNewsItem', true);
     const updateDownloadProgress = displayAppUpdateNewsItem
       ? number('updateDownloadProgress', 30, updateDownloadProgressOptions)

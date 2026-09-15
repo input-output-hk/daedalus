@@ -5,6 +5,7 @@ import StoryDecorator from '../_support/StoryDecorator';
 import AppUpdateOverlay from '../../../source/renderer/app/components/appUpdate/AppUpdateOverlay';
 import { update, version, availableAppVersion } from './_utils/fakeDataUpdate';
 import { rangeMap } from '../../../source/renderer/app/utils/numbers';
+import { localeOf } from '../_support/globals';
 
 export default {
   title: 'News / Overlays',
@@ -15,7 +16,8 @@ export default {
 };
 
 export const Update = {
-  render: (_, { locale }: { locale: string }) => {
+  render: (_args, context) => {
+    const locale = localeOf(context);
     const scenario = radios(
       'Scenario',
       {

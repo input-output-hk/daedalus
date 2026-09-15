@@ -12,6 +12,7 @@ import {
 } from '../../../source/renderer/app/config/profileConfig';
 import AlertsOverlay from '../../../source/renderer/app/components/news/AlertsOverlay';
 import RTSFlagsRecommendationOverlay from '../../../source/renderer/app/components/knownIssues/RTSFlagsRecommendationOverlay/RTSFlagsRecommendationOverlay';
+import { localeOf } from '../_support/globals';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -97,21 +98,21 @@ export default {
 };
 
 export const Alerts = {
-  render: (_, props: { locale: string }) => (
+  render: (_args, context) => (
     <AlertsOverlay
-      allAlertsCount={getAlerts(props.locale).length}
-      alerts={getAlerts(props.locale)}
+      allAlertsCount={getAlerts(localeOf(context)).length}
+      alerts={getAlerts(localeOf(context))}
       onCloseOpenAlert={() => null}
       onMarkNewsAsRead={action('onMarkNewsAsRead')}
       onOpenExternalLink={action('onOpenExternalLink')}
       onProceedNewsAction={action('onProceedNewsAction')}
       currentDateFormat={select(
         'currentDateFormat',
-        dateOptionsIntl[props.locale].reduce((obj, { label, value }) => {
+        dateOptionsIntl[localeOf(context)].reduce((obj, { label, value }) => {
           obj[label] = value;
           return obj;
         }, {}),
-        dateOptionsIntl[props.locale][0].value
+        dateOptionsIntl[localeOf(context)][0].value
       )}
     />
   ),

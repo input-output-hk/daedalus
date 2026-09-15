@@ -9,6 +9,7 @@ import {
   WalletSortOrder,
 } from '../../../source/renderer/app/types/sidebarTypes';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
+import { currentThemeOf } from '../_support/globals';
 
 const wallets = [
   {
@@ -88,14 +89,14 @@ export default {
 };
 
 export const Empty = {
-  render: (props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <SidebarWalletsMenu
       wallets={[]}
       onAddWallet={action('addWallet')}
       onWalletItemClick={() => {}}
       isActiveWallet={() => false}
       isAddWalletButtonActive={false}
-      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
       visible={false}
       sortBy={WalletSortBy.Date}
       sortOrder={WalletSortOrder.Desc}
@@ -104,7 +105,7 @@ export const Empty = {
 };
 
 export const WithWallets = {
-  render: (props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <div
       style={{
         display: 'flex',
@@ -125,7 +126,7 @@ export const WithWallets = {
           onWalletItemClick={action('walletItemClick')}
           onAddWallet={action('addWallet')}
           isAddWalletButtonActive={false}
-          isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+          isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
           visible
           sortBy={'DATE'}
           sortOrder={WalletSortOrder.Asc}
@@ -145,7 +146,7 @@ export const WithWallets = {
           onWalletItemClick={action('walletItemClick')}
           onAddWallet={action('addWallet')}
           isAddWalletButtonActive={false}
-          isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+          isShelleyActivated={isShelleyTestnetTheme(currentThemeOf(context))}
           visible
           sortBy={'DATE'}
           sortOrder={WalletSortOrder.Asc}

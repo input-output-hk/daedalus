@@ -48,29 +48,3 @@ export const osMinWindowHeights = {
   Linux: '660px',
   Mac: '700px',
 };
-
-/* eslint-disable no-restricted-globals */
-const getParams = (param: string) => {
-  const { hash, search } = parent.window.location;
-  const queries = hash || search;
-  const params = new URLSearchParams(queries.slice(1));
-  return params.get(param);
-};
-
-export const getInitialState = () => {
-  const themeName =
-    getParams('themeName') ||
-    sessionStorage.getItem('themeName') ||
-    themeNames[0];
-  const localeName =
-    getParams('localeName') ||
-    sessionStorage.getItem('localeName') ||
-    localeNames[0];
-  const osName =
-    getParams('osName') || sessionStorage.getItem('osName') || osNames[0];
-  return {
-    themeName,
-    localeName,
-    osName,
-  };
-};

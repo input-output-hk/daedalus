@@ -23,6 +23,7 @@ import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/
 import { Separator } from '../../../source/renderer/app/components/widgets/separator/Separator';
 import { CollapsibleSection } from '../../../source/renderer/app/components/widgets/collapsible-section/CollapsibleSection';
 import { VerticalSeparator } from '../../../source/renderer/app/components/wallet/widgets/VerticalSeparator';
+import { localeOf } from '../_support/globals';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -162,7 +163,7 @@ export const _InlineEditingInput = {
 };
 
 export const _BigButtonForDialogs = {
-  render: (_, props) => (
+  render: (_args, context) => (
     <div>
       <div
         style={{
@@ -172,10 +173,10 @@ export const _BigButtonForDialogs = {
         }}
       >
         <BigButtonForDialogs
-          description={intl[props.locale].formatMessage(
+          description={intl[localeOf(context)].formatMessage(
             messages.createNewWallet
           )}
-          label={intl[props.locale].formatMessage(messages.create)}
+          label={intl[localeOf(context)].formatMessage(messages.create)}
           icon={createIcon}
           onClick={() => {}}
         />
@@ -188,10 +189,10 @@ export const _BigButtonForDialogs = {
         }}
       >
         <BigButtonForDialogs
-          description={intl[props.locale].formatMessage(
+          description={intl[localeOf(context)].formatMessage(
             messages.joinSharedWallet
           )}
-          label={intl[props.locale].formatMessage(messages.join)}
+          label={intl[localeOf(context)].formatMessage(messages.join)}
           icon={joinSharedIcon}
           onClick={() => {}}
           isDisabled
@@ -205,10 +206,10 @@ export const _BigButtonForDialogs = {
         }}
       >
         <BigButtonForDialogs
-          description={intl[props.locale].formatMessage(
+          description={intl[localeOf(context)].formatMessage(
             messages.importExistingWallet
           )}
-          label={intl[props.locale].formatMessage(messages.import)}
+          label={intl[localeOf(context)].formatMessage(messages.import)}
           icon={importIcon}
           onClick={() => {}}
         />
@@ -225,17 +226,17 @@ export const _TinySwitch = {
 };
 
 export const TinySwitchShortLabel = {
-  render: (_, props) => (
-    <TinySwitch label={intl[props.locale].formatMessage(messages.save)} />
+  render: (_args, context) => (
+    <TinySwitch label={intl[localeOf(context)].formatMessage(messages.save)} />
   ),
 
   name: 'TinySwitch - short label',
 };
 
 export const _ButtonLink = {
-  render: (_, props) => (
+  render: (_args, context) => (
     <ButtonLink
-      label={intl[props.locale].formatMessage(messages.save)}
+      label={intl[localeOf(context)].formatMessage(messages.save)}
       // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       onClick={action('onClick')}
     />
