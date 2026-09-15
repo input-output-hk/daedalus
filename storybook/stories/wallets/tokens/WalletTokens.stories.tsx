@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
-import { withState } from '@dump247/storybook-state';
+import { withState } from '../../_support/WithLocalState';
 // Helpers and config
 import {
   generateAssetToken,

@@ -1,4 +1,4 @@
-import { Store } from '@dump247/storybook-state';
+import { Store } from '../../_support/WithLocalState';
 import {
   DATE_ENGLISH_OPTIONS,
   LANGUAGE_OPTIONS,

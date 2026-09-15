@@ -8,7 +8,7 @@ import {
   text,
   number,
 } from '@storybook/addon-knobs';
-import { withState } from '@dump247/storybook-state';
+import { withState } from '../_support/WithLocalState';
 import StoryDecorator from '../_support/StoryDecorator';
 import Notification from '../../../source/renderer/app/components/notifications/Notification';
 import InlineNotification from '../../../source/renderer/app/components/notifications/InlineNotification';

@@ -1,0 +1,636 @@
+# Storybook sidebar baseline
+#
+# Every storiesOf().add() registration in the corpus, with the group and panel
+# it appears under and the label it appears as. Regenerate with:
+#
+#   node .agent/plans/storybook-modernization/task-plans/task-001-sidebar-extract.js .
+#
+# The tree is the diff surface. It carries no path and no line number, so an edit
+# above a registration cannot perturb it. The index below carries provenance and is
+# expected to move whenever a file changes.
+#
+# storiesOf() titles are full sidebar paths. The tree splits each at its first
+# separator, so a three-level title prints as a group and a two-level panel.
+
+GROUP  Analytics
+  PANEL  (no panel)  [1]
+    STORY  Analytics Consent Form
+GROUP  Assets
+  PANEL  Asset pill  [1]
+    STORY  Default
+  PANEL  AssetSettingsDialog  [3]
+    STORY  Default
+    STORY  With recommended decimal precision
+    STORY  With recommended decimal precision (non-zero)
+GROUP  Common
+  PANEL  ItemsDropdown  [4]
+    STORY  Assets
+    STORY  Generic
+    STORY  Wallets
+    STORY  Wallets - Label only
+  PANEL  Notifications  [3]
+    STORY  General
+    STORY  Inline
+    STORY  With actions
+  PANEL  Widgets  [10]
+    STORY  BigButtonForDialogs
+    STORY  ButtonLink
+    STORY  CollapsibleTextBlock
+    STORY  CountdownWidget
+    STORY  InlineEditingInput
+    STORY  NormalSwitch
+    STORY  Separator
+    STORY  TinySwitch
+    STORY  TinySwitch - short label
+    STORY  VerticalSeparator
+GROUP  Decentralization
+  PANEL  Countdown  [2]
+    STORY  Countdown party
+    STORY  Decentralization Countdown
+  PANEL  Redeem ITN Rewards  [6]
+    STORY  No Wallets
+    STORY  Redemption Unavailable
+    STORY  Step 1
+    STORY  Step 2
+    STORY  Step 3 - Failure
+    STORY  Step 3 - Success
+  PANEL  Staking  [16]
+    STORY  Delegation Center
+    STORY  Delegation Center - Loading
+    STORY  Delegation Center - No Wallets
+    STORY  Delegation Center - Not an Shelley era
+    STORY  Delegation Wizard
+    STORY  Delegation Wizard - Delegation Not Available
+    STORY  Epochs
+    STORY  Info
+    STORY  Info Countdown
+    STORY  Pools Index
+    STORY  Pools Index - Loading
+    STORY  Rewards
+    STORY  Stake Pools List
+    STORY  Undelegate Confirmation
+    STORY  Undelegate Confirmation - unknownn stake pool
+    STORY  Undelegate Confirmation Result
+GROUP  Discreet Mode
+  PANEL  Discreet Asset Amount  [2]
+    STORY  Discreet mode disabled
+    STORY  Discreet mode enabled
+  PANEL  Discreet Mode Toggle  [1]
+    STORY  Main
+GROUP  Governance
+  PANEL  DRep Detail  [15]
+    STORY  Largest known metadata
+    STORY  Loaded — additional fields the parser refuses
+    STORY  Loaded — additional metadata fields
+    STORY  Loaded — already a favorite
+    STORY  Loaded — anchor could not be verified
+    STORY  Loaded — anchor on an unreachable scheme
+    STORY  Loaded — anchor verified but empty
+    STORY  Loaded — inactive DRep
+    STORY  Loaded — no anchor
+    STORY  Loaded — only fields no standard defines
+    STORY  Loaded — partial metadata
+    STORY  Loaded — with anchor
+    STORY  Loading
+    STORY  Not found
+    STORY  Ranking unavailable
+  PANEL  DRep Directory  [20]
+    STORY  Connected flow
+    STORY  Empty
+    STORY  Error
+    STORY  Favorite toggle
+    STORY  Favorites view
+    STORY  Favorites view — empty
+    STORY  Favorites view — stale favorite
+    STORY  Loaded
+    STORY  Loading
+    STORY  Node syncing
+    STORY  Node syncing — empty fallback
+    STORY  Pinned favorites above the cohort
+    STORY  Pinned favorites — favorite already in the cohort
+    STORY  Refresh failed — retained snapshot
+    STORY  Refreshing
+    STORY  Search results
+    STORY  Selfnode unavailable
+    STORY  Show all — full population
+    STORY  Table view
+    STORY  Voting power unavailable
+  PANEL  Delegation  [24]
+    STORY  Abstain to a DRep
+    STORY  Already delegated to Abstain
+    STORY  Already delegated to this DRep
+    STORY  Confirmation dialog - Abstain
+    STORY  Confirmation dialog - No Confidence
+    STORY  Confirmation dialog - hardware wallet
+    STORY  Confirmation dialog - software wallet
+    STORY  Confirmation dialog - submission fails
+    STORY  Connected flow
+    STORY  DRep to Abstain
+    STORY  DRep to No Confidence
+    STORY  Hardware wallet - connecting
+    STORY  Hardware wallet - verification failed
+    STORY  Hardware wallet - verified
+    STORY  Hardware wallet - verifying
+    STORY  Initialization error - generic
+    STORY  Initialization error - no UTxOs
+    STORY  Initialization error - not enough money
+    STORY  Initialization error - same vote
+    STORY  No Confidence to a DRep
+    STORY  Not delegated yet
+    STORY  Unavailable while syncing
+    STORY  Voting power delegation
+    STORY  Voting power delegation - prefilled from directory
+  PANEL  Governance Center  [3]
+    STORY  Every delegation state
+    STORY  No wallets
+    STORY  Nothing delegated yet
+GROUP  Loading
+  PANEL  Chain Storage  [6]
+    STORY  Busy State
+    STORY  Data Found
+    STORY  Interactive Picker
+    STORY  Invalid Current Path
+    STORY  Recovery + Data Found
+    STORY  Recovery Fallback
+  PANEL  Mithril / Bootstrap  [2]
+    STORY  Interactive Shell
+    STORY  Storage To Decision Routing
+  PANEL  Mithril / Error  [2]
+    STORY  Generic Failure
+    STORY  Interactive Error Stage
+  PANEL  Mithril / Mithril Partial Sync Dialogue  [5]
+    STORY  Known Epochs Behind
+    STORY  Known Epochs Behind / Confirm View
+    STORY  Snapshot Ahead Of Local Tip (Derived)
+    STORY  Unknown Behind
+    STORY  Unknown Behind / Confirm View
+  PANEL  Mithril / Partial Sync Overlay  [15]
+    STORY  Active Progress
+    STORY  Cancelled
+    STORY  Cancelling
+    STORY  Completed
+    STORY  Completed - Finalize Failed (auto-plays)
+    STORY  Download Progress Bar (Partial)
+    STORY  Downloading File Count
+    STORY  Failed - Converting (All Recovery Actions)
+    STORY  Failed - Downloading (All Recovery Actions)
+    STORY  Failed - Finalizing (All Recovery Actions)
+    STORY  Failed - Installing (All Recovery Actions)
+    STORY  Failed With Restart Allowed
+    STORY  Failed With Wipe-Only Recovery
+    STORY  Interactive
+    STORY  Stopping Node
+  PANEL  Mithril / Progress  [3]
+    STORY  Interactive Working State
+    STORY  Preparing
+    STORY  Starting Node Handoff
+  PANEL  Mithril / Snapshot Picker  [3]
+    STORY  Interactive Decision View
+    STORY  Loading Snapshots
+    STORY  No Snapshots Available
+GROUP  Navigation
+  PANEL  Sidebar  [9]
+    STORY  Active
+    STORY  Decentralization Progress Category
+    STORY  Delegation Category
+    STORY  Hardware Wallet Selected
+    STORY  Inactive
+    STORY  Network label
+    STORY  No Category
+    STORY  Wallet Selected
+    STORY  Wallets Category
+  PANEL  Wallets Menu  [2]
+    STORY  Empty
+    STORY  With Wallets
+GROUP  News
+  PANEL  NewsFeed  [3]
+    STORY  Empty
+    STORY  Fetched
+    STORY  Fetching
+  PANEL  Overlays  [6]
+    STORY  Alerts
+    STORY  Incident - Grey
+    STORY  Incident - Themed
+    STORY  Incident Overlay
+    STORY  RTS Recommendation
+    STORY  Update
+GROUP  Nodes
+  PANEL  About  [1]
+    STORY  About Dialog
+  PANEL  Connecting and Loading  [3]
+    STORY  Connecting
+    STORY  Loading Wallet Data
+    STORY  Trouble Connecting
+  PANEL  Diagnostic  [4]
+    STORY  Partial Sync At Or Past Snapshot
+    STORY  Partial Sync CTA Blocked
+    STORY  Partial Sync CTA Ready
+    STORY  Partial Sync Confirmation
+  PANEL  Diagnostic / Mithril Partial Sync Confirmation  [4]
+    STORY  At Or Past Snapshot
+    STORY  Known Epochs Behind
+    STORY  Start Error
+    STORY  Unknown Behind
+  PANEL  Environment  [3]
+    STORY  Production
+    STORY  Staging
+    STORY  Testnet
+  PANEL  Errors  [2]
+    STORY  No Disk Space Error
+    STORY  System Time Error
+  PANEL  Splash Network Info  [1]
+    STORY  Flight
+  PANEL  Updates  [1]
+    STORY  Data Layer Migration
+GROUP  Settings
+  PANEL  General  [7]
+    STORY  General
+    STORY  Security
+    STORY  Stake Pools
+    STORY  Support
+    STORY  Terms of Service
+    STORY  Themes
+    STORY  Wallets
+  PANEL  Language  [2]
+    STORY  Select Language - initial
+    STORY  Select Language - submitting
+GROUP  StakingChart
+  PANEL  (no panel)  [2]
+    STORY  Chart with Tooltips  (UNREACHABLE)
+    STORY  Tooltip only  (UNREACHABLE)
+GROUP  Voting
+  PANEL  Voting Info  [5]
+    STORY  API error
+    STORY  Results phase
+    STORY  Snapshot phase
+    STORY  Tallying phase
+    STORY  Voting phase
+  PANEL  Voting Registration Wizard  [5]
+    STORY  Voting Registration - Step 1
+    STORY  Voting Registration - Step 2
+    STORY  Voting Registration - Step 3
+    STORY  Voting Registration - Step 4
+    STORY  Voting Registration - Step 5
+GROUP  Wallets
+  PANEL  Add Wallet  [9]
+    STORY  Add
+    STORY  Create - New process
+    STORY  Create - Old process
+    STORY  Import
+    STORY  Restore - Old
+    STORY  Restore - Step 1
+    STORY  Restore - Step 2
+    STORY  Restore - Step 3
+    STORY  Restore - Step 4
+  PANEL  Export to File  [3]
+    STORY  default
+    STORY  spending password
+    STORY  submitting
+  PANEL  Hardware Wallets  [10]
+    STORY  Hardware wallet connect Ledger step 1
+    STORY  Hardware wallet connect Ledger step 2
+    STORY  Hardware wallet connect Ledger step 3
+    STORY  Hardware wallet connect Ledger step 4
+    STORY  Hardware wallet connect Ledger step 5
+    STORY  Hardware wallet connect Trezor step 1
+    STORY  Hardware wallet connect Trezor step 2
+    STORY  Hardware wallet connect Trezor step 3
+    STORY  Hardware wallet connect Trezor step 4
+    STORY  Hardware wallet connect Trezor step 5
+  PANEL  Import File  [2]
+    STORY  Step 1 - Import File
+    STORY  Step 2 - Wallets
+  PANEL  Legacy Wallets  [3]
+    STORY  Legacy Notification
+    STORY  Transfer Funds - Step1
+    STORY  Transfer Funds - Step2
+  PANEL  Paper Wallets  [5]
+    STORY  Complete Mnemonics
+    STORY  Completion
+    STORY  Confirm Mnemonics
+    STORY  Instructions
+    STORY  Verify
+  PANEL  Receive  [3]
+    STORY  Receive - random
+    STORY  Receive - sequential
+    STORY  Receive - sequential with address verification
+  PANEL  Send  [6]
+    STORY  Send - Hardware wallet verifying transaction
+    STORY  Send - Hardware wallet verifying transaction failed
+    STORY  Send - Hardware wallet verifying transaction succeeded
+    STORY  Send - Send screen
+    STORY  Wallet Send Confirmation Dialog With Assets
+    STORY  Wallet Send Confirmation Dialog With No Assets
+  PANEL  Set Password  [2]
+    STORY  Change Wallet Password
+    STORY  Set Wallet Password
+  PANEL  Settings  [10]
+    STORY  Delete - Accepted & filled correctly
+    STORY  Delete - Accepted & filled incorrectly
+    STORY  Delete - Accepted, filled correctly & submitting
+    STORY  Delete - Countdown
+    STORY  Public Key - QR Code
+    STORY  Public Key - Spending Password
+    STORY  Recovery Prase Verification - Widget
+    STORY  Unpair - Accepted
+    STORY  Unpair - Accepted & submitting
+    STORY  Wallet Settings
+  PANEL  Summary  [2]
+    STORY  Wallet Summary
+    STORY  Wallet Summary Header
+  PANEL  Tokens  [3]
+    STORY  WalletTokenPicker
+    STORY  WalletTokens
+    STORY  WalletTokensList
+  PANEL  Transactions  [5]
+    STORY  Metadata
+    STORY  Transaction
+    STORY  Transactions List
+    STORY  UTXO Distribution
+    STORY  Wallet Tokens Transactions List
+GROUP  dApps
+  PANEL  TransactionRequest  [2]
+    STORY  Notifications
+    STORY  Request
+
+GROUPS 15
+PANELS 53
+REGISTRATIONS 272
+REACHABLE 270
+UNREACHABLE 2
+UNRESOLVED LABELS 0
+
+# Index: title | label | path:line | whether the barrel loads the module
+
+Analytics  |  Analytics Consent Form  |  source/renderer/app/components/profile/analytics/Analytics.stories.tsx:10  |  loaded
+Assets / Asset pill  |  Default  |  storybook/stories/assets/Asset.stories.tsx:12  |  loaded
+Assets / AssetSettingsDialog  |  Default  |  storybook/stories/assets/AssetSettingsDialog.stories.tsx:28  |  loaded
+Assets / AssetSettingsDialog  |  With recommended decimal precision  |  storybook/stories/assets/AssetSettingsDialog.stories.tsx:37  |  loaded
+Assets / AssetSettingsDialog  |  With recommended decimal precision (non-zero)  |  storybook/stories/assets/AssetSettingsDialog.stories.tsx:49  |  loaded
+Common / ItemsDropdown  |  Assets  |  storybook/stories/common/ItemsDropdown.stories.tsx:245  |  loaded
+Common / ItemsDropdown  |  Generic  |  storybook/stories/common/ItemsDropdown.stories.tsx:113  |  loaded
+Common / ItemsDropdown  |  Wallets  |  storybook/stories/common/ItemsDropdown.stories.tsx:152  |  loaded
+Common / ItemsDropdown  |  Wallets - Label only  |  storybook/stories/common/ItemsDropdown.stories.tsx:208  |  loaded
+Common / Notifications  |  General  |  storybook/stories/notifications/Notifications.stories.tsx:20  |  loaded
+Common / Notifications  |  Inline  |  storybook/stories/notifications/Notifications.stories.tsx:172  |  loaded
+Common / Notifications  |  With actions  |  storybook/stories/notifications/Notifications.stories.tsx:91  |  loaded
+Common / Widgets  |  BigButtonForDialogs  |  storybook/stories/common/Widgets.stories.tsx:149  |  loaded
+Common / Widgets  |  ButtonLink  |  storybook/stories/common/Widgets.stories.tsx:206  |  loaded
+Common / Widgets  |  CollapsibleTextBlock  |  storybook/stories/common/Widgets.stories.tsx:219  |  loaded
+Common / Widgets  |  CountdownWidget  |  storybook/stories/common/Widgets.stories.tsx:114  |  loaded
+Common / Widgets  |  InlineEditingInput  |  storybook/stories/common/Widgets.stories.tsx:120  |  loaded
+Common / Widgets  |  NormalSwitch  |  storybook/stories/common/Widgets.stories.tsx:213  |  loaded
+Common / Widgets  |  Separator  |  storybook/stories/common/Widgets.stories.tsx:247  |  loaded
+Common / Widgets  |  TinySwitch  |  storybook/stories/common/Widgets.stories.tsx:202  |  loaded
+Common / Widgets  |  TinySwitch - short label  |  storybook/stories/common/Widgets.stories.tsx:203  |  loaded
+Common / Widgets  |  VerticalSeparator  |  storybook/stories/common/Widgets.stories.tsx:252  |  loaded
+Decentralization / Countdown  |  Countdown party  |  storybook/stories/staking/CountdownParty.stories.tsx:15  |  loaded
+Decentralization / Countdown  |  Decentralization Countdown  |  storybook/stories/staking/Staking.stories.tsx:94  |  loaded
+Decentralization / Redeem ITN Rewards  |  No Wallets  |  storybook/stories/staking/Staking.stories.tsx:290  |  loaded
+Decentralization / Redeem ITN Rewards  |  Redemption Unavailable  |  storybook/stories/staking/Staking.stories.tsx:293  |  loaded
+Decentralization / Redeem ITN Rewards  |  Step 1  |  storybook/stories/staking/Staking.stories.tsx:278  |  loaded
+Decentralization / Redeem ITN Rewards  |  Step 2  |  storybook/stories/staking/Staking.stories.tsx:281  |  loaded
+Decentralization / Redeem ITN Rewards  |  Step 3 - Failure  |  storybook/stories/staking/Staking.stories.tsx:287  |  loaded
+Decentralization / Redeem ITN Rewards  |  Step 3 - Success  |  storybook/stories/staking/Staking.stories.tsx:284  |  loaded
+Decentralization / Staking  |  Delegation Center  |  storybook/stories/staking/Staking.stories.tsx:113  |  loaded
+Decentralization / Staking  |  Delegation Center - Loading  |  storybook/stories/staking/Staking.stories.tsx:123  |  loaded
+Decentralization / Staking  |  Delegation Center - No Wallets  |  storybook/stories/staking/Staking.stories.tsx:147  |  loaded
+Decentralization / Staking  |  Delegation Center - Not an Shelley era  |  storybook/stories/staking/Staking.stories.tsx:137  |  loaded
+Decentralization / Staking  |  Delegation Wizard  |  storybook/stories/staking/Staking.stories.tsx:218  |  loaded
+Decentralization / Staking  |  Delegation Wizard - Delegation Not Available  |  storybook/stories/staking/Staking.stories.tsx:239  |  loaded
+Decentralization / Staking  |  Epochs  |  storybook/stories/staking/Staking.stories.tsx:172  |  loaded
+Decentralization / Staking  |  Info  |  storybook/stories/staking/Staking.stories.tsx:175  |  loaded
+Decentralization / Staking  |  Info Countdown  |  storybook/stories/staking/Staking.stories.tsx:192  |  loaded
+Decentralization / Staking  |  Pools Index  |  storybook/stories/staking/Staking.stories.tsx:154  |  loaded
+Decentralization / Staking  |  Pools Index - Loading  |  storybook/stories/staking/Staking.stories.tsx:157  |  loaded
+Decentralization / Staking  |  Rewards  |  storybook/stories/staking/Staking.stories.tsx:169  |  loaded
+Decentralization / Staking  |  Stake Pools List  |  storybook/stories/staking/Staking.stories.tsx:166  |  loaded
+Decentralization / Staking  |  Undelegate Confirmation  |  storybook/stories/staking/Staking.stories.tsx:247  |  loaded
+Decentralization / Staking  |  Undelegate Confirmation - unknownn stake pool  |  storybook/stories/staking/Staking.stories.tsx:259  |  loaded
+Decentralization / Staking  |  Undelegate Confirmation Result  |  storybook/stories/staking/Staking.stories.tsx:268  |  loaded
+Discreet Mode / Discreet Asset Amount  |  Discreet mode disabled  |  source/renderer/app/features/discreet-mode/ui/DiscreetValue.story.tsx:31  |  loaded
+Discreet Mode / Discreet Asset Amount  |  Discreet mode enabled  |  source/renderer/app/features/discreet-mode/ui/DiscreetValue.story.tsx:38  |  loaded
+Discreet Mode / Discreet Mode Toggle  |  Main  |  source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetModeToggle.story.tsx:9  |  loaded
+Governance / DRep Detail  |  Largest known metadata  |  storybook/stories/governance/DRepDetail.stories.tsx:405  |  loaded
+Governance / DRep Detail  |  Loaded — additional fields the parser refuses  |  storybook/stories/governance/DRepDetail.stories.tsx:323  |  loaded
+Governance / DRep Detail  |  Loaded — additional metadata fields  |  storybook/stories/governance/DRepDetail.stories.tsx:178  |  loaded
+Governance / DRep Detail  |  Loaded — already a favorite  |  storybook/stories/governance/DRepDetail.stories.tsx:151  |  loaded
+Governance / DRep Detail  |  Loaded — anchor could not be verified  |  storybook/stories/governance/DRepDetail.stories.tsx:378  |  loaded
+Governance / DRep Detail  |  Loaded — anchor on an unreachable scheme  |  storybook/stories/governance/DRepDetail.stories.tsx:388  |  loaded
+Governance / DRep Detail  |  Loaded — anchor verified but empty  |  storybook/stories/governance/DRepDetail.stories.tsx:335  |  loaded
+Governance / DRep Detail  |  Loaded — inactive DRep  |  storybook/stories/governance/DRepDetail.stories.tsx:142  |  loaded
+Governance / DRep Detail  |  Loaded — no anchor  |  storybook/stories/governance/DRepDetail.stories.tsx:139  |  loaded
+Governance / DRep Detail  |  Loaded — only fields no standard defines  |  storybook/stories/governance/DRepDetail.stories.tsx:352  |  loaded
+Governance / DRep Detail  |  Loaded — partial metadata  |  storybook/stories/governance/DRepDetail.stories.tsx:159  |  loaded
+Governance / DRep Detail  |  Loaded — with anchor  |  storybook/stories/governance/DRepDetail.stories.tsx:122  |  loaded
+Governance / DRep Detail  |  Loading  |  storybook/stories/governance/DRepDetail.stories.tsx:406  |  loaded
+Governance / DRep Detail  |  Not found  |  storybook/stories/governance/DRepDetail.stories.tsx:407  |  loaded
+Governance / DRep Detail  |  Ranking unavailable  |  storybook/stories/governance/DRepDetail.stories.tsx:399  |  loaded
+Governance / DRep Directory  |  Connected flow  |  storybook/stories/governance/DRepDirectory.stories.tsx:391  |  loaded
+Governance / DRep Directory  |  Empty  |  storybook/stories/governance/DRepDirectory.stories.tsx:553  |  loaded
+Governance / DRep Directory  |  Error  |  storybook/stories/governance/DRepDirectory.stories.tsx:554  |  loaded
+Governance / DRep Directory  |  Favorite toggle  |  storybook/stories/governance/DRepDirectory.stories.tsx:608  |  loaded
+Governance / DRep Directory  |  Favorites view  |  storybook/stories/governance/DRepDirectory.stories.tsx:678  |  loaded
+Governance / DRep Directory  |  Favorites view — empty  |  storybook/stories/governance/DRepDirectory.stories.tsx:692  |  loaded
+Governance / DRep Directory  |  Favorites view — stale favorite  |  storybook/stories/governance/DRepDirectory.stories.tsx:705  |  loaded
+Governance / DRep Directory  |  Loaded  |  storybook/stories/governance/DRepDirectory.stories.tsx:521  |  loaded
+Governance / DRep Directory  |  Loading  |  storybook/stories/governance/DRepDirectory.stories.tsx:560  |  loaded
+Governance / DRep Directory  |  Node syncing  |  storybook/stories/governance/DRepDirectory.stories.tsx:567  |  loaded
+Governance / DRep Directory  |  Node syncing — empty fallback  |  storybook/stories/governance/DRepDirectory.stories.tsx:578  |  loaded
+Governance / DRep Directory  |  Pinned favorites above the cohort  |  storybook/stories/governance/DRepDirectory.stories.tsx:634  |  loaded
+Governance / DRep Directory  |  Pinned favorites — favorite already in the cohort  |  storybook/stories/governance/DRepDirectory.stories.tsx:651  |  loaded
+Governance / DRep Directory  |  Refresh failed — retained snapshot  |  storybook/stories/governance/DRepDirectory.stories.tsx:564  |  loaded
+Governance / DRep Directory  |  Refreshing  |  storybook/stories/governance/DRepDirectory.stories.tsx:561  |  loaded
+Governance / DRep Directory  |  Search results  |  storybook/stories/governance/DRepDirectory.stories.tsx:722  |  loaded
+Governance / DRep Directory  |  Selfnode unavailable  |  storybook/stories/governance/DRepDirectory.stories.tsx:557  |  loaded
+Governance / DRep Directory  |  Show all — full population  |  storybook/stories/governance/DRepDirectory.stories.tsx:599  |  loaded
+Governance / DRep Directory  |  Table view  |  storybook/stories/governance/DRepDirectory.stories.tsx:667  |  loaded
+Governance / DRep Directory  |  Voting power unavailable  |  storybook/stories/governance/DRepDirectory.stories.tsx:591  |  loaded
+Governance / Delegation  |  Abstain to a DRep  |  storybook/stories/governance/Delegation.stories.tsx:542  |  loaded
+Governance / Delegation  |  Already delegated to Abstain  |  storybook/stories/governance/Delegation.stories.tsx:562  |  loaded
+Governance / Delegation  |  Already delegated to this DRep  |  storybook/stories/governance/Delegation.stories.tsx:559  |  loaded
+Governance / Delegation  |  Confirmation dialog - Abstain  |  storybook/stories/governance/Delegation.stories.tsx:636  |  loaded
+Governance / Delegation  |  Confirmation dialog - No Confidence  |  storybook/stories/governance/Delegation.stories.tsx:637  |  loaded
+Governance / Delegation  |  Confirmation dialog - hardware wallet  |  storybook/stories/governance/Delegation.stories.tsx:668  |  loaded
+Governance / Delegation  |  Confirmation dialog - software wallet  |  storybook/stories/governance/Delegation.stories.tsx:581  |  loaded
+Governance / Delegation  |  Confirmation dialog - submission fails  |  storybook/stories/governance/Delegation.stories.tsx:640  |  loaded
+Governance / Delegation  |  Connected flow  |  storybook/stories/governance/Delegation.stories.tsx:444  |  loaded
+Governance / Delegation  |  DRep to Abstain  |  storybook/stories/governance/Delegation.stories.tsx:552  |  loaded
+Governance / Delegation  |  DRep to No Confidence  |  storybook/stories/governance/Delegation.stories.tsx:553  |  loaded
+Governance / Delegation  |  Hardware wallet - connecting  |  storybook/stories/governance/Delegation.stories.tsx:624  |  loaded
+Governance / Delegation  |  Hardware wallet - verification failed  |  storybook/stories/governance/Delegation.stories.tsx:633  |  loaded
+Governance / Delegation  |  Hardware wallet - verified  |  storybook/stories/governance/Delegation.stories.tsx:630  |  loaded
+Governance / Delegation  |  Hardware wallet - verifying  |  storybook/stories/governance/Delegation.stories.tsx:627  |  loaded
+Governance / Delegation  |  Initialization error - generic  |  storybook/stories/governance/Delegation.stories.tsx:568  |  loaded
+Governance / Delegation  |  Initialization error - no UTxOs  |  storybook/stories/governance/Delegation.stories.tsx:570  |  loaded
+Governance / Delegation  |  Initialization error - not enough money  |  storybook/stories/governance/Delegation.stories.tsx:573  |  loaded
+Governance / Delegation  |  Initialization error - same vote  |  storybook/stories/governance/Delegation.stories.tsx:569  |  loaded
+Governance / Delegation  |  No Confidence to a DRep  |  storybook/stories/governance/Delegation.stories.tsx:545  |  loaded
+Governance / Delegation  |  Not delegated yet  |  storybook/stories/governance/Delegation.stories.tsx:580  |  loaded
+Governance / Delegation  |  Unavailable while syncing  |  storybook/stories/governance/Delegation.stories.tsx:704  |  loaded
+Governance / Delegation  |  Voting power delegation  |  storybook/stories/governance/Delegation.stories.tsx:527  |  loaded
+Governance / Delegation  |  Voting power delegation - prefilled from directory  |  storybook/stories/governance/Delegation.stories.tsx:533  |  loaded
+Governance / Governance Center  |  Every delegation state  |  storybook/stories/governance/GovernanceWallets.stories.tsx:105  |  loaded
+Governance / Governance Center  |  No wallets  |  storybook/stories/governance/GovernanceWallets.stories.tsx:109  |  loaded
+Governance / Governance Center  |  Nothing delegated yet  |  storybook/stories/governance/GovernanceWallets.stories.tsx:106  |  loaded
+Loading / Chain Storage  |  Busy State  |  storybook/stories/loading/chain-storage/ChainStorageLocationPicker.stories.tsx:69  |  loaded
+Loading / Chain Storage  |  Data Found  |  storybook/stories/loading/chain-storage/ChainStorageLocationPicker.stories.tsx:89  |  loaded
+Loading / Chain Storage  |  Interactive Picker  |  storybook/stories/loading/chain-storage/ChainStorageLocationPicker.stories.tsx:28  |  loaded
+Loading / Chain Storage  |  Invalid Current Path  |  storybook/stories/loading/chain-storage/ChainStorageLocationPicker.stories.tsx:60  |  loaded
+Loading / Chain Storage  |  Recovery + Data Found  |  storybook/stories/loading/chain-storage/ChainStorageLocationPicker.stories.tsx:98  |  loaded
+Loading / Chain Storage  |  Recovery Fallback  |  storybook/stories/loading/chain-storage/ChainStorageLocationPicker.stories.tsx:79  |  loaded
+Loading / Mithril / Bootstrap  |  Interactive Shell  |  storybook/stories/loading/mithril/MithrilBootstrap.stories.tsx:59  |  loaded
+Loading / Mithril / Bootstrap  |  Storage To Decision Routing  |  storybook/stories/loading/mithril/MithrilBootstrap.stories.tsx:129  |  loaded
+Loading / Mithril / Error  |  Generic Failure  |  storybook/stories/loading/mithril/MithrilErrorView.stories.tsx:42  |  loaded
+Loading / Mithril / Error  |  Interactive Error Stage  |  storybook/stories/loading/mithril/MithrilErrorView.stories.tsx:22  |  loaded
+Loading / Mithril / Mithril Partial Sync Dialogue  |  Known Epochs Behind  |  storybook/stories/loading/mithril/MithrilPartialSyncDialogue.stories.tsx:81  |  loaded
+Loading / Mithril / Mithril Partial Sync Dialogue  |  Known Epochs Behind / Confirm View  |  storybook/stories/loading/mithril/MithrilPartialSyncDialogue.stories.tsx:90  |  loaded
+Loading / Mithril / Mithril Partial Sync Dialogue  |  Snapshot Ahead Of Local Tip (Derived)  |  storybook/stories/loading/mithril/MithrilPartialSyncDialogue.stories.tsx:107  |  loaded
+Loading / Mithril / Mithril Partial Sync Dialogue  |  Unknown Behind  |  storybook/stories/loading/mithril/MithrilPartialSyncDialogue.stories.tsx:125  |  loaded
+Loading / Mithril / Mithril Partial Sync Dialogue  |  Unknown Behind / Confirm View  |  storybook/stories/loading/mithril/MithrilPartialSyncDialogue.stories.tsx:131  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Active Progress  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:284  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Cancelled  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:287  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Cancelling  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:295  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Completed  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:313  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Completed - Finalize Failed (auto-plays)  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:375  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Download Progress Bar (Partial)  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:329  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Downloading File Count  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:322  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Failed - Converting (All Recovery Actions)  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:348  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Failed - Downloading (All Recovery Actions)  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:339  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Failed - Finalizing (All Recovery Actions)  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:366  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Failed - Installing (All Recovery Actions)  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:357  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Failed With Restart Allowed  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:298  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Failed With Wipe-Only Recovery  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:306  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Interactive  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:267  |  loaded
+Loading / Mithril / Partial Sync Overlay  |  Stopping Node  |  storybook/stories/loading/mithril/MithrilPartialSyncOverlay.stories.tsx:336  |  loaded
+Loading / Mithril / Progress  |  Interactive Working State  |  storybook/stories/loading/mithril/MithrilProgressView.stories.tsx:44  |  loaded
+Loading / Mithril / Progress  |  Preparing  |  storybook/stories/loading/mithril/MithrilProgressView.stories.tsx:77  |  loaded
+Loading / Mithril / Progress  |  Starting Node Handoff  |  storybook/stories/loading/mithril/MithrilProgressView.stories.tsx:86  |  loaded
+Loading / Mithril / Snapshot Picker  |  Interactive Decision View  |  storybook/stories/loading/mithril/MithrilDecisionView.stories.tsx:39  |  loaded
+Loading / Mithril / Snapshot Picker  |  Loading Snapshots  |  storybook/stories/loading/mithril/MithrilDecisionView.stories.tsx:77  |  loaded
+Loading / Mithril / Snapshot Picker  |  No Snapshots Available  |  storybook/stories/loading/mithril/MithrilDecisionView.stories.tsx:86  |  loaded
+Navigation / Sidebar  |  Active  |  storybook/stories/navigation/SidebarCategory.stories.tsx:24  |  loaded
+Navigation / Sidebar  |  Decentralization Progress Category  |  storybook/stories/navigation/Sidebar.stories.tsx:208  |  loaded
+Navigation / Sidebar  |  Delegation Category  |  storybook/stories/navigation/Sidebar.stories.tsx:191  |  loaded
+Navigation / Sidebar  |  Hardware Wallet Selected  |  storybook/stories/navigation/Sidebar.stories.tsx:172  |  loaded
+Navigation / Sidebar  |  Inactive  |  storybook/stories/navigation/SidebarCategory.stories.tsx:17  |  loaded
+Navigation / Sidebar  |  Network label  |  storybook/stories/navigation/Sidebar.stories.tsx:230  |  loaded
+Navigation / Sidebar  |  No Category  |  storybook/stories/navigation/Sidebar.stories.tsx:116  |  loaded
+Navigation / Sidebar  |  Wallet Selected  |  storybook/stories/navigation/Sidebar.stories.tsx:152  |  loaded
+Navigation / Sidebar  |  Wallets Category  |  storybook/stories/navigation/Sidebar.stories.tsx:134  |  loaded
+Navigation / Wallets Menu  |  Empty  |  storybook/stories/navigation/SidebarWalletsMenu.stories.tsx:85  |  loaded
+Navigation / Wallets Menu  |  With Wallets  |  storybook/stories/navigation/SidebarWalletsMenu.stories.tsx:99  |  loaded
+News / NewsFeed  |  Empty  |  storybook/stories/news/NewsFeed.stories.tsx:24  |  loaded
+News / NewsFeed  |  Fetched  |  storybook/stories/news/NewsFeed.stories.tsx:65  |  loaded
+News / NewsFeed  |  Fetching  |  storybook/stories/news/NewsFeed.stories.tsx:44  |  loaded
+News / Overlays  |  Alerts  |  storybook/stories/news/AlertsOverlay.stories.tsx:95  |  loaded
+News / Overlays  |  Incident - Grey  |  storybook/stories/news/IncidentOverlay.stories.tsx:56  |  loaded
+News / Overlays  |  Incident - Themed  |  storybook/stories/news/IncidentOverlay.stories.tsx:44  |  loaded
+News / Overlays  |  Incident Overlay  |  storybook/stories/news/IncidentOverlay.stories.tsx:32  |  loaded
+News / Overlays  |  RTS Recommendation  |  storybook/stories/news/AlertsOverlay.stories.tsx:113  |  loaded
+News / Overlays  |  Update  |  storybook/stories/news/AppUpdateOverlay.stories.tsx:14  |  loaded
+Nodes / About  |  About Dialog  |  storybook/stories/nodes/about/About.stories.tsx:12  |  loaded
+Nodes / Connecting and Loading  |  Connecting  |  storybook/stories/nodes/syncing/Syncing.stories.tsx:17  |  loaded
+Nodes / Connecting and Loading  |  Loading Wallet Data  |  storybook/stories/nodes/syncing/Syncing.stories.tsx:19  |  loaded
+Nodes / Connecting and Loading  |  Trouble Connecting  |  storybook/stories/nodes/syncing/Syncing.stories.tsx:18  |  loaded
+Nodes / Diagnostic  |  Partial Sync At Or Past Snapshot  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:133  |  loaded
+Nodes / Diagnostic  |  Partial Sync CTA Blocked  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:132  |  loaded
+Nodes / Diagnostic  |  Partial Sync CTA Ready  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:131  |  loaded
+Nodes / Diagnostic  |  Partial Sync Confirmation  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:136  |  loaded
+Nodes / Diagnostic / Mithril Partial Sync Confirmation  |  At Or Past Snapshot  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:144  |  loaded
+Nodes / Diagnostic / Mithril Partial Sync Confirmation  |  Known Epochs Behind  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:142  |  loaded
+Nodes / Diagnostic / Mithril Partial Sync Confirmation  |  Start Error  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:148  |  loaded
+Nodes / Diagnostic / Mithril Partial Sync Confirmation  |  Unknown Behind  |  storybook/stories/nodes/status/Diagnostics.stories.tsx:143  |  loaded
+Nodes / Environment  |  Production  |  storybook/stories/nodes/environment/TopBarEnvironment.stories.tsx:138  |  loaded
+Nodes / Environment  |  Staging  |  storybook/stories/nodes/environment/TopBarEnvironment.stories.tsx:131  |  loaded
+Nodes / Environment  |  Testnet  |  storybook/stories/nodes/environment/TopBarEnvironment.stories.tsx:124  |  loaded
+Nodes / Errors  |  No Disk Space Error  |  storybook/stories/nodes/errors/Errors.stories.tsx:13  |  loaded
+Nodes / Errors  |  System Time Error  |  storybook/stories/nodes/errors/Errors.stories.tsx:15  |  loaded
+Nodes / Splash Network Info  |  Flight  |  storybook/stories/nodes/splash/Splash.stories.tsx:8  |  loaded
+Nodes / Updates  |  Data Layer Migration  |  storybook/stories/nodes/updates/Updates.stories.tsx:13  |  loaded
+Settings / General  |  General  |  storybook/stories/settings/general/General.stories.tsx:44  |  loaded
+Settings / General  |  Security  |  storybook/stories/settings/general/General.stories.tsx:126  |  loaded
+Settings / General  |  Stake Pools  |  storybook/stories/settings/general/General.stories.tsx:77  |  loaded
+Settings / General  |  Support  |  storybook/stories/settings/general/General.stories.tsx:117  |  loaded
+Settings / General  |  Terms of Service  |  storybook/stories/settings/general/General.stories.tsx:105  |  loaded
+Settings / General  |  Themes  |  storybook/stories/settings/general/General.stories.tsx:93  |  loaded
+Settings / General  |  Wallets  |  storybook/stories/settings/general/General.stories.tsx:55  |  loaded
+Settings / Language  |  Select Language - initial  |  storybook/stories/settings/language/Language.stories.tsx:11  |  loaded
+Settings / Language  |  Select Language - submitting  |  storybook/stories/settings/language/Language.stories.tsx:23  |  loaded
+StakingChart  |  Chart with Tooltips  |  storybook/stories/staking/Legacy.stories.tsx:49  |  NOT LOADED
+StakingChart  |  Tooltip only  |  storybook/stories/staking/Legacy.stories.tsx:31  |  NOT LOADED
+Voting / Voting Info  |  API error  |  storybook/stories/voting/Voting.stories.tsx:207  |  loaded
+Voting / Voting Info  |  Results phase  |  storybook/stories/voting/Voting.stories.tsx:204  |  loaded
+Voting / Voting Info  |  Snapshot phase  |  storybook/stories/voting/Voting.stories.tsx:195  |  loaded
+Voting / Voting Info  |  Tallying phase  |  storybook/stories/voting/Voting.stories.tsx:201  |  loaded
+Voting / Voting Info  |  Voting phase  |  storybook/stories/voting/Voting.stories.tsx:198  |  loaded
+Voting / Voting Registration Wizard  |  Voting Registration - Step 1  |  storybook/stories/voting/Voting.stories.tsx:114  |  loaded
+Voting / Voting Registration Wizard  |  Voting Registration - Step 2  |  storybook/stories/voting/Voting.stories.tsx:128  |  loaded
+Voting / Voting Registration Wizard  |  Voting Registration - Step 3  |  storybook/stories/voting/Voting.stories.tsx:152  |  loaded
+Voting / Voting Registration Wizard  |  Voting Registration - Step 4  |  storybook/stories/voting/Voting.stories.tsx:168  |  loaded
+Voting / Voting Registration Wizard  |  Voting Registration - Step 5  |  storybook/stories/voting/Voting.stories.tsx:176  |  loaded
+Wallets / Add Wallet  |  Add  |  storybook/stories/wallets/addWallet/Add.stories.tsx:18  |  loaded
+Wallets / Add Wallet  |  Create - New process  |  storybook/stories/wallets/addWallet/Create.stories.tsx:11  |  loaded
+Wallets / Add Wallet  |  Create - Old process  |  storybook/stories/wallets/addWallet/Create.stories.tsx:13  |  loaded
+Wallets / Add Wallet  |  Import  |  storybook/stories/wallets/addWallet/Import.stories.tsx:10  |  loaded
+Wallets / Add Wallet  |  Restore - Old  |  storybook/stories/wallets/addWallet/RestoreOld.stories.tsx:12  |  loaded
+Wallets / Add Wallet  |  Restore - Step 1  |  storybook/stories/wallets/addWallet/Restore.stories.tsx:25  |  loaded
+Wallets / Add Wallet  |  Restore - Step 2  |  storybook/stories/wallets/addWallet/Restore.stories.tsx:62  |  loaded
+Wallets / Add Wallet  |  Restore - Step 3  |  storybook/stories/wallets/addWallet/Restore.stories.tsx:102  |  loaded
+Wallets / Add Wallet  |  Restore - Step 4  |  storybook/stories/wallets/addWallet/Restore.stories.tsx:118  |  loaded
+Wallets / Export to File  |  default  |  storybook/stories/wallets/export/WalletExportToFile.stories.tsx:9  |  loaded
+Wallets / Export to File  |  spending password  |  storybook/stories/wallets/export/WalletExportToFile.stories.tsx:31  |  loaded
+Wallets / Export to File  |  submitting  |  storybook/stories/wallets/export/WalletExportToFile.stories.tsx:20  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Ledger step 1  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:34  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Ledger step 2  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:45  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Ledger step 3  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:56  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Ledger step 4  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:67  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Ledger step 5  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:78  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Trezor step 1  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:89  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Trezor step 2  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:100  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Trezor step 3  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:111  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Trezor step 4  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:122  |  loaded
+Wallets / Hardware Wallets  |  Hardware wallet connect Trezor step 5  |  storybook/stories/wallets/hardwareWallets/HardwareWallets.stories.tsx:133  |  loaded
+Wallets / Import File  |  Step 1 - Import File  |  storybook/stories/wallets/import/WalletImportFile.stories.tsx:32  |  loaded
+Wallets / Import File  |  Step 2 - Wallets  |  storybook/stories/wallets/import/WalletImportFile.stories.tsx:50  |  loaded
+Wallets / Legacy Wallets  |  Legacy Notification  |  storybook/stories/wallets/legacyWallets/LegacyNotification.stories.tsx:11  |  loaded
+Wallets / Legacy Wallets  |  Transfer Funds - Step1  |  storybook/stories/wallets/legacyWallets/TransferFunds.stories.tsx:18  |  loaded
+Wallets / Legacy Wallets  |  Transfer Funds - Step2  |  storybook/stories/wallets/legacyWallets/TransferFunds.stories.tsx:59  |  loaded
+Wallets / Paper Wallets  |  Complete Mnemonics  |  storybook/stories/wallets/paperWallets/PaperWallets.stories.tsx:34  |  loaded
+Wallets / Paper Wallets  |  Completion  |  storybook/stories/wallets/paperWallets/PaperWallets.stories.tsx:57  |  loaded
+Wallets / Paper Wallets  |  Confirm Mnemonics  |  storybook/stories/wallets/paperWallets/PaperWallets.stories.tsx:43  |  loaded
+Wallets / Paper Wallets  |  Instructions  |  storybook/stories/wallets/paperWallets/PaperWallets.stories.tsx:14  |  loaded
+Wallets / Paper Wallets  |  Verify  |  storybook/stories/wallets/paperWallets/PaperWallets.stories.tsx:26  |  loaded
+Wallets / Receive  |  Receive - random  |  storybook/stories/wallets/receive/WalletReceive.stories.tsx:117  |  loaded
+Wallets / Receive  |  Receive - sequential  |  storybook/stories/wallets/receive/WalletReceive.stories.tsx:22  |  loaded
+Wallets / Receive  |  Receive - sequential with address verification  |  storybook/stories/wallets/receive/WalletReceive.stories.tsx:65  |  loaded
+Wallets / Send  |  Send - Hardware wallet verifying transaction  |  storybook/stories/wallets/send/WalletSend.stories.tsx:325  |  loaded
+Wallets / Send  |  Send - Hardware wallet verifying transaction failed  |  storybook/stories/wallets/send/WalletSend.stories.tsx:385  |  loaded
+Wallets / Send  |  Send - Hardware wallet verifying transaction succeeded  |  storybook/stories/wallets/send/WalletSend.stories.tsx:355  |  loaded
+Wallets / Send  |  Send - Send screen  |  storybook/stories/wallets/send/WalletSend.stories.tsx:295  |  loaded
+Wallets / Send  |  Wallet Send Confirmation Dialog With Assets  |  storybook/stories/wallets/send/WalletSend.stories.tsx:415  |  loaded
+Wallets / Send  |  Wallet Send Confirmation Dialog With No Assets  |  storybook/stories/wallets/send/WalletSend.stories.tsx:450  |  loaded
+Wallets / Set Password  |  Change Wallet Password  |  storybook/stories/wallets/setPassword/SetWalletPassword.stories.tsx:92  |  loaded
+Wallets / Set Password  |  Set Wallet Password  |  storybook/stories/wallets/setPassword/SetWalletPassword.stories.tsx:67  |  loaded
+Wallets / Settings  |  Delete - Accepted & filled correctly  |  storybook/stories/wallets/settings/WalletDelete.stories.tsx:78  |  loaded
+Wallets / Settings  |  Delete - Accepted & filled incorrectly  |  storybook/stories/wallets/settings/WalletDelete.stories.tsx:61  |  loaded
+Wallets / Settings  |  Delete - Accepted, filled correctly & submitting  |  storybook/stories/wallets/settings/WalletDelete.stories.tsx:95  |  loaded
+Wallets / Settings  |  Delete - Countdown  |  storybook/stories/wallets/settings/WalletDelete.stories.tsx:44  |  loaded
+Wallets / Settings  |  Public Key - QR Code  |  storybook/stories/wallets/settings/PublicKeyQRCode.stories.tsx:10  |  loaded
+Wallets / Settings  |  Public Key - Spending Password  |  storybook/stories/wallets/settings/WalletPublicKey.stories.tsx:13  |  loaded
+Wallets / Settings  |  Recovery Prase Verification - Widget  |  storybook/stories/wallets/settings/WalletRecoveryPhraseVerification.stories.tsx:26  |  loaded
+Wallets / Settings  |  Unpair - Accepted  |  storybook/stories/wallets/settings/WalletUnpair.stories.tsx:32  |  loaded
+Wallets / Settings  |  Unpair - Accepted & submitting  |  storybook/stories/wallets/settings/WalletUnpair.stories.tsx:50  |  loaded
+Wallets / Settings  |  Wallet Settings  |  storybook/stories/wallets/settings/WalletSettings.stories.tsx:17  |  loaded
+Wallets / Summary  |  Wallet Summary  |  storybook/stories/wallets/summary/WalletSummary.stories.tsx:157  |  loaded
+Wallets / Summary  |  Wallet Summary Header  |  storybook/stories/wallets/summary/WalletSummaryHeader.stories.tsx:20  |  loaded
+Wallets / Tokens  |  WalletTokenPicker  |  source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.stories.tsx:66  |  loaded
+Wallets / Tokens  |  WalletTokens  |  storybook/stories/wallets/tokens/WalletTokens.stories.tsx:142  |  loaded
+Wallets / Tokens  |  WalletTokensList  |  storybook/stories/wallets/tokens/WalletTokensList.stories.tsx:154  |  loaded
+Wallets / Transactions  |  Metadata  |  storybook/stories/wallets/transactions/TransactionMetadata.stories.tsx:7  |  loaded
+Wallets / Transactions  |  Transaction  |  storybook/stories/wallets/transactions/Transaction.stories.tsx:118  |  loaded
+Wallets / Transactions  |  Transactions List  |  storybook/stories/wallets/transactions/TransactionsList.stories.tsx:162  |  loaded
+Wallets / Transactions  |  UTXO Distribution  |  storybook/stories/wallets/transactions/Utxo.stories.tsx:21  |  loaded
+Wallets / Transactions  |  Wallet Tokens Transactions List  |  storybook/stories/wallets/transactions/TransactionsList.stories.tsx:205  |  loaded
+dApps / TransactionRequest  |  Notifications  |  storybook/stories/dapps/TransactionRequest.stories.tsx:167  |  loaded
+dApps / TransactionRequest  |  Request  |  storybook/stories/dapps/TransactionRequest.stories.tsx:41  |  loaded

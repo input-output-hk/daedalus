@@ -8,7 +8,7 @@ import {
   DefaultSyncingConnectingStory,
   LoadingWalletDataSyncingConnectingStory,
   ConnectivityIssuesSyncingConnectingStory,
-} from './SyncingConnecting.stories';
+} from './_support/SyncingConnecting';
 
 storiesOf('Nodes / Connecting and Loading', module)
   .addDecorator((story, context) => (

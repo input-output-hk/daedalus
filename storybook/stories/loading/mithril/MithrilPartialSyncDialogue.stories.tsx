@@ -27,11 +27,12 @@ const makePromptProps = (startFails: boolean) => ({
 const behindByEpochsKnob = () => loadingNumberKnob('behindByEpochs', 120);
 const startFailsKnob = () => loadingBooleanKnob('startFails', false);
 
-// StoryWrapper injects the DaedalusMenu OS selection onto the story *context*
-// (the second render arg) — not the args object — so read it from there and
-// mirror it onto global.environment. This is what lets the prompt's
-// platform-aware shortcut note ("Cmd + D" on macOS, "Ctrl + D" elsewhere)
-// track the toolbar OS switch.
+// StoryWrapper passes the OS selection to the story on the *context*, the
+// second render argument, not the args object, so read it from there and mirror
+// it onto global.environment. This is what lets the prompt's platform-aware
+// shortcut note ("Cmd + D" on macOS, "Ctrl + D" elsewhere) track the toolbar OS
+// switch. The selection is a Storybook global, so context.globals.osName holds
+// the same value.
 const applyStoryOs = (context: unknown) =>
   applyEnvironmentOs((context as { osName?: string }).osName ?? '');
 

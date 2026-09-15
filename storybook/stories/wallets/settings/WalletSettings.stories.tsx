@@ -3,12 +3,13 @@ import { storiesOf } from '@storybook/react';
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 // Screens
-import WalletSettingsScreen from './WalletSettingsScreen.stories';
+import WalletSettingsScreen from './_support/WalletSettingsScreen';
 import './WalletDelete.stories';
 import './WalletUnpair.stories';
 import './WalletRecoveryPhraseVerification.stories';
 import './WalletPublicKey.stories';
 import './PublicKeyQRCode.stories';
+import './UndelegateWallet.stories';
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets / Settings', module)

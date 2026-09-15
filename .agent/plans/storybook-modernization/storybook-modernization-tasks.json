@@ -1,0 +1,2246 @@
+{
+ "metadata": {
+  "title": "Storybook Modernization Tasks",
+  "created": "2026-09-10",
+  "updated": "2026-09-14",
+  "version": "2.2.0",
+  "totalTasks": 61,
+  "prdReference": ".agent/plans/storybook-modernization/storybook-modernization-prd.md",
+  "description": "Move Daedalus off Storybook 6.4.22, storiesOf() and addon-knobs onto 10.6.x by way of 8.6.x, then cover every router-reachable screen with a container story built on one shared MobX store fixture harness",
+  "sourceFiles": [
+   ".agent/plans/storybook-modernization/research/01-current-coverage.md",
+   ".agent/plans/storybook-modernization/research/02-storybook-upgrade-path.md",
+   ".agent/plans/storybook-modernization/research/03-react-upgrade-gate.md",
+   ".agent/plans/storybook-modernization/research/04-tooling-alternatives.md",
+   ".agent/plans/storybook-modernization/research/05-reachable-screens.md",
+   "storybook/main.ts",
+   "storybook/preview.tsx",
+   "storybook/stories/index.ts",
+   "storybook/stories/_support/StoryWrapper.tsx",
+   "storybook/stories/_support/StoryProvider.tsx",
+   "storybook/stories/_support/config.ts",
+   "storybook/addons/DaedalusMenu/register.tsx",
+   "source/renderer/app/stores/index.ts",
+   "source/renderer/app/Routes.tsx",
+   "source/renderer/app/containers/Root.tsx",
+   "perSystem/checks.nix",
+   "package.json",
+   "tsconfig.json"
+  ],
+  "importantNote": "yarn storybook:build is a required CI check (perSystem/checks.nix:78, x86_64-linux only) and is the only automated check that renders components with real themes and translations. The trunk must never carry a commit with it red. Phase 3 is the one landing that cannot be decomposed into smaller green commits, and the constraint is yarn compile rather than the build: at 8.6.x a file still importing storiesOf from @storybook/react fails tsc whether or not the indexer sees it, and tsconfig.json declares no include, so every story file is in the program. It is therefore landed as a single merge from a single branch that is green when it merges. Phases 6 and 7 are additive and cannot break an existing story."
+ },
+ "phases": [
+  {
+   "id": "phase-1",
+   "name": "Baseline, Deletions And Version-Neutral Changes",
+   "description": "Everything that can land on the pinned Storybook 6.4.22 without touching a story shape. Records the sidebar baseline the whole conversion is diffed against, removes the story sets the owner has decided to delete, removes the /staking/epochs screen and the dead /redeem-itn-wallets route binding, and lands the standalone tsconfig change.",
+   "riskLevel": "low",
+   "tasks": [
+    {
+     "id": "task-001",
+     "title": "Capture the sidebar baseline",
+     "description": "Record the full sidebar tree as it stands before any change: 15 top-level groups, 53 distinct panel titles and 272 registrations with their display labels, 267 under storybook/stories and 5 in the colocated story files. A raw grep for .add( over storybook/stories returns 272; three of those are moment().add() chains at staking/_support/Epochs.tsx:10, staking/_support/Undelegate.tsx:108 and staking/_support/DelegationSteps.tsx:211, and two more sit in the support module governance/_utils/drepPopulation.ts, which registers nothing. Every later label check is a diff against this file, because the codemod sanitizer renames 80 exports and a wrong sidebar label is invisible to every automated check.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 3.0,
+     "dependencies": [],
+     "targetPaths": [
+      "storybook/stories/index.ts",
+      "storybook/main.ts"
+     ],
+     "implementationNotes": [
+      "Build the workbench and walk the sidebar, or extract the titles from the storiesOf() and .add() arguments; both are acceptable as long as the result records group, panel and story label for every registration.",
+      "Store the baseline as a plain text or JSON file outside the repository, or as a scratch artifact attached to the branch. It is a working reference, not a deliverable.",
+      "Record the count alongside the tree so a missing registration shows up as an arithmetic difference rather than a reading error."
+     ],
+     "acceptance": [
+      "Every one of the 272 registrations across the 84 story files appears in the baseline with its group, panel and label",
+      "The baseline distinguishes the two registrations in staking/Legacy.stories.tsx that the barrel never loads"
+     ],
+     "notes": "Cheap, and the whole conversion is unverifiable without it."
+    },
+    {
+     "id": "task-002",
+     "title": "Delete the four flag-disabled story sets",
+     "description": "Locked decision 4. Remove 12 registrations documenting screens no user can reach, and their barrel entries. The components and the feature flags are not touched.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-001"
+     ],
+     "targetPaths": [
+      "storybook/stories/wallets/paperWallets/PaperWallets.stories.tsx",
+      "storybook/stories/wallets/legacyWallets/LegacyNotification.stories.tsx",
+      "storybook/stories/wallets/legacyWallets/TransferFunds.stories.tsx",
+      "storybook/stories/staking/CountdownParty.stories.tsx",
+      "storybook/stories/staking/Staking.stories.tsx",
+      "storybook/stories/wallets/index.ts",
+      "storybook/stories/index.ts"
+     ],
+     "implementationNotes": [
+      "Delete whole files: PaperWallets.stories.tsx (5 registrations), LegacyNotification.stories.tsx (1), TransferFunds.stories.tsx (2), CountdownParty.stories.tsx (1).",
+      "Remove three registrations from staking/Staking.stories.tsx: the countdown panel at :92 and the Info and Info Countdown registrations at :176 and :193.",
+      "Remove the barrel entries in the same commit: storybook/stories/wallets/index.ts:17-19 and storybook/stories/index.ts:11.",
+      "Flags for the record, all unchanged by this task: stakingConfig.ts:104 IS_STAKING_INFO_PAGE_AVAILABLE, SidebarStore.ts:123 and :124, walletsConfig.ts:44 IS_BYRON_WALLET_MIGRATION_ENABLED.",
+      "This also removes 19 knob call sites that would otherwise be converted in phase 4, not the 13 first recorded here. 13 are in the four deleted files: 6 in TransferFunds.stories.tsx, 5 in CountdownParty.stories.tsx, 2 in LegacyNotification.stories.tsx and none in PaperWallets.stories.tsx. The other 6 are in the three registrations removed from staking/Staking.stories.tsx: the date call inside startDateTimeKnob, the number call in the Info story, and four boolean calls in Info Countdown. Measured across the whole corpus the figure reconciles exactly: 396 call sites before this task and 377 after, against the 396 the PRD records.",
+      "The voting stories are deliberately not in this set. Locked decision 13 keeps storybook/stories/voting/Voting.stories.tsx and every story rendering a component under source/renderer/app/components/voting/, because the owner judges Catalyst suspended rather than retired. Same observable state as the four sets above, a maintained component tree behind no affordance, different product judgment."
+     ],
+     "acceptance": [
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "The sidebar diff against task-001 shows exactly 12 registrations removed and nothing else",
+      "No file under source/renderer/app/components or source/renderer/app/config is modified"
+     ]
+    },
+    {
+     "id": "task-003",
+     "title": "Delete the orphaned legacy staking story and its eight components",
+     "description": "Locked decision 5. storybook/stories/staking/Legacy.stories.tsx is unreachable from the barrel, so its two registrations never appear in the sidebar and storybook:build never loads it. It is also the only reference in the repository to source/renderer/app/components/staking/legacy/.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 2.0,
+     "dependencies": [
+      "task-001"
+     ],
+     "targetPaths": [
+      "storybook/stories/staking/Legacy.stories.tsx",
+      "source/renderer/app/components/staking/legacy/"
+     ],
+     "implementationNotes": [
+      "Confirm the components are unreferenced before deleting: grep for each of the eight component names across source/, storybook/ and tests/.",
+      "The directory carries a .scss stylesheet alongside each component plus the _stakingConfig.scss partial, 17 tracked files in all. The .scss.d.ts files are not among them: .gitignore:141 ignores *.scss.d.ts and typed-scss-modules generates them through the precompile script, so none is tracked anywhere in the repository and none is part of this commit. Note also that two partials are named _stakingConfig.scss. Only the copy inside legacy/ goes; source/renderer/app/components/staking/_stakingConfig.scss at the parent level has at least five surviving importers and is untouched.",
+      "tsc is the only thing that has been compiling these files, because tsconfig.json declares no include and only excludes node_modules.",
+      "This task changes four tracked i18n artifacts, which the entry did not previously say. StakingChartTooltip.tsx is the only file in the directory calling defineMessages, and its six ids under staking.chart.tooltip.* appear in translations/messages.json, i18n/locales/defaultMessages.json, en-US.json and ja-JP.json. The i18n check at perSystem/checks.nix:64-76 regenerates and requires no diff, so removing the component without regenerating leaves a required check red. Regenerate in the same commit; all six carry the !!! untranslated prefix in both locales, so no translation is lost.",
+      "Refinement to locked decision 5, which records five components as referenced by nothing at all. Measured: legacy/Staking.tsx is referenced by nothing, and BlockGenerationInfo, StakingSwitch and StakingSystemState are referenced only by it, with StakingSystemStateElement referenced only by StakingSystemState. It is one dead subtree rooted at an unreferenced file rather than five isolated files. Same conclusion, and it is what a reviewer re-running the per-component greps will see."
+     ],
+     "acceptance": [
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "grep over source/, storybook/ and tests/ returns no reference to any of the eight deleted components"
+     ]
+    },
+    {
+     "id": "task-004",
+     "title": "Remove the /staking/epochs screen",
+     "description": "Locked decision 14. The route is live at Routes.tsx:196-200, the navigation item that would reach it is commented out at StakingNavigation.tsx:64-67, and ROUTES.STAKING.PAGE is a goToRoute target rather than a Switch binding (Staking.tsx:71-78), so nothing can land on the path. The route, the container, the components, the story and the dummy fixtures all go.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-001"
+     ],
+     "targetPaths": [
+      "source/renderer/app/Routes.tsx",
+      "source/renderer/app/routes-config.ts",
+      "source/renderer/app/containers/staking/StakingEpochsPage.tsx",
+      "source/renderer/app/components/staking/epochs/",
+      "source/renderer/app/components/staking/navigation/StakingNavigation.tsx",
+      "source/renderer/app/config/stakingCurrentEpoch.dummy.json",
+      "source/renderer/app/config/stakingPreviousEpoch.dummy.json",
+      "storybook/stories/staking/_support/Epochs.tsx",
+      "storybook/stories/staking/Staking.stories.tsx",
+      "source/renderer/app/i18n/locales/en-US.json",
+      "source/renderer/app/i18n/locales/ja-JP.json",
+      "translations/messages.json"
+     ],
+     "implementationNotes": [
+      "What users keep: components/staking/delegation-center/DelegationCenterHeader.tsx renders the current epoch with its slot counts, a countdown to the next epoch (:154, :165-172) and the sentence at :43-45 telling the user when a delegation change takes effect. DelegationCenter.tsx:61-67 mounts it at the top of /staking/delegation-center, and it takes its data from the delegation center's own props, so it is independent of the deleted page.",
+      "What users lose: nothing visible. The epoch progress bar at StakingEpochs.tsx:124-135 renders on the deleted page alone, and no affordance reaches that page.",
+      "This is a stub rather than a suspended feature, which is the distinction from the voting stories kept under decision 13: StakingEpochsPage.tsx:5-6 imports config/stakingPreviousEpoch.dummy.json and config/stakingCurrentEpoch.dummy.json and reads no store at all.",
+      "Delete in one commit: the binding at Routes.tsx:196-200 and the import at Routes.tsx:20; ROUTES.STAKING.EPOCHS at routes-config.ts:13, whose only reader is Routes.tsx:198; containers/staking/StakingEpochsPage.tsx; the seven files under components/staking/epochs/, five components plus a stylesheet and helpers.ts; the commented navigation item at StakingNavigation.tsx:64-67 and the messages.epochs entry at :24-28 that was its only reader; both dummy JSON fixtures, which nothing else imports; and storybook/stories/staking/_support/Epochs.tsx with the import at Staking.stories.tsx:17 and the registration at :172.",
+      "No barrel entry changes. storybook/stories/index.ts reaches this story only through staking/Staking.stories.tsx, so removing that import and registration is the equivalent edit.",
+      "Regenerate the translation artifacts in the same commit. The i18n check at perSystem/checks.nix:64-76 snapshots source/renderer/app/i18n/locales and translations/messages.json, runs yarn i18n:manage and fails when the result differs from what is committed. Twelve message ids go: the eleven under staking.epochs.* and staking.navigation.epochs.",
+      "This removes two knob call sites from the phase 4 staking tranche, the date knob at _support/Epochs.tsx:13 and the number knob at :28.",
+      "Line references in this entry drifted before it was executed and were corrected rather than followed. The route binding is at Routes.tsx:195-199 and ROUTES.STAKING.EPOCHS at routes-config.ts:12, both moved by task-005 removing the /redeem-itn-wallets binding and its constant first. The story import and registration are at Staking.stories.tsx:14 and :130-132, moved by task-002 removing 88 lines from that file.",
+      "Four tracked i18n artifacts are regenerated, not the three this entry lists. source/renderer/app/i18n/locales/defaultMessages.json is in the same snapshotted directory as en-US.json and ja-JP.json and carries both the twelve removed ids and four path entries naming the deleted component files. No acceptance criterion listed here catches it; the i18n check at perSystem/checks.nix:64-76 does.",
+      "Japanese translations are deleted by this task, not placeholders. All twelve ids carried real translator output in ja-JP.json as well as real English in en-US.json, contrary to task-003 where the six removed ids were !!!-prefixed in both locales. The twelve, for anyone tracing where they went: staking.epochs.currentEpoch.tableHeader.pool, staking.epochs.currentEpoch.tableHeader.slotsElected, staking.epochs.currentHeading, staking.epochs.no.results, staking.epochs.previousEpoch.tableHeader.pool, staking.epochs.previousEpoch.tableHeader.slotsElected, staking.epochs.previousHeading, staking.epochs.tableBody.of, staking.epochs.tableBody.slots, staking.epochs.tableHeader.performance, staking.epochs.tableHeader.sharedRewards and staking.navigation.epochs. They were removed because the screen they label is unreachable and locked decision 14 removes it, not because they were incomplete. Both translations remain in git history at the commit before this one and return with a revert.",
+      "source/renderer/app/i18n/locales/babeledit-project.babel still names the eleven staking.epochs.* ids and is left alone. It is a frozen snapshot last touched in 2022, carrying 1950 ids against the 1612 in en-US.json and missing ids added since, and yarn i18n:manage does not write it. The i18n check copies it unchanged and passes. Reconciling it is a separate piece of work and not this task."
+     ],
+     "acceptance": [
+      "grep over source/, storybook/ and tests/ returns no reference to StakingEpochs, ROUTES.STAKING.EPOCHS or either dummy JSON fixture",
+      "yarn storybook:build, yarn compile, yarn lint and yarn i18n:manage pass, with the regenerated locale files and translations/messages.json committed",
+      "The sidebar diff against task-001 shows exactly one further registration removed, Epochs under Decentralization / Staking",
+      "/staking/delegation-center still renders the current epoch, the next epoch countdown and the sentence about when a delegation change takes effect"
+     ],
+     "notes": "The coverage target does not move: the screen was never on it. What moves is the container count, 105 to 104, and the excluded route list in the research note, which loses an entry."
+    },
+    {
+     "id": "task-005",
+     "title": "Delete the dead /redeem-itn-wallets route binding",
+     "description": "Locked decision 15. Routes.tsx:209-213 nests the TrackedRoute for ROUTES.REDEEM_ITN_REWARDS inside <Route path={ROUTES.STAKING.ROOT}>, where under react-router 5 it is only evaluated while the location already starts with /staking, so it can never match. The screen is unaffected: Root.tsx:68-70 mounts RedeemItnRewardsContainer when staking.redeemStep is non-null, set from the OS menu item.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 1.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/renderer/app/Routes.tsx",
+      "source/renderer/app/routes-config.ts"
+     ],
+     "implementationNotes": [
+      "Delete the binding at Routes.tsx:209-213 and the import at Routes.tsx:25, which the binding is the only user of. Root.tsx:6 has its own import and is untouched.",
+      "ROUTES.REDEEM_ITN_REWARDS at routes-config.ts:4 goes with it. Routes.tsx:211 is its only reader, and a path constant with no binding is the same trap in a smaller form: a goToRoute written against it gives a blank content area rather than an error.",
+      "Why deleted rather than moved out to the top-level Switch: nothing navigates to this screen by route, the OS menu path at Root.tsx:68-70 is the one the product uses, and a route that can never match is a trap for whoever later tries to link to the screen.",
+      "Independent of every other task in this phase. It touches no story file and no Storybook configuration."
+     ],
+     "acceptance": [
+      "grep over source/, storybook/ and tests/ returns no reference to ROUTES.REDEEM_ITN_REWARDS",
+      "yarn compile and yarn lint pass, with no unused-import warning in Routes.tsx",
+      "The ITN rewards redemption item in the OS menu still opens the screen in a dev build"
+     ],
+     "notes": "The coverage target does not move. RedeemItnRewardsContainer stays on the 49-screen list and gets its container story in the phase 7 staking tranche."
+    },
+    {
+     "id": "task-006",
+     "title": "Restage the wallet settings undelegation story",
+     "description": "Locked decision 6. _support/WalletSettingsScreen.tsx:326 renders UndelegateWalletConfirmationDialog inside a box that WalletSettings.tsx:209 returns null for, because walletsConfig.ts:45 sets IS_WALLET_UNDELEGATION_ENABLED false. The component is live and reachable through DelegationCenterPage.tsx:118-119, so only the framing is wrong.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 2.0,
+     "dependencies": [
+      "task-001"
+     ],
+     "targetPaths": [
+      "storybook/stories/wallets/settings/_support/WalletSettingsScreen.tsx",
+      "storybook/stories/staking/_support/Undelegate.tsx"
+     ],
+     "implementationNotes": [
+      "Move the registration out of the wallet settings screen framing and present the dialog on its own, the way staking/_support/Undelegate.tsx already presents its siblings.",
+      "Keep the story label recognizable against the task-001 baseline, or record the rename deliberately in the diff."
+     ],
+     "acceptance": [
+      "The dialog renders standalone rather than inside a settings box the application returns null for",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-007",
+     "title": "Remove the orphaned support modules and the unused dependency",
+     "description": "Three support modules under storybook/stories are imported by nothing, storybook-addon-swc is declared at package.json:175 and referenced nowhere in the repository, and storybook/preview-head.html is zero bytes.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 2.0,
+     "dependencies": [
+      "task-002",
+      "task-003"
+     ],
+     "targetPaths": [
+      "storybook/stories/staking/StakingWrapper.tsx",
+      "storybook/stories/wallets/_utils/defaultWalletProps.tsx",
+      "storybook/stories/wallets/_utils/HardwareWalletWithNavigationLayout.tsx",
+      "storybook/preview-head.html",
+      "package.json"
+     ],
+     "implementationNotes": [
+      "Re-verify the orphan status after task-002 and task-003, because those deletions may have orphaned further modules under storybook/stories/wallets/_utils/.",
+      "Removing storybook-addon-swc from package.json does not change the build: the SWC rule is handwritten in webpackFinal at storybook/main.ts:71.",
+      "yarn.lock changes with the dependency removal and is part of the same commit.",
+      "Re-verification result, recorded because a null result is still the reason this task depends on task-002 and task-003. The module graph was walked from all four workbench entry points, storybook/main.ts, storybook/preview.tsx, storybook/stories/index.ts and the DaedalusMenu register module main.ts names through require.resolve: 119 files under storybook/, 116 reachable, 3 orphaned. The three are exactly the three named here. task-002, task-003 and task-004 orphaned no additional module, and the three cascade to nothing. Guard for whoever repeats this: storybook/stories/wallets/_utils/HardwareWalletsWrapper.tsx is three characters from HardwareWalletWithNavigationLayout.tsx, is reachable, and stays, along with four other modules in that directory.",
+      "The yarn.lock edit removes only the storybook-addon-swc@1.1.7 block. Two ranges it was the sole requester of are deliberately left, \"@swc/core@^1.2.152\" and swc-loader@^0.1.15, because pruning them also means removing the thirteen @swc/core-*@1.2.175 platform entries behind one of them, and a hand-pruned lockfile is harder to trust than one with a stale tail that the next full yarn install clears. Both are distinct from the pinned direct dependencies the repository uses, @swc/core@1.10.18 and swc-loader@0.1.15, which are untouched. The test that the manifest and the lockfile agree is building .#internal.x86_64-linux.node_modules, which installs with --frozen-lockfile and derives its offline cache from yarn.lock; it rebuilt clean."
+     ],
+     "acceptance": [
+      "grep confirms no importer for each removed module at the time of removal",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-008",
+     "title": "Set useDefineForClassFields to false in tsconfig.json",
+     "description": "Locked decision 11. tsconfig.json:24 sets it true while storybook/main.ts:87 sets it false and jest.config.js sets the SWC equivalent to false, so the type checker is checking against semantics neither runtime uses. MobX 5 requires class fields to use assignment so its prototype setters can intercept them during initialization.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 2.0,
+     "dependencies": [],
+     "targetPath": "tsconfig.json",
+     "implementationNotes": [
+      "Standalone commit. Nothing else changes in it.",
+      "Run yarn compile before and after and record the error count difference. The expectation is zero difference; anything else is a finding that belongs in the commit body.",
+      "Do not touch tsconfig.json:17 experimentalDecorators or storybook/main.ts:79, :84 and :87 while in this file."
+     ],
+     "acceptance": [
+      "yarn compile passes with no new errors",
+      "The commit touches exactly one line of one file"
+     ],
+     "notes": "Adjacent to this work rather than part of it. It will matter more during a MobX 6 migration than it does here.",
+     "targetPaths": [
+      "tsconfig.json"
+     ]
+    },
+    {
+     "id": "task-009",
+     "title": "Count the story functions reading theme, locale and OS from props",
+     "description": "StoryWrapper.tsx:77-81 passes osName, locale and currentTheme to the story as props. Modern globals arrive through story context, so every one of those story functions changes shape during the conversion. The population has never been counted and the count sizes the per-file work in phase 3.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 2.0,
+     "dependencies": [],
+     "targetPaths": [
+      "storybook/stories/_support/StoryWrapper.tsx"
+     ],
+     "implementationNotes": [
+      "Grep for props.currentTheme, props.osName, props.locale and for the (_, props) and (props) story signatures across every story file.",
+      "Four files carry comments recording the dependency and are the known starting set: governance/DRepDetail.stories.tsx:67, governance/DRepDirectory.stories.tsx:248, loading/mithril/MithrilPartialSyncDialogue.stories.tsx:30 and nodes/status/Diagnostics.stories.tsx:88.",
+      "Record the result per domain, because the domains are the hand-finish tranches in phase 3."
+     ],
+     "acceptance": [
+      "A per-domain count exists and is attached to the phase 3 tranche tasks",
+      "The count is taken after task-002 and task-003 land, or is adjusted for the deleted files"
+     ]
+    },
+    {
+     "id": "task-062",
+     "title": "Rename the 15 sibling-registering story files out of the convention",
+     "description": "Fifteen files match the *.stories.* naming convention and register no stories of their own; they import or re-export siblings. Move them into _support/ and rename them so the phase 2 glob cannot pick them up as indexer inputs. At 6.4.22 the glob would auto-title them and register their named exports, moving the phase 1 sidebar baseline; at 8.6 and 10.6 they are a hard build-storybook failure via NoMetaError collected into MultipleIndexingError.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 4.0,
+     "dependencies": [],
+     "targetPaths": [
+      "storybook/stories/staking/DelegationCenter.stories.tsx",
+      "storybook/stories/staking/DelegationSteps.stories.tsx",
+      "storybook/stories/staking/StakePoolsTable.stories.tsx",
+      "storybook/stories/staking/Rewards.stories.tsx",
+      "storybook/stories/staking/RedeemItnWallets.stories.tsx",
+      "storybook/stories/staking/Undelegate.stories.tsx",
+      "storybook/stories/staking/Epochs.stories.tsx",
+      "storybook/stories/staking/StakePools.stories.tsx",
+      "storybook/stories/wallets/addWallet/AddWallet.stories.ts",
+      "storybook/stories/wallets/settings/WalletSettingsScreen.stories.tsx",
+      "storybook/stories/nodes/updates/DataLayerMigration.stories.tsx",
+      "storybook/stories/nodes/errors/SystemTimeError.stories.tsx",
+      "storybook/stories/nodes/errors/NoDiskSpaceError.stories.tsx",
+      "storybook/stories/nodes/syncing/SyncingConnecting.stories.tsx",
+      "storybook/stories/nodes/status/Status.stories.ts"
+     ],
+     "implementationNotes": [
+      "WalletSettingsScreen.stories.tsx:139 has a default export, but it is an anonymous React component rather than a CSF meta object, so it registers nothing and belongs in this set.",
+      "Status.stories.ts is a single line: import './Diagnostics.stories';. AddWallet.stories.ts is five such lines.",
+      "Renaming is chosen over a glob exclusion so the trap is not left in place for the sixteenth such file, and over adding default exports so the sidebar does not gain roughly 15 panels nobody asked for.",
+      "Update every importer. task-010 replaces the barrel, so an import that breaks here surfaces immediately rather than at the glob."
+     ],
+     "acceptance": [
+      "No file under storybook/stories matches *.stories.* without either a storiesOf call or a CSF default export whose value is a meta object",
+      "yarn compile passes, proving no importer was left dangling",
+      "yarn storybook:build passes and the sidebar tree is byte-identical to the task-001 baseline, because none of these files registered anything"
+     ],
+     "notes": "Locked decision 16. Must land before task-010 introduces the glob."
+    }
+   ]
+  },
+  {
+   "id": "phase-2",
+   "name": "Story Indexing",
+   "description": "Replace the hand-maintained barrel with a glob on the pinned 6.4.22, so that an unreferenced story file becomes a build participant instead of a silent absence, and so the required check's coverage matches the corpus before the conversion starts.",
+   "riskLevel": "medium",
+   "tasks": [
+    {
+     "id": "task-010",
+     "title": "Replace the barrel with a glob and rehome its side effects",
+     "description": "storybook/main.ts:8 declares stories: ['../storybook/stories/index.ts'], a barrel of side-effect imports. Replace it with a glob over the story file naming conventions, and move the two side effects at storybook/stories/index.ts:1-2, the global SCSS import and the environment import, into preview.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-002",
+      "task-003",
+      "task-004",
+      "task-007",
+      "task-062"
+     ],
+     "targetPaths": [
+      "storybook/main.ts",
+      "storybook/preview.tsx",
+      "storybook/stories/index.ts"
+     ],
+     "implementationNotes": [
+      "The glob must match both naming conventions in use: *.stories.ts, *.stories.tsx and *.story.tsx, and must reach the four colocated files under source/renderer/app.",
+      "Storybook 6 has supported glob stories entries since 6.0 and loads a storiesOf file found by a glob exactly as the barrel did, because registration is a side effect of loading the module either way.",
+      "If 6.4.22's indexer rejects the glob, fold this task and task-011 into phase 3 and verify them at 8.6.x instead. Nothing later in the plan depends on where the glob is verified.",
+      "Delete storybook/stories/index.ts only once the side effects are rehomed and the build is green.",
+      "The barrel currently also loads sibling-registering modules; the 15 files that register no stories of their own must still be reachable from the file that registers their exports.",
+      "Why this is a coverage increase rather than a configuration tidy-up, since several later entries carry the opposite inference: yarn compile does not report an unresolvable relative import in this repository, measured during task-006 with a probe and recorded in task-062-impl-review.md. yarn storybook:build does report one, but only for a module the indexer reaches. Under the barrel that was whatever someone remembered to list, which is how Legacy.stories.tsx stayed dead for years with every check green. Under the glob it is the corpus on disk.",
+      "The two side effects this entry asks to move into preview were already there, at preview.tsx:4 and :6. What the task actually requires is to stop loading the barrel duplicates. The two stylesheet imports were not equivalent: the barrel used a plain specifier, which goes through the .scss rule in webpackFinal where css-loader has modules enabled with localIdentName and therefore rewrites every class name in a stylesheet whose entire purpose is to be global; preview.tsx uses an inline style-loader!css-loader!sass-loader chain that bypasses the rule and emits the names unchanged. Deleting the barrel removes the scoped duplicate and keeps the correct one. This is the one change here with a possible visual consequence and it cannot be seen from a build: the symptom to look for is unstyled previews across every story, and the cause would be this line.",
+      "The glob also orphans two of the 15 files task-062 renamed, nodes/status/_support/Status.ts and wallets/addWallet/_support/AddWallet.ts. Both are import-only barrels whose single importer was a sub-barrel removed here, and the story files they reached are matched by the glob directly. task-062 recorded in advance that this task would remove them. The other 13 keep their importers.",
+      "task-001-sidebar-extract.js rooted its reachability walk at the barrel and had to be updated in this task, since that file no longer exists. Its roots are now every file matching the story naming convention under the two directories the globs name. The output format is unchanged and the artifact it produces is byte-identical across this change. Note that the reachability column is now close to tautological for a registering file, because the glob matches all of them; the guarantee it used to provide has moved into the build, which is the point of the phase."
+     ],
+     "acceptance": [
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "Every story file on disk is indexed, verified by count against task-001",
+      "The frozen clock in storybook/preview.tsx still applies"
+     ]
+    },
+    {
+     "id": "task-011",
+     "title": "Make the sidebar grouping and ordering explicit",
+     "description": "Sidebar order is currently implicit in barrel import order. Under a glob it becomes whatever the indexer produces unless it is stated, so encode it through the title values and a storySort in preview parameters.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-010"
+     ],
+     "targetPaths": [
+      "storybook/main.ts",
+      "storybook/preview.tsx"
+     ],
+     "implementationNotes": [
+      "14 top-level groups and 49 panel titles, not the 15 and 53 first recorded here: phase 1 removed three panels in task-002, removed the root-level StakingChart group in task-003, and added a registration to an existing panel in task-006. Note also that the task-001 baseline records no order at all. That was deliberate, and task-001.md says so: order at 6.4.22 was implicit in barrel import order and the plan intended to replace the barrel, so capturing it would have encoded the thing being changed. The acceptance criterion is therefore met by its second limb, a deliberate order that is written down.",
+      "storySort accepts an explicit order array; prefer that over a comparator so the intended order is readable.",
+      "The order chosen is the one the barrel produced, recovered rather than invented. At 6.4.22 storiesOf registers as a side effect of module evaluation and the barrel evaluated its imports depth-first in source order, so a depth-first walk of the import graph at 5311ce0d0, the last commit before task-010, reproduces the sequence users saw: Nodes, Loading, Wallets, Decentralization, dApps, Voting, Governance, Settings, Assets, News, Navigation, Common, Discreet Mode, Analytics.",
+      "One difference from the barrel era is accepted and recorded. storySort returns 0 for two stories sharing a title unless includeNames is set, and sortStoriesV6 then breaks the tie on fileNameOrder, which under the glob is require.context order. Seven of the 49 panels are assembled from more than one file and hold 45 of the 258 registrations between them: Wallets / Settings (7 files), Wallets / Add Wallet (5), Wallets / Transactions (4), News / Overlays (3), Wallets / Tokens (3), Navigation / Sidebar (2) and Wallets / Summary (2). In those seven, story order is now file path order. Pinning it would need includeNames plus an order array naming all 258 stories, regenerated by hand whenever a story is added, which defeats the readability this entry asks for. The other 42 panels come from one file each and keep their in-file definition order.",
+      "Verified without a browser by running the shipped comparator. storySort is a pure function exported from the installed @storybook/store; feeding it the 258 extracted registrations together with the order array read out of preview.tsx reproduces the group and panel sort the preview performs, and the 49 titles come out in exactly the barrel-era sequence. storybook:build passing only proves the parameter parses."
+     ],
+     "acceptance": [
+      "The sidebar order matches the task-001 baseline, or every difference is deliberate and recorded",
+      "yarn storybook:build passes"
+     ]
+    },
+    {
+     "id": "task-012",
+     "title": "Verify the glob against the baseline",
+     "description": "Confirm that the corpus the indexer sees is the corpus on disk. This is the point at which the silent-absence defect that killed Legacy.stories.tsx is fixed.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 2.0,
+     "dependencies": [
+      "task-011",
+      "task-001"
+     ],
+     "targetPaths": [
+      "storybook/main.ts"
+     ],
+     "implementationNotes": [
+      "Compare the registration count against the baseline. The expected figure is 258, not the 257 first recorded here. The subtraction behind 257 is right as far as it goes, the task-001 baseline of 272 less the 15 registrations phase 1 removed, 12 in task-002, 2 in task-003 and 1 in task-004. It omits the one registration task-006 added, Wallets / Settings | Undelegate Wallet. 272 - 15 + 1 = 258. Stated here so the next reader does not re-derive 257 from the same subtraction. The count is established by composition rather than read out of a running workbench, which this environment cannot open: task-010 showed the require.context matchers select exactly the 65 convention-following files on disk, and those 65 carry 258 registrations.",
+      "Add a temporary story file in a directory no barrel ever referenced, confirm it appears, then remove it. Two things make this test mean something. Put it under source/renderer/app/components/widgets: that half of the glob holds 1508 tracked files and 4 stories, so it is where an indexing failure would be least visible, and no barrel ever named it. And do not treat a green build as evidence it was indexed, because a file the indexer ignores also builds green. Run it both ways: with the probe valid and present the build must be green, and with an unresolvable import added to that same file it must go red. The green run is what makes the red one attributable to the import rather than to the file. Done here: the matcher selected the path, the extractor count rose 258 to 259, the valid probe built green, the broken one failed with Can't resolve './GlobCheckProbeMissing', and after removal the corpus returned to 258. That is the silent-absence defect shown closed rather than assumed closed."
+     ],
+     "acceptance": [
+      "The indexed registration count equals the expected 257",
+      "A story file added anywhere under the globbed paths appears without a further edit"
+     ]
+    },
+    {
+     "id": "task-063",
+     "title": "Replace withState with a local wrapper and remove @dump247/storybook-state",
+     "description": "@dump247/storybook-state imports @storybook/addons (dist/index.js:11) and calls addons.getChannel() at :157 at module-evaluation time, and it peers @storybook/addons ^3.2.16. Phase 3 removes @storybook/addons and no version of it exists in the 8 line. Replace the 17 withState call sites with a local stateful wrapper component that touches no Storybook API, then drop the dependency, so the hop in phase 3 carries nothing that cannot survive it.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 9.0,
+     "dependencies": [
+      "task-010"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/WithLocalState.tsx",
+      "storybook/stories/settings/general/General.stories.tsx",
+      "package.json"
+     ],
+     "implementationNotes": [
+      "The wrapper holds React state and passes it plus a setter to the render function. No Storybook channel, no addon registration, no decorator.",
+      "It is version-agnostic by construction, so it works identically on 6.4.22 and 8.6.x and is deleted in phase 4 when these sites become useArgs.",
+      "Keeping 6.4.22's @storybook/addons instead does not work: dist/cjs/index.js:143 keys its singleton on __STORYBOOK_ADDONS and :49-56 throws 'Accessing non-existent addons channel' when setChannel was never called, which Storybook 8 never does.",
+      "Installing @storybook/addons@7.6.x does not work either: its module.exports is a named re-export set with no default export carrying getChannel, and it drags a 7.x runtime into a Yarn 1 flat-hoisted tree.",
+      "The edit set is 10 source files, not the two this entry names in targetPaths. Nine story files hold the 17 withState call sites: common/ItemsDropdown, dapps/TransactionRequest, governance/DRepDirectory, governance/Delegation, notifications/Notifications, settings/general/General, settings/language/Language, wallets/tokens/WalletTokens and wallets/tokens/WalletTokensList. The tenth is storybook/stories/settings/utils/helpers.tsx, which imports Store as a type for onLocaleValueChange. All 17 sites use the legacy two-argument form withState(initialState, (store) => ...), so the wrapper takes the same arguments and the change at each file is the import specifier alone.",
+      "The wrapper must return a plain function that renders a component, not a component. The package returns function () { return React.createElement(StoryState, ...) }, and Storybook calls the story function directly, so a replacement whose returned function used hooks itself would call them outside a render and break at the first story. Reproduce the store semantics as well as the signature: initial state frozen, set merges and refreezes, reset notifies only when something changed, and one store per withState() call living as long as the module so state survives a remount. store.reset() has zero call sites in the corpus and is implemented because the type declares it.",
+      "What was established about the second acceptance criterion, and what was not. Nothing in this repository renders a story: there is no display, the e2e suite cannot execute, and storybook:build bundles without evaluating preview modules, so the 17 sites were not individually driven. Two things were done instead. The wrapper was mounted under React with jsdom and driven directly, asserting nine properties: initial render, frozen state, a direct mutation not taking effect, set re-rendering, set merging rather than replacing, reset restoring, state surviving a remount, each withState call getting its own store, and one store not disturbing another. All nine passed. And the diff at every one of the nine call-site files is one line, the import specifier, so no site had its arguments, its store usage or its render function changed. A permanent guard would need storybook/ added to jest.config.js roots, which this task does not do; the wrapper is deleted in phase 4.",
+      "The acceptance grep is not literally empty. grep -rn @dump247/storybook-state over source, storybook and package.json returns exactly one hit, a comment in the replacement naming the package it replaces. No import, no dependency and no lockfile entry remains, which is what the criterion is for. The comment is kept because whoever deletes this shim in phase 4 needs to know what it stood in for.",
+      "Three lint errors surfaced that a mechanical import swap causes and are worth expecting elsewhere: moving a specifier from a package to a relative path changes its import/order group, so the import had to move below the last package import in ItemsDropdown, DRepDirectory and Delegation; and react/function-component-definition rejects an arrow function returning JSX, so withState returns a named function expression. Two of those three files were already prettier-dirty under the repository prettier 2.1.2 before this change, at 6 and 18 lines, and are unchanged in that respect; running prettier --write on them would have reformatted unrelated code."
+     ],
+     "acceptance": [
+      "grep -rn '@dump247/storybook-state' source storybook package.json returns nothing",
+      "All 17 former withState call sites render and their interactive state still changes when driven",
+      "yarn compile, yarn lint and yarn storybook:build all pass"
+     ],
+     "notes": "Locked decision 9. Blocks phase 3: the hop cannot land while this dependency is installed."
+    }
+   ]
+  },
+  {
+   "id": "phase-3",
+   "name": "The Storybook 8.6.x Hop And CSF Conversion",
+   "description": "One branch, one landing. At 8.6.x a file still importing storiesOf from @storybook/react fails tsc whether or not the indexer sees it, and every story file is in the tsc program, so the corpus must be fully shape-converted at the moment the manifest changes. Knobs and withState are untouched here because @storybook/addon-knobs@8.0.1 builds at 8.6.x, which is the whole reason the route stops there.",
+   "riskLevel": "high",
+   "tasks": [
+    {
+     "id": "task-013",
+     "title": "Pre-flight Storybook 8.6.x against React 16.14.0 in a scratch worktree",
+     "description": "Storybook's React 16 support is a peer-range commitment, not proof that every code path was exercised at 16.14.0. Stand up 8.6.x with @storybook/react-webpack5 in a scratch worktree with a handful of hand-converted CSF stories and confirm the tree renders before the hop branch is opened.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-012"
+     ],
+     "targetPaths": [
+      "storybook/main.ts",
+      "storybook/preview.tsx",
+      "storybook/stories/_support/StoryDecorator.tsx",
+      "storybook/stories/_support/StoryProvider.tsx"
+     ],
+     "implementationNotes": [
+      "Scratch worktree, not the working branch. Nothing from this task is merged.",
+      "Carry all four legacy-decorator settings across: tsconfig.json:17 experimentalDecorators, storybook/main.ts:79 parser decorators, storybook/main.ts:84 legacyDecorator, storybook/main.ts:87 useDefineForClassFields.",
+      "Include one story that mounts react-polymorph through StoryDecorator's ThemeProvider with SimpleSkins and SimpleDefaults. react-polymorph 1.0.4 was last published 2022-04-14, sits between Storybook and every rendered story, and has not been exercised under a modern preview runtime.",
+      "Include one MobX observing component so a silent decorator regression surfaces here rather than three tranches into the conversion.",
+      "Include one story that uses the full StoryProvider and StoryLayout shell.",
+      "Confirm the webpackFinal body carries over unchanged: the SWC rule, SCSS modules with the [name]_[local] local ident, .inline.svg via svg-inline-loader, the two NormalModuleReplacementPlugin rules for @trezor/transport, the nine Node polyfills and the five stubbed modules.",
+      "Confirm withKnobs is still callable as a plain function at 8.0.1. 22 sites use the withKnobs(story, context) idiom rather than registering it as a decorator, for example storybook/stories/wallets/_utils/WalletsWrapper.tsx:9. This is not the documented usage and cannot be assumed to survive the version bump. Discovering it inside phase 3 means discovering it inside the one landing that cannot be decomposed.",
+      "RESULT, blocking deviation found. The repository webpackFinal assigns config.resolve wholesale rather than merging into it. At 6.4.22 that costs nothing. At 8.6.x it breaks React 16 outright: @storybook/react-dom-shim ships its own webpackFinal preset that sets resolve.alias[\"@storybook/react-dom-shim\"] to its react-16 build whenever react-dom is below 18, and assigning over config.resolve discards that alias, so the preview tries to resolve react-dom/client, which does not exist in React 16.14.0. Observed as SB_BUILDER-WEBPACK5_0002 Module not found: Can't resolve react-dom/client. The fix, verified in the pre-flight, is to spread: config.resolve = { ...config.resolve, extensions: [...new Set([...(config.resolve.extensions||[]), ...ours]), fallback: { ...config.resolve.fallback, ...ours } }. task-015 must carry this or the hop cannot build at all.",
+      "RESULT, kill criterion not triggered. react-polymorph 1.0.4 renders correctly under the 8.6.18 preview pipeline at React 16.14.0. Input and Button both render through StoryDecorator ThemeProvider with SimpleSkins and SimpleDefaults, carry their values and labels, and receive theme class names. The full shell, StoryDecorator wrapping StoryProvider, mounts and renders a story inside it. Ten render assertions, all passing.",
+      "RESULT, MobX. An @observable mutated inside runInAction re-renders an @observer story: count:0 to count:1. The pre-flight compiles with the same four legacy-decorator settings the repository uses and reproduces configure({ enforceActions: observed }). This is the assertion that would fail if a decorator setting were dropped, since that failure is a runtime one.",
+      "RESULT, withKnobs at @storybook/addon-knobs 8.0.1. The corpus idiom works. Calling withKnobs(story, context) from inside a decorator, exactly as storybook/stories/wallets/_utils/WalletsWrapper.tsx:9 does, renders the wrapped story and the knobs return their defaults. Called bare outside a story render it throws \"Storybook preview hooks can only be called inside decorators and story functions\", which is expected rather than a regression: the addon uses preview hooks internally and needs an active hook context. An earlier pre-flight attempt that called it bare recorded a false negative.",
+      "RESULT, story signatures at 8.6.18, measured rather than assumed. The first render argument is the args object and the second is the full story context. A story written (props) => props.currentTheme therefore reads args and gets undefined unless currentTheme is declared as an arg; a story written (_, props) => props.currentTheme reads the context. The rule for the conversion follows: do not rewrite a first-argument site to read the context, because that is a behaviour change rather than a fix and a visual diff would flag it as a regression. task-016 moves theme, locale and OS to globals, which live at context.globals, so second-argument sites migrate there and first-argument sites need a per-site decision recorded in their tranche.",
+      "RESULT, environment. The npm registry is reachable, so this ran here rather than needing an operator. @storybook/react and @storybook/react-webpack5 8.6.18 peer react ^16.8.0, and @storybook/addon-knobs stops at 8.0.1, whose four ^8.0.0 peers all publish 8.6.18. @storybook/test is an optional peer of @storybook/react and its absence is a build warning, not an error. Note the repository pins the knobs addon at 6.4.0, not the 8.0.1 the compatibility analysis assumes; task-015 bumps it.",
+      "LIMIT. Rendering was established through composeStories from @storybook/react 8.6.18 under jsdom, which applies the project annotations, decorators and parameters, plus a successful storybook build. There is no display here, so the manager, the addon panels and the iframe bootstrap are not covered. That is the same blind spot locked decision 7 records; this narrows it rather than closing it."
+     ],
+     "acceptance": [
+      "Every pre-flight story renders in the preview with correct theming",
+      "A MobX observable update re-renders a story",
+      "The build completes with the existing swc-loader rule rather than a re-derived compiler config",
+      "Any deviation required from the current webpackFinal body is written down before the branch opens",
+      "The pre-flight records whether withKnobs(story, context) still works at @storybook/addon-knobs 8.0.1, with the observed behaviour, not an assumption"
+     ],
+     "notes": "Kill criterion. If react-polymorph misbehaves under the 8.6.x preview runtime, stop and re-plan rather than opening the branch."
+    },
+    {
+     "id": "task-014",
+     "title": "Run the codemod chain as a dry run over a real tranche",
+     "description": "Codemod coverage is currently a prediction derived from reading the transform source and matching its stated preconditions against measured properties of the estate. Turn it into an observation before the hop branch is opened.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-013"
+     ],
+     "targetPaths": [
+      "storybook/stories/nodes",
+      "storybook/stories/settings"
+     ],
+     "implementationNotes": [
+      "Run storiesof-to-csf, then csf-hoist-story-annotations, then csf-2-to-3 from the 8.6.x CLI over one real domain, in the scratch worktree.",
+      "Record what it actually produced: how many files converted cleanly, how many exports the sanitizer renamed, what the display-name re-attachment looks like, and how much hand correction each file needed.",
+      "There are 5 dynamic .add() registrations in staking/Staking.stories.tsx, not 9: task-002 removed the countdown, info and info-countdown pageNames entries and task-004 removed epochs. RESULT, and it is not what this entry predicted: they are not skipped, they are silently dropped. The chain reported 1 ok, 0 errors and produced a file carrying 14 of 19 registrations, losing exactly the five non-literal labels Delegation Center, Pools Index, Pools Index - Loading, Rewards and Stake Pools List. Dropped while the run reports success is worse than skipped, because nothing in the output says a story went missing. Remedy, tested: replace the four pageNames lookups and the one template literal with the string literals they evaluate to before running the chain, and all 19 survive.",
+      "The corpus is 68 storiesOf() calls across 65 files, not 73; 73 was the pre-phase-1 figure and phase 1 removed six calls while task-006 added one. RESULT: no file is skipped for want of a string-literal title and none already has a default export. But three files hold TWO storiesOf calls, nodes/status/Diagnostics.stories.tsx, staking/Staking.stories.tsx and voting/Voting.stories.tsx, and the codemod emits one export default per call, so each produces a file with two default exports, which is not valid TypeScript. Remedy: split each into one file per title before running the chain.",
+      "RESULT over the dry-run tranche, nodes plus settings, 9 files and 28 registrations: storiesof-to-csf 0 errors 9 ok, csf-hoist-story-annotations 0 errors 3 ok 6 unmodified, csf-2-to-3 0 errors 4 ok 5 unmodified. All 28 labels preserved against the task-001 baseline. The codemod attached an explicit storyName to the 5 exports whose sanitized identifier would not round-trip; the other 23 derive correctly. Per-file hand correction cost: zero for 8 of 9, one file split for the ninth.",
+      "DECISION on the kill criterion: not triggered, the codemod is used for the whole corpus. 62 of 65 files convert with zero hand correction and no label loss. Three need a mechanical split first and one of those also needs five labels inlined. The procedure for each tranche is therefore: split any file with more than one storiesOf call, inline any non-literal .add() label, run the chain, then diff the tranche label set against the task-001 baseline. That last step is not optional: it is the only thing that catches a dropped registration.",
+      "RESULT on the four control-flow strings. context.kind and context.story are both still populated at 8.6.18, carrying the title and the story name, so the sites survive the version hop itself. Two of the four cannot break at all: Wallet Add matches no label anywhere in the 258-registration corpus, and neither Empty nor Wallet Add matches any of the 40 registrations across the 16 files WalletsWrapper decorates, so the ternary at WalletsWrapper.tsx:14 already always takes the same branch. The remaining exposure is SettingsWrapper.tsx:29 and :31 and WalletWithNavigationLayout.tsx:32, which read the title and story name dynamically rather than comparing to a literal, so preserved labels keep them working."
+     ],
+     "acceptance": [
+      "A recorded per-file correction cost for one real domain",
+      "A decision on whether the codemod is used for the whole corpus or only for part of it"
+     ],
+     "notes": "Kill criterion. If the output needs more hand correction than hand conversion would have taken, convert by hand and drop the codemod from the plan."
+    },
+    {
+     "id": "task-015",
+     "title": "Open the hop branch: manifest, framework field, binaries and preview object",
+     "description": "The configuration half of the hop. Move the Storybook dependency set to 8.6.x by hand, add the mandatory framework field, rename the CLI binaries and convert preview to a default-export object.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-014",
+      "task-063"
+     ],
+     "targetPaths": [
+      "package.json",
+      "storybook/main.ts",
+      "storybook/preview.tsx"
+     ],
+     "implementationNotes": [
+      "Locked decision 12: do not run storybook upgrade. Edit package.json by hand and run automigrations individually against the configuration files.",
+      "Add framework: { name: '@storybook/react-webpack5' } and remove @storybook/builder-webpack5, @storybook/manager-webpack5, @storybook/core and @storybook/addons.",
+      "package.json:55 and :56 change from start-storybook and build-storybook to storybook dev and storybook build. The script names storybook and storybook:build must not change, because perSystem/checks.nix:78 runs yarn storybook:build.",
+      "Keep @storybook/addon-knobs installed, bumped from the pinned 6.4.0 (package.json:85) to 8.0.1, which peers @storybook/manager-api@^8.0.0 and builds at this line. @dump247/storybook-state is already gone by this point: task-063 removed it in phase 2, because it imports @storybook/addons, which this task's manifest edit deletes and which has no version in the 8 line.",
+      "preview.tsx becomes a default-export Preview object carrying decorators and parameters. The frozen clock survives.",
+      "The branch is red from here until task-025. That is expected and is why this is one landing.",
+      "Bump @storybook/addon-knobs from the pinned 6.4.0 (package.json:85) to 8.0.1 in the same manifest edit. 8.0.1 peers @storybook/theming, @storybook/components, @storybook/core-events and @storybook/manager-api at ^8.0.0, all of which publish 8.6.x.",
+      "RED WINDOW opens here and closes at task-025. Measured at this commit, yarn compile reports exactly 70 errors and every one is owned by a later task: 68 TS2305, one per storiesOf call site, which task-017 and the five tranches remove, and 2 TS2307 for @storybook/addons in storybook/addons/DaedalusMenu, which task-016 removes. Nothing else fails. 70 is the number that has to reach zero.",
+      "CRITICAL, found here and fixed here: yarn storybook:build returned exit 0 on a hard build failure. At 8.6.x the CLI catches a build error and then tries to prompt for telemetry; with no TTY in the Nix sandbox the prompt resolves and the process exits 0, so the derivation succeeded while the manager build had failed with Could not resolve @storybook/addons. The required check would have reported green on every failure for the rest of this phase, which is the one check phase 3 leans on. Adding --disable-telemetry to both storybook scripts makes the failure propagate: the same tree then exits 1. Do not remove that flag.",
+      "Two dependencies were only present transitively through the Storybook 6.4.22 packages and had to be declared when those were removed. os-browserify, which storybook/main.ts require.resolve()s for the os fallback, and @types/webpack-env, which source/renderer/app/i18n/translations.ts:2 needs for require.context. Both were in the old lockfile and in neither manifest. Every other module webpackFinal resolves was checked against the manifest at the same time; those two were the only gaps.",
+      "@storybook/addon-knobs@8.0.1 peers @storybook/theming, @storybook/components, @storybook/core-events and @storybook/manager-api at ^8.0.0. Yarn 1 does not install peers, so all four are declared explicitly at 8.6.18, as the task-013 pre-flight had to do.",
+      "The config.resolve merge fix from task-013 is carried at storybook/main.ts. It is mandatory: assigning over config.resolve discards the alias @storybook/react-dom-shim sets to its react-16 build, and the preview then resolves react-dom/client, which React 16.14.0 does not have.",
+      "Signature rule for the tranches, measured in task-013 at 8.6.18 rather than assumed: the first render argument is the args object and the second is the story context. Do not rewrite a site reading the first argument to read the context; it reads undefined today and changing it is a behaviour change a visual diff would flag as a regression."
+     ],
+     "acceptance": [
+      "The manifest resolves and yarn install completes on Yarn 1 without a partially hoisted Storybook tree",
+      "yarn storybook:build fails only on unconverted storiesOf files, not on configuration"
+     ]
+    },
+    {
+     "id": "task-016",
+     "title": "Replace DaedalusMenu with globalTypes and a context-reading StoryWrapper",
+     "description": "@storybook/addons no longer exists at 8.6.x, so the addon has to move either way. Replace it with Storybook's own toolbar globals rather than porting it, because globals are the end state and porting first means editing every story body twice.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 14.0,
+     "dependencies": [
+      "task-015",
+      "task-009"
+     ],
+     "targetPaths": [
+      "storybook/addons/DaedalusMenu/",
+      "storybook/stories/_support/StoryWrapper.tsx",
+      "storybook/preview.tsx",
+      "storybook/stories/settings/general/General.stories.tsx"
+     ],
+     "implementationNotes": [
+      "Add globalTypes with three toolbar entries and initialGlobals in preview: nine themes and two locales from storybook/stories/_support/config.ts:11-21 and :34-37, three operating systems from :39-43 with the minimum window heights of 641px, 660px and 700px at :46-50.",
+      "StoryWrapper reads context.globals and rebuilds ThemeManager, WindowSizeManager and IntlProvider around the story, as it does today at :64-84.",
+      "Keep the prop pass-through at StoryWrapper.tsx:77-81 alive for now. It is deleted in task-024, in the same change that deletes the last consumer.",
+      "General.stories.tsx:97 writes back to the toolbar through updateParam. Under globals that becomes context.globals plus the updateGlobals API, and it is the only write-back site in the corpus.",
+      "Delete storybook/addons/DaedalusMenu/ entirely: four TypeScript files and a stylesheet, the daedalusMenu/updateParam and daedalusMenu/paramUpdated channel protocol, the sessionStorage write at DaedalusMenu.tsx:53 and the parent.window.location.hash manipulation at :56-62. Storybook persists and URL-encodes globals itself.",
+      "Remove the require.resolve entry for the local addon from the addons array in storybook/main.ts.",
+      "Measured by task-009 at ab7060622: 65 functions and components across 39 story files depend on the StoryWrapper pass-through. 35 name currentTheme, osName or locale, and they do not agree where to read it from: 18 take it from the first render argument written (props) or ({ locale }), 16 from the second written (_, props) or (_, { locale }), and one through this.props in the class component StakingDelegationSteps at storybook/stories/staking/_support/DelegationSteps.tsx:115. The other 30 forward the whole argument by spread without naming any of the three. A globals replacement therefore has to serve two signatures, not one.",
+      "RESULT. The three toolbar controls are Storybook globals declared in preview.tsx as globalTypes for themeName, localeName and osName, with items taken from _support/config.ts so the nine themes, two locales and three OS profiles come from one place. The preview decorator reads context.globals and passes them to StoryWrapper, which no longer holds them in state or listens on a channel. General.stories.tsx writes back with useGlobals from @storybook/preview-api instead of updateParam. storybook/addons/ is gone from disk, not just from the addons array.",
+      "Error count moved 70 to 68 exactly as predicted: both TS2307 for @storybook/addons cleared, the 68 TS2305 for storiesOf untouched. The storybook check now fails on the corpus rather than on configuration, which is what task-015 predicted but could not reach because the manager build failed first: the manager builds in 228ms and the indexer then rejects every storiesOf file with Unable to index files: Unexpected storiesOf usage. That is the state task-017 inherits.",
+      "@storybook/preview-api is declared explicitly at 8.6.18 rather than relied on transitively. General.stories.tsx imports it directly, and leaving it transitive would have been a third instance of the weakness recorded in .agent/findings/undeclared-transitive-dependencies.md.",
+      "Two comments elsewhere described the removed channel mechanism and were corrected rather than left: loading/mithril/MithrilPartialSyncDialogue.stories.tsx and _support/environment.ts. The first also records that context.globals.osName is the same value the prop pass-through carries, which matters when task-024 removes the pass-through.",
+      "LIMIT. Three of the four acceptance criteria are about behaviour in a running preview: that all nine themes, both locales and all three OS profiles switch from the toolbar, that a selection survives a reload and a story URL carries it, and that the Themes story moves the toolbar selection. None can be exercised here, because nothing in this repository renders a story and there is no display. What is established instead is that the globals are declared with the full option lists, that the decorator reads them, and that persistence and URL encoding are Storybook's own behaviour for globals rather than anything this repository implements, which is the reason the hand-written sessionStorage and location-hash code could be deleted. The fourth criterion, that storybook/addons/ is gone, is structural and is met.",
+      "CORRECTION. Three formatting and prose defects were caught before the commit rather than after. The new @storybook/preview-api import tripped import/order and was moved above the relative imports. The config.ts import added to preview.tsx was written across five lines where prettier puts it on one; this surfaced only because prettier was run over every file the task touched rather than the single file that had complained before, the same sweep habit that found os-browserify. And two of the comments written for this task described what a later change would do rather than what the code does, which does not belong in a public tree, so both were reworded to state the present behaviour. The one remaining prettier complaint, a require(...) call at General.stories.tsx:108, predates this task and was left alone."
+     ],
+     "acceptance": [
+      "All nine themes, both locales and all three OS profiles switch from the toolbar",
+      "A selection survives a reload and a story URL carries it",
+      "The Themes story still moves the toolbar selection when it changes theme",
+      "storybook/addons/ is gone"
+     ]
+    },
+    {
+     "id": "task-017",
+     "title": "Run the codemod chain over the whole corpus",
+     "description": "Apply storiesof-to-csf, csf-hoist-story-annotations and csf-2-to-3 across every remaining story file, producing the mechanical half of the conversion in one reviewable commit.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-015"
+     ],
+     "targetPaths": [
+      "storybook/stories",
+      "source/renderer/app/components",
+      "source/renderer/app/features"
+     ],
+     "implementationNotes": [
+      "PRECONDITIONS, both already satisfied on the branch before the hop opened. task-014 found two ways the codemod damages this corpus, and both remedies were landed while the branch was still green because they are version-independent and doing them inside the red window would be strictly worse. First, a file with two storiesOf calls converts to a file with two export default statements, which is not valid TypeScript; the three such files were split into one file per title, adding voting/VotingInfo.stories.tsx, nodes/status/MithrilPartialSyncConfirmation.stories.tsx and staking/RedeemItnRewards.stories.tsx, with the shared staking decorator moved to staking/_support/decorator.tsx and the shared voting fixture to voting/_support/fundInfo.ts. Second, the codemod silently drops a .add() whose label is not a string literal; the five such labels in staking/Staking.stories.tsx were inlined. Verified after: no file holds more than one storiesOf call and no registration carries a non-literal label, so this task now runs against a corpus with zero known conversion defects.",
+      "Run the chain from the 8.6.x CLI, in the order the migration guide documents. Running csf-2-to-3 before csf-hoist-story-annotations produces a shape the later transform cannot read.",
+      "Reach the four colocated files under source/ as well: components/profile/analytics/Analytics.stories.tsx, components/wallet/tokens/wallet-token-picker/WalletTokenPicker.stories.tsx, features/discreet-mode/ui/DiscreetValue.story.tsx, features/discreet-mode/ui/discreet-toggle/DiscreetModeToggle.story.tsx.",
+      "Commit the raw codemod output before hand-finishing anything, so the hand corrections are reviewable separately from the mechanical transform.",
+      "Run nix fmt over the result. Formatting is not negotiable and the codemod does not produce prettier-clean output.",
+      "Measure this task by the label set diffed against the task-001 baseline, not by the codemod exit status. task-014 established that the chain reports 1 ok, 0 errors while discarding registrations, so a clean run says nothing about whether stories survived. The same applies to every hand-finish tranche."
+     ],
+     "acceptance": [
+      "Every file that the codemod can take has been taken, with the skips listed",
+      "The commit contains no hand edits"
+     ]
+    },
+    {
+     "id": "task-018",
+     "title": "Hand-finish the shared widgets tranche",
+     "description": "Thirteen files across common, assets, dapps, notifications, navigation and news. These render the widgets other domains reuse, so a conversion defect here surfaces broadly, and this tranche establishes the patterns the other four follow.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-016",
+      "task-017"
+     ],
+     "targetPaths": [
+      "storybook/stories/common",
+      "storybook/stories/assets",
+      "storybook/stories/dapps",
+      "storybook/stories/notifications",
+      "storybook/stories/navigation",
+      "storybook/stories/news"
+     ],
+     "implementationNotes": [
+      "Move this tranche's theme, locale and OS reads from props to context in the same edit, using the task-009 census. A story body is not touched twice for the same reason.",
+      "common/Widgets.stories.tsx registers 10 stories across 257 lines and exercises nine separate widgets.",
+      "navigation/Sidebar.stories.tsx carries 15 @ts-ignore directives, the second highest in the corpus. Carry them across rather than removing them, per locked decision 8.",
+      "Leave knobs and withState alone. common/ItemsDropdown.stories.tsx, dapps/TransactionRequest.stories.tsx and notifications/Notifications.stories.tsx carry withState and are converted in phase 4.",
+      "Write down the patterns this tranche settles: decorator placement, where fixture data lives for files that register no stories of their own, and how a display name with punctuation is re-attached.",
+      "Measured by task-009 at ab7060622: 21 functions across 9 files in this tranche depend on the StoryWrapper prop pass-through, 16 of them naming currentTheme, osName or locale and 5 forwarding the whole argument by spread. This is the largest named-read population in the corpus despite holding its smallest files; storybook/stories/navigation/Sidebar.stories.tsx alone carries 7, all reading currentTheme from the second render argument. None of the 21 sits in a file phase 1 removes."
+     ],
+     "acceptance": [
+      "yarn storybook:build over the converted subset, yarn compile and yarn lint pass",
+      "Panel titles and story labels match the task-001 baseline",
+      "The @ts-ignore count in this tranche is unchanged",
+      "No story in this tranche reads currentTheme, osName or locale from props"
+     ]
+    },
+    {
+     "id": "task-019",
+     "title": "Hand-finish the nodes, loading and settings tranche",
+     "description": "Twenty files. nodes/ and loading/ carry the Mithril and syncing story sets, several of which register a sibling's exported story functions rather than their own, which is the shape that needs a decision about where fixture data lives under CSF.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 14.0,
+     "dependencies": [
+      "task-018"
+     ],
+     "targetPaths": [
+      "storybook/stories/nodes",
+      "storybook/stories/loading",
+      "storybook/stories/settings"
+     ],
+     "implementationNotes": [
+      "Files that register no stories of their own need the CSF split decided rather than renamed: nodes/errors/NoDiskSpaceError.stories.tsx, nodes/errors/SystemTimeError.stories.tsx, nodes/status/Status.stories.ts, nodes/syncing/SyncingConnecting.stories.tsx, nodes/updates/DataLayerMigration.stories.tsx.",
+      "loading/mithril/MithrilPartialSyncDialogue.stories.tsx:30 and nodes/status/Diagnostics.stories.tsx:88 carry comments recording the props dependency; both move to context here.",
+      "nodes/about/About.stories.tsx:12-14 is the one existing container story and its props fixture at nodes/_utils/props.ts is a 19-line literal. Convert it in place; it is replaced by a harness-based story in phase 6.",
+      "Measured by task-009 at ab7060622: 11 functions across 8 files in this tranche depend on the StoryWrapper prop pass-through, 9 naming currentTheme, osName or locale and 2 forwarding by spread. loading/mithril/MithrilPartialSyncDialogue.stories.tsx reads osName from the second render argument through a cast, and nodes/status/Diagnostics.stories.tsx reads currentTheme from the first. None of the 11 sits in a file phase 1 removes."
+     ],
+     "acceptance": [
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "Panel titles and story labels match the baseline",
+      "Every sibling-registering file has an explicit, documented CSF shape"
+     ]
+    },
+    {
+     "id": "task-020",
+     "title": "Hand-finish the wallets tranche",
+     "description": "Twenty-five files and the largest share of the corpus, including wallets/send/WalletSend.stories.tsx at 489 lines and wallets/settings/WalletSettingsScreen.stories.tsx at 445 lines, which registers no stories of its own and holds 9 of the 229 @ts-ignore directives.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 22.0,
+     "dependencies": [
+      "task-018"
+     ],
+     "targetPaths": [
+      "storybook/stories/wallets",
+      "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.stories.tsx"
+     ],
+     "implementationNotes": [
+      "WalletSettingsScreen.stories.tsx exports story functions consumed by wallets/settings/WalletSettings.stories.tsx. Decide once whether the exports become CSF stories in place or stay as fixtures, and apply the same rule to DelegationCenter.stories.tsx in task-021.",
+      "The restaged undelegation story from task-006 is in this tranche and must keep its new framing.",
+      "wallets/_utils/ holds the wrappers this tranche depends on: WalletsWrapper.tsx, WalletWithNavigationLayout.tsx, HardwareWalletsWrapper.tsx, CreateWalletScreens.tsx, WalletsTransactionsWrapper.ts. They become CSF decorators; their logic does not change.",
+      "wallets/hardwareWallets/HardwareWallets.stories.tsx carries 10 @ts-ignore directives and 10 registrations.",
+      "Measured by task-009 at ab7060622: 13 functions across 11 files in this tranche depend on the StoryWrapper prop pass-through, 5 naming currentTheme, osName or locale and 8 forwarding by spread. Two of the spread-only forwarders are in wallets/legacyWallets/TransferFunds.stories.tsx, which task-002 deletes, so the figure is 11 once phase 1 completes. The named-read count is unaffected."
+     ],
+     "acceptance": [
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "Panel titles and story labels match the baseline",
+      "The @ts-ignore count in this tranche is unchanged"
+     ]
+    },
+    {
+     "id": "task-021",
+     "title": "Hand-finish the staking tranche",
+     "description": "Eight story files after the phase 1 deletions, including staking/Staking.stories.tsx, which holds the 9 dynamic .add() registrations the codemod cannot take, and staking/DelegationCenter.stories.tsx at 401 lines with 19 @ts-ignore directives, the highest in the corpus.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 16.0,
+     "dependencies": [
+      "task-018"
+     ],
+     "targetPaths": [
+      "storybook/stories/staking"
+     ],
+     "implementationNotes": [
+      "The 9 registrations in Staking.stories.tsx that do not use a string-literal name are hand work. Each becomes an explicit named export with an explicit storyName.",
+      "Staking.stories.tsx has already lost three registrations in task-002; convert what remains, not what the baseline recorded.",
+      "DelegationCenter.stories.tsx registers no stories of its own and exports story functions for a sibling. Apply the rule settled in task-020.",
+      "staking/Epochs.stories.tsx is gone, deleted with the /staking/epochs screen in phase 1, and so are the import at Staking.stories.tsx:17 and the registration at :172. Convert what remains, not what the baseline recorded.",
+      "Measured by task-009 at ab7060622: 17 functions across 8 files in this tranche depend on the StoryWrapper prop pass-through, 5 naming currentTheme, osName or locale and 12 forwarding by spread. Ten of the spread-only forwarders are the (_, props) registrations in storybook/stories/staking/Staking.stories.tsx that hand the argument to an imported support component, which are the same lines as the dynamic registrations this task already carries. One more is in storybook/stories/staking/StakingWrapper.tsx, which task-007 deletes, so the figure is 16 once phase 1 completes."
+     ],
+     "acceptance": [
+      "All 9 dynamic registrations have explicit exports and explicit display names matching the baseline",
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "The @ts-ignore count in this tranche is unchanged"
+     ]
+    },
+    {
+     "id": "task-022",
+     "title": "Hand-finish the governance and voting tranche",
+     "description": "Six files holding the richest fixtures in the corpus: governance/DRepDirectory.stories.tsx at 731 lines with 20 registrations, Delegation.stories.tsx at 715 with 24, DRepDetail.stories.tsx at 408 with 15, plus voting/Voting.stories.tsx with 10.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-018"
+     ],
+     "targetPaths": [
+      "storybook/stories/governance",
+      "storybook/stories/voting"
+     ],
+     "implementationNotes": [
+      "governance/DRepDetail.stories.tsx:67 and governance/DRepDirectory.stories.tsx:248 carry comments recording the props dependency; both move to context here.",
+      "These fixtures are reused by the phase 7 container stories for the same screens, so keep them exported and keep them where a screen story can import them.",
+      "voting/Voting.stories.tsx has two storiesOf calls and four decorators; check the codemod split them into two files or one default export as intended.",
+      "Measured by task-009 at ab7060622: 3 functions across 3 files in this tranche depend on the StoryWrapper prop pass-through, all of them spreading the whole argument and none naming currentTheme, osName or locale. This tranche holds the largest story files in the corpus and the smallest conversion surface for the globals change. governance/DRepDetail.stories.tsx:67 and governance/DRepDirectory.stories.tsx:248 record in comments that locale is deliberately left to the IntlProvider inside StoryWrapper rather than read as a prop."
+     ],
+     "acceptance": [
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "Panel titles and story labels match the baseline",
+      "The fixture data remains importable from outside its story file"
+     ]
+    },
+    {
+     "id": "task-023",
+     "title": "Diff every sidebar label against the baseline",
+     "description": "The codemod sanitizer renames every export whose display name contains characters that are not letters, digits or spaces, and re-attaches an explicit display name for each. 80 such names were measured before the phase 1 deletions. A wrong label is invisible to storybook:build, to tsc and to eslint.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-018",
+      "task-019",
+      "task-020",
+      "task-021",
+      "task-022",
+      "task-001"
+     ],
+     "targetPaths": [
+      "storybook/stories/wallets/_utils/WalletsWrapper.tsx",
+      "storybook/stories/settings/utils/SettingsWrapper.tsx",
+      "storybook/stories/wallets/_utils/WalletWithNavigationLayout.tsx"
+     ],
+     "implementationNotes": [
+      "Walk the running workbench and compare group, panel and story label against the task-001 baseline, allowing for the 15 deleted registrations and the deliberate rename in task-006.",
+      "Every sanitizer-renamed export is checked individually. The remainder can be checked by count and by group.",
+      "Four of the 80 labels are control flow, not text, and are checked as behaviour rather than as strings: WalletsWrapper.tsx:14 branches on context.story !== 'Empty' && context.story !== 'Wallet Add' to decide whether to wrap in WalletWithNavigationLayout; SettingsWrapper.tsx:29 passes context.kind to linkTo and :31 reads context.story; WalletWithNavigationLayout.tsx:32 reads context.kind.",
+      "These survive the version hop: at 10.6.0 the story store still sets kind: componentAnnotations.title and story: storyAnnotations?.name, marked 'Back compat'. The risk is the conversion. If the sanitizer renames any of those four strings and the emitted storyName differs by a character, the layout or the navigation link changes silently and storybook:build stays green."
+     ],
+     "acceptance": [
+      "Every one of the 80 sanitizer-renamed exports is checked against the baseline label, and each difference is either reverted with an explicit storyName or recorded as deliberate",
+      "The four control-flow strings are verified by behaviour: a wallets story still wraps or does not wrap as it did before, and a settings story's linkTo still navigates to the same panel",
+      "The sidebar tree matches the task-001 baseline, group for group and panel for panel, with differences enumerated"
+     ]
+    },
+    {
+     "id": "task-024",
+     "title": "Delete the StoryWrapper prop pass-through",
+     "description": "StoryWrapper.tsx:77-81 keeps passing osName, locale and currentTheme as props while stories are still reading them. By this point every consumer reads context.globals instead, so the pass-through goes.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-018",
+      "task-019",
+      "task-020",
+      "task-021",
+      "task-022"
+     ],
+     "targetPath": "storybook/stories/_support/StoryWrapper.tsx",
+     "implementationNotes": [
+      "Deleting it is safe only when the grep for props.currentTheme, props.osName and props.locale across story files returns nothing. Run that grep as part of the change.",
+      "Measured by task-009 at ab7060622: the pass-through has 65 consumers across 39 story files, 35 naming one of the three values and 30 forwarding the whole argument by spread. The 30 are what makes this task hard to verify: after the pass-through goes they still compile and still lint clean, and they fail only by rendering a component with three props missing, which no required check sees. Counting them to zero is the acceptance, not a green build."
+     ],
+     "acceptance": [
+      "No story file reads theme, locale or OS from props",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/StoryWrapper.tsx",
+      "storybook/preview.tsx"
+     ]
+    },
+    {
+     "id": "task-025",
+     "title": "Verify the hop and merge it",
+     "description": "The branch merges once, green. This task is the full verification that makes the merge safe: all three required checks, a manual pass over every panel, and a confirmation that knobs and withState still work untouched.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-023",
+      "task-024"
+     ],
+     "targetPaths": [
+      "storybook/",
+      "package.json"
+     ],
+     "implementationNotes": [
+      "yarn storybook:build, yarn compile, yarn lint, yarn i18n:manage and yarn test:jest all run before the merge.",
+      "Walk all 15 sidebar groups in the running workbench, not only the tranches that felt risky.",
+      "Confirm the knob controls still render and still change the component, because they are carried across this landing unchanged.",
+      "Rebase onto master rather than merging master into the branch."
+     ],
+     "acceptance": [
+      "All required checks pass on the merge commit",
+      "Every panel renders",
+      "Knobs and withState still function at 8.6.x",
+      "The trunk has not carried a red commit at any point"
+     ],
+     "notes": "The one landing in the plan that cannot be decomposed. The reason is yarn compile: a file importing storiesOf from @storybook/react fails tsc at 8.6.x whether or not the indexer sees it."
+    }
+   ]
+  },
+  {
+   "id": "phase-4",
+   "name": "Knobs And Story State Conversion",
+   "description": "366 knob call sites after the phase 1 deletions and 17 withState call sites, converted on 8.6.x in tranches by domain. CSF stories and knob decorators coexist at this line, so a half-converted corpus builds and renders and every tranche is its own landing.",
+   "riskLevel": "high",
+   "tasks": [
+    {
+     "id": "task-026",
+     "title": "Settle the knob-to-arg patterns and the useArgs exception rule",
+     "description": "A knob is a function call evaluated inside the render body on every render; an arg is a static declaration outside it that arrives as a prop. That difference decides whether a call site converts mechanically, and the patterns for the cases that do not should be settled once rather than per tranche.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-025"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support",
+      ".agent/skills/storybook-creation/SKILL.md"
+     ],
+     "implementationNotes": [
+      "Write the worked pattern for each of the five common shapes: a top-level knob, a knob nested in a callback, a knob nested in a mapped list, a knob inside JSX, and a knob whose value feeds two components.",
+      "Four types account for 357 of the 366 sites remaining after the phase 1 deletions: boolean 167, number 93, text 50, select 47. Settle each of the other five: date returns a timestamp while the date control returns a Date, so the call site adjusts; optionsKnob maps to check, inline-check, radio or select depending on its display config; button has no arg equivalent at all, because args are values and not actions, so each of the two sites is either dropped or moved into the story body; radios and object map directly.",
+      "Locked decision 9: useArgs is the default replacement for withState. useState from the preview API is the exception, used only where exposing the value as a control would be actively misleading, meaning scratch state no viewer should poke at. Record the rule here and the sites that take it in task-033.",
+      "Both replacements are called inside the story rather than wrapping it, so the story signature changes in all 17 cases."
+     ],
+     "acceptance": [
+      "A written pattern exists for every knob type in use and for both state replacements",
+      "The exception rule is stated once, in a place the tranche tasks can cite"
+     ]
+    },
+    {
+     "id": "task-027",
+     "title": "Convert knobs in the shared widgets tranche",
+     "description": "common, assets, dapps, notifications, navigation and news. Three of these files also carry withState, and both rewrites land on the same story bodies, so they are done in one pass per file.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 14.0,
+     "dependencies": [
+      "task-026"
+     ],
+     "targetPaths": [
+      "storybook/stories/common",
+      "storybook/stories/assets",
+      "storybook/stories/dapps",
+      "storybook/stories/notifications",
+      "storybook/stories/navigation",
+      "storybook/stories/news"
+     ],
+     "implementationNotes": [
+      "common/ItemsDropdown.stories.tsx, dapps/TransactionRequest.stories.tsx and notifications/Notifications.stories.tsx carry both knobs and withState.",
+      "notifications/Notifications.stories.tsx holds both button knob call sites, which have no arg equivalent.",
+      "A nested knob has no mechanical conversion: hoist the value to the story's args and thread it down, which changes the surrounding code."
+     ],
+     "acceptance": [
+      "No knob import remains in this tranche",
+      "Every converted control still changes the component in the running workbench",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-028",
+     "title": "Convert knobs in the nodes and loading tranche",
+     "description": "The Mithril, syncing, diagnostics and error story sets. loading/mithril/MithrilPartialSyncOverlay.stories.tsx alone carries 15 registrations across 388 lines.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-026"
+     ],
+     "targetPaths": [
+      "storybook/stories/nodes",
+      "storybook/stories/loading"
+     ],
+     "implementationNotes": [
+      "nodes/syncing/SyncingConnecting.stories.tsx and nodes/errors/ files register no stories of their own; their knobs belong to the stories their exports feed, so convert the pair together.",
+      "These fixtures are reused by the phase 6 container stories for LoadingPage, SyncingConnectingPage, MithrilSyncContainer and ChainStorageContainer, so keep them exported."
+     ],
+     "acceptance": [
+      "No knob import remains in this tranche",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-029",
+     "title": "Convert knobs in the settings and profile tranche",
+     "description": "settings/ plus the two colocated story files under source/renderer/app/features/discreet-mode and the analytics story. settings/general/General.stories.tsx also carries withState and the single toolbar write-back site.",
+     "status": "pending",
+     "priority": "medium",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-026"
+     ],
+     "targetPaths": [
+      "storybook/stories/settings",
+      "source/renderer/app/features/discreet-mode",
+      "source/renderer/app/components/profile/analytics/Analytics.stories.tsx"
+     ],
+     "implementationNotes": [
+      "settings/general/General.stories.tsx and settings/language/Language.stories.tsx both carry withState.",
+      "The toolbar write-back converted in task-016 lives in this tranche; do not regress it while rewriting the story body around it.",
+      "storybook/stories/_support/DiscreetModeToggleKnob.ts is a knob helper and goes with the last knob in this tranche."
+     ],
+     "acceptance": [
+      "No knob import remains in this tranche",
+      "The Themes story still moves the toolbar selection",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-030",
+     "title": "Convert knobs in the wallets tranche",
+     "description": "The largest knob population in the corpus, spread across send, receive, summary, tokens, transactions, settings and import. Two of these files also carry withState.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 26.0,
+     "dependencies": [
+      "task-026"
+     ],
+     "targetPaths": [
+      "storybook/stories/wallets",
+      "source/renderer/app/components/wallet/tokens/wallet-token-picker/WalletTokenPicker.stories.tsx"
+     ],
+     "implementationNotes": [
+      "wallets/tokens/WalletTokens.stories.tsx and wallets/tokens/WalletTokensList.stories.tsx carry both knobs and withState.",
+      "wallets/settings/WalletSettingsScreen.stories.tsx carries knobs of four types across 445 lines and registers no stories of its own.",
+      "wallets/send/WalletSend.stories.tsx is 489 lines with 10 @ts-ignore directives; carry them, per locked decision 8.",
+      "This is the tranche most likely to overrun, because its knobs are concentrated in mapped lists over wallet and token arrays."
+     ],
+     "acceptance": [
+      "No knob import remains in this tranche",
+      "Every converted control still changes the component in the running workbench",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-031",
+     "title": "Convert knobs in the staking tranche",
+     "description": "Staking, DelegationCenter, DelegationSteps, StakePools, StakePoolsTable, Rewards, RedeemItnWallets and Undelegate.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 16.0,
+     "dependencies": [
+      "task-026"
+     ],
+     "targetPaths": [
+      "storybook/stories/staking"
+     ],
+     "implementationNotes": [
+      "staking/DelegationCenter.stories.tsx is 401 lines with 19 @ts-ignore directives and registers no stories of its own.",
+      "Three files call moment().add(), which is not a story registration; do not let a grep for .add( mislead the conversion.",
+      "These fixtures feed the phase 7 staking container stories; keep them exported.",
+      "Epochs.stories.tsx is not in this tranche. It went in phase 1 with the /staking/epochs screen, and its two knob call sites went with it."
+     ],
+     "acceptance": [
+      "No knob import remains in this tranche",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-032",
+     "title": "Convert knobs in the governance and voting tranche",
+     "description": "The four governance files and voting/Voting.stories.tsx. governance/DRepDirectory.stories.tsx also carries withState.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-026"
+     ],
+     "targetPaths": [
+      "storybook/stories/governance",
+      "storybook/stories/voting"
+     ],
+     "implementationNotes": [
+      "governance/DRepDirectory.stories.tsx and governance/Delegation.stories.tsx both carry withState alongside knobs.",
+      "62 registrations across the four governance files, the richest fixture set in the corpus and the one phase 7 reuses most heavily."
+     ],
+     "acceptance": [
+      "No knob import remains in this tranche",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    },
+    {
+     "id": "task-033",
+     "title": "Sweep the remaining withState sites and record the exceptions",
+     "description": "17 call sites across 10 files. Eight of the ten were converted alongside their knobs in the tranche tasks; this sweeps the rest, checks the whole population and writes down which sites took the useState exception and why.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-027",
+      "task-028",
+      "task-029",
+      "task-030",
+      "task-031",
+      "task-032"
+     ],
+     "targetPaths": [
+      "storybook/stories",
+      ".agent/skills/storybook-creation/SKILL.md"
+     ],
+     "implementationNotes": [
+      "The exception list is recorded in one place, per locked decision 9, so the rule stays visible rather than becoming per-file taste.",
+      "storybook/stories/_support/ carried one @dump247/storybook-state importer alongside the nine story files. task-063 replaced it with the local wrapper in phase 2, so what goes with the last call site here is the wrapper, not the package."
+     ],
+     "acceptance": [
+      "grep for withState across the repository returns nothing",
+      "The useState exceptions are listed with a one-line reason each"
+     ]
+    },
+    {
+     "id": "task-034",
+     "title": "Remove addon-knobs and storybook-state from the manifest",
+     "description": "package.json:85 declares @storybook/addon-knobs. It becomes unreferenced once the last call site is gone (@dump247/storybook-state was already removed in phase 2 by task-063), and removing them is what unblocks the 10.6.x bump, because neither loads at Storybook 9 or above.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-033"
+     ],
+     "targetPaths": [
+      "package.json",
+      "storybook/main.ts"
+     ],
+     "implementationNotes": [
+      "Remove @storybook/addon-knobs from the addons array in storybook/main.ts as well as from the manifest.",
+      "yarn.lock changes in the same commit."
+     ],
+     "acceptance": [
+      "Neither package appears in package.json, yarn.lock or any import",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-5",
+   "name": "The Storybook 10.6.x Bump",
+   "description": "Three separate landings against an already-converted corpus. This is where the 9.1.x fallback is taken if the moduleResolution change proves not to be mechanically fixable across source/.",
+   "riskLevel": "high",
+   "tasks": [
+    {
+     "id": "task-035",
+     "title": "Move tsconfig moduleResolution off node",
+     "description": "Storybook 10 removed the typesVersions fields that made node resolution work, so tsconfig.json:29 must move to bundler, node16 or nodenext. bundler needs TypeScript 5.0 and the repository is on typescript@4.9.5 (package.json:188), so the options are node16 and nodenext. Because tsconfig.json carries no include, this changes resolution semantics for source/ as well as storybook/.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 10.0,
+     "dependencies": [
+      "task-034"
+     ],
+     "targetPath": "tsconfig.json",
+     "implementationNotes": [
+      "Its own commit, ahead of the bump, because its fallout has nothing to do with Storybook.",
+      "Run yarn compile before and after and classify every new error. Mechanically fixable means an import specifier gains an extension or a package's types resolve through a different entry point.",
+      "If the errors are not mechanically fixable, stop and take the 9.1.x fallback: 9.1.x peers typescript >= 4.9.x with no resolution constraint and needs no ESM main config. The rest of this phase changes only in which version number it writes."
+     ],
+     "acceptance": [
+      "yarn compile passes, or the fallback to 9.1.x is taken and recorded",
+      "The commit touches tsconfig.json and whatever import specifiers the change mechanically requires, and nothing else"
+     ],
+     "notes": "Kill criterion, and the only one in the plan that redirects the target rather than stopping the work.",
+     "targetPaths": [
+      "tsconfig.json"
+     ]
+    },
+    {
+     "id": "task-036",
+     "title": "Convert storybook/main.ts to strict ESM",
+     "description": "Storybook 10 requires an ESM main config: no require, no __dirname, and require.resolve becomes import.meta.resolve. main.ts currently opens with two require calls at :1-2 and resolves the local addon by path.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-034"
+     ],
+     "targetPath": "storybook/main.ts",
+     "implementationNotes": [
+      "The local addon require.resolve entry is already gone, removed with DaedalusMenu in task-016.",
+      "mini-css-extract-plugin and webpack become imports. The webpackFinal body is otherwise unchanged, including the SWC rule and its four legacy-decorator settings.",
+      "Run the fix-faux-esm-require automigration against the file rather than hand-editing blind, then read the result."
+     ],
+     "acceptance": [
+      "No require, __dirname or require.resolve remains in storybook/main.ts",
+      "yarn storybook:build passes at 8.6.x with the ESM config, or the change is held until task-037"
+     ],
+     "targetPaths": [
+      "storybook/main.ts"
+     ]
+    },
+    {
+     "id": "task-037",
+     "title": "Bump the manifest to 10.6.x and run the automigrations individually",
+     "description": "Locked decision 12: no storybook upgrade. Edit package.json by hand and run renderer-to-framework, consolidated-imports, wrap-getAbsolutePath and fix-faux-esm-require one at a time against the configuration files.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-035",
+      "task-036"
+     ],
+     "targetPaths": [
+      "package.json",
+      "storybook/main.ts",
+      "storybook/preview.tsx",
+      "storybook/stories"
+     ],
+     "implementationNotes": [
+      "9 and 10 folded actions, controls, toolbars and viewport into core, so the addon list shrinks to roughly @storybook/addon-links.",
+      "consolidated-imports rewrites @storybook/manager-api and @storybook/preview-api to their storybook/* paths, and @storybook/addon-actions to storybook/actions across the 58 files that import action().",
+      "Script names stay storybook and storybook:build. perSystem/checks.nix:78 runs yarn storybook:build and must not need editing.",
+      "Yarn 1 hoists flat; check node_modules/@storybook for a partially hoisted tree after install rather than trusting the resolution output."
+     ],
+     "acceptance": [
+      "yarn storybook:build, yarn compile and yarn lint pass at 10.6.x",
+      "perSystem/checks.nix is unmodified",
+      "The four legacy-decorator settings are intact"
+     ]
+    },
+    {
+     "id": "task-038",
+     "title": "Verify the bump and close the conversion",
+     "description": "Full verification against the converted corpus at 10.6.x, and the point at which the corpus is declared ready for the container work.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-037"
+     ],
+     "targetPaths": [
+      "storybook/",
+      "package.json"
+     ],
+     "implementationNotes": [
+      "Walk all 15 sidebar groups. Confirm the toolbar globals, the nine themes, the two locales and the three OS profiles.",
+      "Confirm the frozen clock still applies and date formatting is stable across two builds.",
+      "Record the installed version and the addon list. The render check that phase 8 previously carried is out of scope per locked decision 7, so nothing downstream depends on this landing for that reason."
+     ],
+     "acceptance": [
+      "All required checks pass",
+      "Every panel renders and every control works",
+      "The repository is on 10.6.x, or on 9.1.x with the reason recorded"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-6",
+   "name": "Container Harness And Screen Tranches 1 To 5",
+   "description": "29 of the 49 router-reachable screens, and every harness mechanism the remaining 20 need. Each tranche's harness additions are a superset of the one before, so the mechanism is proved on the screens with the fewest dependencies before it carries the wallet screens.",
+   "riskLevel": "high",
+   "tasks": [
+    {
+     "id": "task-039",
+     "title": "Build the store fixture harness core",
+     "description": "A plain object keyed by the 24 StoresMap names (stores/index.ts:58-83), each defaulting to an object whose fields are the observable defaults of the real store rather than a real store instance, mounted through a real Provider with the real ActionsMap. Built as an extension of storybook/stories/_support/StoryProvider.tsx, which already supplies three stores at :220-264 and mounts the real Provider at :273-277.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 14.0,
+     "dependencies": [
+      "task-038"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/StoryProvider.tsx",
+      "source/renderer/app/stores/index.ts"
+     ],
+     "implementationNotes": [
+      "No real store may be constructed. setUpStores (stores/index.ts:94-143) takes a live Api and calls initialize(), which starts the polling reactions (stores/lib/Store.ts:31-35).",
+      "Stores reference each other through this.stores (Store.ts:25-27), so the fixture has to be a full map rather than one store: a computed that crosses into a missing key throws.",
+      "Standardize on a real <Provider stores actions>, not on props. mobx-react 6.3.1 does prefer explicit props, because grabStoresByName returns early for names already in nextProps, but AnalyticsConsentPage reads MobXProviderContext directly through hooks/useStores.ts:5-7 with no prop fallback, and a props fixture stops at the first nested container.",
+      "Supply the four dominant stores properly first: app is read by 35 of the 48 screen containers, profile by 23, networkStatus by 20, wallets by 16. walletBackup, walletsLocal and window are read by no screen at all and can stay empty objects.",
+      "Keep the real ActionsMap from source/renderer/app/actions, which StoryProvider.tsx:9 already imports and which is inert without listeners.",
+      "Per-screen usage is a partial override of two or three keys, not a new fixture. Make the override shape the documented entry point.",
+      "types/injectedPropsType.ts:6-10 types stores as any | StoresMap, and tsconfig.json:79-85 disables strict and noImplicitAny, so an incomplete fixture compiles. The harness needs its own defaults; the type checker will not supply them."
+     ],
+     "acceptance": [
+      "All 24 StoresMap keys resolve to an object",
+      "No reaction starts and no Api is constructed when a story mounts",
+      "A screen container renders through the Provider with a two-key override and nothing else",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ],
+     "notes": "The harness is the schedule. If this lands cleanly the remaining screens are fixture data; if it does not, every screen pays the cost again."
+    },
+    {
+     "id": "task-040",
+     "title": "Screen tranche 1: profile and app only, 8 screens",
+     "description": "DisplaySettingsPage, GeneralSettingsPage, TermsOfUseSettingsPage, SupportSettingsPage, SecuritySettingsPage, AboutDialog, SplashNetworkPage and AssetSettingsDialogContainer. Harness: store map, actions, intl, theme.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-039"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/settings/DisplaySettingsPage.stories.tsx",
+      "storybook/stories/screens/settings/GeneralSettingsPage.stories.tsx",
+      "storybook/stories/screens/settings/TermsOfUseSettingsPage.stories.tsx",
+      "storybook/stories/screens/settings/SupportSettingsPage.stories.tsx",
+      "storybook/stories/screens/settings/SecuritySettingsPage.stories.tsx",
+      "storybook/stories/screens/static/AboutDialog.stories.tsx",
+      "storybook/stories/screens/splash/SplashNetworkPage.stories.tsx",
+      "storybook/stories/screens/assets/AssetSettingsDialogContainer.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 8 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "DisplaySettingsPage -> source/renderer/app/containers/settings/categories/DisplaySettingsPage.tsx -> storybook/stories/screens/settings/DisplaySettingsPage.stories.tsx (stores: profile) | GeneralSettingsPage -> source/renderer/app/containers/settings/categories/GeneralSettingsPage.tsx -> storybook/stories/screens/settings/GeneralSettingsPage.stories.tsx (stores: profile, app) | TermsOfUseSettingsPage -> source/renderer/app/containers/settings/categories/TermsOfUseSettingsPage.tsx -> storybook/stories/screens/settings/TermsOfUseSettingsPage.stories.tsx (stores: profile) | SupportSettingsPage -> source/renderer/app/containers/settings/categories/SupportSettingsPage.tsx -> storybook/stories/screens/settings/SupportSettingsPage.stories.tsx (stores: profile, app) | SecuritySettingsPage -> source/renderer/app/containers/settings/categories/SecuritySettingsPage.tsx -> storybook/stories/screens/settings/SecuritySettingsPage.stories.tsx (stores: none; discreet-mode context only) | AboutDialog -> source/renderer/app/containers/static/AboutDialog.tsx -> storybook/stories/screens/static/AboutDialog.stories.tsx (stores: app) | SplashNetworkPage -> source/renderer/app/containers/splash/SplashNetworkPage.tsx -> storybook/stories/screens/splash/SplashNetworkPage.stories.tsx (stores: app) | AssetSettingsDialogContainer -> source/renderer/app/containers/assets/AssetSettingsDialogContainer.tsx -> storybook/stories/screens/assets/AssetSettingsDialogContainer.stories.tsx (stores: assets, uiDialogs)",
+      "Start with GeneralSettingsPage, which has no story at either layer today, and SecuritySettingsPage, which reads no stores at all and needs only the discreet-mode feature context (SecuritySettingsPage.tsx:7).",
+      "AboutDialog already has a container story at nodes/about/About.stories.tsx:12-14 built on a 19-line props literal at nodes/_utils/props.ts. Replace it with the harness version and delete the literal.",
+      "AssetSettingsDialogContainer is mounted by MainLayout.tsx:117 rather than by a route, and reads assets and uiDialogs.",
+      "Establish the file layout and naming for the whole screen corpus in this tranche, because 41 screens follow it."
+     ],
+     "acceptance": [
+      "All 8 story files listed in targetPaths exist and appear in the sidebar under the settings group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "No new @ts-ignore directives"
+     ],
+     "subtasks": [
+      {
+       "id": "task-040-a",
+       "title": "DisplaySettingsPage",
+       "description": "DisplaySettingsPage -> source/renderer/app/containers/settings/categories/DisplaySettingsPage.tsx -> storybook/stories/screens/settings/DisplaySettingsPage.stories.tsx (stores: profile)",
+       "status": "pending"
+      },
+      {
+       "id": "task-040-b",
+       "title": "GeneralSettingsPage",
+       "description": "GeneralSettingsPage -> source/renderer/app/containers/settings/categories/GeneralSettingsPage.tsx -> storybook/stories/screens/settings/GeneralSettingsPage.stories.tsx (stores: profile, app)",
+       "status": "pending"
+      },
+      {
+       "id": "task-040-c",
+       "title": "TermsOfUseSettingsPage",
+       "description": "TermsOfUseSettingsPage -> source/renderer/app/containers/settings/categories/TermsOfUseSettingsPage.tsx -> storybook/stories/screens/settings/TermsOfUseSettingsPage.stories.tsx (stores: profile)",
+       "status": "pending"
+      },
+      {
+       "id": "task-040-d",
+       "title": "SupportSettingsPage",
+       "description": "SupportSettingsPage -> source/renderer/app/containers/settings/categories/SupportSettingsPage.tsx -> storybook/stories/screens/settings/SupportSettingsPage.stories.tsx (stores: profile, app)",
+       "status": "pending"
+      },
+      {
+       "id": "task-040-e",
+       "title": "SecuritySettingsPage",
+       "description": "SecuritySettingsPage -> source/renderer/app/containers/settings/categories/SecuritySettingsPage.tsx -> storybook/stories/screens/settings/SecuritySettingsPage.stories.tsx (stores: none; discreet-mode context only)",
+       "status": "pending"
+      },
+      {
+       "id": "task-040-f",
+       "title": "AboutDialog",
+       "description": "AboutDialog -> source/renderer/app/containers/static/AboutDialog.tsx -> storybook/stories/screens/static/AboutDialog.stories.tsx (stores: app)",
+       "status": "pending"
+      },
+      {
+       "id": "task-040-g",
+       "title": "SplashNetworkPage",
+       "description": "SplashNetworkPage -> source/renderer/app/containers/splash/SplashNetworkPage.tsx -> storybook/stories/screens/splash/SplashNetworkPage.stories.tsx (stores: app)",
+       "status": "pending"
+      },
+      {
+       "id": "task-040-h",
+       "title": "AssetSettingsDialogContainer",
+       "description": "AssetSettingsDialogContainer -> source/renderer/app/containers/assets/AssetSettingsDialogContainer.tsx -> storybook/stories/screens/assets/AssetSettingsDialogContainer.stories.tsx (stores: assets, uiDialogs)",
+       "status": "pending"
+      }
+     ]
+    },
+    {
+     "id": "task-041",
+     "title": "Add request-shaped defaults and the networkStatus store",
+     "description": "Roughly a dozen screens read isExecuting, error, wasExecuted, result or isExecutingFirstTime off a request field, and containers read through without guarding, so an omitted field throws inside render rather than degrading.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-040"
+     ],
+     "targetPath": "storybook/stories/_support/StoryProvider.tsx",
+     "implementationNotes": [
+      "Request-shaped defaults for every container that reads ...Request.isExecuting, .error, .wasExecuted, .result or .isExecutingFirstTime, plus the networkStatus store defaults. Roughly a dozen screens read a request object, InitialSettingsPage.tsx:39 and WalletSummaryPage.tsx:137 among them. An omitted field throws inside render rather than degrading, which is why this is a harness default and not a per-story concern.",
+      "InitialSettingsPage.tsx:39 and WalletSummaryPage.tsx:137 are the two confirmed readers; sweep the 48 screen containers for the rest rather than adding fields as failures appear.",
+      "Make the request shape a single factory with all five fields defaulted, so a screen override sets one field rather than restating the object.",
+      "networkStatus is read by 20 of the 48 screens and is the third most common dependency."
+     ],
+     "acceptance": [
+      "Every file in targetPaths exists and is imported by the harness, so the requestDefaults additions are reachable from a story override rather than copied per story",
+      "A request-shaped default exists with all five fields",
+      "No screen story sets a request field that the default does not already carry",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ],
+     "notes": "Cheap to fix once in the harness default and expensive to fix twelve times, which is why it is its own task.",
+     "targetPaths": [
+      "storybook/stories/_support/harness/requestDefaults.ts",
+      "storybook/stories/_support/harness/storeDefaults.ts"
+     ]
+    },
+    {
+     "id": "task-042",
+     "title": "Screen tranche 2: add networkStatus, 8 screens",
+     "description": "InitialSettingsPage, TermsOfUsePage, AnalyticsConsentPage, WalletsSettingsPage, NoDiskSpaceErrorPage, SystemTimeErrorPage, ToggleRTSFlagsDialogContainer and RTSFlagsRecommendationOverlayContainer.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-041"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/profile/InitialSettingsPage.stories.tsx",
+      "storybook/stories/screens/profile/TermsOfUsePage.stories.tsx",
+      "storybook/stories/screens/profile/AnalyticsConsentPage.stories.tsx",
+      "storybook/stories/screens/settings/WalletsSettingsPage.stories.tsx",
+      "storybook/stories/screens/loading/NoDiskSpaceErrorPage.stories.tsx",
+      "storybook/stories/screens/loading/SystemTimeErrorPage.stories.tsx",
+      "storybook/stories/screens/knownIssues/ToggleRTSFlagsDialogContainer.stories.tsx",
+      "storybook/stories/screens/knownIssues/RTSFlagsRecommendationOverlayContainer.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 8 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "InitialSettingsPage -> source/renderer/app/containers/profile/InitialSettingsPage.tsx -> storybook/stories/screens/profile/InitialSettingsPage.stories.tsx (stores: profile, networkStatus; reads request objects at :39) | TermsOfUsePage -> source/renderer/app/containers/profile/TermsOfUsePage.tsx -> storybook/stories/screens/profile/TermsOfUsePage.stories.tsx (stores: profile) | AnalyticsConsentPage -> source/renderer/app/containers/profile/AnalyticsConsentPage.tsx -> storybook/stories/screens/profile/AnalyticsConsentPage.stories.tsx (stores: reaches stores through hooks/useStores.ts:5-7, so it proves the Provider path and cannot be served by props) | WalletsSettingsPage -> source/renderer/app/containers/settings/categories/WalletsSettingsPage.tsx -> storybook/stories/screens/settings/WalletsSettingsPage.stories.tsx (stores: profile, wallets) | NoDiskSpaceErrorPage -> source/renderer/app/containers/loading/NoDiskSpaceErrorPage.tsx -> storybook/stories/screens/loading/NoDiskSpaceErrorPage.stories.tsx (stores: networkStatus) | SystemTimeErrorPage -> source/renderer/app/containers/loading/SystemTimeErrorPage.tsx -> storybook/stories/screens/loading/SystemTimeErrorPage.stories.tsx (stores: networkStatus, app) | ToggleRTSFlagsDialogContainer -> source/renderer/app/containers/knownIssues/ToggleRTSFlagsDialogContainer.tsx -> storybook/stories/screens/knownIssues/ToggleRTSFlagsDialogContainer.stories.tsx (stores: networkStatus; the one screen with no coverage of any kind today) | RTSFlagsRecommendationOverlayContainer -> source/renderer/app/containers/knownIssues/RTSFlagsRecommendationOverlayContainer.tsx -> storybook/stories/screens/knownIssues/RTSFlagsRecommendationOverlayContainer.stories.tsx (stores: networkStatus)",
+      "AnalyticsConsentPage proves the Provider path: it calls useStores() and useActions() (AnalyticsConsentPage.tsx:10-11), both of which read MobXProviderContext directly through hooks/useStores.ts:5-7, so props cannot serve it.",
+      "ToggleRTSFlagsDialogContainer is mounted at App.tsx:90 and is the only screen in the application with no story coverage of any kind today.",
+      "TermsOfUsePage has no story at either layer either; its TermsOfUseForm is covered here rather than separately."
+     ],
+     "acceptance": [
+      "All 8 story files listed in targetPaths exist and appear in the sidebar under the profile and errors group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "AnalyticsConsentPage renders through the Provider with no props fixture",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ],
+     "subtasks": [
+      {
+       "id": "task-042-a",
+       "title": "InitialSettingsPage",
+       "description": "InitialSettingsPage -> source/renderer/app/containers/profile/InitialSettingsPage.tsx -> storybook/stories/screens/profile/InitialSettingsPage.stories.tsx (stores: profile, networkStatus; reads request objects at :39)",
+       "status": "pending"
+      },
+      {
+       "id": "task-042-b",
+       "title": "TermsOfUsePage",
+       "description": "TermsOfUsePage -> source/renderer/app/containers/profile/TermsOfUsePage.tsx -> storybook/stories/screens/profile/TermsOfUsePage.stories.tsx (stores: profile)",
+       "status": "pending"
+      },
+      {
+       "id": "task-042-c",
+       "title": "AnalyticsConsentPage",
+       "description": "AnalyticsConsentPage -> source/renderer/app/containers/profile/AnalyticsConsentPage.tsx -> storybook/stories/screens/profile/AnalyticsConsentPage.stories.tsx (stores: reaches stores through hooks/useStores.ts:5-7, so it proves the Provider path and cannot be served by props)",
+       "status": "pending"
+      },
+      {
+       "id": "task-042-d",
+       "title": "WalletsSettingsPage",
+       "description": "WalletsSettingsPage -> source/renderer/app/containers/settings/categories/WalletsSettingsPage.tsx -> storybook/stories/screens/settings/WalletsSettingsPage.stories.tsx (stores: profile, wallets)",
+       "status": "pending"
+      },
+      {
+       "id": "task-042-e",
+       "title": "NoDiskSpaceErrorPage",
+       "description": "NoDiskSpaceErrorPage -> source/renderer/app/containers/loading/NoDiskSpaceErrorPage.tsx -> storybook/stories/screens/loading/NoDiskSpaceErrorPage.stories.tsx (stores: networkStatus)",
+       "status": "pending"
+      },
+      {
+       "id": "task-042-f",
+       "title": "SystemTimeErrorPage",
+       "description": "SystemTimeErrorPage -> source/renderer/app/containers/loading/SystemTimeErrorPage.tsx -> storybook/stories/screens/loading/SystemTimeErrorPage.stories.tsx (stores: networkStatus, app)",
+       "status": "pending"
+      },
+      {
+       "id": "task-042-g",
+       "title": "ToggleRTSFlagsDialogContainer",
+       "description": "ToggleRTSFlagsDialogContainer -> source/renderer/app/containers/knownIssues/ToggleRTSFlagsDialogContainer.tsx -> storybook/stories/screens/knownIssues/ToggleRTSFlagsDialogContainer.stories.tsx (stores: networkStatus; the one screen with no coverage of any kind today)",
+       "status": "pending"
+      },
+      {
+       "id": "task-042-h",
+       "title": "RTSFlagsRecommendationOverlayContainer",
+       "description": "RTSFlagsRecommendationOverlayContainer -> source/renderer/app/containers/knownIssues/RTSFlagsRecommendationOverlayContainer.tsx -> storybook/stories/screens/knownIssues/RTSFlagsRecommendationOverlayContainer.stories.tsx (stores: networkStatus)",
+       "status": "pending"
+      }
+     ]
+    },
+    {
+     "id": "task-043",
+     "title": "Add the backend store and the Mithril fields",
+     "description": "backend.loadingPhase has no representation in the current StoryProvider and five screens key off it.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-042"
+     ],
+     "targetPath": "storybook/stories/_support/StoryProvider.tsx",
+     "implementationNotes": [
+      "backend.loadingPhase and the Mithril fields, which tranche 3 needs for LoadingPage, SyncingConnectingPage, MithrilSyncContainer and ChainStorageContainer.",
+      "LoadingPage.tsx:41-88 branches on loadingPhase; enumerate the values it reads rather than inventing them.",
+      "The Mithril fields are already exercised by the loading/mithril story fixtures converted in task-028; reuse them rather than writing new ones."
+     ],
+     "acceptance": [
+      "Every file in targetPaths exists and is imported by the harness, so the backend store additions are reachable from a story override rather than copied per story",
+      "Every loadingPhase branch LoadingPage reads is representable from the harness",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/harness/storeDefaults.ts",
+      "storybook/stories/_support/harness/fixtures/backend.ts"
+     ]
+    },
+    {
+     "id": "task-044",
+     "title": "Screen tranche 3: add backend, 5 screens",
+     "description": "LoadingPage, SyncingConnectingPage, MithrilSyncContainer, ChainStorageContainer and DaedalusDiagnosticsDialog. LoadingPage is the first screen with several branches worth separate stories and the first that mounts nested containers.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 13.0,
+     "dependencies": [
+      "task-043"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/loading/LoadingPage.stories.tsx",
+      "storybook/stories/screens/loading/SyncingConnectingPage.stories.tsx",
+      "storybook/stories/screens/loading/MithrilSyncContainer.stories.tsx",
+      "storybook/stories/screens/loading/ChainStorageContainer.stories.tsx",
+      "storybook/stories/screens/status/DaedalusDiagnosticsDialog.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 5 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "LoadingPage -> source/renderer/app/containers/loading/LoadingPage.tsx -> storybook/stories/screens/loading/LoadingPage.stories.tsx (stores: backend, networkStatus, profile, app; several branches worth separate stories) | SyncingConnectingPage -> source/renderer/app/containers/loading/SyncingConnectingPage.tsx -> storybook/stories/screens/loading/SyncingConnectingPage.stories.tsx (stores: backend, networkStatus) | MithrilSyncContainer -> source/renderer/app/containers/loading/MithrilSyncContainer.tsx -> storybook/stories/screens/loading/MithrilSyncContainer.stories.tsx (stores: backend, with the Mithril fields) | ChainStorageContainer -> source/renderer/app/containers/loading/ChainStorageContainer.tsx -> storybook/stories/screens/loading/ChainStorageContainer.stories.tsx (stores: backend) | DaedalusDiagnosticsDialog -> source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx -> storybook/stories/screens/status/DaedalusDiagnosticsDialog.stories.tsx (stores: networkStatus, app)",
+      "LoadingPage renders five nested containers, so its fixture must satisfy every child's store reads, not only its own. This is the first real test of the Provider decision.",
+      "Its five states are chain storage, Mithril bootstrap or sync, syncing, the disk-space overlay and the system-time overlay (LoadingPage.tsx:20-95), and each is a separate story.",
+      "SyncingConnectingPage reads six stores, the second highest in this half of the corpus."
+     ],
+     "acceptance": [
+      "All 5 story files listed in targetPaths exist and appear in the sidebar under the loading and diagnostics group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "LoadingPage has a story per branch and each renders the branch it claims",
+      "The nested containers render rather than throwing on an undefined store",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ],
+     "subtasks": [
+      {
+       "id": "task-044-a",
+       "title": "LoadingPage",
+       "description": "LoadingPage -> source/renderer/app/containers/loading/LoadingPage.tsx -> storybook/stories/screens/loading/LoadingPage.stories.tsx (stores: backend, networkStatus, profile, app; several branches worth separate stories)",
+       "status": "pending"
+      },
+      {
+       "id": "task-044-b",
+       "title": "SyncingConnectingPage",
+       "description": "SyncingConnectingPage -> source/renderer/app/containers/loading/SyncingConnectingPage.tsx -> storybook/stories/screens/loading/SyncingConnectingPage.stories.tsx (stores: backend, networkStatus)",
+       "status": "pending"
+      },
+      {
+       "id": "task-044-c",
+       "title": "MithrilSyncContainer",
+       "description": "MithrilSyncContainer -> source/renderer/app/containers/loading/MithrilSyncContainer.tsx -> storybook/stories/screens/loading/MithrilSyncContainer.stories.tsx (stores: backend, with the Mithril fields)",
+       "status": "pending"
+      },
+      {
+       "id": "task-044-d",
+       "title": "ChainStorageContainer",
+       "description": "ChainStorageContainer -> source/renderer/app/containers/loading/ChainStorageContainer.tsx -> storybook/stories/screens/loading/ChainStorageContainer.stories.tsx (stores: backend)",
+       "status": "pending"
+      },
+      {
+       "id": "task-044-e",
+       "title": "DaedalusDiagnosticsDialog",
+       "description": "DaedalusDiagnosticsDialog -> source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx -> storybook/stories/screens/status/DaedalusDiagnosticsDialog.stories.tsx (stores: networkStatus, app)",
+       "status": "pending"
+      }
+     ]
+    },
+    {
+     "id": "task-045",
+     "title": "Add the newsFeed, appUpdate and uiNotifications stores",
+     "description": "Four overlay screens depend on these three keys and nothing else new.",
+     "status": "pending",
+     "priority": "medium",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-042"
+     ],
+     "targetPath": "storybook/stories/_support/StoryProvider.tsx",
+     "implementationNotes": [
+      "newsFeed, appUpdate and uiNotifications defaults for tranche 4. The existing news stories at storybook/stories/news/ carry usable payload shapes; lift them rather than inventing new ones.",
+      "The news and app-update fixtures already exist in the story sets converted in task-027; reuse them."
+     ],
+     "acceptance": [
+      "Every file in targetPaths exists and is imported by the harness, so the news and updates stores additions are reachable from a story override rather than copied per story",
+      "The three stores carry defaults that render an empty state without throwing",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/harness/storeDefaults.ts",
+      "storybook/stories/_support/harness/fixtures/news.ts"
+     ]
+    },
+    {
+     "id": "task-046",
+     "title": "Screen tranche 4: news, updates and notifications, 4 screens",
+     "description": "NewsFeedContainer, NewsOverlayContainer, AppUpdateContainer and NotificationsContainer, all mounted above the router by App.tsx and Root.tsx.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 7.0,
+     "dependencies": [
+      "task-045"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/news/NewsFeedContainer.stories.tsx",
+      "storybook/stories/screens/news/NewsOverlayContainer.stories.tsx",
+      "storybook/stories/screens/appUpdate/AppUpdateContainer.stories.tsx",
+      "storybook/stories/screens/notifications/NotificationsContainer.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 4 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "NewsFeedContainer -> source/renderer/app/containers/news/NewsFeedContainer.tsx -> storybook/stories/screens/news/NewsFeedContainer.stories.tsx (stores: newsFeed, app) | NewsOverlayContainer -> source/renderer/app/containers/news/NewsOverlayContainer.tsx -> storybook/stories/screens/news/NewsOverlayContainer.stories.tsx (stores: newsFeed) | AppUpdateContainer -> source/renderer/app/containers/appUpdate/AppUpdateContainer.tsx -> storybook/stories/screens/appUpdate/AppUpdateContainer.stories.tsx (stores: appUpdate) | NotificationsContainer -> source/renderer/app/containers/notifications/NotificationsContainer.tsx -> storybook/stories/screens/notifications/NotificationsContainer.stories.tsx (stores: uiNotifications)",
+      "NewsFeedContainer reads five stores: app, appUpdate, networkStatus, newsFeed and profile.",
+      "NewsOverlayContainer covers both the incident and alert shapes, which are separate component stories today."
+     ],
+     "acceptance": [
+      "All 4 story files listed in targetPaths exist and appear in the sidebar under the news, updates and notifications group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ],
+     "subtasks": [
+      {
+       "id": "task-046-a",
+       "title": "NewsFeedContainer",
+       "description": "NewsFeedContainer -> source/renderer/app/containers/news/NewsFeedContainer.tsx -> storybook/stories/screens/news/NewsFeedContainer.stories.tsx (stores: newsFeed, app)",
+       "status": "pending"
+      },
+      {
+       "id": "task-046-b",
+       "title": "NewsOverlayContainer",
+       "description": "NewsOverlayContainer -> source/renderer/app/containers/news/NewsOverlayContainer.tsx -> storybook/stories/screens/news/NewsOverlayContainer.stories.tsx (stores: newsFeed)",
+       "status": "pending"
+      },
+      {
+       "id": "task-046-c",
+       "title": "AppUpdateContainer",
+       "description": "AppUpdateContainer -> source/renderer/app/containers/appUpdate/AppUpdateContainer.tsx -> storybook/stories/screens/appUpdate/AppUpdateContainer.stories.tsx (stores: appUpdate)",
+       "status": "pending"
+      },
+      {
+       "id": "task-046-d",
+       "title": "NotificationsContainer",
+       "description": "NotificationsContainer -> source/renderer/app/containers/notifications/NotificationsContainer.tsx -> storybook/stories/screens/notifications/NotificationsContainer.stories.tsx (stores: uiNotifications)",
+       "status": "pending"
+      }
+     ]
+    },
+    {
+     "id": "task-047",
+     "title": "Add the router stub, MemoryRouter and AnalyticsProvider",
+     "description": "Nothing in the workbench provides a Router today, and five screens use withRouter while two read stores.router.location. Three screens use withAnalytics, which calls useAnalytics() (components/analytics/withAnalytics.tsx:16) and reads a context, so a provider is required rather than a prop.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 10.0,
+     "dependencies": [
+      "task-044",
+      "task-046"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/StoryProvider.tsx",
+      "storybook/stories/_support/StoryLayout.tsx"
+     ],
+     "implementationNotes": [
+      "A MemoryRouter seeded with the screen's path and a RouterStore stub whose location matches it, so MainLayout.tsx:100 and Settings.tsx:21-28 agree with what withRouter supplies.",
+      "The five withRouter screens are voting/Governance, GovernanceWalletsPage, DRepDirectoryPage, DRepDetailPage and VotingGovernancePage.",
+      "The three withAnalytics screens are WalletSummaryPage, WalletSendPage and StakePoolsListPage. A no-op tracker is enough.",
+      "The path is a per-story input, not a harness constant. DRepDetailPage needs one carrying a :drepId in phase 7."
+     ],
+     "acceptance": [
+      "A screen story can declare its route path and have both withRouter and stores.router.location agree with it",
+      "A withAnalytics screen renders without a real tracker",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ]
+    },
+    {
+     "id": "task-048",
+     "title": "Screen tranche 5: chrome, 4 screens",
+     "description": "MainLayout, TopBarContainer, Settings and Governance. This tranche unblocks everything after it, because every remaining screen renders inside MainLayout.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 10.0,
+     "dependencies": [
+      "task-047"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/chrome/MainLayout.stories.tsx",
+      "storybook/stories/screens/chrome/TopBarContainer.stories.tsx",
+      "storybook/stories/screens/chrome/Settings.stories.tsx",
+      "storybook/stories/screens/chrome/Governance.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 4 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "MainLayout -> source/renderer/app/containers/MainLayout.tsx -> storybook/stories/screens/chrome/MainLayout.stories.tsx (stores: app, sidebar, networkStatus, wallets, uiDialogs; reads router location at :100) | TopBarContainer -> source/renderer/app/containers/TopBarContainer.tsx -> storybook/stories/screens/chrome/TopBarContainer.stories.tsx (stores: app, sidebar, wallets, networkStatus) | Settings -> source/renderer/app/containers/settings/Settings.tsx -> storybook/stories/screens/chrome/Settings.stories.tsx (stores: app; reads router location at :21-28) | Governance -> source/renderer/app/containers/voting/Governance.tsx -> storybook/stories/screens/chrome/Governance.stories.tsx (stores: withRouter)",
+      "MainLayout reads six stores and is the only consumer of stores.router.location (MainLayout.tsx:100). It also mounts three nested containers.",
+      "TopBarContainer reads seven stores and additionally needs the discreet-mode feature context.",
+      "storybook/stories/_support/StoryLayout.tsx already assembles Sidebar and SidebarLayout for component stories; reconcile it with the container story rather than maintaining two shells."
+     ],
+     "acceptance": [
+      "All 4 story files listed in targetPaths exist and appear in the sidebar under the chrome group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "MainLayout renders with its sidebar, top bar and a child screen",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ],
+     "subtasks": [
+      {
+       "id": "task-048-a",
+       "title": "MainLayout",
+       "description": "MainLayout -> source/renderer/app/containers/MainLayout.tsx -> storybook/stories/screens/chrome/MainLayout.stories.tsx (stores: app, sidebar, networkStatus, wallets, uiDialogs; reads router location at :100)",
+       "status": "pending"
+      },
+      {
+       "id": "task-048-b",
+       "title": "TopBarContainer",
+       "description": "TopBarContainer -> source/renderer/app/containers/TopBarContainer.tsx -> storybook/stories/screens/chrome/TopBarContainer.stories.tsx (stores: app, sidebar, wallets, networkStatus)",
+       "status": "pending"
+      },
+      {
+       "id": "task-048-c",
+       "title": "Settings",
+       "description": "Settings -> source/renderer/app/containers/settings/Settings.tsx -> storybook/stories/screens/chrome/Settings.stories.tsx (stores: app; reads router location at :21-28)",
+       "status": "pending"
+      },
+      {
+       "id": "task-048-d",
+       "title": "Governance",
+       "description": "Governance -> source/renderer/app/containers/voting/Governance.tsx -> storybook/stories/screens/chrome/Governance.stories.tsx (stores: withRouter)",
+       "status": "pending"
+      }
+     ]
+    },
+    {
+     "id": "task-049",
+     "title": "Harness review checkpoint",
+     "description": "Every mechanism now exists and 29 of the 49 screens are covered. Review the harness before it carries 20 more screens and a materially larger fixture volume.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-048"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/StoryProvider.tsx",
+      "storybook/stories/screens"
+     ],
+     "implementationNotes": [
+      "Measure the real per-screen cost across tranches 1 to 5 and compare it against the 12 hours per tranche this plan assumed. That rate is the input to the phase 7 re-estimate.",
+      "Check for override duplication: if three screens override the same two fields the same way, that belongs in the default.",
+      "Confirm no screen story constructs a store, starts a reaction or reaches a real Api."
+     ],
+     "acceptance": [
+      "A recorded per-screen rate for tranches 1 to 5",
+      "The harness override surface is documented well enough for phase 8 to write it up"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-7",
+   "name": "Screen Tranches 6 To 8",
+   "description": "The remaining 20 screens. These introduce fixture data against a fixed wrapper rather than new mechanisms, which is the property that keeps the container work from scaling linearly with screen count. It is also the half with the widest error bars, because nothing in the corpus has demonstrated the pattern at wallet-screen scale.",
+   "riskLevel": "high",
+   "tasks": [
+    {
+     "id": "task-050",
+     "title": "Write one wallet-scale proof story before committing to tranche 6",
+     "description": "The only existing container fixture is a 19-line literal covering the simplest container in the application. WalletSummaryPage reads nine stores, the highest in the corpus, and WalletSettingsPage mounts eight nested containers. One of them is written and reviewed before the rest of the tranche is planned.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-049"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens",
+      "storybook/stories/_support/StoryProvider.tsx"
+     ],
+     "implementationNotes": [
+      "Pick WalletSummaryPage: nine stores, four states (transactions, loading first page, restoring, empty) at WalletSummaryPage.tsx:136-171, a request read at :137, and withAnalytics.",
+      "Measure the real cost against the tranche 1 to 5 rate from task-049 and re-estimate task-052 before starting it.",
+      "If the cost is materially above the rate, re-plan the remaining tranches rather than absorbing the overrun."
+     ],
+     "acceptance": [
+      "One wallet screen renders all four of its states from the harness",
+      "The measured cost is recorded and task-052 is re-estimated against it"
+     ],
+     "notes": "Kill criterion for the phase, not for the plan. Re-plan the remaining 20 screens rather than pushing through."
+    },
+    {
+     "id": "task-051",
+     "title": "Build the wallet domain fixture data",
+     "description": "Nine store keys arrive with this tranche: wallets, transactions, assets, addresses, walletSettings, walletMigration, hardwareWallets, currency and uiDialogs. This is the largest fixture volume in the plan.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-050"
+     ],
+     "targetPath": "storybook/stories/_support/StoryProvider.tsx",
+     "implementationNotes": [
+      "The wallets, transactions, assets, addresses, walletSettings, walletMigration, hardwareWallets, currency and uiDialogs shapes tranche 6 needs. StoryProvider.tsx:20-129 is a starting point but covers only the Wallet domain shape, not transactions or assets. Wallet is source/renderer/app/domains/Wallet.ts, 286 lines with 19 @observable fields, and WalletSummaryPage.tsx:119 throws outright without a fully shaped one.",
+      "StoryProvider.tsx:20-129 already carries wallet fixtures, but they cover the Wallet domain shape only, not transactions or assets.",
+      "Reuse the fixtures already exported by the wallet story files converted in task-020 and task-030 rather than writing a second set.",
+      "uiDialogs is read by 9 screens and is what a dialog-state story toggles; make the open-dialog override a one-line change."
+     ],
+     "acceptance": [
+      "Every file in targetPaths exists and is imported by the harness, so the wallet fixtures additions are reachable from a story override rather than copied per story",
+      "A wallet, a transaction list, an asset list and an address list are all available as harness defaults",
+      "A dialog state is expressible as a single override",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/harness/fixtures/wallets.ts",
+      "storybook/stories/_support/harness/fixtures/transactions.ts",
+      "storybook/stories/_support/harness/fixtures/assets.ts"
+     ]
+    },
+    {
+     "id": "task-052",
+     "title": "Screen tranche 6: wallets, 9 screens",
+     "description": "The Wallet shell, WalletAddPage, WalletSummaryPage, WalletSendPage, WalletReceivePage, WalletTokensPage, WalletTransactionsPage, WalletSettingsPage and WalletUtxoPage. Four of the nine carry multiple meaningful states.",
+     "status": "pending",
+     "priority": "critical",
+     "estimatedHours": 36.0,
+     "dependencies": [
+      "task-051"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/wallet/Wallet.stories.tsx",
+      "storybook/stories/screens/wallet/WalletAddPage.stories.tsx",
+      "storybook/stories/screens/wallet/WalletSummaryPage.stories.tsx",
+      "storybook/stories/screens/wallet/WalletSendPage.stories.tsx",
+      "storybook/stories/screens/wallet/WalletReceivePage.stories.tsx",
+      "storybook/stories/screens/wallet/WalletTokensPage.stories.tsx",
+      "storybook/stories/screens/wallet/WalletTransactionsPage.stories.tsx",
+      "storybook/stories/screens/wallet/WalletSettingsPage.stories.tsx",
+      "storybook/stories/screens/wallet/WalletUtxoPage.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 9 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "Wallet shell -> source/renderer/app/containers/wallet/Wallet.tsx -> storybook/stories/screens/wallet/Wallet.stories.tsx (stores: states: no-active-wallet, restoring, normal (Wallet.tsx:65-88)) | WalletAddPage -> source/renderer/app/containers/wallet/WalletAddPage.tsx -> storybook/stories/screens/wallet/WalletAddPage.stories.tsx (stores: six dialog branches plus the bare screen; mounts WalletBackupDialogContainer at :80-81, which reads stores.walletBackup) | WalletSummaryPage -> source/renderer/app/containers/wallet/WalletSummaryPage.tsx -> storybook/stories/screens/wallet/WalletSummaryPage.stories.tsx (stores: reads ~25 fields across 9 stores at :85-171; throws at :119 without a fully shaped Wallet domain object; withAnalytics) | WalletSendPage -> source/renderer/app/containers/wallet/WalletSendPage.tsx -> storybook/stories/screens/wallet/WalletSendPage.stories.tsx (stores: withAnalytics; destructures assets.all at :134 and resolves via getAssetByUniqueId at :115-117) | WalletReceivePage -> source/renderer/app/containers/wallet/WalletReceivePage.tsx -> storybook/stories/screens/wallet/WalletReceivePage.stories.tsx (stores: separate random and sequential branches) | WalletTokensPage -> source/renderer/app/containers/wallet/WalletTokensPage.tsx -> storybook/stories/screens/wallet/WalletTokensPage.stories.tsx (stores: reads activeWallet.assets.total at :41) | WalletTransactionsPage -> source/renderer/app/containers/wallet/WalletTransactionsPage.tsx -> storybook/stories/screens/wallet/WalletTransactionsPage.stories.tsx (stores: transactions, wallets, addresses) | WalletSettingsPage -> source/renderer/app/containers/wallet/WalletSettingsPage.tsx -> storybook/stories/screens/wallet/WalletSettingsPage.stories.tsx (stores: mounts eight nested containers, constructed as elements but rendered only behind isDialogOpen at WalletSettings.tsx:368-402) | WalletUtxoPage -> source/renderer/app/containers/wallet/WalletUtxoPage.tsx -> storybook/stories/screens/wallet/WalletUtxoPage.stories.tsx (stores: wallets)",
+      "Multi-state screens and their evidence: the Wallet shell has no-active-wallet, restoring and normal (Wallet.tsx:65-88); WalletAddPage has six dialog branches plus the bare screen (WalletAddPage.tsx:72-94); WalletSummaryPage has four (:136-171); WalletSettingsPage has the hardware-wallet branch at :107 and ten dialogs at :167-191.",
+      "WalletSettingsPage mounts eight nested containers and WalletAddPage five. The parent fixture has to satisfy every child's store reads, which is the largest hidden cost in this tranche.",
+      "The wallet dialog containers are not separate coverage targets. They are exercised through the parent screen story that opens them.",
+      "WalletReceivePage has separate random and sequential branches."
+     ],
+     "acceptance": [
+      "All 9 story files listed in targetPaths exist and appear in the sidebar under the wallets group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "Every nested container renders rather than throwing on an undefined store",
+      "yarn storybook:build, yarn compile and yarn lint pass",
+      "No new @ts-ignore directives"
+     ],
+     "subtasks": [
+      {
+       "id": "task-052-a",
+       "title": "Wallet shell",
+       "description": "Wallet shell -> source/renderer/app/containers/wallet/Wallet.tsx -> storybook/stories/screens/wallet/Wallet.stories.tsx (stores: states: no-active-wallet, restoring, normal (Wallet.tsx:65-88))",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-b",
+       "title": "WalletAddPage",
+       "description": "WalletAddPage -> source/renderer/app/containers/wallet/WalletAddPage.tsx -> storybook/stories/screens/wallet/WalletAddPage.stories.tsx (stores: six dialog branches plus the bare screen; mounts WalletBackupDialogContainer at :80-81, which reads stores.walletBackup)",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-c",
+       "title": "WalletSummaryPage",
+       "description": "WalletSummaryPage -> source/renderer/app/containers/wallet/WalletSummaryPage.tsx -> storybook/stories/screens/wallet/WalletSummaryPage.stories.tsx (stores: reads ~25 fields across 9 stores at :85-171; throws at :119 without a fully shaped Wallet domain object; withAnalytics)",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-d",
+       "title": "WalletSendPage",
+       "description": "WalletSendPage -> source/renderer/app/containers/wallet/WalletSendPage.tsx -> storybook/stories/screens/wallet/WalletSendPage.stories.tsx (stores: withAnalytics; destructures assets.all at :134 and resolves via getAssetByUniqueId at :115-117)",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-e",
+       "title": "WalletReceivePage",
+       "description": "WalletReceivePage -> source/renderer/app/containers/wallet/WalletReceivePage.tsx -> storybook/stories/screens/wallet/WalletReceivePage.stories.tsx (stores: separate random and sequential branches)",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-f",
+       "title": "WalletTokensPage",
+       "description": "WalletTokensPage -> source/renderer/app/containers/wallet/WalletTokensPage.tsx -> storybook/stories/screens/wallet/WalletTokensPage.stories.tsx (stores: reads activeWallet.assets.total at :41)",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-g",
+       "title": "WalletTransactionsPage",
+       "description": "WalletTransactionsPage -> source/renderer/app/containers/wallet/WalletTransactionsPage.tsx -> storybook/stories/screens/wallet/WalletTransactionsPage.stories.tsx (stores: transactions, wallets, addresses)",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-h",
+       "title": "WalletSettingsPage",
+       "description": "WalletSettingsPage -> source/renderer/app/containers/wallet/WalletSettingsPage.tsx -> storybook/stories/screens/wallet/WalletSettingsPage.stories.tsx (stores: mounts eight nested containers, constructed as elements but rendered only behind isDialogOpen at WalletSettings.tsx:368-402)",
+       "status": "pending"
+      },
+      {
+       "id": "task-052-i",
+       "title": "WalletUtxoPage",
+       "description": "WalletUtxoPage -> source/renderer/app/containers/wallet/WalletUtxoPage.tsx -> storybook/stories/screens/wallet/WalletUtxoPage.stories.tsx (stores: wallets)",
+       "status": "pending"
+      }
+     ]
+    },
+    {
+     "id": "task-053",
+     "title": "Build the staking domain fixture data",
+     "description": "One store key arrives with this tranche, staking, and stake pool fixtures already exist in the staking stories.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-049"
+     ],
+     "targetPath": "storybook/stories/_support/StoryProvider.tsx",
+     "implementationNotes": [
+      "The staking store shape tranche 7 needs. Stake pool fixtures already exist in the staking stories; lift them rather than duplicating.",
+      "Reuse the stake pool and delegation fixtures from the staking stories converted in task-021 and task-031.",
+      "RedeemItnRewardsContainer needs staking.redeemStep, which Root.tsx:68-70 reads to decide whether to mount it at all."
+     ],
+     "acceptance": [
+      "Every file in targetPaths exists and is imported by the harness, so the staking fixtures additions are reachable from a story override rather than copied per story",
+      "A stake pool list, a delegation state and a redeem step are available as harness defaults",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/harness/fixtures/staking.ts"
+     ]
+    },
+    {
+     "id": "task-054",
+     "title": "Screen tranche 7: staking, 6 screens",
+     "description": "The Staking shell, DelegationCenterPage, StakePoolsListPage, StakingRewardsPage, StakePoolsSettingsPage and RedeemItnRewardsContainer.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 20.0,
+     "dependencies": [
+      "task-053"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/staking/Staking.stories.tsx",
+      "storybook/stories/screens/staking/DelegationCenterPage.stories.tsx",
+      "storybook/stories/screens/staking/StakePoolsListPage.stories.tsx",
+      "storybook/stories/screens/staking/StakingRewardsPage.stories.tsx",
+      "storybook/stories/screens/settings/StakePoolsSettingsPage.stories.tsx",
+      "storybook/stories/screens/staking/RedeemItnRewardsContainer.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 6 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "Staking shell -> source/renderer/app/containers/staking/Staking.tsx -> storybook/stories/screens/staking/Staking.stories.tsx (stores: staking, app) | DelegationCenterPage -> source/renderer/app/containers/staking/DelegationCenterPage.tsx -> storybook/stories/screens/staking/DelegationCenterPage.stories.tsx (stores: staking, wallets, networkStatus; reaches UndelegateWalletConfirmationDialog at :118-119) | StakePoolsListPage -> source/renderer/app/containers/staking/StakePoolsListPage.tsx -> storybook/stories/screens/staking/StakePoolsListPage.stories.tsx (stores: staking, wallets; withAnalytics) | StakingRewardsPage -> source/renderer/app/containers/staking/StakingRewardsPage.tsx -> storybook/stories/screens/staking/StakingRewardsPage.stories.tsx (stores: staking) | StakePoolsSettingsPage -> source/renderer/app/containers/settings/categories/StakePoolsSettingsPage.tsx -> storybook/stories/screens/settings/StakePoolsSettingsPage.stories.tsx (stores: staking, profile) | RedeemItnRewardsContainer -> source/renderer/app/containers/staking/RedeemItnRewardsContainer.tsx -> storybook/stories/screens/staking/RedeemItnRewardsContainer.stories.tsx (stores: staking, wallets)",
+      "Multi-state screens and their evidence: the Staking shell has not-synced, countdown and normal (Staking.tsx:96-119), though the countdown branch is unreachable in a shipped build and is covered only if it is cheap; DelegationCenterPage has no-wallets, list, the undelegate dialog and the delegation wizard (:84-126); StakePoolsListPage has list, ranking in progress and the delegation wizard (:111-114).",
+      "The delegation setup wizard is reached from two screens, DelegationCenterPage.tsx:124 and StakePoolsListPage.tsx:113. Cover it once, from whichever parent is cheaper, and say which.",
+      "RedeemItnRewardsContainer is mounted by Root.tsx:68-70 from the OS menu path, not by a route. Its loading state is the screen with no story at either layer today."
+     ],
+     "acceptance": [
+      "All 6 story files listed in targetPaths exist and appear in the sidebar under the staking group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "Six screens render, with a story per state for the three multi-state screens",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ],
+     "subtasks": [
+      {
+       "id": "task-054-a",
+       "title": "Staking shell",
+       "description": "Staking shell -> source/renderer/app/containers/staking/Staking.tsx -> storybook/stories/screens/staking/Staking.stories.tsx (stores: staking, app)",
+       "status": "pending"
+      },
+      {
+       "id": "task-054-b",
+       "title": "DelegationCenterPage",
+       "description": "DelegationCenterPage -> source/renderer/app/containers/staking/DelegationCenterPage.tsx -> storybook/stories/screens/staking/DelegationCenterPage.stories.tsx (stores: staking, wallets, networkStatus; reaches UndelegateWalletConfirmationDialog at :118-119)",
+       "status": "pending"
+      },
+      {
+       "id": "task-054-c",
+       "title": "StakePoolsListPage",
+       "description": "StakePoolsListPage -> source/renderer/app/containers/staking/StakePoolsListPage.tsx -> storybook/stories/screens/staking/StakePoolsListPage.stories.tsx (stores: staking, wallets; withAnalytics)",
+       "status": "pending"
+      },
+      {
+       "id": "task-054-d",
+       "title": "StakingRewardsPage",
+       "description": "StakingRewardsPage -> source/renderer/app/containers/staking/StakingRewardsPage.tsx -> storybook/stories/screens/staking/StakingRewardsPage.stories.tsx (stores: staking)",
+       "status": "pending"
+      },
+      {
+       "id": "task-054-e",
+       "title": "StakePoolsSettingsPage",
+       "description": "StakePoolsSettingsPage -> source/renderer/app/containers/settings/categories/StakePoolsSettingsPage.tsx -> storybook/stories/screens/settings/StakePoolsSettingsPage.stories.tsx (stores: staking, profile)",
+       "status": "pending"
+      },
+      {
+       "id": "task-054-f",
+       "title": "RedeemItnRewardsContainer",
+       "description": "RedeemItnRewardsContainer -> source/renderer/app/containers/staking/RedeemItnRewardsContainer.tsx -> storybook/stories/screens/staking/RedeemItnRewardsContainer.stories.tsx (stores: staking, wallets)",
+       "status": "pending"
+      }
+     ]
+    },
+    {
+     "id": "task-055",
+     "title": "Build the governance and voting fixture data",
+     "description": "Two store keys arrive with this tranche, governance and voting, and the governance stories already hold the richest fixtures in the corpus at 62 registrations across four files.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-049"
+     ],
+     "targetPath": "storybook/stories/_support/StoryProvider.tsx",
+     "implementationNotes": [
+      "The governance and voting shapes tranche 8 needs. The governance stories already carry the richest fixtures in the corpus, 62 registrations across four files, so the data exists and only the store wrapper is new.",
+      "Reuse the DRep, delegation and governance wallet fixtures from the files converted in task-022 and task-032. Only the store wrapper is new.",
+      "DRepDetailPage needs a resolved fetchDRep promise (DRepDetailPage.tsx:56-65), because the entry arrives through component state rather than through the store."
+     ],
+     "acceptance": [
+      "Every file in targetPaths exists and is imported by the harness, so the governance fixtures additions are reachable from a story override rather than copied per story",
+      "A DRep list, a DRep detail record and a governance wallet list are available as harness defaults",
+      "fetchDRep resolves without a network call",
+      "yarn storybook:build passes, so the shared harness cannot be left in a state that breaks the corpus for the next tranche"
+     ],
+     "targetPaths": [
+      "storybook/stories/_support/harness/fixtures/governance.ts",
+      "storybook/stories/_support/harness/fixtures/voting.ts"
+     ]
+    },
+    {
+     "id": "task-056",
+     "title": "Screen tranche 8: governance and voting, 5 screens",
+     "description": "GovernanceWalletsPage, the DRepDirectoryPage directory view, the DRepDirectoryPage favorites view, DRepDetailPage and VotingGovernancePage. One container serves two of these screens.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 16.0,
+     "dependencies": [
+      "task-055"
+     ],
+     "targetPaths": [
+      "storybook/stories/screens/governance/GovernanceWalletsPage.stories.tsx",
+      "storybook/stories/screens/governance/DRepDirectoryPage.directory.stories.tsx",
+      "storybook/stories/screens/governance/DRepDirectoryPage.favorites.stories.tsx",
+      "storybook/stories/screens/governance/DRepDetailPage.stories.tsx",
+      "storybook/stories/screens/voting/VotingGovernancePage.stories.tsx"
+     ],
+     "implementationNotes": [
+      "The 5 screens in this tranche, each with its container and the story file it gets. This roster is the definition of done for the tranche; a screen not on it is not in scope here, and every screen on it needs a story file at the named path.",
+      "GovernanceWalletsPage -> source/renderer/app/containers/governance/GovernanceWalletsPage.tsx -> storybook/stories/screens/governance/GovernanceWalletsPage.stories.tsx (stores: governance, wallets; withRouter) | DRepDirectoryPage directory view -> source/renderer/app/containers/governance/DRepDirectoryPage.tsx -> storybook/stories/screens/governance/DRepDirectoryPage.directory.stories.tsx (stores: governance; withRouter) | DRepDirectoryPage favorites view -> source/renderer/app/containers/governance/DRepDirectoryPage.tsx -> storybook/stories/screens/governance/DRepDirectoryPage.favorites.stories.tsx (stores: governance; same container, second meaningful state) | DRepDetailPage -> source/renderer/app/containers/governance/DRepDetailPage.tsx -> storybook/stories/screens/governance/DRepDetailPage.stories.tsx (stores: governance; withRouter, and reads match.params.drepId at :56, so the story must seed a route carrying a :drepId) | VotingGovernancePage -> source/renderer/app/containers/voting/VotingGovernancePage.tsx -> storybook/stories/screens/voting/VotingGovernancePage.stories.tsx (stores: voting; withRouter)",
+      "DRepDirectoryPage is bound to both /governance/dreps and /governance/favorites (Routes.tsx:243-254) and branches on location.pathname at :133-137, so the two views are separate stories from one file and the router path is what separates them.",
+      "DRepDirectoryPage carries four refreshState values (:139): Idle, Loading, Loaded and Failed. DRepDetailPage carries three detailRefreshState values (:29-32, :123).",
+      "DRepDetailPage reads match.params.drepId at :56, so its story needs a router seeded with a real path rather than a stub object.",
+      "VotingGovernancePage has an unavailable branch at :77 and a confirmation dialog at :131, and reads seven stores.",
+      "/governance/delegate has no navigation tab; it is pushed from DRepDirectoryPage.tsx:80 and DRepDetailPage.tsx:90. It is still a reachable screen."
+     ],
+     "acceptance": [
+      "All 5 story files listed in targetPaths exist and appear in the sidebar under the governance and voting group",
+      "Each story mounts its real container through the harness Provider, not a hand-built props object, and renders the screen's own content rather than an empty shell or an error boundary",
+      "Each story's store override names only the keys that screen actually reads, so an unused key added to the harness later cannot silently become load-bearing",
+      "Five screens render, with a story per refresh state for the two DRep screens",
+      "The favorites view renders from the same container as the directory view, separated only by the route path",
+      "yarn storybook:build, yarn compile and yarn lint pass"
+     ],
+     "subtasks": [
+      {
+       "id": "task-056-a",
+       "title": "GovernanceWalletsPage",
+       "description": "GovernanceWalletsPage -> source/renderer/app/containers/governance/GovernanceWalletsPage.tsx -> storybook/stories/screens/governance/GovernanceWalletsPage.stories.tsx (stores: governance, wallets; withRouter)",
+       "status": "pending"
+      },
+      {
+       "id": "task-056-b",
+       "title": "DRepDirectoryPage directory view",
+       "description": "DRepDirectoryPage directory view -> source/renderer/app/containers/governance/DRepDirectoryPage.tsx -> storybook/stories/screens/governance/DRepDirectoryPage.directory.stories.tsx (stores: governance; withRouter)",
+       "status": "pending"
+      },
+      {
+       "id": "task-056-c",
+       "title": "DRepDirectoryPage favorites view",
+       "description": "DRepDirectoryPage favorites view -> source/renderer/app/containers/governance/DRepDirectoryPage.tsx -> storybook/stories/screens/governance/DRepDirectoryPage.favorites.stories.tsx (stores: governance; same container, second meaningful state)",
+       "status": "pending"
+      },
+      {
+       "id": "task-056-d",
+       "title": "DRepDetailPage",
+       "description": "DRepDetailPage -> source/renderer/app/containers/governance/DRepDetailPage.tsx -> storybook/stories/screens/governance/DRepDetailPage.stories.tsx (stores: governance; withRouter, and reads match.params.drepId at :56, so the story must seed a route carrying a :drepId)",
+       "status": "pending"
+      },
+      {
+       "id": "task-056-e",
+       "title": "VotingGovernancePage",
+       "description": "VotingGovernancePage -> source/renderer/app/containers/voting/VotingGovernancePage.tsx -> storybook/stories/screens/voting/VotingGovernancePage.stories.tsx (stores: voting; withRouter)",
+       "status": "pending"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-8",
+   "name": "Guardrails And Documentation",
+   "description": "The corpus is converted and the screens are covered, and nothing automated proves any of it renders. The lint plugin stops the old APIs coming back; the documentation stops teaching APIs that no longer exist.",
+   "riskLevel": "medium",
+   "tasks": [
+    {
+     "id": "task-059",
+     "title": "Add eslint-plugin-storybook",
+     "description": "Locked decision 10. The plugin is in neither package.json nor .eslintrc, so nothing flags a deprecated API or a malformed story today. Adding it after the corpus is clean makes a story authored against the old APIs a lint failure rather than a review catch.",
+     "status": "pending",
+     "priority": "medium",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-052",
+      "task-054",
+      "task-056"
+     ],
+     "targetPaths": [
+      "package.json",
+      ".eslintrc"
+     ],
+     "implementationNotes": [
+      "The 457 existing warnings under storybook/ stay warnings. Promoting them is a different piece of work, and 261 of them are @typescript-eslint/ban-ts-comment, which is the same question as the 229 @ts-ignore directives.",
+      "yarn lint is a required check at perSystem/checks.nix:54, so the plugin must land with zero new errors."
+     ],
+     "acceptance": [
+      "yarn lint passes with the plugin enabled",
+      "A story written against storiesOf fails lint",
+      "The warning count has not been promoted to errors"
+     ]
+    },
+    {
+     "id": "task-060",
+     "title": "Rewrite the Storybook skill and workflow documents",
+     "description": ".agent/skills/storybook-creation/SKILL.md and .agent/workflows/storybook.md both teach storiesOf(). The workflow document additionally describes a storybook/.storybook/ directory that does not exist and a title separator the skill file already contradicts.",
+     "status": "pending",
+     "priority": "high",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-049",
+      "task-052",
+      "task-054",
+      "task-056"
+     ],
+     "targetPaths": [
+      ".agent/skills/storybook-creation/SKILL.md",
+      ".agent/workflows/storybook.md"
+     ],
+     "implementationNotes": [
+      "Teach CSF, args and argTypes, globals and the toolbar, and the container harness with its override shape.",
+      "Document the directory layout that exists after this work, including the screen story tree and where fixture data lives.",
+      "Record the useArgs exception rule from task-026 and task-033 so it stays a rule rather than becoming per-file taste.",
+      "Describe what storybook:build proves and what it does not: it bundles the corpus without evaluating preview modules, so it cannot prove a story renders. There is no smoke runner; locked decision 7 put it out of scope. Say so plainly rather than leaving the reader to assume a render check exists.",
+      "Do not describe the plan, the phases or the order the work was done in. Describe the workbench as it stands.",
+      "The purpose of this task is that every PR merged after this epic uses the format the epic adopted. The skill is what an agent or a contributor reads before writing a story, and today it says in bold at SKILL.md:26 'Do NOT use Component Story Format (CSF)'. Left unchanged, it actively reintroduces the API this epic spent phases 3 and 4 removing.",
+      "eslint-plugin-storybook (task-059) is the enforcement half and this is the instruction half. They ship together: the lint rule catches a story authored against the old API, and these two documents are where someone finds out what to write instead. Cross-reference the rule set from the skill so a lint failure has somewhere to point."
+     ],
+     "acceptance": [
+      "Neither document references storiesOf, knobs or @dump247/storybook-state",
+      "The directory layout described matches the repository, including the screen story tree and where fixture data lives",
+      "A reader can write both a component story and a screen story from these two documents alone, without opening an existing story to copy it",
+      "The skill names the eslint-plugin-storybook rules that enforce it, so a contributor whose PR fails lint is told where the convention is written down",
+      "Neither document claims an automated render check exists"
+     ]
+    },
+    {
+     "id": "task-061",
+     "title": "Close out and record the follow-ons",
+     "description": "Final verification across the whole set, and a written record of the work that was deliberately left out so it is findable rather than remembered.",
+     "status": "pending",
+     "priority": "medium",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-059",
+      "task-060"
+     ],
+     "targetPaths": [
+      ".agent/plans/storybook-modernization/storybook-modernization-prd.md",
+      ".agent/plans/storybook-modernization/storybook-modernization-tasks.json"
+     ],
+     "implementationNotes": [
+      "Run every required check against a clean checkout.",
+      "Update the PRD status and the task statuses in this file, and record any deviation from the plan with its reason.",
+      "The named follow-ons are: removing the 229 @ts-ignore directives; image-diff visual regression with jest-image-snapshot; a second coverage tier for the 26 distinct reachable dialog and wizard-step containers; and promoting the 457 storybook lint warnings to errors."
+     ],
+     "acceptance": [
+      "All required checks pass on a clean checkout",
+      "The PRD status and every task status reflect what actually happened",
+      "The follow-on list is recorded where the next person will find it"
+     ]
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "totalPhases": 8,
+  "totalTasks": 61,
+  "estimatedTotalHours": 527.0,
+  "criticalPath": [
+   "task-001",
+   "task-002",
+   "task-007",
+   "task-010",
+   "task-011",
+   "task-012",
+   "task-013",
+   "task-014",
+   "task-015",
+   "task-016",
+   "task-018",
+   "task-020",
+   "task-023",
+   "task-025",
+   "task-026",
+   "task-030",
+   "task-033",
+   "task-034",
+   "task-035",
+   "task-037",
+   "task-038",
+   "task-039",
+   "task-040",
+   "task-041",
+   "task-042",
+   "task-043",
+   "task-044",
+   "task-047",
+   "task-048",
+   "task-049",
+   "task-050",
+   "task-051",
+   "task-052",
+   "task-060",
+   "task-061"
+  ],
+  "keyFiles": [
+   "storybook/main.ts",
+   "storybook/preview.tsx",
+   "storybook/stories/index.ts",
+   "storybook/stories/_support/StoryProvider.tsx",
+   "storybook/stories/_support/StoryWrapper.tsx",
+   "storybook/stories/_support/config.ts",
+   "storybook/addons/DaedalusMenu/index.ts",
+   "storybook/stories/wallets/send/WalletSend.stories.tsx",
+   "storybook/stories/staking/Staking.stories.tsx",
+   "storybook/stories/governance/DRepDirectory.stories.tsx",
+   "source/renderer/app/stores/index.ts",
+   "source/renderer/app/Routes.tsx",
+   "package.json",
+   "tsconfig.json",
+   "perSystem/checks.nix",
+   ".agent/skills/storybook-creation/SKILL.md"
+  ],
+  "riskAreas": [
+   "The container harness is the schedule for phases 6 and 7, not the screen count. research/05-reachable-screens.md section 7 establishes that one shared harness serves nearly every container, because all 48 screen containers read the same StoresMap through the same @inject decorator and none constructs a store or an Api of its own, with four named exceptions: SecuritySettingsPage, AnalyticsConsentPage, DRepDetailPage and LoadingPage. The 202 hours in phases 6 and 7 rest on that verdict. If it is wrong, and each container needs its own wiring, the figure is wrong by a wide margin rather than by a little.",
+   "Nothing in the corpus demonstrates a container fixture at screen scale. The only prior art is a 19-line literal at storybook/stories/nodes/_utils/props.ts covering the simplest container in the application. task-050 exists because the first wallet-scale story is the real proof, and task-049 records the tranche 1 to 5 rate so that proof can be measured against something.",
+   "strict: false gives the container work no help at all. tsconfig.json:79-85 disables strict and noImplicitAny and types/injectedPropsType.ts:6-10 types stores as any | StoresMap, so an incomplete fixture compiles and the first signal is a runtime failure in the story. Until task-057 lands, the only thing catching that is the per-tranche manual pass.",
+   "Request-shaped reads are the most likely repeated failure in container stories. Containers read isExecuting, error, wasExecuted, result and isExecutingFirstTime through without guarding, so an omitted field throws inside render rather than degrading. task-041 fixes it once in the harness default; found late, it is twelve separate fixes.",
+   "The 49 screens are not 49 stories. Twelve of them carry between two and six meaningful states each, and 90 to 120 stories is a planning estimate sensitive to how much dialog state is folded into a parent's stories rather than given its own.",
+   "The knob estimate is built from call-site counts, not from decisions. Of the 396 call sites in the corpus, 394 of them under storybook/stories, 204 sit at an indentation of eight spaces or deeper, meaning they are nested inside a callback, a mapped list or JSX and have no mechanical arg equivalent. They dominate phase 4 and are the largest source of error in the conversion half.",
+   "Phase 3 lands as one merge and no smaller unit is verifiable on the trunk. The mitigations are that everything version-neutral lands first in phases 1 and 2, that knobs and withState are untouched because addon-knobs 8.0.1 builds at 8.6.x, and that task-013 proves the runtime in a scratch worktree before the branch opens. The residual risk is review load on a single large landing.",
+   "react-polymorph 1.0.4 was last published 2022-04-14, the repository is read-only to us, and it sits between Storybook and every rendered story through StoryDecorator's ThemeProvider. Its behavior under a modern preview runtime has not been exercised. task-013 is the only place this surfaces before the bulk conversion.",
+   "The Storybook 10 target requires moving tsconfig moduleResolution off node, which changes resolution semantics for source/ as well as storybook/ because tsconfig.json carries no include. task-035 is the decision point, and 9.1.x is the documented fallback.",
+   "package.json:316 pins yarn@1.22.21 against a stated Storybook floor of yarn 4 from version 9, and Yarn 1 hoists flat, which is the shape that breaks a partially upgraded Storybook tree. The plan avoids storybook upgrade entirely and edits the manifest by hand, which removes the dependency on the least tested path but does not remove flat hoisting.",
+   "229 @ts-ignore directives across 48 story files are carried through the conversion by decision, so whatever they hide stays hidden. New container stories are written without them, which is the only place the count is held down.",
+   "storybook:build is wrapped x86_64-linux only, so nothing in this plan verifies the workbench builds on macOS or Windows. The operating-system switcher simulates platform chrome; it does not test a platform.",
+   "Provisional. The phase 4 tranches were rated against roughly 350 knob sites; the measured surface is about 410 (396 direct plus 44 indirect through loading/_support/loadingKnobs.ts, less 30 removed by the phase 1 deletions), which adds roughly 15 hours. task-050's acceptance re-estimates task-052, which is 36 hours already inside this total. task-039, named in riskAreas as the biggest unknown in the project, carries no risk premium over a mechanical task of the same size."
+  ],
+  "testingNotes": "No automated render check ships with this plan. @storybook/test-runner is out of scope per locked decision 7: it needs a Playwright browser and the Nix build is offline (nix/internal/common.nix:315). yarn compile proves every story type-checks, yarn lint proves it parses, yarn storybook:build proves the corpus bundles. None of them evaluates a preview module, so none proves a story renders. The container tranches in phases 6 and 7 are accepted by manual walkthrough.",
+  "rollbackPlan": "Phases 1 and 2 revert per task; reverting the glob restores the barrel. Phase 3 reverts as one merge, returning the repository to Storybook 6.4.22 with storiesOf intact and nothing later landed. Phase 4 reverts per tranche, with the 8 files carrying both knobs and withState coupled together. Phase 5 reverts to 8.6.x with a fully converted corpus, and the moduleResolution commit is separate because its fallout reaches source/. Phases 6 and 7 revert per tranche, since a screen story is purely additive. Phase 8 reverts per task. The state to avoid is a partially converted corpus with the manifest already bumped, which landing phase 3 as one merge makes unreachable on the trunk."
+ }
+}

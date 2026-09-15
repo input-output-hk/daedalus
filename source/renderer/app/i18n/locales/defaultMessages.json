@@ -5182,81 +5182,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!current epoch",
-        "description": "Headline for the current epoch.",
-        "id": "staking.epochs.currentHeading"
-      },
-      {
-        "defaultMessage": "!!!previous epoch",
-        "description": "Headline for the previous epoch.",
-        "id": "staking.epochs.previousHeading"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/epochs/StakingEpochs.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Stake pool",
-        "description": "Table header \"Stake pool\" label on staking epochs page",
-        "id": "staking.epochs.currentEpoch.tableHeader.pool"
-      },
-      {
-        "defaultMessage": "!!!Slots elected",
-        "description": "Table header \"Slots elected\" label on staking epochs page",
-        "id": "staking.epochs.currentEpoch.tableHeader.slotsElected"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/epochs/StakingEpochsCurrentEpochData.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!No results",
-        "description": "\"No results\" results label on staking epochs page.",
-        "id": "staking.epochs.no.results"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/epochs/StakingEpochsNoData.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Stake pool",
-        "description": "Table header \"Stake pool\" label on staking epochs page",
-        "id": "staking.epochs.previousEpoch.tableHeader.pool"
-      },
-      {
-        "defaultMessage": "!!!Slots elected",
-        "description": "Table header \"Slots elected\" label on staking epochs page",
-        "id": "staking.epochs.previousEpoch.tableHeader.slotsElected"
-      },
-      {
-        "defaultMessage": "!!!Performance",
-        "description": "Table header \"Performance\" label on staking epochs page",
-        "id": "staking.epochs.tableHeader.performance"
-      },
-      {
-        "defaultMessage": "!!!Shared rewards",
-        "description": "Table header \"Shared rewards\" label on staking epochs page",
-        "id": "staking.epochs.tableHeader.sharedRewards"
-      },
-      {
-        "defaultMessage": "!!!slots",
-        "description": "\"slots\" text in table body on staking epochs page",
-        "id": "staking.epochs.tableBody.slots"
-      },
-      {
-        "defaultMessage": "!!!of",
-        "description": "\"of\" text in table body on staking epochs page",
-        "id": "staking.epochs.tableBody.of"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/epochs/StakingEpochsPreviousEpochData.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
         "description": "Headline for the Decentralization progress notification.",
         "id": "staking.info.heading"
@@ -5317,41 +5242,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!slot",
-        "description": "\"slot\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.slot.label"
-      },
-      {
-        "defaultMessage": "!!!transactions",
-        "description": "\"transactions\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.transactions.label"
-      },
-      {
-        "defaultMessage": "!!!MPC phase",
-        "description": "\"MPC phase\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.mpc.phase.label"
-      },
-      {
-        "defaultMessage": "!!!commitments",
-        "description": "\"commitments\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.commitments.label"
-      },
-      {
-        "defaultMessage": "!!!openings",
-        "description": "\"openings\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.openings.label"
-      },
-      {
-        "defaultMessage": "!!!shares",
-        "description": "\"shares\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.shares.label"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/legacy/StakingChartTooltip.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Delegation center",
         "description": "Label for the \"Delegation\" nav button in the staking navigation.",
         "id": "staking.navigation.delegation_center"
@@ -5365,11 +5255,6 @@
         "defaultMessage": "!!!Rewards",
         "description": "Label for the \"Rewards\" nav button in the staking navigation.",
         "id": "staking.navigation.rewards"
-      },
-      {
-        "defaultMessage": "!!!Epochs",
-        "description": "Label for the \"Epochs\" nav button in the staking navigation.",
-        "id": "staking.navigation.epochs"
       },
       {
         "defaultMessage": "!!!Info",

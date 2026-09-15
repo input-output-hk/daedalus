@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import BigNumber from 'bignumber.js';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select, number, boolean } from '@storybook/addon-knobs';
-import { withState } from '@dump247/storybook-state';
+import { withState } from '../_support/WithLocalState';
 import StoryDecorator from '../_support/StoryDecorator';
 import DappTransactionRequest from '../../../source/renderer/app/components/dapp/DappTransactionRequest';
 import Notification from '../../../source/renderer/app/components/notifications/Notification';

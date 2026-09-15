@@ -2,15 +2,18 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-  core: {
-    builder: 'webpack5',
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {},
   },
-  stories: ['../storybook/stories/index.ts'],
+  stories: [
+    '../storybook/stories/**/*.stories.@(ts|tsx)',
+    '../source/renderer/app/**/*.@(stories|story).@(ts|tsx)',
+  ],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    require.resolve('./addons/DaedalusMenu/register.tsx'),
   ],
   // Make whatever fine-grained changes you need
   webpackFinal: async (config, { configType }) => {
@@ -39,9 +42,24 @@ module.exports = {
     config.experiments = {
       syncWebAssembly: true,
     };
+    // Merge into config.resolve rather than assigning over it. Storybook puts
+    // things there that the preview cannot run without: @storybook/react-dom-shim
+    // aliases itself to its react-16 build whenever react-dom is below 18, and
+    // discarding that alias makes the preview resolve react-dom/client, which
+    // React 16 does not have.
     config.resolve = {
-      extensions: ['.ts', '.tsx', '.js', '.json'],
+      ...config.resolve,
+      extensions: [
+        ...new Set([
+          ...(config.resolve.extensions || []),
+          '.ts',
+          '.tsx',
+          '.js',
+          '.json',
+        ]),
+      ],
       fallback: {
+        ...config.resolve.fallback,
         process: require.resolve('process/browser'),
         path: require.resolve('path-browserify'),
         crypto: require.resolve('crypto-browserify'),

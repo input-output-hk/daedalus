@@ -2,9 +2,9 @@ import React from 'react';
 import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withState } from '@dump247/storybook-state';
+import { useGlobals } from '@storybook/preview-api';
+import { withState } from '../../_support/WithLocalState';
 import SettingsWrapper from '../utils/SettingsWrapper';
-import { updateParam } from '../../../addons/DaedalusMenu';
 import { themesIds } from '../../_support/config';
 // Screens
 import ProfileSettingsForm from '../../../../source/renderer/app/components/widgets/forms/ProfileSettingsForm';
@@ -90,17 +90,19 @@ storiesOf('Settings / General', module)
       isLoading={boolean('isLoading', false)}
     />
   ))
-  .add('Themes', () => (
-    <DisplaySettings
-      theme="DarkBlue"
-      selectTheme={({ theme }) => {
-        updateParam({
-          param: 'themeName',
-          value: getParamName(themesIds, theme)[0],
-        });
-      }}
-    />
-  ))
+  .add('Themes', () => {
+    // The toolbar selection is a Storybook global now, so this writes back
+    // through updateGlobals rather than over an addon channel.
+    const [, updateGlobals] = useGlobals();
+    return (
+      <DisplaySettings
+        theme="DarkBlue"
+        selectTheme={({ theme }) => {
+          updateGlobals({ themeName: getParamName(themesIds, theme)[0] });
+        }}
+      />
+    );
+  })
   // @ts-ignore ts-migrate(2345)
   .add('Terms of Service', (_, props) => {
     const termsOfUseSource = require(

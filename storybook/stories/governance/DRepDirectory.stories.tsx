@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withState } from '@dump247/storybook-state';
 import { withKnobs, select, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
+import { withState } from '../_support/WithLocalState';
 import type { ListViewMode } from '../../../source/renderer/app/types/listViewTypes';
 import GovernanceShell, { GOVERNANCE_TABS } from './_utils/GovernanceShell';
 import StoryDecorator from '../_support/StoryDecorator';
