@@ -1360,7 +1360,7 @@
      "id": "task-034",
      "title": "Confirm the pointer against the user's own chain before writing a row",
      "description": "Koios is read as an index, not an oracle. Before a chain-sourced row is written, the transaction the pointer names is read out of the user's own immutable database at block_hash and absolute_slot and checked to mint that asset under that policy and to carry that metadata. An index that lies fails the check; an index that is unreachable leaves the row absent.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 12.0,
      "dependencies": [
@@ -1368,7 +1368,12 @@
      ],
      "targetPaths": [
       "source/main/assets/chainPointerVerification.ts",
-      "source/main/assets/immutableBlockReader.ts"
+      "source/main/assets/chainPointerVerification.realfs.spec.ts",
+      "source/main/assets/immutableBlockReader.ts",
+      "source/main/assets/immutableBlockReader.realfs.spec.ts",
+      "source/main/assets/cborSpan.ts",
+      "source/main/assets/cborSpan.spec.ts",
+      "source/main/assets/chainPointer.fixture.ts"
      ],
      "implementationNotes": [
       "Three checks run against the tx_cbor bytes with no chain access at all, and all three were executed against a live response: blake2b-256 over the transaction body reproduces the transaction hash Koios claims, blake2b-256 over the auxiliary data equals transaction body key 7, and transaction body key 9 names the subject's policy id and asset name.",
@@ -1378,7 +1383,12 @@
       "Auxiliary data has three historical shapes: a bare metadata map in Shelley, a two-element array in Allegra and Mary, and from Alonzo a CBOR tag 259 map whose key 0 holds the metadata, with the CIP-25 721 payload two levels down inside the tag.",
       "This runs in the main process. It is file I O plus CBOR decoding and needs no Rust and no protocol library.",
       "Immutable chunk layout is an undocumented internal format. Record the version it was read against and fail closed on a shape it does not recognize rather than guessing.",
-      "Name the CBOR decoder in this task rather than in an acceptance criterion. The confirmation needs a decoder that hands back the original byte range of a decoded item, because the transaction id is blake2b-256 over the body as originally encoded and a canonical re-encode produces the wrong hash. Neither cbor@5.2.0 nor borc@2.1.2 exposes that. Choosing one is a PRD-level decision about the 'no new runtime dependency' requirement and belongs on the record before the work starts."
+      "Name the CBOR decoder in this task rather than in an acceptance criterion. The confirmation needs a decoder that hands back the original byte range of a decoded item, because the transaction id is blake2b-256 over the body as originally encoded and a canonical re-encode produces the wrong hash. Neither cbor@5.2.0 nor borc@2.1.2 exposes that. Choosing one is a PRD-level decision about the 'no new runtime dependency' requirement and belongs on the record before the work starts.",
+      "CBOR decoder, settled: no new runtime dependency. source/main/assets/cborSpan.ts is a structural reader that returns byte ranges rather than values, because the byte-range requirement is real and neither cbor@5.0.2 nor borc@2.1.2 meets it. It is not a decoder, its failure mode is one-directional because every use sits inside a check whose failure writes no row, and ranges are needed in three places rather than one. This closes PRD open question 2.",
+      "The volatile window is measured against the immutable database's own tip rather than against k and a slot length. The tip is the last entry of the highest chunk, which needs no per-network constant and answers exactly the question being asked: does this database hold that slot yet.",
+      "The chunk size is derived from chunk zero's primary index, whose length is chunkSize + 2 offsets, rather than hardcoded per network.",
+      "The mint check reads the quantity. The recorded transaction mints one asset and burns another under the same policy in the same field, so a check that only matched the key would confirm the burned one.",
+      "Verified end to end on 2026-09-16 against the 17 GiB preprod immutable database on the development machine and a live tx_cbor response: chunk size derived as 21600, tip slot 131566495, pointer confirmed and the CIP-25 name extracted. That run is evidence rather than a committed test, because CI has no chain."
      ],
      "testCases": [
       "A recorded pointer and its block confirm, and the row is written",
