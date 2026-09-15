@@ -227,7 +227,15 @@ export class ImmutableBlockReader {
     try {
       const primary = this._primary(chunk);
       const secondary = this._secondary(chunk);
-      if (!primary || !secondary) return { status: 'absent' };
+      if (!primary || !secondary) {
+        // Chunks are contiguous from zero up to the tip, so a chunk that covers
+        // a slot at or below the tip has to be on disk. Its absence means the
+        // database is not in the state this reader can read, which decides
+        // nothing about the pointer. Answering `absent` here would turn a
+        // damaged or half-written database into a rejected pointer and a
+        // day-long backoff for a subject that is perfectly real.
+        return { status: 'unreadable', reason: 'chunk-index-missing' };
+      }
       if (primary[0] !== IMMUTABLE_PRIMARY_INDEX_VERSION) {
         return { status: 'unreadable', reason: 'primary-index-version' };
       }

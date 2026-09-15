@@ -52,6 +52,8 @@ type Layout = {
   truncatePrimaryTo?: number;
   /** Leave every secondary index empty, so no tip can be found. */
   emptySecondary?: boolean;
+  /** Remove the block's own chunk index, as a half-written database would. */
+  omitChunkIndex?: boolean;
 };
 
 const write = (layout: Layout = {}): string => {
@@ -103,7 +105,9 @@ const write = (layout: Layout = {}): string => {
   }
 
   const name = String(chunk).padStart(5, '0');
-  fs.writeFileSync(path.join(directory, `${name}.primary`), primary);
+  if (!layout.omitChunkIndex) {
+    fs.writeFileSync(path.join(directory, `${name}.primary`), primary);
+  }
   fs.writeFileSync(path.join(directory, `${name}.secondary`), secondary);
   if (!layout.omitChunkFile) {
     fs.writeFileSync(path.join(directory, `${name}.chunk`), BLOCK);
@@ -303,6 +307,18 @@ describe('ImmutableBlockReader', () => {
     expect(reader.readBlock(PREPROD_BLOCK.slot, PREPROD_BLOCK.hash)).toEqual({
       status: 'unreadable',
       reason: 'tip-unknown',
+    });
+  });
+
+  // Chunks run contiguously up to the tip, so one that is missing under the tip
+  // is a database in a state this reader cannot read, not a block that is not
+  // there. Answering absent would make a half-written database look like a
+  // lying index.
+  it('fails closed when the chunk index under the tip is missing', () => {
+    const reader = new ImmutableBlockReader(write({ omitChunkIndex: true }));
+    expect(reader.readBlock(PREPROD_BLOCK.slot, PREPROD_BLOCK.hash)).toEqual({
+      status: 'unreadable',
+      reason: 'chunk-index-missing',
     });
   });
 

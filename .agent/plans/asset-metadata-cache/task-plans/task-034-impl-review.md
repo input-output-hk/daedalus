@@ -151,3 +151,31 @@ confirmation and turns it into a row, and until then this module has one caller,
 which is its own spec.
 
 Decision: approved
+
+Correction to Iteration 1
+Timestamp: 2026-09-16T21:40:00Z
+
+A false-rejection path, found while planning `task-038` and fixed.
+
+`readBlock` answered `absent` when a chunk's primary or secondary index could
+not be read, and `absent` is the one outcome that means the pointer is wrong.
+Chunks run contiguously from zero up to the tip, so a chunk covering a slot at or
+below the tip has to be on disk: its absence means the database is not in a state
+this reader can read, which decides nothing about the pointer. It now answers
+`unreadable` with the reason `chunk-index-missing`.
+
+The consequence of the original behaviour was not small. A half-written, damaged
+or partly deleted chain database would have made every pointer into the affected
+chunks look like an index lying about a block, and `task-035` records a rejected
+pointer as `failed` with a day-long retry and a warning in the log. A user whose
+chain was mid-repair would have seen their NFT names disappear for a day at a
+time, with the log blaming the index.
+
+The Mithril paths were checked and are not affected: `watchdog/src/mithril.rs:341-390`
+replaces the whole chain directory on a bootstrap and merges new immutable files
+into an existing complete one on a partial sync, so neither leaves a hole below
+the tip. The fix is for the states nothing guarantees against rather than for one
+that was observed.
+
+A case drives it: a database whose block chunk has no primary index, with the tip
+still above the slot asked for.
