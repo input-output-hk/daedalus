@@ -53,6 +53,7 @@ describe('DappStore', () => {
       catalogAvailable: true,
       diagnosticsAvailable: true,
       isOpen: true,
+      consoleCaptureAvailable: true,
     });
     receiveState(true);
     await Promise.resolve();
@@ -66,6 +67,7 @@ describe('DappStore', () => {
       catalogAvailable: true,
       diagnosticsAvailable: false,
       isOpen: false,
+      consoleCaptureAvailable: true,
     });
     openRequest.mockResolvedValue(undefined);
     const { store } = createStore();
@@ -76,7 +78,32 @@ describe('DappStore', () => {
     expect(openRequest).toHaveBeenCalledWith({
       catalogId: 'catalog-id',
       localName: 'Localized name',
+      captureConsole: false,
     });
+  });
+
+  it('tracks only the catalog entry whose launch is pending', async () => {
+    statusRequest.mockResolvedValue({
+      catalogAvailable: true,
+      diagnosticsAvailable: false,
+      isOpen: false,
+      consoleCaptureAvailable: true,
+    });
+    let resolveLaunch!: () => void;
+    openRequest.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveLaunch = resolve;
+      })
+    );
+    const { store } = createStore();
+    store.setup();
+    await Promise.resolve();
+
+    const launch = store.launch('catalog-id', 'Localized name');
+    expect(store.launchingCatalogId).toBe('catalog-id');
+    resolveLaunch();
+    await launch;
+    expect(store.launchingCatalogId).toBeNull();
   });
 
   it('short-circuits launch while preferred catalog is unavailable', async () => {
@@ -90,6 +117,7 @@ describe('DappStore', () => {
       catalogAvailable: false,
       diagnosticsAvailable: true,
       isOpen: false,
+      consoleCaptureAvailable: true,
     });
     openRequest.mockResolvedValue(undefined);
     const { actions, store } = createStore();
@@ -106,9 +134,32 @@ describe('DappStore', () => {
       url: 'https://example.com/private?value=1',
       walletId: 'wallet-a',
       localName: 'Untrusted dApp',
+      captureConsole: false,
     });
     expect(actions.router.goToRoute.trigger).toHaveBeenCalledWith({
       route: '/apps/wallet-a',
+    });
+  });
+
+  it('captures console output only after an available diagnostics opt-in', async () => {
+    statusRequest.mockResolvedValue({
+      catalogAvailable: true,
+      diagnosticsAvailable: true,
+      consoleCaptureAvailable: true,
+      isOpen: false,
+    });
+    openRequest.mockResolvedValue(undefined);
+    const { store } = createStore();
+    store.setup();
+    await Promise.resolve();
+
+    store.setConsoleCaptureEnabled(true);
+    await store.launch('catalog-id', 'Localized name');
+
+    expect(openRequest).toHaveBeenCalledWith({
+      catalogId: 'catalog-id',
+      localName: 'Localized name',
+      captureConsole: true,
     });
   });
 

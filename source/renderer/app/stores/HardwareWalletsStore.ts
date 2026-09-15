@@ -169,15 +169,6 @@ export const AddressVerificationCheckStatuses: {
   REVERIFY: 'reverify',
 };
 const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
-const LEDGER_FLEX_APP_VERSION = '7.3.1';
-const isCertifiedLedgerFlex = (
-  vendor: DeviceType,
-  model: string,
-  version: string
-): boolean =>
-  vendor === DeviceTypes.LEDGER &&
-  model === DeviceModels.LEDGER_FLEX &&
-  version === LEDGER_FLEX_APP_VERSION;
 
 const dappHardwareCapability = (
   vendor: DeviceType,
@@ -204,7 +195,12 @@ const dappHardwareConnectorCapability = (
   model: string,
   version: string
 ): HardwareConnectorCapabilityEvidence => {
-  const certified = isCertifiedLedgerFlex(vendor, model, version);
+  const minimumVersion =
+    vendor === DeviceTypes.LEDGER
+      ? MINIMAL_CARDANO_APP_VERSION
+      : MINIMAL_TREZOR_FIRMWARE_VERSION;
+  const supported =
+    semver.valid(version) !== null && semver.gte(version, minimumVersion);
   return Object.freeze({
     matrixRevision: HARDWARE_CONNECTOR_MATRIX_REVISION,
     rowId: hardwareConnectorRowId(vendor, model, version),
@@ -213,8 +209,8 @@ const dappHardwareConnectorCapability = (
     ...(vendor === DeviceTypes.LEDGER
       ? { appVersion: version }
       : { firmwareVersion: version }),
-    certifiedExtensions: Object.freeze(certified ? [95] : [104]),
-    physicalCertified: certified,
+    certifiedExtensions: Object.freeze(supported ? [95, 104] : []),
+    physicalCertified: supported,
   });
 };
 

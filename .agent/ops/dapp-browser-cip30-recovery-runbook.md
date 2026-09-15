@@ -31,7 +31,7 @@ The launcher supplies one immutable `dappBrowserPolicy`. Invalid or absent polic
 | `diagnosticsEnabled` | Gates only arbitrary Diagnostics URL staging and launch. | Independent of preferred catalog. Staged Diagnostics URLs are main-memory, one-use values and disappear on teardown/restart. |
 | `cip104Revision` | Gates CIP-104 negotiation at the descriptor's required revision. | Reviewed package variants use revision 1 after the recorded interoperability gate; task-901's separate pilot keeps revision 0. It never bypasses launch, wallet-kind, hardware-row, or disclosure-consent gates. |
 | `cip142Revision` | Gates CIP-142 negotiation at the descriptor's required revision. | Independent of launch-mode controls. It never creates a guest or bypasses route, sandbox, grant, or consent checks. Task-807 baseline and the recorded Windows activation use revision 0. |
-| `hardwareConnectorRows` | Enables only exact compiled, physically certified hardware rows. | Empty in the baseline and recorded Windows activation. Never substitute software signing or a different device row during recovery. |
+| `hardwareConnectorEnabled` | Package-wide hardware connector kill switch. | Enabled in all package variants. Compatibility is determined by known device models and minimum app or firmware versions, without an upper version bound. |
 | Per-entry network/resource policy | Limits a bundled catalog entry's network URLs and permitted destinations. | A catalog release change, not a remote switch. Origin or resource-policy changes create a new entry identity and require review. |
 
 [`DappLaunchPolicy.spec.ts`](../../source/main/dapp/DappLaunchPolicy.spec.ts) proves the global, preferred, and Diagnostics controls are independent and malformed policy disables launch. Proposed-extension capability checks remain subordinate to the authenticated broker and registry.
@@ -46,7 +46,7 @@ The launcher supplies one immutable `dappBrowserPolicy`. Invalid or absent polic
    - preferred only: set `preferredCatalogEnabled=false`;
    - Diagnostics only: set `diagnosticsEnabled=false`;
    - CIP-142 only: set `cip142Revision=0`;
-   - hardware row only: remove the exact row from `hardwareConnectorRows`.
+   - hardware signing: set `hardwareConnectorEnabled=false`;
    - CIP-104 only: set `cip104Revision=0`.
 3. Produce and review a normal packaged launcher update. Do not patch a running process or introduce a remote flag.
 4. Install the update and restart Daedalus. Restart tears down the prior process and guest. Confirm new launch attempts are refused for the disabled mode.

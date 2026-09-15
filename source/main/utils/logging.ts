@@ -40,3 +40,11 @@ export const logger: Logger = {
   error: logToLevel('error'),
   warn: logToLevel('warn'),
 };
+
+export const logDappConsole = (message: string): void => {
+  log.debug(formatContext({ ...messageContext, level: 'debug' }), {
+    message,
+    data: null,
+    environmentData,
+  });
+};

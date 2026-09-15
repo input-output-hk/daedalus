@@ -321,6 +321,7 @@ describe('frozen CIP-30 contracts', () => {
         extension: [{ cip: 95 }, { cip: 95, extra: true }],
         extensions: [[{ cip: 95 }], [{ cip: 0 }]],
         enableOptions: [{ extensions: [{ cip: 95 }] }, { extra: true }],
+        enableResult: [{ extensions: [{ cip: 95 }] }, {}],
         paginate: [
           { page: 0, limit: 100 },
           { page: 0, limit: 101 },

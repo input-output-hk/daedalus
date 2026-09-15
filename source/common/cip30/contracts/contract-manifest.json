@@ -163,7 +163,7 @@
           "schemaRef": "common.json#/definitions/enableOptions"
         }
       ],
-      "successSchema": { "type": "object" },
+      "successSchemaRef": "common.json#/definitions/enableResult",
       "rejections": ["apiError"]
     },
     {
@@ -207,19 +207,20 @@
     },
     {
       "path": "api.getCollateral",
-      "minArgs": 1,
+      "minArgs": 0,
       "maxArgs": 1,
       "args": [
         {
           "name": "params",
-          "required": true,
-          "undefinedMeansOmitted": false,
+          "required": false,
+          "undefinedMeansOmitted": true,
+          "default": "omitted",
           "schemaRef": "common.json#/definitions/getCollateralParams"
         }
       ],
       "successSchemaRef": "common.json#/definitions/utxoResults",
       "rejections": ["apiError"],
-      "semantics": "Deprecated. Pure-ADA current candidates or null; side-effect-free; no Daedalus 5 ADA request cap."
+      "semantics": "Deprecated. Pure-ADA current candidates or null; omitted params select the smallest candidate; side-effect-free; no Daedalus 5 ADA request cap."
     },
     {
       "path": "api.getBalance",

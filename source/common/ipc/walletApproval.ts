@@ -1,4 +1,5 @@
 import type {
+  DappConsentPresentation,
   NativeTransactionPresentation,
   WalletApprovalPresentation,
   WalletApprovalRenderMainRequest,
@@ -144,6 +145,7 @@ const parsePresentation = (value: unknown): WalletApprovalPresentation => {
       'scopes',
       'extensions',
       ...(hasReview ? ['review'] : []),
+      ...(value.kind === 'transaction-sign' ? ['canSubmit'] : []),
       ...(transaction || batch ? ['authorization'] : []),
     ]) ||
     !isText(value.requestId) ||
@@ -165,7 +167,8 @@ const parsePresentation = (value: unknown): WalletApprovalPresentation => {
     !Array.isArray(value.extensions) ||
     !value.extensions.every(
       (extension) => Number.isSafeInteger(extension) && extension > 0
-    )
+    ) ||
+    (value.kind === 'transaction-sign' && typeof value.canSubmit !== 'boolean')
   )
     throw new Error('Invalid dApp consent presentation');
   const identity = {
@@ -189,7 +192,15 @@ const parsePresentation = (value: unknown): WalletApprovalPresentation => {
         (review.mode !== 'submit' || authorization.kind !== 'none'))
     )
       throw new Error('Invalid wallet approval presentation');
-    return Object.freeze({ ...identity, kind, authorization, review });
+    return Object.freeze({
+      ...identity,
+      kind,
+      authorization,
+      review,
+      ...(kind === 'transaction-sign'
+        ? { canSubmit: value.canSubmit as boolean }
+        : {}),
+    }) as DappConsentPresentation;
   }
   if (batch) {
     const kind = value.kind as 'batch-sign' | 'batch-submit';

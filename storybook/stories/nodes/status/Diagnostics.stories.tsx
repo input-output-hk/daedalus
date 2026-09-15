@@ -82,6 +82,9 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   diagnosticsAvailable: true,
   diagnosticsReady: true,
   isDappLaunching: false,
+  consoleCaptureAvailable: true,
+  consoleCaptureEnabled: false,
+  onConsoleCaptureChange: action('onConsoleCaptureChange'),
   onLaunchDapp: async (url, walletId, localName) => {
     action('onLaunchDapp')({ url, walletId, localName });
   },

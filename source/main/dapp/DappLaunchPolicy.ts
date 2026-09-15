@@ -1,7 +1,4 @@
 export const DAPP_POLICY_REVISION = 1;
-export const TASK_607_CERTIFIED_HARDWARE_ROWS: readonly string[] = Object.freeze(
-  ['ledger:europa:7.3.1:signData']
-);
 
 export type DappLaunchMode = 'preferred' | 'diagnostics';
 
@@ -12,7 +9,7 @@ export type DappLaunchPolicyConfig = Readonly<{
   diagnosticsEnabled: boolean;
   cip104Revision: number;
   cip142Revision: number;
-  hardwareConnectorRows: readonly string[];
+  hardwareConnectorEnabled: boolean;
 }>;
 
 const DISABLED_POLICY: DappLaunchPolicyConfig = Object.freeze({
@@ -22,7 +19,7 @@ const DISABLED_POLICY: DappLaunchPolicyConfig = Object.freeze({
   diagnosticsEnabled: false,
   cip104Revision: 0,
   cip142Revision: 0,
-  hardwareConnectorRows: Object.freeze([]),
+  hardwareConnectorEnabled: false,
 });
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
@@ -31,29 +28,10 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
 const isRevision = (value: unknown): value is number =>
   Number.isSafeInteger(value) && Number(value) >= 0;
 
-const hardwareRows = (
-  value: unknown,
-  certifiedRows: readonly string[]
-): readonly string[] => {
-  if (
-    value === undefined ||
-    (Array.isArray(value) &&
-      new Set(value).size === value.length &&
-      value.every(
-        (row) => typeof row === 'string' && certifiedRows.includes(row)
-      ))
-  )
-    return Object.freeze(Array.isArray(value) ? [...value] : []);
-  return Object.freeze([]);
-};
-
 export class DappLaunchPolicy {
   readonly config: DappLaunchPolicyConfig;
 
-  constructor(
-    value: unknown,
-    certifiedRows = TASK_607_CERTIFIED_HARDWARE_ROWS
-  ) {
+  constructor(value: unknown) {
     if (
       !isPlainObject(value) ||
       value.revision !== DAPP_POLICY_REVISION ||
@@ -61,7 +39,8 @@ export class DappLaunchPolicy {
       typeof value.preferredCatalogEnabled !== 'boolean' ||
       typeof value.diagnosticsEnabled !== 'boolean' ||
       !isRevision(value.cip104Revision) ||
-      !isRevision(value.cip142Revision)
+      !isRevision(value.cip142Revision) ||
+      typeof value.hardwareConnectorEnabled !== 'boolean'
     ) {
       this.config = DISABLED_POLICY;
       return;
@@ -74,10 +53,7 @@ export class DappLaunchPolicy {
       diagnosticsEnabled: value.diagnosticsEnabled,
       cip104Revision: value.cip104Revision,
       cip142Revision: value.cip142Revision,
-      hardwareConnectorRows: hardwareRows(
-        value.hardwareConnectorRows,
-        certifiedRows
-      ),
+      hardwareConnectorEnabled: value.hardwareConnectorEnabled,
     });
   }
 
@@ -96,7 +72,7 @@ export class DappLaunchPolicy {
       : this.config.cip142Revision;
   }
 
-  hardwareConnectorEnabled(rowId: string): boolean {
-    return this.config.hardwareConnectorRows.includes(rowId);
+  hardwareConnectorEnabled(): boolean {
+    return this.config.hardwareConnectorEnabled;
   }
 }

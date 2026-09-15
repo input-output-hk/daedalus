@@ -7,10 +7,7 @@ import type {
 import { parseDappApprovalDecision } from '../../common/cip30/schemas';
 import { ConsentCoordinator } from '../cip30/ConsentCoordinator';
 import type { DappGuestRevocationReason } from '../dapp/DappBrowserManager';
-import {
-  setDappBrowserConsentPending,
-  setDappConsentLifecycleRevoker,
-} from './dappBrowser';
+import { setDappConsentLifecycleRevoker } from './dappBrowser';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   awaitIpcResponse,
@@ -43,7 +40,8 @@ export const consentCoordinator = new ConsentCoordinator({
     consentCoordinator.decide(
       decision.requestId,
       decision.approved,
-      decision.passphrase
+      decision.passphrase,
+      decision.submit
     );
   },
   progress: async (requestId, phase, itemIndex, submissionAuthorized) => {
@@ -72,13 +70,14 @@ export const consentCoordinator = new ConsentCoordinator({
       )
     );
   },
-  setGuestHidden: setDappBrowserConsentPending,
 });
 
 export const handleWalletApprovalRequests = (window: BrowserWindow): void => {
-  setDappConsentLifecycleRevoker((reason) =>
+  setDappConsentLifecycleRevoker((reason, guestWebContentsId) =>
     consentCoordinator.cancel(
-      (identity) => identity.kind === 'dapp',
+      (identity) =>
+        identity.kind === 'dapp' &&
+        identity.guestWebContentsId === guestWebContentsId,
       changesAccount(reason) ? accountChange : undefined
     )
   );

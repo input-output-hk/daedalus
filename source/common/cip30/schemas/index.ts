@@ -242,27 +242,40 @@ export const parseDappApprovalDecision = (
     !!value &&
     typeof value === 'object' &&
     Object.prototype.hasOwnProperty.call(value, 'passphrase');
+  const hasSubmit =
+    !!value &&
+    typeof value === 'object' &&
+    Object.prototype.hasOwnProperty.call(value, 'submit');
   if (
-    !ownData(
-      value,
-      hasPassphrase
-        ? ['requestId', 'approved', 'passphrase']
-        : ['requestId', 'approved']
-    )
+    !ownData(value, [
+      'requestId',
+      'approved',
+      ...(hasPassphrase ? ['passphrase'] : []),
+      ...(hasSubmit ? ['submit'] : []),
+    ])
   )
     throw invalidRequest();
-  const { requestId, approved, passphrase } = value as DappApprovalDecision;
+  const {
+    requestId,
+    approved,
+    passphrase,
+    submit,
+  } = value as DappApprovalDecision;
   if (
     typeof requestId !== 'string' ||
     requestId.length === 0 ||
     typeof approved !== 'boolean' ||
     (hasPassphrase &&
-      (!approved || typeof passphrase !== 'string' || passphrase.length === 0))
+      (!approved ||
+        typeof passphrase !== 'string' ||
+        passphrase.length === 0)) ||
+    (hasSubmit && (!approved || submit !== true))
   )
     throw invalidRequest();
   return {
     requestId,
     approved,
     ...(hasPassphrase ? { passphrase } : {}),
+    ...(hasSubmit ? { submit: true as const } : {}),
   };
 };

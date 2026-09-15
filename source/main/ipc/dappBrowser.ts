@@ -37,10 +37,19 @@ import {
   currentWindowSender,
 } from './lib/currentWindowSender';
 
+export const isDappConsoleCaptureSupported = (
+  network: string,
+  isFlight: boolean
+): boolean =>
+  (network === 'mainnet' && isFlight) ||
+  network === 'preprod' ||
+  network === 'preview';
+
 type PendingDiagnosticsLaunch = Readonly<{
   url: ParsedDappUrl;
   walletId: string;
   localName: string;
+  captureConsole: boolean;
 }>;
 
 const isCatalogOpenRequest = (
@@ -49,9 +58,11 @@ const isCatalogOpenRequest = (
   if (!value || typeof value !== 'object') return false;
   const candidate = value as Record<string, unknown>;
   return (
-    Object.keys(candidate).sort().join('\0') === 'catalogId\0localName' &&
+    Object.keys(candidate).sort().join('\0') ===
+      'captureConsole\0catalogId\0localName' &&
     typeof candidate.catalogId === 'string' &&
-    typeof candidate.localName === 'string'
+    typeof candidate.localName === 'string' &&
+    typeof candidate.captureConsole === 'boolean'
   );
 };
 
@@ -61,10 +72,12 @@ const isDiagnosticsOpenRequest = (
   if (!value || typeof value !== 'object') return false;
   const candidate = value as Record<string, unknown>;
   return (
-    Object.keys(candidate).sort().join('\0') === 'localName\0url\0walletId' &&
+    Object.keys(candidate).sort().join('\0') ===
+      'captureConsole\0localName\0url\0walletId' &&
     typeof candidate.url === 'string' &&
     typeof candidate.walletId === 'string' &&
-    typeof candidate.localName === 'string'
+    typeof candidate.localName === 'string' &&
+    typeof candidate.captureConsole === 'boolean'
   );
 };
 
@@ -92,7 +105,7 @@ export class DappBrowserController {
     );
     this.onState = onState;
     this.routeLease = new DappRouteLeaseService(networkGenesis, () => {
-      this.manager.close('route-changed').catch(() => undefined);
+      this.manager.revoke('route-changed');
     });
   }
 
@@ -125,6 +138,10 @@ export class DappBrowserController {
       isOpen: this.manager.isOpen,
       catalogAvailable: this.policy.allows('preferred'),
       diagnosticsAvailable: this.policy.allows('diagnostics'),
+      consoleCaptureAvailable: isDappConsoleCaptureSupported(
+        environment.network,
+        launcherConfig.isFlight
+      ),
     });
   }
 
@@ -132,15 +149,28 @@ export class DappBrowserController {
     if (isCatalogOpenRequest(request)) {
       if (!this.policy.allows('preferred'))
         throw new Error('DApp launch is disabled');
+      if (
+        request.captureConsole &&
+        !isDappConsoleCaptureSupported(
+          environment.network,
+          launcherConfig.isFlight
+        )
+      )
+        throw new Error('DApp console capture is unavailable');
       const lease = this.routeLease.current;
       if (!lease) throw new Error('DApp route lease is stale');
       const entry = findDappCatalogEntry(this.catalog, request.catalogId);
       this.routeLease.requireCurrent(lease);
       if (!this.policy.allows('preferred'))
         throw new Error('DApp launch is disabled');
-      await this.manager.launch(entry, lease.networkGenesis, request.localName);
+      await this.manager.launch(
+        entry,
+        lease.networkGenesis,
+        request.localName,
+        request.captureConsole
+      );
       if (!this.routeLease.isCurrent(lease)) {
-        await this.manager.close('route-changed');
+        this.manager.revoke('route-changed');
         throw new Error('DApp route lease is stale');
       }
       this.onState(true);
@@ -152,6 +182,14 @@ export class DappBrowserController {
       throw new Error('DApp launch is disabled');
     if (request.walletId === '')
       throw new Error('Invalid dApp browser request');
+    if (
+      request.captureConsole &&
+      !isDappConsoleCaptureSupported(
+        environment.network,
+        launcherConfig.isFlight
+      )
+    )
+      throw new Error('DApp console capture is unavailable');
     const url = parseDiagnosticsDappUrl(request.url, {
       allowHttpLoopback: environment.isDev,
     });
@@ -159,6 +197,7 @@ export class DappBrowserController {
       url,
       walletId: request.walletId,
       localName: request.localName,
+      captureConsole: request.captureConsole,
     });
     const lease = this.routeLease.current;
     if (lease?.walletId === request.walletId)
@@ -182,17 +221,14 @@ export class DappBrowserController {
       launch.url.href,
       launch.url.origin,
       launch.localName,
-      { allowHttpLoopback: environment.isDev }
+      { allowHttpLoopback: environment.isDev },
+      launch.captureConsole
     );
     if (!this.routeLease.isCurrent(lease)) {
-      await this.manager.close('route-changed');
+      this.manager.revoke('route-changed');
       throw new Error('DApp route lease is stale');
     }
     this.onState(true);
-  }
-
-  setConsentPending(pending: boolean): void {
-    this.manager.setHidden(pending);
   }
 
   async close(): Promise<void> {
@@ -208,26 +244,33 @@ export class DappBrowserController {
 }
 
 let onDappConsentLifecycleRevoked = (
-  _reason: DappGuestRevocationReason
+  _reason: DappGuestRevocationReason,
+  _guestWebContentsId: number
 ): void => undefined;
-let onDappBrokerLifecycleRevoked = (): void => undefined;
+let onDappBrokerLifecycleRevoked = (_guestWebContentsId: number): void =>
+  undefined;
 let publishDappBrowserState = (_isOpen: boolean): void => undefined;
 
 export const setDappConsentLifecycleRevoker = (
-  revoke: (reason: DappGuestRevocationReason) => void
+  revoke: (
+    reason: DappGuestRevocationReason,
+    guestWebContentsId: number
+  ) => void
 ): void => {
   onDappConsentLifecycleRevoked = revoke;
 };
 
-export const setDappBrokerLifecycleRevoker = (revoke: () => void): void => {
+export const setDappBrokerLifecycleRevoker = (
+  revoke: (guestWebContentsId: number) => void
+): void => {
   onDappBrokerLifecycleRevoked = revoke;
 };
 
 const browserController = new DappBrowserController(
-  new DappBrowserManager((reason) => {
-    onDappConsentLifecycleRevoked(reason);
-    onDappBrokerLifecycleRevoked();
-    publishDappBrowserState(false);
+  new DappBrowserManager((reason, guestWebContentsId, isOpen) => {
+    onDappConsentLifecycleRevoked(reason, guestWebContentsId);
+    onDappBrokerLifecycleRevoked(guestWebContentsId);
+    publishDappBrowserState(isOpen);
   }),
   launcherConfig.nodeConfig.network.genesisHash,
   dappLaunchPolicy,
@@ -267,8 +310,6 @@ export const handleDappBrowserRequests = (window: BrowserWindow): void => {
 };
 
 export const closeDappBrowser = (): Promise<void> => browserController.close();
-export const setDappBrowserConsentPending = (pending: boolean): void =>
-  browserController.setConsentPending(pending);
 export const authenticateDappGuest = (event: IpcMainInvokeEvent) =>
   browserController.authenticate(event);
 export const getCurrentDappRouteLease = (): DappRouteLease | null =>

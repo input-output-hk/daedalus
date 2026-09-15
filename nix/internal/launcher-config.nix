@@ -281,7 +281,7 @@ let
           then 1
           else 0;
         cip142Revision = 0;
-        hardwareConnectorRows = [];
+        hardwareConnectorEnabled = true;
       };
     }
     // lib.optionalAttrs (os == "linux") {
