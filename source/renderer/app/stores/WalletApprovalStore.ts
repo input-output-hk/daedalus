@@ -126,6 +126,16 @@ export default class WalletApprovalStore extends Store {
         : undefined
     );
   }
+  @action.bound
+  submit(passphrase?: string): void {
+    const transaction =
+      this.current?.kind === 'transaction-sign' ? this.current : undefined;
+    this.decide(
+      true,
+      transaction?.authorization.kind === 'software' ? passphrase : undefined,
+      true
+    );
+  }
 
   @action.bound
   reject(): void {
@@ -134,13 +144,14 @@ export default class WalletApprovalStore extends Store {
   @action.bound
   dismissResult(): void {
     if (!this.result || !this.current) return;
-    const { walletId } = this.current;
+    const { walletId, kind } = this.current;
     if (this.isSubmissionRequest)
       this.stores.transactions.dismissReceipt(walletId, this.receiptIds);
     this.clear();
-    this.actions.router.goToRoute.trigger({
-      route: this.stores.wallets.getWalletRoute(walletId, 'transactions'),
-    });
+    if (kind === 'native-transaction')
+      this.actions.router.goToRoute.trigger({
+        route: this.stores.wallets.getWalletRoute(walletId, 'transactions'),
+      });
   }
 
   @action.bound
@@ -168,7 +179,8 @@ export default class WalletApprovalStore extends Store {
     return (
       request.kind === 'native-transaction' ||
       request.kind === 'transaction-submit' ||
-      request.kind === 'batch-submit'
+      request.kind === 'batch-submit' ||
+      (request.kind === 'transaction-sign' && this.submissionAuthorized)
     );
   }
 
@@ -289,7 +301,7 @@ export default class WalletApprovalStore extends Store {
       this.submissionAuthorized = true;
   }
 
-  private decide(approved: boolean, passphrase?: string): void {
+  private decide(approved: boolean, passphrase?: string, submit = false): void {
     if (!this.current || this.deciding || !this.resolveDecision) return;
     this.deciding = true;
     const resolve = this.resolveDecision;
@@ -298,6 +310,7 @@ export default class WalletApprovalStore extends Store {
       requestId: this.current.requestId,
       approved,
       ...(approved && passphrase ? { passphrase } : {}),
+      ...(approved && submit ? { submit: true as const } : {}),
     });
   }
 

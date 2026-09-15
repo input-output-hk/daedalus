@@ -1602,7 +1602,7 @@ export class HardwareWalletService {
           !capability.physicalCertified ||
           !capability.productEnabled ||
           (capability.rowId !== `${vendor}-native` &&
-            !dappLaunchPolicy.hardwareConnectorEnabled(capability.rowId))
+            !dappLaunchPolicy.hardwareConnectorEnabled())
         )
           throw new Error('Hardware exact transaction is not enabled');
         const restored = restoreExactTransaction(exact);
@@ -1644,7 +1644,7 @@ export class HardwareWalletService {
             ) ||
           !capability.physicalCertified ||
           !capability.packagedEnabled ||
-          !dappLaunchPolicy.hardwareConnectorEnabled(capability.rowId)
+          !dappLaunchPolicy.hardwareConnectorEnabled()
         )
           throw new Error('Hardware connector is not enabled');
         if (vendor === 'ledger') {

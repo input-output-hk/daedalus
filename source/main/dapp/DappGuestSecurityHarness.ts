@@ -116,7 +116,7 @@ const testPackagedPolicy = (config: HarnessLauncherConfig): void => {
     diagnosticsEnabled: expectedEnabled,
     cip104Revision: expectedEnabled ? 1 : 0,
     cip142Revision: 0,
-    hardwareConnectorRows: [],
+    hardwareConnectorEnabled: true,
   });
   const enabled = {
     revision: DAPP_POLICY_REVISION,
@@ -125,6 +125,7 @@ const testPackagedPolicy = (config: HarnessLauncherConfig): void => {
     diagnosticsEnabled: true,
     cip104Revision: 1,
     cip142Revision: 1,
+    hardwareConnectorEnabled: true,
   } as const;
   const cases = [
     {
@@ -364,6 +365,7 @@ const testGuestDenialsAndStorage = async (): Promise<void> => {
     'fixture',
     () => initialLoad,
     () => tearingDown,
+    () => undefined,
     () => undefined
   );
   await guest.loadURL(`${fixtureOrigin}/`);
@@ -474,13 +476,14 @@ const testGuestDenialsAndStorage = async (): Promise<void> => {
   await cleanupSession(reopenedSession);
 };
 
-const testLifecycleRevocation = async (
+const testLifecyclePolicy = async (
   attack: 'reload' | 'redirect'
 ): Promise<void> => {
   const guestSession = createDappSession();
   sessions.add(guestSession);
   const guest = createWindow(guestSession);
   let tearingDown = false;
+  let refreshedDocuments = 0;
   let revokedBeforeDestroy = false;
   let revocations = 0;
   const revoked = new Promise<string>((resolve) => {
@@ -490,6 +493,9 @@ const testLifecycleRevocation = async (
       'fixture',
       () => false,
       () => tearingDown,
+      () => {
+        refreshedDocuments += 1;
+      },
       (reason) => {
         if (tearingDown) return;
         tearingDown = true;
@@ -511,15 +517,17 @@ const testLifecycleRevocation = async (
   ) => boolean;
   if (attack === 'reload') {
     emit('did-start-navigation', event, `${fixtureOrigin}/`, false, true);
-    emit('did-start-navigation', event, `${fixtureOrigin}/`, false, true);
+    assert.strictEqual(refreshedDocuments, 1);
+    assert.strictEqual(revocations, 0);
+    assert.strictEqual(event.defaultPrevented, false);
   } else {
     emit('will-redirect', event, 'https://other.invalid/', false, true);
     emit('will-redirect', event, 'https://other.invalid/', false, true);
+    assert.strictEqual(await revoked, 'navigation');
+    assert.strictEqual(revocations, 1);
+    assert(revokedBeforeDestroy);
+    assert(event.defaultPrevented);
   }
-  assert.strictEqual(await revoked, 'navigation');
-  assert.strictEqual(revocations, 1);
-  assert(revokedBeforeDestroy);
-  if (attack === 'redirect') assert(event.defaultPrevented);
   destroyWindow(guest);
   await cleanupSession(guestSession);
 };
@@ -558,9 +566,9 @@ app.whenReady().then(async () => {
     process.stderr.write('policy variants passed\n');
     const manifestChannels = await testPrivilegedIpc();
     process.stderr.write('privileged IPC passed\n');
-    await testLifecycleRevocation('reload');
-    process.stderr.write('reload revocation passed\n');
-    await testLifecycleRevocation('redirect');
+    await testLifecyclePolicy('reload');
+    process.stderr.write('reload refresh passed\n');
+    await testLifecyclePolicy('redirect');
     process.stderr.write('redirect revocation passed\n');
     await testGuestDenialsAndStorage();
     process.stderr.write('guest denials passed\n');
@@ -581,7 +589,7 @@ app.whenReady().then(async () => {
         wrongSenderRejected: true,
         subframeRejected: true,
         navigationRevoked: true,
-        reloadRevoked: true,
+        reloadAuthorityRotated: true,
         destinationBindingDenied: true,
         popupDownloadPermissionDeviceDenied: true,
         storageCleared: true,

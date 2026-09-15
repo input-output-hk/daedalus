@@ -60,29 +60,35 @@ const review = {
 const request = (
   kind: 'transaction-sign' | 'transaction-submit',
   overrides = {}
-) => ({
-  authorization:
-    kind === 'transaction-sign'
-      ? { kind: 'hardware' as const, vendor: 'ledger' as const }
-      : { kind: 'none' as const },
-  requestId: 'storybook-review',
-  walletId: 'aa'.repeat(20),
-  kind,
-  origin: 'https://example.test',
-  walletName: 'Storybook wallet',
-  networkName: 'Preview',
-  scopes: [
-    kind === 'transaction-sign'
-      ? 'transaction-signing'
-      : 'transaction-submission',
-  ],
-  extensions: [],
-  review: {
-    ...review,
-    mode: kind === 'transaction-sign' ? ('sign' as const) : ('submit' as const),
-    ...overrides,
-  },
-});
+): Extract<
+  DappConsentPresentation,
+  { kind: 'transaction-sign' | 'transaction-submit' }
+> => {
+  const base = {
+    requestId: 'storybook-review',
+    walletId: 'aa'.repeat(20),
+    origin: 'https://example.test',
+    walletName: 'Storybook wallet',
+    networkName: 'Preview',
+    extensions: [],
+  };
+  if (kind === 'transaction-sign')
+    return {
+      ...base,
+      kind,
+      canSubmit: true,
+      authorization: { kind: 'hardware', vendor: 'ledger' },
+      scopes: ['transaction-signing'],
+      review: { ...review, mode: 'sign', ...overrides },
+    };
+  return {
+    ...base,
+    kind,
+    authorization: { kind: 'none' },
+    scopes: ['transaction-submission'],
+    review: { ...review, mode: 'submit', ...overrides },
+  };
+};
 
 type BatchPresentation = Extract<
   DappConsentPresentation,
@@ -185,6 +191,7 @@ function Approval({
       activeItemIndex={deciding ? 1 : undefined}
       submissionAuthorized={false}
       onApprove={onApprove}
+      onSubmit={action('sign and submit')}
       onReject={onReject}
     />
   );

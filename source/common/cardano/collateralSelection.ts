@@ -87,10 +87,11 @@ const better = (left: Selection, right?: Selection): boolean => {
 
 export const selectCip30Collateral = (
   utxos: readonly Cip30Utxo[],
-  amountCbor: string,
+  amountCbor: string | undefined,
   maxCollateralInputs: number
 ): readonly string[] | null => {
-  const amount = decodeCip30Coin(amountCbor);
+  const amount =
+    amountCbor === undefined ? BigInt(0) : decodeCip30Coin(amountCbor);
   if (!Number.isSafeInteger(maxCollateralInputs) || maxCollateralInputs < 1)
     throw new RangeError('Invalid maxCollateralInputs');
 

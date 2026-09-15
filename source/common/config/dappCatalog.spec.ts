@@ -47,11 +47,44 @@ describe('dapp catalog', () => {
     for (const network of networks)
       expect(getDappCatalog(network, false).map(({ id }) => id)).toEqual(
         network === 'mainnet' || network === 'mainnet_flight'
-          ? ['liqwid-finance', 'unfrack-it']
-          : network === 'preprod' || network === 'preview'
+          ? [
+              'liqwid-finance',
+              'unfrack-it',
+              'strike-finance-mainnet',
+              'fluidtokens-mainnet',
+              'steelswap-mainnet',
+            ]
+          : network === 'preprod'
+          ? ['unfrack-it', 'strike-finance-preprod']
+          : network === 'preview'
           ? ['unfrack-it']
           : []
       );
+    expect(
+      findDappCatalogEntry(dappCatalog, 'strike-finance-mainnet')
+        .entryUrlByNetworkGenesis['*']
+    ).toBe('https://api.strikefinance.org');
+    expect(
+      findDappCatalogEntry(dappCatalog, 'strike-finance-preprod')
+        .entryUrlByNetworkGenesis['*']
+    ).toBe('https://testnet.strikefinance.org/');
+    expect(
+      findDappCatalogEntry(dappCatalog, 'fluidtokens-mainnet')
+        .entryUrlByNetworkGenesis['*']
+    ).toBe('https://app.fluidtokens.com/');
+    expect(
+      findDappCatalogEntry(dappCatalog, 'steelswap-mainnet')
+        .entryUrlByNetworkGenesis['*']
+    ).toBe('https://steelswap.io/');
+    expect(
+      findDappCatalogEntry(dappCatalog, 'steelswap-mainnet')
+        .allowedResourceOrigins
+    ).toEqual([
+      'https://api.steelswap.io',
+      'https://fonts.googleapis.com',
+      'https://fonts.gstatic.com',
+      'https://gt1.dezons.com',
+    ]);
 
     const injected = defineDappCatalog([
       entry('supported'),
@@ -95,6 +128,24 @@ describe('dapp catalog', () => {
         nameMessageId: 'dapp.catalog.unfrack.name',
         descriptionMessageId: 'dapp.catalog.unfrack.description',
         iconAsset: 'unfrack',
+      },
+      {
+        id: 'strike-finance-mainnet',
+        nameMessageId: 'dapp.catalog.strike.name',
+        descriptionMessageId: 'dapp.catalog.strike.description',
+        iconAsset: 'strike',
+      },
+      {
+        id: 'fluidtokens-mainnet',
+        nameMessageId: 'dapp.catalog.fluidtokens.name',
+        descriptionMessageId: 'dapp.catalog.fluidtokens.description',
+        iconAsset: 'fluidtokens',
+      },
+      {
+        id: 'steelswap-mainnet',
+        nameMessageId: 'dapp.catalog.steelswap.name',
+        descriptionMessageId: 'dapp.catalog.steelswap.description',
+        iconAsset: 'steelswap',
       },
     ]);
   });

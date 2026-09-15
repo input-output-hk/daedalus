@@ -10,6 +10,7 @@ import type {
 const exposeInMainWorld = jest.fn();
 const executeInMainWorld = jest.fn();
 const invoke = jest.fn();
+const consoleError = jest.spyOn(console, 'error').mockImplementation();
 
 jest.mock('electron', () => ({
   contextBridge: { executeInMainWorld, exposeInMainWorld },
@@ -49,7 +50,11 @@ describe('dApp preload', () => {
     );
   });
 
-  beforeEach(() => invoke.mockReset());
+  beforeEach(() => {
+    invoke.mockReset();
+    consoleError.mockClear();
+  });
+  afterAll(() => consoleError.mockRestore());
 
   it('exposes only window.cardano.daedalus during preload evaluation', () => {
     expect(exposureCallCount).toBe(1);
@@ -79,25 +84,22 @@ describe('dApp preload', () => {
 
   it('routes every adapter through one channel and adds only negotiated namespaces', async () => {
     invoke.mockImplementation(
-      async (_channel: string, request: DappCip30GatewayRequest) => {
-        if (request.method === 'api.getExtensions') {
-          return {
-            status: 'fulfilled',
-            value: [{ cip: 95 }, { cip: 103 }],
-          };
-        }
-        return {
-          status: 'fulfilled',
-          value: request.method === 'provider.enable' ? {} : 0,
-        };
-      }
+      async (_channel: string, request: DappCip30GatewayRequest) => ({
+        status: 'fulfilled',
+        value:
+          request.method === 'provider.enable'
+            ? { extensions: [{ cip: 95 }, { cip: 103 }] }
+            : 0,
+      })
     );
 
     const api = await provider.enable({ extensions: [{ cip: 95 }] });
+    expect(invoke).toHaveBeenCalledTimes(1);
     expect(Object.prototype.hasOwnProperty.call(api, 'cip95')).toBe(true);
     expect(Object.prototype.hasOwnProperty.call(api, 'cip103')).toBe(true);
     expect(Object.prototype.hasOwnProperty.call(api, 'cip104')).toBe(false);
     expect(Object.prototype.hasOwnProperty.call(api, 'cip142')).toBe(false);
+    expect(typeof api.getCollateral).toBe('function');
 
     await api.getNetworkId();
     expect(invoke).toHaveBeenLastCalledWith(DAPP_CIP30_GATEWAY_CHANNEL, {
@@ -108,10 +110,9 @@ describe('dApp preload', () => {
 
   it('preserves normative CIP-103 client success shapes', async () => {
     invoke
-      .mockResolvedValueOnce({ status: 'fulfilled', value: {} })
       .mockResolvedValueOnce({
         status: 'fulfilled',
-        value: [{ cip: 103 }],
+        value: { extensions: [{ cip: 103 }] },
       })
       .mockResolvedValueOnce({
         status: 'fulfilled',
@@ -136,15 +137,13 @@ describe('dApp preload', () => {
   it('exposes CIP-104 only from the authoritative negotiated set', async () => {
     const accountPub = `5840${'11'.repeat(64)}`;
     invoke.mockImplementation(
-      async (_channel: string, gateway: DappCip30GatewayRequest) => {
-        if (gateway.method === 'api.getExtensions')
-          return { status: 'fulfilled', value: [{ cip: 104 }] };
-        return {
-          status: 'fulfilled',
-          value:
-            gateway.method === 'api.cip104.getAccountPub' ? accountPub : {},
-        };
-      }
+      async (_channel: string, gateway: DappCip30GatewayRequest) => ({
+        status: 'fulfilled',
+        value:
+          gateway.method === 'provider.enable'
+            ? { extensions: [{ cip: 104 }] }
+            : accountPub,
+      })
     );
     const api = await provider.enable({ extensions: [{ cip: 104 }] });
     expect(Object.prototype.hasOwnProperty.call(api, 'cip104')).toBe(true);
@@ -157,13 +156,13 @@ describe('dApp preload', () => {
 
   it('exposes CIP-142 only from the authoritative negotiated set', async () => {
     invoke.mockImplementation(
-      async (_channel: string, request: DappCip30GatewayRequest) =>
-        request.method === 'api.getExtensions'
-          ? { status: 'fulfilled', value: [{ cip: 142 }] }
-          : {
-              status: 'fulfilled',
-              value: request.method === 'provider.enable' ? {} : 42,
-            }
+      async (_channel: string, request: DappCip30GatewayRequest) => ({
+        status: 'fulfilled',
+        value:
+          request.method === 'provider.enable'
+            ? { extensions: [{ cip: 142 }] }
+            : 42,
+      })
     );
     const api = await provider.enable({ extensions: [{ cip: 142 }] });
     expect(Object.prototype.hasOwnProperty.call(api, 'cip142')).toBe(true);
@@ -209,10 +208,9 @@ describe('dApp preload', () => {
     'rejects directly with a reconstructed plain $type value',
     async (rejection, call) => {
       invoke
-        .mockResolvedValueOnce({ status: 'fulfilled', value: {} })
         .mockResolvedValueOnce({
           status: 'fulfilled',
-          value: [{ cip: 103 }],
+          value: { extensions: [{ cip: 103 }] },
         })
         .mockResolvedValueOnce({ status: 'rejected', rejection });
       const api = await provider.enable();
@@ -227,6 +225,9 @@ describe('dApp preload', () => {
       expect(caught).toEqual(rejection.value);
       expect(caught).not.toBe(rejection.value);
       expect(caught).not.toBeInstanceOf(Error);
+      expect(consoleError).toHaveBeenCalledWith(
+        expect.stringContaining(JSON.stringify(rejection))
+      );
     }
   );
 

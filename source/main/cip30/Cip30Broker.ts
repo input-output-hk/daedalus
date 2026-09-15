@@ -26,6 +26,8 @@ import {
 import type { TransactionContextSnapshot } from '../../common/cardano/transactionContext';
 import {
   diffVKeyWitnesses,
+  extractVKeyWitnesses,
+  mergeVKeyWitnesses,
   WitnessSetError,
 } from '../../common/cardano/witnessSet';
 import { createCip30TransactionReview } from '../../common/cip30/review';
@@ -75,6 +77,7 @@ import {
 import { consentCoordinator } from '../ipc/walletApproval';
 import { executeCip30WalletRequest } from '../ipc/cip30Wallet';
 import { DappTransactionContextServiceError } from '../cardano/DappTransactionContextService';
+import { logger } from '../utils/logging';
 import { CapabilityContext, CapabilityService } from './CapabilityService';
 import { ConsentCoordinator } from './ConsentCoordinator';
 import { Dispatcher, Cip30DispatchRejection } from './Dispatcher';
@@ -99,7 +102,7 @@ import {
 import { setCip30SessionRevoker } from './runtime';
 
 export const CARDANO_WALLET_SOURCE_REVISION =
-  'bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e';
+  '245c877a80d76138bee87f393fd2d36a75fdad47';
 
 const IMPLEMENTED_METHODS = new Set<DappCip30Method>([
   'api.getExtensions',
@@ -266,6 +269,9 @@ export class Cip30Broker {
   revoke(): void {
     this.options.sessions.revokeAll();
   }
+  revokeGuest(guestWebContentsId: number): void {
+    this.options.sessions.revokeGuest(guestWebContentsId);
+  }
 
   private binding(event: IpcMainInvokeEvent): Cip30BrokerBinding | null {
     const guest = this.options.authenticate(event);
@@ -360,9 +366,7 @@ export class Cip30Broker {
           ? {
               device: Object.freeze({
                 ...evidence.hardware,
-                packagedEnabled: dappLaunchPolicy.hardwareConnectorEnabled(
-                  evidence.hardware.rowId
-                ),
+                packagedEnabled: dappLaunchPolicy.hardwareConnectorEnabled(),
               }),
             }
           : {}),
@@ -481,7 +485,7 @@ export class Cip30Broker {
       grantedScopes: Object.freeze([...liveScopes]),
     };
     this.options.sessions.create(capability);
-    return {};
+    return { extensions: enabledExtensions.map((cip) => ({ cip })) };
   }
 
   private async getAccountPub(
@@ -999,6 +1003,7 @@ export class Cip30Broker {
           ? { kind: 'software' }
           : { kind: 'hardware', vendor: evidence.walletKind },
         kind: 'transaction-sign',
+        canSubmit: !partialSign,
         origin: binding.authority.origin,
         walletName: evidence.walletName,
         networkName: this.options.networkName,
@@ -1052,18 +1057,48 @@ export class Cip30Broker {
         )
           throw internal();
         const witness = response.value.witnesses[0];
+        let freshWitnesses: Buffer;
         try {
-          return diffVKeyWitnesses(
+          freshWitnesses = diffVKeyWitnesses(
             transaction.envelope,
             witness.body_hash,
             Buffer.from(witness.witness_set_cbor, 'hex'),
             witnessKeyHashes.required,
             witnessKeyHashes.allowed
-          ).toString('hex');
+          );
         } catch (error) {
           if (error instanceof WitnessSetError) throw internal();
           throw error;
         }
+        if (approval.submissionAuthorized) {
+          let observation: SubmissionObservation = 'unknown';
+          approval.reportProgress('submitting', 0);
+          try {
+            const signedTransaction = mergeVKeyWitnesses(
+              transaction.envelope,
+              extractVKeyWitnesses(freshWitnesses)
+            ).toString('hex');
+            const submission = await this.options.executeWallet({
+              operation: 'submit-transaction',
+              walletId: binding.authority.walletId,
+              network: binding.authority.network,
+              sourceRevision: this.options.sourceRevision,
+              transaction: signedTransaction,
+            });
+            if (submission.status === 'rejected') observation = 'failed';
+            else if (
+              submission.operation === 'submit-transaction' &&
+              submission.value.transaction_id === transaction.transactionId
+            )
+              observation = observeSubmission(submission.value.status);
+          } catch {
+            observation = 'unknown';
+          }
+          approval.reportResult(
+            submissionResult([transaction.transactionId], [observation])
+          );
+        }
+        return freshWitnesses.toString('hex');
       },
     });
     this.assertCurrent(binding);
@@ -1419,6 +1454,16 @@ export class Cip30Broker {
       } else {
         rejection = internal();
       }
+      logger.warn('CIP-30 request rejected', {
+        method: request?.method || 'invalid',
+        dappId:
+          binding.guest.launch.kind === 'catalog'
+            ? binding.guest.launch.catalogEntryId
+            : 'diagnostics',
+        rejectionType: rejection.type,
+        rejectionCode:
+          rejection.type === 'api-error' ? rejection.value.code : undefined,
+      });
       return request
         ? createDappCip30RejectedEnvelope(request.method, rejection)
         : { status: 'rejected', rejection };
@@ -1531,7 +1576,9 @@ export const handleCip30BrokerRequests = (): void => {
     sourceRevision: CARDANO_WALLET_SOURCE_REVISION,
     collateral: collateralService,
   });
-  setDappBrokerLifecycleRevoker(() => broker?.revoke());
+  setDappBrokerLifecycleRevoker((guestWebContentsId) =>
+    broker?.revokeGuest(guestWebContentsId)
+  );
   setCip30SessionRevoker(() => broker?.revoke());
   ipcMain.handle(DAPP_CIP30_GATEWAY_CHANNEL, broker.handle);
   registered = true;

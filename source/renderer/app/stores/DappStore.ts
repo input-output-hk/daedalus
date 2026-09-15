@@ -17,8 +17,11 @@ import Store from './lib/Store';
 export default class DappStore extends Store {
   @observable catalogAvailable = false;
   @observable diagnosticsAvailable = false;
+  @observable consoleCaptureAvailable = false;
+  @observable consoleCaptureEnabled = false;
   @observable guestOpen = false;
   @observable isLaunching = false;
+  @observable launchingCatalogId: string | null = null;
   @observable connections: readonly DappGrant[] = [];
   @observable connectionsCorrupt = false;
   @observable isManagingConnections = false;
@@ -60,6 +63,9 @@ export default class DappStore extends Store {
         runInAction('DappStore::receiveStatus', () => {
           this.catalogAvailable = status.catalogAvailable;
           this.diagnosticsAvailable = status.diagnosticsAvailable;
+          this.consoleCaptureAvailable = status.consoleCaptureAvailable;
+          if (!status.consoleCaptureAvailable)
+            this.consoleCaptureEnabled = false;
           this.guestOpen = status.isOpen;
         });
       },
@@ -73,6 +79,8 @@ export default class DappStore extends Store {
     this.unbind?.();
     this.unbind = undefined;
     this.isLaunching = false;
+    this.launchingCatalogId = null;
+    this.consoleCaptureEnabled = false;
     this.isManagingConnections = false;
     this.prunedWalletIds = undefined;
     super.teardown();
@@ -83,12 +91,18 @@ export default class DappStore extends Store {
     if (!this.ready || this.isLaunching) return;
     const generation = this.generation;
     this.isLaunching = true;
+    this.launchingCatalogId = catalogId;
     try {
-      await openDappBrowserChannel.request({ catalogId, localName });
+      await openDappBrowserChannel.request({
+        catalogId,
+        localName,
+        captureConsole: this.consoleCaptureEnabled,
+      });
     } finally {
       if (generation === this.generation)
         runInAction('DappStore::finishLaunch', () => {
           this.isLaunching = false;
+          this.launchingCatalogId = null;
         });
     }
   }
@@ -110,7 +124,12 @@ export default class DappStore extends Store {
     const generation = this.generation;
     this.isLaunching = true;
     try {
-      await openDappBrowserChannel.request({ url, walletId, localName });
+      await openDappBrowserChannel.request({
+        url,
+        walletId,
+        localName,
+        captureConsole: this.consoleCaptureEnabled,
+      });
       this.actions.router.goToRoute.trigger({
         route: `/apps/${encodeURIComponent(walletId)}`,
       });
@@ -120,6 +139,11 @@ export default class DappStore extends Store {
           this.isLaunching = false;
         });
     }
+  }
+
+  @action.bound
+  setConsoleCaptureEnabled(enabled: boolean): void {
+    this.consoleCaptureEnabled = this.consoleCaptureAvailable && enabled;
   }
 
   @action.bound

@@ -374,6 +374,28 @@ describe('Cip30WalletService', () => {
     });
   });
 
+  it('keeps hardware wallet capabilities available without a live device', async () => {
+    const fixture = create();
+    fixture.setWallet({
+      id: 'wallet',
+      name: 'Hardware',
+      isHardwareWallet: true,
+    });
+    fixture.refreshDappConnectorCapability.mockRejectedValue(
+      new Error('Cardano app unavailable')
+    );
+
+    await expect(
+      fixture.service.receive(request('capabilities'))
+    ).resolves.toMatchObject({
+      status: 'fulfilled',
+      operation: 'capabilities',
+      value: {
+        walletKind: 'ledger',
+      },
+    });
+  });
+
   it('returns ordered source addresses without CIP-30 serialization', async () => {
     const fixture = create();
     await expect(

@@ -2,7 +2,10 @@ import { dappCatalog } from '../../common/config/dappCatalog';
 import type { DappBrowserManager } from '../dapp/DappBrowserManager';
 import type { DappCatalogEntry } from '../dapp/dappCatalog';
 import { DappLaunchPolicy } from '../dapp/DappLaunchPolicy';
-import { DappBrowserController } from './dappBrowser';
+import {
+  DappBrowserController,
+  isDappConsoleCaptureSupported,
+} from './dappBrowser';
 
 jest.mock('../config', () => ({
   dappLaunchPolicy: { allows: () => false },
@@ -16,6 +19,10 @@ jest.mock('../environment', () => ({
 }));
 jest.mock('./lib/MainIpcChannel', () => ({
   MainIpcChannel: jest.fn(() => ({ onRequest: jest.fn() })),
+}));
+jest.mock('../windows/windowBounds', () => ({
+  restoreSavedWindowBounds: jest.fn(),
+  saveWindowBoundsOnSizeAndPositionChange: jest.fn(),
 }));
 
 const entry: DappCatalogEntry = {
@@ -39,6 +46,7 @@ const enabledPolicy = (preferred = true, diagnostics = true) =>
     diagnosticsEnabled: diagnostics,
     cip104Revision: 0,
     cip142Revision: 0,
+    hardwareConnectorEnabled: true,
   });
 
 describe('DappBrowserController', () => {
@@ -47,6 +55,7 @@ describe('DappBrowserController', () => {
     launch: jest.fn(() => Promise.resolve()),
     launchDiagnostics: jest.fn(() => Promise.resolve()),
     close: jest.fn(() => Promise.resolve()),
+    revoke: jest.fn(),
   });
   const { launcherConfig } = jest.requireMock('../config');
   const { environment } = jest.requireMock('../environment');
@@ -80,6 +89,7 @@ describe('DappBrowserController', () => {
       url: 'https://example.com/app',
       walletId: 'wallet-a',
       localName: 'Untrusted dApp',
+      captureConsole: false,
     });
     expect(manager.launchDiagnostics).not.toHaveBeenCalled();
 
@@ -87,17 +97,16 @@ describe('DappBrowserController', () => {
     await Promise.resolve();
 
     expect(manager.launchDiagnostics).toHaveBeenCalledTimes(1);
-    expect(
-      manager.launchDiagnostics
-    ).toHaveBeenCalledWith(
+    expect(manager.launchDiagnostics).toHaveBeenCalledWith(
       'https://example.com/app',
       'https://example.com',
       'Untrusted dApp',
-      { allowHttpLoopback: false }
+      { allowHttpLoopback: false },
+      false
     );
   });
 
-  it('revokes the guest before a trusted renderer reload', () => {
+  it('revokes guest authority without closing it before a trusted renderer reload', () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
       (manager as unknown) as DappBrowserManager,
@@ -123,7 +132,8 @@ describe('DappBrowserController', () => {
     startNavigation?.({ isMainFrame: true, isSameDocument: false });
 
     expect(controller.routeLease.current).toBeNull();
-    expect(manager.close).toHaveBeenCalledWith('route-changed');
+    expect(manager.revoke).toHaveBeenCalledWith('route-changed');
+    expect(manager.close).not.toHaveBeenCalled();
   });
 
   it('rejects diagnostics independently without affecting preferred launch', async () => {
@@ -143,10 +153,20 @@ describe('DappBrowserController', () => {
         url: 'https://example.com',
         walletId: 'wallet-a',
         localName: 'Untrusted dApp',
+        captureConsole: false,
       })
     ).rejects.toThrow('DApp launch is disabled');
-    await controller.open({ catalogId: 'example', localName: 'Example' });
-    expect(manager.launch).toHaveBeenCalledWith(entry, 'genesis', 'Example');
+    await controller.open({
+      catalogId: 'example',
+      localName: 'Example',
+      captureConsole: false,
+    });
+    expect(manager.launch).toHaveBeenCalledWith(
+      entry,
+      'genesis',
+      'Example',
+      false
+    );
     expect(manager.launchDiagnostics).not.toHaveBeenCalled();
   });
   it('exposes preferred availability without enabling diagnostics or requiring an entry', () => {
@@ -168,12 +188,42 @@ describe('DappBrowserController', () => {
       isOpen: false,
       catalogAvailable: true,
       diagnosticsAvailable: false,
+      consoleCaptureAvailable: true,
     });
     expect(diagnosticsOnly.status).toEqual({
       isOpen: false,
       catalogAvailable: false,
       diagnosticsAvailable: true,
+      consoleCaptureAvailable: true,
     });
+  });
+
+  it('limits console capture to Flight, Preprod, and Preview builds', async () => {
+    expect(isDappConsoleCaptureSupported('mainnet', true)).toBe(true);
+    expect(isDappConsoleCaptureSupported('preprod', false)).toBe(true);
+    expect(isDappConsoleCaptureSupported('preview', false)).toBe(true);
+    expect(isDappConsoleCaptureSupported('mainnet', false)).toBe(false);
+
+    environment.network = 'mainnet';
+    const manager = makeManager();
+    const controller = new DappBrowserController(
+      (manager as unknown) as DappBrowserManager,
+      'genesis',
+      enabledPolicy(),
+      [entry]
+    );
+    controller.routeLease.observeTrustedRoute(
+      'file:///app/index.html#/apps/wallet-a'
+    );
+
+    await expect(
+      controller.open({
+        catalogId: 'example',
+        localName: 'Example',
+        captureConsole: true,
+      })
+    ).rejects.toThrow('DApp console capture is unavailable');
+    expect(manager.launch).not.toHaveBeenCalled();
   });
 
   it('resolves a preferred catalog ID only from the injected main catalog', async () => {
@@ -188,11 +238,24 @@ describe('DappBrowserController', () => {
       'file:///app/index.html#/apps/wallet-a'
     );
 
-    await controller.open({ catalogId: 'example', localName: 'Example' });
+    await controller.open({
+      catalogId: 'example',
+      localName: 'Example',
+      captureConsole: false,
+    });
 
-    expect(manager.launch).toHaveBeenCalledWith(entry, 'genesis', 'Example');
+    expect(manager.launch).toHaveBeenCalledWith(
+      entry,
+      'genesis',
+      'Example',
+      false
+    );
     await expect(
-      controller.open({ catalogId: 'unknown', localName: 'Unknown' })
+      controller.open({
+        catalogId: 'unknown',
+        localName: 'Unknown',
+        captureConsole: false,
+      })
     ).rejects.toThrow('Unknown dApp catalog entry');
   });
 
@@ -214,7 +277,11 @@ describe('DappBrowserController', () => {
     );
 
     await expect(
-      controller.open({ catalogId: 'hidden', localName: 'Hidden' })
+      controller.open({
+        catalogId: 'hidden',
+        localName: 'Hidden',
+        captureConsole: false,
+      })
     ).rejects.toThrow('Unknown dApp catalog entry');
     expect(manager.launch).not.toHaveBeenCalled();
   });
@@ -234,14 +301,20 @@ describe('DappBrowserController', () => {
       preprod.open({
         catalogId: 'liqwid-finance',
         localName: 'Liqwid Finance',
+        captureConsole: false,
       })
     ).rejects.toThrow('Unknown dApp catalog entry');
     expect(preprodManager.launch).not.toHaveBeenCalled();
-    await preprod.open({ catalogId: 'unfrack-it', localName: 'unfrack.it' });
+    await preprod.open({
+      catalogId: 'unfrack-it',
+      localName: 'unfrack.it',
+      captureConsole: false,
+    });
     expect(preprodManager.launch).toHaveBeenCalledWith(
       dappCatalog[1],
       'preprod-genesis',
-      'unfrack.it'
+      'unfrack.it',
+      false
     );
 
     environment.network = 'mainnet';
@@ -259,11 +332,13 @@ describe('DappBrowserController', () => {
     await flight.open({
       catalogId: 'liqwid-finance',
       localName: 'Liqwid Finance',
+      captureConsole: false,
     });
     expect(flightManager.launch).toHaveBeenCalledWith(
       dappCatalog[0],
       'mainnet-genesis',
-      'Liqwid Finance'
+      'Liqwid Finance',
+      false
     );
   });
 
@@ -281,7 +356,11 @@ describe('DappBrowserController', () => {
       'file:///app/index.html#/apps/wallet-a'
     );
 
-    await controller.open({ catalogId: 'example', localName: 'Example' });
+    await controller.open({
+      catalogId: 'example',
+      localName: 'Example',
+      captureConsole: false,
+    });
     await controller.close();
 
     expect(state).toHaveBeenNthCalledWith(1, true);
@@ -311,6 +390,7 @@ describe('DappBrowserController', () => {
       url: 'https://example.com',
       walletId: 'wallet-a',
       localName: 'Untrusted dApp',
+      captureConsole: false,
     });
 
     navigate?.({}, 'file:///app/index.html#/apps/wallet-b', true);

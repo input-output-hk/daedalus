@@ -53,7 +53,7 @@ describe('DappCatalogPage', () => {
               catalogAvailable: true,
               ready: true,
               guestOpen: false,
-              isLaunching: false,
+              launchingCatalogId: null,
               launch,
               close: jest.fn(),
             },
