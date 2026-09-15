@@ -89,7 +89,7 @@ yarn themes:update
 - Runs `source/renderer/app/themes/utils/updateThemesCLI.ts` (interactive CLI)
 - Presents available updates to existing theme files
 - Applies selected updates to theme files
-- Auto-formats all updated files with Prettier (`--loglevel warn`)
+- Auto-formats all updated files with Prettier (`--log-level warn`)
 - Modifies files in: `source/renderer/app/themes/daedalus/*.ts`
 
 **Interactive CLI Usage**:
@@ -401,7 +401,7 @@ Theme changes are validated in CI via:
 
 **Solution**:
 - Prettier is auto-run by `themes:update` command
-- If formatting is missing, run: `yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.ts`
+- If formatting is missing, run: `yarn prettier --log-level warn --write source/renderer/app/themes/daedalus/*.ts`
 
 ### TypeScript Compilation Errors
 

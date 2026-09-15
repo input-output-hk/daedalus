@@ -293,19 +293,24 @@ export const TxBody = (
   const blake2b = (data) => blakejs.blake2b(data, null, 32);
 
   function getId() {
-    return blake2b(
-      encode(
-        TxBody(
-          inputs,
-          outputs,
-          fee,
-          ttl,
-          certs,
-          withdrawals,
-          auxiliaryData,
-          auxiliaryDataHash
-        )
-      ) // 32
+    // `blake2b` returns a Uint8Array, whose `toString` ignores an encoding
+    // argument and yields a comma-separated decimal list. Wrapping in a Buffer
+    // is what produces the hex this is meant to return.
+    return Buffer.from(
+      blake2b(
+        encode(
+          TxBody(
+            inputs,
+            outputs,
+            fee,
+            ttl,
+            certs,
+            withdrawals,
+            auxiliaryData,
+            auxiliaryDataHash
+          )
+        ) // 32
+      )
     ).toString('hex');
   }
 

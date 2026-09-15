@@ -1,0 +1,915 @@
+{
+  "metadata": {
+    "title": "Dependency Hygiene Tasks",
+    "created": "2026-08-26",
+    "updated": "2026-08-27",
+    "version": "3.1.0",
+    "totalTasks": 24,
+    "prdReference": ".agent/plans/dependency-hygiene/dependency-hygiene-prd.md",
+    "description": "Make one prettier version govern the repository, prove BIP39 conformance and first-party wallet entropy before anything underneath them moves, then take the mechanical and consequential runtime dependency bumps.",
+    "sourceFiles": [
+      "package.json",
+      "yarn.lock",
+      ".prettierrc",
+      ".prettierignore",
+      "perSystem/formatter.nix",
+      "perSystem/checks.nix",
+      "nix/internal/common.nix",
+      "source/renderer/app/utils/crypto.ts",
+      "source/renderer/webpack.config.js",
+      "tests/wallets/unit/steps/mnemonics.ts",
+      ".agent/skills/theme-management/SKILL.md",
+      ".agent/plans/dependency-hygiene/research/01-measured-divergence.md",
+      ".agent/plans/dependency-hygiene/research/02-dependency-inventory.md",
+      "source/renderer/app/api/api.ts",
+      "source/renderer/app/api/utils/mnemonics.ts",
+      "source/renderer/app/stores/WalletsStore.ts",
+      "source/common/config/crypto/valid-words.en.ts",
+      "source/renderer/app/utils/entropy.ts",
+      "jest.config.js",
+      ".eslintrc",
+      "tests/wallets/unit/features/scrambling-and-unscrambling-mnemonics.feature"
+    ],
+    "importantNote": "Branch chore/dependency-hygiene, cut from master; there is no develop branch. Four hard rules. (1) The prettier bump must change package.json and yarn.lock and nothing else; if a source file changes, stop and re-measure rather than committing a reformat. (2) pbkdf2 and lodash are pinned in BOTH dependencies and resolutions; moving only one line leaves the old version installed and the advisory unresolved while the diff looks complete. (3) The whole of phase 3 lands and is green BEFORE any tier 2 bump, because bip39 3.1.0 replaces the entropy source behind wallet recovery phrase generation. The assertions must witness that change, not be written around whatever it produced. (4) Known-answer values come from the published BIP39 vectors, never from this implementation's current output. A self-captured value proves the output did not change; it cannot prove it was ever right."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Formatter version parity",
+      "description": "Move the prettier dependency to the version treefmt already runs, so the local pre-flight and the merge gate stop disagreeing, and repair the CLI flag prettier 3 renamed.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Bump prettier to 3.6.2",
+          "description": "Change devDependencies.prettier from 2.1.2 to 3.6.2 and regenerate the lockfile. 3.6.2 is what treefmt runs from the pinned nixpkgs, so this closes the gap by moving the dependency rather than by reformatting the tree.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": [],
+          "targetPaths": [
+            "package.json",
+            "yarn.lock"
+          ],
+          "implementationNotes": [
+            "Edit package.json:163.",
+            "Regenerate yarn.lock with yarn install inside the Nix dev shell. Never run yarn install outside the shell: host python3 resolves to an unrelated venv and libudev/libusb are absent, so node-hid and usb build wrong or not at all.",
+            "No fixed-output hash needs updating. node_modules is built from an offline cache derived from yarn.lock at evaluation time (nix/internal/common.nix:298)."
+          ],
+          "acceptance": [
+            "package.json names prettier 3.6.2",
+            "yarn.lock resolves prettier to 3.6.2",
+            "git diff --name-only lists package.json and yarn.lock only"
+          ],
+          "notes": "If any other file appears in git diff, the premise that the tree is already prettier 3 shaped is wrong. Stop and re-measure.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.6,
+          "completedNotes": "package.json names prettier 3.6.2 and yarn.lock resolves to it. The lockfile diff is confined to the top-level prettier entry; @storybook/csf-tools keeps a nested prettier 2.3.0 that formats nothing here. Regenerated with yarn install inside nix develop .#mainnet, node v24.15.0, yarn 1.22.22."
+        },
+        {
+          "id": "task-002",
+          "title": "Rename --loglevel to --log-level in the prettier scripts",
+          "description": "Prettier 3 removed --loglevel in favour of --log-level and ignores the old spelling with a warning, so the intended quieting stops working and every invocation gains a warning line.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 0.25,
+          "dependencies": [
+            "task-001"
+          ],
+          "targetPath": "package.json",
+          "implementationNotes": [
+            "Three call sites: prettier:format (package.json:49), themes:update (:58), themes:copy (:59)."
+          ],
+          "acceptance": [
+            "No script passes --loglevel",
+            "yarn prettier:format emits no unknown-option warning"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.1,
+          "completedNotes": "prettier:format, themes:update and themes:copy now pass --log-level. The remaining --loglevel references are in .agent/skills/theme-management/SKILL.md, which is task-014."
+        },
+        {
+          "id": "task-003",
+          "title": "Verify the bump reformats nothing",
+          "description": "Confirm both formatters agree on the tree as committed, and that running the format command no longer produces a diff. This is the check that closes the reported problem.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-001",
+            "task-002"
+          ],
+          "targetPaths": [
+            "package.json",
+            "yarn.lock"
+          ],
+          "testCases": [
+            "yarn prettier:check exits 0",
+            "nix fmt -- --ci reports 0 changed and exits 0",
+            "yarn prettier:format followed by git diff --name-only produces empty output",
+            "git diff --name-only lists package.json and yarn.lock only"
+          ],
+          "acceptance": [
+            "All four checks above hold on a clean checkout of the branch"
+          ],
+          "notes": "Baseline measured at 50e6b84b3: yarn prettier:check reported 210 files, nix fmt -- --ci reported 0 changes, and prettier 2 rewriting the tree left 209 files that treefmt reverted plus one it did not.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.4,
+          "completedNotes": "Verified: yarn prettier:check reports all matched files conform and exits 0; nix fmt -- --ci formats 1955 files with 0 changed; yarn prettier:format followed by git diff --name-only lists package.json and yarn.lock only. No source file changed, so the premise held and no re-measure was needed."
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "One source of truth for formatting",
+      "description": "Stop the Nix formatter generating its own prettier config and duplicating the ignore rules, so a future edit to .prettierrc or .prettierignore reaches both entry points.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-004",
+          "title": "Let treefmt read .prettierrc",
+          "description": "Remove programs.prettier.settings from formatter.nix. treefmt-nix generates a config file from those settings and passes it as --config, which stops prettier discovering .prettierrc. With settings empty, treefmt-nix passes no --config and prettier resolves the repository's own file.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-003"
+          ],
+          "targetPath": "perSystem/formatter.nix",
+          "implementation": {
+            "change": "Delete the programs.prettier.settings attribute, keeping programs.prettier.enable. Replace the 'Use the settings from .prettierrc' comment with one recording that omitting settings is what makes prettier read .prettierrc, so the comment stops being aspirational."
+          },
+          "implementationNotes": [
+            "treefmt-nix/programs/prettier.nix gates the flag on the settings being non-empty: settingsFile = if settings != { } then ... else null, and options = lib.optionals (settingsFile != null) [\"--config\" ...].",
+            "Read the regenerated treefmt.toml to confirm the prettier options list no longer contains --config."
+          ],
+          "testCases": [
+            "The generated treefmt.toml passes no --config for prettier",
+            "nix fmt -- --ci reports 0 changed"
+          ],
+          "acceptance": [
+            "nix fmt -- --ci is clean with .prettierrc as the only prettier config",
+            "git diff --name-only lists perSystem/formatter.nix only"
+          ],
+          "notes": "A clean run proves .prettierrc supplies the same options the generated file did. The two agree today by hand; this makes them agree by construction.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.7,
+          "completedNotes": "Removed programs.prettier.settings. Confirmed the two configs were already identical before removing anything: the generated /nix/store/...-prettierrc.json held exactly {\"singleQuote\": true, \"trailingComma\": \"es5\"} and .prettierrc holds the same two keys. The treefmt-nix module emits --config only when the settings attrset filters to non-empty, so removal drops the flag rather than passing an empty config; the rebuilt config shows options = [\"--write\"]. Proof that .prettierrc is now honoured: the same prettier binary passes --check on crypto.ts and fails it with --no-config, because prettier 3 defaults to singleQuote false and trailingComma all."
+        },
+        {
+          "id": "task-005",
+          "title": "Drop the inert prettier include and exclude lists",
+          "description": "The prettier includes and excludes in formatter.nix have no effect. They are written to settings.formatter.prettier.*, which becomes a second definition of the same option as the module default and concatenates with it rather than replacing it. Scope is decided by .prettierignore, which prettier applies even to paths passed explicitly.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-004"
+          ],
+          "targetPath": "perSystem/formatter.nix",
+          "implementation": {
+            "change": "Delete settings.formatter.prettier entirely, leaving a comment recording that .prettierignore is the scope gate for prettier under both nix fmt and yarn prettier. Keep settings.global.excludes: alejandra and rustfmt depend on it and are not gated by .prettierignore."
+          },
+          "implementationNotes": [
+            "Removing entries cannot widen scope: the module defaults are a separate definition and stay in place regardless, and every repository entry is already a subset of them.",
+            "The option that would actually override the defaults is programs.prettier.includes, not settings.formatter.prettier.includes. Worth noting in the comment so the next person does not repeat the mistake.",
+            "settings.formatter.alejandra.includes is redundant for the same reason, but alejandra is out of scope for this branch. Leave it."
+          ],
+          "testCases": [
+            "nix fmt -- --ci reports 0 changed",
+            "prettier --ignore-path /dev/null --check README.md tsconfig.json still reports both files, confirming Markdown and top-level JSON remain out of scope"
+          ],
+          "acceptance": [
+            "No prettier scope rules remain in perSystem/formatter.nix",
+            "nix fmt -- --ci is clean and no Markdown or YAML file is reformatted"
+          ],
+          "securityNotes": [
+            "Residual risk, accepted and named once in the PRD: if a future prettier stopped applying .prettierignore to explicitly passed paths, treefmt would begin formatting every Markdown file including CHANGELOG.md. That surfaces as a loud diff on the first nix fmt after such a bump, not as silent corruption, and task-006 makes any prettier version move deliberate."
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.8,
+          "completedNotes": "Removed the 25 include entries and the 4 exclude entries. Generated-config diff confirms the includes concatenated rather than replaced: the module's 16 extension globs remain and cover every extension the repository list named. Measured side effect not predicted by the plan: treefmt now emits 1969 files to prettier rather than 1955, the 14 being the formerly excluded locale, newsfeed and e2e document files, which prettier declines via .prettierignore. nix fmt -- --ci still reports 0 changed."
+        },
+        {
+          "id": "task-006",
+          "title": "Add a prettier version parity check",
+          "description": "The treefmt prettier tracks nixpkgs. A nixpkgs bump moves it and reopens the gap with no signal. Assert that the version in package.json and the version treefmt invokes are the same, and fail with a message naming both and saying what to do.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-005"
+          ],
+          "targetPath": "perSystem/checks.nix",
+          "implementation": {
+            "change": "Add prettier-version-parity to the x86_64-linux block, next to the other static analysis. Read the binary from config.treefmt.settings.formatter.prettier.command so the check cannot drift from what the formatter runs, and read the pin with jq from package.json.",
+            "logic": [
+              "pinned=$(jq -r '.devDependencies.prettier' ${inputs.self}/package.json)",
+              "actual=$(${config.treefmt.settings.formatter.prettier.command} --version)",
+              "Fail when they differ, printing both values and both remedies",
+              "touch $out on success"
+            ]
+          },
+          "implementationNotes": [
+            "perSystem in checks.nix currently takes {system, lib, pkgs, ...}. Add config to the argument set.",
+            "x86_64-linux only, matching the other static analysis. Every x86_64-linux check is a constituent of hydraJobs.required, so this gates a merge.",
+            "The exact-match comparison assumes the pin stays an exact version rather than a range. That holds for every devDependency today.",
+            "Rejected alternative: pointing treefmt at the prettier in node_modules would make the two identical by construction, but it would make nix fmt depend on building node_modules, which is too slow for a formatter run on every save."
+          ],
+          "testCases": [
+            "nix build .#checks.x86_64-linux.prettier-version-parity succeeds as written",
+            "With package.json temporarily set to 3.6.1, the same build fails and the output names both versions"
+          ],
+          "acceptance": [
+            "The check passes on the branch",
+            "The check demonstrably fails on a deliberate mismatch",
+            "The failure message states both versions and both ways to resolve them"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.0,
+          "completedNotes": "Added prettier-version-parity to checks.nix and config to the perSystem argument set. Deviation from the planned design: the pinned version is read with builtins.readFile ../package.json at evaluation time rather than with jq at build time, which drops the jq dependency, avoids taking a dependency on the whole flake source, and lets the error message embed both versions. Verified passing (prints \"prettier 3.6.2 in package.json and in nix fmt\") and verified failing with the pin temporarily at 3.6.1. Confirmed present in hydraJobs.checks.x86_64-linux, which required collects."
+        },
+        {
+          "id": "task-006-a",
+          "title": "Run the merge gate in check:all",
+          "description": "Replace yarn prettier:check with nix fmt -- --ci in check:all, so the documented local pre-flight and the check that actually gates a merge are the same command. Resolves Open Question 1.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-006"
+          ],
+          "targetPath": "package.json",
+          "implementationNotes": [
+            "CI gates on the `required` aggregate, which collects every derivation in checks.x86_64-linux. Nothing in CI runs yarn check:all or yarn prettier:check, so check:all is a local mirror of the required set and the formatter was the one member it mirrored with the wrong tool.",
+            "Keep prettier:check as a standalone script. It stays useful as a fast, Nix-free, JS-only pass.",
+            "treefmt --ci is --no-cache --fail-on-change and it writes. This changes check:all from read-only to something that reformats the working tree. That is accepted, and it must be stated in the commit body rather than discovered.",
+            "The read-only alternative, nix build .#checks.x86_64-linux.treefmt, was rejected: it builds from the flake source and does not see untracked files."
+          ],
+          "testCases": [
+            "yarn check:all passes on a clean checkout",
+            "yarn check:all fails when a .nix file is misformatted, which yarn prettier:check never caught"
+          ],
+          "acceptance": [
+            "check:all invokes nix fmt -- --ci",
+            "prettier:check still exists as its own script",
+            "The write behaviour is documented in the commit body"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.5,
+          "completedNotes": "check:all now calls a new fmt:check script running nix fmt -- --ci; prettier:check kept standalone. Verified: on a clean tree fmt:check reports 0 changed; with a .nix file deliberately misformatted, prettier:check still exits 0 while fmt:check exits 1."
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Crypto assurance",
+      "description": "Assert where seed derivation and wallet entropy stand today against the published BIP39 vectors, make the entropy source a first-party module rather than a bip39 default, and leave controls behind that make a later weakening conspicuous. All of it lands before any tier 2 bump, because the bip39 bump replaces the entropy source.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-016",
+          "title": "Commit the published BIP39 vectors as a fixture",
+          "description": "Bring the 24 published English test vectors into the repository with their upstream source recorded, so anyone can diff the fixture against the standard and rerun the suite themselves. This is what makes the conformance claim checkable from outside.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": [],
+          "targetPath": "source/renderer/app/utils/__fixtures__/bip39-vectors.json",
+          "implementationNotes": [
+            "Source: trezor/python-mnemonic, vectors.json, the english array. 24 entries, 8 each at 12, 18 and 24 words. Each entry is entropy hex, mnemonic, seed hex, xprv.",
+            "Record the upstream URL and the commit it was taken from, in a sibling readme or a header field. A fixture whose provenance is not written down proves nothing.",
+            "Copy verbatim. Do not reformat, reorder, or prune to the entries that seem relevant.",
+            "All 24 use the passphrase TREZOR. That is part of the vector, not a placeholder to change."
+          ],
+          "acceptance": [
+            "24 English vectors committed",
+            "Upstream source and revision recorded alongside them",
+            "The file is byte-identical to the upstream english array"
+          ],
+          "securityNotes": [
+            "These are published test vectors and are safe to commit. They must never be presented as, or confused with, a usable wallet phrase."
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.6,
+          "completedNotes": "24 English vectors committed verbatim from trezor/python-mnemonic vectors.json at commit b57a5ad77a981e743f4167ab2f7927a55c1e82a8, with provenance recorded inside the fixture. Pinned to a commit rather than master so the fixture cannot change meaning without changing."
+        },
+        {
+          "id": "task-007",
+          "title": "Assert current conformance against the published BIP39 vectors",
+          "description": "Establish the baseline by proving what the implementation does today matches the standard, not merely what it happens to output. Run every published English vector through the current code and record the result as the measurement the rest of the branch preserves.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 0.75,
+          "dependencies": [
+            "task-016"
+          ],
+          "targetPath": ".agent/plans/dependency-hygiene/research/03-crypto-conformance-baseline.md",
+          "implementationNotes": [
+            "Measure on the current dependency set, before task-010 and task-011.",
+            "mnemonicToSeedHex returns 32 bytes where BIP39's seed is 64, so the assertion is against the leading half of the published value. Record that truncation as existing behaviour, not a finding.",
+            "Cover the no-password path: getScrambledInput calls mnemonicToSeedHex with one argument. unorm.nfkd(undefined) returns the empty string, so the salt is `mnemonic` and the output matches the published empty-passphrase seed. Record it, because it looks like a defect and is not.",
+            "Compare valid-words.en.ts against bip39.wordlists.english positionally, not as a set."
+          ],
+          "acceptance": [
+            "All 24 published English vectors verified against the current implementation",
+            "Both pbkdf2 resolutions verified, Node and browser",
+            "The wordlist comparison recorded with its result",
+            "The baseline is written to research/ before any dependency moves"
+          ],
+          "securityNotes": [
+            "Use only the published vectors. Never a mnemonic that has held funds.",
+            "If any vector does not match, stop the branch. A conformance failure on the current dependency set is a live defect, not a planning input."
+          ],
+          "notes": "Replaces the original 'capture current output as fixtures'. A self-captured value proves the output did not change; it cannot prove the output was ever right. Both are available here, so the standard is what gets asserted.",
+          "completedAt": "2026-08-27",
+          "actualHours": 0.8,
+          "completedNotes": "All 24 vectors pass against the current implementation on every axis: mnemonicToSeedHex against the published seed, the same through both pbkdf2 resolutions, entropyToMnemonic, and the mnemonicToEntropy round trip. Recorded in research/03-crypto-conformance-baseline.md along with the 32-byte truncation, the no-password salt path, the Jest/webpack pbkdf2 split, and the entropy chain."
+        },
+        {
+          "id": "task-008",
+          "title": "Add crypto.spec.ts asserting every vector on both pbkdf2 resolutions",
+          "description": "The vector suite. Asserts entropy to mnemonic and mnemonic to seed for all 24 published vectors, against both the Node and the browser pbkdf2 implementation, because webpack.config.js is target: 'web' and ships pbkdf2/browser.js while Jest resolves main.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 2.0,
+          "dependencies": [
+            "task-007"
+          ],
+          "targetPath": "source/renderer/app/utils/crypto.spec.ts",
+          "implementationNotes": [
+            "Assert the fixture's entry count before iterating, so deleting a vector fails the suite rather than quietly reducing coverage. Same shape as the existing i18n check in perSystem/checks.nix.",
+            "require('pbkdf2/browser.js') explicitly alongside the default resolution. A suite that tests only what Jest resolves says nothing about what ships.",
+            "Assert exact hex strings, never a length or a shape. A shape assertion reproduces the gap this task exists to close.",
+            "Colocate as <Unit>.spec.ts; tests/ is Cucumber territory.",
+            "describe names the exported unit with no article, present tense third person, not 'should'.",
+            "Also cover blake2b224 and getStakeAddressFromStakeKey with a fixed vector: blakejs 1.1.0 to 1.2.1 sits underneath them and the original task list missed it.",
+            "Also cover the bech32 encode and decode round trip."
+          ],
+          "testCases": [
+            "Every published vector: entropy to mnemonic matches exactly",
+            "Every published vector: mnemonic and TREZOR passphrase to seed matches the leading 32 bytes",
+            "The same seed assertions through pbkdf2/browser.js",
+            "mnemonicToSeedHex with no password matches the published empty-passphrase seed",
+            "blake2b224 returns the known digest for a fixed input",
+            "getStakeAddressFromStakeKey returns the known address for a known stake key",
+            "The scramble and unscramble round trip returns the original input"
+          ],
+          "acceptance": [
+            "yarn jest source/renderer/app/utils/crypto.spec.ts --coverage=false passes",
+            "The suite fails when an expected vector is altered, verified by doing it",
+            "The suite fails when a vector is removed from the fixture",
+            "Committed and green before any tier 2 bump"
+          ],
+          "notes": "bip39 3.1.0 replaced create-hash, pbkdf2 and randombytes with @noble/hashes. The checksum path inside entropyToMnemonic is exactly the kind of change a round-trip test cannot see and a vector can.",
+          "completedAt": "2026-08-27",
+          "actualHours": 2.2,
+          "completedNotes": "90 assertions in source/renderer/app/utils/crypto.spec.ts. Covers all 24 vectors for mnemonicToSeedHex, for both pbkdf2 resolutions, and for the entropyToMnemonic and mnemonicToEntropy pair; plus the no-password salt path, blake2b224, bech32 encode and decode, and both network branches of getStakeAddressFromStakeKey. Expectations outside the published set come from independent implementations, not from the code under test. Verified failing under four injections: altered seed (2 failures), altered entropy (1), deleted vector (fixture guard), 2048 iterations changed to 2047 (26). Full Jest suite 34 files, 327 passed, 3 skipped."
+        },
+        {
+          "id": "task-017",
+          "title": "Add the first-party entropy module",
+          "description": "source/renderer/app/utils/entropy.ts exporting secureRandomBytes: an explicit CSPRNG wrapper with stated failure behaviour, replacing an entropy source Daedalus currently inherits from a transitive dependency default.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-008"
+          ],
+          "targetPaths": [
+            "source/renderer/app/utils/entropy.ts",
+            "source/renderer/app/utils/entropy.spec.ts"
+          ],
+          "implementation": {
+            "method": "secureRandomBytes",
+            "parameters": [
+              "size: number"
+            ],
+            "returnType": "Buffer",
+            "logic": [
+              "Reject a size that is not a positive integer, or exceeds getRandomValues' 65536 byte limit. Refuse rather than chunk silently.",
+              "Read globalThis.crypto. Throw a named error when it or getRandomValues is absent. Never fall back to anything weaker, and never fall back at all.",
+              "Allocate with Buffer.alloc, not allocUnsafe. randombytes uses allocUnsafe, so a fill that silently no-ops yields whatever occupied that heap page, which looks random and is not. Zero-filled memory trips the next guard instead.",
+              "Reject all-zero output. At 32 bytes a genuine all-zero draw has probability 2^-256, so this costs nothing and catches the exact failure named in the pbkdf2 advisory this branch clears.",
+              "Reject a draw identical to the previous one. This is the continuous health test a DRBG is expected to carry.",
+              "Document the guarantee in a header comment. The point of the module is that a reader finds the guarantee here rather than three levels down in node_modules."
+            ]
+          },
+          "testCases": [
+            "Returns the platform CSPRNG bytes unmodified",
+            "Requests exactly the number of bytes asked for",
+            "Throws when globalThis.crypto is absent",
+            "Throws when getRandomValues is not a function",
+            "Throws when the source returns all zeros",
+            "Throws when the source repeats its previous output",
+            "Rejects a non-integer, zero, negative, or oversized size"
+          ],
+          "acceptance": [
+            "yarn jest source/renderer/app/utils/entropy.spec.ts --coverage=false passes",
+            "Every guard has been observed failing when its condition is forced",
+            "No fallback path exists in the module"
+          ],
+          "securityNotes": [
+            "This module is the entropy source for every wallet Daedalus creates. It fails closed by design: an error reaching the user is the correct outcome when no CSPRNG is available.",
+            "Never add a fallback. A weaker source that works is worse than an error that stops."
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.8,
+          "completedNotes": "entropy.ts exports secureRandomBytes, reading globalThis.crypto.getRandomValues and throwing with no fallback. Allocation is new Uint8Array, zero-filled by specification and with no unsafe variant, rather than Buffer.allocUnsafe as randombytes uses. Rejects all-zero and repeated draws. 17 assertions; removing the zero guard fails 2, removing the repeat guard fails 1, adding a Math.random fallback fails 3. Deviation: jest.setup.js was required, because jest-environment-jsdom at this version provides no globalThis.crypto at all. Measured. That also predicts bip39 3.1.0 failing under Jest without it, since @noble/hashes reads the same global."
+        },
+        {
+          "id": "task-018",
+          "title": "Take wallet entropy from secureRandomBytes",
+          "description": "Change crypto.ts:54 from bip39.generateMnemonic(ent, null, validWords) to pass secureRandomBytes. The null delegates the entropy source for every wallet the application creates to whatever bip39 currently defaults to, and this branch's own bip39 bump replaces that default.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-017"
+          ],
+          "targetPath": "source/renderer/app/utils/crypto.ts",
+          "implementationNotes": [
+            "One line. The measured chain today is crypto.ts:54 to bip39 3.0.4's `rng = rng || randomBytes` to randombytes/browser.js to global.crypto.getRandomValues, because webpack is target: 'web'.",
+            "bip39 3.1.0 changes that line to `rng = rng || (size => Buffer.from(utils_1.randomBytes(size)))` using @noble/hashes. Both fail closed, so the substitution is not itself a weakening. It is a silent replacement of the entropy source, arriving as one line of a lockfile diff.",
+            "After this change, no dependency bump can move the entropy source."
+          ],
+          "testCases": [
+            "generateMnemonic(24) requests exactly 32 bytes from the injected source",
+            "generateMnemonic returns a phrase of the requested word count from the English wordlist",
+            "The existing Cucumber @unit mnemonic features still pass"
+          ],
+          "acceptance": [
+            "crypto.ts passes secureRandomBytes, not null",
+            "yarn test:jest and yarn test:unit pass",
+            "No other behaviour changes"
+          ],
+          "securityNotes": [
+            "This is the single highest-consequence line on the branch. It decides where the seed for every Daedalus wallet comes from."
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.6,
+          "completedNotes": "crypto.ts:54 passes secureRandomBytes instead of null. The Cucumber 10,000-mnemonic property scenario passes, and 10,000 calls produce 10,000 distinct phrases in 145ms. Caught late: the first version returned safe-buffer's Buffer type, which bip39's typings reject, and yarn compile was not re-run after the wiring edit. Fixed by using the global Buffer, which six other renderer modules already rely on through webpack's ProvidePlugin, and the commit was amended before being pushed."
+        },
+        {
+          "id": "task-019",
+          "title": "Prove recovery phrase entropy reaches the phrase intact",
+          "description": "The provenance test. Randomness cannot be asserted by a known-answer test, but the seam around it can, and that is where the assurance lives.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-018"
+          ],
+          "targetPath": "source/renderer/app/utils/crypto.spec.ts",
+          "implementation": {
+            "logic": [
+              "Stub crypto.getRandomValues to emit a known 32 byte pattern.",
+              "Call generateMnemonic(24).",
+              "Assert bip39.mnemonicToEntropy of the result equals exactly those bytes."
+            ],
+            "change": "One assertion proves the entropy came from the platform CSPRNG, that all 256 bits reached the phrase, and that nothing transformed, truncated or discarded them on the way. It cannot be passed by an implementation that sources entropy anywhere else."
+          },
+          "testCases": [
+            "24-word generation: mnemonicToEntropy of the output equals the stubbed CSPRNG bytes exactly",
+            "The same for 12, 15, 18 and 21 words at their respective entropy lengths",
+            "Fed a published vector's entropy, generateMnemonic returns that vector's exact mnemonic",
+            "The test fails when entropy is routed around secureRandomBytes",
+            "The test fails when the entropy is truncated or rehashed before use"
+          ],
+          "acceptance": [
+            "The provenance assertion passes",
+            "It has been observed failing under each of the two failure injections above",
+            "Committed and green before any tier 2 bump"
+          ],
+          "securityNotes": [
+            "This is the assertion that a weakened entropy path cannot satisfy. If a future change makes it awkward, the change is the problem."
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.6,
+          "completedNotes": "Provenance block in crypto.spec.ts. Feeds getRandomValues a known pattern and asserts mnemonicToEntropy of the phrase equals exactly those bytes, across all five lengths and against the published vectors. Three published vectors use all-zero entropy, which secureRandomBytes refuses; those are asserted as refusals rather than excepted from the guard. Verified against three weakenings of crypto.ts: reverting to null (30 failures), rehashing entropy (27), halving and duplicating it (29)."
+        },
+        {
+          "id": "task-020",
+          "title": "Reject weak randomness and untested crypto in lint and coverage",
+          "description": "Structural controls, so that weakening the crypto path cannot be done quietly. Lint rejects the obvious substitutions; a coverage threshold makes deleting a test fail the build instead of reducing coverage.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-019"
+          ],
+          "targetPaths": [
+            ".eslintrc",
+            "jest.config.js"
+          ],
+          "implementationNotes": [
+            "Restrict Math.random and Buffer.allocUnsafe on the crypto path.",
+            "Restrict bip39.generateMnemonic so it can only be called from entropy.ts or crypto.ts, which stops a second call site reintroducing the default rng.",
+            "Set coverageThreshold entries for source/renderer/app/utils/crypto.ts and entropy.ts. Jest already collects coverage by default, so this is configuration rather than new machinery.",
+            "Deleting a test rather than fixing it is the specific move that hid the 9-word defect for five years. This is the control aimed at that.",
+            "State plainly in the commit body what this does and does not achieve. No in-repository check defends itself against a commit that also edits the check. What these controls buy is that a weakening cannot be mistaken for something else in review."
+          ],
+          "testCases": [
+            "yarn lint fails on a Math.random introduced into the crypto path",
+            "yarn lint fails on a bip39.generateMnemonic call added outside the permitted modules",
+            "yarn test:jest fails when a crypto test is deleted",
+            "yarn lint and yarn test:jest pass on the branch as committed"
+          ],
+          "acceptance": [
+            "All four cases above verified, including the three that must fail",
+            "The full check set is still green"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.7,
+          "completedNotes": "Lint restricts Math.random, Buffer.allocUnsafe and bip39.generateMnemonic across source, with crypto.ts the single named exception for the last. Each verified failing by injection. randomInRange in numbers.ts is the only pre-existing Math.random under source, has no callers anywhere, and is annotated rather than removed. Deviation: the coverage floor moved into the crypto-vectors check instead of jest.config.js, because a per-file coverageThreshold there makes every partial yarn jest <file> run exit 1 even when its tests pass. Measured before choosing."
+        },
+        {
+          "id": "task-021",
+          "title": "Add a separately named crypto-vectors check",
+          "description": "Give the crypto assertions their own named derivation in checks.x86_64-linux, so they appear by name on every pull request rather than folded into a generic Jest run.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.0,
+          "dependencies": [
+            "task-020"
+          ],
+          "targetPath": "perSystem/checks.nix",
+          "implementationNotes": [
+            "Use the existing mkJsCheck helper. It reuses the prebuilt node_modules, so there is no extra yarn install.",
+            "Belongs in the x86_64-linux block. Every derivation there is a constituent of the required aggregate in flake.nix, so the check gates a merge with no further CI wiring.",
+            "The Jest check already covers these specs. This exists for visibility: a reviewer should see crypto-vectors pass or fail by name, not infer it."
+          ],
+          "testCases": [
+            "nix build -L .#checks.x86_64-linux.crypto-vectors succeeds",
+            "It fails when an expected vector is altered",
+            "It appears in the required aggregate"
+          ],
+          "acceptance": [
+            "The check exists, passes, and has been observed failing",
+            "nix flake check -L is green"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.2,
+          "completedNotes": "crypto-vectors added to checks.x86_64-linux, confirmed present in hydraJobs so required collects it. Runs both crypto specs, 142 tests, with coverage floors of 100 on entropy.ts and the measured figures on crypto.ts. Verified failing by deleting the failure-behaviour block, which drops entropy.ts to 90 percent statements and fails with the threshold named."
+        },
+        {
+          "id": "task-022",
+          "title": "Move paper wallet coverage to a recorded restore vector",
+          "description": "Paper wallet creation is retired: the sidebar category is hard-disabled at SidebarStore.ts:122, which is why generateMnemonic(9) throwing went unnoticed. Restore is kept and gains the fixed vector it never had, so it is provable without the creation path existing. The skipped scenario and its creation-side steps are removed, their coverage moved to Jest.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-008"
+          ],
+          "targetPaths": [
+            "source/renderer/app/utils/__fixtures__/paper-wallet-certificate.json",
+            "source/renderer/app/utils/crypto.spec.ts",
+            "tests/wallets/unit/features/scrambling-and-unscrambling-mnemonics.feature",
+            "tests/wallets/unit/steps/mnemonics.ts"
+          ],
+          "implementationNotes": [
+            "The vector is captured and verified. Certificate: 'soccer cruel cloth apple witness mimic hero resemble entry chase fruit hurry close riot educate idea mom moral legal winner thank year wave sausage worth useful legal'. It restores to the published BIP39 vector phrase 'abandon' x11 'about'. Derived passphrase 8c58fb2e030c9664c3cb95097e62755a462fd5a2ed7196fc656f0c67bd446200. Deterministic across repeated runs.",
+            "A round trip proves self-consistency, not that an old certificate still opens. Assert the recorded 27-word phrase through getScrambledInput and unscramblePaperWalletMnemonic, which is the path StepMnemonicsContainer takes at lines 57 to 60.",
+            "rust-cardano-crypto populates its exported RustModule object from a promise registered at import time, so `await loadRustModule()` is NOT sufficient: the object is still empty when that await resolves. The spec needs a beforeAll that waits until RustModule has keys, or every paper wallet assertion fails with 'module.alloc is not a function'.",
+            "Capture the fixture on this branch. Once the scrambling code is removed on the retirement branch, it cannot be captured again.",
+            "Record the fixture's provenance beside it: which phrase, which nine words, and that it was generated rather than taken from a real certificate.",
+            "Delete the scrambling scenario and the creation-side steps it used. Do not leave a skipped scenario behind, and do not delete coverage without moving it.",
+            "Do not remove the paper wallet creation feature here. That deletes an IPC channel and is a separate branch; see task-024."
+          ],
+          "acceptance": [
+            "The restore vector is committed with its provenance",
+            "crypto.spec.ts asserts it and passes",
+            "No scenario under tests/wallets/unit carries @skip or @wip",
+            "yarn test:unit passes",
+            "Paper wallet creation code is untouched on this branch"
+          ],
+          "securityNotes": [
+            "The wallet phrase in the fixture is the canonical published BIP39 test vector, universally recognised as one. Never use a phrase that has held funds.",
+            "96 bits of entropy would sit below BIP39's minimum even if generateMnemonic(9) succeeded. Do not lower the floor to make it pass; the flow is retired instead."
+          ],
+          "notes": "Open Question 5, decided 2026-08-27. No longer blocks the branch.",
+          "testCases": [
+            "The recorded certificate restores to its known 12-word phrase",
+            "getScrambledInput derives the recorded passphrase from the certificate's last nine words",
+            "The assertion passes without any call to scramblePaperWalletMnemonic",
+            "The assertion fails if a word in the recorded certificate is altered"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.8,
+          "completedNotes": "Recorded certificate fixture committed with provenance, asserted through getScrambledInput and unscramblePaperWalletMnemonic, the path StepMnemonicsContainer takes. The skipped feature and its seven orphaned steps are removed; no scenario under tests/wallets/unit carries @skip or @wip. crypto.ts coverage rose from 74.64 to 87.32 percent of statements, and the floor was raised to match. The suite waits for rust-cardano-crypto RustModule to be populated, since await loadRustModule() returns while it is still empty."
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Runtime dependency bumps",
+      "description": "Take the mechanical tier, then the consequential tier including both resolutions edits. Grouped so a bisect lands on a category rather than a 20 package diff.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-009",
+          "title": "Record the advisory baseline",
+          "description": "Capture yarn audit output before any dependency moves, so the effect of the tier 2 bumps is measured rather than asserted.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 0.25,
+          "dependencies": [],
+          "targetPath": "package.json",
+          "implementationNotes": [
+            "Record the distinct-advisory count and the per-severity breakdown. Raw totals double-count packages that appear in several trees."
+          ],
+          "acceptance": [
+            "Baseline counts recorded and available to quote in the task-011 commit body"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.4,
+          "completedNotes": "288 distinct advisories at branch start: 16 critical, 131 high, 108 moderate, 33 low. Recorded in research/04-advisory-baseline.md, with ownership by future arc in research/05-advisory-ownership.md."
+        },
+        {
+          "id": "task-010",
+          "title": "Take the mechanical runtime bumps",
+          "description": "13 utility packages with no rendering surface, no key material and no arithmetic on user balances. The existing check set covers them: a break shows up as a failed compile, lint, Jest or Cucumber run.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2.0,
+          "dependencies": [
+            "task-003"
+          ],
+          "targetPaths": [
+            "package.json",
+            "yarn.lock"
+          ],
+          "implementationNotes": [
+            "check-disk-space 3.2.0 to 3.4.0; classnames 2.2.6 to 2.5.1; csv-stringify 5.5.1 to 5.6.5; electron-store 8.0.1 to 8.2.0; form-data 3.0.0 to 3.0.5; fs-extra 9.0.1 to 9.1.0; humanize-duration 3.23.1 to 3.34.1; mime-types 2.1.27 to 2.1.35; node-downloader-helper 1.0.18 to 1.0.19; sanitize-filename 1.6.3 to 1.6.4; semver 7.3.5 to 7.8.5; url 0.11.0 to 0.11.4; validator 13.7.0 to 13.15.35.",
+            "Read each changelog before taking it. The inventory resolved versions from the registry; it did not read release notes.",
+            "electron-store persists application configuration, so its release notes deserve more than a skim.",
+            "validator and form-data are reached through deep imports (validator/lib/isInt, form-data/lib/form_data) and url through a webpack resolve.fallback entry, not through a plain import. Do not conclude any of the three is unused."
+          ],
+          "testCases": [
+            "yarn compile passes",
+            "yarn lint passes",
+            "yarn test:jest passes",
+            "yarn test:unit passes",
+            "yarn storybook:build passes"
+          ],
+          "acceptance": [
+            "All 13 packages at the inventory versions",
+            "The full check set is green",
+            "No source file changed"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 2.3,
+          "completedNotes": "All 13 at inventory versions, only package.json and yarn.lock changed, full check set green including storybook:build. Behavioural baseline for humanize-duration in both locales, validator/lib/isInt and the url fallback API captured before and identical after. Cleared 2 advisories, both validator. The form-data and semver advisories did not clear, because those are against nested copies under storybook, jest-environment-jsdom, webdriverio, axios and @trezor/connect; the direct dependencies are clean. The plan and my earlier reporting both overstated what this tier would clear."
+        },
+        {
+          "id": "task-011",
+          "title": "Clear the lodash and pbkdf2 advisories",
+          "description": "8 consequential packages, two of which are pinned in resolutions as well as dependencies. lodash needs >=4.18.0 to clear its advisory; pbkdf2 has a fix at 3.1.6. A resolutions entry overrides the whole tree, so both lines must move together.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 2.5,
+          "dependencies": [
+            "task-008",
+            "task-009",
+            "task-010",
+            "task-019",
+            "task-021"
+          ],
+          "targetPaths": [
+            "package.json",
+            "yarn.lock"
+          ],
+          "implementation": {
+            "change": "Bump pbkdf2 3.1.2 to 3.1.6, lodash 4.17.21 to 4.18.1, lodash-es 4.17.15 to 4.18.1, bip39 3.0.4 to 3.1.0, blakejs 1.1.0 to 1.2.1, blake2b 2.1.3 to 2.1.4, bignumber.js 9.0.1 to 9.3.1, cbor 5.0.2 to 5.2.0. Update the resolutions entries '**/**/lodash' and 'pbkdf2' in the same commit."
+          },
+          "implementationNotes": [
+            "Moving only the dependencies line leaves the old version installed and the advisory unresolved, with a diff that looks complete. yarn why is the check that catches it.",
+            "lodash 4.18.1 is the first minor after years at 4.17.21, so it carries more change than the version step suggests.",
+            "bignumber.js reaches 91 import sites and cbor covers transaction and metadata serialization; the Jest and Cucumber suites are what confirm nothing moved.",
+            "Record the before and after advisory counts in the commit body."
+          ],
+          "testCases": [
+            "yarn why lodash reports 4.18.1 installed",
+            "yarn why pbkdf2 reports 3.1.6 installed",
+            "yarn test:unit passes",
+            "yarn compile && yarn lint && yarn test:jest && yarn storybook:build pass",
+            "yarn audit distinct-advisory count is lower than the task-009 baseline",
+            "source/renderer/app/utils/crypto.spec.ts passes with its original expected values",
+            "The provenance test from task-019 passes unchanged, proving bip39 3.1.0 did not move the entropy source"
+          ],
+          "acceptance": [
+            "All 8 packages at the inventory versions",
+            "Both resolutions entries updated and confirmed by yarn why",
+            "The crypto spec passes unchanged",
+            "The advisory count is recorded before and after"
+          ],
+          "securityNotes": [
+            "If the crypto spec fails, that is the test doing its job. Stop and investigate the bump. Do not update the expected value to match the new output.",
+            "bip39 3.1.0 replaces create-hash, pbkdf2 and randombytes with @noble/hashes, which changes the default rng. task-018 makes that irrelevant by passing the entropy source explicitly. Confirm the provenance test still passes rather than assuming it."
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 3.5,
+          "completedNotes": "All 8 at inventory versions with both resolutions entries moved alongside dependencies. yarn why confirms exactly one copy each of pbkdf2 3.1.6 and lodash 4.18.1 in the whole tree. Advisories 288 to 275, no new ones, both pbkdf2 criticals cleared. Crypto suites pass with original expectations; the only deleted line across both specs is an import. Two consequences of the bump: blakejs 1.2.1 dropped its instanceof Buffer branch, which fails only under jsdom, so the specs moved to the node environment; and blakejs shipping types for the first time revealed that getId in dataSerialization.ts called toString(hex) on a Uint8Array and returned a comma-separated decimal list. Pre-existing, no callers, fixed. bignumber.js and cbor behaviour identical before and after."
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Investigation and acceptance",
+      "description": "Classify the dependencies that look unused, correct the documents naming the removed prettier flag, and prove the branch on a packaged build rather than the check set alone.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-012",
+          "title": "Classify the runtime dependencies with no first-party import",
+          "description": "17 of 93 declared runtime dependencies have no import of the package or any subpath anywhere in first-party code. Several are explained by build configuration and are correctly declared. The rest may be the same misclassification already corrected for gulp, inquirer and cucumber-html-reporter. This task answers the question; it does not remove anything.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2.0,
+          "dependencies": [],
+          "targetPaths": [
+            "package.json",
+            "source/renderer/webpack.config.js",
+            "nix/internal/runtime-nodejs-deps.json"
+          ],
+          "implementationNotes": [
+            "The candidates: @ledgerhq/hw-transport-node-hid, buffer, cardano-launcher, find-process, glob, graceful-fs, nanoid, node-hid, omit-deep-lodash, process, prop-types, rotating-file-stream, source-map-support, tail, tcp-port-used, url, util.",
+            "Already explained, do not re-derive: buffer, process and url are webpack resolve.fallback and ProvidePlugin entries (source/renderer/webpack.config.js:113-130); node-hid and @ledgerhq/hw-transport-node-hid are reached through the transport layer webpack rewrites via NormalModuleReplacementPlugin (:164).",
+            "Two have positive evidence of being stranded: find-process appears only in planning documents as a helper that was considered and not used; omit-deep-lodash is named in a comment at source/common/utils/logging.ts:42 but that file imports only types.",
+            "Absence from nix/internal/runtime-nodejs-deps.json proves nothing on its own. That file describes the main-process runtime closure, and anything webpack bundles into the renderer will not appear in it.",
+            "Each entry needs one of three answers: reached by a build-configuration mechanism, required transitively at runtime and tracked in the packaging closure, or genuinely stranded."
+          ],
+          "acceptance": [
+            "Every one of the 17 has a written classification with its evidence",
+            "No dependency is removed on this branch"
+          ],
+          "notes": "Scoped deliberately narrow. Removal needs its own branch and a packaged build to verify, because a wrongly removed dependency breaks packaging in a way the check set does not catch.",
+          "completedAt": "2026-08-27",
+          "actualHours": 1.6,
+          "completedNotes": "17 of 93 runtime dependencies have no first-party reference of any kind. Classified into build-configuration mechanisms (buffer, process, url, node-hid, cardano-launcher), Nix runtime closure membership (graceful-fs, safe-buffer, source-map-support, glob), a version mismatch (@ledgerhq/hw-transport-node-hid declared but @ledgerhq/hw-transport-node-hid-noevents imported and undeclared), and five with no reference at all. Corrected two inventory errors: omit-deep-lodash IS imported at logging.ts:1, and @iohk-jormungandr/wallet-js is reached by dynamic import. Nothing removed."
+        },
+        {
+          "id": "task-013",
+          "title": "Record the unused dependency question as a finding",
+          "description": "Write the task-012 result to .agent/findings/, which exists for real problems noticed during other work that would otherwise be lost when the thread ends.",
+          "status": "completed",
+          "priority": "low",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-012"
+          ],
+          "targetPath": ".agent/findings/",
+          "implementationNotes": [
+            "Follow the folder's convention: state what is true today, why it matters, and what a fix would have to decide.",
+            "This repository is public. An unused dependency is hygiene, not an exploit surface, so it belongs here rather than being raised privately."
+          ],
+          "acceptance": [
+            "A finding exists naming each stranded dependency and the evidence for it",
+            "The finding states what a removal branch would have to verify"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.9,
+          "completedNotes": "Recorded as .agent/findings/01. Created the .agent/findings/ directory with a readme setting out how it differs from research/ and SOPs/, and indexed it in .agent/readme.md."
+        },
+        {
+          "id": "task-014",
+          "title": "Update documents naming --loglevel",
+          "description": "The theme management skill documents the prettier invocation used by themes:update and themes:copy, including the flag prettier 3 removed.",
+          "status": "completed",
+          "priority": "low",
+          "estimatedHours": 0.25,
+          "dependencies": [
+            "task-002"
+          ],
+          "targetPath": ".agent/skills/theme-management/SKILL.md",
+          "implementationNotes": [
+            "Two references: line 92 describes the flag, line 404 gives a copy-paste command."
+          ],
+          "acceptance": [
+            "grep -rn -- '--loglevel' .agent package.json returns nothing"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 0.2,
+          "completedNotes": "Two --loglevel references in .agent/skills/theme-management/SKILL.md updated to --log-level. The only remaining occurrences are in this plan and its research notes, which describe the pre-bump state deliberately."
+        },
+        {
+          "id": "task-015",
+          "title": "Run the full check set and build a packaged installer",
+          "description": "A dependency change that claims to touch nothing must be shown to touch nothing. The check set does not build an installer, and webpack decides what actually ships, so a dependency that resolves and compiles can still fail to bundle.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 2.0,
+          "dependencies": [
+            "task-006",
+            "task-006-a",
+            "task-011",
+            "task-013",
+            "task-014",
+            "task-021",
+            "task-022",
+            "task-024"
+          ],
+          "targetPaths": [
+            "flake.nix",
+            "package.json",
+            "perSystem/checks.nix"
+          ],
+          "testCases": [
+            "nix flake check -L passes",
+            "yarn check:all passes",
+            "yarn build produces a production build",
+            "yarn package produces an installer, and the installed application starts and begins syncing",
+            "The branch diff contains no unexplained source file change"
+          ],
+          "acceptance": [
+            "Every x86_64-linux check is green",
+            "yarn check:all exits 0",
+            "A packaged installer starts and syncs",
+            "Each commit is reviewable on its own and reverts independently"
+          ],
+          "notes": "Darwin checks are built and reported but do not gate. The Windows workflow is reporting-only; a red Windows Jest run after a dependency bump is worth reading rather than dismissing.",
+          "completedAt": "2026-08-27",
+          "actualHours": 2.4,
+          "completedNotes": "nix build .#hydraJobs.required builds every gating check including treefmt at 0 changed. yarn check:all exits 0, now running nix fmt -- --ci as its formatter step. All four Linux installers build: mainnet, preprod, preview, selfnode. Jest 35 files 403 tests, Cucumber @unit 32 scenarios, storybook:build passes. CHANGELOG entries added under 11.2.0 Chores. NOT verified here: the installed application starting and syncing, which needs a display and hours of chain sync. Adam confirmed on 2026-08-27 that CI produces the installer used for manual release testing, so that step is deliberately left to release QA rather than claimed."
+        },
+        {
+          "id": "task-024",
+          "title": "Record the paper wallet retirement and the wasm readiness race",
+          "description": "Two findings for follow-up branches. Neither is acted on here, both are written down with enough detail that the next branch does not have to rediscover them.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 0.75,
+          "dependencies": [
+            "task-022"
+          ],
+          "targetPath": ".agent/findings/",
+          "implementationNotes": [
+            "Finding one, paper wallet creation retirement. The flow has no entry point: SidebarStore.ts:122 sets PAPER_WALLET_CREATE_CERTIFICATE to false. generateMnemonic(9) throws Invalid entropy because 96 bits is below BIP39's 128 bit floor, and the throw happens inside a Promise executor in api.ts so it rejects rather than reaching the surrounding try/catch, meaning the caller sees a raw Error and not an ApiError. Removal surface: roughly 1,900 lines across 24 renderer files, the generatePaperWalletChannel IPC contract on both sides, paper-wallet-request.types.ts, paperWalletPdfGenerator.ts, six PNG assets and a TTF font under source/common/assets/pdf, Storybook stories, i18n keys, and store, action, route and sidebar wiring. Restore must survive: getScrambledInput, unscramblePaperWalletMnemonic, mnemonicToSeedHex, StepMnemonicsContainer, and the vector added by task-022. Only scramblePaperWalletMnemonic and generateAdditionalMnemonics are creation-only.",
+            "Finding two, the rust-cardano-crypto readiness race. The module exports a RustModule object populated by a promise registered at import time, and crypto.ts calls unscrambleStrings synchronously against it with no readiness guarantee. It works in practice because the module loads during startup long before a user restores a wallet, but nothing enforces that ordering. Measured: `await loadRustModule()` returns before RustModule is populated.",
+            "Write each as its own finding. Do not fold them into the dependency finding from task-013."
+          ],
+          "acceptance": [
+            "Both findings recorded with the measurements that support them",
+            "The retirement finding names what must survive removal, not only what goes",
+            "Neither is acted on in this branch"
+          ],
+          "completedAt": "2026-08-27",
+          "actualHours": 1.0,
+          "completedNotes": "Recorded as findings 02, 03 and 04: the paper wallet creation retirement with its removal surface and what restore depends on; the rust-cardano-crypto readiness race and the blakejs Buffer narrowing, plus the latent getId defect that was fixed; and that a green required aggregate does not mean the branch ships, since the Linux installers are in nonrequired and are the only job running webpack over the renderer."
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 5,
+    "totalTasks": 24,
+    "estimatedTotalHours": 25.25,
+    "criticalPath": [
+      "task-001",
+      "task-003",
+      "task-016",
+      "task-007",
+      "task-008",
+      "task-017",
+      "task-018",
+      "task-019",
+      "task-020",
+      "task-021",
+      "task-010",
+      "task-011",
+      "task-015"
+    ],
+    "keyFiles": [
+      "package.json",
+      "yarn.lock",
+      "perSystem/formatter.nix",
+      "perSystem/checks.nix",
+      "source/renderer/app/utils/crypto.spec.ts",
+      "source/renderer/app/utils/entropy.ts",
+      "source/renderer/app/utils/__fixtures__/bip39-vectors.json"
+    ],
+    "riskAreas": [
+      "The formatter half rests on the tree already being prettier 3 shaped. Verified at 50e6b84b3, where prettier 3.6.2 reported the tree clean. If task-001 produces source file changes, the measurement is stale and the plan needs revisiting before anything is committed.",
+      "pbkdf2 and lodash are pinned twice. Updating only the dependencies line produces a diff that reviews as correct and installs the vulnerable version. yarn why is the only thing that catches it.",
+      "bip39 3.1.0 replaced its internal hashing implementation. If derivation output changed, every existing check would still pass. task-008 is the only thing standing between that and a shipped wallet that derives different seeds.",
+      "bignumber.js reaches 91 import sites covering every displayed and submitted amount. A rounding or formatting change would be user-visible and is not covered by any assertion on exact output.",
+      "task-006 fails the build the next time a nixpkgs bump moves prettier. That is the intent, but it makes a nixpkgs bump and a package.json edit one atomic change rather than two.",
+      "The check set does not build an installer. A dependency that compiles can still fail to bundle, which is why task-015 requires a packaged build rather than a green flake check.",
+      "Contributors holding in-flight branches containing prettier 2 output will see those hunks disappear on rebase. Intended, but worth saying before the branch merges.",
+      "Wallet recovery phrase entropy is currently a bip39 default, and this branch replaces that default. Phase 3 exists so the replacement is witnessed rather than absorbed.",
+      "A crypto scenario has been skipped since 2021 hiding a throwing generateMnemonic(9). Green builds have not meant what they appeared to mean on this path.",
+      "The paper wallet restore vector must be captured while the scrambling code still exists. Once the retirement branch removes it, restore becomes untestable without the fixture."
+    ],
+    "testingNotes": "Two different kinds of verification. The formatter half is verified by absence: the decisive check is that yarn prettier:format produces an empty diff, since running that command is what currently breaks the build. The dependency half is verified by assertion: known-answer vectors for seed derivation, yarn why for the resolutions entries, measured advisory counts, and a packaged installer that starts.",
+    "rollbackPlan": "Eight commits, each reverting independently, and the branch reverts cleanly. Reverting the prettier bump alone restores the current formatter divergence, which is a known state rather than a broken one. Reverting the tier 2 commit alone restores the advisories. Nothing user visible changes either way.",
+    "securityNotes": [
+      "The lodash and pbkdf2 advisories are the reason the tier 2 commit exists. Neither is reachable as currently called, per the earlier reachability analysis, so this is hygiene rather than an incident response, and it should not be described as urgent.",
+      "The elliptic pin is deliberately out of scope. It is the only item in the wider audit with a plausible path to user funds, and it stays unquantified until the questions about the Trezor path are answered.",
+      "Fixtures must use a published test mnemonic. Never commit a phrase that has ever held funds.",
+      "Known-answer values come from the published BIP39 vectors, never from current output.",
+      "secureRandomBytes fails closed and must never gain a fallback path.",
+      "No in-repository check defends itself against a commit that also edits the check. These controls make a weakening conspicuous, not impossible. A CODEOWNERS file on the crypto paths, backed by branch protection, is what would require a second approver, and it needs repository administrator rights."
+    ]
+  }
+}

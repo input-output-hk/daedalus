@@ -1,6 +1,6 @@
 import { When, Then } from 'cucumber';
 import { expect } from 'chai';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import { noWalletsErrorMessage, getFixedAmountByName } from './helpers';
 

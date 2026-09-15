@@ -1,0 +1,12 @@
+{
+  "source": {
+    "note": "Generated on this branch with scramblePaperWalletMnemonic while that function still existed, so that restore stays provable after paper wallet creation is retired. This is not taken from a real certificate and has never held funds.",
+    "generated": "2026-08-27",
+    "walletPhrase": "The published BIP39 English vector at index 0, universally recognised as a test phrase.",
+    "certificatePasswordWords": "Nine fixed words chosen arbitrarily. They are not a BIP39 phrase and do not need to be; getScrambledInput only runs PBKDF2 over the string.",
+    "scrambling": "rust-cardano-crypto 0.2.0, which this branch does not bump, so the recorded value pins the implementation that produced the historical certificates."
+  },
+  "certificate": "soccer cruel cloth apple witness mimic hero resemble entry chase fruit hurry close riot educate idea mom moral legal winner thank year wave sausage worth useful legal",
+  "restoresTo": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+  "passphrase": "8c58fb2e030c9664c3cb95097e62755a462fd5a2ed7196fc656f0c67bd446200"
+}
