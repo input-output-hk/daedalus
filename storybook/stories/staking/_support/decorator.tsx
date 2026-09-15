@@ -1,6 +1,7 @@
 import React from 'react';
 import { withKnobs } from '@storybook/addon-knobs';
 import StoryLayout from '../../_support/StoryLayout';
+import { currentThemeOf } from '../../_support/globals';
 import StoryProvider from '../../_support/StoryProvider';
 import StoryDecorator from '../../_support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../../../source/renderer/app/config/sidebarConfig';
@@ -16,7 +17,11 @@ export const stakingDecorator = (story, context) => {
   return (
     <StoryDecorator>
       <StoryProvider>
-        <StoryLayout activeSidebarCategory={activeSidebarCategory} {...context}>
+        <StoryLayout
+          activeSidebarCategory={activeSidebarCategory}
+          {...context}
+          currentTheme={currentThemeOf(context)}
+        >
           {context.parameters.id === 'wizard' ? (
             storyWithKnobs
           ) : (

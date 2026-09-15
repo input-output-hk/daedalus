@@ -1,4 +1,5 @@
 import { themesIds, locales, themeNames, localeNames, osNames } from './config';
+import type { Locale } from '../../../source/common/types/locales.types';
 
 /*
  * Reading the toolbar selections from a story.
@@ -29,7 +30,7 @@ type StoryContext = {
 export const currentThemeOf = (context: StoryContext): string =>
   themesIds[context?.globals?.themeName ?? themeNames[0]];
 
-export const localeOf = (context: StoryContext): string =>
+export const localeOf = (context: StoryContext): Locale =>
   locales[context?.globals?.localeName ?? localeNames[0]];
 
 export const osNameOf = (context: StoryContext): string =>

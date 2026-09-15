@@ -3,6 +3,7 @@ import { action } from '@storybook/addon-actions';
 import { number, boolean, select } from '@storybook/addon-knobs';
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
+import { localeOf } from '../../_support/globals';
 import { generateAddress } from '../../_support/utils';
 // Screens
 import WalletReceiveSequential from '../../../../source/renderer/app/components/wallet/receive/WalletReceiveSequential';
@@ -22,7 +23,8 @@ export default {
 };
 
 export const ReceiveSequential = {
-  render: ({ locale }: { locale: string }) => {
+  render: (_args, context) => {
+    const locale = localeOf(context);
     const showDialog = boolean('showDialog', false);
     return (
       <VerticalFlexContainer>
@@ -71,7 +73,8 @@ export const ReceiveSequential = {
 
 export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   ReceiveSequentialWithAddressVerification = {
-    render: ({ locale }: { locale: string }) => {
+    render: (_args, context) => {
+      const locale = localeOf(context);
       return (
         <VerticalFlexContainer>
           <WalletReceiveSequential

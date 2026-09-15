@@ -157,7 +157,7 @@ export default {
   ],
 };
 
-export const _WalletTokensList = withState(
+const _WalletTokensListStory = withState(
   {
     favorites: {},
   },
@@ -189,4 +189,7 @@ export const _WalletTokensList = withState(
   )
 );
 
-_WalletTokensList.storyName = 'WalletTokensList';
+export const _WalletTokensList = {
+  render: _WalletTokensListStory,
+  name: 'WalletTokensList',
+};

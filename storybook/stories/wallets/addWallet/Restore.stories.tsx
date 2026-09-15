@@ -15,10 +15,7 @@ import WalletTypeDialog from '../../../../source/renderer/app/components/wallet/
 import MnemonicsDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/MnemonicsDialog';
 import ConfigurationDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog';
 import SuccessDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/SuccessDialog';
-
-type Props = {
-  locale: string;
-};
+import { localeOf } from '../../_support/globals';
 
 export default {
   title: 'Wallets / Add Wallet',
@@ -112,8 +109,8 @@ export const RestoreStep2 = {
 };
 
 export const RestoreStep3 = {
-  render: (props: Props) => {
-    const { locale } = props;
+  render: (_args, context) => {
+    const locale = localeOf(context);
     return (
       <ConfigurationDialog
         isSubmitting={false}

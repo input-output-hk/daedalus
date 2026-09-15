@@ -141,7 +141,7 @@ export default {
   decorators: [WalletsWrapper, withKnobs],
 };
 
-export const _WalletTokens = withState(
+const _WalletTokensStory = withState(
   {
     favorites: {},
   },
@@ -168,4 +168,7 @@ export const _WalletTokens = withState(
   )
 );
 
-_WalletTokens.storyName = 'WalletTokens';
+export const _WalletTokens = {
+  render: _WalletTokensStory,
+  name: 'WalletTokens',
+};

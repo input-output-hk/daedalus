@@ -11,6 +11,7 @@ import {
 } from '../../_support/utils';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import WalletsWrapper from '../_utils/WalletsWrapper';
+import { localeOf } from '../../_support/globals';
 import WalletsTransactionsWrapper from '../_utils/WalletsTransactionsWrapper';
 import {
   DATE_ENGLISH_OPTIONS, // LANGUAGE_OPTIONS,
@@ -154,6 +155,7 @@ export default {
         // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
         <WalletsTransactionsWrapper
           {...props}
+          locale={localeOf(props)}
           transactionsOption={transactionsOption}
           getStory={getStory}
         />

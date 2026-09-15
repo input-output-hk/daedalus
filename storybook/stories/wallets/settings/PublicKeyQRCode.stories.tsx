@@ -10,9 +10,8 @@ export default {
 };
 
 export const PublicKeyQrCode = {
-  render: (props) => (
+  render: () => (
     <PublicKeyQRCodeDialog
-      {...props}
       walletName="Wallet Public Key"
       walletPublicKey="Wallet Public Key"
       onClose={() => null}

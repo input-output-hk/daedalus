@@ -10,6 +10,7 @@ import {
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
+import { localeOf } from '../../_support/globals';
 import currenciesList from '../../../../source/renderer/app/config/currenciesList.json';
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -155,7 +156,8 @@ export default {
 };
 
 export const _WalletSummary = {
-  render: ({ locale }: { locale: string }) => {
+  render: (_args, context) => {
+    const locale = localeOf(context);
     const currencyState = select(
       'Currency state',
       {

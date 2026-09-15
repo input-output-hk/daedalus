@@ -17,6 +17,7 @@ import { RECOVERY_PHRASE_VERIFICATION_TIMES as times } from '../../../../source/
 import StoryDecorator from '../../_support/StoryDecorator';
 // Screens
 import WalletRecoveryPhraseVerificationWidget from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget';
+import { localeOf } from '../../_support/globals';
 
 export default {
   title: 'Wallets / Settings',
@@ -30,7 +31,8 @@ export default {
 
 export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale }: { locale: string; }... Remove this comment to see the full error message
   RecoveryPraseVerificationWidget = {
-    render: (_, { locale }: { locale: string }) => {
+    render: (_args, context) => {
+      const locale = localeOf(context);
       const groupId = 'Recovery Phrase Verification';
       const wordCount = options(
         'Word count',

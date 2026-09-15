@@ -23,7 +23,7 @@ import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/
 import { Separator } from '../../../source/renderer/app/components/widgets/separator/Separator';
 import { CollapsibleSection } from '../../../source/renderer/app/components/widgets/collapsible-section/CollapsibleSection';
 import { VerticalSeparator } from '../../../source/renderer/app/components/wallet/widgets/VerticalSeparator';
-import { localeOf } from '../_support/globals';
+import { currentThemeOf, localeOf } from '../_support/globals';
 
 const { intl: enIntl } = new IntlProvider({
   locale: 'en-US',
@@ -106,7 +106,11 @@ export default {
       return (
         <StoryDecorator propsForChildren={state}>
           <StoryProvider>
-            <StoryLayout activeSidebarCategory={null} {...context}>
+            <StoryLayout
+              activeSidebarCategory={null}
+              {...context}
+              currentTheme={currentThemeOf(context)}
+            >
               {story()}
             </StoryLayout>
           </StoryProvider>

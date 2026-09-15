@@ -3,12 +3,7 @@ import React from 'react';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 // Screens
 import WalletSettingsScreen from './_support/WalletSettingsScreen';
-import './WalletDelete.stories';
-import './WalletUnpair.stories';
-import './WalletRecoveryPhraseVerification.stories';
-import './WalletPublicKey.stories';
-import './PublicKeyQRCode.stories';
-import './UndelegateWallet.stories';
+import { localeOf } from '../../_support/globals';
 
 export default {
   title: 'Wallets / Settings',
@@ -16,5 +11,7 @@ export default {
 };
 
 export const WalletSettings = {
-  render: (_, props) => <WalletSettingsScreen {...props} />,
+  render: (_args, context) => (
+    <WalletSettingsScreen locale={localeOf(context)} />
+  ),
 };

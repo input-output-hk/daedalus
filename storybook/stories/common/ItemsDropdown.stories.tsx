@@ -13,6 +13,7 @@ import { withState } from '../_support/WithLocalState';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import StoryLayout from '../_support/StoryLayout';
+import { currentThemeOf } from '../_support/globals';
 import ItemsDropdown from '../../../source/renderer/app/components/widgets/forms/ItemsDropdown';
 import WalletsDropdown from '../../../source/renderer/app/components/widgets/forms/WalletsDropdown';
 import WalletsDropdownLabel from '../../../source/renderer/app/components/widgets/forms/WalletsDropdownLabel';
@@ -99,7 +100,11 @@ export default {
       return (
         <StoryDecorator propsForChildren={state}>
           <StoryProvider>
-            <StoryLayout activeSidebarCategory={null} {...context}>
+            <StoryLayout
+              activeSidebarCategory={null}
+              {...context}
+              currentTheme={currentThemeOf(context)}
+            >
               <div
                 style={{
                   margin: 50,
