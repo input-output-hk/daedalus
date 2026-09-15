@@ -1,5 +1,18 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const webpack = require('webpack');
+// Take webpack from the builder rather than from the top of node_modules. Yarn
+// resolves @storybook/builder-webpack5's own webpack range separately from this
+// package's pinned one and nests the result, so the two are different copies of
+// webpack with different class objects in them. A plugin built from one and
+// registered on a compiler from the other constructs dependencies the compiler
+// does not recognise: ProvidePlugin writes `loc` on a Dependency that is not the
+// Dependency class the parser produced, the write throws inside the parse, and
+// every module the plugin touches reports "Module parse failed" with no file
+// named.
+const webpack = require(
+  require.resolve('webpack', {
+    paths: [require.resolve('@storybook/builder-webpack5')],
+  })
+);
 
 module.exports = {
   framework: {
