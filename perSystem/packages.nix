@@ -13,29 +13,28 @@
         if system != targetSystem
         then "-${targetSystem}"
         else "";
-    in
-      (lib.listToAttrs (lib.concatMap (cluster:
-        [
-          {
-            name = "daedalus-${cluster}${suffix}";
-            value = internal.package.${cluster};
-          }
-          {
-            name = "installer-${cluster}${suffix}";
-            value = internal.unsignedInstaller.${cluster};
-          }
-        ]
-        ++ [
-          {
-            name = "makeSignedInstaller-${cluster}${suffix}";
-            value = internal.makeSignedInstaller.${cluster};
-          }
-          {
-            name = "daedalus-bridge-${cluster}${suffix}";
-            value = internal.common.daedalus-bridge.${cluster};
-          }
-        ])
-        inputs.self.internal.installerClusters));
+    in (lib.listToAttrs (lib.concatMap (cluster:
+      [
+        {
+          name = "daedalus-${cluster}${suffix}";
+          value = internal.package.${cluster};
+        }
+        {
+          name = "installer-${cluster}${suffix}";
+          value = internal.unsignedInstaller.${cluster};
+        }
+      ]
+      ++ [
+        {
+          name = "makeSignedInstaller-${cluster}${suffix}";
+          value = internal.makeSignedInstaller.${cluster};
+        }
+        {
+          name = "daedalus-bridge-${cluster}${suffix}";
+          value = internal.common.daedalus-bridge.${cluster};
+        }
+      ])
+    inputs.self.internal.installerClusters));
   in {
     packages =
       if system == "x86_64-linux"

@@ -11,50 +11,48 @@
 #     clusters = [ "mainnet" ];
 #     packages.mainnet = inputs.daedalus.packages.${system}."nixos-package-mainnet";
 #   };
-
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.services.daedalus;
 
-  mkClusterModule = cluster:
-    let
-      varDir = "/var/lib/daedalus/${cluster}";
-      helperDest = "${varDir}/chrome-sandbox";
-      manifestDest = "${varDir}/sandbox-identity.json";
-      pkg = cfg.packages.${cluster};
-    in
-    {
-      system.activationScripts."daedalus-sandbox-${cluster}" = {
-        text = ''
-          mkdir -p ${varDir}
-          chmod 0755 ${varDir}
-          chown root:root ${varDir}
+  mkClusterModule = cluster: let
+    varDir = "/var/lib/daedalus/${cluster}";
+    helperDest = "${varDir}/chrome-sandbox";
+    manifestDest = "${varDir}/sandbox-identity.json";
+    pkg = cfg.packages.${cluster};
+  in {
+    system.activationScripts."daedalus-sandbox-${cluster}" = {
+      text = ''
+        mkdir -p ${varDir}
+        chmod 0755 ${varDir}
+        chown root:root ${varDir}
 
-          # Copy chrome-sandbox from package share/ (0555 in store) to mutable
-          # location. Write manifest LAST — no window where manifest exists but
-          # helper is still 0555 / not yet present.
-          cp -f ${pkg}/share/chrome-sandbox ${helperDest}.tmp
-          chown root:root ${helperDest}.tmp
-          chmod 0755 ${helperDest}.tmp
-          mv -f ${helperDest}.tmp ${helperDest}
+        # Copy chrome-sandbox from package share/ (0555 in store) to mutable
+        # location. Write manifest LAST — no window where manifest exists but
+        # helper is still 0555 / not yet present.
+        cp -f ${pkg}/share/chrome-sandbox ${helperDest}.tmp
+        chown root:root ${helperDest}.tmp
+        chmod 0755 ${helperDest}.tmp
+        mv -f ${helperDest}.tmp ${helperDest}
 
-          install -o root -g root -m 0644 ${pkg}/share/sandbox-identity.json ${manifestDest}
-        '';
-        deps = [];
-      };
-
-      environment.systemPackages = [ pkg ];
+        install -o root -g root -m 0644 ${pkg}/share/sandbox-identity.json ${manifestDest}
+      '';
+      deps = [];
     };
 
-in
-{
+    environment.systemPackages = [pkg];
+  };
+in {
   options.services.daedalus = {
     enable = lib.mkEnableOption "Daedalus wallet";
 
     clusters = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "mainnet" ];
+      default = ["mainnet"];
       description = "Which Daedalus clusters to install.";
     };
 

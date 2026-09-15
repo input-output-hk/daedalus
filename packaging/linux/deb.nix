@@ -12,7 +12,7 @@
 }: let
   packageVersion = "${version}+build${toString buildCounter}.git${buildRevShort}-1";
   installRoot = "/opt/daedalus/${cluster}";
-  commonTemplate = ./deb-common.sh;
+  commonTemplate = ./linux-deb-common.sh;
   scriptTemplates = {
     preinst = ./deb-preinst.sh;
     postinst = ./deb-postinst.sh;

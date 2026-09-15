@@ -12,36 +12,36 @@
       else "";
   in
     (lib.listToAttrs (lib.concatMap (cluster:
-        [
-          {
-            # Developer-only Nix package; Linux release artifacts are below.
-            name = "daedalus-${cluster}${suffix}";
-            value = internal.package.${cluster};
-          }
-          {
-            name = "installer-${cluster}${suffix}";
-            value = internal.unsignedInstaller.${cluster};
-          }
-          {
-            name = "makeSignedInstaller-${cluster}${suffix}";
-            value = internal.makeSignedInstaller.${cluster};
-          }
-        ]
-        ++ lib.optionals (targetSystem == "x86_64-linux") [
-          {
-            name = "deb-installer-${cluster}${suffix}";
-            value = internal.debInstaller.${cluster};
-          }
-          {
-            name = "rpm-installer-${cluster}${suffix}";
-            value = internal.rpmInstaller.${cluster};
-          }
-          {
-            name = "arch-installer-${cluster}${suffix}";
-            value = internal.archInstaller.${cluster};
-          }
-        ])
-      inputs.self.internal.installerClusters))
+      [
+        {
+          # Developer-only Nix package; Linux release artifacts are below.
+          name = "daedalus-${cluster}${suffix}";
+          value = internal.package.${cluster};
+        }
+        {
+          name = "installer-${cluster}${suffix}";
+          value = internal.unsignedInstaller.${cluster};
+        }
+        {
+          name = "makeSignedInstaller-${cluster}${suffix}";
+          value = internal.makeSignedInstaller.${cluster};
+        }
+      ]
+      ++ lib.optionals (targetSystem == "x86_64-linux") [
+        {
+          name = "deb-installer-${cluster}${suffix}";
+          value = internal.debInstaller.${cluster};
+        }
+        {
+          name = "rpm-installer-${cluster}${suffix}";
+          value = internal.rpmInstaller.${cluster};
+        }
+        {
+          name = "arch-installer-${cluster}${suffix}";
+          value = internal.archInstaller.${cluster};
+        }
+      ])
+    inputs.self.internal.installerClusters))
     // {
       default = internal.package.mainnet;
     };

@@ -1,1 +1,1 @@
-{ flake.nixosModules.daedalus = import ../nixosModules/daedalus.nix; }
+{flake.nixosModules.daedalus = import ../nixosModules/daedalus.nix;}

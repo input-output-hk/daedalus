@@ -65,11 +65,14 @@
           installer = lib.genAttrs (supportedSystems ++ ["x86_64-windows"]) (
             targetSystem: self.internal.${targetSystem}.unsignedInstaller
           );
-          deb-installer.x86_64-linux = lib.genAttrs self.internal.installerClusters
+          deb-installer.x86_64-linux =
+            lib.genAttrs self.internal.installerClusters
             (cluster: self.packages.x86_64-linux."deb-installer-${cluster}");
-          rpm-installer.x86_64-linux = lib.genAttrs self.internal.installerClusters
+          rpm-installer.x86_64-linux =
+            lib.genAttrs self.internal.installerClusters
             (cluster: self.packages.x86_64-linux."rpm-installer-${cluster}");
-          arch-installer.x86_64-linux = lib.genAttrs self.internal.installerClusters
+          arch-installer.x86_64-linux =
+            lib.genAttrs self.internal.installerClusters
             (cluster: self.packages.x86_64-linux."arch-installer-${cluster}");
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:

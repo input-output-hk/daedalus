@@ -45,14 +45,17 @@
           '';
         });
 
-      debInstaller = genClusters (cluster:
-        import ../../packaging/linux/deb.nix (commonPackagingArgs cluster));
+      debInstaller =
+        genClusters (cluster:
+          import ../../packaging/linux/deb.nix (commonPackagingArgs cluster));
 
-      rpmInstaller = genClusters (cluster:
-        import ../../packaging/linux/rpm.nix (commonPackagingArgs cluster));
+      rpmInstaller =
+        genClusters (cluster:
+          import ../../packaging/linux/rpm.nix (commonPackagingArgs cluster));
 
-      archInstaller = genClusters (cluster:
-        import ../../packaging/linux/arch.nix (commonPackagingArgs cluster));
+      archInstaller =
+        genClusters (cluster:
+          import ../../packaging/linux/arch.nix (commonPackagingArgs cluster));
 
       nixosPackage = genClusters (cluster: let
         nixosElectronBin = "${pkgs.electron}/libexec/electron/electron";
@@ -164,8 +167,7 @@
           '';
         });
     in {
-      packages =
-        lib.listToAttrs (lib.concatMap (cluster: [
+      packages = lib.listToAttrs (lib.concatMap (cluster: [
           {
             name = "deb-installer-${cluster}";
             value = debInstaller.${cluster};
