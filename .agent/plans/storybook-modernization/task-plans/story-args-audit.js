@@ -27,11 +27,13 @@
  * form. Helper functions in the same file are not story renders and are not
  * reported.
  *
- * What it cannot see: a story whose render comes back from a call, such as
- * `export const Thing = makeStory({ ... })`. Following that would mean
- * analysing what the callee returns. Those are counted and listed separately
- * rather than passed over, because a scan that silently ignores a shape is
- * worse than one that says which shapes it skipped.
+ * A story is often a binding rather than a literal function:
+ * `export const Thing = SomeStory`, where `SomeStory` is declared in this file
+ * or imported from a relative path. Both are followed. What is left is a render
+ * that comes back from a call, `export const Thing = makeStory({ ... })`, which
+ * would need the callee analysed; those are listed as unresolved rather than
+ * passed over, because a scan that silently ignores a shape is worse than one
+ * that says which shapes it skipped.
  */
 const fs = require('fs');
 const path = require('path');
@@ -61,6 +63,40 @@ function findStoryFiles(dir, out) {
   return out;
 }
 
+const parseCache = new Map();
+function parse(file) {
+  if (!parseCache.has(file)) {
+    parseCache.set(
+      file,
+      ts.createSourceFile(
+        file,
+        fs.readFileSync(file, 'utf8'),
+        ts.ScriptTarget.Latest,
+        true,
+        ts.ScriptKind.TSX
+      )
+    );
+  }
+  return parseCache.get(file);
+}
+
+// Resolve a relative import specifier the way tsc would for this repository's
+// extensions. Only relative paths: a story imported from a package is not ours.
+function resolveRelative(fromFile, specifier) {
+  if (!specifier.startsWith('.')) return null;
+  const base = path.resolve(path.dirname(fromFile), specifier);
+  for (const candidate of [
+    base,
+    `${base}.tsx`,
+    `${base}.ts`,
+    path.join(base, 'index.tsx'),
+    path.join(base, 'index.ts'),
+  ]) {
+    if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) return candidate;
+  }
+  return null;
+}
+
 const isFunction = (n) =>
   n && (ts.isArrowFunction(n) || ts.isFunctionExpression(n));
 
@@ -80,18 +116,62 @@ function readsFirstArgument(fn) {
 }
 
 function auditFile(file) {
-  const source = fs.readFileSync(file, 'utf8');
-  const sf = ts.createSourceFile(
-    file,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TSX
-  );
+  const sf = parse(file);
 
   let metaDeclaresArgs = false;
   const renders = [];
   const notAnalysed = [];
+
+  // Find the function a name is bound to, following one relative import if the
+  // name is not declared here. One hop is enough for this corpus and keeps the
+  // scan a scan rather than a type checker.
+  const functionNamed = (name, source = sf, followImports = true) => {
+    let found = null;
+    const walk = (n) => {
+      if (found) return;
+      if (
+        ts.isVariableDeclaration(n) &&
+        ts.isIdentifier(n.name) &&
+        n.name.text === name &&
+        isFunction(n.initializer)
+      ) {
+        found = n.initializer;
+      } else if (
+        ts.isFunctionDeclaration(n) &&
+        n.name &&
+        n.name.text === name &&
+        n.body
+      ) {
+        found = n;
+      }
+      ts.forEachChild(n, walk);
+    };
+    walk(source);
+    if (found || !followImports) return found;
+
+    for (const st of source.statements) {
+      if (
+        !ts.isImportDeclaration(st) ||
+        !st.importClause ||
+        !ts.isStringLiteral(st.moduleSpecifier)
+      ) {
+        continue;
+      }
+      const bindings = st.importClause.namedBindings;
+      const named =
+        bindings && ts.isNamedImports(bindings)
+          ? bindings.elements.find((e) => e.name.text === name)
+          : null;
+      const isDefault = st.importClause.name && st.importClause.name.text === name;
+      if (!named && !isDefault) continue;
+      const target = resolveRelative(source.fileName, st.moduleSpecifier.text);
+      if (!target) return null;
+      const exported = named ? (named.propertyName || named.name).text : 'default';
+      if (exported === 'default') return null;
+      return functionNamed(exported, parse(target), false);
+    }
+    return null;
+  };
 
   const objectNamed = (name) => {
     let found = null;
@@ -144,11 +224,23 @@ function auditFile(file) {
           }
         } else if (isFunction(d.initializer)) {
           renders.push({ story: d.name.text, fn: d.initializer, ownArgs: false });
+        } else if (ts.isIdentifier(d.initializer)) {
+          const target = functionNamed(d.initializer.text);
+          if (target) {
+            renders.push({ story: d.name.text, fn: target, ownArgs: false });
+          } else {
+            notAnalysed.push({
+              file,
+              story: d.name.text,
+              source: `${d.initializer.text}, declared elsewhere`,
+              line: sf.getLineAndCharacterOfPosition(d.getStart()).line + 1,
+            });
+          }
         } else if (ts.isCallExpression(d.initializer)) {
           notAnalysed.push({
             file,
             story: d.name.text,
-            callee: d.initializer.expression.getText(),
+            source: `${d.initializer.expression.getText()}(...)`,
             line: sf.getLineAndCharacterOfPosition(d.getStart()).line + 1,
           });
         }
@@ -188,9 +280,9 @@ for (const r of unfilled) {
 }
 if (skipped.length) {
   console.log('');
-  console.log('Not analysed, because the render comes back from a call:');
+  console.log('Not analysed, because the render is not declared here:');
   for (const r of skipped) {
-    console.log(`  ${r.file}:${r.line}  ${r.story} = ${r.callee}(...)`);
+    console.log(`  ${r.file}:${r.line}  ${r.story} = ${r.source}`);
   }
 }
 console.log('');
@@ -198,6 +290,6 @@ console.log(`story files scanned:                 ${files.length}`);
 console.log(`renders reading the first argument:  ${rows.length}`);
 console.log(`  with args declared:                ${rows.length - unfilled.length}`);
 console.log(`  with no args declared:             ${unfilled.length}`);
-console.log(`renders this scan cannot follow:     ${skipped.length}`);
+console.log(`renders this scan cannot resolve:    ${skipped.length}`);
 
 process.exit(unfilled.length ? 1 : 0);
