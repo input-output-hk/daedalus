@@ -966,13 +966,13 @@ describe('DRepDetailPage', () => {
     expect(app.openExternalLink).not.toHaveBeenCalled();
   });
 
-  it('calls toggleFavorite on Select for delegation when the DRep is not already favorited', async () => {
-    const { governance } = await renderPage();
+  it('does not call toggleFavorite on Select for delegation when the DRep is not already favorited', async () => {
+    const { governance, pushSpy } = await renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
-    expect(governance.toggleFavorite).toHaveBeenCalledTimes(1);
-    expect(governance.toggleFavorite).toHaveBeenCalledWith(DREP_ID);
+    expect(governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(pushSpy).toHaveBeenCalledWith(ROUTES.GOVERNANCE.DELEGATE);
   });
 
   it('does not call toggleFavorite on Select for delegation when already favorited', async () => {

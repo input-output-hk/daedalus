@@ -48,7 +48,7 @@ GOVERNANCE: {
 - Sets up a MobX reaction on `isNodeInSync` → calls `refresh()` once on `false→true`
 - Disposes the sync reaction in `componentWillUnmount`
 - Routes "View details" to `history.push(ROUTES.GOVERNANCE.DREPS/${drepId})`
-- Routes "Select" to `handleSelectForDelegation` (auto-favorites, sets nav state, navigates)
+- Routes "Select" to `handleSelectForDelegation` (sets nav state and navigates without favoriting)
 
 ### `DRepDetailPage`
 - Calls `governanceStore.fetchDRep(drepId)` on mount; stores result in local component state
@@ -62,3 +62,4 @@ GOVERNANCE: {
 - Does not clear `delegationNavState` — the store's lifecycle reaction handles cleanup
 - Calls `governance.setDelegationNavState(...)` when "Browse DReps" is clicked
 - Provides `onEnsureFavorited` to `VotingPowerDelegation` for auto-favoring existing delegations
+- Adds a selected DRep to favorites only when `delegateVotes` returns `success: true`; skips sentinels and already-favorited DReps
