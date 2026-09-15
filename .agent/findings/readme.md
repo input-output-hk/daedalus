@@ -17,3 +17,4 @@ looking for.
 | Finding | Scope | Status |
 |---------|-------|--------|
 | [retired-drep-visibility.md](./retired-drep-visibility.md) | Governance, with an upstream fix: a retired DRep leaves the wallet loading forever | Open, not scheduled |
+| [undeclared-transitive-dependencies.md](./undeclared-transitive-dependencies.md) | Dependency management, repository-wide: source and build config import packages nothing declares | Open, not scheduled |
