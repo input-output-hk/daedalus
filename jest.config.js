@@ -64,6 +64,11 @@ module.exports = {
     environment: {
       network: {},
     },
+    // The preload puts this on the global in the application, per network. The
+    // mainnet value is used here so a spec that maps a stored URL back to its
+    // preset has a preset to map to; without it `ASSET_METADATA_SERVERS_LIST`
+    // is read at module load with an undefined URL and nothing can match.
+    koiosUrl: 'https://api.koios.rest/api/v1',
   },
 
   // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.

@@ -87,6 +87,16 @@
         "id": "api.errors.invalidSmashServer"
       },
       {
+        "defaultMessage": "!!!This URL did not answer as a metadata source",
+        "description": "\"This URL did not answer as a metadata source\" error message",
+        "id": "api.errors.invalidAssetMetadataSource"
+      },
+      {
+        "defaultMessage": "!!!This metadata source is too far behind your node to be used",
+        "description": "\"This metadata source is too far behind your node to be used\" error message",
+        "id": "api.errors.staleAssetMetadataSource"
+      },
+      {
         "defaultMessage": "!!!Insufficient funds to support tokens. You need at least an additional {adaAmount} ADA in your wallet to process this transaction.",
         "description": "\"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet",
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens"

@@ -6,14 +6,21 @@ import Asset from '../domains/Asset';
 import { ROUTES } from '../routes-config';
 import { ellipsis } from '../utils/strings';
 import { assetFingerprint } from '../utils/assetFingerprint';
-import { getAssetTokenFromToken } from '../utils/assets';
+import {
+  getAssetMetadataSourceIdFromUrl,
+  getAssetTokenFromToken,
+} from '../utils/assets';
 import { resolveAssetDecimals } from '../utils/assetDecimals';
+import { ASSET_METADATA_SERVERS_LIST } from '../config/assetsConfig';
 import {
   onAssetMetadataUpdate,
   requestAssetMetadata,
 } from '../ipc/assetMetadataChannel';
 import type { AssetMetadata, AssetToken } from '../api/assets/types';
 import type { AssetMetadataEntry } from '../../../common/types/asset-metadata.types';
+import type { AssetMetadataSourceType } from '../types/assetTypes';
+import LocalizableError from '../i18n/LocalizableError';
+import ApiError from '../domains/ApiError';
 import { EventCategories } from '../analytics';
 
 const subjectOf = (policyId: string, assetName: string): string =>
@@ -68,6 +75,22 @@ export default class AssetsStore extends Store {
   @observable
   removingAssetUniqueId: string | null | undefined = null;
 
+  // Where on-chain metadata pointers are read from. Null until the stored value
+  // has been read, and null afterwards on a network with no preset instance.
+  @observable
+  assetMetadataSourceUrl: string | null | undefined = null;
+
+  // `ApiError` is not a `LocalizableError`; it carries the same three fields
+  // `intl.formatMessage` reads and is not a subclass. `StakingStore` types the
+  // equivalent field as `LocalizableError` and stores an `ApiError` in it,
+  // which type-checks only because the value comes out of an untyped `catch`.
+  @observable
+  assetMetadataSourceUrlError: LocalizableError | ApiError | null | undefined =
+    null;
+
+  @observable
+  assetMetadataSourceLoading = false;
+
   // One row per subject the cache has resolved, filled by the request channel
   // and kept filled by the update channel.
   @observable
@@ -98,6 +121,12 @@ export default class AssetsStore extends Store {
     assetsActions.onOpenAssetSend.listen(this._onOpenAssetSend);
     assetsActions.onCopyAssetParam.listen(this._onCopyAssetParam);
     assetsActions.onToggleFavorite.listen(this._onToggleFavorite);
+    assetsActions.selectAssetMetadataSourceUrl.listen(
+      this._onAssetMetadataSourceUrlSelected
+    );
+    assetsActions.resetAssetMetadataSourceError.listen(
+      this._onAssetMetadataSourceErrorReset
+    );
     walletsActions.setActiveAsset.listen(this._setActiveAsset);
     walletsActions.unsetActiveAsset.listen(this._unsetActiveAsset);
 
@@ -106,6 +135,7 @@ export default class AssetsStore extends Store {
 
     this._setUpFavorites();
     this._setUpLocalDecimals();
+    this._setUpMetadataSource();
   }
 
   // ==================== PUBLIC ==================
@@ -156,6 +186,16 @@ export default class AssetsStore extends Store {
     return this.favoritesRequest.result || {};
   }
 
+  /**
+   * Which preset the selected URL belongs to, or `custom`. The settings page
+   * renders the selection from this rather than from the URL, so a user who
+   * types the default sees the default selected.
+   */
+  @computed
+  get assetMetadataSourceId(): AssetMetadataSourceType {
+    return getAssetMetadataSourceIdFromUrl(this.assetMetadataSourceUrl || '');
+  }
+
   // =================== PRIVATE ==================
   _setUpFavorites = async () => {
     this.favoritesRequest.execute();
@@ -174,6 +214,77 @@ export default class AssetsStore extends Store {
         this._localDecimals.set(subject, value);
       });
     });
+  };
+
+  /**
+   * The stored selection, falling back to the preset for this network. There is
+   * no server-side counterpart to reconcile against, which is the one way this
+   * is simpler than `StakingStore._getSmashSettingsRequest`: the stored value is
+   * the only one, so nothing is written back on start.
+   */
+  _setUpMetadataSource = async () => {
+    const stored = await this.api.localStorage.getAssetMetadataSource();
+    const sourceUrl = stored || ASSET_METADATA_SERVERS_LIST.koios?.url || null;
+    runInAction('AssetsStore::setUpMetadataSource', () => {
+      this.assetMetadataSourceUrl = sourceUrl;
+    });
+  };
+
+  /**
+   * Probe, then store, then write. The probe is what makes a URL the user typed
+   * safe to keep: a pattern match alone would let a typo become a channel that
+   * silently answers nothing, which no surface distinguishes from an asset the
+   * index has never heard of.
+   */
+  _onAssetMetadataSourceUrlSelected = async ({
+    sourceUrl,
+  }: {
+    sourceUrl: string;
+  }) => {
+    if (!sourceUrl || sourceUrl === this.assetMetadataSourceUrl) return;
+    runInAction('AssetsStore::metadataSourceProbeStarted', () => {
+      this.assetMetadataSourceUrlError = null;
+      this.assetMetadataSourceLoading = true;
+    });
+
+    const localTip = get(this.stores, 'networkStatus.localTip', null);
+    const check = await this.api.ada.checkAssetMetadataSourceIsValid({
+      url: sourceUrl,
+      localTipSlot:
+        typeof localTip?.absoluteSlotNumber === 'number'
+          ? localTip.absoluteSlotNumber
+          : null,
+    });
+
+    if (check.valid === false) {
+      runInAction('AssetsStore::metadataSourceRefused', () => {
+        this.assetMetadataSourceUrlError = new ApiError({
+          code:
+            check.reason === 'stale'
+              ? 'stale_asset_metadata_source'
+              : 'invalid_asset_metadata_source',
+        });
+        this.assetMetadataSourceLoading = false;
+      });
+      return;
+    }
+
+    runInAction('AssetsStore::metadataSourceSelected', () => {
+      this.assetMetadataSourceUrl = sourceUrl;
+      this.assetMetadataSourceUrlError = null;
+      this.assetMetadataSourceLoading = false;
+    });
+    await this.api.localStorage.setAssetMetadataSource(sourceUrl);
+    this.analytics.sendEvent(
+      EventCategories.SETTINGS,
+      'Changed asset metadata source'
+    );
+  };
+
+  @action
+  _onAssetMetadataSourceErrorReset = () => {
+    this.assetMetadataSourceUrlError = null;
+    this.assetMetadataSourceLoading = false;
   };
 
   /**

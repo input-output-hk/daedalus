@@ -1,10 +1,16 @@
 import BigNumber from 'bignumber.js';
 import {
+  assetMetadataSourceTipIsFresh,
+  getAssetMetadataSourceIdFromUrl,
   getAssetTokenFromToken,
   getNonZeroAssetTokens,
   searchAssets,
   sortAssets,
 } from './assets';
+import {
+  ASSET_METADATA_SERVERS_LIST,
+  ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS,
+} from '../config/assetsConfig';
 import type { AssetMetadata, AssetToken, Token } from '../api/assets/types';
 
 const policyId = '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7';
@@ -384,5 +390,75 @@ describe('sortAssets', () => {
 
   it('leaves the order alone for a key it does not know', () => {
     expect(order('rank' as any, 'asc')).toEqual([30, 10, 40, 20]);
+  });
+});
+
+describe('getAssetMetadataSourceIdFromUrl', () => {
+  it('returns the preset id for the default URL', () => {
+    expect(
+      getAssetMetadataSourceIdFromUrl(ASSET_METADATA_SERVERS_LIST.koios.url)
+    ).toBe('koios');
+  });
+
+  it('returns the preset id for the direct literal', () => {
+    expect(getAssetMetadataSourceIdFromUrl('direct')).toBe('direct');
+  });
+
+  it('returns custom for an unrelated URL', () => {
+    expect(
+      getAssetMetadataSourceIdFromUrl('https://koios.example.com/api/v1')
+    ).toBe('custom');
+  });
+
+  // The same host with a trailing slash is a different stored string, and the
+  // reduction compares strings. Custom is the honest answer rather than a
+  // near-match, and the settings page shows the URL either way.
+  it('returns custom for the default URL with a trailing slash', () => {
+    expect(
+      getAssetMetadataSourceIdFromUrl(
+        `${ASSET_METADATA_SERVERS_LIST.koios.url}/`
+      )
+    ).toBe('custom');
+  });
+
+  it('returns custom for the empty string', () => {
+    expect(getAssetMetadataSourceIdFromUrl('')).toBe('custom');
+  });
+});
+
+describe('assetMetadataSourceTipIsFresh', () => {
+  const local = 131545218;
+
+  it('accepts a source at the same tip as the node', () => {
+    expect(assetMetadataSourceTipIsFresh(local, local)).toBe(true);
+  });
+
+  it('accepts a source exactly at the lag bound', () => {
+    expect(
+      assetMetadataSourceTipIsFresh(
+        local - ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS,
+        local
+      )
+    ).toBe(true);
+  });
+
+  it('refuses a source one slot beyond the lag bound', () => {
+    expect(
+      assetMetadataSourceTipIsFresh(
+        local - ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS - 1,
+        local
+      )
+    ).toBe(false);
+  });
+
+  // A node that is still syncing is behind everything, so being ahead is not a
+  // reason to refuse.
+  it('accepts a source far ahead of the node', () => {
+    expect(assetMetadataSourceTipIsFresh(local + 5_000_000, local)).toBe(true);
+  });
+
+  it('accepts any source while the local tip is unknown', () => {
+    expect(assetMetadataSourceTipIsFresh(1, null)).toBe(true);
+    expect(assetMetadataSourceTipIsFresh(1, undefined)).toBe(true);
   });
 });

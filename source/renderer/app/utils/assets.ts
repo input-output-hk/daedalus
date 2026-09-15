@@ -1,12 +1,18 @@
 import find from 'lodash/find';
 import BigNumber from 'bignumber.js';
-import { filter, escapeRegExp } from 'lodash';
+import { filter, escapeRegExp, reduce } from 'lodash';
 import Wallet from '../domains/Wallet';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 import { formattedTokenDecimals } from './formatters';
 import { hexToString } from './strings';
+import {
+  ASSET_METADATA_SERVERS_LIST,
+  ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS,
+  ASSET_METADATA_SOURCE_TYPES,
+} from '../config/assetsConfig';
+import type { AssetMetadataSourceType } from '../types/assetTypes';
 
 export type SortBy = 'token' | 'fingerprint' | 'quantity';
 export type SortDirection = 'asc' | 'desc';
@@ -247,3 +253,51 @@ export const isTokenMissingInWallet = (
 };
 export const tokenHasBalance = (token: Token, amount: BigNumber) =>
   token.quantity.isGreaterThanOrEqualTo(amount);
+
+/**
+ * The preset a stored URL belongs to, or `custom`.
+ *
+ * The same reduction as `getSmashServerIdFromUrl` at `utils/staking.ts:17-28`,
+ * and it exists for the same reason: a user who pastes the default URL should
+ * see the default selected rather than a custom entry holding the same string.
+ * It carries no suppression where that one does, because the preset list's keys
+ * and the fallback are both typed.
+ */
+export const getAssetMetadataSourceIdFromUrl = (
+  sourceUrl: string
+): AssetMetadataSourceType =>
+  reduce(
+    ASSET_METADATA_SERVERS_LIST,
+    (result: AssetMetadataSourceType, entry, id) => {
+      if (entry && entry.url === sourceUrl) {
+        return id as AssetMetadataSourceType;
+      }
+      return result;
+    },
+    ASSET_METADATA_SOURCE_TYPES.CUSTOM
+  );
+
+/**
+ * Whether a candidate source is current enough to read pointers from.
+ *
+ * One-directional. A source ahead of the local tip is fine, because a node that
+ * is still syncing is behind everything; only a source that lags the user's own
+ * node by more than the bound is refused. A null local tip is the state before
+ * the first network status arrives, and it accepts: refusing every source for
+ * the length of a first sync would make the setting unusable exactly when
+ * someone is most likely to open it.
+ *
+ * Lives here rather than in `api.ts` so the boundary can be driven without
+ * building an `AdaApi`.
+ */
+export const assetMetadataSourceTipIsFresh = (
+  sourceTipSlot: number,
+  localTipSlot: number | null | undefined
+): boolean => {
+  if (typeof localTipSlot !== 'number' || !Number.isFinite(localTipSlot)) {
+    return true;
+  }
+  return (
+    localTipSlot - sourceTipSlot <= ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS
+  );
+};

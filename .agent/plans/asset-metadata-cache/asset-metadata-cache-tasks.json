@@ -1218,7 +1218,7 @@
      "id": "task-031",
      "title": "Probe a candidate URL against /tip, map a stored URL back to its preset, and persist the selection",
      "description": "A user-supplied URL is validated by pattern and then by a live probe before it is accepted, which is what checkSmashServerHealth does for SMASH. Koios exposes GET /tip and it serves the same purpose as /v2/smash/health. The stored value maps back to a preset so a user who types the default sees the default selected, and it persists per profile.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 4.0,
      "dependencies": [
@@ -1226,11 +1226,21 @@
      ],
      "targetPaths": [
       "source/renderer/app/api/assets/requests/checkAssetMetadataSourceHealth.ts",
+      "source/renderer/app/api/assets/requests/checkAssetMetadataSourceHealth.spec.ts",
+      "source/renderer/app/api/assets/types.ts",
       "source/renderer/app/api/api.ts",
+      "source/renderer/app/api/errors.ts",
+      "source/renderer/app/domains/ApiError.ts",
+      "source/renderer/app/config/assetsConfig.ts",
       "source/renderer/app/utils/assets.ts",
       "source/renderer/app/utils/assets.spec.ts",
       "source/renderer/app/api/utils/localStorage.ts",
-      "source/renderer/app/stores/AssetsStore.ts"
+      "source/common/config/electron-store.config.ts",
+      "source/common/types/electron-store.types.ts",
+      "source/renderer/app/actions/assets-actions.ts",
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/stores/AssetsStore.spec.ts",
+      "jest.config.js"
      ],
      "implementationNotes": [
       "checkAssetMetadataSourceHealth is the same six lines as api/staking/requests/checkSmashServerHealth.ts against GET /tip.",
@@ -1239,7 +1249,10 @@
       "getAssetMetadataSourceIdFromUrl in utils/assets.ts is the same lodash reduce as getSmashServerIdFromUrl at utils/staking.ts:17-28, falling back to CUSTOM.",
       "Persistence is three lines against a new key beside getSmashServer, setSmashServer and unsetSmashServer at api/utils/localStorage.ts:328-333.",
       "On start, read the stored value and fall back to the launcher URL when there is none, which is the defaulting StakingStore._getSmashSettingsRequest does at stores/StakingStore.ts:199-224. Unlike SMASH there is no cardano-wallet setting to keep in step, so there is one write and nothing to reconcile.",
-      "MobX: configure({ enforceActions: 'observed' }) is live, so the post-await assignment of the selected URL is wrapped in runInAction."
+      "MobX: configure({ enforceActions: 'observed' }) is live, so the post-await assignment of the selected URL is wrapped in runInAction.",
+      "Endpoint ordering, settled: the metadata source setting feeds the pointer channel and nothing else, and assetRegistryEndpoint is unchanged. The PRD at :664 puts the setting second in the registry fetcher's order, behind launcherConfig.metadataUrl, which is present on every network but selfnode, so the setting could never apply there. The two are different endpoints speaking different protocols and one setting cannot serve both. The setting is not decorative because it is the only source of the pointer channel's base URL.",
+      "checkSmashServerHealth is not a direct probe and the PRD describes it as one. It passes the candidate URL to cardano-wallet as a query parameter and asks cardano-wallet to check it. There is no cardano-wallet endpoint that probes a Koios instance, so checkAssetMetadataSourceHealth issues its own https request rather than reusing api/utils/request.ts, which sends over plain HTTP on selfnode and carries the wallet's client certificate.",
+      "The acceptance decision is three-valued rather than the boolean checkSmashServerIsValid returns: unreachable and stale are different things to say to the person who typed the URL, and they map to two ApiError codes."
      ],
      "testCases": [
       "getAssetMetadataSourceIdFromUrl returns the preset id for the default URL",

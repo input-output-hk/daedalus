@@ -13,6 +13,8 @@ import type { ActionsMap } from '../actions/index';
 import { noopAnalyticsTracker } from '../analytics';
 import { assetFingerprint } from '../utils/assetFingerprint';
 import { getAssetTokenFromToken, searchAssets } from '../utils/assets';
+import { ASSET_METADATA_SERVERS_LIST } from '../config/assetsConfig';
+import type { AssetMetadataSourceCheck } from '../api/assets/types';
 
 jest.mock('../ipc/assetMetadataChannel', () => ({
   requestAssetMetadata: jest.fn(),
@@ -45,22 +47,42 @@ const entry = (overrides: Record<string, any> = {}) => ({
   ...overrides,
 });
 
-const makeStore = (storedDecimals: Record<string, any> = {}) => {
+const makeStore = (
+  storedDecimals: Record<string, any> = {},
+  options: {
+    storedSource?: string;
+    check?: AssetMetadataSourceCheck;
+    localTipSlot?: number | null;
+  } = {}
+) => {
   const localStorage = {
     getWalletTokenFavorites: jest.fn().mockResolvedValue({}),
     getAssetsLocalData: jest.fn().mockResolvedValue(storedDecimals),
     setAssetLocalData: jest.fn().mockResolvedValue(undefined),
     toggleWalletTokenFavorite: jest.fn().mockResolvedValue(undefined),
+    getAssetMetadataSource: jest.fn().mockResolvedValue(options.storedSource),
+    setAssetMetadataSource: jest.fn().mockResolvedValue(undefined),
   };
-  const api = { ada: {}, localStorage } as unknown as Api;
+  const ada = {
+    checkAssetMetadataSourceIsValid: jest
+      .fn()
+      .mockResolvedValue(options.check ?? { valid: true }),
+  };
+  const api = { ada, localStorage } as unknown as Api;
   const actions = {} as unknown as ActionsMap;
   const store = new AssetsStore(api, actions, noopAnalyticsTracker);
   store.configure({
     wallets: { active: null },
     transactions: { all: [] },
-    networkStatus: { isConnected: false },
+    networkStatus: {
+      isConnected: false,
+      localTip:
+        typeof options.localTipSlot === 'number'
+          ? { absoluteSlotNumber: options.localTipSlot }
+          : null,
+    },
   } as any);
-  return { store, localStorage };
+  return { store, localStorage, ada };
 };
 
 const withHoldings = (store: AssetsStore, subjects: Array<string>) => {
@@ -180,6 +202,8 @@ describe('AssetsStore', () => {
           onCopyAssetParam: { listen: jest.fn() },
           onAssetSettingsRefresh: { listen: jest.fn() },
           onToggleFavorite: { listen: jest.fn() },
+          selectAssetMetadataSourceUrl: { listen: jest.fn() },
+          resetAssetMetadataSourceError: { listen: jest.fn() },
         },
         wallets: {
           setActiveAsset: { listen: jest.fn() },
@@ -436,6 +460,8 @@ describe('AssetsStore', () => {
         onCopyAssetParam: { listen: jest.fn() },
         onAssetSettingsRefresh: { listen: jest.fn() },
         onToggleFavorite: { listen: jest.fn() },
+        selectAssetMetadataSourceUrl: { listen: jest.fn() },
+        resetAssetMetadataSourceError: { listen: jest.fn() },
       },
       wallets: {
         setActiveAsset: { listen: jest.fn() },
@@ -495,5 +521,122 @@ describe('AssetsStore', () => {
       );
       expect(searchAssets('und', [row])).toHaveLength(1);
     });
+  });
+});
+
+/**
+ * The metadata source setting. `setup()` is never called here, for the reason
+ * the header gives, so the startup read and the selection are driven directly,
+ * the way the metadata cases above drive `_onMetadataResolved`.
+ */
+describe('AssetsStore metadata source', () => {
+  const CUSTOM = 'https://koios.example.com/api/v1';
+
+  it('comes up on the preset when the profile has stored nothing', async () => {
+    const { store } = makeStore();
+    await (store as any)._setUpMetadataSource();
+    expect(store.assetMetadataSourceUrl).toBe(
+      ASSET_METADATA_SERVERS_LIST.koios.url
+    );
+    expect(store.assetMetadataSourceId).toBe('koios');
+  });
+
+  it('comes up on the stored URL when the profile has one', async () => {
+    const { store } = makeStore({}, { storedSource: CUSTOM });
+    await (store as any)._setUpMetadataSource();
+    expect(store.assetMetadataSourceUrl).toBe(CUSTOM);
+    expect(store.assetMetadataSourceId).toBe('custom');
+  });
+
+  it('keeps a selection across a restart', async () => {
+    const first = makeStore();
+    await (first.store as any)._setUpMetadataSource();
+    await (first.store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(first.localStorage.setAssetMetadataSource).toHaveBeenCalledWith(
+      CUSTOM
+    );
+
+    const second = makeStore({}, { storedSource: CUSTOM });
+    await (second.store as any)._setUpMetadataSource();
+    expect(second.store.assetMetadataSourceUrl).toBe(CUSTOM);
+  });
+
+  it('probes a URL against the local tip before storing it', async () => {
+    const { store, ada } = makeStore({}, { localTipSlot: 131545218 });
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(ada.checkAssetMetadataSourceIsValid).toHaveBeenCalledWith({
+      url: CUSTOM,
+      localTipSlot: 131545218,
+    });
+  });
+
+  it('passes a null tip through while the node is still syncing', async () => {
+    const { store, ada } = makeStore({}, { localTipSlot: null });
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(ada.checkAssetMetadataSourceIsValid).toHaveBeenCalledWith({
+      url: CUSTOM,
+      localTipSlot: null,
+    });
+  });
+
+  it('renders the refusal and stores nothing when a URL does not answer', async () => {
+    const { store, localStorage } = makeStore(
+      {},
+      { check: { valid: false, reason: 'unreachable' } }
+    );
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(store.assetMetadataSourceUrl).toBe(
+      ASSET_METADATA_SERVERS_LIST.koios.url
+    );
+    expect(store.assetMetadataSourceUrlError.id).toBe(
+      'api.errors.invalidAssetMetadataSource'
+    );
+    expect(localStorage.setAssetMetadataSource).not.toHaveBeenCalled();
+  });
+
+  it('names staleness separately from unreachability', async () => {
+    const { store } = makeStore(
+      {},
+      { check: { valid: false, reason: 'stale' } }
+    );
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(store.assetMetadataSourceUrlError.id).toBe(
+      'api.errors.staleAssetMetadataSource'
+    );
+  });
+
+  it('does not probe the URL that is already selected', async () => {
+    const { store, ada } = makeStore({}, { storedSource: CUSTOM });
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(ada.checkAssetMetadataSourceIsValid).not.toHaveBeenCalled();
+  });
+
+  it('clears a refusal when the error is reset', async () => {
+    const { store } = makeStore(
+      {},
+      { check: { valid: false, reason: 'unreachable' } }
+    );
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(store.assetMetadataSourceUrlError).not.toBeNull();
+    (store as any)._onAssetMetadataSourceErrorReset();
+    expect(store.assetMetadataSourceUrlError).toBeNull();
+    expect(store.assetMetadataSourceLoading).toBe(false);
   });
 });

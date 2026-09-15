@@ -325,6 +325,12 @@ export default class LocalStorageApi {
       assetLocalData,
       `${policyId}${assetName}`
     );
+  getAssetMetadataSource = (): Promise<string> =>
+    LocalStorageApi.get(keys.ASSET_METADATA_SOURCE);
+  setAssetMetadataSource = (sourceUrl: string): Promise<void> =>
+    LocalStorageApi.set(keys.ASSET_METADATA_SOURCE, sourceUrl);
+  unsetAssetMetadataSource = (): Promise<void> =>
+    LocalStorageApi.unset(keys.ASSET_METADATA_SOURCE);
   getSmashServer = (): Promise<string> =>
     LocalStorageApi.get(keys.SMASH_SERVER);
   setSmashServer = (smashServerUrl: string): Promise<void> =>

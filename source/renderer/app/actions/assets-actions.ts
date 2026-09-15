@@ -24,6 +24,10 @@ export default class AssetsActions {
     uniqueId: string;
     isFavorite: boolean;
   }> = new Action();
+  selectAssetMetadataSourceUrl: Action<{
+    sourceUrl: string;
+  }> = new Action();
+  resetAssetMetadataSourceError: Action<any> = new Action();
   copyAssetParamNotification: Action<{
     param: string;
     shortValue: string;

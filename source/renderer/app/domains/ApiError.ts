@@ -47,6 +47,8 @@ type KnownErrorType =
   | 'address_already_exists'
   | 'utxo_too_small'
   | 'invalid_smash_server'
+  | 'invalid_asset_metadata_source'
+  | 'stale_asset_metadata_source'
   | 'cannot_cover_fee'
   | 'wallet_internal_error';
 

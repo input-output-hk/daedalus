@@ -81,3 +81,19 @@ export type AssetMetadata = {
   url?: string;
   logo?: string;
 };
+
+/** The current tip of a candidate metadata source, as its `/tip` reports it. */
+export type AssetMetadataSourceTip = {
+  absoluteSlot: number;
+};
+
+/**
+ * Whether a candidate metadata source may be stored, and when not, why.
+ *
+ * Two-valued would be enough to refuse. It is three-valued because the two
+ * refusals mean different things to the person who typed the URL: one says this
+ * is not an instance, the other says this instance is behind.
+ */
+export type AssetMetadataSourceCheck =
+  | { valid: true }
+  | { valid: false; reason: 'unreachable' | 'stale' };

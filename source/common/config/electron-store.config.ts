@@ -10,6 +10,9 @@ export const STORAGE_KEYS: Record<string, StorageKey> = {
   APP_AUTOMATIC_UPDATE_FAILED: 'APP-AUTOMATIC-UPDATE-FAILED',
   APP_UPDATE_COMPLETED: 'APP-UPDATE-COMPLETED',
   ASSET_DATA: 'ASSET-DATA',
+  // Where this profile reads on-chain asset metadata pointers from. The launcher
+  // supplies the default; this key exists only once the user has chosen.
+  ASSET_METADATA_SOURCE: 'ASSET-METADATA-SOURCE',
   CURRENCY_ACTIVE: 'CURRENCY-ACTIVE',
   CURRENCY_SELECTED: 'CURRENCY-SELECTED',
   DATA_LAYER_MIGRATION_ACCEPTANCE: 'DATA-LAYER-MIGRATION-ACCEPTANCE',

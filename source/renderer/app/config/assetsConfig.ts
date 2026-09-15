@@ -56,3 +56,23 @@ export const ASSET_METADATA_SOURCE_TYPES: Record<
 export const ASSET_METADATA_URL_VALIDATOR = new RegExp(
   '^(direct|https://[a-zA-Z0-9-_~.]+(:[0-9]+)?(/[a-zA-Z0-9-_~.]+)*/?)$'
 );
+
+/**
+ * How long a candidate source has to answer `/tip` before it is refused. Short:
+ * this is a person waiting on a settings form, not a background fetch.
+ */
+export const ASSET_METADATA_SOURCE_PROBE_TIMEOUT_MS = 10000;
+
+/**
+ * How far behind the user's own node a source may be and still be accepted.
+ *
+ * 43,200 slots is twelve hours at one slot per second, which is the same order
+ * as the volatile window the local confirmation in the chain channel cannot see
+ * into. An index further behind than that cannot answer for anything the local
+ * check could confirm anyway. Chosen from that argument rather than measured:
+ * nothing here says how far a real instance drifts.
+ *
+ * The comparison is one-directional. An instance ahead of the local tip is not
+ * refused, because a node that is still syncing is behind everything.
+ */
+export const ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS = 43200;

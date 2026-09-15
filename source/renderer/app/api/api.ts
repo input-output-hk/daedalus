@@ -85,12 +85,15 @@ import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
 import { getSmashSettings } from './staking/requests/getSmashSettings';
 import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
+import { checkAssetMetadataSourceHealth } from './assets/requests/checkAssetMetadataSourceHealth';
 import { updateSmashSettings } from './staking/requests/updateSmashSettings';
 // Governance requests
 import { listDReps } from './governance/requests/listDReps';
 import { getDRep } from './governance/requests/getDRep';
 import { getDRepSummary } from './governance/requests/getDRepSummary';
 import type { ApiDRepInfo, ApiDRepSummary } from './governance/types';
+import type { AssetMetadataSourceCheck } from './assets/types';
+import { assetMetadataSourceTipIsFresh } from '../utils/assets';
 // Utility functions
 import patchAdaApi from './utils/patchAdaApi';
 import { getLegacyWalletId, utcStringToDate } from './utils';
@@ -115,6 +118,7 @@ import {
   DELEGATION_DEPOSIT,
   DELEGATION_ACTIONS,
 } from '../config/stakingConfig';
+import { ASSET_METADATA_SERVERS_LIST } from '../config/assetsConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -2191,6 +2195,56 @@ export default class AdaApi {
       });
       throw new ApiError(error);
     }
+  };
+  /**
+   * Whether a candidate asset metadata source may be stored.
+   *
+   * Three-valued rather than the boolean `checkSmashServerIsValid` returns,
+   * because the two refusals say different things to the person who typed the
+   * URL. A URL that answers nothing recognisable is not an instance; an
+   * instance whose tip is far behind the user's own node is one that cannot
+   * answer for anything the local confirmation could check.
+   *
+   * `localTipSlot` is null until the first network status arrives. The lag
+   * comparison is skipped then rather than failing closed, because refusing
+   * every source for the length of a first sync would make the setting
+   * unusable exactly when a user is most likely to open it.
+   */
+  checkAssetMetadataSourceIsValid = async (request: {
+    url: string;
+    localTipSlot: number | null;
+  }): Promise<AssetMetadataSourceCheck> => {
+    const { url, localTipSlot } = request;
+    logger.debug('AdaApi::checkAssetMetadataSourceIsValid called', {
+      parameters: {
+        url,
+      },
+    });
+
+    if (url === ASSET_METADATA_SERVERS_LIST.direct.url) {
+      return { valid: true };
+    }
+
+    let tip;
+    try {
+      tip = await checkAssetMetadataSourceHealth(url);
+    } catch (error) {
+      logger.debug('AdaApi::checkAssetMetadataSourceIsValid unreachable', {
+        reason: error instanceof Error ? error.message : 'unknown',
+      });
+      return { valid: false, reason: 'unreachable' };
+    }
+
+    if (!assetMetadataSourceTipIsFresh(tip.absoluteSlot, localTipSlot)) {
+      logger.debug('AdaApi::checkAssetMetadataSourceIsValid stale', {
+        sourceTipSlot: tip.absoluteSlot,
+        localTipSlot,
+      });
+      return { valid: false, reason: 'stale' };
+    }
+
+    logger.debug('AdaApi::checkAssetMetadataSourceIsValid success');
+    return { valid: true };
   };
   updateSmashSettings = async (
     poolMetadataSource: PoolMetadataSource
