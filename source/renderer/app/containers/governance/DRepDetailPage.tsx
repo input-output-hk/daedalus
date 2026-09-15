@@ -84,9 +84,6 @@ class DRepDetailPage extends React.Component<Props, State> {
       selectedDRepVerifiedName: detail?.verifiedName ?? null,
       selectedDRepAnchorUrl: detail?.anchor?.url ?? null,
     });
-    if (!governanceStore?.favoriteDRepIds.has(drepId)) {
-      governanceStore?.toggleFavorite(drepId);
-    }
     this.props.history.push(inherited?.from ?? ROUTES.GOVERNANCE.DELEGATE);
   };
 

@@ -25,6 +25,7 @@ import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import { GovernanceRefreshState } from '../../stores/GovernanceStore';
 import type { DelegationNavState } from '../../stores/GovernanceStore';
+import type VotingStore from '../../stores/VotingStore';
 import { DEFAULT_DREP_COHORT_CRITERIA } from '../../components/governance/_shared/drepCohort';
 import VotingGovernancePage from './VotingGovernancePage';
 import DRepDirectoryPage from '../governance/DRepDirectoryPage';
@@ -206,7 +207,10 @@ const buildStores = ({
     },
     staking: { getStakePoolById: jest.fn(), stakePools: [] },
     voting: {
-      delegateVotes: jest.fn(async () => ({ success: true as const })),
+      delegateVotes: jest.fn<
+        ReturnType<VotingStore['delegateVotes']>,
+        Parameters<VotingStore['delegateVotes']>
+      >(async () => ({ success: true })),
       initializeVPDelegationTx: jest.fn(async () => ({
         fees: new BigNumber('0.174257'),
         success: true as const,
@@ -287,6 +291,122 @@ const openConfirmation = async (
   await screen.findByText('Confirm Transaction');
   return flow;
 };
+
+const confirmSoftwareDelegation = () => {
+  const passwordInput = document.querySelector('input[type="password"]');
+  expect(passwordInput).not.toBeNull();
+  fireEvent.change(passwordInput as Element, {
+    target: { value: 'secret123' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+};
+
+describe('Automatic favorites after delegation submission', () => {
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  it('does not save a selected candidate when the delegation form is cancelled', () => {
+    const { history, stores } = renderFlow(
+      [{ pathname: ROUTES.GOVERNANCE.DREPS }],
+      { delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' } }
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(history.location.pathname).toBe(ROUTES.GOVERNANCE.DASHBOARD);
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
+  });
+
+  it('does not save an unsigned candidate when confirmation is cancelled', async () => {
+    const { stores } = await openConfirmation(VALID_DREP_ID);
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+
+    // The form remains mounted behind the dialog; cancel the dialog itself.
+    fireEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1]);
+
+    expect(screen.queryByText('Confirm Transaction')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
+  });
+
+  it('waits for successful submission before saving the candidate', async () => {
+    const { stores, actions } = await openConfirmation(VALID_DREP_ID);
+    let completeSubmission!: () => void;
+    stores.voting.delegateVotes.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          completeSubmission = () => resolve({ success: true });
+        })
+    );
+    confirmSoftwareDelegation();
+    await waitFor(() =>
+      expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
+    );
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
+
+    await act(async () => {
+      completeSubmission();
+    });
+
+    expect(stores.governance.toggleFavorite).toHaveBeenCalledTimes(1);
+    expect(stores.governance.toggleFavorite).toHaveBeenCalledWith(
+      VALID_DREP_ID
+    );
+    expect(actions.router.goToRoute.trigger).toHaveBeenCalledWith({
+      route: ROUTES.WALLETS.SUMMARY,
+      params: { id: WALLET_ID },
+    });
+  });
+
+  it('does not save the candidate when submission resolves with a failure', async () => {
+    const { stores, actions } = await openConfirmation(VALID_DREP_ID);
+    stores.voting.delegateVotes.mockResolvedValueOnce({
+      success: false,
+      errorCode: 'generic',
+    });
+    confirmSoftwareDelegation();
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Confirm' })).not.toBeDisabled()
+    );
+    expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1);
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
+  });
+
+  it('preserves an already-favorited DRep after successful submission', async () => {
+    const { stores, actions } = await openConfirmation(VALID_DREP_ID);
+    stores.governance.favoriteDRepIds.add(VALID_DREP_ID);
+    confirmSoftwareDelegation();
+
+    await waitFor(() =>
+      expect(actions.router.goToRoute.trigger).toHaveBeenCalledTimes(1)
+    );
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(stores.governance.favoriteDRepIds.has(VALID_DREP_ID)).toBe(true);
+  });
+
+  it.each(['abstain', 'no_confidence'])(
+    'does not favorite %s after successful submission',
+    async (sentinel) => {
+      const { stores, actions } = await openConfirmation(sentinel);
+      confirmSoftwareDelegation();
+
+      await waitFor(() =>
+        expect(actions.router.goToRoute.trigger).toHaveBeenCalledTimes(1)
+      );
+      expect(stores.voting.delegateVotes).toHaveBeenCalledWith(
+        expect.objectContaining({ chosenOption: sentinel })
+      );
+      expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+    }
+  );
+});
 
 describe('DRep selection handoff via GovernanceStore.delegationNavState', () => {
   afterEach(() => {
@@ -376,6 +496,7 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
@@ -403,6 +524,10 @@ describe('DRep selection handoff via GovernanceStore.delegationNavState', () => 
     expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith(
       expect.objectContaining({ chosenOption: VALID_DREP_ID })
     );
+    expect(stores.governance.toggleFavorite).toHaveBeenCalledTimes(1);
+    expect(stores.governance.toggleFavorite).toHaveBeenCalledWith(
+      VALID_DREP_ID
+    );
   });
 });
 
@@ -426,6 +551,7 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await screen.findByText('Confirm Transaction');
@@ -455,6 +581,10 @@ describe('Hardware-wallet delegate flow via GovernanceStore.delegationNavState h
         passphrase: '',
         wallet: expect.objectContaining({ id: HW_WALLET_ID }),
       })
+    );
+    expect(stores.governance.toggleFavorite).toHaveBeenCalledTimes(1);
+    expect(stores.governance.toggleFavorite).toHaveBeenCalledWith(
+      VALID_DREP_ID
     );
   });
 

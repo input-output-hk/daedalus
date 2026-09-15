@@ -138,13 +138,21 @@ class VotingGovernancePage extends Component<Props> {
               )}
               onClose={onClose}
               onExternalLinkClick={openExternalLink}
-              onSubmit={(passphrase) =>
-                voting.delegateVotes({
+              onSubmit={async (passphrase) => {
+                const result = await voting.delegateVotes({
                   chosenOption,
                   passphrase,
                   wallet: selectedWallet,
-                })
-              }
+                });
+                if (
+                  result.success &&
+                  !isSentinel &&
+                  !governance.favoriteDRepIds.has(chosenOption)
+                ) {
+                  governance.toggleFavorite(chosenOption);
+                }
+                return result;
+              }}
               redirectToWallet={(id) => {
                 this.props.actions.router.goToRoute.trigger({
                   route: ROUTES.WALLETS.SUMMARY,
