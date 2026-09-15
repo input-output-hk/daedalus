@@ -622,4 +622,25 @@ describe('httpRegistryTransport', () => {
       { ok: true, status: 200, body: '{}' },
     ]);
   });
+
+  it('answers network for a URL it cannot parse, without opening a socket', async () => {
+    await expect(
+      httpRegistryTransport.post('not a url', '{}', 5000)
+    ).resolves.toEqual({ ok: false, reason: 'network' });
+  });
+
+  // The cap is a parameter of the transport now, because a batch of raw
+  // transactions is an order larger than a registry answer.
+  it('reads up to the cap the caller names rather than a fixed one', async () => {
+    const url = await serve((request, response) => {
+      response.writeHead(200, { 'content-type': 'application/json' });
+      response.end('x'.repeat(2048));
+    });
+    await expect(
+      httpRegistryTransport.post(url, '{}', 5000, 1024)
+    ).resolves.toEqual({ ok: false, reason: 'too-large' });
+    await expect(
+      httpRegistryTransport.post(url, '{}', 5000, 4096)
+    ).resolves.toEqual({ ok: true, status: 200, body: 'x'.repeat(2048) });
+  });
 });

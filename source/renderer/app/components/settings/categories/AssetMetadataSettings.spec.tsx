@@ -195,4 +195,27 @@ describe('AssetMetadataSettings', () => {
     unmount();
     expect(onResetSourceError).toHaveBeenCalled();
   });
+
+  it('describes the option that is not available yet', () => {
+    renderPage({ sourceUrl: 'direct' });
+    expect(
+      screen.getByText(/read from the chain data you already hold/)
+    ).toBeInTheDocument();
+  });
+
+  it('opens the registry link outside the application', () => {
+    const onOpenExternalLink = jest.fn();
+    renderPage({ onOpenExternalLink });
+    fireEvent.click(screen.getByText('Cardano token registry'));
+    expect(onOpenExternalLink).toHaveBeenCalledWith(
+      'https://tokens.cardano.org/'
+    );
+  });
+
+  it('opens the index link outside the application', () => {
+    const onOpenExternalLink = jest.fn();
+    renderPage({ onOpenExternalLink });
+    fireEvent.click(screen.getByText('Koios'));
+    expect(onOpenExternalLink).toHaveBeenCalledWith('https://koios.rest/');
+  });
 });

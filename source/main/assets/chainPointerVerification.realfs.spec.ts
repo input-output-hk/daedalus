@@ -178,8 +178,12 @@ const cip25Payload = (name: string) =>
     ],
   ]);
 
-const auxiliaryData = (shape: AuxiliaryShape, name: string): Buffer => {
-  const metadata = cip25Payload(name);
+const auxiliaryData = (
+  shape: AuxiliaryShape,
+  name: string,
+  payload?: unknown
+): Buffer => {
+  const metadata = payload ?? cip25Payload(name);
   if (shape === 'shelley') return cbor.encode(metadata);
   if (shape === 'mary') return cbor.encode([metadata, []]);
   return cbor.encode(
@@ -221,6 +225,13 @@ const syntheticTransaction = (
     policyId?: string;
     withAuxiliary?: boolean;
     script?: unknown;
+    withMint?: boolean;
+    claimAuxiliary?: boolean;
+    payload?: unknown;
+    /** Claim an auxiliary-data hash while carrying no auxiliary data. */
+    claimMissingAuxiliary?: boolean;
+    /** A witness set whose native-script entry is not a list of scripts. */
+    brokenWitnessScripts?: boolean;
   } = {}
 ) => {
   const name = options.name ?? 'Fixture Token';
@@ -229,7 +240,7 @@ const syntheticTransaction = (
   const policyId =
     options.policyId ?? witnessScript?.policyId ?? SYNTHETIC_POLICY;
   const withAuxiliary = options.withAuxiliary ?? true;
-  const auxiliary = auxiliaryData(shape, name);
+  const auxiliary = auxiliaryData(shape, name, options.payload);
 
   const mint = new Map<Buffer, Map<Buffer, number>>([
     [
@@ -241,9 +252,12 @@ const syntheticTransaction = (
     [0, []],
     [1, []],
     [2, 200000],
-    [9, mint],
   ]);
-  if (withAuxiliary) {
+  if (options.withMint !== false) body.set(9, mint);
+  if (
+    (withAuxiliary && options.claimAuxiliary !== false) ||
+    options.claimMissingAuxiliary
+  ) {
     body.set(7, Buffer.from(digest(auxiliary), 'hex'));
   }
   const bodyBytes = cbor.encode(body);
@@ -251,9 +265,16 @@ const syntheticTransaction = (
   // to appear in the witness set as the exact bytes that were hashed into the
   // policy id. Encoding a Buffer would wrap it in a byte string instead.
   // `a1 01 81` is a one-entry map, key 1, holding a one-element array.
-  const witnessBytes = witnessScript
-    ? Buffer.concat([Buffer.from([0xa1, 0x01, 0x81]), witnessScript.bytes])
-    : cbor.encode(new Map());
+  const witnessBytes = (() => {
+    // `a1 01 01`: key 1 holding an integer where a list of scripts belongs.
+    if (options.brokenWitnessScripts) return Buffer.from([0xa1, 0x01, 0x01]);
+    if (!witnessScript) return cbor.encode(new Map());
+    // `a1 01 81`: key 1 holding a one-element list, then the script's own bytes.
+    return Buffer.concat([
+      Buffer.from([0xa1, 0x01, 0x81]),
+      witnessScript.bytes,
+    ]);
+  })();
 
   const transaction =
     shape === 'alonzo'
@@ -623,5 +644,241 @@ describe('confirmChainPointer and policy closure', () => {
     expect(result.status).toBe('confirmed');
     if (result.status !== 'confirmed') return;
     expect(result.policyClosed).toBe(false);
+  });
+});
+
+describe('confirmChainPointer refusals that need no chain', () => {
+  const reader = () =>
+    makeReader(REAL_BLOCK, PREPROD_BLOCK.slot, PREPROD_BLOCK.hash);
+
+  it('rejects a transaction hash that is not 32 bytes of hex', () => {
+    expect(
+      confirmChainPointer(realCandidate({ txHash: 'not hex' }), {
+        reader: reader(),
+      })
+    ).toEqual({ status: 'rejected', reason: 'pointer-not-hex' });
+  });
+
+  it('rejects a block hash that is not 32 bytes of hex', () => {
+    expect(
+      confirmChainPointer(realCandidate({ blockHash: 'ab' }), {
+        reader: reader(),
+      })
+    ).toEqual({ status: 'rejected', reason: 'pointer-not-hex' });
+  });
+
+  it('rejects a policy id that is not hex', () => {
+    const policyId = 'z'.repeat(56);
+    expect(
+      confirmChainPointer(
+        realCandidate({
+          policyId,
+          subject: `${policyId}${PREPROD_BLOCK.assetName}`,
+        }),
+        { reader: reader() }
+      )
+    ).toEqual({ status: 'rejected', reason: 'subject-not-hex' });
+  });
+
+  it('rejects an empty transaction', () => {
+    expect(
+      confirmChainPointer(realCandidate({ cbor: '' }), { reader: reader() })
+    ).toEqual({ status: 'rejected', reason: 'transaction-empty' });
+  });
+
+  it('rejects a transaction that is not an array of at least two parts', () => {
+    // `81 01`, a one-element array.
+    expect(
+      confirmChainPointer(realCandidate({ cbor: '8101' }), {
+        reader: reader(),
+      })
+    ).toEqual({ status: 'rejected', reason: 'transaction-shape' });
+  });
+});
+
+describe('confirmChainPointer and the mint and auxiliary fields', () => {
+  it('rejects a transaction that mints nothing', () => {
+    const built = syntheticTransaction('alonzo', { withMint: false });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    expect(confirmChainPointer(built.candidate(), { reader })).toEqual({
+      status: 'rejected',
+      reason: 'no-mint-field',
+    });
+  });
+
+  // Auxiliary data that the body does not commit to is bound to nothing, so it
+  // must not travel with the record.
+  it('rejects auxiliary data the body does not claim', () => {
+    const built = syntheticTransaction('alonzo', { claimAuxiliary: false });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    expect(confirmChainPointer(built.candidate(), { reader })).toEqual({
+      status: 'rejected',
+      reason: 'auxiliary-data-unclaimed',
+    });
+  });
+
+  it('confirms with no name when the metadata is not a map', () => {
+    // The transaction is sound and its auxiliary data hashes correctly; only
+    // the payload inside is a shape no CIP-25 record can be.
+    const built = syntheticTransaction('alonzo', {
+      payload: new cbor.Tagged(30, [1, 2]),
+    });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.cip25).toBeNull();
+  });
+
+  it('confirms with no name when the auxiliary shape is one it does not read', () => {
+    // Not a map, not a two-element array and not a tag 259 map, so none of the
+    // three historical shapes.
+    const built = syntheticTransaction('shelley', { payload: 42 });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.cip25).toBeNull();
+  });
+
+  it('confirms with no name when the metadata carries no CIP-25 label', () => {
+    const built = syntheticTransaction('alonzo', {
+      payload: new Map<number, unknown>([[674, new Map([['msg', 'hello']])]]),
+    });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.cip25).toBeNull();
+  });
+});
+
+describe('confirmChainPointer reading a CIP-25 record', () => {
+  // The payload is a metadatum, not JSON: it can hold integers, byte strings,
+  // arrays and maps whose keys are not text, and every one of them has to come
+  // back as something a name resolver can read.
+  const record = new Map<string, unknown>([
+    ['name', 'Fixture Token'],
+    ['edition', 7],
+    ['owed', -3],
+    ['hash', Buffer.from('c0ffee', 'hex')],
+    ['files', [new Map([['src', 'ipfs://one']]), 'ipfs://two']],
+    ['nested', new Map<number, unknown>([[1, 'keyed by a number']])],
+  ]);
+
+  const withRecord = () =>
+    syntheticTransaction('alonzo', {
+      payload: new Map<number, unknown>([
+        [
+          721,
+          new Map<string, unknown>([
+            [
+              SYNTHETIC_POLICY,
+              new Map<string, unknown>([
+                [Buffer.from(SYNTHETIC_NAME, 'hex').toString('utf8'), record],
+              ]),
+            ],
+          ]),
+        ],
+      ]),
+    });
+
+  it('reads every metadatum form the payload can carry', () => {
+    const built = withRecord();
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.cip25).toEqual({
+      name: 'Fixture Token',
+      edition: 7,
+      owed: -3,
+      hash: 'c0ffee',
+      files: [{ src: 'ipfs://one' }, 'ipfs://two'],
+      nested: { '1': 'keyed by a number' },
+    });
+  });
+});
+
+describe('confirmChainPointer on the paths that decide nothing', () => {
+  it('rejects a body claiming an auxiliary hash it carries no data for', () => {
+    const built = syntheticTransaction('alonzo', {
+      withAuxiliary: false,
+      claimMissingAuxiliary: true,
+    });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    expect(confirmChainPointer(built.candidate(), { reader })).toEqual({
+      status: 'rejected',
+      reason: 'auxiliary-data-missing',
+    });
+  });
+
+  // A block shape this reader does not know decides nothing about the pointer,
+  // so it is neither a confirmation nor a rejection.
+  it('fails closed on a block whose shape it does not recognise', () => {
+    const built = syntheticTransaction('alonzo');
+    // `81 01`, a one-element array, which is not an era wrapper.
+    const reader = makeReader(
+      Buffer.from([0x81, 0x01]),
+      SYNTHETIC_SLOT,
+      built.headerHash
+    );
+    expect(confirmChainPointer(built.candidate(), { reader })).toEqual({
+      status: 'unavailable',
+      reason: 'block-shape',
+    });
+  });
+
+  it('reports a policy as open when the witness set is not a shape it reads', () => {
+    const built = syntheticTransaction('alonzo', {
+      brokenWitnessScripts: true,
+    });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.policyClosed).toBe(false);
+  });
+
+  it('confirms with no name when the payload has no entry for this policy', () => {
+    const built = syntheticTransaction('alonzo', {
+      payload: new Map<number, unknown>([
+        [721, new Map<string, unknown>([['ff'.repeat(28), new Map()]])],
+      ]),
+    });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.cip25).toBeNull();
+  });
+
+  it('reads a metadatum form it has no mapping for as nothing', () => {
+    const built = syntheticTransaction('alonzo', {
+      payload: new Map<number, unknown>([
+        [
+          721,
+          new Map<string, unknown>([
+            [
+              SYNTHETIC_POLICY,
+              new Map<string, unknown>([
+                [
+                  Buffer.from(SYNTHETIC_NAME, 'hex').toString('utf8'),
+                  new Map<string, unknown>([
+                    ['name', 'Fixture Token'],
+                    ['listed', true],
+                  ]),
+                ],
+              ]),
+            ],
+          ]),
+        ],
+      ]),
+    });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.cip25).toEqual({ name: 'Fixture Token', listed: null });
   });
 });

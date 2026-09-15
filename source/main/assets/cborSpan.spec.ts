@@ -88,6 +88,15 @@ describe('itemEnd', () => {
     expect(() => itemEnd(bytes(0x18), 0)).toThrow(CborError);
   });
 
+  // An indefinite-length string may only hold chunks of its own type, so a
+  // chunk of another type is a malformed input rather than a nested item.
+  it('refuses a chunk of the wrong type inside an indefinite string', () => {
+    expect(() => itemEnd(bytes(0x5f, 0x01, 0xff), 0)).toThrow('bad chunk');
+    expect(() => itemEnd(bytes(0x7f, 0x41, 0x61, 0xff), 0)).toThrow(
+      'bad chunk'
+    );
+  });
+
   it('refuses a reserved additional information value', () => {
     expect(() => itemEnd(bytes(0x1c), 0)).toThrow(CborError);
   });

@@ -399,4 +399,119 @@ describe('queryKoiosPointers', () => {
     await query(transport);
     expect(transport.calls[0].maxBytes).toBe(8 * 1024 * 1024);
   });
+
+  it('takes a CIP-68 map that is not keyed by asset name as the record itself', async () => {
+    const transport = stub((call) =>
+      call.url.includes('asset_info')
+        ? okBody([assetInfoRecord({ cip68_metadata: { name: 'Flat' } })])
+        : okBody([txCborRecord()])
+    );
+    const result = await query(transport);
+    expect(result.pointers[0].cip68Metadata).toEqual({ name: 'Flat' });
+  });
+
+  it('drops a transaction record that carries no bytes', async () => {
+    const transport = stub((call) =>
+      call.url.includes('asset_info')
+        ? okBody([assetInfoRecord()])
+        : okBody([txCborRecord({ cbor: null })])
+    );
+    const result = await query(transport);
+    expect(result.transactions).toHaveLength(0);
+    expect(result.pointers).toHaveLength(0);
+  });
+
+  it('drops a transaction record with no absolute slot', async () => {
+    const transport = stub((call) =>
+      call.url.includes('asset_info')
+        ? okBody([assetInfoRecord()])
+        : okBody([txCborRecord({ absolute_slot: null })])
+    );
+    const result = await query(transport);
+    expect(result.transactions).toHaveLength(0);
+  });
+
+  it('drops an entry that is not an object', async () => {
+    const transport = stub((call) =>
+      call.url.includes('asset_info') ? okBody(['not a record']) : okBody([])
+    );
+    const result = await query(transport);
+    expect(result.pointers).toHaveLength(0);
+    expect(transport.calls).toHaveLength(1);
+  });
+
+  it('drops an entry with no minting transaction hash', async () => {
+    const transport = stub((call) =>
+      call.url.includes('asset_info')
+        ? okBody([assetInfoRecord({ minting_tx_hash: null })])
+        : okBody([])
+    );
+    const result = await query(transport);
+    expect(result.pointers).toHaveLength(0);
+  });
+
+  // The ceiling is checked before every request including the second of a
+  // batch, so a batch can be throttled halfway through.
+  it('throttles the second call of a batch when the ceiling falls between them', async () => {
+    const transport = happy();
+    const budget = new KoiosRequestBudget(1, 1000);
+    const result = await query(transport, { budget });
+    expect(transport.calls).toHaveLength(1);
+    expect(result.pointers).toHaveLength(0);
+    expect(result.resolutions[0].retryAfter).toBe(
+      1_000_000 + KOIOS_THROTTLED_RETRY_MS
+    );
+  });
+
+  it('answers nothing for an empty subject list', async () => {
+    const transport = happy();
+    const result = await queryKoiosPointers([], {
+      baseUrl: BASE,
+      transport,
+      budget: new KoiosRequestBudget(),
+    });
+    expect(transport.calls).toHaveLength(0);
+    expect(result).toEqual({ pointers: [], transactions: [], resolutions: [] });
+  });
+
+  it('drops a transaction entry that is not an object', async () => {
+    const transport = stub((call) =>
+      call.url.includes('asset_info')
+        ? okBody([assetInfoRecord()])
+        : okBody(['not a record'])
+    );
+    const result = await query(transport);
+    expect(result.transactions).toHaveLength(0);
+  });
+
+  it('waits the backoff it was given before retrying', async () => {
+    const transport = stub(() => ({ ok: true, status: 503, body: '' }));
+    const started = Date.now();
+    await query(transport, { retryBackoffMs: 20 });
+    expect(Date.now() - started).toBeGreaterThanOrEqual(15);
+    expect(transport.calls).toHaveLength(2);
+  });
+
+  // The ceiling is consulted again before the retry, so a batch can run out of
+  // room between its first attempt and its second.
+  it('throttles rather than retrying when the ceiling falls before the retry', async () => {
+    const transport = stub(() => ({ ok: true, status: 503, body: '' }));
+    const budget = new KoiosRequestBudget(1, 1000);
+    const result = await query(transport, { budget });
+    expect(transport.calls).toHaveLength(1);
+    expect(result.resolutions[0].retryAfter).toBe(
+      1_000_000 + KOIOS_THROTTLED_RETRY_MS
+    );
+  });
+
+  it('abandons a batch whose body is not JSON at all', async () => {
+    const transport = stub(() => ({
+      ok: true,
+      status: 200,
+      body: '<html>gateway</html>',
+    }));
+    const result = await query(transport);
+    expect(result.pointers).toHaveLength(0);
+    expect(result.resolutions[0].state).toBe('failed');
+  });
 });

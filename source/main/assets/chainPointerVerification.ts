@@ -232,6 +232,26 @@ const cip25For = (
   policyId: string,
   assetName: string
 ): Record<string, unknown> | null => {
+  try {
+    return readCip25(bytes, auxiliary, policyId, assetName);
+  } catch (error) {
+    // A payload this reader cannot interpret is a missing name, not a bad
+    // transaction. The transaction's integrity is already established by the
+    // three hash checks above, and refusing the whole pointer here would leave
+    // a genuinely minted asset with no row at all.
+    logger.debug('Chain pointer: metadata could not be read', {
+      reason: error instanceof Error ? error.message : 'unknown',
+    });
+    return null;
+  }
+};
+
+const readCip25 = (
+  bytes: Uint8Array,
+  auxiliary: CborSpan,
+  policyId: string,
+  assetName: string
+): Record<string, unknown> | null => {
   const metadata = metadataSpan(bytes, auxiliary);
   if (!metadata) return null;
   const labelled = mapSpans(bytes, metadata.start).find((entry) => {

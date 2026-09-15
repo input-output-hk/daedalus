@@ -1509,7 +1509,7 @@
      "id": "task-037",
      "title": "Jest coverage across the source setting and the chain channel",
      "description": "The URL validator, the preset mapping, the two-call sequence against recorded responses, the three local checks with their negative cases, and the row-shape assertions that keep the chain channel out of the decimals path.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 6.0,
      "dependencies": [
@@ -1518,16 +1518,22 @@
       "task-036"
      ],
      "targetPaths": [
-      "source/main/assets/chainPointerVerification.spec.ts",
+      "source/main/assets/chainPointerVerification.realfs.spec.ts",
+      "source/main/assets/immutableBlockReader.realfs.spec.ts",
       "source/main/assets/koiosClient.spec.ts",
-      "source/renderer/app/utils/assets.spec.ts",
-      "source/renderer/app/config/assetsConfig.spec.ts"
+      "source/main/assets/cborSpan.spec.ts",
+      "source/main/assets/assetRegistryClient.spec.ts",
+      "source/renderer/app/components/settings/categories/AssetMetadataSettings.spec.tsx",
+      "source/main/assets/chainPointerVerification.ts"
      ],
      "implementationNotes": [
       "Record one asset_info and one tx_cbor response as fixtures rather than calling the network from a test. The measured subject c76ef5451f551f3c06d48c46b153cb35221b507683b2e413122661b942544544 and its minting transaction are the obvious pair.",
       "Negative cases carry the value here: tampered auxiliary data, a mint field naming a different policy, and a body that does not reproduce its claimed hash. A passing positive case proves very little on its own.",
       "Colocate as <Unit>.spec.ts. describe names the exported unit with no article; it uses present-tense third person, not should.",
-      "Assert the row shape directly: a chain row has decimals NULL and verified 0. That assertion is what stops a later change quietly routing Koios decimals into the formatter."
+      "Assert the row shape directly: a chain row has decimals NULL and verified 0. That assertion is what stops a later change quietly routing Koios decimals into the formatter.",
+      "The task graph's target paths name specs that do not exist under those names, because each phase 7 task tested its own module as it was built. The paths are corrected to the specs that exist.",
+      "The sweep changed one source file. A CIP-25 payload the reader cannot interpret now yields no name rather than rejecting the whole pointer: the transaction's integrity is established by the three hash checks, and refusing it would leave a genuinely minted asset with no row at all.",
+      "Four unreached lines remain and each is recorded with its argument: two catches around Buffer.from(hex), which never throws; a default arm over a value that is already exhaustively matched; and a rejection handler on a promise that never rejects."
      ],
      "testCases": [
       "Every negative case in task-034 has a spec",
