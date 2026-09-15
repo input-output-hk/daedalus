@@ -1,10 +1,3 @@
-import React from 'react';
-import { withKnobs } from '@storybook/addon-knobs';
-import StoryLayout from '../_support/StoryLayout';
-import StoryProvider from '../_support/StoryProvider';
-import StoryDecorator from '../_support/StoryDecorator';
-import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
-import StakingWithNavigation from '../../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import {
   Step1ConfigurationDialogStory,
   Step2ConfirmationDialogStory,
@@ -20,42 +13,52 @@ export default {
   decorators: [stakingDecorator],
 };
 
-export const Step1 = Step1ConfigurationDialogStory;
+export const Step1 = {
+  render: Step1ConfigurationDialogStory,
 
-Step1.parameters = {
-  id: 'redeem-itn-wallets-story',
+  parameters: {
+    id: 'redeem-itn-wallets-story',
+  },
 };
 
-export const Step2 = Step2ConfirmationDialogStory;
+export const Step2 = {
+  render: Step2ConfirmationDialogStory,
 
-Step2.parameters = {
-  id: 'redeem-itn-wallets-story',
+  parameters: {
+    id: 'redeem-itn-wallets-story',
+  },
 };
 
-export const Step3Success = Step3SuccessDialogStory;
+export const Step3Success = {
+  render: Step3SuccessDialogStory,
+  name: 'Step 3 - Success',
 
-Step3Success.storyName = 'Step 3 - Success';
-
-Step3Success.parameters = {
-  id: 'redeem-itn-wallets-story',
+  parameters: {
+    id: 'redeem-itn-wallets-story',
+  },
 };
 
-export const Step3Failure = Step3FailureDialogStory;
+export const Step3Failure = {
+  render: Step3FailureDialogStory,
+  name: 'Step 3 - Failure',
 
-Step3Failure.storyName = 'Step 3 - Failure';
-
-Step3Failure.parameters = {
-  id: 'redeem-itn-wallets-story',
+  parameters: {
+    id: 'redeem-itn-wallets-story',
+  },
 };
 
-export const NoWallets = NoWalletsDialogDialogStory;
+export const NoWallets = {
+  render: NoWalletsDialogDialogStory,
 
-NoWallets.parameters = {
-  id: 'redeem-itn-wallets-story',
+  parameters: {
+    id: 'redeem-itn-wallets-story',
+  },
 };
 
-export const RedemptionUnavailable = RedemptionUnavailableDialogDialogStory;
+export const RedemptionUnavailable = {
+  render: RedemptionUnavailableDialogDialogStory,
 
-RedemptionUnavailable.parameters = {
-  id: 'redeem-itn-wallets-story',
+  parameters: {
+    id: 'redeem-itn-wallets-story',
+  },
 };

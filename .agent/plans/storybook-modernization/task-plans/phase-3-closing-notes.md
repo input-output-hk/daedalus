@@ -51,6 +51,29 @@ converted files after, and `index.json` emitted by a real Storybook build after,
 own indexer rather than a model of it. 258 `title | label` pairs across 49 panels, identical in all
 three, with per-file ordering identical too.
 
+## A story can render nothing, in two directions
+
+Locked decision 7 dropped the browser-driven render check because Playwright cannot run in the
+offline sandbox, and recorded the consequence: a story could build and render nothing with every
+check green. Thirteen live instances of that were in the corpus. Two of them are worth keeping as a
+pair, because they show the failure has two directions and one blind spot covers both.
+
+`news/IncidentOverlay.stories.tsx` read an argument nothing fills. Its decorator handed the incident
+fixture to `story({ ... })`, which Storybook merges onto the story context after stripping `title`
+among other keys, while the three stories read their first argument, which is `context.args`. All
+three rendered an incident with no title, content, date or action.
+
+`wallets/settings/WalletSettings.stories.tsx` read an argument filled with the wrong thing. It
+spread the entire story context into `WalletSettingsScreen`, a component declaring one prop, so the
+screen was handed a story id, a parameters object and a globals object as props alongside a locale
+that only arrived because the wrapper was still passing it down.
+
+One asks for something that is not there; the other takes everything that is. Neither is visible to
+`compile`, to `lint`, or to `storybook`: both compile, both lint clean, both index, and both appear
+in the sidebar under the right label with a component that is empty or wrong inside. The scan at
+`story-args-audit.js` covers both, because both come down to the same question, which argument the
+value is expected to arrive on.
+
 ## Defects found in the repository, not in the plan
 
 - **Undeclared transitive dependencies.** Written up in

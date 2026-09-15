@@ -12,6 +12,7 @@ import {
   StakingUndelegateConfirmationResultStory,
 } from './_support/Undelegate';
 import { StakePoolsTableStory } from './_support/StakePoolsTable';
+import { currentThemeOf, localeOf } from '../_support/globals';
 
 export default {
   title: 'Decentralization / Staking',
@@ -19,9 +20,13 @@ export default {
 };
 
 export const DelegationCenter = {
-  render: (_, props) => (
-    // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: true; id: string; n... Remove this comment to see the full error message
-    <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
+  render: (_args, context) => (
+    <StakingDelegationCenterStory
+      locale={localeOf(context)}
+      currentTheme={currentThemeOf(context)}
+      isLoading={false}
+      isEpochsInfoAvailable
+    />
   ),
 
   parameters: {
@@ -30,9 +35,13 @@ export const DelegationCenter = {
 };
 
 export const DelegationCenterLoading = {
-  render: (_, props) => (
-    // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; isEpochsInfoAvailable: tr... Remove this comment to see the full error message
-    <StakingDelegationCenterStory {...props} isLoading isEpochsInfoAvailable />
+  render: (_args, context) => (
+    <StakingDelegationCenterStory
+      locale={localeOf(context)}
+      currentTheme={currentThemeOf(context)}
+      isLoading
+      isEpochsInfoAvailable
+    />
   ),
 
   name: 'Delegation Center - Loading',
@@ -43,9 +52,13 @@ export const DelegationCenterLoading = {
 };
 
 export const DelegationCenterNotAnShelleyEra = {
-  render: (_, props) => (
-    // @ts-ignore ts-migrate(2739) FIXME: Type '{ isEpochsInfoAvailable: false; id: string; ... Remove this comment to see the full error message
-    <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
+  render: (_args, context) => (
+    <StakingDelegationCenterStory
+      locale={localeOf(context)}
+      currentTheme={currentThemeOf(context)}
+      isLoading={false}
+      isEpochsInfoAvailable={false}
+    />
   ),
 
   name: 'Delegation Center - Not an Shelley era',
@@ -66,36 +79,56 @@ export const _DelegationCenterNoWallets = {
   name: 'Delegation Center - No Wallets',
 };
 
-export const PoolsIndex = StakePoolsStory;
+export const PoolsIndex = {
+  render: (_args, context) => (
+    <StakePoolsStory
+      locale={localeOf(context)}
+      currentTheme={currentThemeOf(context)}
+      isLoading={false}
+    />
+  ),
 
-PoolsIndex.parameters = {
-  id: 'stake-pools',
+  parameters: {
+    id: 'stake-pools',
+  },
 };
 
-export const // @ts-ignore ts-migrate(2739) FIXME: Type '{ isLoading: true; id: string; name: string;... Remove this comment to see the full error message
-  PoolsIndexLoading = {
-    render: (props) => <StakePoolsStory {...props} isLoading />,
-    name: 'Pools Index - Loading',
+export const PoolsIndexLoading = {
+  render: (_args, context) => (
+    <StakePoolsStory
+      locale={localeOf(context)}
+      currentTheme={currentThemeOf(context)}
+      isLoading
+    />
+  ),
 
-    parameters: {
-      id: 'stake-pools-loading',
-    },
-  };
+  name: 'Pools Index - Loading',
 
-export const StakePoolsList = StakePoolsTableStory;
-
-StakePoolsList.parameters = {
-  id: 'stake-pools-table',
+  parameters: {
+    id: 'stake-pools-loading',
+  },
 };
 
-export const Rewards = StakingRewardsStory;
+export const StakePoolsList = {
+  render: (_args, context) => (
+    <StakePoolsTableStory currentTheme={currentThemeOf(context)} />
+  ),
 
-Rewards.parameters = {
-  id: 'rewards',
+  parameters: {
+    id: 'stake-pools-table',
+  },
+};
+
+export const Rewards = {
+  render: () => <StakingRewardsStory />,
+
+  parameters: {
+    id: 'rewards',
+  },
 };
 
 export const DelegationWizard = {
-  render: (_, props) => {
+  render: (_args, context) => {
     const oversaturationPercentage = number('Oversaturation Percentage', 0, {
       min: 0,
       max: 1000,
@@ -103,9 +136,9 @@ export const DelegationWizard = {
       range: true,
     });
     return (
-      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
       <StakingDelegationSteps
-        {...props}
+        locale={localeOf(context)}
+        currentTheme={currentThemeOf(context)}
         oversaturationPercentage={oversaturationPercentage}
       />
     );
@@ -116,20 +149,25 @@ export const DelegationWizard = {
   },
 };
 
-export const // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-  DelegationWizardDelegationNotAvailable = {
-    render: (_, props) => <StakingDelegationSteps {...props} isDisabled />,
-    name: 'Delegation Wizard - Delegation Not Available',
+export const DelegationWizardDelegationNotAvailable = {
+  render: (_args, context) => (
+    <StakingDelegationSteps
+      locale={localeOf(context)}
+      currentTheme={currentThemeOf(context)}
+      oversaturationPercentage={0}
+      isDisabled
+    />
+  ),
+  name: 'Delegation Wizard - Delegation Not Available',
 
-    parameters: {
-      id: 'wizard',
-    },
-  };
+  parameters: {
+    id: 'wizard',
+  },
+};
 
 export const UndelegateConfirmation = {
-  render: (_, props) => (
+  render: () => (
     <StakingUndelegateConfirmationStory
-      {...props}
       isHardwareWallet={boolean('isHardwareWallet', false)}
     />
   ),
@@ -140,9 +178,7 @@ export const UndelegateConfirmation = {
 };
 
 export const UndelegateConfirmationUnknownnStakePool = {
-  render: (_, props) => (
-    <StakingUndelegateConfirmationStory {...props} unknownStakePool />
-  ),
+  render: () => <StakingUndelegateConfirmationStory unknownStakePool />,
 
   name: 'Undelegate Confirmation - unknownn stake pool',
 
@@ -151,13 +187,12 @@ export const UndelegateConfirmationUnknownnStakePool = {
   },
 };
 
-export const // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ locale, }: { locale: string; ... Remove this comment to see the full error message
-  UndelegateConfirmationResult = {
-    render: (_, props) => (
-      <StakingUndelegateConfirmationResultStory {...props} />
-    ),
+export const UndelegateConfirmationResult = {
+  render: (_args, context) => (
+    <StakingUndelegateConfirmationResultStory locale={localeOf(context)} />
+  ),
 
-    parameters: {
-      id: 'undelegate-confirmation-result',
-    },
-  };
+  parameters: {
+    id: 'undelegate-confirmation-result',
+  },
+};
