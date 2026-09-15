@@ -13,6 +13,7 @@ import type { AssetMetadataDatabase } from './assetMetadataDb';
 import {
   ASSET_METADATA_REFRESH_MS,
   AssetMetadataResolver,
+  openAssetMetadataResolver,
 } from './assetMetadataResolver';
 import type {
   RegistryTransport,
@@ -715,5 +716,110 @@ describe('timers', () => {
     jest.advanceTimersByTime(24 * 60 * 60 * 1000);
     await Promise.resolve();
     expect(transport.calls).toBe(1);
+  });
+});
+
+/**
+ * Offline is a state rather than a failure, and the two places that say so are
+ * a transport that throws rather than answering, and the background work the
+ * request queues behind its answer. Neither is reached by a transport that
+ * returns a failure result, which is what every other case here uses.
+ */
+describe('a transport that throws', () => {
+  const throwingTransport = (): RegistryTransport => ({
+    post: () => {
+      throw new Error('there is no network');
+    },
+  });
+
+  it('answers from the cache and records nothing', async () => {
+    const resolver = resolverWith(throwingTransport());
+    const rows = await resolver.resolve([BTED.subject]);
+    expect(rows).toEqual([]);
+    expect(storedRow()).toBeUndefined();
+  });
+
+  it('does not reject the request that queued the work', async () => {
+    const resolver = resolverWith(throwingTransport());
+    expect(resolver.request([BTED.subject])).toEqual([]);
+    await expect(resolver.pending()).resolves.toBeUndefined();
+  });
+
+  it('releases the subject, so a later request tries again', async () => {
+    let attempts = 0;
+    const transport: RegistryTransport = {
+      post: async (_url: string, body: string) => {
+        attempts += 1;
+        if (attempts === 1) throw new Error('there is no network');
+        const { subjects } = JSON.parse(body);
+        return {
+          ok: true,
+          status: 200,
+          body: JSON.stringify({ subjects: subjects.map(() => bted()) }),
+        };
+      },
+    };
+    const resolver = resolverWith(transport);
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(storedRow()).toBeUndefined();
+
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(storedRow().ticker).toBe('BTED');
+    expect(attempts).toBe(2);
+  });
+});
+
+describe('a database that throws under the resolver', () => {
+  it('does not reject the background work, and releases the subject', async () => {
+    // `request` reads the cache itself and then queues the rest behind its
+    // answer, so this fails the second read, inside the queued work. Every
+    // accessor on the real wrapper swallows its own failure, so an injected
+    // one is the only way to reach the queue's own guard: work scheduled and
+    // not awaited must not become an unhandled rejection.
+    let reads = 0;
+    const failsOnTheSecondRead = {
+      readMetadata: (subjects: Array<string>) => {
+        reads += 1;
+        // Read one is `request`'s own; read two is the queued work's.
+        if (reads === 2) throw new Error('the handle went away');
+        return database.readMetadata(subjects);
+      },
+      readResolutions: () => [],
+      writeMetadata: () => 0,
+      writeResolutions: () => 0,
+      close: () => {},
+    };
+    const resolver = resolverWith(failingTransport(), {
+      database: failsOnTheSecondRead,
+    });
+
+    expect(resolver.request([BTED.subject])).toEqual([]);
+    await expect(resolver.pending()).resolves.toBeUndefined();
+    expect(reads).toBe(2);
+
+    // Released rather than left claimed, so the subject can be asked for again.
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(reads).toBe(4);
+  });
+});
+
+describe('openAssetMetadataResolver', () => {
+  it('builds a resolver on the options it is given and closes its database', async () => {
+    const resolver = openAssetMetadataResolver({
+      database,
+      transport: transportFor(() => [bted()]),
+      endpoint: 'https://tokens.example',
+      now: () => NOW,
+    });
+    await resolver.resolve([BTED.subject]);
+    expect(storedRow().ticker).toBe('BTED');
+
+    resolver.close();
+    // Closed through the resolver rather than through the handle the suite
+    // holds, so the teardown's own close is the second one.
+    expect(database.readMetadata([BTED.subject])).toEqual([]);
   });
 });

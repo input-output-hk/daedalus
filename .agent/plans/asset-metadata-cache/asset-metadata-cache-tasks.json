@@ -1065,7 +1065,7 @@
      "id": "task-026",
      "title": "Jest coverage across the main-process modules",
      "description": "Consolidate and fill the gaps left by the per-task specs, so the database, the client, the verification chain, the resolver and the image store are covered as a set rather than individually.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 10.0,
      "dependencies": [
@@ -1073,22 +1073,28 @@
       "task-012"
      ],
      "targetPaths": [
-      "source/main/assets/assetMetadataDb.spec.ts",
+      "source/main/assets/assetMetadataDb.realfs.spec.ts",
       "source/main/assets/assetRegistryClient.spec.ts",
       "source/main/assets/assetVerification.spec.ts",
-      "source/main/assets/assetMetadataResolver.spec.ts",
-      "source/main/assets/assetImageStore.spec.ts"
+      "source/main/assets/assetMetadataResolver.realfs.spec.ts",
+      "source/main/assets/assetImageStore.realfs.spec.ts",
+      "source/main/ipc/assetMetadataChannel.realfs.spec.ts",
+      "source/renderer/app/utils/assets.spec.ts"
      ],
      "implementationNotes": [
-      "Specs are colocated as <Unit>.spec.ts. tests/ is Cucumber territory and is not used here.",
+      "Specs are colocated as <Unit>.spec.ts, with .realfs.spec.ts for one that uses the real filesystem rather than a stub. tests/ is Cucumber territory and is not used here.",
       "describe names the exported unit with no article; it uses present-tense third person, not 'should'.",
       "yarn test:jest runs outside the Nix shell, so these are the checks that can run anywhere.",
-      "Cucumber is not used. The end-to-end suite cannot execute: spectron@14 resolves electron-chromedriver@12 against Electron 41.3.0, and Cucumber is not in the check set at perSystem/checks.nix."
+      "Cucumber is not used. The end-to-end suite cannot execute: spectron@14 resolves electron-chromedriver@12 against Electron 41.3.0, and Cucumber is not in the check set at perSystem/checks.nix.",
+      "Four items on the PRD's Testing Strategy list describe phase 7 code that does not exist: the metadata source URL validator, getAssetMetadataSourceIdFromUrl, pointer resolution and its three local checks, and the chain-row assertion. They are named as out of scope rather than omitted.",
+      "The gaps are found by a coverage run rather than by reading, and every one of them is a failure path: the real HTTP transport, the database's seven catches, both IPC handler catches, three verification catches and the resolver's background-work guard.",
+      "sortAssets in the renderer had no coverage and orders every token list; it also carries the empty-fingerprint fallback this plan added for a row the cache has not resolved."
      ],
      "acceptance": [
-      "Every negative case named in the PRD Testing Strategy has a spec, listed by name in the task's closing note",
-      "Coverage includes the renderer-side modules this task's target paths do not name, or the task's scope is widened to include them; it cannot satisfy its own criterion from source/main/assets alone",
-      "yarn test:jest passes"
+      "Every negative case the PRD Testing Strategy names for phases 1 to 6 has a spec, listed by name in the task's closing note, with the phase 7 items named as out of scope",
+      "The renderer modules the Testing Strategy names are covered and named, and the task's targetPaths include them",
+      "No unreached failure path remains in the main-process modules, or the reason one remains is recorded",
+      "jest, cucumber-unit, compile and lint pass from nix build, and no source file changes"
      ]
     },
     {

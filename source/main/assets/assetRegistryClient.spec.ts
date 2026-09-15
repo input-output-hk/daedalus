@@ -5,6 +5,8 @@
  *
  * @jest-environment node
  */
+import http from 'http';
+import type { AddressInfo } from 'net';
 import {
   ASSET_REGISTRY_BACKOFF_BASE_MS,
   ASSET_REGISTRY_BACKOFF_CEILING_MS,
@@ -15,6 +17,8 @@ import {
   assetRegistryEndpoint,
   assetRegistryQueryUrl,
   assetRegistryRequestBody,
+  ASSET_REGISTRY_MAX_RESPONSE_BYTES,
+  httpRegistryTransport,
   queryAssetRegistry,
 } from './assetRegistryClient';
 import type {
@@ -445,5 +449,177 @@ describe('sequencing', () => {
     expect(transport.calls.length).toBeGreaterThan(1);
     expect(transport.overlapped).toBe(false);
     expect(result.entries).toHaveLength(300);
+  });
+});
+
+/**
+ * The real transport, against a server on the loopback address.
+ *
+ * Every other group in this file substitutes `post`, so this is the only place
+ * the code that opens a socket runs at all: the two response caps, the timeout,
+ * the two error paths and the scheme choice that lets the selfnode mock be
+ * reached over plain HTTP.
+ */
+describe('httpRegistryTransport', () => {
+  let server: http.Server | null = null;
+
+  const serve = async (
+    handler: (
+      request: http.IncomingMessage,
+      response: http.ServerResponse
+    ) => void
+  ): Promise<string> => {
+    server = http.createServer(handler);
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    const { port } = server.address() as AddressInfo;
+    return `http://127.0.0.1:${port}/metadata/query`;
+  };
+
+  afterEach(async () => {
+    if (!server) return;
+    const closing = server;
+    server = null;
+    // `closeAllConnections` is Node 18.2 and newer and is not in the @types
+    // version this repository pins, so it is reached through the instance
+    // rather than the declaration. Without it `close` waits for keep-alive
+    // sockets and the case times out.
+    (
+      closing as unknown as { closeAllConnections?: () => void }
+    ).closeAllConnections?.();
+    await new Promise<void>((resolve) => {
+      closing.close(() => resolve());
+    });
+  });
+
+  it('posts the body and returns the status and the response text', async () => {
+    let seen = '';
+    let method = '';
+    let contentType = '';
+    const url = await serve((request, response) => {
+      method = request.method;
+      contentType = String(request.headers['content-type']);
+      const chunks: Array<Buffer> = [];
+      request.on('data', (chunk) => chunks.push(chunk));
+      request.on('end', () => {
+        seen = Buffer.concat(chunks).toString('utf8');
+        response.writeHead(200, { 'content-type': 'application/json' });
+        response.end('{"subjects":[]}');
+      });
+    });
+
+    const result = await httpRegistryTransport.post(
+      url,
+      '{"subjects":["a"]}',
+      5000
+    );
+    expect(result).toEqual({
+      ok: true,
+      status: 200,
+      body: '{"subjects":[]}',
+    });
+    expect(method).toBe('POST');
+    expect(contentType).toBe('application/json');
+    expect(seen).toBe('{"subjects":["a"]}');
+  });
+
+  it('reports a status it does not like rather than failing', async () => {
+    const url = await serve((_request, response) => {
+      response.writeHead(413);
+      response.end('too big');
+    });
+    const result = await httpRegistryTransport.post(url, '{}', 5000);
+    expect(result).toEqual({ ok: true, status: 413, body: 'too big' });
+  });
+
+  it('refuses a response that declares a length over the cap', async () => {
+    let bodySent = false;
+    const url = await serve((_request, response) => {
+      response.writeHead(200, {
+        'content-length': String(ASSET_REGISTRY_MAX_RESPONSE_BYTES + 1),
+      });
+      bodySent = true;
+      response.end('x'.repeat(ASSET_REGISTRY_MAX_RESPONSE_BYTES + 1));
+    });
+    const result = await httpRegistryTransport.post(url, '{}', 5000);
+    expect(result).toEqual({ ok: false, reason: 'too-large' });
+    // The refusal is on the header, so it does not depend on how much of the
+    // body arrived.
+    expect(bodySent).toBe(true);
+  });
+
+  it('refuses a response that streams past the cap without declaring it', async () => {
+    const url = await serve((_request, response) => {
+      // Chunked, so there is no content-length to read and the cap has to be
+      // enforced as the bytes arrive.
+      response.writeHead(200, { 'transfer-encoding': 'chunked' });
+      const chunk = 'x'.repeat(64 * 1024);
+      for (
+        let sent = 0;
+        sent <= ASSET_REGISTRY_MAX_RESPONSE_BYTES;
+        sent += chunk.length
+      ) {
+        response.write(chunk);
+      }
+      response.end();
+    });
+    const result = await httpRegistryTransport.post(url, '{}', 5000);
+    expect(result).toEqual({ ok: false, reason: 'too-large' });
+  });
+
+  it('returns a response exactly at the cap rather than refusing it', async () => {
+    const body = 'x'.repeat(ASSET_REGISTRY_MAX_RESPONSE_BYTES);
+    const url = await serve((_request, response) => {
+      response.writeHead(200, { 'content-length': String(body.length) });
+      response.end(body);
+    });
+    const result = await httpRegistryTransport.post(url, '{}', 5000);
+    expect(result).toEqual({
+      ok: true,
+      status: 200,
+      body,
+    });
+  });
+
+  it('gives up on a server that never answers', async () => {
+    const url = await serve(() => {
+      // Deliberately no response.
+    });
+    const result = await httpRegistryTransport.post(url, '{}', 50);
+    expect(result).toEqual({ ok: false, reason: 'timeout' });
+  });
+
+  it('reports a connection nobody is listening on as a network failure', async () => {
+    const url = await serve((_request, response) => response.end('{}'));
+    const closing = server;
+    server = null;
+    (
+      closing as unknown as { closeAllConnections?: () => void }
+    ).closeAllConnections?.();
+    await new Promise<void>((resolve) => closing.close(() => resolve()));
+
+    const result = await httpRegistryTransport.post(url, '{}', 5000);
+    expect(result).toEqual({ ok: false, reason: 'network' });
+  });
+
+  it('reports a URL it cannot parse as a network failure rather than throwing', async () => {
+    const result = await httpRegistryTransport.post('not a url', '{}', 5000);
+    expect(result).toEqual({ ok: false, reason: 'network' });
+  });
+
+  it('settles once when the server answers and then the connection drops', async () => {
+    const url = await serve((_request, response) => {
+      response.writeHead(200);
+      response.end('{}');
+    });
+    const results = await Promise.all([
+      httpRegistryTransport.post(url, '{}', 5000),
+      httpRegistryTransport.post(url, '{}', 5000),
+    ]);
+    expect(results).toEqual([
+      { ok: true, status: 200, body: '{}' },
+      { ok: true, status: 200, body: '{}' },
+    ]);
   });
 });

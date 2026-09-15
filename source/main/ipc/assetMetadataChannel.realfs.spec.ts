@@ -469,6 +469,73 @@ describe('assetMetadataChannel', () => {
     });
   });
 
+  /**
+   * Both handlers promise the renderer exactly one attributable response per
+   * request, which is what the correlation registry on the other side depends
+   * on. Neither the database nor the image store can produce a throw to test
+   * that with: both swallow their own failures, which is why closing the
+   * database reaches the guard rather than the catch. A collaborator that throws
+   * is the only driver for it.
+   */
+  describe('a metadata column the handler cannot use', () => {
+    it.each([
+      ['a JSON array', '[1, 2, 3]'],
+      ['a JSON null', 'null'],
+      ['a JSON number', '7'],
+      ['the empty string', ''],
+    ])('maps %s to null', async (_name, stored) => {
+      writeRow(SUBJECT, { metadata: stored });
+      const handlers = handlersWith(
+        stubTransport(async () => registryAnswer(SUBJECT))
+      );
+      const response = await handlers.readMetadata({
+        requestId: 'r-shape',
+        subjects: [SUBJECT],
+      });
+      expect(response.entries[0].metadata).toBeNull();
+    });
+  });
+
+  describe('answering when a collaborator throws', () => {
+    it('answers the request id with empty lists rather than rejecting', async () => {
+      const handlers = handlersWith(
+        stubTransport(async () => ({ ok: false, reason: 'network' }))
+      );
+      (handlers as any)._resolver = {
+        request: () => {
+          throw new Error('the resolver fell over');
+        },
+      };
+
+      const response = await handlers.readMetadata({
+        requestId: 'r-throw',
+        subjects: [SUBJECT],
+      });
+      expect(response).toEqual({
+        requestId: 'r-throw',
+        entries: [],
+        unresolved: [],
+      });
+    });
+
+    it('answers the request id with absent rather than rejecting an image read', async () => {
+      const handlers = handlersWith(
+        stubTransport(async () => ({ ok: false, reason: 'network' }))
+      );
+      (handlers as any)._images = {
+        fetch: async () => {
+          throw new Error('the image store fell over');
+        },
+      };
+
+      const response = await handlers.readImage({
+        requestId: 'i-throw',
+        subject: SUBJECT,
+      });
+      expect(response).toEqual({ requestId: 'i-throw', status: 'absent' });
+    });
+  });
+
   describe('handleAssetMetadataRequests', () => {
     it('registers one handler per request channel however often it is called', () => {
       const module = loadModule();

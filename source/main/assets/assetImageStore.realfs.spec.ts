@@ -17,6 +17,7 @@ import {
   ASSET_IMAGE_TOUCH_INTERVAL_MS,
   AssetImageStore,
   detectImageMediaType,
+  openAssetImageStore,
 } from './assetImageStore';
 import type {
   RegistryTransport,
@@ -485,5 +486,19 @@ describe('the eviction ordering', () => {
     expect(database.enforceImageBounds(1, 1_000_000)).toBe(1);
     expect(database.readImage(older)).not.toBeNull();
     expect(database.readImage(newer)).toBeNull();
+  });
+});
+
+describe('openAssetImageStore', () => {
+  it('builds a store on the options it is given', async () => {
+    const store = openAssetImageStore({
+      database,
+      transport: answering(PNG),
+      endpoint: 'https://tokens.example',
+      now: () => NOW,
+    });
+    const row = await store.fetch(SUBJECT);
+    expect(row.mediaType).toBe('image/png');
+    expect(Buffer.from(row.bytes)).toEqual(PNG);
   });
 });

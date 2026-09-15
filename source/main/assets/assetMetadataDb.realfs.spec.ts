@@ -557,3 +557,70 @@ describe('reading and writing', () => {
     db.close();
   });
 });
+
+/**
+ * The module's stated property is that nothing it does can fail startup, and
+ * every accessor carries a catch that says so. The wrapper's own `close()` is
+ * not the way to reach them: it drops its reference, so every accessor returns
+ * at its guard and the `try` is never entered. A handle that is live to the
+ * wrapper and dead to the engine is the state those catches exist for, and it is
+ * what a filesystem going away under a running process produces.
+ */
+describe('a handle that fails under the wrapper', () => {
+  const brokenDatabase = () => {
+    const db = openAssetMetadataDatabase(databaseFile);
+    db.writeMetadata([metadataWrite()]);
+    db.writeImage({
+      subject: SUBJECT,
+      mediaType: 'image/png',
+      bytes: new Uint8Array([137, 80, 78, 71]),
+    });
+    // Straight at the engine, leaving the wrapper's reference in place.
+    (db as unknown as { _db: { close: () => void } })._db.close();
+    return db;
+  };
+
+  it('answers an empty list from a read rather than throwing', () => {
+    const db = brokenDatabase();
+    expect(db.readMetadata([SUBJECT])).toEqual([]);
+    expect(db.readResolutions([SUBJECT])).toEqual([]);
+    expect(db.readImageSubjects([SUBJECT])).toEqual([]);
+  });
+
+  it('answers nothing from an image read rather than throwing', () => {
+    expect(brokenDatabase().readImage(SUBJECT)).toBeNull();
+  });
+
+  it('reports zero rows written rather than throwing', () => {
+    const db = brokenDatabase();
+    expect(db.writeMetadata([metadataWrite()])).toBe(0);
+    expect(
+      db.writeResolutions([
+        { subject: SUBJECT, state: 'resolved', retryAfter: 0, failureCount: 0 },
+      ])
+    ).toBe(0);
+  });
+
+  it('reports an image write and a touch as refused rather than throwing', () => {
+    const db = brokenDatabase();
+    expect(
+      db.writeImage({
+        subject: SUBJECT,
+        mediaType: 'image/png',
+        bytes: new Uint8Array([137, 80, 78, 71]),
+      })
+    ).toBe(false);
+    expect(db.touchImage(SUBJECT, 1)).toBe(false);
+  });
+
+  it('evicts nothing rather than throwing', () => {
+    expect(brokenDatabase().enforceImageBounds(1, 1)).toBe(0);
+  });
+
+  it('closes without throwing, and stays closed', () => {
+    const db = brokenDatabase();
+    expect(() => db.close()).not.toThrow();
+    expect(() => db.close()).not.toThrow();
+    expect(db.readMetadata([SUBJECT])).toEqual([]);
+  });
+});

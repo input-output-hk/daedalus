@@ -228,6 +228,15 @@ describe('evaluateNativeScript', () => {
     ).toBe(true);
   });
 
+  it('refuses a kind it does not know, which the decoder cannot produce', () => {
+    // Unreachable through `decodeNativeScript`, which refuses an unknown tag.
+    // The guard is what decides which way an unknown kind falls, and it falls
+    // towards unsatisfied.
+    expect(evaluateNativeScript({ kind: 'unheard-of' } as any, hashes())).toBe(
+      false
+    );
+  });
+
   it('resolves through nesting', () => {
     const script: NativeScript = {
       kind: 'all',
@@ -352,6 +361,18 @@ describe('verifyPolicyBinding', () => {
     expect(
       verifyPolicyBinding(subject, `8201${bytes.toString('hex')}`, [])
     ).toEqual({ bound: false, reason: 'not-a-script' });
+  });
+
+  it('reports bytes that are not CBOR at all as not-a-script', () => {
+    // A lone break byte hashes like anything else and fails at the decoder
+    // rather than at the shape check, which is a different path from the case
+    // above where the CBOR decodes to something that is not a script.
+    const bytes = Buffer.from('ff', 'hex');
+    const subject = `${nativeScriptPolicyId(bytes)}42544544`;
+    expect(verifyPolicyBinding(subject, '8201ff', [])).toEqual({
+      bound: false,
+      reason: 'not-a-script',
+    });
   });
 
   it('binds but does not satisfy when the signing key is not required', () => {
@@ -560,6 +581,19 @@ describe('attestationPayload', () => {
     expect(attestationPayload(BTED.subject, 'logo', 42, 0)).toBeNull();
   });
 
+  it('refuses a value CBOR cannot encode rather than throwing', () => {
+    // The registry publishes JSON, so nothing it sends can be a function; the
+    // guard is for a caller handing over something the encoder refuses.
+    expect(
+      attestationPayload(BTED.subject, 'ticker', () => 'BTED', 0)
+    ).toBeNull();
+  });
+
+  it('refuses a subject or a property name that is not a string', () => {
+    expect(attestationPayload(null as any, 'ticker', 'BTED', 0)).toBeNull();
+    expect(attestationPayload(BTED.subject, null as any, 'BTED', 0)).toBeNull();
+  });
+
   it('refuses a sequence number that is not an integer', () => {
     expect(attestationPayload(BTED.subject, 'ticker', 'BTED', 1.5)).toBeNull();
     expect(
@@ -638,6 +672,18 @@ describe('verifyAttestationSignature', () => {
     expect(
       verifyAttestationSignature(
         payload,
+        BTED_PROPERTIES.name.signature,
+        BTED.publicKey
+      )
+    ).toBe(false);
+  });
+
+  it('rejects a payload that is not bytes rather than throwing', () => {
+    // `attestationPayload` returns null for an input it cannot encode, and a
+    // caller that passes that on reaches the verifier with nothing to verify.
+    expect(
+      verifyAttestationSignature(
+        null as any,
         BTED_PROPERTIES.name.signature,
         BTED.publicKey
       )

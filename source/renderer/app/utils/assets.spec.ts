@@ -3,8 +3,9 @@ import {
   getAssetTokenFromToken,
   getNonZeroAssetTokens,
   searchAssets,
+  sortAssets,
 } from './assets';
-import type { AssetMetadata, Token } from '../api/assets/types';
+import type { AssetMetadata, AssetToken, Token } from '../api/assets/types';
 
 const policyId = '6b8d07d69639e9413dd637a1a815a7323c69c86abbafb66dbfdb1aa7';
 const otherPolicyId =
@@ -284,5 +285,104 @@ describe('searchAssets', () => {
   it('returns everything for a search of fewer than three characters', () => {
     const rows = [unresolvedRow()];
     expect(searchAssets('un', rows)).toEqual(rows);
+  });
+});
+
+/**
+ * The comparator behind every token list. Driven as the order a list comes out
+ * in rather than as the sign of a pair, because the order is what it is for.
+ *
+ * The row with neither a fingerprint nor metadata is the state phase 3
+ * introduced: a token the wallet holds and the cache has never heard of is
+ * rendered anyway, and the comparator has to place it.
+ */
+describe('sortAssets', () => {
+  const row = (overrides: Record<string, any>): AssetToken =>
+    ({
+      policyId,
+      assetName,
+      uniqueId: `${policyId}${assetName}`,
+      quantity: new BigNumber(1),
+      decimals: null,
+      ...overrides,
+    }) as AssetToken;
+
+  const named = row({
+    fingerprint: 'asset1bbbb',
+    metadata: { name: 'Beta', description: '', ticker: 'B' },
+    quantity: new BigNumber(30),
+  });
+  const alsoNamed = row({
+    fingerprint: 'asset1aaaa',
+    metadata: { name: 'Alpha', description: '', ticker: 'A' },
+    quantity: new BigNumber(20),
+  });
+  const unnamed = row({
+    fingerprint: 'asset1cccc',
+    metadata: null,
+    quantity: new BigNumber(10),
+  });
+  const unresolved = row({
+    fingerprint: undefined,
+    metadata: null,
+    quantity: new BigNumber(40),
+  });
+
+  const order = (
+    sortBy: 'token' | 'fingerprint' | 'quantity',
+    direction: 'asc' | 'desc'
+  ) =>
+    [named, unnamed, unresolved, alsoNamed]
+      .slice()
+      .sort(sortAssets(sortBy, direction))
+      .map((asset) => asset.quantity.toNumber());
+
+  it('puts published names first, in order, then the rest by fingerprint', () => {
+    // 20 Alpha, 30 Beta, then the two without a name: the unresolved row's
+    // empty fingerprint sorts ahead of asset1cccc.
+    expect(order('token', 'asc')).toEqual([20, 30, 40, 10]);
+  });
+
+  it('reverses both halves without moving a named row past an unnamed one', () => {
+    expect(order('token', 'desc')).toEqual([30, 20, 10, 40]);
+  });
+
+  it('orders by fingerprint, with a row that has none sorting first', () => {
+    expect(order('fingerprint', 'asc')).toEqual([40, 20, 30, 10]);
+  });
+
+  it('reverses the fingerprint order, leaving a row with none last', () => {
+    expect(order('fingerprint', 'desc')).toEqual([10, 30, 20, 40]);
+  });
+
+  it('orders by quantity in the denomination each row is shown in', () => {
+    expect(order('quantity', 'asc')).toEqual([10, 20, 30, 40]);
+    expect(order('quantity', 'desc')).toEqual([40, 30, 20, 10]);
+  });
+
+  it('compares quantities as the user sees them, not as the ledger holds them', () => {
+    // 1000 raw units at six decimal places is 0.001, which is less than 2 at
+    // none. Sorting the raw integers would put it last.
+    const formatted = row({
+      fingerprint: 'asset1dddd',
+      metadata: null,
+      quantity: new BigNumber(1000),
+      decimals: 6,
+    });
+    const raw = row({
+      fingerprint: 'asset1eeee',
+      metadata: null,
+      quantity: new BigNumber(2),
+      decimals: 0,
+    });
+    expect(
+      [raw, formatted]
+        .sort(sortAssets('quantity', 'asc'))
+        .map((asset) => asset.fingerprint)
+    ).toEqual(['asset1dddd', 'asset1eeee']);
+  });
+
+  it('leaves the order alone for a key it does not know', () => {
+    expect(order('rank' as any, 'asc')).toEqual([30, 10, 40, 20]);
   });
 });
