@@ -1710,8 +1710,62 @@ Corrections to this document, recorded rather than edited in:
   `.agent/workflows/ipc.md`, along with eleven other divergences between that
   document and the code, including a table of seven channels that do not exist.
 
+### 2026-09-16: Phase 7 built
+
+The metadata source setting and the chain channel are complete. Thirty-eight of
+the forty tasks are `completed` and two are `blocked` on an operator with all
+three platforms, which are the two manual QA passes.
+
+What phase 7 produced:
+
+- A settings category in the shape of the SMASH one, with a live probe against
+  the candidate instance's `/tip` before a URL is stored, and two refusals that
+  read differently: not an instance, and behind your node.
+- A pointer client that resolves a batch in two requests, trims its responses,
+  holds a request ceiling of a fifth of the published rate limit, and leaves rows
+  absent on every refusal.
+- The local confirmation, which is what makes the index an index. Three checks
+  over the bytes and one against the block in the user's own immutable database.
+- Chain rows, with `decimals` NULL and `verified` false on every one of them, and
+  a name resolution rung between the published name and the decoded one.
+- Per-channel freshness: a CIP-25 record under a policy that can never mint again
+  is read once for the life of an installation.
+
+Corrections to this document, recorded rather than edited in:
+
+- **Open question 2 is closed.** The confirmation needs a decoder that hands back
+  the original byte range of a decoded item, and neither `cbor@5.0.2` nor
+  `borc@2.1.2` does. No runtime dependency was added. A structural reader is in
+  the repository at `source/main/assets/cborSpan.ts`: it walks the structure,
+  measures it and returns offsets, and the caller reads values from those offsets.
+  Its failure mode is one-directional, because every use of it sits inside a check
+  whose failure writes no row, and the byte ranges are needed in three places
+  rather than one.
+- **The endpoint ordering at the fetch and verify path is wrong.** It puts the
+  configured source setting second in the registry fetcher's order, behind
+  `launcherConfig.metadataUrl`, which is present on every network but selfnode, so
+  the setting could never apply. The setting does not feed the registry fetcher at
+  all: the two are different endpoints speaking different protocols. It supplies
+  the pointer channel's base URL and nothing else.
+- **`checkSmashServerHealth` is not a probe of the candidate URL.** It passes that
+  URL to cardano-wallet as a query parameter and asks cardano-wallet to check it.
+  There is no cardano-wallet endpoint that will probe a pointer source, so the
+  asset probe issues its own request rather than reusing the repository's HTTP
+  client, which sends over plain HTTP on selfnode and carries the wallet's client
+  certificate.
+- **Closure cannot be read from the registry's policy field for a chain row.** A
+  chain row exists precisely for a subject the registry does not answer. The script
+  is taken from the minting transaction's own witness set instead, which is
+  available for exactly these rows and is the script the chain accepted. The
+  measured 89.6 percent closure figure is about registry entries and does not
+  transfer to this channel, which is unmeasured.
+- **The volatile window is measured against the immutable database's own tip**
+  rather than against k and a slot length. That needs no per-network constant and
+  answers the question being asked, which is whether the database holds that slot
+  yet.
+
 ---
 
 **Status:** In Progress
-**Date:** 2026-09-10, updated 2026-09-11, revised 2026-09-14, phases 1 to 6 built 2026-09-15
+**Date:** 2026-09-10, updated 2026-09-11, revised 2026-09-14, phases 1 to 6 built 2026-09-15, phase 7 built 2026-09-16
 **Author:** Se7en Labs

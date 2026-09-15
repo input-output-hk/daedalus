@@ -51,10 +51,10 @@ and menu entry that reach it.
 - `.agent/skills/i18n-messaging/SKILL.md`. Fifteen messages are added, so its
   rules on ids, descriptions and the `!!!` marker are the ones that decide
   whether the `i18n` check passes.
-- `.agent/workflows/frontend.md` is **not** followed on component style: report
-  01 records that it shows `useContext(IntlContext)`, which is not in the
-  repository, and `composes:`, which is used zero times. The neighbouring
-  settings components are the pattern instead.
+- `.agent/workflows/frontend.md` is **not** followed on component style. It
+  shows `useContext(IntlContext)`, a symbol that is not in this repository and
+  that react-intl 2.9.0 predates, and `composes:`, which is used zero times.
+  The neighbouring settings components are the pattern instead.
 
 ## Live Repo Findings Verified For Planning
 

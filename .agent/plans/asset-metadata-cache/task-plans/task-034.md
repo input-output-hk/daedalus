@@ -206,7 +206,7 @@ version 1 and version 2 spell it differently.
 6. A transaction whose bytes are valid but which is not in the block it names
    fails.
 7. All three historical auxiliary-data shapes decode.
-8. An unrecognised immutable chunk shape fails closed rather than guessing, and
+8. An unrecognized immutable chunk shape fails closed rather than guessing, and
    the format version it was read against is recorded in the module.
 9. No confirmation is returned on any failing path.
 10. No new runtime dependency; `package.json` and `yarn.lock` unchanged.
@@ -256,7 +256,7 @@ version 1 and version 2 spell it differently.
   direction and it is not detectable from here in advance.
 - **A freshly minted NFT resolves late.** See the closing note; it is the common
   case rather than the exception.
-- **The block read is synchronous file I O in the main process.** A chunk file
+- **The block read is synchronous file I/O in the main process.** A chunk file
   is on the order of a megabyte and is read once per confirmation. It runs
   behind the resolver's existing queue, and nothing waits on it, but it is
   synchronous and it is on the main process's thread.

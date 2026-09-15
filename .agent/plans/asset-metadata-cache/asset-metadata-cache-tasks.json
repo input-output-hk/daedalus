@@ -2,7 +2,7 @@
  "metadata": {
   "title": "Asset Metadata Cache Tasks",
   "created": "2026-09-10",
-  "updated": "2026-09-14",
+  "updated": "2026-09-16",
   "version": "1.3.0",
   "totalTasks": 40,
   "prdReference": ".agent/plans/asset-metadata-cache/asset-metadata-cache-prd.md",
@@ -1550,7 +1550,7 @@
      "id": "task-038",
      "title": "Manual QA across the three source options",
      "description": "The process boundary, the settings surface and the chain channel end to end, on all three platforms, because CI wraps every check in x86_64-linux only and none of the specs exercise a real instance or a real chain.",
-     "status": "pending",
+     "status": "blocked",
      "priority": "high",
      "estimatedHours": 4.0,
      "dependencies": [
@@ -1568,7 +1568,10 @@
       "The direct option is visible and cannot be selected.",
       "An NFT the registry has never heard of: fingerprint only before resolution, its CIP-25 name after, and its amount in raw units throughout.",
       "Offline with a populated cache: chain rows answer from disk, no dialog and no toast.",
-      "Point the setting at an instance that returns a pointer to a transaction the local chain does not confirm, and check no row is written."
+      "Point the setting at an instance that returns a pointer to a transaction the local chain does not confirm, and check no row is written.",
+      "Two scenarios the task did not name are in the procedure. A freshly minted NFT, which is the only check of the volatile window's user-visible consequence and the case the PRD accepts as the usual path for NFTs. And selfnode, which has no Koios instance and must render the settings page, issue no request and say nothing about it.",
+      "Two scenarios need a local stand-in instance rather than a public one: refusing a source whose tip is far behind the node, because no public instance is twelve hours behind, and the lying-index case, because it needs a pointer to a transaction that did not mint the asset.",
+      "One thing was exercised here and is recorded so nobody looks for it again: the chain confirmation was run once against the real preprod immutable database on the development machine with a live tx_cbor response on 2026-09-16 and confirmed the pointer. One platform, one network, one asset, outside the application."
      ],
      "testCases": [
       "Linux, macOS and Windows each cover the six checks above",
@@ -1578,7 +1581,7 @@
       "The matrix is recorded with the version and platform each run was taken on",
       "No unresolved failure is carried forward without being written down"
      ],
-     "notes": "The failing-pointer case is the one worth doing by hand, because it is the check that makes the index untrusted by construction."
+     "notes": "The failing-pointer case is the one worth doing by hand, because it is the check that makes the index untrusted by construction. Blocked: this environment has no display, no macOS, no Windows, no mainnet wallet and no funded selfnode, so no scenario has been executed. The procedure, the expected evidence and the operator checklist are the deliverable."
     }
    ]
   }

@@ -46,9 +46,10 @@ profile persistence, and the store state the settings page will bind to.
 ## Docs, Workflows, and Skills Consulted
 
 - `.agent/skills/i18n-messaging/SKILL.md`, for the two new error messages.
-- `.agent/system/state-management.md` is **not** relied on for the store shape;
-  report 01 records its `Store` constructor signature as one that has never
-  existed. `stores/StakingStore.ts` is read instead.
+- `.agent/system/state-management.md` is **not** relied on for the store shape.
+  The `Store` constructor signature it gives does not exist in this repository,
+  and `setupStores` is really `setUpStores` with four parameters.
+  `stores/StakingStore.ts` is read instead.
 
 ## Live Repo Findings Verified For Planning
 
