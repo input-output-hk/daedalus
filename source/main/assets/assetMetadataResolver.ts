@@ -184,10 +184,18 @@ export const registryEntryToRow = (
 export const chainPointerToRow = (
   pointer: KoiosPointer,
   slot: number,
-  cip25: Record<string, unknown> | null
+  cip25: Record<string, unknown> | null,
+  policyClosed: boolean
 ): AssetMetadataWrite => {
   const payload = pointer.cip68Metadata ?? cip25;
-  const metadata = payload ? JSON.stringify(payload) : null;
+  // A CIP-68 datum lives at a spendable output and changes when that output is
+  // spent, which needs no minting at all, so a closed minting policy says
+  // nothing about it. Only a CIP-25 record is frozen by closure.
+  const frozen = policyClosed && !pointer.cip68Metadata;
+  const metadata = JSON.stringify({
+    record: payload ?? null,
+    closed: frozen,
+  });
   return {
     subject: pointer.subject,
     policyId: pointer.policyId,
@@ -237,6 +245,23 @@ const sameContent = (
   row.source === stored.source &&
   row.sequenceNumber === stored.sequenceNumber &&
   row.slot === stored.slot;
+
+/**
+ * Whether a row can never change again.
+ *
+ * Only a chain row can be frozen, and only when the resolution that wrote it
+ * found the minting policy already closed. A forced read still reaches it: a
+ * manual refresh does not consult this at all.
+ */
+export const chainRowIsFrozen = (row: AssetMetadataRow): boolean => {
+  if (row.source !== 'chain' || typeof row.metadata !== 'string') return false;
+  try {
+    const parsed = JSON.parse(row.metadata);
+    return parsed?.closed === true;
+  } catch {
+    return false;
+  }
+};
 
 const storedAsWrite = (stored: AssetMetadataRow): AssetMetadataWrite => ({
   subject: stored.subject,
@@ -564,7 +589,12 @@ export class AssetMetadataResolver {
       }
 
       rows.push(
-        chainPointerToRow(pointer, confirmation.slot, confirmation.cip25)
+        chainPointerToRow(
+          pointer,
+          confirmation.slot,
+          confirmation.cip25,
+          confirmation.policyClosed
+        )
       );
       resolutions.push({
         subject: pointer.subject,
@@ -608,6 +638,11 @@ export class AssetMetadataResolver {
       if (this._claimed.has(subject)) return false;
       const row = bySubject.get(subject);
       if (!row) return true;
+      // Freshness is per channel rather than per row age. A registry record can
+      // be updated by its issuer at any time, so it always takes the window. A
+      // CIP-25 record under a policy that can never mint again is final, so it
+      // is read once and never again. Everything else takes the window.
+      if (chainRowIsFrozen(row)) return false;
       return now - row.updatedAt > ASSET_METADATA_REFRESH_MS;
     });
   }

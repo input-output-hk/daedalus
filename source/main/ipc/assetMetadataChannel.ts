@@ -81,6 +81,24 @@ const parsedMetadata = (
   }
 };
 
+/**
+ * A chain row's metadata column holds the record the minter published beside
+ * one field of the resolver's own bookkeeping, the policy-closure verdict that
+ * decides whether the row is ever re-read. The renderer gets the record and not
+ * the bookkeeping, which keeps the wire shape the same for both channels and
+ * keeps a minter-chosen key from ever colliding with one of ours.
+ */
+const entryMetadata = (
+  row: AssetMetadataRow
+): Record<string, unknown> | null => {
+  const parsed = parsedMetadata(row.metadata);
+  if (row.source !== 'chain') return parsed;
+  const record = parsed?.record;
+  return record && typeof record === 'object' && !Array.isArray(record)
+    ? (record as Record<string, unknown>)
+    : null;
+};
+
 const toEntry = (
   row: AssetMetadataRow,
   withImage: Set<string>
@@ -94,7 +112,7 @@ const toEntry = (
   verified: row.verified,
   source: row.source,
   hasImage: withImage.has(row.subject),
-  metadata: parsedMetadata(row.metadata),
+  metadata: entryMetadata(row),
 });
 
 /**

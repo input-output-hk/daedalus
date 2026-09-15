@@ -203,6 +203,60 @@ export const evaluateNativeScript = (
   }
 };
 
+/**
+ * The latest slot at which a native script could still be satisfied, or null
+ * when it never stops being satisfiable.
+ *
+ * A minting policy that can no longer be satisfied can never mint again, which
+ * is what makes a CIP-25 record final. The rule per form:
+ *
+ * - a key signature never expires, so it is unbounded
+ * - `all` is bounded by its earliest-expiring member
+ * - `any` is bounded by its latest-expiring member
+ * - `n of k` is bounded by the n-th latest, because n branches have to hold at
+ *   once; the conservative reading, the latest, is used instead, so a policy is
+ *   only ever called closed later than it truly is
+ * - `invalid_before` bounds the start and not the end, so it is unbounded
+ * - `invalid_hereafter` is valid up to but not including its slot
+ *
+ * Every uncertainty resolves towards "still open", because calling a policy
+ * closed stops the record ever being read again.
+ */
+export const nativeScriptLatestSlot = (script: NativeScript): number | null => {
+  switch (script.kind) {
+    case 'sig':
+    case 'timeAfter':
+      return null;
+    case 'timeBefore':
+      return script.slot - 1;
+    case 'all': {
+      let earliest: number | null = null;
+      script.scripts.forEach((inner) => {
+        const slot = nativeScriptLatestSlot(inner);
+        if (slot === null) return;
+        earliest = earliest === null ? slot : Math.min(earliest, slot);
+      });
+      return earliest;
+    }
+    case 'any':
+    case 'atLeast': {
+      let latest: number | null = null;
+      let unbounded = script.scripts.length === 0;
+      script.scripts.forEach((inner) => {
+        const slot = nativeScriptLatestSlot(inner);
+        if (slot === null) {
+          unbounded = true;
+          return;
+        }
+        latest = latest === null ? slot : Math.max(latest, slot);
+      });
+      return unbounded ? null : latest;
+    }
+    default:
+      return null;
+  }
+};
+
 export const nativeScriptPolicyId = (scriptBytes: Uint8Array): string => {
   const prefixed = new Uint8Array(scriptBytes.length + 1);
   prefixed[0] = 0;

@@ -9,6 +9,8 @@
  * The negative cases carry the weight. A positive case proves the happy path
  * agrees with itself; what has to be true is that a tampered byte anywhere in
  * the chain of hashes produces no row.
+ *
+ * @jest-environment node
  */
 import fs from 'fs';
 import os from 'os';
@@ -185,6 +187,32 @@ const auxiliaryData = (shape: AuxiliaryShape, name: string): Buffer => {
   );
 };
 
+/**
+ * A native script, and the policy id it hashes to.
+ *
+ * The mint has to be under the script's own policy id for the closure check to
+ * find it, so the id is derived rather than chosen.
+ */
+const nativeScript = (script: unknown) => {
+  const bytes = cbor.encode(script);
+  const prefixed = Buffer.concat([Buffer.from([0]), bytes]);
+  const policyId = Buffer.from(
+    blake2b(28).update(Uint8Array.from(prefixed)).digest()
+  ).toString('hex');
+  return { bytes, policyId };
+};
+
+const KEY_HASH = Buffer.alloc(28, 7);
+
+/** `all [sig, invalid_hereafter slot]`, the ordinary closing policy. */
+const closingScript = (slot: number) => [
+  1,
+  [
+    [0, KEY_HASH],
+    [5, slot],
+  ],
+];
+
 const syntheticTransaction = (
   shape: AuxiliaryShape,
   options: {
@@ -192,11 +220,14 @@ const syntheticTransaction = (
     quantity?: number;
     policyId?: string;
     withAuxiliary?: boolean;
+    script?: unknown;
   } = {}
 ) => {
   const name = options.name ?? 'Fixture Token';
   const quantity = options.quantity ?? 1;
-  const policyId = options.policyId ?? SYNTHETIC_POLICY;
+  const witnessScript = options.script ? nativeScript(options.script) : null;
+  const policyId =
+    options.policyId ?? witnessScript?.policyId ?? SYNTHETIC_POLICY;
   const withAuxiliary = options.withAuxiliary ?? true;
   const auxiliary = auxiliaryData(shape, name);
 
@@ -216,7 +247,13 @@ const syntheticTransaction = (
     body.set(7, Buffer.from(digest(auxiliary), 'hex'));
   }
   const bodyBytes = cbor.encode(body);
-  const witnessBytes = cbor.encode(new Map());
+  // Built from bytes rather than through `cbor.encode`, because the script has
+  // to appear in the witness set as the exact bytes that were hashed into the
+  // policy id. Encoding a Buffer would wrap it in a byte string instead.
+  // `a1 01 81` is a one-entry map, key 1, holding a one-element array.
+  const witnessBytes = witnessScript
+    ? Buffer.concat([Buffer.from([0xa1, 0x01, 0x81]), witnessScript.bytes])
+    : cbor.encode(new Map());
 
   const transaction =
     shape === 'alonzo'
@@ -258,11 +295,12 @@ const syntheticTransaction = (
     block,
     headerHash,
     txHash: digest(bodyBytes),
+    policyId,
     candidate: (
       overrides: Partial<PointerCandidate> = {}
     ): PointerCandidate => ({
-      subject: `${SYNTHETIC_POLICY}${SYNTHETIC_NAME}`,
-      policyId: SYNTHETIC_POLICY,
+      subject: `${policyId}${SYNTHETIC_NAME}`,
+      policyId,
       assetName: SYNTHETIC_NAME,
       txHash: digest(bodyBytes),
       blockHash: headerHash,
@@ -492,11 +530,18 @@ describe('confirmChainPointer across the auxiliary-data shapes', () => {
   });
 
   it('rejects a mint under a different policy', () => {
-    const built = syntheticTransaction('alonzo', {
-      policyId: 'c'.repeat(56),
-    });
+    const built = syntheticTransaction('alonzo');
+    const other = 'c'.repeat(56);
     const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
-    expect(confirmChainPointer(built.candidate(), { reader })).toEqual({
+    expect(
+      confirmChainPointer(
+        built.candidate({
+          policyId: other,
+          subject: `${other}${SYNTHETIC_NAME}`,
+        }),
+        { reader }
+      )
+    ).toEqual({
       status: 'rejected',
       reason: 'mint-does-not-name-subject',
     });
@@ -509,5 +554,74 @@ describe('confirmChainPointer across the auxiliary-data shapes', () => {
     expect(result.status).toBe('confirmed');
     if (result.status !== 'confirmed') return;
     expect(result.cip25).toBeNull();
+  });
+});
+
+describe('confirmChainPointer and policy closure', () => {
+  // The immutable tip in these cases is SYNTHETIC_SLOT, so a lock at a lower
+  // slot has passed and one at a higher slot has not.
+  const confirmWith = (script: unknown) => {
+    const built = syntheticTransaction('alonzo', { script });
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    return confirmChainPointer(built.candidate(), { reader });
+  };
+
+  it('reports a policy whose time lock has passed as closed', () => {
+    const result = confirmWith(closingScript(SYNTHETIC_SLOT - 1));
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.policyClosed).toBe(true);
+  });
+
+  it('reports a policy whose time lock is still ahead as open', () => {
+    const result = confirmWith(closingScript(SYNTHETIC_SLOT + 10_000));
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.policyClosed).toBe(false);
+  });
+
+  it('reports a policy with no time lock as open', () => {
+    const result = confirmWith([0, KEY_HASH]);
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.policyClosed).toBe(false);
+  });
+
+  // An `any` branch that never expires keeps the whole policy open, however
+  // many of its siblings have.
+  it('reports an any policy with one unexpiring branch as open', () => {
+    const result = confirmWith([
+      2,
+      [
+        [5, SYNTHETIC_SLOT - 1],
+        [0, KEY_HASH],
+      ],
+    ]);
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.policyClosed).toBe(false);
+  });
+
+  it('reports a policy it cannot find a native script for as open', () => {
+    const built = syntheticTransaction('alonzo');
+    const reader = makeReader(built.block, SYNTHETIC_SLOT, built.headerHash);
+    const result = confirmChainPointer(built.candidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.policyClosed).toBe(false);
+  });
+
+  // The recorded transaction mints under a Plutus V3 script, which is the case
+  // that cannot be decided statically at all.
+  it('reports a Plutus minting policy as open', () => {
+    const reader = makeReader(
+      REAL_BLOCK,
+      PREPROD_BLOCK.slot,
+      PREPROD_BLOCK.hash
+    );
+    const result = confirmChainPointer(realCandidate(), { reader });
+    expect(result.status).toBe('confirmed');
+    if (result.status !== 'confirmed') return;
+    expect(result.policyClosed).toBe(false);
   });
 });

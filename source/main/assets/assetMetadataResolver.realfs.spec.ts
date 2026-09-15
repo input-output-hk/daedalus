@@ -13,6 +13,7 @@ import type { AssetMetadataDatabase } from './assetMetadataDb';
 import {
   ASSET_METADATA_REFRESH_MS,
   AssetMetadataResolver,
+  chainPointerToRow,
   openAssetMetadataResolver,
 } from './assetMetadataResolver';
 import type {
@@ -1056,6 +1057,198 @@ describe('the chain channel', () => {
     resolver.setPointerSourceUrl('https://preprod.koios.rest/api/v1');
     await resolver.resolve([CHAIN_SUBJECT]);
     expect(pointer.calls).toBe(2);
+  });
+});
+
+describe('chainPointerToRow', () => {
+  const pointer = (cip68: Record<string, unknown> | null = null) => ({
+    subject: CHAIN_SUBJECT,
+    policyId: PREPROD_BLOCK.policyId,
+    assetName: PREPROD_BLOCK.assetName,
+    fingerprint: 'asset1chain',
+    mintingTxHash: PREPROD_BLOCK.transactionHash,
+    mintCount: 1,
+    cip68Metadata: cip68,
+  });
+
+  const closureOf = (row: { metadata: string | null }) =>
+    JSON.parse(row.metadata).closed;
+
+  it('freezes a CIP-25 row under a policy that can no longer mint', () => {
+    const row = chainPointerToRow(
+      pointer(),
+      PREPROD_BLOCK.slot,
+      { name: 'Northwind Demo' },
+      true
+    );
+    expect(closureOf(row)).toBe(true);
+  });
+
+  it('leaves a CIP-25 row under an open policy unfrozen', () => {
+    const row = chainPointerToRow(
+      pointer(),
+      PREPROD_BLOCK.slot,
+      { name: 'Northwind Demo' },
+      false
+    );
+    expect(closureOf(row)).toBe(false);
+  });
+
+  // A CIP-68 datum lives at a spendable output and changes when that output is
+  // spent, which needs no minting, so closure says nothing about it.
+  it('never freezes a CIP-68 row, even under a closed policy', () => {
+    const row = chainPointerToRow(
+      pointer({ name: 'Live Record' }),
+      PREPROD_BLOCK.slot,
+      { name: 'Mint Record' },
+      true
+    );
+    expect(closureOf(row)).toBe(false);
+    expect(row.name).toBe('Live Record');
+  });
+
+  it('reads a CIP-25 name written as an array of parts', () => {
+    const row = chainPointerToRow(
+      pointer(),
+      PREPROD_BLOCK.slot,
+      { name: ['Northwind ', 'Demo'] },
+      false
+    );
+    expect(row.name).toBe('Northwind Demo');
+  });
+
+  it('carries no decimals and claims no verification', () => {
+    const row = chainPointerToRow(pointer(), PREPROD_BLOCK.slot, null, false);
+    expect(row.decimals).toBeNull();
+    expect(row.verified).toBe(false);
+    expect(row.sequenceNumber).toBeNull();
+    expect(row.ticker).toBeNull();
+    expect(row.source).toBe('chain');
+  });
+});
+
+describe('freshness per channel', () => {
+  const WEEK = ASSET_METADATA_REFRESH_MS;
+
+  const writeChainRow = (options: { closed: boolean; record?: unknown }) => {
+    database.writeMetadata(
+      [
+        {
+          subject: CHAIN_SUBJECT,
+          policyId: PREPROD_BLOCK.policyId,
+          assetName: PREPROD_BLOCK.assetName,
+          ticker: null,
+          name: 'Northwind Demo',
+          decimals: null,
+          verified: false,
+          metadata: JSON.stringify({
+            record: options.record ?? { name: 'Northwind Demo' },
+            closed: options.closed,
+          }),
+          source: 'chain',
+          sequenceNumber: null,
+          slot: PREPROD_BLOCK.slot,
+        },
+      ],
+      // Written a fortnight ago, so the seven-day window has elapsed and the
+      // only thing that can hold a re-read back is the freezing rule.
+      NOW - 2 * WEEK
+    );
+  };
+
+  const asked = async (extra: Record<string, unknown> = {}) => {
+    const pointer = pointerTransport();
+    const resolver = chainResolver(
+      transportFor(() => []),
+      {
+        pointerTransport: pointer,
+        ...extra,
+      }
+    );
+    resolver.request([CHAIN_SUBJECT]);
+    await resolver.pending();
+    return pointer.calls;
+  };
+
+  it('never re-reads a CIP-25 row under a policy that can no longer mint', async () => {
+    writeChainRow({ closed: true });
+    expect(await asked()).toBe(0);
+  });
+
+  it('re-reads a CIP-25 row under an open policy once the window has elapsed', async () => {
+    writeChainRow({ closed: false });
+    expect(await asked()).toBe(2);
+  });
+
+  it('re-reads a frozen row when the read is forced', async () => {
+    writeChainRow({ closed: true });
+    const pointer = pointerTransport();
+    const resolver = chainResolver(
+      transportFor(() => []),
+      {
+        pointerTransport: pointer,
+      }
+    );
+    // A manual refresh from the settings dialog does not consult the window or
+    // the freezing rule at all.
+    resolver.request([CHAIN_SUBJECT], { force: true });
+    await resolver.pending();
+    expect(pointer.calls).toBe(2);
+  });
+
+  it('does not freeze a row inside the window either way', async () => {
+    writeChainRow({ closed: false });
+    database.writeMetadata(
+      [
+        {
+          subject: CHAIN_SUBJECT,
+          policyId: PREPROD_BLOCK.policyId,
+          assetName: PREPROD_BLOCK.assetName,
+          ticker: null,
+          name: 'Northwind Demo',
+          decimals: null,
+          verified: false,
+          metadata: JSON.stringify({ record: {}, closed: false }),
+          source: 'chain',
+          sequenceNumber: null,
+          slot: PREPROD_BLOCK.slot,
+        },
+      ],
+      NOW
+    );
+    expect(await asked()).toBe(0);
+  });
+
+  it('takes the window for a registry row whatever its policy does', async () => {
+    const registry = transportFor(() => [bted()]);
+    const resolver = resolverWith(registry);
+    await resolver.resolve([BTED.subject]);
+    expect(registry.calls).toBe(1);
+
+    // The same row, a fortnight old. A registry record can be updated by its
+    // issuer long after the minting window shuts, so closure never freezes one.
+    const stored = storedRow();
+    database.writeMetadata(
+      [
+        {
+          subject: stored.subject,
+          policyId: stored.policyId,
+          assetName: stored.assetName,
+          ticker: stored.ticker,
+          name: stored.name,
+          decimals: stored.decimals,
+          verified: stored.verified,
+          metadata: stored.metadata,
+          source: stored.source,
+          sequenceNumber: stored.sequenceNumber,
+          slot: stored.slot,
+        },
+      ],
+      NOW - 2 * WEEK
+    );
+    resolver.request([BTED.subject]);
+    await resolver.pending();
+    expect(registry.calls).toBe(2);
   });
 });
 

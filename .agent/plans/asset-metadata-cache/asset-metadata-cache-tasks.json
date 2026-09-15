@@ -1469,21 +1469,29 @@
      "id": "task-036",
      "title": "Per-channel freshness: a closed policy freezes CIP-25 and nothing else",
      "description": "Apply the tiering the PRD already records. A registry row takes the seven-day window. A CIP-25 row under a closed policy is fetched once and never re-read. A CIP-68 row takes the seven-day window because a datum changes whenever its UTxO is spent.",
-     "status": "pending",
+     "status": "completed",
      "priority": "medium",
      "estimatedHours": 3.0,
      "dependencies": [
       "task-035"
      ],
      "targetPaths": [
+      "source/main/assets/assetVerification.ts",
+      "source/main/assets/assetVerification.spec.ts",
+      "source/main/assets/chainPointerVerification.ts",
+      "source/main/assets/chainPointerVerification.realfs.spec.ts",
       "source/main/assets/assetMetadataResolver.ts",
-      "source/main/assets/assetMetadataDb.ts"
+      "source/main/assets/assetMetadataResolver.realfs.spec.ts",
+      "source/main/ipc/assetMetadataChannel.ts"
      ],
      "implementationNotes": [
       "Closure is read from the policy script already in hand, not stored in a column of its own. The two-byte era wrapper says whether a lock can be expressed at all, and invalid_hereafter says whether it has passed.",
       "Of 4,578 registry entries carrying a parseable policy, 4,104 (89.6 percent) are already closed, 47 close at a known future slot, and 427 (9.3 percent) are Shelley 8200-wrapped MultiSig scripts that cannot express a lock at all. That is what makes one resolution per asset for the life of an installation the realistic volume.",
       "Plutus minting policies cannot be classified this way, because future behavior is not statically determinable. Treat an unclassifiable policy as open and apply the seven-day window. Do not assume the Plutus share is small; it is unmeasured.",
-      "Closure does not freeze the registry record. The attestation key still exists and can still sign long after the minting window shuts, so a registry row never inherits a CIP-25 row's permanence."
+      "Closure does not freeze the registry record. The attestation key still exists and can still sign long after the minting window shuts, so a registry row never inherits a CIP-25 row's permanence.",
+      "The PRD's caveat is resolved by taking the policy script from the minting transaction's own witness set rather than from the registry. A chain row exists precisely for a subject the registry does not answer, so the registry's policy field is never in hand for these rows; the witness set has to carry the script that authorised the mint, and task-034 has already confirmed that transaction against the user's own chain.",
+      "The PRD's closure measurement, 89.6 percent of entries already closed, is about registry entries. What share of chain-row policies close is unmeasured and the two are unlikely to match, because registry entries skew to fungible tokens under one-off policies and chain rows are NFTs. The rule holds; the volume claim it supports is weaker for this channel.",
+      "The verdict is decided when the row is written, where the immutable tip is already in hand, and stored beside the record rather than inside it: a CIP-25 payload whose author wrote a key of the same name would otherwise freeze its own row. The channel unwraps the record on the way to the renderer, so the wire shape is unchanged."
      ],
      "testCases": [
       "A CIP-25 row under a policy whose invalid_hereafter has passed is not re-read",

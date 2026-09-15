@@ -16,6 +16,7 @@ import {
   decodeNativeScript,
   evaluateNativeScript,
   isPropertyAttested,
+  nativeScriptLatestSlot,
   nativeScriptPolicyId,
   verifyAttestationSignature,
   verifyPolicyBinding,
@@ -867,5 +868,72 @@ describe('verifyRegistryProperty', () => {
       attested: false,
       verified: false,
     });
+  });
+});
+
+describe('nativeScriptLatestSlot', () => {
+  const sig = { kind: 'sig' as const, keyHash: 'ab'.repeat(28) };
+  const before = (slot: number) => ({ kind: 'timeBefore' as const, slot });
+  const after = (slot: number) => ({ kind: 'timeAfter' as const, slot });
+
+  it('reports a key signature as never expiring', () => {
+    expect(nativeScriptLatestSlot(sig)).toBeNull();
+  });
+
+  it('reports a lower bound as never expiring', () => {
+    expect(nativeScriptLatestSlot(after(100))).toBeNull();
+  });
+
+  // `invalid_hereafter` is valid up to but not including its slot.
+  it('reports an upper bound as expiring one slot before it', () => {
+    expect(nativeScriptLatestSlot(before(100))).toBe(99);
+  });
+
+  it('bounds an all by its earliest expiring member', () => {
+    expect(
+      nativeScriptLatestSlot({
+        kind: 'all',
+        scripts: [sig, before(100), before(200)],
+      })
+    ).toBe(99);
+  });
+
+  it('bounds an any by its latest expiring member', () => {
+    expect(
+      nativeScriptLatestSlot({
+        kind: 'any',
+        scripts: [before(100), before(200)],
+      })
+    ).toBe(199);
+  });
+
+  // One branch that never expires keeps the whole disjunction open, which is
+  // the case that decides whether a policy is ever frozen.
+  it('reports an any with one unexpiring branch as never expiring', () => {
+    expect(
+      nativeScriptLatestSlot({ kind: 'any', scripts: [before(100), sig] })
+    ).toBeNull();
+  });
+
+  it('reports an all of unexpiring members as never expiring', () => {
+    expect(nativeScriptLatestSlot({ kind: 'all', scripts: [sig, sig] })).toBe(
+      null
+    );
+  });
+
+  // The exact answer for n of k is the n-th latest. The latest is used, so a
+  // policy is only ever called closed later than it truly is.
+  it('bounds an n of k conservatively, by its latest expiring member', () => {
+    expect(
+      nativeScriptLatestSlot({
+        kind: 'atLeast',
+        required: 2,
+        scripts: [before(100), before(200), before(300)],
+      })
+    ).toBe(299);
+  });
+
+  it('reports an empty any as never expiring rather than as already closed', () => {
+    expect(nativeScriptLatestSlot({ kind: 'any', scripts: [] })).toBeNull();
   });
 });

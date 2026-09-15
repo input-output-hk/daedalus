@@ -1,4 +1,5 @@
 import blake2b from 'blake2b';
+import * as cbor from 'cbor';
 import { logger } from '../utils/logging';
 import {
   CborError,
@@ -11,6 +12,11 @@ import {
   unwrapTag,
 } from './cborSpan';
 import type { CborSpan } from './cborSpan';
+import {
+  decodeNativeScript,
+  nativeScriptLatestSlot,
+  nativeScriptPolicyId,
+} from './assetVerification';
 import { ImmutableBlockReader } from './immutableBlockReader';
 import type { ImmutableReadResult } from './immutableBlockReader';
 
@@ -50,6 +56,16 @@ export type PointerConfirmation =
       subject: string;
       slot: number;
       cip25: Record<string, unknown> | null;
+      /**
+       * Whether the minting policy can never mint this asset again.
+       *
+       * A CIP-25 record is in the mint transaction, so a policy that cannot
+       * mint again has a final record and never needs re-reading. Only a native
+       * script whose time lock has already passed answers true: a Plutus policy
+       * is not statically decidable and a policy with no lock never closes, and
+       * both are reported open.
+       */
+      policyClosed: boolean;
     }
   /** Newer than the immutable database. Try again once it has caught up. */
   | { status: 'pending'; reason: 'beyond-immutable-tip'; tipSlot: number }
@@ -269,6 +285,63 @@ const blockHoldsTransaction = (block: Uint8Array, txHash: string): boolean => {
   );
 };
 
+/**
+ * Whether the minting policy of `policyId` can never mint again, read from the
+ * script in the transaction's own witness set.
+ *
+ * The PRD reads closure from the script the **registry** publishes, and a chain
+ * row exists precisely for a subject the registry does not answer, so that
+ * script is never in hand here. The mint transaction's witness set has to carry
+ * the script that authorised the mint, and this transaction has already been
+ * confirmed against the user's own chain, so the copy here is both available
+ * and stronger than the registry's.
+ *
+ * False for everything it cannot decide: a Plutus policy, a script it cannot
+ * find or decode, a lock still in the future, and no lock at all. Being wrong
+ * in that direction costs one re-read; being wrong the other way freezes a
+ * record for good.
+ */
+const policyIsClosed = (
+  bytes: Uint8Array,
+  witnesses: CborSpan,
+  policyId: string,
+  tipSlot: number
+): boolean => {
+  const head = readHead(bytes, witnesses.start);
+  if (head.major !== 5) return false;
+  const nativeScripts = mapSpans(bytes, witnesses.start).find((entry) => {
+    const key = readHead(bytes, entry.key.start);
+    // Witness set key 1 is the native scripts. Every other key is a signature,
+    // a datum, a redeemer or a Plutus script.
+    return key.major === 0 && key.argument === BigInt(1);
+  });
+  if (!nativeScripts) return false;
+
+  // Conway wraps a set in tag 258. Earlier eras write a bare array.
+  const { span } = unwrapTag(bytes, nativeScripts.value.start);
+  let spans: Array<CborSpan>;
+  try {
+    spans = arraySpans(bytes, span.start);
+  } catch {
+    return false;
+  }
+
+  return spans.some((scriptSpan) => {
+    const scriptBytes = slice(bytes, scriptSpan);
+    if (nativeScriptPolicyId(scriptBytes) !== policyId) return false;
+    let decoded: unknown;
+    try {
+      decoded = cbor.decodeFirstSync(Buffer.from(scriptBytes));
+    } catch {
+      return false;
+    }
+    const script = decodeNativeScript(decoded);
+    if (!script) return false;
+    const latest = nativeScriptLatestSlot(script);
+    return latest !== null && latest < tipSlot;
+  });
+};
+
 export type ConfirmPointerOptions = {
   reader: ImmutableBlockReader;
 };
@@ -308,6 +381,7 @@ export const confirmChainPointer = (
   }
 
   let cip25: Record<string, unknown> | null = null;
+  let witnesses: CborSpan | null = null;
   try {
     const parts = arraySpans(bytes, 0);
     if (parts.length < 2) {
@@ -320,6 +394,7 @@ export const confirmChainPointer = (
       return { status: 'rejected', reason: 'transaction-id' };
     }
 
+    witnesses = parts[1];
     const entries = bodyEntries(bytes, body);
 
     // 2. The mint field names this subject, positively.
@@ -410,5 +485,17 @@ export const confirmChainPointer = (
     return { status: 'unavailable', reason: 'block-shape' };
   }
 
-  return { status: 'confirmed', subject, slot: absoluteSlot, cip25 };
+  const tipSlot = options.reader.tipSlot();
+  const policyClosed =
+    witnesses !== null && tipSlot !== null
+      ? policyIsClosed(bytes, witnesses, policyId.toLowerCase(), tipSlot)
+      : false;
+
+  return {
+    status: 'confirmed',
+    subject,
+    slot: absoluteSlot,
+    cip25,
+    policyClosed,
+  };
 };
