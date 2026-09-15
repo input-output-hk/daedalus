@@ -84,9 +84,10 @@ function StatefulStory<T extends Record<string, any>>({
 }: StatefulStoryProps<T>) {
   const [, setRenderCount] = useState(0);
 
-  useEffect(() => store.subscribe(() => setRenderCount((count) => count + 1)), [
-    store,
-  ]);
+  useEffect(
+    () => store.subscribe(() => setRenderCount((count) => count + 1)),
+    [store]
+  );
 
   return <>{storyFn(store)}</>;
 }
