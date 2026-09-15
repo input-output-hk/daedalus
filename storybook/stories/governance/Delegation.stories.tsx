@@ -442,7 +442,7 @@ export default {
   decorators: [governanceStoryDecorator, withKnobs],
 };
 
-export const ConnectedFlow = withState(
+const ConnectedFlowStory = withState(
   {
     activeSidebarCategory: ROUTES.GOVERNANCE.DELEGATE,
     activeVotingRoute: ROUTES.GOVERNANCE.DELEGATE,
@@ -522,7 +522,10 @@ export const ConnectedFlow = withState(
   }
 );
 
-ConnectedFlow.storyName = 'Connected flow';
+export const ConnectedFlow = {
+  render: ConnectedFlowStory,
+  name: 'Connected flow',
+};
 
 export const _VotingPowerDelegation = {
   render: () => {

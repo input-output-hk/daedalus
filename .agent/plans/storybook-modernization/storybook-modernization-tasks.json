@@ -787,7 +787,7 @@
      "id": "task-022",
      "title": "Hand-finish the governance and voting tranche",
      "description": "Six files holding the richest fixtures in the corpus: governance/DRepDirectory.stories.tsx at 731 lines with 20 registrations, Delegation.stories.tsx at 715 with 24, DRepDetail.stories.tsx at 408 with 15, plus voting/Voting.stories.tsx with 10.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 12.0,
      "dependencies": [
@@ -801,7 +801,11 @@
       "governance/DRepDetail.stories.tsx:67 and governance/DRepDirectory.stories.tsx:248 carry comments recording the props dependency; both move to context here.",
       "These fixtures are reused by the phase 7 container stories for the same screens, so keep them exported and keep them where a screen story can import them.",
       "voting/Voting.stories.tsx has two storiesOf calls and four decorators; check the codemod split them into two files or one default export as intended.",
-      "Measured by task-009 at ab7060622: 3 functions across 3 files in this tranche depend on the StoryWrapper prop pass-through, all of them spreading the whole argument and none naming currentTheme, osName or locale. This tranche holds the largest story files in the corpus and the smallest conversion surface for the globals change. governance/DRepDetail.stories.tsx:67 and governance/DRepDirectory.stories.tsx:248 record in comments that locale is deliberately left to the IntlProvider inside StoryWrapper rather than read as a prop."
+      "Measured by task-009 at ab7060622: 3 functions across 3 files in this tranche depend on the StoryWrapper prop pass-through, all of them spreading the whole argument and none naming currentTheme, osName or locale. This tranche holds the largest story files in the corpus and the smallest conversion surface for the globals change. governance/DRepDetail.stories.tsx:67 and governance/DRepDirectory.stories.tsx:248 record in comments that locale is deliberately left to the IntlProvider inside StoryWrapper rather than read as a prop.",
+      "RESULT. Two of the six files changed. governance/DRepDirectory's ConnectedFlow and FavoriteToggle and governance/Delegation's ConnectedFlow become objects with render and name, clearing the last three TS2339. The other four files needed nothing: no story in this tranche reads a global from any argument, checked by grep against the current tree rather than inferred from the task-009 census, which was taken at ab7060622 and before the conversion.",
+      "The comments at governance/DRepDetail.stories.tsx:66 and governance/DRepDirectory.stories.tsx:246 saying the locale is deliberately left to the IntlProvider inside StoryWrapper were checked and still hold: the provider is in the preview decorator and is driven by the toolbar global. They were left alone rather than rewritten to mention globals.",
+      "voting/Voting.stories.tsx and voting/VotingInfo.stories.tsx each hold one default export and one title, Voting / Voting Registration Wizard and Voting / Voting Info. The two storiesOf calls this entry warned about were separated in the preparatory commit, so the codemod had one each and produced one meta each.",
+      "WINDOW CLOSED ON THE CHECKS. compile exit 0, lint exit 0, storybook exit 0, together for the first time since task-015 opened the window. The count went 70 at task-015, 68 after task-016 cleared the two TS2307, 19 after the conversion, then 16, 14, 3 and 0 across the five tranches. Label set 258 entries across 49 titles and identical to the pre-conversion set at every step. Empty-render burn-down stays at 0. @ts-ignore in the tranche unchanged at 1."
      ],
      "acceptance": [
       "yarn storybook:build, yarn compile and yarn lint pass",
