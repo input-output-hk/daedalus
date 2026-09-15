@@ -606,10 +606,12 @@
       "source/renderer/app/features"
      ],
      "implementationNotes": [
+      "PRECONDITIONS, both already satisfied on the branch before the hop opened. task-014 found two ways the codemod damages this corpus, and both remedies were landed while the branch was still green because they are version-independent and doing them inside the red window would be strictly worse. First, a file with two storiesOf calls converts to a file with two export default statements, which is not valid TypeScript; the three such files were split into one file per title, adding voting/VotingInfo.stories.tsx, nodes/status/MithrilPartialSyncConfirmation.stories.tsx and staking/RedeemItnRewards.stories.tsx, with the shared staking decorator moved to staking/_support/decorator.tsx and the shared voting fixture to voting/_support/fundInfo.ts. Second, the codemod silently drops a .add() whose label is not a string literal; the five such labels in staking/Staking.stories.tsx were inlined. Verified after: no file holds more than one storiesOf call and no registration carries a non-literal label, so this task now runs against a corpus with zero known conversion defects.",
       "Run the chain from the 8.6.x CLI, in the order the migration guide documents. Running csf-2-to-3 before csf-hoist-story-annotations produces a shape the later transform cannot read.",
       "Reach the four colocated files under source/ as well: components/profile/analytics/Analytics.stories.tsx, components/wallet/tokens/wallet-token-picker/WalletTokenPicker.stories.tsx, features/discreet-mode/ui/DiscreetValue.story.tsx, features/discreet-mode/ui/discreet-toggle/DiscreetModeToggle.story.tsx.",
       "Commit the raw codemod output before hand-finishing anything, so the hand corrections are reviewable separately from the mechanical transform.",
-      "Run nix fmt over the result. Formatting is not negotiable and the codemod does not produce prettier-clean output."
+      "Run nix fmt over the result. Formatting is not negotiable and the codemod does not produce prettier-clean output.",
+      "Measure this task by the label set diffed against the task-001 baseline, not by the codemod exit status. task-014 established that the chain reports 1 ok, 0 errors while discarding registrations, so a clean run says nothing about whether stories survived. The same applies to every hand-finish tranche."
      ],
      "acceptance": [
       "Every file that the codemod can take has been taken, with the skips listed",
