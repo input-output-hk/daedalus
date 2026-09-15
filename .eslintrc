@@ -124,6 +124,15 @@
       "rules": {
           "jest/no-standalone-expect": "off"
       }
+    },
+    {
+      // A CSF story is an exported arrow function returning JSX. That is the
+      // form Storybook documents, the form its codemods emit, and the form the
+      // rule reports as a component defined the wrong way.
+      "files": ["**/*.stories.ts", "**/*.stories.tsx", "**/*.story.ts", "**/*.story.tsx"],
+      "rules": {
+          "react/function-component-definition": "off"
+      }
     }
   ]
 }
