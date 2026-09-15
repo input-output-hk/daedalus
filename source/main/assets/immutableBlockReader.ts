@@ -76,6 +76,23 @@ const reasonOf = (error: unknown): string =>
 export const immutableDirectoryPath = (chainPath: string): string =>
   path.join(chainPath, 'immutable');
 
+/**
+ * The chain path the node was started against.
+ *
+ * `source/main/index.ts:360-369` resolves it as `<stateDir>/chain`, or
+ * `<custom>/chain` when the user has moved it, with the custom path held in
+ * electron-store. This reproduces that rather than importing it, because the
+ * asset channel is registered before the backend is started and the value there
+ * is a local in an async function.
+ */
+export const resolveChainPath = (
+  stateDirectory: string,
+  customChainPath: string | null | undefined
+): string =>
+  customChainPath
+    ? path.join(customChainPath, 'chain')
+    : path.join(stateDirectory, 'chain');
+
 export class ImmutableBlockReader {
   private _directory: string;
 

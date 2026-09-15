@@ -431,6 +431,9 @@ describe('AssetsStore', () => {
       expect(requestAssetMetadata).toHaveBeenCalledTimes(1);
       expect(requestAssetMetadata).toHaveBeenCalledWith([SUBJECT], {
         refresh: true,
+        // The pointer source travels with every read. It is null here because
+        // this store never read the stored selection.
+        sourceUrl: null,
       });
     });
 
@@ -529,6 +532,47 @@ describe('AssetsStore', () => {
  * the header gives, so the startup read and the selection are driven directly,
  * the way the metadata cases above drive `_onMetadataResolved`.
  */
+describe('AssetsStore for a chain row', () => {
+  const chainEntry = entry({
+    ticker: null,
+    name: 'Northwind Demo',
+    decimals: null,
+    verified: false,
+    source: 'chain',
+    metadata: { name: 'Northwind Demo' },
+  });
+
+  it('carries the row source onto the asset a surface renders', () => {
+    const { store } = makeStore();
+    (store as any)._onMetadataResolved({ entries: [chainEntry] });
+    const row = getAssetTokenFromToken(
+      tokenFor(SUBJECT) as any,
+      store.getAsset
+    );
+    expect(row.source).toBe('chain');
+    expect(row.metadata.name).toBe('Northwind Demo');
+  });
+
+  // The mechanical form of the rule that no amount is formatted by a number
+  // that did not come from the registry.
+  it('formats nothing from a chain row', () => {
+    const { store } = makeStore();
+    (store as any)._onMetadataResolved({ entries: [chainEntry] });
+    const asset = store.getAsset(POLICY, ASSET_NAME);
+    expect(asset.decimals).toBeNull();
+    expect(asset.recommendedDecimals).toBeNull();
+    expect(asset.recommendedDecimalsVerified).toBe(false);
+  });
+
+  it('still applies a setting of the user own over a chain row', () => {
+    const { store } = makeStore({ [SUBJECT]: { decimals: 4 } });
+    (store as any)._onMetadataResolved({ entries: [chainEntry] });
+    return (store as any)._setUpLocalDecimals().then(() => {
+      expect(store.getAsset(POLICY, ASSET_NAME).decimals).toBe(4);
+    });
+  });
+});
+
 describe('AssetsStore metadata source', () => {
   const CUSTOM = 'https://koios.example.com/api/v1';
 
@@ -624,6 +668,15 @@ describe('AssetsStore metadata source', () => {
       sourceUrl: CUSTOM,
     });
     expect(ada.checkAssetMetadataSourceIsValid).not.toHaveBeenCalled();
+  });
+
+  it('sends the selected pointer source with every read', async () => {
+    const { store } = makeStore({}, { storedSource: CUSTOM });
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._requestMetadata(['abc']);
+    expect(requestAssetMetadata).toHaveBeenCalledWith(['abc'], {
+      sourceUrl: CUSTOM,
+    });
   });
 
   it('clears a refusal when the error is reset', async () => {

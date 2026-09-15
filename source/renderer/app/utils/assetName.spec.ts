@@ -88,3 +88,57 @@ describe('isMinterChosenAssetName', () => {
     expect(isMinterChosenAssetName(null)).toBe(false);
   });
 });
+
+describe('resolveAssetName for a chain row', () => {
+  // The whole reason a chain row's `source` reaches the renderer. Both a
+  // registry name and a CIP-25 name arrive as `metadata.name`, because the
+  // cache stores one name column, and the two are not the same claim.
+  it('names a CIP-25 record as coming from the chain rather than the registry', () => {
+    const resolved = resolveAssetName({
+      assetName:
+        '787c09a71b2eacdc2a7644591bd32426ed996387470bc6ec9574167ccf6af8cf',
+      metadata: { name: 'Northwind Demo', description: '' },
+      source: 'chain',
+    });
+    expect(resolved).toEqual({
+      name: 'Northwind Demo',
+      provenance: AssetNameProvenance.ChainName,
+    });
+  });
+
+  it('names the same value from the registry as a registry name', () => {
+    const resolved = resolveAssetName({
+      assetName: '',
+      metadata: { name: 'Northwind Demo', description: '' },
+      source: 'registry',
+    });
+    expect(resolved.provenance).toBe(AssetNameProvenance.RegistryName);
+  });
+
+  // A chain name is in the transaction that minted the asset, which had to
+  // satisfy the minting policy, so it is not the unbound case the marker exists
+  // for.
+  it('does not mark a chain name as minter-chosen', () => {
+    expect(
+      isMinterChosenAssetName(
+        resolveAssetName({
+          assetName: '436f696e74657374',
+          metadata: { name: 'Northwind Demo', description: '' },
+          source: 'chain',
+        })
+      )
+    ).toBe(false);
+  });
+
+  it('prefers a decoded name over nothing when a chain row carries no name', () => {
+    const resolved = resolveAssetName({
+      assetName: '436f696e74657374',
+      metadata: { name: '', description: '' },
+      source: 'chain',
+    });
+    expect(resolved).toEqual({
+      name: 'Cointest',
+      provenance: AssetNameProvenance.MinterChosen,
+    });
+  });
+});

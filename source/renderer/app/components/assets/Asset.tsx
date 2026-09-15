@@ -182,11 +182,18 @@ class Asset extends Component<Props, State> {
       hasWarning,
       hasError,
     } = this.props;
-    const { fingerprint, metadata, decimals, recommendedDecimals, assetName } =
-      asset;
+    const {
+      fingerprint,
+      metadata,
+      decimals,
+      recommendedDecimals,
+      assetName,
+      source,
+    } = asset;
     const resolvedName = resolveAssetName({
       assetName,
       metadata,
+      source,
     });
     const isMinterChosen = isMinterChosenAssetName(resolvedName);
     const name = resolvedName?.name || '';

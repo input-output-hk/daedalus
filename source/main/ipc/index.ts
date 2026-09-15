@@ -5,7 +5,10 @@ import { mithrilCommandChannel } from './mithrilCommandChannel';
 import { handleChainStorageRequests } from './chainStorageChannel';
 import { backendLifecycle } from '../BackendLifecycle';
 import downloadLogsApi from './download-logs';
-import { handleElectronStoreChannel } from './electronStoreConversation';
+import {
+  handleElectronStoreChannel,
+  requestElectronStore,
+} from './electronStoreConversation';
 import getLogsApi from './get-logs';
 import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
@@ -29,6 +32,41 @@ import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
 import { handleAssetMetadataRequests } from './assetMetadataChannel';
+import {
+  immutableDirectoryPath,
+  resolveChainPath,
+} from '../assets/immutableBlockReader';
+import { stateDirectoryPath } from '../config';
+import { STORAGE_KEYS as storageKeys } from '../../common/config/electron-store.config';
+import { logger } from '../utils/logging';
+
+/**
+ * The immutable database of the chain the node is running against.
+ *
+ * Resolved here rather than inside the asset channel, because reading the custom
+ * chain path means reading an electron-store key and `electron-store` requires
+ * the Electron binary at import time. This module is the composition root and is
+ * only ever loaded inside Electron; the channel module is loaded by its own spec.
+ *
+ * Read once. A change to the custom chain path restarts the node, so the value
+ * at startup is the one the node is running against.
+ */
+const immutableDirectory = (): string | null => {
+  try {
+    const custom = requestElectronStore({
+      type: 'get',
+      key: storageKeys.CUSTOM_CHAIN_PATH,
+    }) as string | undefined;
+    return immutableDirectoryPath(
+      resolveChainPath(stateDirectoryPath, custom ?? null)
+    );
+  } catch (error) {
+    logger.warn('Asset metadata: chain path could not be resolved', {
+      reason: error instanceof Error ? error.message : 'unknown',
+    });
+    return null;
+  }
+};
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -48,7 +86,9 @@ export default (window: BrowserWindow) => {
   handleAddressIntrospectionRequests();
   handleManageAppUpdateRequests(window);
   handleGovernanceAnchorRequests();
-  handleAssetMetadataRequests(window);
+  handleAssetMetadataRequests(window, {
+    immutableDirectory: immutableDirectory(),
+  });
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions

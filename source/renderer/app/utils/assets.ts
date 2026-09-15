@@ -47,8 +47,8 @@ export const filterAssets = (
  * holds exists whether or not anything has been cached about it, so taking
  * `uniqueId` from the lookup would make an unresolved asset disappear from the
  * send form, the send confirmation and the transaction list. Only `metadata`,
- * `decimals`, `recommendedDecimals`, `recommendedDecimalsVerified`, `hasImage`
- * and `fingerprint` come from the lookup.
+ * `decimals`, `recommendedDecimals`, `recommendedDecimalsVerified`, `hasImage`,
+ * `source` and `fingerprint` come from the lookup.
  *
  * A token built from a transaction response carries neither `uniqueId` nor
  * `assetNameASCII`, so both are derived here in the same shape the
@@ -71,6 +71,7 @@ export const getAssetTokenFromToken = (
     recommendedDecimals,
     recommendedDecimalsVerified,
     hasImage,
+    source,
   } = getAsset(policyId, assetName) || {};
   return {
     ...token,
@@ -82,6 +83,7 @@ export const getAssetTokenFromToken = (
     recommendedDecimals,
     recommendedDecimalsVerified,
     hasImage,
+    source,
   };
 };
 export const getNonZeroAssetTokens = (

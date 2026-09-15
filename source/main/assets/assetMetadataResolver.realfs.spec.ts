@@ -19,6 +19,14 @@ import type {
   RegistryTransport,
   RegistryTransportResult,
 } from './assetRegistryClient';
+import type { HttpTransport, HttpTransportResult } from './httpTransport';
+import { KoiosRequestBudget } from './koiosClient';
+import {
+  IMMUTABLE_PRIMARY_INDEX_VERSION,
+  IMMUTABLE_SECONDARY_ENTRY_BYTES,
+} from './immutableBlockReader';
+import { arraySpans, mapSpans, readHead } from './cborSpan';
+import { PREPROD_BLOCK, PREPROD_BLOCK_HEX } from './chainPointer.fixture';
 
 jest.mock('../config', () => ({
   launcherConfig: { metadataUrl: 'https://tokens.example' },
@@ -803,6 +811,251 @@ describe('a database that throws under the resolver', () => {
     resolver.request([BTED.subject]);
     await resolver.pending();
     expect(reads).toBe(4);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The chain channel.
+//
+// The pointer source is stubbed and the immutable database is written to a
+// temporary directory from the recorded preprod block, so the whole path runs:
+// two requests, four checks, one row.
+// ---------------------------------------------------------------------------
+
+const CHUNK_SIZE = 21600;
+const CHAIN_BLOCK = Buffer.from(PREPROD_BLOCK_HEX, 'hex');
+const CHAIN_SUBJECT = `${PREPROD_BLOCK.policyId}${PREPROD_BLOCK.assetName}`;
+
+const chainTransaction = () => {
+  const outer = arraySpans(CHAIN_BLOCK, 0);
+  const inner = arraySpans(CHAIN_BLOCK, outer[1].start);
+  const bodies = arraySpans(CHAIN_BLOCK, inner[1].start);
+  const witnesses = arraySpans(CHAIN_BLOCK, inner[2].start);
+  const auxiliary = mapSpans(CHAIN_BLOCK, inner[3].start).find(
+    (entry) =>
+      Number(readHead(CHAIN_BLOCK, entry.key.start).argument) ===
+      PREPROD_BLOCK.transactionIndex
+  );
+  const index = PREPROD_BLOCK.transactionIndex;
+  return Buffer.concat([
+    Buffer.from([0x84]),
+    CHAIN_BLOCK.subarray(bodies[index].start, bodies[index].end),
+    CHAIN_BLOCK.subarray(witnesses[index].start, witnesses[index].end),
+    Buffer.from([0xf5]),
+    CHAIN_BLOCK.subarray(auxiliary.value.start, auxiliary.value.end),
+  ]).toString('hex');
+};
+
+const writeImmutable = (root: string, slot = PREPROD_BLOCK.slot): string => {
+  const immutable = path.join(root, 'immutable');
+  fs.mkdirSync(immutable, { recursive: true });
+  const zero = Buffer.alloc(1 + (CHUNK_SIZE + 2) * 4);
+  zero[0] = IMMUTABLE_PRIMARY_INDEX_VERSION;
+  fs.writeFileSync(path.join(immutable, '00000.primary'), zero);
+
+  const chunk = Math.floor(slot / CHUNK_SIZE);
+  const relative = (slot % CHUNK_SIZE) + 1;
+  const primary = Buffer.alloc(1 + (CHUNK_SIZE + 2) * 4);
+  primary[0] = IMMUTABLE_PRIMARY_INDEX_VERSION;
+  for (let index = relative + 1; index <= CHUNK_SIZE + 1; index += 1) {
+    primary.writeUInt32BE(IMMUTABLE_SECONDARY_ENTRY_BYTES, 1 + index * 4);
+  }
+  const secondary = Buffer.alloc(IMMUTABLE_SECONDARY_ENTRY_BYTES);
+  Buffer.from(PREPROD_BLOCK.hash, 'hex').copy(secondary, 16);
+  secondary.writeBigUInt64BE(BigInt(slot), 48);
+
+  const name = String(chunk).padStart(5, '0');
+  fs.writeFileSync(path.join(immutable, `${name}.primary`), primary);
+  fs.writeFileSync(path.join(immutable, `${name}.secondary`), secondary);
+  fs.writeFileSync(path.join(immutable, `${name}.chunk`), CHAIN_BLOCK);
+  return immutable;
+};
+
+const pointerTransport = (
+  options: { slot?: number; txHash?: string } = {}
+): HttpTransport & { calls: number } => {
+  const stub = {
+    calls: 0,
+    async post(url: string): Promise<HttpTransportResult> {
+      stub.calls += 1;
+      if (url.includes('asset_info')) {
+        return {
+          ok: true,
+          status: 200,
+          body: JSON.stringify([
+            {
+              policy_id: PREPROD_BLOCK.policyId,
+              asset_name: PREPROD_BLOCK.assetName,
+              fingerprint: 'asset1chain',
+              minting_tx_hash: options.txHash ?? PREPROD_BLOCK.transactionHash,
+              mint_cnt: 1,
+              cip68_metadata: null,
+            },
+          ]),
+        };
+      }
+      return {
+        ok: true,
+        status: 200,
+        body: JSON.stringify([
+          {
+            tx_hash: options.txHash ?? PREPROD_BLOCK.transactionHash,
+            block_hash: PREPROD_BLOCK.hash,
+            absolute_slot: options.slot ?? PREPROD_BLOCK.slot,
+            block_height: 5078119,
+            cbor: chainTransaction(),
+          },
+        ]),
+      };
+    },
+  };
+  return stub;
+};
+
+const chainResolver = (
+  registry: RegistryTransport,
+  extra: Record<string, unknown> = {}
+) =>
+  resolverWith(registry, {
+    immutableDirectory: writeImmutable(directory),
+    pointerSourceUrl: 'https://preprod.koios.rest/api/v1',
+    pointerBudget: new KoiosRequestBudget(),
+    ...extra,
+  });
+
+describe('the chain channel', () => {
+  it('writes a chain row for a subject the registry does not answer', async () => {
+    const pointer = pointerTransport();
+    const resolver = chainResolver(
+      transportFor(() => []),
+      {
+        pointerTransport: pointer,
+      }
+    );
+    await resolver.resolve([CHAIN_SUBJECT]);
+
+    const row = database.readMetadata([CHAIN_SUBJECT])[0];
+    expect(row.source).toBe('chain');
+    expect(row.slot).toBe(PREPROD_BLOCK.slot);
+    expect(row.sequenceNumber).toBeNull();
+    expect(row.decimals).toBeNull();
+    expect(row.verified).toBe(false);
+    expect(row.ticker).toBeNull();
+    expect(row.name).toBe('Northwind Demo');
+    // Two requests for the whole batch, which is what the pointer client
+    // promises and what the resolver must not turn into two per asset.
+    expect(pointer.calls).toBe(2);
+  });
+
+  it('does not consult the index for a subject the registry answered', async () => {
+    const pointer = pointerTransport();
+    const resolver = chainResolver(
+      transportFor(() => [bted()]),
+      {
+        pointerTransport: pointer,
+      }
+    );
+    await resolver.resolve([BTED.subject]);
+
+    expect(pointer.calls).toBe(0);
+    expect(storedRow().source).toBe('registry');
+  });
+
+  it('does not overwrite a registry row with a chain row', async () => {
+    const pointer = pointerTransport();
+    // A registry answer for the same subject the pointer source knows.
+    const registry = transportFor(() => [
+      {
+        subject: CHAIN_SUBJECT,
+        policy: null,
+        name: { value: 'Registry Name', sequenceNumber: 0, signatures: [] },
+      },
+    ]);
+    const resolver = chainResolver(registry, { pointerTransport: pointer });
+    await resolver.resolve([CHAIN_SUBJECT]);
+
+    const row = database.readMetadata([CHAIN_SUBJECT])[0];
+    expect(row.source).toBe('registry');
+    expect(row.name).toBe('Registry Name');
+    expect(pointer.calls).toBe(0);
+  });
+
+  it('writes no row and records a pending retry inside the volatile window', async () => {
+    const pointer = pointerTransport({ slot: PREPROD_BLOCK.slot + 1 });
+    const resolver = chainResolver(
+      transportFor(() => []),
+      {
+        pointerTransport: pointer,
+      }
+    );
+    await resolver.resolve([CHAIN_SUBJECT]);
+
+    expect(database.readMetadata([CHAIN_SUBJECT])).toEqual([]);
+    const resolution = database.readResolutions([CHAIN_SUBJECT])[0];
+    expect(resolution.state).toBe('pending');
+    expect(resolution.retryAfter).toBe(NOW + 60 * 60 * 1000);
+    // Twelve hours is the order of the window the immutable database cannot
+    // see into, and the retry has to land inside it.
+    expect(resolution.retryAfter - NOW).toBeLessThan(12 * 60 * 60 * 1000);
+  });
+
+  it('writes no row when the pointer names a transaction the chain does not hold', async () => {
+    const pointer = pointerTransport({ txHash: 'a'.repeat(64) });
+    const resolver = chainResolver(
+      transportFor(() => []),
+      {
+        pointerTransport: pointer,
+      }
+    );
+    await resolver.resolve([CHAIN_SUBJECT]);
+
+    expect(database.readMetadata([CHAIN_SUBJECT])).toEqual([]);
+    expect(database.readResolutions([CHAIN_SUBJECT])[0].state).toBe('failed');
+  });
+
+  it('issues nothing when no pointer source is selected', async () => {
+    const pointer = pointerTransport();
+    const resolver = chainResolver(
+      transportFor(() => []),
+      {
+        pointerTransport: pointer,
+        pointerSourceUrl: null,
+      }
+    );
+    await resolver.resolve([CHAIN_SUBJECT]);
+
+    expect(pointer.calls).toBe(0);
+    expect(database.readMetadata([CHAIN_SUBJECT])).toEqual([]);
+  });
+
+  it('issues nothing when there is no immutable database to confirm against', async () => {
+    const pointer = pointerTransport();
+    const resolver = resolverWith(
+      transportFor(() => []),
+      {
+        immutableDirectory: null,
+        pointerSourceUrl: 'https://preprod.koios.rest/api/v1',
+        pointerTransport: pointer,
+        pointerBudget: new KoiosRequestBudget(),
+      }
+    );
+    await resolver.resolve([CHAIN_SUBJECT]);
+
+    expect(pointer.calls).toBe(0);
+  });
+
+  it('takes the pointer source the renderer last named', async () => {
+    const pointer = pointerTransport();
+    const resolver = chainResolver(
+      transportFor(() => []),
+      {
+        pointerTransport: pointer,
+        pointerSourceUrl: null,
+      }
+    );
+    resolver.setPointerSourceUrl('https://preprod.koios.rest/api/v1');
+    await resolver.resolve([CHAIN_SUBJECT]);
+    expect(pointer.calls).toBe(2);
   });
 });
 

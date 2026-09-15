@@ -322,7 +322,10 @@ export default class AssetsStore extends Store {
     subjects: Array<string>,
     options: { refresh?: boolean } = {}
   ) => {
-    const response = await requestAssetMetadata(subjects, options);
+    const response = await requestAssetMetadata(subjects, {
+      ...options,
+      sourceUrl: this.assetMetadataSourceUrl,
+    });
     if (!response || response.entries.length === 0) return;
     runInAction('AssetsStore::mergeAssetMetadata', () => {
       response.entries.forEach((entry) => {
@@ -368,6 +371,7 @@ export default class AssetsStore extends Store {
       recommendedDecimals,
       recommendedDecimalsVerified,
       hasImage: entry ? entry.hasImage : false,
+      source: entry ? entry.source : null,
     });
   };
 
@@ -392,6 +396,7 @@ export default class AssetsStore extends Store {
       // Not unknown: the cache holds no row for this subject, so it certainly
       // holds no logo for it. The value arrives with the row.
       hasImage: false,
+      source: null,
     });
     this._unresolvedAssets.set(subject, asset);
     return asset;

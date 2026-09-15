@@ -65,6 +65,17 @@ const assetWithImpersonatedTicker = {
   },
 };
 
+// An NFT the registry has never heard of, named by its CIP-25 record.
+const assetWithChainName = {
+  ...baseAsset,
+  assetName: '787c09a71b2eacdc2a7644591bd32426ed996387470bc6ec9574167ccf6af8cf',
+  metadata: {
+    name: 'Northwind Demo',
+    description: '',
+  },
+  source: 'chain' as const,
+};
+
 const renderAsset = (props) =>
   render(
     <TestDecorator>
@@ -151,5 +162,30 @@ describe('Asset', () => {
     expect(screen.getByTestId('assetNameMinterChosen')).toHaveClass(
       styles.minterChosenName
     );
+  });
+
+  // The chain channel exists to name an NFT the registry has never heard of.
+  it('displays a CIP-25 name where the asset name alone would show nothing', () => {
+    renderAsset({ asset: assetWithChainName });
+    expect(screen.queryByTestId('assetName')).toHaveTextContent(
+      'Northwind Demo'
+    );
+  });
+
+  it('does not mark a CIP-25 name as minter-chosen', () => {
+    renderAsset({ asset: assetWithChainName });
+    expect(screen.queryByTestId('assetNameMinterChosen')).toBeNull();
+    expect(screen.queryByTestId('assetName')).not.toHaveClass(
+      styles.minterChosenName
+    );
+  });
+
+  it('shows the fingerprint for that asset before its row arrives', () => {
+    const { container } = renderAsset({
+      asset: { ...baseAsset, assetName: assetWithChainName.assetName },
+    });
+    expect(screen.queryByTestId('assetName')).toBeNull();
+    expect(screen.queryByTestId('assetNameMinterChosen')).toBeNull();
+    expect(container.textContent).toContain('asset1t4g');
   });
 });

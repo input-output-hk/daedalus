@@ -76,10 +76,13 @@ const imageWaiters = new Map<
  * `refresh` asks the main process to schedule these subjects whether or not
  * their refresh window has elapsed and whether or not they are inside a retry
  * backoff. It does not change what comes back now, only what is fetched next.
+ *
+ * `sourceUrl` is the user's selected pointer source. It travels with every read
+ * because the setting lives here and the client that uses it lives there.
  */
 export const requestAssetMetadata = (
   subjects: Array<string>,
-  options: { refresh?: boolean } = {}
+  options: { refresh?: boolean; sourceUrl?: string | null } = {}
 ): Promise<AssetMetadataMainResponse> =>
   new Promise((resolve) => {
     const requestId = uuidv4();
@@ -89,6 +92,7 @@ export const requestAssetMetadata = (
         requestId,
         subjects,
         refresh: options.refresh === true,
+        sourceUrl: options.sourceUrl ?? null,
       })
       .then((response) => deliver(metadataWaiters, response))
       // A rejected response arrives without an id, so it cannot be handed to the

@@ -1414,7 +1414,7 @@
      "id": "task-035",
      "title": "Ingest CIP-25 and CIP-68 as chain-sourced rows, and render their names",
      "description": "Write the confirmed record into asset_metadata with source = 'chain', the mint block's absolute_slot in slot, sequence_number NULL, decimals NULL and verified = 0, and extend the name resolution order so a CIP-25 or CIP-68 name renders below the registry name and above the decoded asset name.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 7.0,
      "dependencies": [
@@ -1423,8 +1423,19 @@
       "task-034"
      ],
      "targetPaths": [
-      "source/main/assets/assetMetadataDb.ts",
       "source/main/assets/assetMetadataResolver.ts",
+      "source/main/assets/assetMetadataResolver.realfs.spec.ts",
+      "source/main/assets/immutableBlockReader.ts",
+      "source/main/ipc/assetMetadataChannel.ts",
+      "source/common/ipc/api.ts",
+      "source/renderer/app/ipc/assetMetadataChannel.ts",
+      "source/renderer/app/api/assets/types.ts",
+      "source/renderer/app/domains/Asset.ts",
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/utils/assetName.ts",
+      "source/renderer/app/utils/assetName.spec.ts",
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/stores/AssetsStore.spec.ts",
       "source/renderer/app/components/assets/Asset.tsx",
       "source/renderer/app/components/assets/Asset.spec.tsx"
      ],
@@ -1436,7 +1447,10 @@
       "A CIP-25 or CIP-68 image is a URI, usually ipfs://, not inline bytes. Store the URI in metadata and fetch nothing. An IPFS gateway is a further external dependency and is not in scope.",
       "Where Koios answers with both cip68_metadata and minting_tx_metadata for a subject, the CIP-68 datum is the live record and is the one stored.",
       "CIP-68 sits on weaker footing than CIP-25 and the code should say so in a comment: a CIP-68 datum lives at a spendable UTxO, so the mint transaction says nothing about its current value, and confirming it locally would mean a local-state-query against the node, which this plan does not build. It is acceptable because a CIP-68 value here supplies a name and nothing else.",
-      "Name order in Asset.tsx: registry ticker, registry name, chain name, decoded asset name when printable, nothing."
+      "Name order in Asset.tsx: registry ticker, registry name, chain name, decoded asset name when printable, nothing.",
+      "Precedence is enforced by not asking: a subject with a registry row is excluded before the pointer request, so no chain row is ever built for it and the question of which write wins never arises. That is also the filter the privacy argument depends on, because the registry answers for fungible holdings and they therefore never reach the index.",
+      "The selected pointer source travels on the existing metadata request rather than on a channel of its own. The setting lives in the renderer and the client in the main process, and one field cannot fall out of step.",
+      "A chain name is not marked minter-chosen. It is in the transaction that minted the asset, which had to satisfy the minting policy, so it is bound to that policy; a decoded asset name is bound to nothing, which is what the marker exists for."
      ],
      "testCases": [
       "A written chain row has source 'chain', a slot, and NULL sequence_number, NULL decimals and verified 0",

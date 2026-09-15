@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import type { AssetMetadataSource } from '../../../../common/types/asset-metadata.types';
 
 /**
  *
@@ -30,6 +31,15 @@ export type Asset = {
    * never sits on the path of a name or an amount.
    */
   hasImage?: boolean;
+  /**
+   * Which channel the cached row came from, or null when there is no row.
+   *
+   * It decides how a name is labelled rather than whether it is shown. A name
+   * on a chain row is in the transaction that minted the asset, which had to
+   * satisfy the minting policy, so it is bound to that policy; a decoded asset
+   * name is bound to nothing.
+   */
+  source?: AssetMetadataSource | null;
   uniqueId: string;
 };
 

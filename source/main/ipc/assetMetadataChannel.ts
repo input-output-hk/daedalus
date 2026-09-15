@@ -47,6 +47,18 @@ export type AssetMetadataChannelOptions = {
   database?: AssetMetadataDatabase;
   transport?: RegistryTransport;
   endpoint?: string | null;
+  /**
+   * The immutable database the chain channel confirms pointers against.
+   *
+   * Supplied by the caller rather than resolved here. Reading it means reading
+   * an electron-store key, and `electron-store` requires the Electron binary at
+   * import time, which is not present in the check sandbox. Keeping that import
+   * out of this module is what lets the handlers be built in a spec.
+   *
+   * Absent disables the chain channel, which is the right behaviour for a
+   * profile with no chain on disk.
+   */
+  immutableDirectory?: string | null;
 };
 
 /**
@@ -118,6 +130,7 @@ export class AssetMetadataChannelHandlers {
       database: this._database,
       transport: options.transport,
       endpoint: options.endpoint,
+      immutableDirectory: options.immutableDirectory ?? null,
       onResolved: (rows) => this.push(rows),
     });
     this._images = new AssetImageStore({
@@ -138,6 +151,12 @@ export class AssetMetadataChannelHandlers {
     const requestId = request?.requestId;
     const subjects = cleanSubjects(request?.subjects);
     try {
+      // The pointer source is the renderer's setting and the client that reads
+      // it is here, so it travels with the request rather than on a channel of
+      // its own that would have to be kept in step.
+      this._resolver.setPointerSourceUrl(
+        typeof request?.sourceUrl === 'string' ? request.sourceUrl : null
+      );
       const rows = this._resolver.request(subjects, {
         force: request?.refresh === true,
       });

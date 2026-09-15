@@ -15,6 +15,15 @@ import type {
   RegistryTransport,
 } from './assetRegistryClient';
 import { verifyRegistryProperty } from './assetVerification';
+import { queryKoiosPointers } from './koiosClient';
+import type {
+  KoiosPointer,
+  KoiosRequestBudget,
+  KoiosTransaction,
+} from './koiosClient';
+import type { HttpTransport } from './httpTransport';
+import { confirmChainPointer } from './chainPointerVerification';
+import { ImmutableBlockReader } from './immutableBlockReader';
 
 const POLICY_ID_HEX_LENGTH = 56;
 const MAX_DECIMAL_PRECISION = 20;
@@ -31,6 +40,27 @@ const MAX_DECIMAL_PRECISION = 20;
  */
 export const ASSET_METADATA_REFRESH_MS = 7 * 24 * 60 * 60 * 1000;
 
+/**
+ * How long a subject waits when its pointer names a block the immutable
+ * database does not hold yet.
+ *
+ * The window is the last k blocks, which on mainnet is about twelve hours. An
+ * hour is comfortably inside it and costs two requests per retry for the whole
+ * batch, so a freshly minted asset picks up its name within an hour of the
+ * block settling rather than at the next cold start.
+ */
+export const ASSET_CHAIN_PENDING_RETRY_MS = 60 * 60 * 1000;
+
+/**
+ * How long a subject waits when its pointer was refused by the local check.
+ *
+ * A rejection is a fact about that pointer rather than a transient failure, but
+ * the pointer can change: an index can correct itself, and `minting_tx_hash` is
+ * documented as both the first and the latest mint. A day is long enough that a
+ * lying index is not re-asked at any cost worth measuring.
+ */
+export const ASSET_CHAIN_REJECTED_RETRY_MS = 24 * 60 * 60 * 1000;
+
 export type AssetMetadataResolverOptions = {
   database?: AssetMetadataDatabase;
   transport?: RegistryTransport;
@@ -38,6 +68,12 @@ export type AssetMetadataResolverOptions = {
   onResolved?: (rows: Array<AssetMetadataRow>) => void;
   now?: () => number;
   retryBackoffMs?: number;
+  /** The immutable database the chain channel confirms pointers against. */
+  immutableDirectory?: string | null;
+  /** The user's selected pointer source. Null disables the chain channel. */
+  pointerSourceUrl?: string | null;
+  pointerTransport?: HttpTransport;
+  pointerBudget?: KoiosRequestBudget;
 };
 
 const asString = (value: unknown): string | null =>
@@ -122,6 +158,73 @@ export const registryEntryToRow = (
   slot: null,
 });
 
+/**
+ * A confirmed pointer as a row.
+ *
+ * Four of the columns are fixed and each is a rule rather than a default.
+ * `source` is `chain`. `slot` is the mint block's, which is what a chain row has
+ * instead of a sequence number. `sequence_number` is NULL, and the schema's
+ * CHECK refuses a chain row that carries one. `decimals` is NULL, which is the
+ * mechanical form of the rule that no amount is ever formatted by a number that
+ * did not come from the registry. `verified` is false, because `verified` is the
+ * verdict of the registry attestation chain and a chain row never runs it.
+ *
+ * The name is the CIP-25 `name`, or the CIP-68 `name` when there is no CIP-25
+ * record. Where an index answers with both, the CIP-68 datum is the live record
+ * and is the one stored.
+ *
+ * A CIP-68 value sits on weaker footing than a CIP-25 one and the difference is
+ * not visible in the row. A CIP-25 payload is in the mint transaction, so the
+ * block read confirms it. A CIP-68 datum lives at a spendable UTxO, which
+ * changes whenever that output is spent, so the mint transaction says nothing
+ * about its current value and confirming it would mean querying the live UTxO
+ * set. That is acceptable only because of what the value is used for, which is a
+ * name and nothing else.
+ */
+export const chainPointerToRow = (
+  pointer: KoiosPointer,
+  slot: number,
+  cip25: Record<string, unknown> | null
+): AssetMetadataWrite => {
+  const payload = pointer.cip68Metadata ?? cip25;
+  const metadata = payload ? JSON.stringify(payload) : null;
+  return {
+    subject: pointer.subject,
+    policyId: pointer.policyId,
+    assetName: pointer.assetName,
+    ticker: null,
+    name: chainName(payload),
+    decimals: null,
+    verified: false,
+    metadata,
+    source: 'chain',
+    sequenceNumber: null,
+    slot,
+  };
+};
+
+/**
+ * The name inside a CIP-25 or CIP-68 payload.
+ *
+ * CIP-25 version 1 writes a bare string; a payload built from a metadatum whose
+ * value was a one-element array carries `['Name']`, which is how the ledger
+ * splits a string over 64 bytes and also how some minters write a single value.
+ * Both spellings are read, and anything else is no name rather than a rendered
+ * object.
+ */
+const chainName = (payload: Record<string, unknown> | null): string | null => {
+  if (!payload) return null;
+  const value = payload.name;
+  if (typeof value === 'string' && value.length > 0) return value;
+  if (Array.isArray(value)) {
+    const joined = value
+      .filter((part): part is string => typeof part === 'string')
+      .join('');
+    return joined.length > 0 ? joined : null;
+  }
+  return null;
+};
+
 const sameContent = (
   row: AssetMetadataWrite,
   stored: AssetMetadataRow
@@ -162,6 +265,14 @@ export class AssetMetadataResolver {
 
   private _retryBackoffMs?: number;
 
+  private _immutableDirectory?: string | null;
+
+  private _pointerSourceUrl?: string | null;
+
+  private _pointerTransport?: HttpTransport;
+
+  private _pointerBudget?: KoiosRequestBudget;
+
   private _claimed = new Set<string>();
 
   private _pending: Promise<void> = Promise.resolve();
@@ -173,6 +284,22 @@ export class AssetMetadataResolver {
     this._onResolved = options.onResolved;
     this._now = options.now ?? Date.now;
     this._retryBackoffMs = options.retryBackoffMs;
+    this._immutableDirectory = options.immutableDirectory;
+    this._pointerSourceUrl = options.pointerSourceUrl;
+    this._pointerTransport = options.pointerTransport;
+    this._pointerBudget = options.pointerBudget;
+  }
+
+  /**
+   * The pointer source the renderer last named.
+   *
+   * The setting is the renderer's, per profile, and the client is here, so it
+   * arrives with each read rather than on a channel of its own. Setting it is a
+   * plain assignment: nothing is scheduled by a change, and the next resolution
+   * uses whatever is current.
+   */
+  setPointerSourceUrl(sourceUrl: string | null | undefined): void {
+    this._pointerSourceUrl = sourceUrl;
   }
 
   close(): void {
@@ -301,8 +428,29 @@ export class AssetMetadataResolver {
       toWrite.push(storedAsWrite(previous));
     });
 
+    // Only subjects the registry did not answer reach the chain channel. That
+    // is what keeps fungible holdings, which the registry does answer for, off
+    // it entirely.
+    const answered = new Set(entries.map((entry) => entry.subject));
+    stored.forEach((row, subject) => {
+      if (row.source === 'registry') answered.add(subject);
+    });
+    const unanswered = wanted.filter((subject) => !answered.has(subject));
+    const chain = await this._resolveFromChain(unanswered, failureCounts, now);
+    chain.rows.forEach((row) => {
+      toWrite.push(row);
+      changed.push(row.subject);
+    });
+
     if (toWrite.length > 0) this._db.writeMetadata(toWrite, now);
-    if (resolutions.length > 0) this._db.writeResolutions(resolutions, now);
+    // The chain outcome is written after the registry's for the same subject,
+    // and both are an upsert on the subject, so the later one stands. That is
+    // the right way round: the registry recorded a subject it does not know,
+    // and the chain channel has just said something more specific about it.
+    const allResolutions = resolutions.concat(chain.resolutions);
+    if (allResolutions.length > 0) {
+      this._db.writeResolutions(allResolutions, now);
+    }
 
     const emitted = changed.length > 0 ? this._db.readMetadata(changed) : [];
     if (emitted.length > 0 && this._onResolved) {
@@ -315,6 +463,118 @@ export class AssetMetadataResolver {
       }
     }
     return emitted;
+  }
+
+  /**
+   * The chain channel: ask the index for pointers, confirm each against the
+   * user's own chain, and turn the confirmations into rows.
+   *
+   * Nothing here throws. A subject that cannot be confirmed produces a
+   * resolution row and no metadata row, which is the same shape the registry
+   * channel already uses for a subject it could not answer.
+   */
+  private async _resolveFromChain(
+    subjects: Array<string>,
+    failureCounts: Record<string, number>,
+    now: number
+  ): Promise<{
+    rows: Array<AssetMetadataWrite>;
+    resolutions: Array<AssetResolutionWrite>;
+  }> {
+    const empty = { rows: [], resolutions: [] };
+    if (subjects.length === 0) return empty;
+    if (!this._pointerSourceUrl || !this._immutableDirectory) return empty;
+
+    let result;
+    try {
+      result = await queryKoiosPointers(subjects, {
+        baseUrl: this._pointerSourceUrl,
+        transport: this._pointerTransport,
+        budget: this._pointerBudget,
+        failureCounts,
+        retryBackoffMs: this._retryBackoffMs,
+        now,
+      });
+    } catch (error) {
+      logger.debug('Asset metadata: pointer query failed', {
+        reason: error instanceof Error ? error.message : 'unknown',
+        subjectCount: subjects.length,
+      });
+      return empty;
+    }
+
+    if (result.pointers.length === 0) {
+      return { rows: [], resolutions: result.resolutions };
+    }
+
+    // One reader for the pass. It lists the immutable directory once to find
+    // the tip, which on a synced mainnet is tens of thousands of entries.
+    const reader = new ImmutableBlockReader(this._immutableDirectory);
+    const byHash = new Map<string, KoiosTransaction>(
+      result.transactions.map((transaction) => [
+        transaction.txHash,
+        transaction,
+      ])
+    );
+
+    const rows: Array<AssetMetadataWrite> = [];
+    const resolutions: Array<AssetResolutionWrite> = result.resolutions.slice();
+
+    result.pointers.forEach((pointer) => {
+      const transaction = byHash.get(pointer.mintingTxHash);
+      if (!transaction) return;
+      const confirmation = confirmChainPointer(
+        {
+          subject: pointer.subject,
+          policyId: pointer.policyId,
+          assetName: pointer.assetName,
+          txHash: transaction.txHash,
+          blockHash: transaction.blockHash,
+          absoluteSlot: transaction.absoluteSlot,
+          cbor: transaction.cbor,
+        },
+        { reader }
+      );
+
+      if (confirmation.status === 'pending') {
+        resolutions.push({
+          subject: pointer.subject,
+          state: 'pending',
+          failureCount: failureCounts[pointer.subject] ?? 0,
+          retryAfter: now + ASSET_CHAIN_PENDING_RETRY_MS,
+        });
+        return;
+      }
+      if (confirmation.status === 'rejected') {
+        logger.warn('Asset metadata: pointer refused by the local check', {
+          reason: confirmation.reason,
+        });
+        resolutions.push({
+          subject: pointer.subject,
+          state: 'failed',
+          failureCount: (failureCounts[pointer.subject] ?? 0) + 1,
+          retryAfter: now + ASSET_CHAIN_REJECTED_RETRY_MS,
+        });
+        return;
+      }
+      if (confirmation.status === 'unavailable') {
+        // Nothing was decided about the pointer, so nothing is recorded about
+        // it either. The subject keeps whatever the registry pass wrote.
+        return;
+      }
+
+      rows.push(
+        chainPointerToRow(pointer, confirmation.slot, confirmation.cip25)
+      );
+      resolutions.push({
+        subject: pointer.subject,
+        state: 'resolved',
+        failureCount: 0,
+        retryAfter: 0,
+      });
+    });
+
+    return { rows, resolutions };
   }
 
   private _supersedes(

@@ -570,6 +570,11 @@ export type AssetMetadataRendererRequest = AssetIpcCorrelated<{
   // who knows an issuer published something today. Still a read: it answers from
   // the cache and schedules the fetch behind the answer.
   refresh?: boolean;
+  // Where on-chain metadata pointers are read from, as the user selected it.
+  // The setting lives in the renderer, per profile, and the client that uses it
+  // lives in the main process, so it travels with every read rather than being
+  // pushed on its own channel and kept in step.
+  sourceUrl?: string | null;
 }>;
 export type AssetMetadataMainResponse = AssetIpcCorrelated<{
   entries: Array<AssetMetadataEntry>;
