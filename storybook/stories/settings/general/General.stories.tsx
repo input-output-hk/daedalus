@@ -2,7 +2,7 @@ import React from 'react';
 import { boolean, number } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withState } from '@dump247/storybook-state';
+import { withState } from '../../_support/WithLocalState';
 import SettingsWrapper from '../utils/SettingsWrapper';
 import { updateParam } from '../../../addons/DaedalusMenu';
 import { themesIds } from '../../_support/config';

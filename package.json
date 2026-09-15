@@ -76,7 +76,6 @@
     "electron": "./node_modules/.bin/electron"
   },
   "devDependencies": {
-    "@dump247/storybook-state": "1.6.1",
     "@electron/rebuild": "4.0.4",
     "@faker-js/faker": "6.0.0",
     "@formatjs/cli": "4.8.3",

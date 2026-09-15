@@ -2,7 +2,6 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
-import { withState } from '@dump247/storybook-state';
 import {
   withKnobs,
   text,
@@ -11,6 +10,7 @@ import {
   select,
 } from '@storybook/addon-knobs';
 import { find, get } from 'lodash';
+import { withState } from '../_support/WithLocalState';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import StoryLayout from '../_support/StoryLayout';
