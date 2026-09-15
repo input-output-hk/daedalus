@@ -1138,7 +1138,7 @@
      "id": "task-028",
      "title": "Correct the IPC workflow document",
      "description": ".agent/workflows/ipc.md labels the renderer-to-main hop ipcRenderer.send / invoke and the main-side hop ipcMain.handle / on. Neither ipcRenderer.invoke nor ipcMain.handle appears anywhere in source/, and ipcRenderer.send appears twice, both outside the channel mechanism.",
-     "status": "pending",
+     "status": "completed",
      "priority": "low",
      "estimatedHours": 2.0,
      "dependencies": [
@@ -1146,13 +1146,22 @@
      ],
      "targetPath": ".agent/workflows/ipc.md",
      "implementationNotes": [
-      "The real mechanism is IpcChannel deriving three wire names from one base at source/common/ipc/lib/IpcChannel.ts:91-93: -broadcast, -request and -response.",
+      "The real mechanism is IpcChannel deriving three wire names from one base at source/common/ipc/lib/IpcChannel.ts:91-93: -broadcast, -request and -response. Nothing is ever sent on the bare constant.",
+      "send posts on -broadcast and pairs with onReceive; request posts on -request and pairs with onRequest. Mixing them sends to a name with no listener and neither side reports it, which is the failure a reader is most likely to hit and the document was silent on.",
       "The two real ipcRenderer.send call sites are stores/WindowStore.ts:17 and :25, neither through a channel. Say so rather than deleting the mention.",
-      "Correct the diagram and the Quick Reference, and leave the four-step channel creation recipe, which is accurate.",
+      "The preload is not a hop. source/main/preload.ts:31 assigns ipcRenderer onto the renderer's global, which is what RendererIpcChannel defaults its sender and receiver to; nothing is forwarded through it.",
+      "IpcChannel<Incoming, Outgoing> is written from the declaring side's point of view, so the two sides list the same pair in the opposite order. The document had them the same on both sides, so a client copied from it has its types inside out.",
+      "Handlers are registered in source/main/ipc/index.ts, not source/main/index.ts.",
+      "The broadcast section described webContents.send on the bare constant, which appears nowhere in source/. The real push is channel.send(message, window.webContents).",
+      "Seven of the tabulated channels do not exist: the whole Cardano table. Twenty-four other names in those tables do. Replaced with the backend, watchdog, asset and governance channels that are declared.",
+      "Two snippets could not work: ipcMain.on('*'), because Electron has no wildcard channel, and a test mock of ipcRenderer.invoke, which nothing calls.",
+      "The response correlation defect is the one place the code rather than the document is wrong. The document points at .agent/findings/ipc-channel-response-correlation.md rather than restating it.",
       "Record the divergence rather than working around it. Anyone reading the document to build a channel today builds the wrong thing."
      ],
      "acceptance": [
       "The document's diagram names the mechanism the repository actually uses",
+      "Every channel name the document tabulates exists in source/common/ipc/api.ts",
+      "Every code sample matches the shape the repository uses, including the generic parameter order, which is reversed between the two sides",
       "No code change accompanies this task"
      ],
      "targetPaths": [
