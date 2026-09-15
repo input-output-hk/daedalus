@@ -29,11 +29,12 @@ Check results:
   `csf-2-to-3` cannot turn `export const X = ImportedStory` into an object literal, so it leaves
   `X.parameters = {}` and `X.storyName = ''` attached to a const TypeScript has typed as
   `() => Element`. 8 files, spread across four of the five tranches.
-- `lint`: 49 errors, up from 0, all `react/function-component-definition`, across 25 files. The rule
-  fires on `render: () => <X />`. The old `.add('X', () => <Y />)` form did not trigger it because
-  the arrow sat in an argument position. This needs a decision in `task-018`, which is the tranche
-  that settles patterns for the other four: either the render bodies take a form the rule accepts,
-  or the rule is scoped off for story files. Nothing in the plan anticipated it.
+- `lint`: 49 errors, up from 0, all `react/function-component-definition`, across 25 files. Every one
+  of the 49 is an `export const X = () => ...` story function. The old `.add('X', () => <Y />)` form
+  did not trigger the rule because the arrow sat in a call argument, which the rule does not inspect;
+  as a `const` initialiser it does. This needs a decision in `task-018`, which is the tranche that
+  settles patterns for the other four: either the story functions take a form the rule accepts, or
+  the rule is scoped off for story files. Nothing in the plan anticipated it.
 - `storybook`: indexing now succeeds and the preview build fails instead. The cause is in
   `storybook/main.ts`, not in any story. It takes `ProvidePlugin` from the root `webpack` at
   5.106.2 while `@storybook/builder-webpack5` runs its own nested copy at 5.111.0, so the plugin
@@ -97,3 +98,18 @@ Approval bar:
 - Met. `task-017` is complete and the five tranches have their input.
 
 Decision: approved
+
+Correction: Iteration 1
+Timestamp: 2026-09-15T10:31:20Z
+
+The check-results section above first said the 49 `react/function-component-definition` errors fire
+on `render: () => <X />`. They do not. All 49 sites are `export const X = () => ...`, read back from
+the reported line of every one rather than from the two files that had been looked at. `csf-2-to-3`
+leaves a plain story function as a function, which CSF 3 permits, and the rule objects to the arrow
+rather than to anything CSF asked for. The distinction matters for the decision it hands `task-018`,
+because the two shapes would be reshaped differently.
+
+Measured while establishing that: `eslint --fix` rewrites all 49 into
+`export function X() { return ...; }`, which the rule accepts and which leaves the export name, and
+so the derived label, untouched. So the option is a mechanical pass and not a rewrite, which is
+worth knowing before choosing between it and scoping the rule off.
