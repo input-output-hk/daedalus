@@ -117,7 +117,9 @@ module.exports = {
   // resetModules: false,
 
   // A path to a custom resolver
-  // resolver: undefined,
+  // Storybook 8 publishes its modules behind package `exports` maps, which Jest
+  // 27 does not read. See the file for what breaks without it.
+  resolver: '<rootDir>/tests/jest/setup/storybookExportsResolver.js',
 
   // Automatically restore mock state between every test
   // restoreMocks: false,

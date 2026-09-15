@@ -884,7 +884,7 @@
      "id": "task-025",
      "title": "Verify the hop and merge it",
      "description": "The branch merges once, green. This task is the full verification that makes the merge safe: all three required checks, a manual pass over every panel, and a confirmation that knobs and withState still work untouched.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 8.0,
      "dependencies": [
@@ -899,7 +899,12 @@
       "yarn storybook:build, yarn compile, yarn lint, yarn i18n:manage and yarn test:jest all run before the merge.",
       "Walk all 15 sidebar groups in the running workbench, not only the tranches that felt risky.",
       "Confirm the knob controls still render and still change the component, because they are carried across this landing unchanged.",
-      "Rebase onto master rather than merging master into the branch."
+      "Rebase onto master rather than merging master into the branch.",
+      "REGRESSION FOUND AND FIXED, from the version hop rather than from the conversion. jest was failing and had been since task-015, because the window was being tracked by compile, lint and storybook and jest was not one of them. tests/jest/governance/delegationStoryFixtures.spec.ts reaches @storybook/addon-knobs, which reaches @storybook/preview-api, a one-line shim for storybook/internal/preview-api. Jest 27.5.1 does not read package exports maps, so it looked for a directory called internal and reported the module missing. Mapping the path one at a time does not converge: each resolved bundle names more subpaths behind more maps. The fix is a resolver at tests/jest/setup/storybookExportsResolver.js that reads the exports map of @storybook/core and storybook and defers everything else to Jest's own resolver, choosing the CommonJS condition because the ESM entry beside it would not be transformed. jest is now 70 suites and 930 tests passed, 8 more than before, being the ones in the suite that could not run.",
+      "ALL EIGHT CHECKS GREEN for x86_64-linux: compile, lint, stylelint, i18n, storybook, jest, shellcheck and cucumber-unit.",
+      "KNOBS AND withState VERIFIED BY RENDERING, not by compiling. A story using text, boolean, number and select inside a withKnobs decorator renders 'default label | true | 42 | b', so each knob returned its default and each value reached the component. A withState story renders count=0 and re-renders as count=7 after store.set({ count: 7 }). Both were carried across this landing untouched on an argument about how they work, and this is the first time either has been measured.",
+      "LIMIT. The walk through all fifteen sidebar groups in a running workbench cannot be performed here: no browser, no display, which is the constraint locked decision 7 already records. What covers the ground it can: the preview build compiles every story module and every component it reaches, Storybook's indexer lists all 258 with titles and names matching the baseline pair for pair, and story-args-audit.js rules out the one failure mode found in this corpus that a build cannot see. That is less than looking at fifteen groups and is stated as such.",
+      "MERGE NOT PERFORMED, two things in the way. master has moved fourteen commits since the merge base and git merge-tree reports one conflict, in storybook/stories/governance/DRepDirectory.stories.tsx, which two of those commits touch and this branch rewrote; everything else auto-merges, including three i18n artifacts and GovernanceWallets.stories.tsx. And master defines a ninth check, docs, from tests/docs.nix, which does not exist on this branch, so nothing here has been measured against it. The entry says to rebase onto master rather than merge master in; this branch is public and has been pushed throughout, so a rebase means force-pushing published history. Both are reported rather than acted on."
      ],
      "acceptance": [
       "All required checks pass on the merge commit",
