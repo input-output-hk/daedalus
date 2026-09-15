@@ -12,8 +12,7 @@ import WalletSendForm, {
 import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/SendConfirmation.view';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
-import Asset from '../../domains/Asset';
-import type { ApiTokens } from '../../api/assets/types';
+import type { ApiTokens, AssetToken } from '../../api/assets/types';
 import { getNonZeroAssetTokens } from '../../utils/assets';
 import {
   withAnalytics,
@@ -112,9 +111,8 @@ class WalletSendPage extends Component<Props, State> {
     actions.dialogs.closeActiveDialog.trigger();
   };
 
-  getAssetByUniqueId = (uniqueId: string, allAssets: Array<Asset>) => {
-    return allAssets.find((asset) => asset.uniqueId === uniqueId);
-  };
+  getAssetByUniqueId = (uniqueId: string, assetTokens: Array<AssetToken>) =>
+    assetTokens.find((assetToken) => assetToken.uniqueId === uniqueId);
 
   render() {
     const { stores, actions } = this.props;
@@ -131,21 +129,20 @@ class WalletSendPage extends Component<Props, State> {
     const { validateAmount, validateAssetAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { all: allAssets, activeAsset, getAsset, favorites } = assetsStore;
+    const { activeAsset, getAsset, favorites } = assetsStore;
     const { unsetActiveAsset } = actions.wallets;
-    const selectedAsset = activeAsset
-      ? this.getAssetByUniqueId(activeAsset, allAssets)
-      : null;
     // Guard against potential null values
     const wallet = wallets.active;
     if (!wallet) throw new Error('Active wallet required for WalletSendPage.');
     const { isHardwareWallet, name: walletName } = wallet;
     const walletTokens = wallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
-    const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = assetTokens.length;
+    // Resolved from what the wallet holds rather than from the cache, so a
+    // token nothing has been cached about still opens its send form selected.
+    const selectedAsset = activeAsset
+      ? this.getAssetByUniqueId(activeAsset, assetTokens)
+      : null;
     const hasRawAssets = wallet.assets.total.length > 0;
-    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
@@ -167,7 +164,6 @@ class WalletSendPage extends Component<Props, State> {
         assets={assetTokens}
         hasAssets={hasAssetsEnabled && hasRawAssets}
         selectedAsset={selectedAsset}
-        isLoadingAssets={isLoadingAssets}
         isDialogOpen={uiDialogs.isOpen}
         isRestoreActive={wallet.isRestoring}
         isHardwareWallet={isHardwareWallet}

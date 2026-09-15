@@ -17,7 +17,10 @@ import {
   MAX_DECIMAL_PRECISION,
 } from '../../config/assetsConfig';
 import { DiscreetTokenWalletAmount } from '../../features/discreet-mode';
-import { isNonRecommendedDecimalSettingUsed } from '../wallet/tokens/wallet-token/helpers';
+import {
+  DecimalSettingDisagreement,
+  decimalSettingDisagreement,
+} from '../wallet/tokens/wallet-token/helpers';
 
 const messages = defineMessages({
   title: {
@@ -68,11 +71,45 @@ const messages = defineMessages({
       '!!!You are not using the recommended decimal place configuration for this native token.',
     description: 'Asset settings recommended pop over content',
   },
+  warningPopOverAvailableUnverified: {
+    id: 'assets.warning.availableUnverified',
+    defaultMessage:
+      '!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.',
+    description:
+      'Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.',
+  },
+  refreshMetadata: {
+    id: 'assets.settings.dialog.refreshMetadata',
+    defaultMessage: '!!!Check the token registry again',
+    description:
+      'Label for the control in the Asset settings dialog that asks the metadata cache to read the token registry again for this one token.',
+  },
+  unverifiedDecimals: {
+    id: 'assets.settings.dialog.unverifiedDecimals',
+    defaultMessage:
+      '!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.',
+    description:
+      'Sentence beside the decimal places field in the Asset settings dialog, shown when the issuer published a decimal place count that could not be verified against the minting policy.',
+  },
+  warningPopOverNotUsingUnverified: {
+    id: 'assets.warning.notUsingUnverified',
+    defaultMessage:
+      '!!!Your setting differs from the {recommendedDecimals, plural, one {# decimal place} other {# decimal places}} this token’s issuer publishes. That figure could not be checked against the token’s minting policy.',
+    description:
+      'Asset settings pop over content, for a setting that differs from a published decimal place count that could not be verified.',
+  },
 });
 type Props = {
   asset: AssetToken;
   onSubmit: (...args: Array<any>) => any;
   onCancel: (...args: Array<any>) => any;
+  /**
+   * Asks the cache to read the registry again for this one token, ignoring the
+   * refresh window. Answers nothing: whatever it finds arrives as a new row and
+   * the dialog re-renders with it, and offline it finds nothing and says so
+   * nowhere.
+   */
+  onRefresh?: (asset: AssetToken) => void;
 };
 type State = {
   decimals: number | null | undefined;
@@ -132,8 +169,12 @@ class AssetSettingsDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onCancel, onSubmit, asset } = this.props;
-    const { decimals: savedDecimals, recommendedDecimals } = asset;
+    const { onCancel, onSubmit, onRefresh, asset } = this.props;
+    const {
+      decimals: savedDecimals,
+      recommendedDecimals,
+      recommendedDecimalsVerified,
+    } = asset;
     const { decimals } = this.state;
     const hasSavedDecimals = typeof savedDecimals === 'number';
     const options = range(MAX_DECIMAL_PRECISION + 1).map((value) => ({
@@ -154,17 +195,35 @@ class AssetSettingsDialog extends Component<Props, State> {
       },
     ];
 
-    const hasWarning = isNonRecommendedDecimalSettingUsed({
+    // A different question from the disagreement below: that one is about two
+    // numbers differing, this one is about one number nobody could check, and it
+    // holds whether or not the user has chosen anything and whether or not the
+    // published figure is zero.
+    const hasUnverifiedDecimals =
+      typeof recommendedDecimals === 'number' &&
+      recommendedDecimalsVerified !== true;
+
+    const disagreement = decimalSettingDisagreement({
       recommendedDecimals,
       decimals: savedDecimals,
+      recommendedDecimalsVerified,
     });
+    const hasWarning = disagreement !== DecimalSettingDisagreement.None;
+    const isUnattested =
+      disagreement === DecimalSettingDisagreement.WithUnverified;
 
     let warningPopOverMessage;
 
     if (hasWarning) {
-      warningPopOverMessage = hasSavedDecimals
-        ? messages.warningPopOverNotUsing
-        : messages.warningPopOverAvailable;
+      if (hasSavedDecimals) {
+        warningPopOverMessage = isUnattested
+          ? messages.warningPopOverNotUsingUnverified
+          : messages.warningPopOverNotUsing;
+      } else {
+        warningPopOverMessage = isUnattested
+          ? messages.warningPopOverAvailableUnverified
+          : messages.warningPopOverAvailable;
+      }
     }
 
     return (
@@ -213,7 +272,17 @@ class AssetSettingsDialog extends Component<Props, State> {
                       recommendedDecimals,
                     })}
                   >
-                    <span data-testid="warning-icon">
+                    {/*
+                     * The same sentence as the pop-over, on the icon itself. A
+                     * pop-over is mouse-only, so the reason for the mark was
+                     * reachable by hovering and by nothing else.
+                     */}
+                    <span
+                      data-testid="warning-icon"
+                      aria-label={intl.formatMessage(warningPopOverMessage, {
+                        recommendedDecimals,
+                      })}
+                    >
                       <SVGInline
                         className={styles.warningIcon}
                         svg={warningIcon}
@@ -227,6 +296,28 @@ class AssetSettingsDialog extends Component<Props, State> {
             optionRenderer={this.optionRenderer}
             selectionRenderer={this.selectionRenderer}
           />
+          <div className={styles.decimalsFooter}>
+            {hasUnverifiedDecimals && (
+              <p
+                className={styles.unverifiedDecimals}
+                data-testid="unverified-decimals"
+              >
+                {intl.formatMessage(messages.unverifiedDecimals, {
+                  recommendedDecimals,
+                })}
+              </p>
+            )}
+            {onRefresh && (
+              <button
+                className={styles.refreshButton}
+                type="button"
+                data-testid="refresh-metadata"
+                onClick={() => onRefresh(asset)}
+              >
+                {intl.formatMessage(messages.refreshMetadata)}
+              </button>
+            )}
+          </div>
         </div>
       </Dialog>
     );

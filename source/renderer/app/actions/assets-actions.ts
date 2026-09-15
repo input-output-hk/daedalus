@@ -10,6 +10,9 @@ export default class AssetsActions {
     decimals: number;
   }> = new Action();
   unsetEditedAsset: Action<any> = new Action();
+  onAssetSettingsRefresh: Action<{
+    asset: AssetToken;
+  }> = new Action();
   onOpenAssetSend: Action<{
     uniqueId: string;
   }> = new Action();
@@ -21,6 +24,10 @@ export default class AssetsActions {
     uniqueId: string;
     isFavorite: boolean;
   }> = new Action();
+  selectAssetMetadataSourceUrl: Action<{
+    sourceUrl: string;
+  }> = new Action();
+  resetAssetMetadataSourceError: Action<any> = new Action();
   copyAssetParamNotification: Action<{
     param: string;
     shortValue: string;

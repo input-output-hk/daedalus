@@ -20,6 +20,10 @@ class AssetSettingsDialogContainer extends Component<Props> {
     dialogs.closeActiveDialog.trigger();
   };
 
+  handleRefresh = (asset: AssetToken) => {
+    this.props.actions.assets.onAssetSettingsRefresh.trigger({ asset });
+  };
+
   handleCancel = () => {
     const { assets, dialogs } = this.props.actions;
     assets.unsetEditedAsset.trigger();
@@ -37,6 +41,7 @@ class AssetSettingsDialogContainer extends Component<Props> {
         asset={editedAsset}
         onSubmit={this.handleSubmit}
         onCancel={this.handleCancel}
+        onRefresh={this.handleRefresh}
       />
     );
   }

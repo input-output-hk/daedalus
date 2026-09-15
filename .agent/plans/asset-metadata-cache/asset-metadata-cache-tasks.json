@@ -1,0 +1,1649 @@
+{
+ "metadata": {
+  "title": "Asset Metadata Cache Tasks",
+  "created": "2026-09-10",
+  "updated": "2026-09-16",
+  "version": "1.3.0",
+  "totalTasks": 40,
+  "prdReference": ".agent/plans/asset-metadata-cache/asset-metadata-cache-prd.md",
+  "description": "A local SQLite asset metadata cache in the Electron main process that resolves tickers, names and decimal places from the Cardano token registry, applies decimal places only when the metadata is cryptographically bound to the minting policy, adds CIP-25 and CIP-68 names through a Koios pointer the user's own node confirms, and removes the one-minute poll of the wallet assets endpoint",
+  "sourceFiles": [
+   ".agent/plans/asset-metadata-cache/prompt.md",
+   "source/renderer/app/stores/AssetsStore.ts",
+   "source/renderer/app/api/api.ts",
+   "source/renderer/app/api/assets/types.ts",
+   "source/renderer/app/utils/assets.ts",
+   "source/renderer/app/domains/Asset.ts",
+   "source/renderer/app/components/assets/Asset.tsx",
+   "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
+   "source/renderer/app/components/wallet/send-form/AssetInput.tsx",
+   "source/renderer/app/components/wallet/tokens/wallet-token/helpers.ts",
+   "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.tsx",
+   "source/renderer/app/containers/wallet/WalletTokensPage.tsx",
+   "source/renderer/app/containers/wallet/WalletSummaryPage.tsx",
+   "source/common/ipc/api.ts",
+   "source/common/ipc/lib/IpcChannel.ts",
+   "source/main/ipc/governanceAnchorChannel.ts",
+   "source/main/governance/anchorCache.ts",
+   "source/main/governance/AnchorFetchService.ts",
+   "source/main/config.ts",
+   "source/main/index.ts",
+   "nix/internal/launcher-config.nix",
+   "source/renderer/app/containers/wallet/dialogs/send-confirmation/DialogContentWithAssets.tsx",
+   ".agent/plans/asset-metadata-cache/research/01-koios-pointer-option.md",
+   "source/renderer/app/components/settings/categories/StakePoolsSettings.tsx",
+   "source/renderer/app/containers/settings/categories/StakePoolsSettingsPage.tsx",
+   "source/renderer/app/config/stakingConfig.ts",
+   "source/renderer/app/api/staking/requests/checkSmashServerHealth.ts",
+   "source/renderer/app/utils/staking.ts",
+   "source/renderer/app/api/utils/localStorage.ts",
+   "source/renderer/app/stores/StakingStore.ts",
+   "source/renderer/app/config/assetsConfig.ts",
+   "source/renderer/app/components/settings/menu/SettingsMenu.tsx",
+   "source/renderer/app/routes-config.ts",
+   "source/renderer/app/Routes.tsx",
+   "source/main/preload.ts"
+  ],
+  "importantNote": "verified must mean the whole chain passed: the policy field hashes to the subject's policy id, the script requires the key hash of the signing public key, and the ed25519 signature over the attestation payload verifies. It must not mean that the server returned a signature, which would collapse back to trusting the operator. task-019 must not ship if task-009's corpus gate was not met. No cardano-wallet change is in scope: the wallet keeps its --token-metadata-server wiring at source/main/index.ts:215-218 and this design simply stops exercising it. Koios is adopted as the pointer service for on-chain metadata (PRD locked decision 9) and it is ADDITIVE to tokens.cardano.org, never a replacement (locked decision 10): Koios strips the registry signatures, returning bare name, description, ticker, url, logo and decimals with no policy, no sequenceNumber and no signatures, so every input to the verification chain is absent from it. Verified decimal places keep coming direct from tokens.cardano.org, and a chain-sourced row leaves decimals NULL so no amount anywhere is formatted by a number that came from Koios. The metadata source is user-selectable in the shape SMASH already uses (locked decision 11): the Koios preset and the custom URL ship together in phase 7, and the direct option is carried in the enum and rendered unavailable until the local scan machinery exists."
+ },
+ "phases": [
+  {
+   "id": "phase-1",
+   "name": "Standalone Correctness Fixes",
+   "description": "Everything that improves what the user sees without a cache, an IPC channel or a new dependency. Four independent commits, each revertible alone, each shippable before the rest of the plan exists.",
+   "riskLevel": "low",
+   "tasks": [
+    {
+     "id": "task-001",
+     "title": "Resolve asset names by provenance and stop rendering non-text as text",
+     "description": "components/assets/Asset.tsx:177-178 renders `ASCII: ${hexToString(assetName)}` whenever there is no metadata name. hexToString is Buffer.from(hex,'hex').toString() (utils/strings.ts:18-19), which decodes as UTF-8 unconditionally, so an asset whose name is a hash renders the literal prefix followed by replacement characters. Add a printable-ASCII predicate and a resolution order, and drop the prefix.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 3.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/renderer/app/components/assets/Asset.tsx",
+      "source/renderer/app/components/assets/Asset.spec.tsx",
+      "source/renderer/app/utils/strings.ts"
+     ],
+     "implementationNotes": [
+      "Resolution order, highest first: registry ticker, registry name, the CIP-25 or CIP-68 name the chain channel resolves in task-035, decoded asset name when printable, nothing. Until the cache lands the first three are simply absent, so this task is the fourth rung and the ordering it sits in.",
+      "The predicate is: decode asset_name from hex, accept only if every resulting byte is in 0x20 to 0x7E inclusive. Reject the empty name.",
+      "Do not simply delete the 'ASCII: ' prefix. Today it is the only thing marking the decoded bytes as raw asset-name bytes rather than a name an issuer published. Asset names are chosen freely by whoever mints, so an asset whose name bytes spell USDC would otherwise render into the same displayName span as a genuine registry USDC, separable only by the fingerprint. Replace the prefix with a visually distinct treatment for a minter-chosen decoded name, on every surface that renders a name. The exact treatment is a design decision; the requirement is that a user can tell a decoded name from a published one without reading the fingerprint. styles.ascii at Asset.tsx:209 is a starting point.",
+      "The fingerprint is rendered separately at Asset.tsx:199-203 and remains the identity when no name resolves. Do not substitute a truncated policy id.",
+      "domains/Asset.ts:22-25 already exposes assetNameASCII as a MobX computed over the same bytes. Put the predicate beside it rather than duplicating the decode."
+     ],
+     "testCases": [
+      "A printable name renders decoded and without a prefix",
+      "A 32-byte random asset name renders no name at all, only the fingerprint",
+      "An empty asset name renders no name",
+      "A name whose bytes are valid UTF-8 but outside ASCII renders no name, which is the conservative choice recorded in the PRD"
+     ],
+     "acceptance": [
+      "A minter-chosen decoded name renders in a treatment visually distinct from a registry or CIP-25 name, on the token list, the send form and the transaction list",
+      "An asset whose name bytes spell an existing registry ticker is distinguishable from the real one without reading the fingerprint, demonstrated with a fixture for both",
+      "No token row in the list or the send form shows replacement characters",
+      "The predicate rejects the empty name and any byte outside 0x20 to 0x7E, asserted per boundary",
+      "yarn lint, yarn compile and yarn test:jest pass"
+     ],
+     "notes": "The marking is a security requirement, not a cosmetic one, and it is what the CIP-30 connector's 'display problem rather than an impersonation one' assumption rests on."
+    },
+    {
+     "id": "task-002",
+     "title": "Take merged-token identity from the token, not from the asset lookup",
+     "description": "utils/assets.ts:122-140 destructures uniqueId out of getAsset(policyId, assetName) || {}, and getNonZeroAssetTokens at :142-149 then filters on !!token.uniqueId. A token with no cached metadata therefore has no identity and is dropped. Under the current poll this is masked; with a cache that starts cold it empties the send form, the send confirmation and the transaction list.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 3.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/utils/assets.spec.ts"
+     ],
+     "implementation": {
+      "method": "getAssetTokenFromToken",
+      "change": "Take uniqueId, policyId, assetName and assetNameASCII from the token; take only metadata, decimals and recommendedDecimals from the asset lookup. The token already carries uniqueId (api/assets/types.ts:55, set at api.ts:3218 and :3229).",
+      "logic": [
+       "Destructure the token first and spread it",
+       "Overlay only the lookup fields that exist",
+       "Delete the .filter((token) => !!token.uniqueId) in getNonZeroAssetTokens, which then has nothing left to remove"
+      ]
+     },
+     "implementationNotes": [
+      "fingerprint stays absent for now. task-005 supplies it locally and task-016 wires it in; do not reach for the endpoint to fill it.",
+      "The fingerprint sort inside getNonZeroAssetTokens is unchanged. WalletSummaryPage.tsx:123-125 re-sorts afterward, so the two orders do not conflict."
+     ],
+     "testCases": [
+      "A token whose subject has no cached row survives the merge with uniqueId, policyId and assetName intact",
+      "A token whose subject has a cached row gains decimals and metadata and keeps its own quantity and address"
+     ],
+     "acceptance": [
+      "A cold-cache render of the send form, the send confirmation and the transaction list shows every token the wallet holds, with fingerprint and raw quantity, before any metadata resolves",
+      "uniqueId for a row originating in a transaction is derived as policyId + assetName, because api.ts:3321-3329 carries neither uniqueId nor assetNameASCII",
+      "getNonZeroAssetTokens no longer filters on uniqueId, and the filter is deleted rather than left always-true",
+      "yarn test:jest passes"
+     ],
+     "notes": "A prerequisite for the cold-cache behavior, not a cleanup. Landed early because it is correct on its own terms today."
+    },
+    {
+     "id": "task-003",
+     "title": "Stop the amount field accepting a decimal separator when decimal places are unknown",
+     "description": "components/wallet/send-form/AssetInput.tsx:116 passes decimalPlaces={decimals}, and decimals is undefined for every asset the user has never configured (domains/Asset.ts:18). With decimalPlaces undefined the react-polymorph NumericInput accepts a decimal separator, and WalletSendForm.tsx:235 then strips it with formattedAmountToNaturalUnits (utils/formatters.ts:163-167), so entering 1.5 produces a natural-unit amount of 15. On the Cardano ledger every quantity is an integer and decimal places are presentation only, so raw units are the correct display for an asset whose decimals are unknown and a separator typed into that field is meaningless input. Make the input path consistent with the confirmation dialog, which already shows both representations honestly.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 4.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/renderer/app/components/wallet/send-form/AssetInput.tsx",
+      "source/renderer/app/components/wallet/send-form/AssetInput.spec.tsx"
+     ],
+     "implementationNotes": [
+      "Pass allowOnlyIntegers to the NumericInput whenever the resolved decimal places are unknown. node_modules/react-polymorph/lib/components/NumericInput.js:197 and :199 select an integers-only input pattern from it, so the separator cannot be typed or pasted.",
+      "Label the field with the token's ticker or fingerprint rather than the formatted-amount placeholder built at AssetInput.tsx:105-111, which currently renders '0' and implies an integer without saying so.",
+      "Delete the keypress guard at AssetInput.tsx:128-137. It fires only when decimals === 0 and is redundant once allowOnlyIntegers covers both the zero and the unknown case.",
+      "The defect is the asymmetry with the screen that follows. The send confirmation renders the formatted amount at containers/wallet/dialogs/send-confirmation/DialogContentWithAssets.tsx:75 and the raw amount at :109-110, under unformattedAmountLabel and the tooltip explaining the difference in the sibling messages.ts:87-98. The confirmation is honest about the two representations while the input converts one into the other by stripping a character.",
+      "Do not block and do not refuse. A user holding a token the registry has never heard of must still be able to spend it, and raw units are the units it is actually denominated in.",
+      "Measured in this tree, and the reason the defect is invisible: new BigNumber('1.23456789').toFixed(undefined, 4) returns '1.23456789' rather than throwing, and undefined > 0 is false, so NumericInput.js:285 and :319 take the branch that appends the separator to the displayed value."
+     ],
+     "testCases": [
+      "With decimals undefined, typing a decimal separator into the asset amount field has no effect",
+      "With decimals undefined, pasting '1.5' yields the field value '15' or is rejected outright, and never a value the form then reinterprets",
+      "With decimals set to 6, the field still accepts '1.5' and yields 1500000 natural units",
+      "With decimals set to 0, behavior is unchanged from today"
+     ],
+     "acceptance": [
+      "yarn test:jest passes",
+      "The amount entered and the amount in the built transaction agree for every combination of decimals set, unset and zero"
+     ],
+     "securityNotes": [
+      "A live defect today and independent of the rest of the plan. It lands in the first phase because it is small, self-contained and revertible on its own, not because it is urgent.",
+      "Severity is bounded and should not be scheduled as an emergency. Decimal places are presentation only, so the realistic harm is a user who knows their token carries six decimals typing 1.5, meaning one and a half tokens, and sending 15 raw units: a large underpayment, not a tenfold overspend. The overspend direction appears at the migration in task-021, not here."
+     ]
+    },
+    {
+     "id": "task-004",
+     "title": "Delete three dead symbols",
+     "description": "Three exported names with no reader. Removing them here keeps them out of the diffs that follow and, in the case of getUniqueId, keeps a conflicting key order out of the new schema's way.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 1.5,
+     "dependencies": [],
+     "targetPaths": [
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/api/assets/requests/getUnknownAsset.ts",
+      "source/renderer/app/api/assets/types.ts",
+      "source/main/config.ts"
+     ],
+     "implementationNotes": [
+      "getUniqueId at utils/assets.ts:301-307 has no callers and concatenates `${assetName}${policyId}`, the opposite order to api.ts:3216, :3227 and :3384 and to AssetsStore.ts:67. The registry keys on policy id followed by asset name, which is the order the surviving sites already use and the order the new subject primary key takes.",
+      "getUnknownAsset at api/assets/requests/getUnknownAsset.ts is referenced only by its own module; GetUnknownAssetRequest at api/assets/types.ts:81-84 goes with it. Confirm with a repository-wide grep for both names before deleting.",
+      "FALLBACK_TOKEN_METADATA_SERVER_URL at source/main/config.ts:167-168 is exported and imported nowhere. The real fallback is the literal at source/main/index.ts:217, and the two do not name the same host.",
+      "Leave MOCK_TOKEN_METADATA_SERVER_URL and MOCK_TOKEN_METADATA_SERVER_PORT at config.ts:173-175 alone. They belong to the bundled mock server, which stays."
+     ],
+     "acceptance": [
+      "yarn lint and yarn compile pass",
+      "A repository-wide grep for each of the three names returns nothing outside history"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-2",
+   "name": "The Main-Process Cache",
+   "description": "The database, the registry client, the verification chain and the resolver that sequences them, built and tested with no consumer. Verification carries the only real uncertainty in the plan and is gated on its own corpus check before anything depends on it.",
+   "riskLevel": "medium",
+   "tasks": [
+    {
+     "id": "task-005",
+     "title": "Compute CIP-14 asset fingerprints locally",
+     "description": "fingerprint is today a field of the assets endpoint response (api/assets/types.ts:18), so dropping that endpoint drops the only source of the identifier the token row renders most prominently (Asset.tsx:199-203). CIP-14 is computable from the policy id and the asset name with packages already in the tree.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 4.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/renderer/app/utils/assetFingerprint.ts",
+      "source/renderer/app/utils/assetFingerprint.spec.ts"
+     ],
+     "implementation": {
+      "method": "assetFingerprint",
+      "parameters": [
+       "policyId: string",
+       "assetName: string"
+      ],
+      "returnType": "string",
+      "logic": [
+       "Concatenate the hex-decoded policy id and the hex-decoded asset name",
+       "Take blake2b-160 over the result using blake2b(20) from the blake2b package",
+       "Encode with bech32 using the human-readable part 'asset', via the bech32 package"
+      ]
+     },
+     "implementationNotes": [
+      "Both packages are already declared: blake2b at package.json:210 and bech32 at package.json:207. No new dependency.",
+      "Verified in this tree against the eight golden vectors in cardano-wallet at lib/primitive/test/spec/Cardano/Wallet/Primitive/Types/TokenFingerprintSpec.hs:40-78, including the empty asset name and the 32-byte asset name cases.",
+      "This lives in the renderer rather than main. It is a pure function of data the renderer already has, it must work with a cold cache, and putting it behind IPC would add a round trip to render a row."
+     ],
+     "testCases": [
+      "All eight golden vectors from TokenFingerprintSpec.hs:40-78 produce their published fingerprints",
+      "An empty asset name produces a fingerprint rather than throwing",
+      "An odd-length or non-hex input is rejected"
+     ],
+     "acceptance": [
+      "yarn test:jest passes with all eight vectors asserted",
+      "No new entry in package.json"
+     ],
+     "notes": "Load-bearing, not an optimization. Without it the token row loses its identifier the moment the endpoint goes."
+    },
+    {
+     "id": "task-006",
+     "title": "Database module: schema, open, version check, point read and write",
+     "description": "A node:sqlite database under the state directory holding asset_metadata, asset_image and asset_resolution as specified in the PRD, with the CHECK constraints that make an inconsistent row unwritable.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 6.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/main/assets/assetMetadataDb.ts",
+      "source/main/assets/assetMetadataDb.spec.ts"
+     ],
+     "implementationNotes": [
+      "DatabaseSync from node:sqlite. Verified in this repository under Electron 41.3.0 on Node 24.15.0 with no flag and no experimental warning; the bundled engine is SQLite 3.51.3, and STRICT tables, CHECK constraints and PRAGMA foreign_keys are all enforced.",
+      "Path: path.join(stateDirectoryPath, 'asset-metadata-cache', 'assets.sqlite'), with stateDirectoryPath from source/main/config.ts:125. Mirror anchorCacheDirectoryPath at source/main/governance/anchorCache.ts:36-37, including giving the database its own directory so the WAL and shared-memory siblings are contained.",
+      "Set PRAGMA journal_mode=WAL and PRAGMA foreign_keys=ON on open.",
+      "Check PRAGMA user_version on open. A file written by a newer version than the running code is deleted and recreated, not read: it holds nothing that cannot be fetched again.",
+      "Wrap every open, read and write so that a corrupt or unreadable file degrades to an empty cache rather than failing startup. anchorCache.ts:42-49 is the shape.",
+      "The primary key is the subject, and asset_resolution is keyed the same way, because what is cached is a property of the asset and not of the wallet holding it. Under the poll being removed, five wallets holding one token produce five fetches a minute for the same subject, roughly 7,200 a day for that one asset, since nothing between the store and the registry deduplicates by subject (AssetsStore.ts:13 and :157-170; cardano-wallet TokenMetadata.hs holds no IORef, TVar, MVar or memo structure). A subject-keyed table dissolves that by construction: one row and one resolution attempt however many wallets are open. A wallet-scoped backoff would retry a known-failing subject once per wallet and then wait out that many separate intervals.",
+      "Expose point reads keyed on subject and a batched upsert. Do not expose a full-table scan; nothing in the design enumerates the cache.",
+      "asset_metadata gains CHECK (decimals IS NULL OR (decimals >= 0 AND decimals <= 20)); assetsConfig.ts:1 sets MAX_DECIMAL_PRECISION = 20 and cardano-wallet accepts 0 to 255, so a verified value above 20 would otherwise be applied automatically while remaining unselectable in the dialog.",
+      "asset_resolution gains a state column with CHECK (state IN ('pending','resolved','unregistered','failed')), so a subject the registry silently omits is recorded rather than re-asked forever."
+     ],
+     "testCases": [
+      "A row claiming both a sequence_number and a slot is rejected by the CHECK constraints",
+      "A row whose subject is not policy_id || asset_name is rejected",
+      "A verified value outside 0 and 1 is rejected",
+      "Opening a database whose user_version is ahead recreates it empty",
+      "Opening a truncated file recreates it empty rather than throwing"
+     ],
+     "acceptance": [
+      "yarn test:jest passes against a temporary database file",
+      "Deleting the directory while the process is running and reopening produces a working empty cache",
+      "A decimals value of 21 is rejected by the engine, asserted directly rather than by inspection",
+      "asset_resolution records state for every attempt outcome, including the 'unregistered' case where the batch succeeded and the subject was omitted"
+     ]
+    },
+    {
+     "id": "task-007",
+     "title": "Registry client: batch query, timeout, retry and backoff",
+     "description": "POST {metadataUrl}/metadata/query against the host named by launcherConfig.metadataUrl, with the same literal fallback already used at source/main/index.ts:217. Batched, sequential, timed out, and with a recorded retry-after on failure rather than a loop.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 6.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/main/assets/assetRegistryClient.ts",
+      "source/main/assets/assetRegistryClient.spec.ts"
+     ],
+     "implementationNotes": [
+      "Read the host from launcherConfig.metadataUrl (source/main/config.ts:71, populated per network at nix/internal/launcher-config.nix:37-41). Using the launcher value keeps the selfnode and testnet setups working, including the bundled mock-token-metadata-server, without a second configuration surface. Resolve the endpoint as launcherConfig.metadataUrl, then the configured source setting, then the bundled mock when network === 'selfnode', then the mainnet literal. launcher-config.nix:448-450 assigns metadataUrl under lib.optionalAttrs (network != 'selfnode'), so on selfnode the key is absent and the bare literal fallback would point at mainnet instead of the mock. The failure is silent, because a mainnet registry answers plausibly.",
+      "Request properties: name, ticker, decimals, url, description. Do not request logo. That is the 36 KiB field and it is fetched one subject at a time in task-011.",
+      "The response carries policy whether or not it is requested, which is what makes verification possible from the bulk query alone. Confirmed live on 2026-09-10 for subject c76ef5451f551f3c06d48c46b153cb35221b507683b2e413122661b942544544.",
+      "Size each batch by serialized request body bytes with a 6 KB ceiling, not by subject count. The endpoint caps the body near 8,192 bytes: measured 2026-09-14, 100 subjects at 7,892 bytes returned 200 and 110 at 8,614 returned 413, and two of eight sampled 100-subject batches failed on asset name length alone. A subject is 56 hex characters of policy id plus up to 64 of asset name, so 100 worst-case subjects is about 12.3 KB and always fails. Issue batches one after another rather than in parallel.",
+      "10 second timeout per request, matching ANCHOR_TIMEOUT_MS at source/main/governance/AnchorFetchService.ts:9. One retry after a short backoff, then abandon the batch and write an asset_resolution row whose retry_after doubles per consecutive failure up to a ceiling.",
+      "Cap the response body in bytes, as AnchorFetchService does, so a misbehaving host cannot exhaust memory.",
+      "The host is fixed and known, so the address-range filtering AnchorFetchService performs is not needed here. Do not copy it.",
+      "Log failures at debug without the subject list.",
+      "A 4xx is deterministic and is never retried. A 413 splits the batch once and re-sends; anything else 4xx is logged at warn with the body size and subject count, never the subject list.",
+      "The registry omits unknown subjects rather than returning a negative, so a batch that returns fewer entries than it asked for is a success. Write every omitted subject to asset_resolution in state 'unregistered', or NFT-holding wallets re-ask forever and the poll this plan deletes comes back."
+     ],
+     "testCases": [
+      "A batch larger than the cap is split and issued sequentially",
+      "A request that exceeds the timeout is abandoned and records a retry-after",
+      "Consecutive failures lengthen the retry-after up to the ceiling and no further",
+      "A response over the byte cap is discarded"
+     ],
+     "acceptance": [
+      "A batch is sized by serialized request body bytes with a ceiling of 6 KB, and a unit test with 100 maximum-length subjects produces more than one batch",
+      "A 413 response splits the batch once and re-sends; a second 413 is recorded without a retry",
+      "No 4xx is ever scheduled for retry, asserted per status code",
+      "Subjects present in a request but absent from a 200 response are written to asset_resolution in state 'unregistered', asserted against a stub that omits one of two subjects",
+      "No timer anywhere in the module schedules unsolicited work",
+      "yarn test:jest passes against a stubbed transport",
+      "On selfnode the client resolves to the bundled mock-token-metadata-server and not to tokens.cardano.org, asserted by a manual QA case"
+     ]
+    },
+    {
+     "id": "task-008",
+     "title": "Verification steps one and two: policy binding and key binding",
+     "description": "Decode the policy field into a native script, prove that the script hashes to the subject's policy id, and prove that the script requires the key hash of the public key that signed the property under consideration.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-007"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetVerification.ts",
+      "source/main/assets/assetVerification.spec.ts"
+     ],
+     "implementationNotes": [
+      "Step one: strip the two leading bytes from the policy field and take blake2b-224 over 0x00 concatenated with the remainder. The digest must equal the subject's first 28 bytes.",
+      "Step two: decode the native script and collect the key hashes it requires, then confirm that blake2b-224 of the signing publicKey is among them. A script that requires no key hash fails.",
+      "Both steps were reproduced locally against the live-captured subject with blake2b alone. The policy field 820182018282051a0303eb448200581c39a1df51147b6de6689a4727846962fb6540c3a3c7859a1a79b9420f yields policy id c76ef5451f551f3c06d48c46b153cb35221b507683b2e413122661b9, and public key 5817526d712f71e33a31ac3429fb7ce70b3e17e727044d9a2a51493e7894ba48 yields key hash 39a1df51147b6de6689a4727846962fb6540c3a3c7859a1a79b9420f, which the script requires.",
+      "blake2b(28) from the blake2b package gives the 224-bit digest. The package is already imported in the main process at source/main/governance/AnchorVerificationService.ts:1.",
+      "A subject with no policy field fails step one and is written with verified = 0. It is not an error and is not logged as one: it is the ordinary state of a large share of the registry.",
+      "Handle nested script forms. A policy that is an all, any or at-least combinator over sub-scripts requires walking it, and a signature from a key inside a satisfiable branch counts."
+     ],
+     "testCases": [
+      "The live-captured subject passes both steps",
+      "A subject whose policy field hashes to a different policy id fails step one",
+      "A subject with no policy field fails step one",
+      "A signature from a key the script does not require fails step two",
+      "A nested all-of and any-of script resolves its key hashes correctly"
+     ],
+     "acceptance": [
+      "Policy binding: a fixture whose policy field digests to a different policy id returns false, and the failure names which digest differed",
+      "Script evaluation follows evaluatePolicy: all, any and atLeast are each covered by a fixture, including an atLeast(2 of 3) satisfied by one key, which must return false",
+      "Time-lock nodes evaluate to true regardless of the current clock, asserted with a policy whose lock expired in 2022",
+      "No path through the module can return true without both the policy digest and the script evaluation having been performed",
+      "yarn test:jest passes"
+     ],
+     "securityNotes": [
+      "verified is the output of this module and its successor. No field of the registry response may set it, directly or by default."
+     ]
+    },
+    {
+     "id": "task-009",
+     "title": "Verification step three: the attestation payload and ed25519, gated on the corpus",
+     "description": "Verify the ed25519 signature over the registry's attestation payload for a property, sequence number included. The exact payload construction is read from the registry's own implementation rather than re-derived, and the module is not accepted until it verifies the full policy-bound corpus with zero failures.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-008"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetVerification.ts",
+      "source/main/assets/assetVerification.spec.ts"
+     ],
+     "implementationNotes": [
+      "Verification uses Node's built-in crypto.verify(null, message, keyObject, signature) over an ed25519 raw public key, which adds nothing to the dependency tree. It is strict: tested 2026-09-14 against a real registry signature with its scalar S replaced by S + L, Node rejects it where cardano-crypto.js accepts it, so cardano-crypto.js is not used for this.",
+      "Take the payload construction from the registry's own implementation. A local sweep of 3,600 plausible constructions against a real mainnet subject did not reproduce the signature, which is why this is read rather than guessed.",
+      "The corpus gate: run verification over the full registry corpus and require zero failures across the policy-bound subjects before this task is accepted. This is not a CI check and not a unit test. It is a one-off validation whose result is recorded on the branch.",
+      "If Node's verifier turns out not to be strict enough on some platform build, promote @noble/curves from a transitive dependency (present at 1.9.7 through @trezor and @ethereumjs) to a declared one and use its ed25519, which rejected the same malleable signature. The primitive sits behind this module, so nothing else changes.",
+      "Verify each property independently. A subject may carry a verified ticker and an unverified decimals, and the row records the outcome per property rather than one verdict for the entry."
+     ],
+     "testCases": [
+      "A tampered property value fails",
+      "A tampered sequence number fails",
+      "A signature valid for a different property of the same subject fails",
+      "A signature valid for the same property of a different subject fails",
+      "The live-captured subject's decimals property verifies"
+     ],
+     "acceptance": [
+      "The attestation payload is the 32-byte blake2b256 over the concatenated blake2b256 digests of CBOR(subject), CBOR(propertyName), CBOR(value) and CBOR(sequenceNumber), asserted against five live properties of a known subject",
+      "Verification uses Node's built-in crypto.verify, and a signature with S replaced by S + L is rejected, asserted directly",
+      "No new runtime dependency is added; package.json is unchanged by this task",
+      "The full policy-bound corpus verifies with zero failures",
+      "yarn test:jest passes"
+     ],
+     "securityNotes": [
+      "This is the step that makes verified mean something. If it is weakened, the decimals resolution order in phase 4 must not ship."
+     ]
+    },
+    {
+     "id": "task-010",
+     "title": "Resolver: sequence cache read, fetch, verify and write",
+     "description": "The one module that owns the order of operations. It answers from the database, schedules what is missing, fetches in batches, verifies before writing, and emits the rows that resolved.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 7.0,
+     "dependencies": [
+      "task-005",
+      "task-006",
+      "task-007",
+      "task-009"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetMetadataResolver.ts",
+      "source/main/assets/assetMetadataResolver.spec.ts"
+     ],
+     "implementationNotes": [
+      "Answer immediately from the database. Never wait on the network to satisfy a read.",
+      "Subtract the subjects that already have rows and the subjects whose asset_resolution retry_after has not elapsed, then batch the remainder.",
+      "Write verified = 1 only when every step of the chain passed for the property being written. Compute it here; never carry it from the response.",
+      "Emit resolved rows through a callback the IPC layer supplies. The resolver does not know about channels.",
+      "Do not hold the database open across a network call. Fetch, then verify, then write.",
+      "Offline is not an error condition. The fetch fails, the cache answers from disk, absent rows stay absent, and nothing is surfaced to the user.",
+      "No interval timer. Resolution is demand-driven, which is the entire point of removing the poll in task-018.",
+      "A row older than seven days is re-read on the next demand for it, never on a timer. The window is set from measurement, not assumption: of 7,976 registry mapping files at commit c9cf09f4, 7,464 (93.58 percent) sit at sequenceNumber 0 on every property, and in the last 365 days 375 commits touched mappings/ while only 38 files were modified rather than added. That is about one change somewhere in the registry every 9.6 days and a 0.48 percent per-asset annual change probability.",
+      "A refresh compares each property's sequenceNumber against the stored one and rewrites the row only when one has risen. updated_at is stamped on every successful read whether or not anything changed, which is what stops a never-updated subject from being re-read on every render.",
+      "The miss path is the one to engineer carefully and the refresh path is close to a formality. 375 commits against 38 modifications says the live event is a user acquiring a token the cache has never seen, not a record changing under one they already hold. Spend the effort on batching, backoff and correct rendering while a miss is outstanding.",
+      "The corpus rate is an average and does not apply directly. Assets a real user holds skew toward active projects and are likelier than average to update, so the real rate for held assets is above 0.48 percent and nobody has measured how far above. Do not present seven days as derived from the held-asset rate."
+     ],
+     "testCases": [
+      "A read for a cached subject returns without touching the transport",
+      "A read for an uncached subject returns absent and schedules a fetch",
+      "A subject inside its retry-after window is not refetched",
+      "A response that fails verification is written with verified = 0 and not retried immediately",
+      "With the transport unavailable, reads still answer from disk",
+      "A row younger than the refresh window is answered from disk without a fetch",
+      "A row older than the refresh window is re-read on demand, and is rewritten only when a sequenceNumber has risen"
+     ],
+     "acceptance": [
+      "yarn test:jest passes against a stubbed transport and a temporary database",
+      "No setInterval or setTimeout schedules unsolicited work"
+     ]
+    },
+    {
+     "id": "task-011",
+     "title": "Image store and its on-demand fetch",
+     "description": "Registry logos are inline base64 PNG with a median entry of 36,191 bytes and 316 MiB across the corpus. They are fetched one subject at a time, only for assets the user holds, and only when something has decided to render one.",
+     "status": "completed",
+     "priority": "low",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-006",
+      "task-007"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetImageStore.ts",
+      "source/main/assets/assetImageStore.spec.ts"
+     ],
+     "implementationNotes": [
+      "A single-subject query requesting only the logo property. The bulk query in task-007 never requests it, which is what bounds the volume at the transport rather than only in the store.",
+      "Decode the base64 into a BLOB rather than storing the encoded string. Verified in this tree that node:sqlite round-trips a BLOB as a Uint8Array.",
+      "Discard any single entry over 256 KiB rather than storing it.",
+      "Record media_type from the payload and reject anything that is not an image type.",
+      "Never bulk mirror. There is no code path that enumerates subjects to warm this table."
+     ],
+     "testCases": [
+      "An entry over the per-entry cap is discarded and the subject records no image",
+      "A non-image media type is rejected",
+      "A stored entry round-trips byte for byte"
+     ],
+     "acceptance": [
+      "yarn test:jest passes",
+      "The bulk query in task-007 still does not request the logo property"
+     ]
+    },
+    {
+     "id": "task-012",
+     "title": "Image eviction under two bounds",
+     "description": "At most 2,000 entries and at most 64 MiB in asset_image, evicting the least recently fetched, in the shape already used for DRep anchors at source/main/governance/anchorCache.ts:24-25.",
+     "status": "completed",
+     "priority": "low",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-006",
+      "task-011"
+     ],
+     "targetPath": "source/main/assets/assetImageStore.ts",
+     "implementationNotes": [
+      "Both bounds, not one. At the 36 KiB median entry size they bite at roughly the same point, which is the intent: neither bound alone protects against the other's pathological case.",
+      "Order by fetched_at, which asset_image_fetched_at indexes. Update fetched_at on read so the ordering means least recently used rather than least recently written.",
+      "Eviction touches asset_image only. A row in asset_metadata carrying verified decimals must never be lost because a logo was evicted, which is why the two tables are separate."
+     ],
+     "testCases": [
+      "Exceeding the entry bound evicts the oldest first",
+      "Exceeding the byte bound evicts until it is satisfied",
+      "Eviction leaves the corresponding asset_metadata rows untouched"
+     ],
+     "acceptance": [
+      "yarn test:jest passes",
+      "Neither bound can be exceeded after a write"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetImageStore.ts",
+      "source/main/assets/assetDatabase.ts"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-3",
+   "name": "IPC And The Store",
+   "description": "Wire the cache to the renderer, rewire AssetsStore to read it, move the two call sites that enumerate the assets list, and only then remove the endpoint and the poll. The old source is taken away last, after the new one is proven to feed the store.",
+   "riskLevel": "medium",
+   "tasks": [
+    {
+     "id": "task-013",
+     "title": "Declare the channels and the shared entry type",
+     "description": "Three channel constants with their request and response types in source/common/ipc/api.ts, and the shared AssetMetadataEntry in a new source/common/types/asset-metadata.types.ts.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 2.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/common/ipc/api.ts",
+      "source/common/types/asset-metadata.types.ts"
+     ],
+     "implementationNotes": [
+      "ASSET_METADATA_CHANNEL is a renderer request for the rows the cache holds right now. It never waits on the network.",
+      "ASSET_METADATA_UPDATE_CHANNEL is the main-to-renderer push carrying rows as they resolve.",
+      "ASSET_IMAGE_CHANNEL is per subject, which is what keeps logos off the path of every other read.",
+      "Place them beside the governance block at source/common/ipc/api.ts:536-543 and follow its naming: RendererRequest and MainResponse for a request channel, MainRequest and RendererResponse for a push.",
+      "AssetMetadataEntry carries verified as a boolean and hasImage as a boolean. It does not carry the image bytes."
+     ],
+     "acceptance": [
+      "Every request type carries a requestId and every response echoes it, enforced by the types rather than by convention",
+      "AssetResolutionState is declared and the metadata response carries unresolved alongside entries, so absence distinguishes never-asked from unregistered from failed",
+      "AssetMetadataEntry carries source, so a node-confirmed chain row is distinguishable from an unattested one",
+      "No channel name collides with an existing constant, which IpcChannel enforces at construction (source/common/ipc/lib/IpcChannel.ts:87-89)",
+      "yarn compile passes"
+     ]
+    },
+    {
+     "id": "task-014",
+     "title": "Main-side handler and its registration",
+     "description": "One module holding the three MainIpcChannel instances and their handlers, registered from source/main/ipc/index.ts.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-010",
+      "task-013"
+     ],
+     "targetPaths": [
+      "source/main/ipc/assetMetadataChannel.ts",
+      "source/main/ipc/index.ts"
+     ],
+     "implementationNotes": [
+      "Copy the shape of source/main/ipc/governanceAnchorChannel.ts:11-34: a typed MainIpcChannel constructed from the constant, an exported handle function, and onRequest handlers that never reject.",
+      "Take the push direction from source/main/ipc/nodePushChannel.ts:16-19.",
+      "Register with one line in source/main/ipc/index.ts beside handleGovernanceAnchorRequests() at :49.",
+      "Do not use ipcRenderer.invoke or ipcMain.handle. Neither appears anywhere in source/, and the mechanism in use is IpcChannel deriving three wire names from one base at source/common/ipc/lib/IpcChannel.ts:91-93. The diagram in .agent/workflows/ipc.md is wrong about this and is corrected in task-028.",
+      "The handler never throws. A failed read returns an empty entry list."
+     ],
+     "acceptance": [
+      "yarn compile and yarn lint pass",
+      "A renderer request with an empty cache returns an empty list rather than an error"
+     ]
+    },
+    {
+     "id": "task-015",
+     "title": "Renderer-side channel clients",
+     "description": "The three RendererIpcChannel instances, constructed from the same constants.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 1.5,
+     "dependencies": [
+      "task-013"
+     ],
+     "implementationNotes": [
+      "Copy source/renderer/app/ipc/governanceChannel.ts:8-10 exactly, including the reversed type parameter order relative to the main side.",
+      "Nothing else belongs in this file. It is a declaration, not a layer."
+     ],
+     "acceptance": [
+      "A client discards a response whose requestId it did not issue and keeps waiting, asserted by driving two overlapping requests whose responses arrive out of order",
+      "The out-of-order test fails if the correlation check is removed, proving it is load-bearing rather than decorative",
+      "No client blocks a render waiting on the network",
+      "yarn compile passes"
+     ],
+     "targetPaths": [
+      "source/renderer/app/ipc/assetMetadataChannel.ts",
+      "source/renderer/app/ipc/assetMetadataChannel.spec.ts"
+     ]
+    },
+    {
+     "id": "task-016",
+     "title": "Rewire AssetsStore to read the cache",
+     "description": "details and getAsset keep their signatures and become reads of an observable map fed by the request and update channels. The request machinery that served the endpoint is removed.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-001",
+      "task-002",
+      "task-005",
+      "task-014",
+      "task-015"
+     ],
+     "targetPaths": [
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/stores/AssetsStore.spec.ts"
+     ],
+     "implementationNotes": [
+      "details at AssetsStore.ts:63-70 and getAsset at :72-73 keep their signatures. Every existing caller is a point lookup: AssetsStore.ts:98, utils/assets.ts:128 and utils/transactionsCsvGenerator.ts:190.",
+      "Derive the subject list from two sources, both already in the renderer: holdings from activeWallet.assets.total, built at api.ts:3225-3232, and the assets of the transactions being rendered, from WalletTransactionsList.tsx:240.",
+      "Subscribe to the update channel and merge resolved rows into the observable map.",
+      "configure({ enforceActions: 'observed' }) is live, so every post-await mutation goes inside runInAction. Reactions go through this.registerReactions([...]), never a bare reaction().",
+      "Attach the locally computed fingerprint from task-005 when building a merged row, since the endpoint no longer supplies one.",
+      "Remove assetsRequests at :26, _createWalletTokensRequest at :180-186 and _retrieveAssetsRequest at :208-209. Leave the favorites request and the edited-asset actions alone: they are unrelated to metadata.",
+      "all at :51-61 is removed here only if task-017 has already moved its two readers. Sequence the two commits accordingly."
+     ],
+     "testCases": [
+      "getAsset returns a cached row without a network call",
+      "getAsset returns undefined for an unresolved subject and the caller still renders",
+      "A pushed update is visible to an observer without a further request"
+     ],
+     "acceptance": [
+      "yarn test:jest, yarn lint and yarn compile pass",
+      "No MobX strict-mode warning appears in the console during a token list render"
+     ]
+    },
+    {
+     "id": "task-017",
+     "title": "Move the two enumerating call sites to the holdings-driven form",
+     "description": "WalletTokensPage.tsx:42 and WalletSummaryPage.tsx:123 call getAssetTokens(all, walletTokens), which maps over the endpoint's list. The holdings-driven equivalent already exists and is already used in three places.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-016"
+     ],
+     "targetPaths": [
+      "source/renderer/app/containers/wallet/WalletTokensPage.tsx",
+      "source/renderer/app/containers/wallet/WalletSummaryPage.tsx",
+      "source/renderer/app/utils/assets.ts"
+     ],
+     "implementationNotes": [
+      "Switch both to getNonZeroAssetTokens(tokens, getAsset) at utils/assets.ts:142-149, which is what WalletSendPage.tsx:144, containers/wallet/dialogs/send-confirmation/SendConfirmation.container.tsx:47 and components/wallet/transactions/WalletTransactionsList.tsx:240 already use.",
+      "The two helpers differ in ordering, not in content: getNonZeroAssetTokens sorts by fingerprint ascending and getAssetTokens does not sort at all. WalletSummaryPage.tsx:123-125 re-sorts by token name afterward, so nothing there changes. WalletTokensPage does not sort, so its list gains a stable fingerprint order, which is an improvement over the endpoint's arbitrary one.",
+      "getAssetTokens at :106-113, getAssetToken at :74-97 and getToken lose their last callers and are deleted in this commit.",
+      "This is the commit after which nothing reads AssetsStore.all, so remove it here."
+     ],
+     "acceptance": [
+      "The token list and the wallet summary render every held token on a cold cache, not only on a warm one",
+      "CSV export resolves fingerprints for assets the wallet held historically, and 'unknown fingerprint' no longer appears in generated output",
+      "WalletSendPage's all is derived from holdings rather than from the cache, asserted by opening the send form for a token with no cached row",
+      "yarn test:jest, yarn lint and yarn compile pass"
+     ]
+    },
+    {
+     "id": "task-018",
+     "title": "Drop the assets endpoint and the one-minute poll",
+     "description": "With nothing reading the endpoint's output, remove the poll, the API method, the request module, the response types and the in-memory metadata carry-over.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-017"
+     ],
+     "targetPaths": [
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/api/api.ts",
+      "source/renderer/app/api/assets/requests/getAssets.ts",
+      "source/renderer/app/api/assets/types.ts"
+     ],
+     "implementationNotes": [
+      "AssetsStore.ts:13 ASSETS_REFRESH_INTERVAL, :33 the setInterval that starts it, :157-170 _refreshAssetsData, and the one-shot listener at :42 that also triggers it.",
+      "api.ts:783-820 getAssets, api.ts:3371-3404 _createAssetFromServerData, and api/assets/requests/getAssets.ts.",
+      "api.ts:362 storedAssetMetadata, passed at :805 and written at :3391. It exists only to survive the endpoint omitting metadata on a later poll, and there is no later poll.",
+      "api/assets/types.ts loses ApiAsset, ApiAssets, GetAssetsRequest and GetAssetsResponse.",
+      "Confirm before deleting that no other consumer exists. A repository-wide grep at the time of writing found exactly two references to the endpoint path, both inside the two request modules, and getUnknownAsset has already gone in task-004.",
+      "No change on the wallet side. It keeps its --token-metadata-server wiring at source/main/index.ts:215-218 and this design simply stops exercising it; mock-token-metadata-server stays in the dev shell at perSystem/devshells/daedalus.nix:44 and in the packaging at nix/internal/any-darwin.nix:245."
+     ],
+     "acceptance": [
+      "yarn test:jest, yarn lint and yarn compile pass",
+      "No HTTP request to /assets is issued during a session with several wallets open",
+      "A repository-wide grep for getAssets and ASSETS_REFRESH_INTERVAL returns nothing outside history"
+     ],
+     "notes": "The revert boundary. Reverting this without also reverting task-016 and task-017 would leave the renderer with no source of metadata, so phases 2 and 3 roll back together from here on."
+    }
+   ]
+  },
+  {
+   "id": "phase-4",
+   "name": "Optimistic Decimals And Its Migration",
+   "description": "Apply verified decimal places automatically, treat the change as a migration because it alters displayed balances without user action, and say once, in one place, when verification failed.",
+   "riskLevel": "medium",
+   "tasks": [
+    {
+     "id": "task-019",
+     "title": "Resolve decimal places by provenance",
+     "description": "Today api.ts:3386-3388 files the registry value under recommendedDecimals and formats from per-user browser storage, so a six-decimal token transacts as a raw integer until a user opens a dialog. Replace that with an explicit resolution order.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-001",
+      "task-016"
+     ],
+     "targetPaths": [
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/utils/formatters.ts"
+     ],
+     "implementationNotes": [
+      "Order, highest first: an explicit user setting for that subject from browser storage; then the cached registry value if and only if verified is true; then none, meaning raw units.",
+      "An unverified registry value never formats anything. It stays available to the settings dialog as the recommended value, which is exactly what it is today.",
+      "Per-user settings are read from api/utils/localStorage.ts:313-327 exactly as now. Nothing about how a user's explicit choice is stored changes.",
+      "Put the resolution in one function and call it from everywhere a decimal count is needed. Three copies of this rule are how the display and the send path come to disagree.",
+      "The unknown case feeds the integers-only amount field from task-003, which is already in place.",
+      "The same function decides what unit the send amount field is accepting, so the field can be labeled with it. For a verified token that unit changes at the migration, which is the risk task-021 carries."
+     ],
+     "testCases": [
+      "User setting present, verified value present and different: the user setting wins",
+      "No user setting, verified value present: the verified value is applied",
+      "No user setting, unverified value present: raw units, and the unverified value is still offered as recommended",
+      "Neither present: raw units"
+     ],
+     "acceptance": [
+      "yarn test:jest passes with all four combinations asserted",
+      "One function is the only reader of the rule"
+     ],
+     "securityNotes": [
+      "This task must not ship if the verification gate in task-009 was not met. Applying an unverified decimal count automatically is the failure mode the whole design exists to avoid."
+     ]
+    },
+    {
+     "id": "task-020",
+     "title": "Extend the disagreement helper with verification state",
+     "description": "isNonRecommendedDecimalSettingUsed at components/wallet/tokens/wallet-token/helpers.ts:6-24 already renders a disagreement between an explicit setting and the recommended value. It needs to know whether the recommended value was verified, because the two cases are not equally strong.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-019"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/wallet/tokens/wallet-token/helpers.ts",
+      "source/renderer/app/components/wallet/tokens/wallet-token/helpers.spec.ts",
+      "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.tsx",
+      "source/renderer/app/components/assets/AssetSettingsDialog.tsx"
+     ],
+     "implementationNotes": [
+      "Extend the existing argument object with a third field rather than adding a second helper. Two helpers answering nearly the same question is how the two consumers drift apart.",
+      "Consumers are WalletToken.tsx:52-55 and AssetSettingsDialog.tsx:157. Both pass the new field in the same commit.",
+      "An explicit setting that contradicts a policy-bound issuer value is worth saying plainly. One that contradicts an unattested value is barely worth saying at all, and the existing warning copy at assets.warning.notUsing overstates it in that case.",
+      "helpers.spec.ts pins the current behavior in eight cases. Extend it rather than rewriting it, so any change to the existing cases is visible in the diff."
+     ],
+     "testCases": [
+      "An explicit setting equal to a verified recommended value produces no disagreement",
+      "An explicit setting differing from a verified recommended value produces the stronger message",
+      "An explicit setting differing from an unverified recommended value produces the weaker message",
+      "All eight existing cases keep their current results"
+     ],
+     "acceptance": [
+      "yarn test:jest passes",
+      "No second helper exists"
+     ]
+    },
+    {
+     "id": "task-021",
+     "title": "One-time notice, leading with the send input rather than the balance",
+     "description": "Applying verified decimal places changes only how an unchanged integer is drawn, because ledger quantities are integers and decimal places are presentation. No balance moves. What changes is the interpretation of the send amount field, which flips from raw units to issuer units at the same moment, so the notice leads with that.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-003",
+      "task-019"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.tsx",
+      "source/renderer/app/api/utils/localStorage.ts",
+      "source/renderer/app/stores/ProfileStore.ts"
+     ],
+     "implementationNotes": [
+      "The risk being mitigated is habit, not surprise at a number. Before the migration a user sends one and a half of a six-decimal token by typing 1500000, because the field is in raw units. After it, the same user types 1.5. Someone typing 1500000 from habit afterward sends a million and a half tokens, and that direction is an overspend gated only by their balance.",
+      "Copy leads with what changed about entering an amount and mentions displayed balances second. It also says the per-token setting still overrides both. Nothing else.",
+      "The other half of this is the amount field label from task-019, which states the unit the field is accepting. The notice is dismissible and the label is not, so the label is the part that keeps working after the banner is gone.",
+      "The send confirmation is a partial backstop and not a sufficient one. For that mistyped amount it would show a formatted 1500000.000000 against a raw 1500000000000 (DialogContentWithAssets.tsx:75 and :109-110). It is the last screen before a signature, so it must not be the only thing standing between a habit and a transaction.",
+      "A dismissible banner on the token list, on first run after the update. Once per user, not per asset.",
+      "Record dismissal in browser storage alongside the other per-profile flags. Follow the existing key conventions in api/utils/localStorage.ts rather than inventing a storage shape.",
+      "A user holding no tokens never sees it. Check the holdings on the wallet object, not the cache.",
+      "Not a modal. This is information, not a decision, and a modal on first launch after an update is the wrong weight for it."
+     ],
+     "testCases": [
+      "Shown once, then never again after dismissal",
+      "Not shown to a profile holding no tokens",
+      "Survives a restart without reappearing",
+      "For a token whose verified decimals were applied by the migration, the amount field states the unit it is accepting, with the banner both present and dismissed"
+     ],
+     "acceptance": [
+      "yarn test:jest and yarn i18n:manage pass",
+      "The banner does not appear on a fresh profile created after the update"
+     ],
+     "securityNotes": [
+      "This is the overspend direction of the decimals work, and the larger of the two input defects. The underpayment case in task-003 is bounded by what the user meant to send; this one is bounded only by their balance."
+     ]
+    },
+    {
+     "id": "task-022",
+     "title": "State in the settings dialog when published decimals could not be verified",
+     "description": "One place, one sentence: beside the decimal places field in the asset settings dialog, saying that the issuer's published decimal places for this token could not be verified against its minting policy and are therefore not applied automatically.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-019"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
+      "source/renderer/app/components/assets/AssetSettingsDialog.spec.tsx"
+     ],
+     "implementationNotes": [
+      "Nowhere else. The token row already carries a warning icon at Asset.tsx:215-228 for decimal-setting disagreement, and a second per-row badge for unverified metadata would appear on a large share of rows, because a large share of registry subjects carry no policy field at all. A badge on most rows is decoration rather than a warning.",
+      "The signal the user already gets on the row is the absence of formatting: the amount shows in raw units, which is the honest rendering of a number nobody can vouch for.",
+      "The settings dialog is the one screen where the user is being asked to make a decision about that number, which is why the sentence belongs there and not in the list.",
+      "Do not add an icon. A line of text beside the field is the whole change.",
+      "task-029 adds a manual refresh control to the same dialog. Land them in an order that does not leave two separate additions to the same layout."
+     ],
+     "testCases": [
+      "A subject with unverified decimals shows the sentence",
+      "A subject with verified decimals does not",
+      "A subject with no published decimals does not"
+     ],
+     "acceptance": [
+      "yarn test:jest and yarn i18n:manage pass",
+      "No new warning surface appears anywhere in the token list"
+     ]
+    },
+    {
+     "id": "task-029",
+     "title": "Manual refresh for one subject in the asset settings dialog",
+     "description": "The seven-day refresh window in task-010 is set from a measured registry change rate of about one change every 9.6 days. It is the right default and it is wrong for the user who knows an issuer published something today. One control, one subject, no bulk refresh.",
+     "status": "completed",
+     "priority": "low",
+     "estimatedHours": 2.5,
+     "dependencies": [
+      "task-016",
+      "task-022"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
+      "source/renderer/app/components/assets/AssetSettingsDialog.spec.tsx",
+      "source/renderer/app/stores/AssetsStore.ts"
+     ],
+     "implementationNotes": [
+      "Refreshes exactly the subject the dialog is open on. There is no refresh-all, because the design has no enumeration of the cache and adding one for a button would undo that.",
+      "It clears that subject's updated_at staleness and any asset_resolution backoff row for it, then goes through the same resolver path as a miss. It does not get its own fetch path.",
+      "Reuse the request channel from task-013 rather than adding a fourth channel. A refresh is a read that is allowed to ignore the window.",
+      "The result arrives on the existing update channel, so the dialog does not need to wait on the call to return.",
+      "Offline behaves as everywhere else: the control does nothing visible, the cached row stays, and nothing is surfaced."
+     ],
+     "testCases": [
+      "Refreshing a subject inside its retry-after window issues a fetch rather than being suppressed",
+      "A refresh that finds no sequenceNumber change leaves the row values unchanged and stamps updated_at",
+      "A refresh that finds a higher sequenceNumber rewrites the row and re-runs verification",
+      "With the transport unavailable, the dialog keeps rendering the cached row"
+     ],
+     "acceptance": [
+      "yarn test:jest and yarn i18n:manage pass",
+      "No code path refreshes more than one subject per user action"
+     ]
+    },
+    {
+     "id": "task-039",
+     "title": "Label the send amount field with the unit it is accepting",
+     "description": "The unit label on the send amount field is the durable half of the overspend mitigation: the one-time notice is dismissible and the label is not. It was named in three tasks' implementation notes and owned by none, and AssetInput.tsx appears in only one task's target paths in the whole graph.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-003",
+      "task-019"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/wallet/send-form/AssetInput.tsx",
+      "source/renderer/app/i18n/locales/en-US.json"
+     ],
+     "implementationNotes": [
+      "The label states the unit the field is currently accepting: the token's ticker or fingerprint when decimals are unknown and the field is in raw units, and the decimal-denominated unit when a verified value is applied.",
+      "It is always present, not conditional on the migration notice, because the notice can be dismissed and the ambiguity cannot.",
+      "It must change in the same render as the denomination it describes, or it becomes the wrong label rather than no label."
+     ],
+     "acceptance": [
+      "The field carries a unit label in both the raw-units and the applied-decimals states, and a screenshot of each is attached to the task",
+      "Toggling an asset between unknown and verified decimals changes the label in the same render as the field's interpretation",
+      "The label is a translated message with a description, following the i18n id convention"
+     ],
+     "notes": "PRD functional requirement. Previously unowned."
+    },
+    {
+     "id": "task-040",
+     "title": "Snapshot decimals per asset row and block on a mid-edit denomination change",
+     "description": "The amount signed is a pure function of the display string, with no record of its denomination: WalletSendForm.tsx:231-236 runs formattedAmountToNaturalUnits over the field value and utils/formatters.ts:156-169 strips separators. AssetInput is an @observer reading decimals live (AssetInput.tsx:77-83), so a resolution arriving mid-edit changes the meaning of what is on screen. A field holding 1500000 typed as raw units, resolved to six decimals, then touched once, submits 1500000000000.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-019",
+      "task-039"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/wallet/send-form/AssetInput.tsx",
+      "source/renderer/app/components/wallet/WalletSendForm.tsx",
+      "source/renderer/app/i18n/locales/en-US.json"
+     ],
+     "implementationNotes": [
+      "Rule 1: snapshot decimals for an asset when its row is added to the form. The row renders and validates against the snapshot, not the live observable.",
+      "Rule 2: if a resolution changes decimals while that row's field is non-empty, clear the field and show a blocking notice on the row. If the field is empty, update the snapshot silently and show nothing.",
+      "Clearing is the only safe action: once the denomination moves, the typed digits are ambiguous and neither reading can be assumed.",
+      "Both rules apply when decimals move from unknown to known and when a cached verified value changes on re-read.",
+      "react-polymorph's componentDidUpdate (NumericInput.js:153-162) corrects only the caret, so the string is not rewritten at the moment of the flip; the damage happens on the next keystroke through bigNumberToFixed at :383-389."
+     ],
+     "acceptance": [
+      "A Cucumber @unit scenario: a field holding a raw-units amount when a resolution arrives asserts the field is cleared and the notice is shown",
+      "A Cucumber @unit scenario: an empty field when a resolution arrives asserts the snapshot updates and no notice is shown",
+      "A Jest spec asserts that the value submitted for an asset is computed against the snapshotted decimals, not the live store value",
+      "Driving a resolution into an open form by hand does not change the number of natural units the form would submit without the user re-entering it"
+     ],
+     "notes": "The condition on which optimistic decimals was approved on 2026-09-14. cucumber-unit is CI-gated at perSystem/checks.nix:48."
+    }
+   ]
+  },
+  {
+   "id": "phase-5",
+   "name": "Cold-Cache Rendering And The Logo",
+   "description": "Remove the spinner that a separated holdings path makes unreachable, give the image column its one render surface, and land the translations.",
+   "riskLevel": "low",
+   "tasks": [
+    {
+     "id": "task-023",
+     "title": "Delete the whole-list spinner and the condition behind it",
+     "description": "isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets is computed at four sites: WalletTokensPage.tsx:46, WalletSummaryPage.tsx:129, WalletSendPage.tsx:148 and WalletTransactionsList.tsx:244. WalletTokensList.tsx:135-140 replaces the entire list with one large spinner whenever it is true, so a single unresolved token blanks every resolved one. All four read totalAssets off the cache-derived list this plan deletes, so all four go together or the branch does not compile. Once holdings and metadata are separate the condition is structurally unreachable.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 5.0,
+     "dependencies": [
+      "task-002",
+      "task-018"
+     ],
+     "targetPaths": [
+      "source/renderer/app/containers/wallet/WalletTokensPage.tsx",
+      "source/renderer/app/containers/wallet/WalletSummaryPage.tsx",
+      "source/renderer/app/containers/wallet/WalletSendPage.tsx",
+      "source/renderer/app/components/wallet/transactions/WalletTransactionsList.tsx",
+      "source/renderer/app/components/wallet/transactions/Transaction.tsx",
+      "source/renderer/app/components/wallet/transactions/Transaction.scss",
+      "source/renderer/app/components/wallet/summary/WalletSummary.tsx",
+      "source/renderer/app/components/wallet/WalletSendForm.tsx",
+      "source/renderer/app/components/wallet/WalletSendForm.spec.tsx",
+      "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.tsx",
+      "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.spec.tsx",
+      "source/renderer/app/components/wallet/tokens/wallet-tokens-list/WalletTokensList.tsx",
+      "source/renderer/app/components/wallet/tokens/wallet-no-tokens/WalletNoTokens.tsx",
+      "storybook/stories/wallets/transactions/Transaction.stories.tsx",
+      "storybook/stories/wallets/summary/WalletSummary.stories.tsx",
+      "storybook/stories/wallets/tokens/WalletTokens.stories.tsx",
+      "storybook/stories/wallets/tokens/WalletTokensList.stories.tsx",
+      "storybook/stories/wallets/send/WalletSend.stories.tsx"
+     ],
+     "implementationNotes": [
+      "Remove the computation at all four sites and the prop each one passes: WalletTokensPage.tsx:46 and :52, WalletSummaryPage.tsx:129 and :182, WalletSendPage.tsx:148 and :170, WalletTransactionsList.tsx:244 and :266.",
+      "Remove the prop and the branch from every consumer: WalletTokens.tsx:35, :57 and :61; WalletTokensList.tsx:26, :61, :80, :124, :129 and :135-140; WalletSummary.tsx:38, :72 and :108; WalletSendForm.tsx:101; Transaction.tsx:267, :478 and :666. WalletSendForm.spec.tsx:122 passes isLoadingAssets={false} and is updated too.",
+      "Doing one site at a time does not compile. hasRawAssets, totalAssets and totalRawAssets are all derived from the assets list this plan removes, so the four computations and their consumers are one change.",
+      "Every row renders immediately with its locally computed fingerprint, its quantity in raw units, and its decoded name where the bytes are printable. Tickers and formatted quantities appear as rows resolve, through the observable map.",
+      "There is no state in which the list is empty because metadata has not arrived, which is what makes this deletion safe rather than a regression.",
+      "WalletNoTokens is reached only from WalletTokensList when the list is empty, where isLoadingAssets is already false, so its guard suppresses nothing. The prop goes with the rest.",
+      "tsc --noEmit covers storybook/ and eslint lints it, so the five stories that pass the prop are part of the same change: Transaction.stories.tsx:199, WalletSummary.stories.tsx:244, WalletTokens.stories.tsx:153, WalletTokensList.stories.tsx:165 and WalletSend.stories.tsx:313, :341, :371, :401.",
+      "Deleting Transaction.tsx's placeholder branch leaves wallet.transaction.fetchingTokenData with no reader, so the four translation artifacts are regenerated in the same commit and the i18n check is part of the acceptance."
+     ],
+     "testCases": [
+      "With an empty cache and a wallet holding several tokens, every row renders at once",
+      "A row gains its ticker without the list remounting",
+      "The transaction list renders its asset rows with no spinner during a cold start"
+     ],
+     "acceptance": [
+      "compile, lint, stylelint, i18n, jest and cucumber-unit pass from nix build",
+      "No spinner and no placeholder appears on the token list, the wallet summary, the send form or the transaction list for a metadata reason at any point during a cold start",
+      "grep -rn isLoadingAssets source storybook tests returns nothing"
+     ]
+    },
+    {
+     "id": "task-024",
+     "title": "Render the asset logo in the token row header",
+     "description": "The one surface that makes the image column meaningful. Requests a logo per subject, only for assets the user holds, and only when the row is rendered.",
+     "status": "completed",
+     "priority": "low",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-011",
+      "task-016"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/wallet/tokens/wallet-token/WalletTokenHeader.tsx",
+      "source/renderer/app/components/wallet/tokens/wallet-token/WalletTokenHeader.scss",
+      "source/renderer/app/components/wallet/tokens/wallet-token/WalletTokenHeader.spec.tsx",
+      "source/renderer/app/ipc/assetMetadataChannel.ts",
+      "source/renderer/app/ipc/assetMetadataChannel.spec.ts",
+      "source/renderer/app/api/assets/types.ts",
+      "source/renderer/app/domains/Asset.ts",
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/stores/AssetsStore.spec.ts"
+     ],
+     "implementationNotes": [
+      "Request over ASSET_IMAGE_CHANNEL, one subject at a time, when a row with hasImage renders. A row without hasImage never asks.",
+      "hasImage reaches AssetMetadataEntry and stops there: AssetsStore._assetFor does not put it on the domain object, so no component can see it. Carrying it is the same four edits task-019 made for recommendedDecimalsVerified.",
+      "At most one request per subject has to outlive the row that made it, because a list unmounts and remounts its rows as it is scrolled. The memo lives in the renderer channel client and holds the promise, so two rows mounting in one frame share one request; the bytes become a data URL there rather than in the component.",
+      "Fall back to the existing header layout when there is no image. The logo is an addition to the row, not a slot that shows a placeholder.",
+      "Cap the rendered size in CSS. A registry logo has no guaranteed dimensions.",
+      "If this task is cut, cut the asset_image table, task-011, task-012 and ASSET_IMAGE_CHANNEL with it rather than leaving them storing bytes nobody reads. The PRD's Status Log records that question as closed by the tracked request, which asks for images directly."
+     ],
+     "acceptance": [
+      "compile, lint, stylelint, jest, i18n and cucumber-unit pass from nix build",
+      "Scrolling a list of many tokens issues at most one image request per subject, asserted on the wire",
+      "A row with no logo renders exactly what it renders today, with no placeholder element"
+     ]
+    },
+    {
+     "id": "task-025",
+     "title": "Translations pass over the new strings",
+     "description": "Extract and check the strings added by the migration notice, the settings-dialog advisory and the amount-field label.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-021",
+      "task-022"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/assets/AssetSettingsDialog.tsx",
+      "source/renderer/app/components/assets/AssetSettingsDialog.spec.tsx",
+      "source/renderer/app/components/wallet/send-form/messages.ts",
+      "source/renderer/app/components/wallet/send-form/AssetInput.spec.tsx",
+      "source/renderer/app/i18n/locales/defaultMessages.json",
+      "source/renderer/app/i18n/locales/en-US.json",
+      "source/renderer/app/i18n/locales/ja-JP.json",
+      "translations/messages.json"
+     ],
+     "implementationNotes": [
+      "Ids are shaped namespace.context.messageKey, every message carries a description, and every new defaultMessage is prefixed !!!. The convention is set out in .agent/skills/i18n-messaging/SKILL.md, which is accurate.",
+      "The eleven new ids sit under assets.*, wallet.send.form.assetInput.* and wallet.tokens.*, each beside the messages of the surface it belongs to rather than all under one namespace.",
+      "yarn i18n:manage regenerates defaultMessages.json and translations/messages.json from source. It adds keys it does not find in a language file and never rewrites one it does, so a changed English default has to be applied to en-US.json and ja-JP.json by hand as well.",
+      "Four messages interpolate a count into an unpluralised noun and render '1 decimal places'. They take the ICU plural form already used eleven times in this file.",
+      "A message that already has a Japanese translation is not edited: changing the English default leaves the Japanese in place and stale, and nothing in the toolchain detects it."
+     ],
+     "acceptance": [
+      "yarn i18n:manage leaves the tracked artifacts unchanged",
+      "Every message this branch adds has a description, an id of the documented shape, the !!! marker in source, and a reader",
+      "A published count of one renders '1 decimal place' on all four surfaces that name one"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-6",
+   "name": "Verification And Documentation",
+   "description": "The checks that cannot run earlier because they need the whole path, and the documentation corrections found while building against it.",
+   "riskLevel": "low",
+   "tasks": [
+    {
+     "id": "task-026",
+     "title": "Jest coverage across the main-process modules",
+     "description": "Consolidate and fill the gaps left by the per-task specs, so the database, the client, the verification chain, the resolver and the image store are covered as a set rather than individually.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 10.0,
+     "dependencies": [
+      "task-010",
+      "task-012"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetMetadataDb.realfs.spec.ts",
+      "source/main/assets/assetRegistryClient.spec.ts",
+      "source/main/assets/assetVerification.spec.ts",
+      "source/main/assets/assetMetadataResolver.realfs.spec.ts",
+      "source/main/assets/assetImageStore.realfs.spec.ts",
+      "source/main/ipc/assetMetadataChannel.realfs.spec.ts",
+      "source/renderer/app/utils/assets.spec.ts"
+     ],
+     "implementationNotes": [
+      "Specs are colocated as <Unit>.spec.ts, with .realfs.spec.ts for one that uses the real filesystem rather than a stub. tests/ is Cucumber territory and is not used here.",
+      "describe names the exported unit with no article; it uses present-tense third person, not 'should'.",
+      "yarn test:jest runs outside the Nix shell, so these are the checks that can run anywhere.",
+      "Cucumber is not used. The end-to-end suite cannot execute: spectron@14 resolves electron-chromedriver@12 against Electron 41.3.0, and Cucumber is not in the check set at perSystem/checks.nix.",
+      "Four items on the PRD's Testing Strategy list describe phase 7 code that does not exist: the metadata source URL validator, getAssetMetadataSourceIdFromUrl, pointer resolution and its three local checks, and the chain-row assertion. They are named as out of scope rather than omitted.",
+      "The gaps are found by a coverage run rather than by reading, and every one of them is a failure path: the real HTTP transport, the database's seven catches, both IPC handler catches, three verification catches and the resolver's background-work guard.",
+      "sortAssets in the renderer had no coverage and orders every token list; it also carries the empty-fingerprint fallback this plan added for a row the cache has not resolved."
+     ],
+     "acceptance": [
+      "Every negative case the PRD Testing Strategy names for phases 1 to 6 has a spec, listed by name in the task's closing note, with the phase 7 items named as out of scope",
+      "The renderer modules the Testing Strategy names are covered and named, and the task's targetPaths include them",
+      "No unreached failure path remains in the main-process modules, or the reason one remains is recorded",
+      "jest, cucumber-unit, compile and lint pass from nix build, and no source file changes"
+     ]
+    },
+    {
+     "id": "task-027",
+     "title": "Manual QA across the three platforms",
+     "description": "The process boundary, the on-disk path and the migration notice cannot be exercised by Jest. CI covers x86_64-linux only, so Windows and macOS are checked by hand.",
+     "status": "blocked",
+     "priority": "high",
+     "estimatedHours": 8.0,
+     "dependencies": [
+      "task-018",
+      "task-023",
+      "task-024",
+      "task-025"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetMetadataDb.ts"
+     ],
+     "implementationNotes": [
+      "First run with an empty database, a wallet holding several tokens, offline. Rows render with fingerprint and quantity, nothing spins, nothing errors.",
+      "The same wallet online. Tickers and formatted amounts appear without a reload.",
+      "A token with verified decimals, a token with unverified decimals and a token the registry does not know, side by side in the list and in the send form.",
+      "The send form for a token with unresolved decimals: the decimal separator cannot be typed, by keyboard or by paste.",
+      "The migration notice on first run after the update, and its absence on the second.",
+      "Delete the cache directory while Daedalus is running, then reopen the token list.",
+      "Confirm the database path on all three platforms against the table in the PRD. Windows is the one no contributor exercises daily.",
+      "On this development machine Electron needs ELECTRON_DISABLE_SANDBOX=true, exported in the shell profile rather than in .envrc, which is tracked.",
+      "Selfnode: launcher-config.nix:448-450 adds metadataUrl only for networks that are not selfnode, so the endpoint for a selfnode run is chosen in code at assetRegistryClient.ts:97-107. If that branch were wrong the run would query the public registry and get a well-formed answer, so the failure is silent and nothing else catches it. The discriminator is a ticker in the bundled mock that no real issuer publishes, checked again with the mock stopped.",
+      "Every step names the artifact it produces. Four of the nine scenarios assert an absence, and for those the evidence is a log line, a directory listing or the same view under the opposite condition rather than a screenshot.",
+      "The mock registry's one subject carries no policy field and a logo value that decodes to ASCII text, so its decimals are not applied and no logo appears. Both are correct and are stated in the scenario so that neither is filed as a defect."
+     ],
+     "acceptance": [
+      "Every scenario passes on Linux, macOS and Windows, except the selfnode scenario, which is run once on any platform",
+      "The database path is recorded as the path itself on each platform, not as a screenshot",
+      "The operator checklist in task-027.md is completed and signed with the build identifier and date, and the named evidence is attached",
+      "Any failure is opened as a defect with its scenario number before the checklist is signed"
+     ],
+     "blockedReason": "manual_execution. This environment has no display, no macOS, no Windows, no funded wallet and no selfnode cluster, so no scenario can be run here and none has been. The procedure, the expected evidence per step and an operator checklist are in task-027.md; the task closes when a signed checklist comes back."
+    },
+    {
+     "id": "task-028",
+     "title": "Correct the IPC workflow document",
+     "description": ".agent/workflows/ipc.md labels the renderer-to-main hop ipcRenderer.send / invoke and the main-side hop ipcMain.handle / on. Neither ipcRenderer.invoke nor ipcMain.handle appears anywhere in source/, and ipcRenderer.send appears twice, both outside the channel mechanism.",
+     "status": "completed",
+     "priority": "low",
+     "estimatedHours": 2.0,
+     "dependencies": [
+      "task-014"
+     ],
+     "targetPath": ".agent/workflows/ipc.md",
+     "implementationNotes": [
+      "The real mechanism is IpcChannel deriving three wire names from one base at source/common/ipc/lib/IpcChannel.ts:91-93: -broadcast, -request and -response. Nothing is ever sent on the bare constant.",
+      "send posts on -broadcast and pairs with onReceive; request posts on -request and pairs with onRequest. Mixing them sends to a name with no listener and neither side reports it, which is the failure a reader is most likely to hit and the document was silent on.",
+      "The two real ipcRenderer.send call sites are stores/WindowStore.ts:17 and :25, neither through a channel. Say so rather than deleting the mention.",
+      "The preload is not a hop. source/main/preload.ts:31 assigns ipcRenderer onto the renderer's global, which is what RendererIpcChannel defaults its sender and receiver to; nothing is forwarded through it.",
+      "IpcChannel<Incoming, Outgoing> is written from the declaring side's point of view, so the two sides list the same pair in the opposite order. The document had them the same on both sides, so a client copied from it has its types inside out.",
+      "Handlers are registered in source/main/ipc/index.ts, not source/main/index.ts.",
+      "The broadcast section described webContents.send on the bare constant, which appears nowhere in source/. The real push is channel.send(message, window.webContents).",
+      "Seven of the tabulated channels do not exist: the whole Cardano table. Twenty-four other names in those tables do. Replaced with the backend, watchdog, asset and governance channels that are declared.",
+      "Two snippets could not work: ipcMain.on('*'), because Electron has no wildcard channel, and a test mock of ipcRenderer.invoke, which nothing calls.",
+      "The response correlation defect is the one place the code rather than the document is wrong. The document points at .agent/findings/ipc-channel-response-correlation.md rather than restating it.",
+      "Record the divergence rather than working around it. Anyone reading the document to build a channel today builds the wrong thing."
+     ],
+     "acceptance": [
+      "The document's diagram names the mechanism the repository actually uses",
+      "Every channel name the document tabulates exists in source/common/ipc/api.ts",
+      "Every code sample matches the shape the repository uses, including the generic parameter order, which is reversed between the two sides",
+      "No code change accompanies this task"
+     ],
+     "targetPaths": [
+      ".agent/workflows/ipc.md"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "phase-7",
+   "name": "The Metadata Source Setting And The Chain Channel",
+   "description": "The second source. A settings surface in the shape of the SMASH server setting, a two-call pointer resolution against Koios, a local confirmation of that pointer against the user's own chain, and ingestion of CIP-25 and CIP-68 into the cache as chain-sourced rows. Additive throughout: every phase before this one works, and keeps working, with the registry alone.",
+   "riskLevel": "medium",
+   "tasks": [
+    {
+     "id": "task-030",
+     "title": "Asset metadata source presets, types and URL validator, wired from launcher config",
+     "description": "Add the asset equivalent of the SMASH configuration block. source/renderer/app/config/assetsConfig.ts gains ASSET_METADATA_SERVERS_LIST, ASSET_METADATA_SOURCE_TYPES and ASSET_METADATA_URL_VALIDATOR, modeled on SMASH_SERVERS_LIST at config/stakingConfig.ts:12-28, SMASH_SERVER_TYPES at :29-33 and SMASH_URL_VALIDATOR at :43-45. The default Koios URL reaches the renderer the way smashUrl does.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 3.0,
+     "dependencies": [],
+     "targetPaths": [
+      "source/renderer/app/config/assetsConfig.ts",
+      "source/renderer/app/config/assetsConfig.spec.ts",
+      "source/renderer/app/types/assetTypes.ts",
+      "declaration.d.ts",
+      "nix/internal/launcher-config.nix",
+      "source/main/config.ts",
+      "source/main/preload.ts"
+     ],
+     "implementationNotes": [
+      "Three source types: KOIOS, CUSTOM, DIRECT. The preset list holds koios and direct only, exactly as SMASH_SERVERS_LIST holds iohk and direct and leaves custom out, because custom has no fixed URL.",
+      "DIRECT is carried from the start and rendered unavailable until task for the local scan lands. It costs a member of an enum now and saves a settings migration later.",
+      "koiosServers goes beside smashServers at nix/internal/launcher-config.nix:31-35 and tokenMetadataServers at :37-41, with a per-network URL, and is assigned beside smashUrl at :456. Type it at source/main/config.ts:70 and expose it at source/main/preload.ts:40.",
+      "The validator differs from SMASH_URL_VALIDATOR in one respect and only one: Koios serves under a /api/v1 path prefix, so the pattern admits a path segment where the SMASH pattern rejects one. https only, optional port, and the literal direct, all unchanged.",
+      "Do not add a second configuration surface. The launcher value is the default and the stored user value overrides it, which is the same relation metadataUrl already has at source/main/config.ts:71.",
+      "koiosServers covers mainnet, mainnet_flight, preprod and preview. It carries mainnet_flight where smashServers does not, because Flight is a mainnet client and clustersAvailable maps it to the mainnet environment; there is no instance for selfnode and there cannot be one. koiosUrl is declared in declaration.d.ts as string | undefined so the renderer reads it without the @ts-ignore that stakingConfig.ts:8 needs for smashUrl."
+     ],
+     "testCases": [
+      "The validator accepts the Koios default including its /api/v1 prefix",
+      "The validator accepts a custom instance with a port and with a path",
+      "The validator rejects an http:// URL and a URL carrying a query string",
+      "The validator accepts the literal direct"
+     ],
+     "acceptance": [
+      "yarn lint, yarn compile and yarn test:jest pass",
+      "nix fmt leaves launcher-config.nix unchanged",
+      "The default URL is present on global for every network the launcher configures"
+     ],
+     "notes": "Structural copy of an existing block. Sized against that block rather than from scratch."
+    },
+    {
+     "id": "task-031",
+     "title": "Probe a candidate URL against /tip, map a stored URL back to its preset, and persist the selection",
+     "description": "A user-supplied URL is validated by pattern and then by a live probe before it is accepted, which is what checkSmashServerHealth does for SMASH. Koios exposes GET /tip and it serves the same purpose as /v2/smash/health. The stored value maps back to a preset so a user who types the default sees the default selected, and it persists per profile.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-030"
+     ],
+     "targetPaths": [
+      "source/renderer/app/api/assets/requests/checkAssetMetadataSourceHealth.ts",
+      "source/renderer/app/api/assets/requests/checkAssetMetadataSourceHealth.spec.ts",
+      "source/renderer/app/api/assets/types.ts",
+      "source/renderer/app/api/api.ts",
+      "source/renderer/app/api/errors.ts",
+      "source/renderer/app/domains/ApiError.ts",
+      "source/renderer/app/config/assetsConfig.ts",
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/utils/assets.spec.ts",
+      "source/renderer/app/api/utils/localStorage.ts",
+      "source/common/config/electron-store.config.ts",
+      "source/common/types/electron-store.types.ts",
+      "source/renderer/app/actions/assets-actions.ts",
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/stores/AssetsStore.spec.ts",
+      "jest.config.js"
+     ],
+     "implementationNotes": [
+      "checkAssetMetadataSourceHealth is the same six lines as api/staking/requests/checkSmashServerHealth.ts against GET /tip.",
+      "The acceptance check mirrors checkSmashServerIsValid at api.ts:2225-2250: the direct option returns true without a request, as api.ts:2227-2228 already does for SMASH_SERVERS_LIST.direct.url, and everything else must answer the probe.",
+      "An instance whose tip is far behind the user's own node is not one to read pointers from. Compare the returned tip against the node's own and refuse a stale one rather than accepting any 200.",
+      "getAssetMetadataSourceIdFromUrl in utils/assets.ts is the same lodash reduce as getSmashServerIdFromUrl at utils/staking.ts:17-28, falling back to CUSTOM.",
+      "Persistence is three lines against a new key beside getSmashServer, setSmashServer and unsetSmashServer at api/utils/localStorage.ts:328-333.",
+      "On start, read the stored value and fall back to the launcher URL when there is none, which is the defaulting StakingStore._getSmashSettingsRequest does at stores/StakingStore.ts:199-224. Unlike SMASH there is no cardano-wallet setting to keep in step, so there is one write and nothing to reconcile.",
+      "MobX: configure({ enforceActions: 'observed' }) is live, so the post-await assignment of the selected URL is wrapped in runInAction.",
+      "Endpoint ordering, settled: the metadata source setting feeds the pointer channel and nothing else, and assetRegistryEndpoint is unchanged. The PRD at :664 puts the setting second in the registry fetcher's order, behind launcherConfig.metadataUrl, which is present on every network but selfnode, so the setting could never apply there. The two are different endpoints speaking different protocols and one setting cannot serve both. The setting is not decorative because it is the only source of the pointer channel's base URL.",
+      "checkSmashServerHealth is not a direct probe and the PRD describes it as one. It passes the candidate URL to cardano-wallet as a query parameter and asks cardano-wallet to check it. There is no cardano-wallet endpoint that probes a Koios instance, so checkAssetMetadataSourceHealth issues its own https request rather than reusing api/utils/request.ts, which sends over plain HTTP on selfnode and carries the wallet's client certificate.",
+      "The acceptance decision is three-valued rather than the boolean checkSmashServerIsValid returns: unreachable and stale are different things to say to the person who typed the URL, and they map to two ApiError codes."
+     ],
+     "testCases": [
+      "getAssetMetadataSourceIdFromUrl returns the preset id for the default URL",
+      "getAssetMetadataSourceIdFromUrl returns CUSTOM for an unrelated URL and for the empty string",
+      "The direct option is accepted without any request being issued",
+      "A URL that does not answer /tip is refused and the error reaches the caller",
+      "A URL whose tip is far behind the local node is refused"
+     ],
+     "acceptance": [
+      "yarn lint, yarn compile and yarn test:jest pass",
+      "A selection survives a restart",
+      "No new @ts-ignore"
+     ],
+     "notes": "The probe is what makes a user-supplied URL safe to store. Without it a typo becomes a permanently silent channel."
+    },
+    {
+     "id": "task-032",
+     "title": "The asset metadata source settings page",
+     "description": "A settings category in the shape of components/settings/categories/StakePoolsSettings.tsx and its container containers/settings/categories/StakePoolsSettingsPage.tsx: a Select over the three source types, an InlineEditingInput shown only for CUSTOM carrying the validator and the error state, and a description under the selection that changes with the type.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-031"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/settings/categories/AssetMetadataSettings.tsx",
+      "source/renderer/app/components/settings/categories/AssetMetadataSettings.scss",
+      "source/renderer/app/components/settings/categories/AssetMetadataSettings.spec.tsx",
+      "source/renderer/app/containers/settings/categories/AssetMetadataSettingsPage.tsx",
+      "source/renderer/app/routes-config.ts",
+      "source/renderer/app/Routes.tsx",
+      "source/renderer/app/components/settings/menu/SettingsMenu.tsx",
+      "source/renderer/app/components/settings/menu/SettingsMenu.messages.ts"
+     ],
+     "implementationNotes": [
+      "Copy the structure of StakePoolsSettings.tsx rather than inventing one. It is 405 lines and its container is 41, and most of the component is defineMessages and the per-type description branches.",
+      "The asset copy is smaller: there is no isSyncing gate and no server-side setting to push, so the disabled-select branch at StakePoolsSettings.tsx and the successfullyUpdated derivation from a loading flag both go.",
+      "One entry each in routes-config.ts:46-55, Routes.tsx:136-140 and components/settings/menu/SettingsMenu.tsx:39-44, matching the STAKE_POOLS entries beside them.",
+      "The DIRECT option is rendered in the Select and disabled, with a description saying it derives the same pointers from the chain the user already holds and is not available yet. Do not hide it: the enum carries it so the shape is visible.",
+      "i18n ids are namespace.context.messageKey, every message carries a description, and every new defaultMessage is prefixed !!!. yarn i18n:manage is a required check at perSystem/checks.nix.",
+      "Three parts of StakePoolsSettings.tsx are deliberately not copied: the isSyncing gate, which exists because SMASH feeds the stake pool list; the successfullyUpdated derivation from a loading flag, which exists because its update is a round trip to cardano-wallet; and the selfnode omission of the default preset, which is unnecessary because a preset with no URL cannot be submitted. .scss.d.ts files are generated and gitignored, so the new stylesheet adds no tracked declaration file."
+     ],
+     "testCases": [
+      "The preset is selected when the stored URL is the default",
+      "Selecting CUSTOM reveals the URL input and selecting a preset hides it",
+      "An invalid URL renders the validator's error and is not submitted",
+      "A URL refused by the probe renders the returned error",
+      "The direct option renders and cannot be selected"
+     ],
+     "acceptance": [
+      "yarn lint, yarn compile, yarn stylelint, yarn i18n:manage and yarn test:jest pass",
+      "The category appears in the settings menu and its route resolves"
+     ],
+     "notes": "Sized against the existing SMASH implementation because it is a structural copy of it, not a new surface."
+    },
+    {
+     "id": "task-033",
+     "title": "Koios client: two-call pointer resolution, in bulk, with responses trimmed",
+     "description": "asset_info carries no chain point and neither does any other asset endpoint, so resolving a usable pointer always takes a second call. tx_cbor returns block_hash, block_height and absolute_slot AND the raw transaction CBOR in one response, so it replaces tx_info at no extra cost and supplies the bytes the local check runs against.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-010",
+      "task-030"
+     ],
+     "targetPaths": [
+      "source/main/assets/koiosClient.ts",
+      "source/main/assets/koiosClient.spec.ts",
+      "source/main/assets/httpTransport.ts",
+      "source/main/assets/assetRegistryClient.ts"
+     ],
+     "implementationNotes": [
+      "Two calls, always: POST asset_info for minting_tx_hash, then POST tx_cbor for the point and the bytes. Do not add tx_info; tx_cbor is a superset of what it returns for this purpose.",
+      "Both endpoints take arrays, so the two calls are per batch and not per asset. Batch alongside the registry client's existing batching rather than adding a second scheduler.",
+      "Trim asset_info with a PostgREST select= list. Measured 2026-09-11 for subject c76ef5451f551f3c06d48c46b153cb35221b507683b2e413122661b942544544: 351 bytes trimmed against 78,821 untrimmed, because the base64 logo is 98.2 percent of the untrimmed response. Never request logo from this endpoint.",
+      "Reuse the timeout, single retry and doubling backoff already built for the registry client, and record failures in asset_resolution keyed on the subject. No interval timer.",
+      "The base URL is the user's selection from task-031, not a constant. A custom instance is a first-class case, not a fallback.",
+      "The Koios documentation describes minting_tx_hash as both the first and the latest mint. It matters only for mint_cnt > 1 under an open policy; take whatever the pointer names and let the local check in task-034 confirm or reject it.",
+      "The disclosure is real and is not engineered around: a Koios operator learns, keyed to the user's source IP, which NFTs the user holds and roughly when they acquired each one. The operator's HAProxy stick-table type ip rate limiting (research/01-koios-pointer-option.md:67-76) makes the per-IP association a design property of the service.",
+      "Carry the research note's operational limits into the client rather than leaving them in the note: a per-IP request ceiling, explicit 429 handling that backs off rather than retries, and fail-closed behavior that leaves rows absent when the ceiling is reached.",
+      "Send subjects only. No wallet identifier, no address, no quantity. The channel is consulted only for subjects the registry did not answer, so fungible holdings never reach it.",
+      "minting_tx_metadata is deliberately absent from the select list. The CIP-25 payload is read out of the transaction bytes the local confirmation checks, so asking the index for its own copy would add an unconfirmed input for a value already held. cip68_metadata is requested, because a CIP-68 datum lives at a spendable UTxO and no reading of the mint transaction can produce it.",
+      "The transport moved to source/main/assets/httpTransport.ts because the response cap has to differ: 1 MiB for a registry answer, 8 MiB for a batch of raw transactions. assetRegistryClient re-exports RegistryTransport, RegistryTransportResult and httpRegistryTransport so its callers and its 47 spec cases are unchanged.",
+      "The resolver wiring is not here. It lands in task-035 with the write, which is also where the selected base URL crosses the process boundary."
+     ],
+     "testCases": [
+      "A batch of subjects produces exactly two requests",
+      "The asset_info request carries a select= list and does not request logo",
+      "A timeout on either call records a retry_after and abandons the batch without spinning",
+      "A custom base URL with a path prefix is composed correctly"
+     ],
+     "acceptance": [
+      "A 429 backs off and is never retried immediately, asserted per status code",
+      "Reaching the per-IP ceiling leaves rows absent rather than blocking a render or surfacing an error dialog",
+      "The request body carries subjects and nothing else, asserted against a captured request",
+      "Request counts hold at two per batch under a wallet holding many assets",
+      "No new runtime dependency",
+      "yarn lint, yarn compile and yarn test:jest pass"
+     ],
+     "notes": "Pointer resolution is two calls, not one. Anything that assumes one is reading asset_info as if it carried a chain point."
+    },
+    {
+     "id": "task-034",
+     "title": "Confirm the pointer against the user's own chain before writing a row",
+     "description": "Koios is read as an index, not an oracle. Before a chain-sourced row is written, the transaction the pointer names is read out of the user's own immutable database at block_hash and absolute_slot and checked to mint that asset under that policy and to carry that metadata. An index that lies fails the check; an index that is unreachable leaves the row absent.",
+     "status": "completed",
+     "priority": "critical",
+     "estimatedHours": 12.0,
+     "dependencies": [
+      "task-033"
+     ],
+     "targetPaths": [
+      "source/main/assets/chainPointerVerification.ts",
+      "source/main/assets/chainPointerVerification.realfs.spec.ts",
+      "source/main/assets/immutableBlockReader.ts",
+      "source/main/assets/immutableBlockReader.realfs.spec.ts",
+      "source/main/assets/cborSpan.ts",
+      "source/main/assets/cborSpan.spec.ts",
+      "source/main/assets/chainPointer.fixture.ts"
+     ],
+     "implementationNotes": [
+      "Three checks run against the tx_cbor bytes with no chain access at all, and all three were executed against a live response: blake2b-256 over the transaction body reproduces the transaction hash Koios claims, blake2b-256 over the auxiliary data equals transaction body key 7, and transaction body key 9 names the subject's policy id and asset name.",
+      "Those three establish self-consistency and that the metadata is bound to that transaction. They do not establish that the transaction was ever accepted into a block: anyone can construct bytes that never were. Reading the block out of the user's own immutable database is what closes that, and nothing smaller does.",
+      "The transaction id is blake2b-256 over the body as originally encoded. A CBOR library's canonical mode produced the wrong hash and its default encoding produced the right one, so the decoder must be able to hand back the original byte range of a decoded item. Check the candidate library for that before adopting it.",
+      "Blocks newer than k from the tip live in volatile/ and are not in the immutable database. On mainnet k is 2160 blocks at roughly 20 seconds average block time, so the window is on the order of 12 hours. Treat a pointer inside it as unresolved-for-now rather than as a failure: write asset_resolution in state 'pending' with a retry_after inside that window, and let the subject resolve on a later demand. This matters more than it sounds, because a freshly minted asset is exactly the one a user has just acquired and most wants to see named, so the common case for an NFT is the one that resolves late. Reading volatile/ as well would close it and is explicitly not in this task's scope; if that is wanted, it is its own task against a different on-disk format.",
+      "Auxiliary data has three historical shapes: a bare metadata map in Shelley, a two-element array in Allegra and Mary, and from Alonzo a CBOR tag 259 map whose key 0 holds the metadata, with the CIP-25 721 payload two levels down inside the tag.",
+      "This runs in the main process. It is file I O plus CBOR decoding and needs no Rust and no protocol library.",
+      "Immutable chunk layout is an undocumented internal format. Record the version it was read against and fail closed on a shape it does not recognize rather than guessing.",
+      "Name the CBOR decoder in this task rather than in an acceptance criterion. The confirmation needs a decoder that hands back the original byte range of a decoded item, because the transaction id is blake2b-256 over the body as originally encoded and a canonical re-encode produces the wrong hash. Neither cbor@5.2.0 nor borc@2.1.2 exposes that. Choosing one is a PRD-level decision about the 'no new runtime dependency' requirement and belongs on the record before the work starts.",
+      "CBOR decoder, settled: no new runtime dependency. source/main/assets/cborSpan.ts is a structural reader that returns byte ranges rather than values, because the byte-range requirement is real and neither cbor@5.0.2 nor borc@2.1.2 meets it. It is not a decoder, its failure mode is one-directional because every use sits inside a check whose failure writes no row, and ranges are needed in three places rather than one. This closes PRD open question 2.",
+      "The volatile window is measured against the immutable database's own tip rather than against k and a slot length. The tip is the last entry of the highest chunk, which needs no per-network constant and answers exactly the question being asked: does this database hold that slot yet.",
+      "The chunk size is derived from chunk zero's primary index, whose length is chunkSize + 2 offsets, rather than hardcoded per network.",
+      "The mint check reads the quantity. The recorded transaction mints one asset and burns another under the same policy in the same field, so a check that only matched the key would confirm the burned one.",
+      "Verified end to end on 2026-09-16 against the 17 GiB preprod immutable database on the development machine and a live tx_cbor response: chunk size derived as 21600, tip slot 131566495, pointer confirmed and the CIP-25 name extracted. That run is evidence rather than a committed test, because CI has no chain."
+     ],
+     "testCases": [
+      "A recorded pointer and its block confirm, and the row is written",
+      "Tampered auxiliary data fails the key 7 check and no row is written",
+      "A mint field naming a different policy fails and no row is written",
+      "A transaction hash that does not reproduce from the body fails",
+      "A pointer into a block newer than k leaves the subject unresolved without an error dialog",
+      "An unrecognized chunk shape fails closed"
+     ],
+     "acceptance": [
+      "A pointer to a block inside the volatile window resolves to state 'pending' with a retry_after inside that window, and no row is written, asserted with a fixture at the boundary",
+      "The user-visible behavior for an asset minted in the last 12 hours is documented in the task's closing note: it shows its decoded name and fingerprint and gains its CIP-25 name on a later demand",
+      "A tampered tx_cbor body fails the transaction-id check and no row is written",
+      "All three historical auxiliary-data shapes decode: the bare Shelley metadata map, the Allegra and Mary two-element array, and the Alonzo tag 259 map",
+      "An unrecognized immutable chunk shape fails closed rather than guessing, and the format version it was read against is recorded",
+      "No chain-sourced row is written on any failing path",
+      "The CBOR decoder is named, declared and pinned, or the byte-range requirement is replaced and the replacement is stated",
+      "yarn lint, yarn compile and yarn test:jest pass"
+     ],
+     "notes": "This is the task that makes Koios an index rather than an oracle. It is the largest piece of phase 7 and the one that must not be skipped to save time."
+    },
+    {
+     "id": "task-035",
+     "title": "Ingest CIP-25 and CIP-68 as chain-sourced rows, and render their names",
+     "description": "Write the confirmed record into asset_metadata with source = 'chain', the mint block's absolute_slot in slot, sequence_number NULL, decimals NULL and verified = 0, and extend the name resolution order so a CIP-25 or CIP-68 name renders below the registry name and above the decoded asset name.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 7.0,
+     "dependencies": [
+      "task-006",
+      "task-016",
+      "task-034"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetMetadataResolver.ts",
+      "source/main/assets/assetMetadataResolver.realfs.spec.ts",
+      "source/main/assets/immutableBlockReader.ts",
+      "source/main/ipc/assetMetadataChannel.ts",
+      "source/common/ipc/api.ts",
+      "source/renderer/app/ipc/assetMetadataChannel.ts",
+      "source/renderer/app/api/assets/types.ts",
+      "source/renderer/app/domains/Asset.ts",
+      "source/renderer/app/utils/assets.ts",
+      "source/renderer/app/utils/assetName.ts",
+      "source/renderer/app/utils/assetName.spec.ts",
+      "source/renderer/app/stores/AssetsStore.ts",
+      "source/renderer/app/stores/AssetsStore.spec.ts",
+      "source/renderer/app/components/assets/Asset.tsx",
+      "source/renderer/app/components/assets/Asset.spec.tsx"
+     ],
+     "implementationNotes": [
+      "decimals stays NULL on every chain row. That is the mechanical form of PRD locked decision 10: verified decimal places come only from tokens.cardano.org, and no amount anywhere is formatted by a number that came from Koios.",
+      "verified stays 0 on every chain row. verified means the registry verification chain passed, and a chain row never runs it, so it never claims it.",
+      "One row per subject. The chain channel is consulted only for subjects the registry does not answer, and where both could answer the registry row stands, because it is the only one of the two that can carry verified decimals. This is a precedence rule in the resolver, not a schema change.",
+      "The CIP-25 or CIP-68 payload goes into the metadata JSON column as returned. Name resolution reads it; nothing else does.",
+      "A CIP-25 or CIP-68 image is a URI, usually ipfs://, not inline bytes. Store the URI in metadata and fetch nothing. An IPFS gateway is a further external dependency and is not in scope.",
+      "Where Koios answers with both cip68_metadata and minting_tx_metadata for a subject, the CIP-68 datum is the live record and is the one stored.",
+      "CIP-68 sits on weaker footing than CIP-25 and the code should say so in a comment: a CIP-68 datum lives at a spendable UTxO, so the mint transaction says nothing about its current value, and confirming it locally would mean a local-state-query against the node, which this plan does not build. It is acceptable because a CIP-68 value here supplies a name and nothing else.",
+      "Name order in Asset.tsx: registry ticker, registry name, chain name, decoded asset name when printable, nothing.",
+      "Precedence is enforced by not asking: a subject with a registry row is excluded before the pointer request, so no chain row is ever built for it and the question of which write wins never arises. That is also the filter the privacy argument depends on, because the registry answers for fungible holdings and they therefore never reach the index.",
+      "The selected pointer source travels on the existing metadata request rather than on a channel of its own. The setting lives in the renderer and the client in the main process, and one field cannot fall out of step.",
+      "A chain name is not marked minter-chosen. It is in the transaction that minted the asset, which had to satisfy the minting policy, so it is bound to that policy; a decoded asset name is bound to nothing, which is what the marker exists for."
+     ],
+     "testCases": [
+      "A written chain row has source 'chain', a slot, and NULL sequence_number, NULL decimals and verified 0",
+      "The CHECK constraints reject a chain row carrying a sequence number",
+      "A subject with a registry row is not overwritten by a chain row",
+      "An NFT with a CIP-25 name renders it, and renders its fingerprint before the row exists",
+      "A chain row never changes the decimals used to format an amount"
+     ],
+     "acceptance": [
+      "yarn lint, yarn compile and yarn test:jest pass",
+      "The decimals resolution order specs from task-019 pass unchanged"
+     ],
+     "notes": "Naming an NFT is the whole point of the chain channel. Formatting an amount is not, and the row shape is what enforces the difference."
+    },
+    {
+     "id": "task-036",
+     "title": "Per-channel freshness: a closed policy freezes CIP-25 and nothing else",
+     "description": "Apply the tiering the PRD already records. A registry row takes the seven-day window. A CIP-25 row under a closed policy is fetched once and never re-read. A CIP-68 row takes the seven-day window because a datum changes whenever its UTxO is spent.",
+     "status": "completed",
+     "priority": "medium",
+     "estimatedHours": 3.0,
+     "dependencies": [
+      "task-035"
+     ],
+     "targetPaths": [
+      "source/main/assets/assetVerification.ts",
+      "source/main/assets/assetVerification.spec.ts",
+      "source/main/assets/chainPointerVerification.ts",
+      "source/main/assets/chainPointerVerification.realfs.spec.ts",
+      "source/main/assets/assetMetadataResolver.ts",
+      "source/main/assets/assetMetadataResolver.realfs.spec.ts",
+      "source/main/ipc/assetMetadataChannel.ts"
+     ],
+     "implementationNotes": [
+      "Closure is read from the policy script already in hand, not stored in a column of its own. The two-byte era wrapper says whether a lock can be expressed at all, and invalid_hereafter says whether it has passed.",
+      "Of 4,578 registry entries carrying a parseable policy, 4,104 (89.6 percent) are already closed, 47 close at a known future slot, and 427 (9.3 percent) are Shelley 8200-wrapped MultiSig scripts that cannot express a lock at all. That is what makes one resolution per asset for the life of an installation the realistic volume.",
+      "Plutus minting policies cannot be classified this way, because future behavior is not statically determinable. Treat an unclassifiable policy as open and apply the seven-day window. Do not assume the Plutus share is small; it is unmeasured.",
+      "Closure does not freeze the registry record. The attestation key still exists and can still sign long after the minting window shuts, so a registry row never inherits a CIP-25 row's permanence.",
+      "The PRD's caveat is resolved by taking the policy script from the minting transaction's own witness set rather than from the registry. A chain row exists precisely for a subject the registry does not answer, so the registry's policy field is never in hand for these rows; the witness set has to carry the script that authorised the mint, and task-034 has already confirmed that transaction against the user's own chain.",
+      "The PRD's closure measurement, 89.6 percent of entries already closed, is about registry entries. What share of chain-row policies close is unmeasured and the two are unlikely to match, because registry entries skew to fungible tokens under one-off policies and chain rows are NFTs. The rule holds; the volume claim it supports is weaker for this channel.",
+      "The verdict is decided when the row is written, where the immutable tip is already in hand, and stored beside the record rather than inside it: a CIP-25 payload whose author wrote a key of the same name would otherwise freeze its own row. The channel unwraps the record on the way to the renderer, so the wire shape is unchanged."
+     ],
+     "testCases": [
+      "A CIP-25 row under a policy whose invalid_hereafter has passed is not re-read",
+      "A CIP-25 row under a policy with no time lock is re-read on the next demand after the window",
+      "A CIP-68 row is re-read after the window regardless of the policy",
+      "A registry row for a closed policy still takes the seven-day window"
+     ],
+     "acceptance": [
+      "yarn lint, yarn compile and yarn test:jest pass",
+      "No fixed-interval timer is introduced"
+     ],
+     "notes": "The fetch-once model rests entirely on this, and it applies to exactly one of the three channels."
+    },
+    {
+     "id": "task-037",
+     "title": "Jest coverage across the source setting and the chain channel",
+     "description": "The URL validator, the preset mapping, the two-call sequence against recorded responses, the three local checks with their negative cases, and the row-shape assertions that keep the chain channel out of the decimals path.",
+     "status": "completed",
+     "priority": "high",
+     "estimatedHours": 6.0,
+     "dependencies": [
+      "task-034",
+      "task-035",
+      "task-036"
+     ],
+     "targetPaths": [
+      "source/main/assets/chainPointerVerification.realfs.spec.ts",
+      "source/main/assets/immutableBlockReader.realfs.spec.ts",
+      "source/main/assets/koiosClient.spec.ts",
+      "source/main/assets/cborSpan.spec.ts",
+      "source/main/assets/assetRegistryClient.spec.ts",
+      "source/renderer/app/components/settings/categories/AssetMetadataSettings.spec.tsx",
+      "source/main/assets/chainPointerVerification.ts"
+     ],
+     "implementationNotes": [
+      "Record one asset_info and one tx_cbor response as fixtures rather than calling the network from a test. The measured subject c76ef5451f551f3c06d48c46b153cb35221b507683b2e413122661b942544544 and its minting transaction are the obvious pair.",
+      "Negative cases carry the value here: tampered auxiliary data, a mint field naming a different policy, and a body that does not reproduce its claimed hash. A passing positive case proves very little on its own.",
+      "Colocate as <Unit>.spec.ts. describe names the exported unit with no article; it uses present-tense third person, not should.",
+      "Assert the row shape directly: a chain row has decimals NULL and verified 0. That assertion is what stops a later change quietly routing Koios decimals into the formatter.",
+      "The task graph's target paths name specs that do not exist under those names, because each phase 7 task tested its own module as it was built. The paths are corrected to the specs that exist.",
+      "The sweep changed one source file. A CIP-25 payload the reader cannot interpret now yields no name rather than rejecting the whole pointer: the transaction's integrity is established by the three hash checks, and refusing it would leave a genuinely minted asset with no row at all.",
+      "Four unreached lines remain and each is recorded with its argument: two catches around Buffer.from(hex), which never throws; a default arm over a value that is already exhaustively matched; and a rejection handler on a promise that never rejects."
+     ],
+     "testCases": [
+      "Every negative case in task-034 has a spec",
+      "A chain row's decimals and verified columns are asserted",
+      "The validator and the preset mapping cases from task-030 and task-031 have specs"
+     ],
+     "acceptance": [
+      "yarn test:jest passes",
+      "No network access from any spec"
+     ],
+     "notes": "The row-shape assertions are regression protection for locked decision 10, which is the thing most likely to be misread later."
+    },
+    {
+     "id": "task-038",
+     "title": "Manual QA across the three source options",
+     "description": "The process boundary, the settings surface and the chain channel end to end, on all three platforms, because CI wraps every check in x86_64-linux only and none of the specs exercise a real instance or a real chain.",
+     "status": "blocked",
+     "priority": "high",
+     "estimatedHours": 4.0,
+     "dependencies": [
+      "task-032",
+      "task-036",
+      "task-037"
+     ],
+     "targetPaths": [
+      "source/renderer/app/components/settings/categories/AssetMetadataSettings.tsx",
+      "source/main/assets/koiosClient.ts"
+     ],
+     "implementationNotes": [
+      "The preset is selected by default on a profile with no stored value, on each platform.",
+      "A custom URL that answers /tip is accepted and takes effect without a restart. A custom URL that does not answer is refused with the error rendered in the input.",
+      "The direct option is visible and cannot be selected.",
+      "An NFT the registry has never heard of: fingerprint only before resolution, its CIP-25 name after, and its amount in raw units throughout.",
+      "Offline with a populated cache: chain rows answer from disk, no dialog and no toast.",
+      "Point the setting at an instance that returns a pointer to a transaction the local chain does not confirm, and check no row is written.",
+      "Two scenarios the task did not name are in the procedure. A freshly minted NFT, which is the only check of the volatile window's user-visible consequence and the case the PRD accepts as the usual path for NFTs. And selfnode, which has no Koios instance and must render the settings page, issue no request and say nothing about it.",
+      "Two scenarios need a local stand-in instance rather than a public one: refusing a source whose tip is far behind the node, because no public instance is twelve hours behind, and the lying-index case, because it needs a pointer to a transaction that did not mint the asset.",
+      "One thing was exercised here and is recorded so nobody looks for it again: the chain confirmation was run once against the real preprod immutable database on the development machine with a live tx_cbor response on 2026-09-16 and confirmed the pointer. One platform, one network, one asset, outside the application."
+     ],
+     "testCases": [
+      "Linux, macOS and Windows each cover the six checks above",
+      "A wallet holding both a registry token and an NFT renders both correctly side by side"
+     ],
+     "acceptance": [
+      "The matrix is recorded with the version and platform each run was taken on",
+      "No unresolved failure is carried forward without being written down"
+     ],
+     "notes": "The failing-pointer case is the one worth doing by hand, because it is the check that makes the index untrusted by construction. Blocked: this environment has no display, no macOS, no Windows, no mainnet wallet and no funded selfnode, so no scenario has been executed. The procedure, the expected evidence and the operator checklist are the deliverable."
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "totalPhases": 7,
+  "totalTasks": 40,
+  "estimatedTotalHours": 193.5,
+  "criticalPath": [
+   "task-007",
+   "task-008",
+   "task-009",
+   "task-010",
+   "task-033",
+   "task-034",
+   "task-035",
+   "task-036",
+   "task-037",
+   "task-038"
+  ],
+  "keyFiles": [
+   "source/main/assets/assetMetadataDb.ts",
+   "source/main/assets/assetVerification.ts",
+   "source/main/assets/assetMetadataResolver.ts",
+   "source/main/assets/assetRegistryClient.ts",
+   "source/common/ipc/api.ts",
+   "source/renderer/app/stores/AssetsStore.ts",
+   "source/renderer/app/utils/assets.ts",
+   "source/renderer/app/utils/assetFingerprint.ts",
+   "source/renderer/app/components/assets/Asset.tsx",
+   "source/renderer/app/components/wallet/send-form/AssetInput.tsx",
+   "source/main/assets/koiosClient.ts",
+   "source/main/assets/chainPointerVerification.ts",
+   "source/renderer/app/config/assetsConfig.ts",
+   "source/renderer/app/components/settings/categories/AssetMetadataSettings.tsx"
+  ],
+  "riskAreas": [
+   "The registry attestation payload construction is not reproduced from first principles. A local sweep of 3,600 plausible constructions against a real mainnet subject did not match the published signature, so it is read from the registry's own implementation and confirmed by the corpus gate in task-009 rather than by inspection.",
+   "Ed25519 verification must be strict, because verified decimal places change a displayed and entered amount. Node's built-in crypto.verify is used rather than cardano-crypto.js, which accepts a signature whose scalar S has had the group order added to it. If Node's verifier turns out not to be strict enough on some platform build, @noble/curves is promoted from a transitive dependency to a declared one; the primitive sits behind one module so nothing else changes.",
+   "task-002 is a live defect that the current poll masks. Landing the cache without it would empty the send form, the send confirmation and the transaction list on a cold start, because getNonZeroAssetTokens filters on an identity it takes from the cache rather than from the token.",
+   "task-003 is a live input-validation defect today, independent of this plan. An asset whose decimal places the user has never set accepts a decimal separator and then has it stripped by string substitution, so 1.5 becomes 15 natural units. Severity is bounded: ledger quantities are integers and decimals are presentation, so the harm is a large underpayment by the user's own hand, not an unintended overspend. Normal bug, not an emergency.",
+   "Dropping the assets endpoint also drops the only source of the CIP-14 fingerprint the token row renders as its primary identifier. task-005 must land before task-018 or every row loses its identity.",
+   "node:sqlite is used without a native module, which is the point, but it is the first use of it in this repository. It is confirmed present in Electron 41.3.0 on Node 24.15.0 with STRICT tables, CHECK constraints and WAL all working, and a future Electron bump should re-run that probe.",
+   "Registry logos are large: a 36,191 byte median entry and 316 MiB across the corpus. The volume bound is at the transport, because the bulk query never requests the logo property, and the store bounds are a second line rather than the first.",
+   "The migration in task-021 is where the overspend direction lives. Applying verified decimals moves no balance, but the send field flips from raw units to issuer units at the same moment: a user who types 1500000 from habit after the change sends a million and a half tokens instead of one and a half, gated only by their balance. The care belongs on the input path and its label, not on a balance notice, and the send confirmation is a partial backstop rather than a sufficient one.",
+   "Koios is adopted (PRD locked decision 9) and it is additive to tokens.cardano.org, never a replacement (locked decision 10). This is the risk most likely to be misread later, because the two sources overlap in what they return and not in what they prove: Koios strips the registry signatures, so a row taking its decimals from Koios would mean verified collapses to the server said so. The structural guard is in task-035, where a chain row is written with decimals NULL and verified 0, and in task-037, which asserts that shape so a later change cannot quietly route Koios decimals into the formatter.",
+   "Freshness is per channel, not per asset, and the plan now stores all three. A closed policy freezes minting and therefore CIP-25, which lives in the mint transaction; it does not freeze the registry record, because the attestation key still exists and can still sign after the minting window shuts; and it does not freeze CIP-68, which lives in a spendable datum. Of 4,578 entries carrying a parseable policy, 4,104 (89.6 percent) are already closed, 47 close at a known future slot, and 427 (9.3 percent) are Shelley 8200-wrapped MultiSig scripts that cannot express a lock at all. Plutus policies cannot be classified this way and the measured corpus is native-script only, so an unclassifiable policy is treated as open. Closure is read from the policy script already in hand rather than stored in a column of its own.",
+   "CIP-68 is stored on weaker footing than CIP-25 and the difference must stay visible. A CIP-25 payload is in the mint transaction, so the local block read in task-034 confirms it. A CIP-68 payload is a datum at a spendable UTxO, so the mint transaction says nothing about its current value, and confirming it locally would mean a local-state-query against the node, which this plan does not build. It is acceptable only because a CIP-68 value here supplies a name and nothing else, which is the class of risk locked decision 5 already accepts for an unverified registry name.",
+   "task-034 reads the immutable chunk format, which is an undocumented internal format and the fragile part of phase 7. It fails closed on a shape it does not recognize rather than guessing, and blocks newer than k from the tip are not in it at all, so a very recent mint resolves on a later demand rather than erroring. A node bump is a reason to re-run that reader against a real chain.",
+   "The direct option is in the settings enum from task-030 and is not built. A mint-field scan was measured at 48 to 58 seconds across the local preprod immutable database, 15.64 GiB across 6,092 chunks, on 2026-09-11. Mainnet is not synced on that machine, so the mainnet figures are extrapolation from that preprod measurement and not measurement: roughly 9 to 11 minutes on the same fast disk and an estimated 31 to 61 minutes on a modest or contended one, once. It is a mint-field traversal rather than a full decode, which is why it sits far below a full-chain decode estimate. Carrying the enum member now is what keeps adding it later a fetch path rather than a settings migration."
+  ],
+  "testingNotes": "Jest carries nearly all of it, because nearly all of it is pure functions over fixed inputs: CIP-14 against the golden vectors in cardano-wallet at lib/primitive/test/spec/Cardano/Wallet/Primitive/Types/TokenFingerprintSpec.hs:40-78, the printable-ASCII predicate, both binding steps against a live-captured subject with negative cases, attestation and signature verification against tampered values, the decimals resolution order across all four combinations, and the database CHECK constraints. One check is not a test: verification is run over the full registry corpus and must report zero failures across the policy-bound subjects before task-009 is accepted. Manual QA covers the process boundary, the on-disk path on three platforms and the migration notice, because CI wraps every check in x86_64-linux only. Cucumber is not used: the end-to-end suite cannot execute and is not in the check set. The refresh window adds two cases to task-010: a row inside the window answers from disk without a fetch, and a row outside it is re-read on demand and rewritten only when a sequenceNumber has risen. task-021 adds the amount-field label assertion, which is the part of the migration that keeps working after the banner is dismissed. Phase 7 adds four groups. The URL validator against the Koios default with its /api/v1 prefix, a custom instance, an http:// URL, a query string and the literal direct. getAssetMetadataSourceIdFromUrl against the preset URL, an unrelated URL and the empty string, mirroring the SMASH reduction it copies. The two-call pointer sequence against a recorded asset_info and tx_cbor pair, with the three local checks and their negative cases: tampered auxiliary data, a mint field naming a different policy, and a body that does not reproduce its claimed hash. And a row-shape assertion that a chain row carries decimals NULL and verified 0, which is the regression guard on locked decision 10. Manual QA in task-038 covers the settings surface, an accepted and a refused custom URL, the unavailable direct option, an NFT named from CIP-25, and a pointer the local chain refuses to confirm.",
+  "rollbackPlan": "No feature flag: the cache is either present and answering or absent and answering nothing, and both states render correctly. Phase 1 is four independent commits, each revertible alone and each an improvement on its own. Phases 2 and 3 roll back together from task-018 onward, because reverting the store without restoring the endpoint client would leave the renderer with no source of metadata. Phases 4 to 6 are revertible individually and leave a working cache behind. The database itself is derived data: deleting the asset-metadata-cache directory costs a re-fetch and nothing else, and a file written by a newer schema version is deleted and recreated rather than repaired. Phase 7 reverts on its own: registry rows are untouched, chain rows stay on disk and stop being read, and deleting the asset-metadata-cache directory clears them. The metadata source setting needs no migration, because a profile with no stored selection reads the launcher configuration's Koios URL, which is the defaulting StakingStore already does for SMASH at source/renderer/app/stores/StakingStore.ts:199-224.",
+  "securityNotes": [
+   "verified is computed in the main process and never carried from the wire. No field of the registry response sets it.",
+   "The boolean collapses three classes into two. Policy-bound is true; signed with a key the policy does not require, and unattested, are both false. Only the policy-bound case justifies changing a displayed balance without asking, because an operator who can sign with an unbound key can assert any decimal places they like.",
+   "Verification gates decimal places only. A ticker or a name that fails verification is still shown: the worst case of a wrong name is a confusing label, and the worst case of a wrong decimal count is a transaction for the wrong amount.",
+   "One advisory, in one place. A wallet that decorates every token with security chrome trains its users to ignore chrome, and a large share of registry subjects carry no policy field at all, so a per-row badge would appear on most rows.",
+   "verified proves that the policy which minted the token authored the metadata. It proves nothing about which token this is: 660 registry tickers collide across 4,256 subjects, 53 percent of the corpus, many of them fully policy-bound, so two policies can both verify while both claiming one ticker. Anyone can mint a policy and sign metadata claiming any ticker. The cache stores the ticker, so implementers need to know that limit, but choosing between claimants is a trust-surface problem handled in the dApp connector security work and is out of scope here.",
+   "Koios is read as an index, not an oracle. A chain-sourced row is written only after the transaction the pointer names has been read out of the user's own immutable database and checked to mint that asset under that policy and to carry that metadata. An index that lies fails that check; an index that is unreachable leaves the row absent rather than wrong.",
+   "A chain row carries decimals NULL and verified 0. verified means the registry verification chain passed, and a chain row never runs it, so it never claims it. No amount anywhere is formatted by a number that came from Koios.",
+   "A user-supplied metadata source URL is checked against a pattern and then against a live probe of /tip before it is stored, which is what checkSmashServerHealth does for a user-supplied SMASH URL. An instance whose tip is far behind the user's own node is refused rather than accepted on a bare 200."
+  ]
+ }
+}

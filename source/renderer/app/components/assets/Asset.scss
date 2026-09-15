@@ -76,8 +76,17 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  &.ascii {
+  // A name decoded from the asset's own name bytes, which whoever minted the
+  // token chose freely. It must not read as a name an issuer published, so it
+  // is marked on three independent channels: an outline, italics and a muted
+  // colour. The outline is the one that survives a monochrome rendering.
+  &.minterChosenName {
+    border: 1px dashed var(--theme-tokens-list-header-text-color);
+    border-radius: 3px;
     color: var(--theme-tokens-list-header-text-color);
+    font-style: italic;
+    margin: 2px 0 2px 4px;
+    padding: 1px 4px;
   }
 }
 

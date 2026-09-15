@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
-import AssetDomain from '../../domains/Asset';
+import type { AssetMetadataSource } from '../../../../common/types/asset-metadata.types';
 
 /**
  *
  * ASSET
- * Fetched from the Assets API endpoint
+ * The metadata for a subject, resolved from the local cache.
  * It's not attached to a particular wallet or transaction
  * Therefore, it doesn't have `quantity` nor `address`
  *
@@ -12,13 +12,6 @@ import AssetDomain from '../../domains/Asset';
  * Missing data: quantity, address
  *
  */
-export type ApiAsset = {
-  policy_id: string;
-  asset_name: string;
-  fingerprint: string;
-  metadata?: AssetMetadata | null;
-};
-export type ApiAssets = Array<ApiAsset>;
 export type Asset = {
   assetName: string;
   decimals?: number | null;
@@ -26,6 +19,27 @@ export type Asset = {
   metadata?: AssetMetadata | null;
   policyId: string;
   recommendedDecimals?: number | null;
+  /**
+   * Whether `recommendedDecimals` was cryptographically bound to the token's
+   * minting policy. Only a verified value is applied automatically; an
+   * unverified one is offered in the settings dialog and formats nothing.
+   */
+  recommendedDecimalsVerified?: boolean;
+  /**
+   * Whether the cache holds a logo for this subject. It is not the logo: the
+   * bytes travel on their own channel, one subject at a time, so that a picture
+   * never sits on the path of a name or an amount.
+   */
+  hasImage?: boolean;
+  /**
+   * Which channel the cached row came from, or null when there is no row.
+   *
+   * It decides how a name is labelled rather than whether it is shown. A name
+   * on a chain row is in the transaction that minted the asset, which had to
+   * satisfy the minting policy, so it is bound to that policy; a decoded asset
+   * name is bound to nothing.
+   */
+  source?: AssetMetadataSource | null;
   uniqueId: string;
 };
 
@@ -77,15 +91,19 @@ export type AssetMetadata = {
   url?: string;
   logo?: string;
 };
-export type StoredAssetMetadata = Record<string, AssetMetadata>;
-export type GetUnknownAssetRequest = {
-  walletId: string;
-  policyId: string;
+
+/** The current tip of a candidate metadata source, as its `/tip` reports it. */
+export type AssetMetadataSourceTip = {
+  absoluteSlot: number;
 };
-export type GetAssetsRequest = {
-  walletId: string;
-};
-export type GetAssetsResponse = {
-  assets: Array<AssetDomain>;
-  total: number;
-};
+
+/**
+ * Whether a candidate metadata source may be stored, and when not, why.
+ *
+ * Two-valued would be enough to refuse. It is three-valued because the two
+ * refusals mean different things to the person who typed the URL: one says this
+ * is not an instance, the other says this instance is behind.
+ */
+export type AssetMetadataSourceCheck =
+  | { valid: true }
+  | { valid: false; reason: 'unreachable' | 'stale' };

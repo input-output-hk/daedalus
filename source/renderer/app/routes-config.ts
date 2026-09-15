@@ -49,6 +49,7 @@ export const ROUTES = {
     GENERAL: '/settings/general',
     SECURITY: '/settings/security',
     STAKE_POOLS: '/settings/stake-pools',
+    ASSET_METADATA: '/settings/asset-metadata',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
     DISPLAY: '/settings/display',

@@ -36,7 +36,6 @@ const messages = defineMessages({
   },
 });
 type Props = {
-  isLoadingAssets: boolean;
   onExternalLinkClick: (...args: Array<any>) => any;
   numberOfAssets: number;
 };
@@ -48,15 +47,13 @@ class WalletSummaryNoTokens extends Component<Props> {
   };
 
   render() {
-    const { isLoadingAssets, onExternalLinkClick, numberOfAssets } = this.props;
+    const { onExternalLinkClick, numberOfAssets } = this.props;
     const { intl } = this.context;
     return (
       <>
-        {!isLoadingAssets && (
-          <div className={styles.numberOfAssets}>
-            {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
-          </div>
-        )}
+        <div className={styles.numberOfAssets}>
+          {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
+        </div>
         <div className={styles.component}>
           <BorderedBox>
             <div className={styles.noTokensContainer}>

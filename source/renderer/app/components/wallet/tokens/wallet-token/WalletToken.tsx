@@ -6,7 +6,10 @@ import AssetContent from '../../../assets/AssetContent';
 import type { AssetToken } from '../../../../api/assets/types';
 import WalletTokenFooter from './WalletTokenFooter';
 import WalletTokenHeader from './WalletTokenHeader';
-import { isNonRecommendedDecimalSettingUsed } from './helpers';
+import {
+  DecimalSettingDisagreement,
+  decimalSettingDisagreement,
+} from './helpers';
 
 type Props = {
   anyAssetWasHovered: boolean;
@@ -49,10 +52,14 @@ const WalletToken = observer((props: Props) => {
     setIsExpanded(!isExpanded);
   }, [setIsExpanded, isExpanded]);
 
-  const hasWarning = isNonRecommendedDecimalSettingUsed({
-    decimals: asset.decimals,
-    recommendedDecimals: asset.recommendedDecimals,
-  });
+  // The icon is unchanged: every disagreement is still worth a mark on the row.
+  // What the verdict changes is how strongly the settings dialog puts it.
+  const hasWarning =
+    decimalSettingDisagreement({
+      decimals: asset.decimals,
+      recommendedDecimals: asset.recommendedDecimals,
+      recommendedDecimalsVerified: asset.recommendedDecimalsVerified,
+    }) !== DecimalSettingDisagreement.None;
 
   const componentStyles = useMemo(
     () =>

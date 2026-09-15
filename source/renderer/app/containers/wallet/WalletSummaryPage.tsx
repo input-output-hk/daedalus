@@ -13,7 +13,7 @@ import { ROUTES } from '../../routes-config';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
-import { getAssetTokens, sortAssets } from '../../utils/assets';
+import { getNonZeroAssetTokens, sortAssets } from '../../utils/assets';
 import {
   withAnalytics,
   WithAnalyticsTrackerProps,
@@ -93,7 +93,7 @@ class WalletSummaryPage extends Component<Props> {
       currency,
       staking,
     } = stores;
-    const { all, getAsset, favorites } = assets;
+    const { getAsset, favorites } = assets;
     const { isInternalAddress } = addresses;
     const { onOpenAssetSend, onCopyAssetParam, onToggleFavorite } =
       actions.assets;
@@ -120,13 +120,10 @@ class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const walletTokens = wallet.assets.total;
-    const assetTokens = getAssetTokens(all, walletTokens).sort(
+    const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset).sort(
       sortAssets('token', 'asc')
     );
-    const totalRawAssets = wallet.assets.total.length;
-    const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
-    const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
 
     const onViewAllButtonClick = () => this.handleViewAllButtonClick(wallet.id);
 
@@ -179,7 +176,6 @@ class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          isLoadingAssets={isLoadingAssets}
           // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
           hasAssetsEnabled={hasAssetsEnabled && hasRawAssets}
           currentLocale={currentLocale}

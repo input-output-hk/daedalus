@@ -37,6 +37,12 @@ function SettingsMenu({ intl, onItemClick, isActiveItem, isFlight }: Props) {
           className="wallets"
         />
         <SettingsMenuItem
+          label={intl.formatMessage(messages.assetMetadata)}
+          onClick={() => onItemClick(ROUTES.SETTINGS.ASSET_METADATA)}
+          active={isActiveItem(ROUTES.SETTINGS.ASSET_METADATA)}
+          className="assetMetadata"
+        />
+        <SettingsMenuItem
           label={intl.formatMessage(messages.stakePools)}
           onClick={() => onItemClick(ROUTES.SETTINGS.STAKE_POOLS)}
           active={isActiveItem(ROUTES.SETTINGS.STAKE_POOLS)}

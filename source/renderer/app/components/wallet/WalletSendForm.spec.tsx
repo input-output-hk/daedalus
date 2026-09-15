@@ -8,6 +8,7 @@ import {
   fireEvent,
   screen,
   cleanup,
+  waitFor,
   within,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
@@ -119,7 +120,6 @@ describe('wallet/Wallet Send Form', () => {
                 isRestoreActive={false}
                 hwDeviceStatus={HwDeviceStatuses.READY}
                 isHardwareWallet={false}
-                isLoadingAssets={false}
                 onExternalLinkClick={jest.fn()}
                 hasAssets
                 selectedAsset={null}
@@ -621,4 +621,160 @@ describe('wallet/Wallet Send Form', () => {
       });
     }
   );
+});
+
+/**
+ * The two send-path safety rules, through the whole form.
+ *
+ * The amount a user signs is the display string with its separators removed, so
+ * a denomination that moves under an open field changes what the digits on
+ * screen mean. These cases drive a resolution into an open form by hand.
+ */
+describe('wallet/Wallet Send Form: a denomination that moves under an open row', () => {
+  beforeEach(() => addLocaleData([...en]));
+  afterEach(cleanup);
+
+  const uniqueId = 'c76ef5451f551f3c06d48c46b153cb35221b507683b2e41312266beef';
+
+  const tokenWith = (decimals: number | null) => [
+    {
+      policyId: uniqueId.slice(0, 56),
+      assetName: uniqueId.slice(56),
+      uniqueId,
+      fingerprint: 'asset1cvmyrfrc7lpsnjhhz9l4rzqmc6nlp4kw2xkvpa',
+      quantity: new BigNumber('900000000'),
+      decimals,
+      recommendedDecimals: null,
+      metadata: {
+        name: 'Test Coin',
+        ticker: 'TEST',
+        description: 'A test coin',
+      },
+    },
+  ];
+
+  function Setup({ assets: rowAssets }: { assets: Array<any> }) {
+    return (
+      <TestDecorator>
+        <BrowserLocalStorageBridge>
+          <DiscreetModeFeatureProvider>
+            <MobxProvider>
+              <WalletSendForm
+                currencyMaxFractionalDigits={6}
+                currencyMaxIntegerDigits={11}
+                currentNumberFormat={NUMBER_OPTIONS[0].value}
+                validateAmount={jest.fn().mockResolvedValue(true)}
+                validateAssetAmount={jest.fn().mockResolvedValue(true)}
+                calculateTransactionFee={jest.fn().mockResolvedValue({
+                  fee: new BigNumber(1),
+                  minimumAda: new BigNumber(1),
+                })}
+                walletAmount={new BigNumber(123)}
+                assets={rowAssets}
+                addressValidator={() => true}
+                onSubmit={jest.fn()}
+                isDialogOpen={() => false}
+                isRestoreActive={false}
+                hwDeviceStatus={HwDeviceStatuses.READY}
+                isHardwareWallet={false}
+                onExternalLinkClick={jest.fn()}
+                hasAssets
+                selectedAsset={rowAssets[0]}
+                onUnsetActiveAsset={() => {}}
+                isAddressFromSameWallet={false}
+                tokenFavorites={{}}
+                walletName="Test wallet"
+                onTokenPickerDialogClose={() => {}}
+                onTokenPickerDialogOpen={() => {}}
+                analyticsTracker={noopAnalyticsTracker}
+                confirmationDialogData={null}
+              />
+            </MobxProvider>
+          </DiscreetModeFeatureProvider>
+        </BrowserLocalStorageBridge>
+      </TestDecorator>
+    );
+  }
+
+  // `selectedAsset` adds the row on mount, which is the shortest honest route to
+  // a form with one open token row.
+  async function openRow(decimals: number | null) {
+    const { rerender } = render(<Setup assets={tokenWith(decimals)} />);
+    // The amount fields are behind a valid receiver address.
+    fireEvent.change(screen.getByPlaceholderText('Paste an address'), {
+      target: {
+        value:
+          'addr_test1qrjzmxr4x7vhlusn05fd4lt7cs6dy8wtcv6vaf9lff7m9yqkw6whlsg36t3laez562llhkvfy5tny4p9y8zrspe48vgsea3q6m',
+      },
+    });
+    const input = await screen.findByTestId(`assetInput:${uniqueId}`);
+    return {
+      input,
+      resolveTo: async (next: number | null) => {
+        rerender(<Setup assets={tokenWith(next)} />);
+        await waitFor(() => screen.getByTestId(`assetUnitLabel:${uniqueId}`));
+      },
+    };
+  }
+
+  const noticeTestId = `assetDenominationNotice:${uniqueId}`;
+
+  test('clears the amount and says why when the decimal places move under it', async () => {
+    const { input, resolveTo } = await openRow(null);
+
+    fireEvent.change(input, { target: { value: '1500000' } });
+    expect(input).toHaveValue('1500000');
+
+    await resolveTo(6);
+
+    // The field the user was looking at is empty, so there is no string left for
+    // the submit path to reinterpret. Before this guard the same field, touched
+    // once more, submitted 1500000000000.
+    await waitFor(() => expect(input).toHaveValue(''));
+    expect(screen.getByTestId(noticeTestId)).toHaveTextContent(
+      'The decimal places published for TEST changed while you were entering an amount'
+    );
+    expect(screen.getByTestId(`assetUnitLabel:${uniqueId}`)).toHaveTextContent(
+      'Enter an amount in TEST, to 6 decimal places.'
+    );
+  });
+
+  test('says nothing and keeps the row usable when the field was empty', async () => {
+    const { input, resolveTo } = await openRow(null);
+
+    await resolveTo(6);
+
+    expect(screen.queryByTestId(noticeTestId)).not.toBeInTheDocument();
+    // The row moved to the new denomination on its own, so the first keystroke
+    // after the resolution lands in it.
+    fireEvent.change(input, { target: { value: '1.5' } });
+    await waitFor(() => expect(input).toHaveValue('1.500000'));
+  });
+
+  test('takes the notice back when the user enters an amount again', async () => {
+    const { input, resolveTo } = await openRow(null);
+
+    fireEvent.change(input, { target: { value: '1500000' } });
+    await resolveTo(6);
+    await waitFor(() => expect(screen.getByTestId(noticeTestId)).toBeVisible());
+
+    fireEvent.change(input, { target: { value: '1.5' } });
+
+    await waitFor(() =>
+      expect(screen.queryByTestId(noticeTestId)).not.toBeInTheDocument()
+    );
+    expect(input).toHaveValue('1.500000');
+  });
+
+  test('leaves a row alone when the resolution agrees with what it was opened in', async () => {
+    const { input, resolveTo } = await openRow(6);
+
+    fireEvent.change(input, { target: { value: '1.5' } });
+    await waitFor(() => expect(input).toHaveValue('1.500000'));
+
+    await resolveTo(6);
+
+    expect(input).toHaveValue('1.500000');
+    expect(screen.queryByTestId(noticeTestId)).not.toBeInTheDocument();
+  });
 });

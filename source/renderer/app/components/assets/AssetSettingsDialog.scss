@@ -33,6 +33,27 @@
     }
   }
 
+  .decimalsFooter {
+    margin-top: 10px;
+  }
+
+  .refreshButton {
+    background: none;
+    border: 0;
+    color: var(--theme-label-button-color);
+    cursor: pointer;
+    font-family: var(--font-medium);
+    font-size: 14px;
+    padding: 0;
+    text-decoration: underline;
+  }
+
+  .unverifiedDecimals {
+    font-size: 14px;
+    margin-bottom: 0;
+    opacity: 0.7;
+  }
+
   .warningIcon {
     svg {
       width: 12px;

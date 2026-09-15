@@ -9,6 +9,7 @@ import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import AmountInputSkin from '../skins/AmountInputSkin';
 import removeIcon from '../../../assets/images/remove.inline.svg';
 import type { NumberFormat } from '../../../../../common/types/number.types';
+import { ellipsis } from '../../../utils/strings';
 import { DiscreetTokenWalletAmount } from '../../../features/discreet-mode';
 import Asset from '../../assets/Asset';
 import { VerticalSeparator } from '../widgets/VerticalSeparator';
@@ -26,6 +27,18 @@ type Props = {
   handleSubmitOnEnter: (...args: Array<any>) => any;
   clearAssetFieldValue: (...args: Array<any>) => any;
   autoFocus: boolean;
+  /**
+   * The decimal places this row is denominated in, snapshotted when the row was
+   * added. Deliberately a prop and not a read of the asset: the asset's value
+   * can change under an open field, and the whole point of the snapshot is that
+   * the row does not move with it.
+   */
+  decimals: number | null | undefined;
+  /**
+   * Whether a resolution moved this asset's decimal places while the field held
+   * an amount. The amount was cleared and the row says why.
+   */
+  hasDenominationChanged: boolean;
 };
 const INPUT_FIELD_PADDING_DELTA = 10;
 
@@ -73,6 +86,8 @@ class AssetInput extends Component<Props> {
       handleSubmitOnEnter,
       clearAssetFieldValue,
       autoFocus,
+      decimals,
+      hasDenominationChanged,
     } = this.props;
     const asset = getAssetByUniqueId(uniqueId);
 
@@ -80,10 +95,36 @@ class AssetInput extends Component<Props> {
       return false;
     }
 
-    const { quantity, metadata, decimals } = asset;
+    // Everything in this row is drawn in the snapshotted denomination, the
+    // balance beside the field included, so the amount a user compares against
+    // is in the units the field is accepting.
+    const { quantity, metadata } = asset;
     const ticker = get(metadata, 'ticker', null);
+    // The unit the field is denominated in, for the label below it. A published
+    // ticker where there is one, and otherwise the fingerprint in the same
+    // spelling the pill above the field uses, so the two name the same thing.
+    //
+    // Never the decoded asset name: those bytes are chosen by whoever minted the
+    // token and an asset whose name spells an existing ticker is free to exist,
+    // which is the one confusion this label must not introduce.
+    const unit = ticker || ellipsis(get(asset, 'fingerprint', '') || '', 9, 4);
+    // A ledger quantity is an integer and decimal places are presentation
+    // only, so a field whose decimal places are unknown, or known to be zero,
+    // is denominated in raw units. A decimal separator typed into it means
+    // nothing, and the submit path strips it rather than interpreting it, so
+    // the field must not accept one in the first place.
+    const areDecimalsKnown = decimals != null;
+    const isInRawUnits = !areDecimalsKnown || decimals === 0;
     const assetField = assetFields[uniqueId];
     const inputFieldStyle = this.generateInputFieldStyle();
+    // Computed from the same local the input's props are, so the label cannot
+    // describe a denomination the field is not accepting.
+    const unitLabel = areDecimalsKnown
+      ? intl.formatMessage(messages.assetInputDecimalUnitsLabel, {
+          unit,
+          decimals,
+        })
+      : intl.formatMessage(messages.assetInputRawUnitsLabel, { unit });
     return (
       <div key={`receiver_asset_${uniqueId}`} className={styles.component}>
         <div className={styles.inputBlock}>
@@ -125,22 +166,28 @@ class AssetInput extends Component<Props> {
             error={assetField.error}
             skin={AmountInputSkin}
             style={inputFieldStyle}
-            onKeyPress={(evt: React.KeyboardEvent<EventTarget>) => {
-              if (decimals === 0) {
-                const { charCode } = evt;
-
-                if (charCode === 190 || charCode === 110 || charCode === 46) {
-                  evt.persist();
-                  evt.preventDefault();
-                  evt.stopPropagation();
-                }
-              }
-
-              handleSubmitOnEnter(evt);
-            }}
+            onKeyPress={handleSubmitOnEnter}
+            allowOnlyIntegers={isInRawUnits}
             allowSigns={false}
             autoFocus={autoFocus}
           />
+          {hasDenominationChanged && (
+            <div
+              className={styles.denominationNotice}
+              data-testid={`assetDenominationNotice:${uniqueId}`}
+            >
+              {intl.formatMessage(
+                messages.assetInputDenominationChangedNotice,
+                { unit }
+              )}
+            </div>
+          )}
+          <div
+            className={styles.unitLabel}
+            data-testid={`assetUnitLabel:${uniqueId}`}
+          >
+            {unitLabel}
+          </div>
           <div className={styles.rightContent} ref={this.rightContentRef}>
             {this.hasAssetValue(assetField) && (
               <div className={styles.clearAssetContainer}>

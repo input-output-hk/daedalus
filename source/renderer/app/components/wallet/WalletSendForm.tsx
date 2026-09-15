@@ -30,10 +30,10 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 import AssetInput from './send-form/AssetInput';
+import { AssetDenominations } from './send-form/assetDenominations';
 import { WalletSendConfirmationDialogView } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import { WalletSendConfirmationDialogContainer } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container';
 import styles from './WalletSendForm.scss';
-import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
@@ -97,8 +97,7 @@ type Props = {
   addressValidator: (...args: Array<any>) => any;
   assets: Array<AssetToken>;
   hasAssets: boolean;
-  selectedAsset: Asset | null | undefined;
-  isLoadingAssets: boolean;
+  selectedAsset: AssetToken | null | undefined;
   isDialogOpen: (...args: Array<any>) => any;
   isRestoreActive: boolean;
   isHardwareWallet: boolean;
@@ -137,6 +136,7 @@ type State = {
   transactionFee: BigNumber;
   transactionFeeError: (string | null | undefined) | (Node | null | undefined);
   selectedAssetUniqueIds: Array<string>;
+  denominationChangedUniqueIds: Array<string>;
   isResetButtonDisabled: boolean;
   isReceiverAddressValid: boolean;
   isReceiverAddressValidOnce: boolean;
@@ -170,6 +170,7 @@ class WalletSendForm extends Component<Props, State> {
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
     selectedAssetUniqueIds: [],
+    denominationChangedUniqueIds: [],
     isResetButtonDisabled: true,
     isReceiverAddressValid: false,
     isReceiverAddressValidOnce: false,
@@ -188,6 +189,14 @@ class WalletSendForm extends Component<Props, State> {
   _isAutoFocusEnabled = true;
 
   requestTokens: RequestToken[] = [];
+
+  /**
+   * The decimal places each open row is denominated in, taken when the row was
+   * added. The amount a user signs is the display string with its separators
+   * removed, so a denomination that moves under an open field changes what the
+   * digits on screen mean.
+   */
+  assetDenominations: AssetDenominations = new AssetDenominations();
 
   form: ReactToolboxMobxForm<FormFields>;
 
@@ -209,6 +218,10 @@ class WalletSendForm extends Component<Props, State> {
         }
       });
     }
+  }
+
+  componentDidUpdate() {
+    this.reconcileAssetDenominations();
   }
 
   componentWillUnmount() {
@@ -316,6 +329,7 @@ class WalletSendForm extends Component<Props, State> {
       isResetButtonDisabled: true,
       adaInputState: AdaInputStateType.None,
       isReceiverAddressValidOnce: false,
+      denominationChangedUniqueIds: [],
     });
   };
   clearReceiverFieldValue = () => {
@@ -348,8 +362,10 @@ class WalletSendForm extends Component<Props, State> {
     const adaAmountField = formFields.get('adaAmount');
 
     if (resetFormFields) {
+      this.assetDenominations.clear();
       this.setState({
         selectedAssetUniqueIds: [],
+        denominationChangedUniqueIds: [],
         formFields: {
           receiver: {
             receiver: receiverField,
@@ -828,6 +844,49 @@ class WalletSendForm extends Component<Props, State> {
     }
   }
 
+  /**
+   * Runs after the render that brought the new value, which is what makes the
+   * snapshot load-bearing rather than decorative: that render drew the row in
+   * the denomination the digits were typed in, and the field is cleared in the
+   * same commit, before another keystroke can reach it.
+   *
+   * Rows whose asset is no longer in the wallet are left out. `AssetInput`
+   * renders nothing for those, and a notice on an invisible row helps nobody.
+   */
+  reconcileAssetDenominations = () => {
+    const { selectedAssetUniqueIds, formFields } = this.state;
+    const assetFields = get(formFields, 'receiver.assetFields', {});
+    const rows = selectedAssetUniqueIds
+      .filter((uniqueId) => !!this.getAssetByUniqueId(uniqueId))
+      .map((uniqueId) => ({
+        uniqueId,
+        currentDecimals: this.getAssetByUniqueId(uniqueId).decimals,
+        field: assetFields[uniqueId],
+      }));
+    const { cleared, adopted } = this.assetDenominations.reconcile(rows);
+
+    if (cleared.length === 0 && adopted.length === 0) return;
+
+    this.setState((prevState) => ({
+      denominationChangedUniqueIds: [
+        ...prevState.denominationChangedUniqueIds.filter(
+          (uniqueId) => !cleared.includes(uniqueId)
+        ),
+        ...cleared,
+      ],
+    }));
+
+    if (cleared.length > 0) this.resetTransactionFee();
+  };
+
+  dismissDenominationChange = (uniqueId: string) => {
+    if (!this.state.denominationChangedUniqueIds.includes(uniqueId)) return;
+    this.setState((prevState) => ({
+      denominationChangedUniqueIds:
+        prevState.denominationChangedUniqueIds.filter((id) => id !== uniqueId),
+    }));
+  };
+
   addAssetRow = (uniqueId: string) => {
     this.addAssetFields(uniqueId);
     this.updateFormFields(false, uniqueId);
@@ -840,13 +899,19 @@ class WalletSendForm extends Component<Props, State> {
     this._isAutoFocusEnabled = true;
   };
   removeAssetRow = (uniqueId: string) => {
-    const { formFields, selectedAssetUniqueIds } = this.state;
+    const { formFields, selectedAssetUniqueIds, denominationChangedUniqueIds } =
+      this.state;
     const { receiver } = formFields;
     const assetFields = omit(receiver.assetFields, uniqueId);
     const assetsDropdown = omit(receiver.assetsDropdown, uniqueId);
+    this.assetDenominations.forget(uniqueId);
     this.setState(
       {
         selectedAssetUniqueIds: without(selectedAssetUniqueIds, uniqueId),
+        denominationChangedUniqueIds: without(
+          denominationChangedUniqueIds,
+          uniqueId
+        ),
         formFields: {
           ...formFields,
           receiver: { ...receiver, assetFields, assetsDropdown },
@@ -872,6 +937,14 @@ class WalletSendForm extends Component<Props, State> {
     );
   };
   addAssetFields = (uniqueId: string) => {
+    // Taken before the field exists, so there is no moment at which a row can be
+    // typed into without a denomination recorded for it. Both ways a row is
+    // added come through here: the picker, and changing which token a row is
+    // for.
+    this.assetDenominations.snapshot(
+      uniqueId,
+      get(this.getAssetByUniqueId(uniqueId), 'decimals', null)
+    );
     const newAsset = `asset_${uniqueId}`;
     this.form.add({
       name: newAsset,
@@ -891,7 +964,11 @@ class WalletSendForm extends Component<Props, State> {
       );
 
     this.form.$(newAsset).set('hooks', {
-      onChange: () => this.setState({ transactionFee: new BigNumber(0) }),
+      onChange: () => {
+        // A user typing a new amount has answered the notice.
+        this.dismissDenominationChange(uniqueId);
+        this.setState({ transactionFee: new BigNumber(0) });
+      },
     });
 
     this.form.$(newAsset).set('validators', [
@@ -1021,6 +1098,7 @@ class WalletSendForm extends Component<Props, State> {
       formFields,
       transactionFeeError,
       selectedAssetUniqueIds,
+      denominationChangedUniqueIds,
       isReceiverAddressValidOnce,
     } = this.state;
     const {
@@ -1205,6 +1283,10 @@ class WalletSendForm extends Component<Props, State> {
                       handleSubmitOnEnter={this.handleSubmitOnEnter}
                       clearAssetFieldValue={this.clearAssetFieldValue}
                       autoFocus={this._isAutoFocusEnabled}
+                      decimals={this.assetDenominations.decimalsFor(uniqueId)}
+                      hasDenominationChanged={denominationChangedUniqueIds.includes(
+                        uniqueId
+                      )}
                     />
                   )
                 )}

@@ -67,6 +67,11 @@ import type {
   DRepAnchorPresence,
   DRepAnchorResult,
 } from '../types/governance.types';
+import type {
+  AssetIpcCorrelated,
+  AssetMetadataEntry,
+  AssetUnresolvedSubject,
+} from '../types/asset-metadata.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -541,3 +546,59 @@ export type ConfirmChainStorageMainResponse = void;
 export const GOVERNANCE_DREP_ANCHOR_CHANNEL = 'GOVERNANCE_DREP_ANCHOR_CHANNEL';
 export type GovernanceDRepAnchorRendererRequest = DRepAnchorPresence;
 export type GovernanceDRepAnchorMainResponse = DRepAnchorResult;
+
+/**
+ * ==================== ASSET METADATA IPC CHANNELS ====================
+ * Channels for the main-process asset metadata cache.
+ *
+ * Every request carries a `requestId` and every response echoes it, because
+ * `IpcChannel` resolves on the next message to reach the channel's response
+ * name whatever request produced it (`lib/IpcChannel.ts:101-145`). A bulk read
+ * keyed on a subject list has overlapping requests as its ordinary case, and a
+ * mis-correlated response here would be wrong decimal places rather than a
+ * wrong label.
+ * =====================================================================
+ */
+
+// Renderer asks for the rows the cache holds right now. It never waits on the
+// network: a subject with no row comes back under `unresolved` and resolution
+// for it is scheduled.
+export const ASSET_METADATA_CHANNEL = 'ASSET_METADATA_CHANNEL';
+export type AssetMetadataRendererRequest = AssetIpcCorrelated<{
+  subjects: Array<string>;
+  // A read the refresh window and the retry backoff do not apply to, for a user
+  // who knows an issuer published something today. Still a read: it answers from
+  // the cache and schedules the fetch behind the answer.
+  refresh?: boolean;
+  // Where on-chain metadata pointers are read from, as the user selected it.
+  // The setting lives in the renderer, per profile, and the client that uses it
+  // lives in the main process, so it travels with every read rather than being
+  // pushed on its own channel and kept in step.
+  sourceUrl?: string | null;
+}>;
+export type AssetMetadataMainResponse = AssetIpcCorrelated<{
+  entries: Array<AssetMetadataEntry>;
+  unresolved: Array<AssetUnresolvedSubject>;
+}>;
+
+// Push: main -> renderer as rows resolve. Unsolicited, so it answers no request
+// and carries no id.
+export const ASSET_METADATA_UPDATE_CHANNEL = 'ASSET_METADATA_UPDATE_CHANNEL';
+export type AssetMetadataUpdateMainRequest = {
+  entries: Array<AssetMetadataEntry>;
+};
+export type AssetMetadataUpdateRendererResponse = void;
+
+// One subject per request, which is what keeps logos off the path of every
+// other read.
+export const ASSET_IMAGE_CHANNEL = 'ASSET_IMAGE_CHANNEL';
+export type AssetImageRendererRequest = AssetIpcCorrelated<{
+  subject: string;
+}>;
+export type AssetImageMainResponse =
+  | AssetIpcCorrelated<{ status: 'absent' }>
+  | AssetIpcCorrelated<{
+      status: 'present';
+      mediaType: string;
+      bytes: Uint8Array;
+    }>;

@@ -21,7 +21,22 @@
   }
 
   .assetItem {
-    margin-bottom: 20px;
+    margin-bottom: 4px;
+  }
+
+  .denominationNotice {
+    @include error-message;
+
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .unitLabel {
+    color: var(--theme-input-placeholder-color);
+    font-family: var(--font-regular);
+    font-size: 12px;
+    line-height: 1.33;
+    margin-bottom: 16px;
   }
 
   .removeAssetButton {

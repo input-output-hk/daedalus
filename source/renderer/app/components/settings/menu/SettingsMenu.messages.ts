@@ -16,6 +16,11 @@ export default defineMessages({
     defaultMessage: '!!!Wallets',
     description: 'Label for the "Wallets" link in the settings menu.',
   },
+  assetMetadata: {
+    id: 'settings.menu.assetMetadata.link.label',
+    defaultMessage: '!!!Tokens',
+    description: 'Label for the "Tokens" link in the settings menu.',
+  },
   stakePools: {
     id: 'settings.menu.stakePools.link.label',
     defaultMessage: '!!!Stake Pools',

@@ -159,6 +159,16 @@ export default class ProfileStore extends Store {
   isInitialScreen = false;
   @observable
   isRTSModeRecommendationAcknowledged = false;
+  /**
+   * Whether this profile has been told that decimal places published by an
+   * issuer and verified against the minting policy are now applied on their own.
+   *
+   * Starts acknowledged. The storage read that can unset it is one IPC round
+   * trip away, and a banner that flashes at every start for someone who
+   * dismissed it a year ago is worse than one that appears a moment late.
+   */
+  @observable
+  isDecimalPlacesNoticeAcknowledged = true;
 
   /* eslint-enable max-len */
   setup() {
@@ -181,6 +191,9 @@ export default class ProfileStore extends Store {
     profileActions.acknowledgeRTSModeRecommendation.listen(
       this._acknowledgeRTSFlagsModeRecommendation
     );
+    profileActions.acknowledgeDecimalPlacesNotice.listen(
+      this._acknowledgeDecimalPlacesNotice
+    );
     this.actions.app.initAppEnvironment.listen(() => {});
     this._loadListViewPreferences();
     this.registerReactions([
@@ -193,6 +206,8 @@ export default class ProfileStore extends Store {
     ]);
 
     this._getTermsOfUseAcceptance();
+
+    this._getDecimalPlacesNoticeAcknowledgement();
 
     this._getAnalyticsAcceptance();
 
@@ -461,6 +476,41 @@ export default class ProfileStore extends Store {
   @action
   _acknowledgeRTSFlagsModeRecommendation = () => {
     this.isRTSModeRecommendationAcknowledged = true;
+  };
+
+  /**
+   * One chain rather than a reaction over two requests. A reaction would have to
+   * decide what to show while one of the two was still loading, and would answer
+   * differently depending on which resolved first.
+   *
+   * A profile that has not accepted the terms of use is being created right now,
+   * so nothing about how amounts used to be entered applies to it. The flag is
+   * written rather than left unset, so the banner does not appear later once the
+   * terms have been accepted.
+   */
+  _getDecimalPlacesNoticeAcknowledgement = async () => {
+    const [acknowledged, termsAccepted] = await Promise.all([
+      this.api.localStorage.getDecimalPlacesNoticeAcknowledged(),
+      this.api.localStorage.getTermsOfUseAcceptance(),
+    ]);
+
+    if (acknowledged === true) return;
+
+    if (termsAccepted !== true) {
+      await this.api.localStorage.setDecimalPlacesNoticeAcknowledged();
+      return;
+    }
+
+    runInAction('ProfileStore::showDecimalPlacesNotice', () => {
+      this.isDecimalPlacesNoticeAcknowledged = false;
+    });
+  };
+
+  _acknowledgeDecimalPlacesNotice = async () => {
+    runInAction('ProfileStore::acknowledgeDecimalPlacesNotice', () => {
+      this.isDecimalPlacesNoticeAcknowledged = true;
+    });
+    await this.api.localStorage.setDecimalPlacesNoticeAcknowledged();
   };
   _getDataLayerMigrationAcceptance = () => {
     this.getDataLayerMigrationAcceptanceRequest.execute();

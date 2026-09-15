@@ -68,6 +68,7 @@ export type LauncherConfig = {
   isFlight: boolean;
   isStaging: boolean;
   smashUrl?: string;
+  koiosUrl?: string;
   metadataUrl?: string;
   updateRunnerBin: string;
   watchdogBin: string;
@@ -119,6 +120,7 @@ export const {
   logsPrefix,
   isFlight,
   smashUrl,
+  koiosUrl,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
@@ -163,9 +165,6 @@ export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk sp
 
 export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks pace
 
-// Used if token metadata server URL is not defined in launcher config
-export const FALLBACK_TOKEN_METADATA_SERVER_URL =
-  'https://metadata.world.dev.cardano.org';
 export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
 
 // Used by mock-token-metadata-server

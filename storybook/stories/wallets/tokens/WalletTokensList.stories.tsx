@@ -162,7 +162,6 @@ storiesOf('Wallets / Tokens', module)
           assets={boolean('Has Tokens', true) ? assets : []}
           assetSettingsDialogWasOpened
           currentLocale="en-US"
-          isLoadingAssets={boolean('isLoadingAssets', false)}
           onAssetSettings={action('onAssetSettings')}
           onCopyAssetParam={action('onCopyAssetParam')}
           onOpenAssetSend={action('onOpenAssetSend')}

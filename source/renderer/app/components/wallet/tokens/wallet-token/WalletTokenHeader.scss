@@ -48,6 +48,18 @@
     }
   }
 
+  /**
+   * A registry logo has no guaranteed dimensions, so the row fixes the box and
+   * the image is fitted inside it rather than allowed to set the row height.
+   */
+  .logo {
+    flex-shrink: 0;
+    height: 22px;
+    margin-left: 10px;
+    object-fit: contain;
+    width: 22px;
+  }
+
   .asset {
     margin-left: 10px;
     margin-right: auto;

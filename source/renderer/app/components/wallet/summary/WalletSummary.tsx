@@ -35,7 +35,6 @@ type Props = {
   onOpenAssetSend: (...args: Array<any>) => any;
   onCopyAssetParam: (...args: Array<any>) => any;
   onAssetSettings: (...args: Array<any>) => any;
-  isLoadingAssets: boolean;
   assetSettingsDialogWasOpened: boolean;
   onExternalLinkClick: (...args: Array<any>) => any;
   onViewAllButtonClick: (...args: Array<any>) => any;
@@ -69,7 +68,6 @@ class WalletSummary extends Component<Props> {
       onCopyAssetParam,
       onAssetSettings,
       assetSettingsDialogWasOpened,
-      isLoadingAssets,
       onExternalLinkClick,
       onViewAllButtonClick,
       onToggleFavorite,
@@ -105,7 +103,6 @@ class WalletSummary extends Component<Props> {
             assets={assets.slice(0, MAX_TOKENS_ON_SUMMARY_PAGE)}
             assetSettingsDialogWasOpened={assetSettingsDialogWasOpened}
             currentLocale={currentLocale}
-            isLoadingAssets={isLoadingAssets}
             onAssetSettings={onAssetSettings}
             onCopyAssetParam={onCopyAssetParam}
             onExternalLinkClick={onExternalLinkClick}

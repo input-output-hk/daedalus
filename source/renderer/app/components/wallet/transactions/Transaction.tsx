@@ -168,11 +168,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Tokens received',
     description: 'Tokens received.',
   },
-  fetchingTokenData: {
-    id: 'wallet.transaction.fetchingTokenData',
-    defaultMessage: '!!!Fetching token data',
-    description: '"Fetching token data..." message.',
-  },
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
     defaultMessage:
@@ -264,7 +259,6 @@ type Props = {
   assetTokens: Array<AssetToken>;
   hasAssetsEnabled: boolean;
   isInternalAddress: (...args: Array<any>) => any;
-  isLoadingAssets: boolean;
   onCopyAssetParam: (...args: Array<any>) => any;
 };
 type State = {
@@ -475,7 +469,6 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
-      isLoadingAssets,
       onCopyAssetParam,
     } = this.props;
     const { intl } = this.context;
@@ -663,56 +656,40 @@ export default class Transaction extends Component<Props, State> {
                         ? intl.formatMessage(messages.tokensSent)
                         : intl.formatMessage(messages.tokensReceived)}
                     </h2>
-                    {isLoadingAssets ? (
-                      <div className={styles.assetContainer}>
-                        <div
-                          className={assetsSeparatorStyles}
-                          style={{
-                            height: '12px',
-                          }}
-                        />
+                    {this.assetsList.map((asset, assetIndex) => (
+                      <div // eslint-disable-next-line react/no-array-index-key
+                        key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
+                        className={styles.assetContainer}
+                      >
+                        {assetIndex === 0 && (
+                          <div
+                            className={assetsSeparatorStyles}
+                            style={{
+                              height: `${assetsSeparatorCalculatedHeight}px`,
+                            }}
+                          />
+                        )}
                         <h3>
-                          <span className={styles.fetchingTokenData}>
-                            {intl.formatMessage(messages.fetchingTokenData)}
+                          <span>
+                            {intl.formatMessage(messages.assetLabel)}
+                            &nbsp;#{assetIndex + 1}
                           </span>
+                          <Asset
+                            asset={asset}
+                            onCopyAssetParam={onCopyAssetParam}
+                            className={styles.assetToken}
+                          />
                         </h3>
+                        {asset.quantity && (
+                          <AssetAmount
+                            amount={asset.quantity}
+                            metadata={asset.metadata}
+                            decimals={asset.decimals}
+                            className={styles.assetAmount}
+                          />
+                        )}
                       </div>
-                    ) : (
-                      this.assetsList.map((asset, assetIndex) => (
-                        <div // eslint-disable-next-line react/no-array-index-key
-                          key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
-                          className={styles.assetContainer}
-                        >
-                          {assetIndex === 0 && (
-                            <div
-                              className={assetsSeparatorStyles}
-                              style={{
-                                height: `${assetsSeparatorCalculatedHeight}px`,
-                              }}
-                            />
-                          )}
-                          <h3>
-                            <span>
-                              {intl.formatMessage(messages.assetLabel)}
-                              &nbsp;#{assetIndex + 1}
-                            </span>
-                            <Asset
-                              asset={asset}
-                              onCopyAssetParam={onCopyAssetParam}
-                              className={styles.assetToken}
-                            />
-                          </h3>
-                          {asset.quantity && (
-                            <AssetAmount
-                              amount={asset.quantity}
-                              metadata={asset.metadata}
-                              decimals={asset.decimals}
-                              className={styles.assetAmount}
-                            />
-                          )}
-                        </div>
-                      ))
-                    )}
+                    ))}
                   </>
                 )}
 

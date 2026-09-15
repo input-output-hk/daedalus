@@ -325,12 +325,24 @@ export default class LocalStorageApi {
       assetLocalData,
       `${policyId}${assetName}`
     );
+  getAssetMetadataSource = (): Promise<string> =>
+    LocalStorageApi.get(keys.ASSET_METADATA_SOURCE);
+  setAssetMetadataSource = (sourceUrl: string): Promise<void> =>
+    LocalStorageApi.set(keys.ASSET_METADATA_SOURCE, sourceUrl);
+  unsetAssetMetadataSource = (): Promise<void> =>
+    LocalStorageApi.unset(keys.ASSET_METADATA_SOURCE);
   getSmashServer = (): Promise<string> =>
     LocalStorageApi.get(keys.SMASH_SERVER);
   setSmashServer = (smashServerUrl: string): Promise<void> =>
     LocalStorageApi.set(keys.SMASH_SERVER, smashServerUrl);
   unsetSmashServer = (): Promise<void> =>
     LocalStorageApi.unset(keys.SMASH_SERVER);
+  getDecimalPlacesNoticeAcknowledged = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.DECIMAL_PLACES_NOTICE, false);
+  setDecimalPlacesNoticeAcknowledged = async (): Promise<void> =>
+    LocalStorageApi.set(keys.DECIMAL_PLACES_NOTICE, true);
+  unsetDecimalPlacesNoticeAcknowledged = (): Promise<void> =>
+    LocalStorageApi.unset(keys.DECIMAL_PLACES_NOTICE);
   getStakingInfoWasOpen = (): Promise<boolean> =>
     LocalStorageApi.get(keys.STAKING_INFO_WAS_OPEN, false);
   setStakingInfoWasOpen = async (): Promise<void> =>

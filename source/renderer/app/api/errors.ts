@@ -108,6 +108,18 @@ export const messages = defineMessages({
     defaultMessage: '!!!This URL is not a valid SMASH server',
     description: '"This URL is not a valid SMASH server" error message',
   },
+  invalidAssetMetadataSource: {
+    id: 'api.errors.invalidAssetMetadataSource',
+    defaultMessage: '!!!This URL did not answer as a metadata source',
+    description: '"This URL did not answer as a metadata source" error message',
+  },
+  staleAssetMetadataSource: {
+    id: 'api.errors.staleAssetMetadataSource',
+    defaultMessage:
+      '!!!This metadata source is too far behind your node to be used',
+    description:
+      '"This metadata source is too far behind your node to be used" error message',
+  },
   cannotLeaveWalletEmpty: {
     id: 'api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens',
     defaultMessage:

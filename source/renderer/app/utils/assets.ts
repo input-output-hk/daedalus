@@ -1,12 +1,18 @@
 import find from 'lodash/find';
 import BigNumber from 'bignumber.js';
-import { filter, escapeRegExp } from 'lodash';
+import { filter, escapeRegExp, reduce } from 'lodash';
 import Wallet from '../domains/Wallet';
-import Asset from '../domains/Asset';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
 import type { TransactionType } from '../api/transactions/types';
 import { formattedTokenDecimals } from './formatters';
+import { hexToString } from './strings';
+import {
+  ASSET_METADATA_SERVERS_LIST,
+  ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS,
+  ASSET_METADATA_SOURCE_TYPES,
+} from '../config/assetsConfig';
+import type { AssetMetadataSourceType } from '../types/assetTypes';
 
 export type SortBy = 'token' | 'fingerprint' | 'quantity';
 export type SortDirection = 'asc' | 'desc';
@@ -34,109 +40,50 @@ export const filterAssets = (
       (transactionType === TransactionTypes.EXPEND &&
         !isInternalAddress(address))
   );
-export const getZeroToken = ({
-  policyId,
-  assetName,
-  assetNameASCII,
-  uniqueId,
-}: Asset): Token => ({
-  policyId,
-  assetName,
-  assetNameASCII,
-  uniqueId,
-  quantity: new BigNumber(0),
-});
-
 /**
- * Receives an asset and a list of tokens
- * Then retrieves the token with the same uniqueId
- * @param asset - asset details
- * @param tokens - list of Tokens
- * See Asset/Token differences at the beginning of this doc
- */
-export const getToken = (asset: Asset, tokens: Tokens) => {
-  let token = tokens.find(({ uniqueId }) => uniqueId === asset.uniqueId);
-
-  if (!token) {
-    token = getZeroToken(asset);
-  }
-
-  return token;
-};
-
-/**
- * Receives a Token and an Asset
- * then merges them into an AssetToken
- * @param asset - asset details
+ * Receives a Token and combines it with the registry data for the same subject.
+ *
+ * Identity comes from the token and never from the lookup: a token the wallet
+ * holds exists whether or not anything has been cached about it, so taking
+ * `uniqueId` from the lookup would make an unresolved asset disappear from the
+ * send form, the send confirmation and the transaction list. Only `metadata`,
+ * `decimals`, `recommendedDecimals`, `recommendedDecimalsVerified`, `hasImage`,
+ * `source` and `fingerprint` come from the lookup.
+ *
+ * A token built from a transaction response carries neither `uniqueId` nor
+ * `assetNameASCII`, so both are derived here in the same shape the
+ * wallet-balance mapping gives them: the policy id followed by the asset name,
+ * and the asset name decoded with `hexToString`.
+ *
  * @param token - token details
- * See Asset/Token differences at the beginning of this doc
- */
-export const getAssetToken = (
-  {
-    policyId,
-    assetName,
-    assetNameASCII,
-    fingerprint,
-    metadata,
-    decimals,
-    recommendedDecimals,
-    uniqueId,
-  }: Asset,
-  { quantity, address }: Token
-): AssetToken => ({
-  policyId,
-  assetName,
-  assetNameASCII,
-  quantity,
-  address,
-  fingerprint,
-  metadata,
-  decimals,
-  recommendedDecimals,
-  uniqueId,
-});
-
-/**
- * Receives both the Assets and the Tokens from a wallet
- * then merges them into AssetTokens
- * @param assets - list of asset details
- * @param tokens - list of token details
- * See Asset/Token differences at the beginning of this doc
- */
-export const getAssetTokens = (
-  assets: Array<Asset>,
-  tokens: Tokens
-): Array<AssetToken> =>
-  assets
-    .map((asset) => getAssetToken(asset, getToken(asset, tokens)))
-    .filter((token) => !!token.uniqueId) // @TOKEN TODO - Remove this filter once we can list zero tokens
-    .filter((token) => !token.quantity.isZero());
-
-/**
- * Receives a Token
- * and combines with the data from the Asset
- * @param asset - asset details
  * @param getAsset - function that returns an asset
  * See Asset/Token differences at the beginning of this doc
  */
 export const getAssetTokenFromToken = (
-  asset: Token,
+  token: Token,
   getAsset: (...args: Array<any>) => any
 ): AssetToken => {
-  const { policyId, assetName, assetNameASCII, quantity, address } = asset;
-  const { fingerprint, metadata, decimals, recommendedDecimals, uniqueId } =
-    getAsset(policyId, assetName) || {};
-  return {
-    policyId,
-    assetName,
-    assetNameASCII,
-    quantity,
-    address,
+  const { policyId, assetName, assetNameASCII, uniqueId } = token;
+  const {
     fingerprint,
     metadata,
     decimals,
     recommendedDecimals,
-    uniqueId,
+    recommendedDecimalsVerified,
+    hasImage,
+    source,
+  } = getAsset(policyId, assetName) || {};
+  return {
+    ...token,
+    uniqueId: uniqueId || `${policyId}${assetName}`,
+    assetNameASCII: assetNameASCII || hexToString(assetName || ''),
+    fingerprint,
+    metadata,
+    decimals,
+    recommendedDecimals,
+    recommendedDecimalsVerified,
+    hasImage,
+    source,
   };
 };
 export const getNonZeroAssetTokens = (
@@ -145,7 +92,6 @@ export const getNonZeroAssetTokens = (
 ): Array<AssetToken> =>
   tokens
     .map((token) => getAssetTokenFromToken(token, getAsset))
-    .filter((token) => !!token.uniqueId)
     .sort(sortAssets('fingerprint', 'asc'));
 
 /**
@@ -164,6 +110,12 @@ export const sortAssets =
     } = asset1;
     const quantity1 = formattedTokenDecimals(unformattedQuantity1, decimals1);
     const { name: name1 } = metadata1 || {};
+    // A token the wallet holds is rendered whether or not anything has been
+    // cached about it, and a fingerprint arrives with the cached row, so the
+    // comparator has to order rows that do not have one yet. Rows without a
+    // fingerprint sort together, ahead of the rest, and keep the order they
+    // arrived in.
+    const sortableFingerprint1 = fingerprint1 || '';
     const {
       quantity: unformattedQuantity2,
       fingerprint: fingerprint2,
@@ -172,6 +124,7 @@ export const sortAssets =
     } = asset2;
     const quantity2 = formattedTokenDecimals(unformattedQuantity2, decimals2);
     const { name: name2 } = metadata2 || {};
+    const sortableFingerprint2 = fingerprint2 || '';
 
     if (sortBy === 'token') {
       if (name1 && !name2) return -1;
@@ -186,18 +139,18 @@ export const sortAssets =
       }
 
       if (sortDirection === 'asc') {
-        return fingerprint1.localeCompare(fingerprint2);
+        return sortableFingerprint1.localeCompare(sortableFingerprint2);
       }
 
-      return fingerprint2.localeCompare(fingerprint1);
+      return sortableFingerprint2.localeCompare(sortableFingerprint1);
     }
 
     if (sortBy === 'fingerprint') {
       if (sortDirection === 'asc') {
-        return fingerprint1.localeCompare(fingerprint2);
+        return sortableFingerprint1.localeCompare(sortableFingerprint2);
       }
 
-      return fingerprint2.localeCompare(fingerprint1);
+      return sortableFingerprint2.localeCompare(sortableFingerprint1);
     }
 
     if (sortBy === 'quantity') {
@@ -269,18 +222,22 @@ export const searchAssets = (
     const { policyId, assetName, assetNameASCII, fingerprint, metadata } =
       asset;
     const { name, ticker, description } = metadata || {};
+    // Only the fields that are text, and only where there is any. `test`
+    // coerces its argument, so an absent field would be searched as the literal
+    // "undefined" and a three-letter search for `und` would match every row the
+    // cache has not resolved. The metadata object itself was in this list and
+    // coerced to "[object Object]"; its three text properties are here in their
+    // own right, so nothing is lost by dropping it.
     const checkList = [
       policyId,
       assetName,
       assetNameASCII,
       fingerprint,
-      metadata,
       name,
       ticker,
       description,
-    ];
+    ].filter((item) => typeof item === 'string');
     const regex = new RegExp(escapeRegExp(searchValue), 'i');
-    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'string | AssetMetadata' is not a... Remove this comment to see the full error message
     return checkList.some((item) => regex.test(item));
   });
 };
@@ -298,10 +255,51 @@ export const isTokenMissingInWallet = (
 };
 export const tokenHasBalance = (token: Token, amount: BigNumber) =>
   token.quantity.isGreaterThanOrEqualTo(amount);
-export const getUniqueId = ({
-  assetName,
-  policyId,
-}: {
-  assetName: string;
-  policyId: string;
-}) => `${assetName}${policyId}`;
+
+/**
+ * The preset a stored URL belongs to, or `custom`.
+ *
+ * The same reduction as `getSmashServerIdFromUrl` at `utils/staking.ts:17-28`,
+ * and it exists for the same reason: a user who pastes the default URL should
+ * see the default selected rather than a custom entry holding the same string.
+ * It carries no suppression where that one does, because the preset list's keys
+ * and the fallback are both typed.
+ */
+export const getAssetMetadataSourceIdFromUrl = (
+  sourceUrl: string
+): AssetMetadataSourceType =>
+  reduce(
+    ASSET_METADATA_SERVERS_LIST,
+    (result: AssetMetadataSourceType, entry, id) => {
+      if (entry && entry.url === sourceUrl) {
+        return id as AssetMetadataSourceType;
+      }
+      return result;
+    },
+    ASSET_METADATA_SOURCE_TYPES.CUSTOM
+  );
+
+/**
+ * Whether a candidate source is current enough to read pointers from.
+ *
+ * One-directional. A source ahead of the local tip is fine, because a node that
+ * is still syncing is behind everything; only a source that lags the user's own
+ * node by more than the bound is refused. A null local tip is the state before
+ * the first network status arrives, and it accepts: refusing every source for
+ * the length of a first sync would make the setting unusable exactly when
+ * someone is most likely to open it.
+ *
+ * Lives here rather than in `api.ts` so the boundary can be driven without
+ * building an `AdaApi`.
+ */
+export const assetMetadataSourceTipIsFresh = (
+  sourceTipSlot: number,
+  localTipSlot: number | null | undefined
+): boolean => {
+  if (typeof localTipSlot !== 'number' || !Number.isFinite(localTipSlot)) {
+    return true;
+  }
+  return (
+    localTipSlot - sourceTipSlot <= ASSET_METADATA_SOURCE_MAX_TIP_LAG_SLOTS
+  );
+};

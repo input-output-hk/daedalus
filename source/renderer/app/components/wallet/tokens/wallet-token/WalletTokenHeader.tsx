@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import { get } from 'lodash';
@@ -7,6 +7,7 @@ import styles from './WalletTokenHeader.scss';
 import Asset from '../../../assets/Asset';
 import AssetAmount from '../../../assets/AssetAmount';
 import type { AssetToken } from '../../../../api/assets/types';
+import { requestAssetImageUrl } from '../../../../ipc/assetMetadataChannel';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/coll... Remove this comment to see the full error message
 import arrow from '../../../../assets/images/collapse-arrow-small.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../../assets/images/star... Remove this comment to see the full error message
@@ -44,8 +45,29 @@ function WalletTokenHeader(props: Props) {
     onCopyAssetParam,
     onToggleFavorite,
   } = props;
-  const { uniqueId } = asset;
+  const { uniqueId, policyId, assetName, hasImage } = asset;
   const starIcon = isFavorite ? starFilledIcon : starNotFilledIcon;
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  // The cache keys a logo on the policy id followed by the asset name, which is
+  // what `uniqueId` is for a token the wallet reports and only usually what it
+  // is for one read off a transaction. Derived here so the two cannot disagree.
+  const subject = `${policyId}${assetName}`;
+
+  // Keyed on `hasImage` as well as on the subject: a row drawn before its
+  // metadata arrives says it has no logo, and the row that replaces it a moment
+  // later is the first one with a reason to ask.
+  useEffect(() => {
+    if (!hasImage) return undefined;
+    let wanted = true;
+    requestAssetImageUrl(subject).then((url) => {
+      if (wanted) setLogoUrl(url);
+    });
+    // A list is scrolled, and an answer can outlive the row that asked for it.
+    return () => {
+      wanted = false;
+    };
+  }, [subject, hasImage]);
 
   const rootStyles = classNames(
     styles.root,
@@ -73,6 +95,10 @@ function WalletTokenHeader(props: Props) {
         >
           <SVGInline svg={starIcon} />
         </button>
+      )}
+
+      {logoUrl && (
+        <img className={styles.logo} src={logoUrl} alt="" data-testid="logo" />
       )}
 
       <Asset

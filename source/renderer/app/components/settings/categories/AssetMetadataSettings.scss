@@ -1,0 +1,50 @@
+.component {
+  margin-bottom: 20px;
+
+  .description {
+    color: var(--theme-support-settings-text-color);
+    display: block;
+    font-family: var(--font-light);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 20px;
+
+    .link {
+      font-size: 16px;
+    }
+  }
+
+  .sourceUrl {
+    margin-top: 20px;
+
+    :global {
+      .SimpleInput_errored {
+        border-color: var(--rp-input-border-color-errored);
+      }
+    }
+  }
+
+  .optionDescription {
+    color: var(--theme-support-settings-text-color);
+    display: block;
+    font-family: var(--font-light);
+    font-size: 14px;
+    line-height: 1.38;
+    margin-top: 20px;
+
+    :global {
+      .SimpleLink_root {
+        font-family: var(--font-regular);
+        word-break: break-word;
+      }
+    }
+  }
+
+  .selectionRenderer {
+    color: var(--theme-support-settings-text-color);
+    font-family: var(--rp-theme-font-regular);
+    line-height: var(--rp-input-line-height);
+    padding: 14px 20px 0;
+    position: relative;
+  }
+}

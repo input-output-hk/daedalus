@@ -87,6 +87,16 @@
         "id": "api.errors.invalidSmashServer"
       },
       {
+        "defaultMessage": "!!!This URL did not answer as a metadata source",
+        "description": "\"This URL did not answer as a metadata source\" error message",
+        "id": "api.errors.invalidAssetMetadataSource"
+      },
+      {
+        "defaultMessage": "!!!This metadata source is too far behind your node to be used",
+        "description": "\"This metadata source is too far behind your node to be used\" error message",
+        "id": "api.errors.staleAssetMetadataSource"
+      },
+      {
         "defaultMessage": "!!!Insufficient funds to support tokens. You need at least an additional {adaAmount} ADA in your wallet to process this transaction.",
         "description": "\"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet",
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens"
@@ -815,6 +825,11 @@
         "defaultMessage": "!!!You can configure the number of decimal places for this native token.",
         "description": "Asset settings pop over content",
         "id": "assets.assetToken.settings.cogPopOver"
+      },
+      {
+        "defaultMessage": "!!!(minter-chosen name: {name})",
+        "description": "Decoded \"assetName\" param, marked as chosen by the minter rather than published by an issuer.",
+        "id": "assets.assetToken.param.assetNameMinterChosen"
       }
     ],
     "path": "source/renderer/app/components/assets/AssetContent.tsx"
@@ -848,6 +863,16 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/tokens/wallet-token/WalletToken.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!This name is decoded from the asset name chosen by whoever minted this token. No issuer published it, and it does not identify the token. The fingerprint does.",
+        "description": "Tooltip on an asset name that was decoded from the asset name bytes rather than published by an issuer.",
+        "id": "assets.assetToken.minterChosenName"
+      }
+    ],
+    "path": "source/renderer/app/components/assets/Asset.tsx"
   },
   {
     "descriptors": [
@@ -895,6 +920,26 @@
         "defaultMessage": "!!!(default)",
         "description": "\"default\" for the Asset settings dialog",
         "id": "assets.settings.dialog.default"
+      },
+      {
+        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so it is offered here rather than applied.",
+        "description": "Asset settings pop over content, for a published decimal place count that exists but could not be verified and is therefore not applied.",
+        "id": "assets.warning.availableUnverified"
+      },
+      {
+        "defaultMessage": "!!!Check the token registry again",
+        "description": "Label for the control in the Asset settings dialog that asks the metadata cache to read the token registry again for this one token.",
+        "id": "assets.settings.dialog.refreshMetadata"
+      },
+      {
+        "defaultMessage": "!!!This token’s issuer publishes {recommendedDecimals, plural, one {# decimal place} other {# decimal places}}. That figure could not be checked against the token’s minting policy, so Daedalus does not apply it on its own. Choosing it here applies it.",
+        "description": "Sentence beside the decimal places field in the Asset settings dialog, shown when the issuer published a decimal place count that could not be verified against the minting policy.",
+        "id": "assets.settings.dialog.unverifiedDecimals"
+      },
+      {
+        "defaultMessage": "!!!Your setting differs from the {recommendedDecimals, plural, one {# decimal place} other {# decimal places}} this token’s issuer publishes. That figure could not be checked against the token’s minting policy.",
+        "description": "Asset settings pop over content, for a setting that differs from a published decimal place count that could not be verified.",
+        "id": "assets.warning.notUsingUnverified"
       }
     ],
     "path": "source/renderer/app/components/assets/AssetSettingsDialog.tsx"
@@ -4392,6 +4437,91 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Some tokens publish their name on the chain instead of to the Cardano token registry. Daedalus finds those records through an index and confirms each one against your own node before using it. The index you choose learns which of these tokens this wallet holds, so it is worth choosing deliberately. Names and decimal places from the {link} are fetched separately and this setting does not affect them.",
+        "description": "description for the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.description"
+      },
+      {
+        "defaultMessage": "!!!Cardano token registry",
+        "description": "label of the registry link in the description on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionLinkLabel"
+      },
+      {
+        "defaultMessage": "!!!https://tokens.cardano.org/",
+        "description": "URL of the registry link in the description on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionLinkUrl"
+      },
+      {
+        "defaultMessage": "!!!On-chain metadata index",
+        "description": "label for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.label"
+      },
+      {
+        "defaultMessage": "!!!Koios (recommended)",
+        "description": "Koios option for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.koios"
+      },
+      {
+        "defaultMessage": "!!!Custom index",
+        "description": "custom option for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.custom"
+      },
+      {
+        "defaultMessage": "!!!From my own chain data (not available yet)",
+        "description": "direct option for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.direct"
+      },
+      {
+        "defaultMessage": "!!!{link} is a public, community-run index of the Cardano chain. It is the default and needs no configuration. Daedalus sends it token identifiers and nothing else, and every record it returns is confirmed against your own node before it is stored.",
+        "description": "description of the Koios option on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionKoios"
+      },
+      {
+        "defaultMessage": "!!!Koios",
+        "description": "label of the Koios link on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionKoiosLinkLabel"
+      },
+      {
+        "defaultMessage": "!!!https://koios.rest/",
+        "description": "URL of the Koios link on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionKoiosLinkUrl"
+      },
+      {
+        "defaultMessage": "!!!An instance you run or trust, which keeps this wallet out of any public index. Daedalus checks that the address answers before saving it, and refuses one whose chain tip is far behind your own node.",
+        "description": "description of the custom option on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionCustom"
+      },
+      {
+        "defaultMessage": "!!!The same records, read from the chain data you already hold, with no third party involved. This option is not available yet.",
+        "description": "description of the direct option on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionDirect"
+      },
+      {
+        "defaultMessage": "!!!Index address",
+        "description": "label of the custom URL input on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.label"
+      },
+      {
+        "defaultMessage": "!!!Enter the address of your own instance",
+        "description": "placeholder of the custom URL input on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.placeholder"
+      },
+      {
+        "defaultMessage": "!!!Invalid address",
+        "description": "message shown for an address that does not match the accepted shape on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.invalidUrl"
+      },
+      {
+        "defaultMessage": "!!!The address should start with \"https://\"",
+        "description": "message shown for an address that is not https on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.invalidUrlPrefix"
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/AssetMetadataSettings.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Theme",
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "id": "settings.display.themeLabel"
@@ -4625,6 +4755,11 @@
         "defaultMessage": "!!!Wallets",
         "description": "Label for the \"Wallets\" link in the settings menu.",
         "id": "settings.menu.wallets.link.label"
+      },
+      {
+        "defaultMessage": "!!!Tokens",
+        "description": "Label for the \"Tokens\" link in the settings menu.",
+        "id": "settings.menu.assetMetadata.link.label"
       },
       {
         "defaultMessage": "!!!Stake Pools",
@@ -7082,6 +7217,21 @@
         "id": "wallet.send.form.button.clearLabel"
       },
       {
+        "defaultMessage": "!!!Enter a whole number of {unit} units. The decimal places for this token are unknown, so amounts are entered and shown as the ledger holds them.",
+        "description": "Label under the token amount field in the wallet send form, for a token whose decimal places could not be resolved, so the field accepts whole ledger units only.",
+        "id": "wallet.send.form.assetInput.rawUnitsLabel"
+      },
+      {
+        "defaultMessage": "!!!The decimal places published for {unit} changed while you were entering an amount, so the amount has been cleared. Enter it again in the units this field now accepts.",
+        "description": "Notice on a token row in the wallet send form, shown when the decimal places for that token changed while an amount was already entered and the amount was cleared as a result.",
+        "id": "wallet.send.form.assetInput.denominationChangedNotice"
+      },
+      {
+        "defaultMessage": "!!!Enter an amount in {unit}, to {decimals, plural, one {# decimal place} other {# decimal places}}.",
+        "description": "Label under the token amount field in the wallet send form, for a token whose decimal places are known, stating the unit and the precision the field accepts.",
+        "id": "wallet.send.form.assetInput.decimalUnitsLabel"
+      },
+      {
         "defaultMessage": "!!!This receiver address belongs to the same wallet from which you are sending funds. If you proceed with this transaction, the transferred funds will remain in this wallet, and you will incur transaction fees, as outlined in Estimated fees.",
         "description": "Label for the same wallet tooltip in the wallet send form.",
         "id": "wallet.send.form.sameWalletLabel"
@@ -7190,6 +7340,16 @@
         "defaultMessage": "!!!Tokens",
         "description": "Favorites list title label",
         "id": "wallet.tokens.list.tokens.title"
+      },
+      {
+        "defaultMessage": "!!!For tokens whose decimal places an issuer has published and proved, amounts are now entered in those units rather than in the whole units the ledger holds: one and a half of a six-decimal token is now 1.5 and not 1500000. Balances for those tokens are shown the same way. A decimal place setting you have chosen yourself still overrides both.",
+        "description": "One-time notice on the token list, shown after the update that began applying verified decimal places, explaining that the amount field for those tokens now takes issuer units.",
+        "id": "wallet.tokens.decimalPlacesNotice"
+      },
+      {
+        "defaultMessage": "!!!Got it",
+        "description": "Label for the button that dismisses the one-time notice on the token list.",
+        "id": "wallet.tokens.decimalPlacesNotice.dismiss"
       }
     ],
     "path": "source/renderer/app/components/wallet/tokens/wallet-tokens/WalletTokens.tsx"
@@ -8150,11 +8310,6 @@
         "defaultMessage": "!!!Tokens received",
         "description": "Tokens received.",
         "id": "wallet.transaction.tokensReceived"
-      },
-      {
-        "defaultMessage": "!!!Fetching token data",
-        "description": "\"Fetching token data...\" message.",
-        "id": "wallet.transaction.fetchingTokenData"
       },
       {
         "defaultMessage": "!!!This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.",

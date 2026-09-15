@@ -1,0 +1,695 @@
+/**
+ * `AssetsStore` reading the cache rather than the endpoint.
+ *
+ * The store is built directly and `initialize()` is never called, so no IPC
+ * channel is registered; the renderer client is mocked and driven by hand.
+ * Strict mode is configured here as the application configures it, so a
+ * mutation outside an action fails a case rather than passing quietly.
+ */
+import { autorun, configure } from 'mobx';
+import AssetsStore from './AssetsStore';
+import type { Api } from '../api/index';
+import type { ActionsMap } from '../actions/index';
+import { noopAnalyticsTracker } from '../analytics';
+import { assetFingerprint } from '../utils/assetFingerprint';
+import { getAssetTokenFromToken, searchAssets } from '../utils/assets';
+import { ASSET_METADATA_SERVERS_LIST } from '../config/assetsConfig';
+import type { AssetMetadataSourceCheck } from '../api/assets/types';
+
+jest.mock('../ipc/assetMetadataChannel', () => ({
+  requestAssetMetadata: jest.fn(),
+  onAssetMetadataUpdate: jest.fn(),
+}));
+
+const { requestAssetMetadata, onAssetMetadataUpdate } = jest.requireMock(
+  '../ipc/assetMetadataChannel'
+);
+
+configure({ enforceActions: 'observed' });
+
+const POLICY = 'c76ef5451f551f3c06d48c46b153cb35221b507683b2e413122661b9';
+const ASSET_NAME = '42544544';
+const SUBJECT = `${POLICY}${ASSET_NAME}`;
+const OTHER_POLICY = 'a'.repeat(56);
+const OTHER_SUBJECT = `${OTHER_POLICY}beef`;
+
+const entry = (overrides: Record<string, any> = {}) => ({
+  subject: SUBJECT,
+  policyId: POLICY,
+  assetName: ASSET_NAME,
+  ticker: 'BTED',
+  name: 'Bit-ED',
+  decimals: 6,
+  verified: true,
+  source: 'registry',
+  hasImage: false,
+  metadata: { url: 'https://bit-ed.org/' },
+  ...overrides,
+});
+
+const makeStore = (
+  storedDecimals: Record<string, any> = {},
+  options: {
+    storedSource?: string;
+    check?: AssetMetadataSourceCheck;
+    localTipSlot?: number | null;
+  } = {}
+) => {
+  const localStorage = {
+    getWalletTokenFavorites: jest.fn().mockResolvedValue({}),
+    getAssetsLocalData: jest.fn().mockResolvedValue(storedDecimals),
+    setAssetLocalData: jest.fn().mockResolvedValue(undefined),
+    toggleWalletTokenFavorite: jest.fn().mockResolvedValue(undefined),
+    getAssetMetadataSource: jest.fn().mockResolvedValue(options.storedSource),
+    setAssetMetadataSource: jest.fn().mockResolvedValue(undefined),
+  };
+  const ada = {
+    checkAssetMetadataSourceIsValid: jest
+      .fn()
+      .mockResolvedValue(options.check ?? { valid: true }),
+  };
+  const api = { ada, localStorage } as unknown as Api;
+  const actions = {} as unknown as ActionsMap;
+  const store = new AssetsStore(api, actions, noopAnalyticsTracker);
+  store.configure({
+    wallets: { active: null },
+    transactions: { all: [] },
+    networkStatus: {
+      isConnected: false,
+      localTip:
+        typeof options.localTipSlot === 'number'
+          ? { absoluteSlotNumber: options.localTipSlot }
+          : null,
+    },
+  } as any);
+  return { store, localStorage, ada };
+};
+
+const withHoldings = (store: AssetsStore, subjects: Array<string>) => {
+  (store as any).stores.wallets.active = {
+    id: 'wallet-1',
+    assets: {
+      total: subjects.map((subject) => ({
+        policyId: subject.slice(0, 56),
+        assetName: subject.slice(56),
+      })),
+    },
+  };
+};
+
+const tokenFor = (subject: string) => ({
+  policyId: subject.slice(0, 56),
+  assetName: subject.slice(56),
+  uniqueId: subject,
+  quantity: { isZero: () => false } as any,
+});
+
+describe('AssetsStore', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    requestAssetMetadata.mockResolvedValue({
+      requestId: 'r',
+      entries: [],
+      unresolved: [],
+    });
+  });
+
+  describe('getAsset', () => {
+    it('returns a cached row without asking for it again', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({ entries: [entry()] });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      expect(asset.uniqueId).toBe(SUBJECT);
+      expect(asset.metadata.ticker).toBe('BTED');
+      expect(asset.metadata.name).toBe('Bit-ED');
+      expect(asset.recommendedDecimals).toBe(6);
+      expect(asset.fingerprint).toBe(assetFingerprint(POLICY, ASSET_NAME));
+      expect(requestAssetMetadata).not.toHaveBeenCalled();
+    });
+
+    it('returns identity and a locally computed fingerprint for an unresolved subject', () => {
+      const { store } = makeStore();
+      const asset = store.getAsset(OTHER_POLICY, 'beef');
+      expect(asset.uniqueId).toBe(OTHER_SUBJECT);
+      expect(asset.policyId).toBe(OTHER_POLICY);
+      expect(asset.fingerprint).toBe(assetFingerprint(OTHER_POLICY, 'beef'));
+      expect(asset.metadata).toBeNull();
+      expect(asset.recommendedDecimals).toBeNull();
+      expect(requestAssetMetadata).not.toHaveBeenCalled();
+    });
+
+    it('returns the same row for an unresolved subject rather than a new one each time', () => {
+      const { store } = makeStore();
+      expect(store.getAsset(OTHER_POLICY, 'beef')).toBe(
+        store.getAsset(OTHER_POLICY, 'beef')
+      );
+    });
+
+    it('returns nothing when the identity cannot have a fingerprint', () => {
+      const { store } = makeStore();
+      expect(store.getAsset('too-short', 'beef')).toBeNull();
+      expect(store.getAsset('zz'.repeat(28), 'beef')).toBeNull();
+      expect(store.getAsset(OTHER_POLICY, 'ab'.repeat(33))).toBeNull();
+    });
+
+    it('prefers the registry name over nothing and keeps an empty name falsy', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [
+          entry({ ticker: null, name: null, decimals: null, metadata: null }),
+        ],
+      });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      expect(asset.metadata).toBeNull();
+      expect(asset.fingerprint).toBe(assetFingerprint(POLICY, ASSET_NAME));
+    });
+  });
+
+  describe('details', () => {
+    it('is keyed by subject', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({ entries: [entry()] });
+      expect(Object.keys(store.details)).toEqual([SUBJECT]);
+      expect(store.details[SUBJECT].metadata.ticker).toBe('BTED');
+    });
+  });
+
+  describe('the update channel', () => {
+    it('makes a resolved row visible to an observer without another request', () => {
+      const { store } = makeStore();
+      const seen: Array<any> = [];
+      const dispose = autorun(() => {
+        const asset = store.getAsset(POLICY, ASSET_NAME);
+        seen.push(asset ? asset.metadata?.ticker : undefined);
+      });
+      expect(seen).toEqual([undefined]);
+
+      (store as any)._onMetadataResolved({ entries: [entry()] });
+
+      expect(seen).toEqual([undefined, 'BTED']);
+      expect(requestAssetMetadata).not.toHaveBeenCalled();
+      dispose();
+    });
+
+    it('subscribes through the update channel during setup', () => {
+      const { store } = makeStore();
+      (store as any).actions = {
+        assets: {
+          setEditedAsset: { listen: jest.fn() },
+          onAssetSettingsSubmit: { listen: jest.fn() },
+          unsetEditedAsset: { listen: jest.fn() },
+          onOpenAssetSend: { listen: jest.fn() },
+          onCopyAssetParam: { listen: jest.fn() },
+          onAssetSettingsRefresh: { listen: jest.fn() },
+          onToggleFavorite: { listen: jest.fn() },
+          selectAssetMetadataSourceUrl: { listen: jest.fn() },
+          resetAssetMetadataSourceError: { listen: jest.fn() },
+        },
+        wallets: {
+          setActiveAsset: { listen: jest.fn() },
+          unsetActiveAsset: { listen: jest.fn() },
+        },
+      };
+      store.setup();
+      expect(onAssetMetadataUpdate).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('the subject list', () => {
+    it('merges holdings and transaction assets, deduplicated, and asks once', () => {
+      const { store } = makeStore();
+      withHoldings(store, [SUBJECT, OTHER_SUBJECT]);
+      (store as any).stores.transactions.all = [
+        { assets: [{ policyId: POLICY, assetName: ASSET_NAME }] },
+        { assets: [{ policyId: 'b'.repeat(56), assetName: '01' }] },
+      ];
+
+      (store as any)._resolveRenderedSubjects();
+
+      expect(requestAssetMetadata).toHaveBeenCalledTimes(1);
+      expect(requestAssetMetadata.mock.calls[0][0]).toEqual([
+        SUBJECT,
+        OTHER_SUBJECT,
+        `${'b'.repeat(56)}01`,
+      ]);
+    });
+
+    it('does not ask again for a subject it has already asked for', () => {
+      const { store } = makeStore();
+      withHoldings(store, [SUBJECT]);
+
+      (store as any)._resolveRenderedSubjects();
+      (store as any)._resolveRenderedSubjects();
+
+      expect(requestAssetMetadata).toHaveBeenCalledTimes(1);
+    });
+
+    it('asks for a newly held subject on its own', () => {
+      const { store } = makeStore();
+      withHoldings(store, [SUBJECT]);
+      (store as any)._resolveRenderedSubjects();
+
+      withHoldings(store, [SUBJECT, OTHER_SUBJECT]);
+      (store as any)._resolveRenderedSubjects();
+
+      expect(requestAssetMetadata).toHaveBeenCalledTimes(2);
+      expect(requestAssetMetadata.mock.calls[1][0]).toEqual([OTHER_SUBJECT]);
+    });
+
+    it('merges the entries the response carries', async () => {
+      const { store } = makeStore();
+      requestAssetMetadata.mockResolvedValue({
+        requestId: 'r',
+        entries: [entry()],
+        unresolved: [{ subject: OTHER_SUBJECT, state: 'pending' }],
+      });
+      withHoldings(store, [SUBJECT, OTHER_SUBJECT]);
+
+      await (store as any)._requestMetadata([SUBJECT, OTHER_SUBJECT]);
+
+      expect(store.getAsset(POLICY, ASSET_NAME).metadata.ticker).toBe('BTED');
+      expect(store.getAsset(OTHER_POLICY, 'beef').metadata).toBeNull();
+    });
+  });
+
+  describe('the per-token decimal setting', () => {
+    it('is read from browser storage at startup', async () => {
+      const { store } = makeStore({ [SUBJECT]: { decimals: 4 } });
+      await (store as any)._setUpLocalDecimals();
+      expect(store.getAsset(POLICY, ASSET_NAME).decimals).toBe(4);
+    });
+
+    it('is written to browser storage and read back through the store', async () => {
+      const { store, localStorage } = makeStore();
+      (store as any)._onMetadataResolved({ entries: [entry()] });
+
+      await (store as any)._onAssetSettingsSubmit({
+        asset: { policyId: POLICY, assetName: ASSET_NAME },
+        decimals: 2,
+      });
+
+      expect(localStorage.setAssetLocalData).toHaveBeenCalledWith(
+        POLICY,
+        ASSET_NAME,
+        { decimals: 2 }
+      );
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      expect(asset.decimals).toBe(2);
+      // The registry's value is still reported separately, which is what the
+      // disagreement warning compares against.
+      expect(asset.recommendedDecimals).toBe(6);
+    });
+
+    it('applies to a subject the cache has no row for', async () => {
+      const { store } = makeStore();
+      await (store as any)._onAssetSettingsSubmit({
+        asset: { policyId: OTHER_POLICY, assetName: 'beef' },
+        decimals: 3,
+      });
+      const asset = store.getAsset(OTHER_POLICY, 'beef');
+      expect(asset.decimals).toBe(3);
+      expect(asset.fingerprint).toBe(assetFingerprint(OTHER_POLICY, 'beef'));
+    });
+  });
+
+  describe('the decimal places a surface formats with', () => {
+    it('applies a verified registry value with no user setting', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: true })],
+      });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      expect(asset.decimals).toBe(6);
+      expect(asset.recommendedDecimals).toBe(6);
+      expect(asset.recommendedDecimalsVerified).toBe(true);
+    });
+
+    it('never applies an unverified registry value', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: false })],
+      });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      // Raw units: the honest rendering of a denomination nobody attested.
+      expect(asset.decimals).toBeNull();
+      // Still offered to the settings dialog, which is where the user decides.
+      expect(asset.recommendedDecimals).toBe(6);
+      expect(asset.recommendedDecimalsVerified).toBe(false);
+    });
+
+    it('lets a user setting win over a verified registry value', async () => {
+      const { store } = makeStore({ [SUBJECT]: { decimals: 2 } });
+      await (store as any)._setUpLocalDecimals();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: true })],
+      });
+      const asset = store.getAsset(POLICY, ASSET_NAME);
+      expect(asset.decimals).toBe(2);
+      expect(asset.recommendedDecimals).toBe(6);
+    });
+
+    it('resolves to raw units when the cache has no row at all', () => {
+      const { store } = makeStore();
+      const asset = store.getAsset(OTHER_POLICY, 'beef');
+      expect(asset.decimals).toBeNull();
+      expect(asset.recommendedDecimals).toBeNull();
+      expect(asset.recommendedDecimalsVerified).toBe(false);
+    });
+
+    it('carries the verdict onto the merged row a component receives', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ decimals: 6, verified: false })],
+      });
+      const row = getAssetTokenFromToken(
+        tokenFor(SUBJECT) as any,
+        store.getAsset
+      );
+      expect(row.decimals).toBeNull();
+      expect(row.recommendedDecimals).toBe(6);
+      expect(row.recommendedDecimalsVerified).toBe(false);
+    });
+  });
+
+  describe('the logo flag', () => {
+    it('carries what the cache says onto the merged row a component receives', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ hasImage: true })],
+      });
+      const row = getAssetTokenFromToken(
+        tokenFor(SUBJECT) as any,
+        store.getAsset
+      );
+      expect(row.hasImage).toBe(true);
+    });
+
+    it('says a subject the cache has no row for has none', () => {
+      const { store } = makeStore();
+      expect(store.getAsset(OTHER_POLICY, 'beef').hasImage).toBe(false);
+    });
+
+    it('says a resolved subject without an image has none', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ hasImage: false })],
+      });
+      expect(store.getAsset(POLICY, ASSET_NAME).hasImage).toBe(false);
+    });
+  });
+
+  describe('the settings dialog', () => {
+    it('overlays the cache onto the token it was opened on', () => {
+      const { store } = makeStore();
+      const opened = tokenFor(SUBJECT);
+      (store as any)._onEditedAssetSet({ asset: opened });
+      expect(store.editedAsset.metadata).toBeNull();
+
+      (store as any)._onMetadataResolved({ entries: [entry()] });
+
+      // The row arriving on the update channel reaches a dialog that is open,
+      // which is what makes a refresh control worth pressing.
+      expect(store.editedAsset.metadata.ticker).toBe('BTED');
+      expect(store.editedAsset.uniqueId).toBe(SUBJECT);
+      // The quantity is the token's own and is not taken from the cache, which
+      // holds no quantity for anything. Compared by value rather than by
+      // identity because the observable field deep-converts what it is given.
+      expect(store.editedAsset.quantity).toEqual(opened.quantity);
+      expect(store.editedAsset.policyId).toBe(POLICY);
+    });
+
+    it('is nothing when no asset is being edited', () => {
+      const { store } = makeStore();
+      expect(store.editedAsset).toBeNull();
+    });
+
+    it('asks about exactly one subject when a refresh is requested', async () => {
+      const { store } = makeStore();
+      await (store as any)._onAssetSettingsRefresh({
+        asset: { policyId: POLICY, assetName: ASSET_NAME },
+      });
+      expect(requestAssetMetadata).toHaveBeenCalledTimes(1);
+      expect(requestAssetMetadata).toHaveBeenCalledWith([SUBJECT], {
+        refresh: true,
+        // The pointer source travels with every read. It is null here because
+        // this store never read the stored selection.
+        sourceUrl: null,
+      });
+    });
+
+    it('merges what a refresh answers with', async () => {
+      const { store } = makeStore();
+      requestAssetMetadata.mockResolvedValue({
+        requestId: 'r',
+        entries: [entry({ ticker: 'REFRESHED' })],
+        unresolved: [],
+      });
+      await (store as any)._onAssetSettingsRefresh({
+        asset: { policyId: POLICY, assetName: ASSET_NAME },
+      });
+      expect(store.getAsset(POLICY, ASSET_NAME).metadata.ticker).toBe(
+        'REFRESHED'
+      );
+    });
+  });
+
+  describe('setup', () => {
+    const actionsFor = () => ({
+      assets: {
+        setEditedAsset: { listen: jest.fn() },
+        onAssetSettingsSubmit: { listen: jest.fn() },
+        unsetEditedAsset: { listen: jest.fn() },
+        onOpenAssetSend: { listen: jest.fn() },
+        onCopyAssetParam: { listen: jest.fn() },
+        onAssetSettingsRefresh: { listen: jest.fn() },
+        onToggleFavorite: { listen: jest.fn() },
+        selectAssetMetadataSourceUrl: { listen: jest.fn() },
+        resetAssetMetadataSourceError: { listen: jest.fn() },
+      },
+      wallets: {
+        setActiveAsset: { listen: jest.fn() },
+        unsetActiveAsset: { listen: jest.fn() },
+      },
+    });
+
+    it('schedules nothing to repeat', () => {
+      jest.useFakeTimers();
+      const repeating = jest.spyOn(global, 'setInterval');
+      const { store } = makeStore();
+      (store as any).actions = actionsFor();
+
+      store.setup();
+
+      expect(repeating).not.toHaveBeenCalled();
+      // Ten minutes of simulated time, against a poll that used to fire every
+      // sixty seconds.
+      jest.advanceTimersByTime(10 * 60 * 1000);
+      expect(requestAssetMetadata).not.toHaveBeenCalled();
+      repeating.mockRestore();
+      jest.useRealTimers();
+    });
+  });
+
+  describe('the merged row a surface renders', () => {
+    it('carries identity and a fingerprint for a subject the cache has no row for', () => {
+      const { store } = makeStore();
+      const row = getAssetTokenFromToken(
+        tokenFor(OTHER_SUBJECT) as any,
+        store.getAsset
+      );
+      expect(row.uniqueId).toBe(OTHER_SUBJECT);
+      expect(row.fingerprint).toBe(assetFingerprint(OTHER_POLICY, 'beef'));
+      expect(row.metadata).toBeNull();
+    });
+
+    it('carries the cached metadata once the row resolves', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({ entries: [entry()] });
+      const row = getAssetTokenFromToken(
+        tokenFor(SUBJECT) as any,
+        store.getAsset
+      );
+      expect(row.metadata.ticker).toBe('BTED');
+      expect(row.fingerprint).toBe(assetFingerprint(POLICY, ASSET_NAME));
+    });
+
+    it('is still searchable by a name the registry published', () => {
+      const { store } = makeStore();
+      (store as any)._onMetadataResolved({
+        entries: [entry({ name: 'Fundamental', ticker: null })],
+      });
+      const row = getAssetTokenFromToken(
+        tokenFor(SUBJECT) as any,
+        store.getAsset
+      );
+      expect(searchAssets('und', [row])).toHaveLength(1);
+    });
+  });
+});
+
+/**
+ * The metadata source setting. `setup()` is never called here, for the reason
+ * the header gives, so the startup read and the selection are driven directly,
+ * the way the metadata cases above drive `_onMetadataResolved`.
+ */
+describe('AssetsStore for a chain row', () => {
+  const chainEntry = entry({
+    ticker: null,
+    name: 'Northwind Demo',
+    decimals: null,
+    verified: false,
+    source: 'chain',
+    metadata: { name: 'Northwind Demo' },
+  });
+
+  it('carries the row source onto the asset a surface renders', () => {
+    const { store } = makeStore();
+    (store as any)._onMetadataResolved({ entries: [chainEntry] });
+    const row = getAssetTokenFromToken(
+      tokenFor(SUBJECT) as any,
+      store.getAsset
+    );
+    expect(row.source).toBe('chain');
+    expect(row.metadata.name).toBe('Northwind Demo');
+  });
+
+  // The mechanical form of the rule that no amount is formatted by a number
+  // that did not come from the registry.
+  it('formats nothing from a chain row', () => {
+    const { store } = makeStore();
+    (store as any)._onMetadataResolved({ entries: [chainEntry] });
+    const asset = store.getAsset(POLICY, ASSET_NAME);
+    expect(asset.decimals).toBeNull();
+    expect(asset.recommendedDecimals).toBeNull();
+    expect(asset.recommendedDecimalsVerified).toBe(false);
+  });
+
+  it('still applies a setting of the user own over a chain row', () => {
+    const { store } = makeStore({ [SUBJECT]: { decimals: 4 } });
+    (store as any)._onMetadataResolved({ entries: [chainEntry] });
+    return (store as any)._setUpLocalDecimals().then(() => {
+      expect(store.getAsset(POLICY, ASSET_NAME).decimals).toBe(4);
+    });
+  });
+});
+
+describe('AssetsStore metadata source', () => {
+  const CUSTOM = 'https://koios.example.com/api/v1';
+
+  it('comes up on the preset when the profile has stored nothing', async () => {
+    const { store } = makeStore();
+    await (store as any)._setUpMetadataSource();
+    expect(store.assetMetadataSourceUrl).toBe(
+      ASSET_METADATA_SERVERS_LIST.koios.url
+    );
+    expect(store.assetMetadataSourceId).toBe('koios');
+  });
+
+  it('comes up on the stored URL when the profile has one', async () => {
+    const { store } = makeStore({}, { storedSource: CUSTOM });
+    await (store as any)._setUpMetadataSource();
+    expect(store.assetMetadataSourceUrl).toBe(CUSTOM);
+    expect(store.assetMetadataSourceId).toBe('custom');
+  });
+
+  it('keeps a selection across a restart', async () => {
+    const first = makeStore();
+    await (first.store as any)._setUpMetadataSource();
+    await (first.store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(first.localStorage.setAssetMetadataSource).toHaveBeenCalledWith(
+      CUSTOM
+    );
+
+    const second = makeStore({}, { storedSource: CUSTOM });
+    await (second.store as any)._setUpMetadataSource();
+    expect(second.store.assetMetadataSourceUrl).toBe(CUSTOM);
+  });
+
+  it('probes a URL against the local tip before storing it', async () => {
+    const { store, ada } = makeStore({}, { localTipSlot: 131545218 });
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(ada.checkAssetMetadataSourceIsValid).toHaveBeenCalledWith({
+      url: CUSTOM,
+      localTipSlot: 131545218,
+    });
+  });
+
+  it('passes a null tip through while the node is still syncing', async () => {
+    const { store, ada } = makeStore({}, { localTipSlot: null });
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(ada.checkAssetMetadataSourceIsValid).toHaveBeenCalledWith({
+      url: CUSTOM,
+      localTipSlot: null,
+    });
+  });
+
+  it('renders the refusal and stores nothing when a URL does not answer', async () => {
+    const { store, localStorage } = makeStore(
+      {},
+      { check: { valid: false, reason: 'unreachable' } }
+    );
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(store.assetMetadataSourceUrl).toBe(
+      ASSET_METADATA_SERVERS_LIST.koios.url
+    );
+    expect(store.assetMetadataSourceUrlError.id).toBe(
+      'api.errors.invalidAssetMetadataSource'
+    );
+    expect(localStorage.setAssetMetadataSource).not.toHaveBeenCalled();
+  });
+
+  it('names staleness separately from unreachability', async () => {
+    const { store } = makeStore(
+      {},
+      { check: { valid: false, reason: 'stale' } }
+    );
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(store.assetMetadataSourceUrlError.id).toBe(
+      'api.errors.staleAssetMetadataSource'
+    );
+  });
+
+  it('does not probe the URL that is already selected', async () => {
+    const { store, ada } = makeStore({}, { storedSource: CUSTOM });
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(ada.checkAssetMetadataSourceIsValid).not.toHaveBeenCalled();
+  });
+
+  it('sends the selected pointer source with every read', async () => {
+    const { store } = makeStore({}, { storedSource: CUSTOM });
+    await (store as any)._setUpMetadataSource();
+    await (store as any)._requestMetadata(['abc']);
+    expect(requestAssetMetadata).toHaveBeenCalledWith(['abc'], {
+      sourceUrl: CUSTOM,
+    });
+  });
+
+  it('clears a refusal when the error is reset', async () => {
+    const { store } = makeStore(
+      {},
+      { check: { valid: false, reason: 'unreachable' } }
+    );
+    await (store as any)._onAssetMetadataSourceUrlSelected({
+      sourceUrl: CUSTOM,
+    });
+    expect(store.assetMetadataSourceUrlError).not.toBeNull();
+    (store as any)._onAssetMetadataSourceErrorReset();
+    expect(store.assetMetadataSourceUrlError).toBeNull();
+    expect(store.assetMetadataSourceLoading).toBe(false);
+  });
+});

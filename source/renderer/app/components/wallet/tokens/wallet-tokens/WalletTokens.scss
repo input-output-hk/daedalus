@@ -4,6 +4,33 @@
   .searchContainer {
     margin: 0 20px 20px;
   }
+
+  .decimalPlacesNotice {
+    background-color: var(--theme-choice-tabs-text-color-active);
+    border-radius: 4px;
+    margin: 0 20px 20px;
+    opacity: 0.08;
+    padding: 16px 20px;
+  }
+
+  .decimalPlacesNoticeText {
+    color: var(--theme-transactions-list-group-date-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.43;
+    margin-bottom: 10px;
+  }
+
+  .decimalPlacesNoticeDismiss {
+    background: none;
+    border: 0;
+    color: var(--theme-label-button-color);
+    cursor: pointer;
+    font-family: var(--font-medium);
+    font-size: 14px;
+    padding: 0;
+    text-decoration: underline;
+  }
 }
 
 .syncing {

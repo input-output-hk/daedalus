@@ -241,7 +241,6 @@ storiesOf('Wallets / Summary', module)
           },
           ...walletAssets.slice(1),
         ]}
-        isLoadingAssets={boolean('isLoadingAssets', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetParam={action('onCopyAsset')}
         onAssetSettings={action('onAssetSettings')}
