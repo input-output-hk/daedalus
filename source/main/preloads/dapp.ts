@@ -26,7 +26,12 @@ const invokeGateway = async <T>(
   let result: unknown;
   try {
     result = await ipcRenderer.invoke(DAPP_CIP30_GATEWAY_CHANNEL, request);
-  } catch {
+  } catch (error) {
+    console.error(
+      `dapp-cip30:${method} ${
+        error instanceof Error ? error.message : JSON.stringify(error)
+      }`
+    );
     // Public CIP errors are plain values by the frozen CIP-30 contract.
     // eslint-disable-next-line no-throw-literal
     throw { ...INTERNAL_ERROR };
@@ -35,11 +40,15 @@ const invokeGateway = async <T>(
   try {
     const envelope = parseDappCip30ResultEnvelope(method, result);
     if (envelope.status === 'rejected') {
+      console.error(
+        `dapp-cip30:${method} ${JSON.stringify(envelope.rejection)}`
+      );
       throw reconstructPublicRejection(envelope.rejection);
     }
     return envelope.value as T;
   } catch (error) {
     if (!(error instanceof Error)) throw error;
+    console.error(`dapp-cip30:${method} ${error.message}`);
     // Public CIP errors are plain values by the frozen CIP-30 contract.
     // eslint-disable-next-line no-throw-literal
     throw { ...INTERNAL_ERROR };

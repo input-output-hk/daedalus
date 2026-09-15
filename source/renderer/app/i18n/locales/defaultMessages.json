@@ -1077,7 +1077,7 @@
         "id": "dapp.catalog.title"
       },
       {
-        "defaultMessage": "!!!Apps have been compatibility-tested by Daedalus. This does not mean they have been security audited or endorsed.",
+        "defaultMessage": "!!!Preferred dApps have been compatibility-tested by Daedalus. This does not mean they have been security audited or endorsed.",
         "description": "Security disclaimer shown above every available catalog.",
         "id": "dapp.catalog.disclaimer"
       },
@@ -2110,6 +2110,16 @@
         "defaultMessage": "!!!Untrusted dApp",
         "description": "Local native window title for a Diagnostics dApp.",
         "id": "daedalus.diagnostics.dialog.dappBrowserWindowTitle"
+      },
+      {
+        "defaultMessage": "!!!Capture dApp console warnings and errors",
+        "description": "Opt-in checkbox label for recording untrusted dApp console diagnostics.",
+        "id": "daedalus.diagnostics.dialog.dappConsoleCapture"
+      },
+      {
+        "defaultMessage": "!!!Applies to newly opened dApps for this Daedalus session. DApps control these messages, which may contain sensitive data.",
+        "description": "Security warning shown below the opt-in dApp console capture checkbox.",
+        "id": "daedalus.diagnostics.dialog.dappConsoleCaptureWarning"
       },
       {
         "defaultMessage": "!!!epoch",
@@ -3190,6 +3200,36 @@
         "defaultMessage": "!!!Borrow, lend, and earn yield on Cardano.",
         "description": "Description of Liqwid Finance in the curated dApp catalog.",
         "id": "dapp.catalog.liqwid.description"
+      },
+      {
+        "defaultMessage": "!!!FluidTokens",
+        "description": "Name of the FluidTokens dApp in the curated catalog.",
+        "id": "dapp.catalog.fluidtokens.name"
+      },
+      {
+        "defaultMessage": "!!!Use FluidTokens on Cardano.",
+        "description": "Description of FluidTokens in the curated dApp catalog.",
+        "id": "dapp.catalog.fluidtokens.description"
+      },
+      {
+        "defaultMessage": "!!!SteelSwap",
+        "description": "Name of the SteelSwap dApp in the curated catalog.",
+        "id": "dapp.catalog.steelswap.name"
+      },
+      {
+        "defaultMessage": "!!!Swap tokens on Cardano.",
+        "description": "Description of SteelSwap in the curated dApp catalog.",
+        "id": "dapp.catalog.steelswap.description"
+      },
+      {
+        "defaultMessage": "!!!Strike Finance",
+        "description": "Name of the Strike Finance dApp in the curated catalog.",
+        "id": "dapp.catalog.strike.name"
+      },
+      {
+        "defaultMessage": "!!!Use Strike Finance on Cardano.",
+        "description": "Description of Strike Finance in the curated dApp catalog.",
+        "id": "dapp.catalog.strike.description"
       },
       {
         "defaultMessage": "!!!unfrack.it",

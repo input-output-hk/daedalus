@@ -20,7 +20,6 @@ interface Display {
 }
 interface Screen {
   getDisplayMatching(rect: Rectangle): Display;
-  workArea: Rectangle;
 }
 type SendStoreRequest = (request: StoreMessage) => unknown;
 

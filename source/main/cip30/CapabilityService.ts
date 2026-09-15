@@ -7,6 +7,7 @@ import {
 import type { HardwareConnectorActivation } from '../../common/types/hardware-wallets.types';
 import { DappLaunchPolicy } from '../dapp/DappLaunchPolicy';
 import { ExtensionRegistry, ResolvedMethod } from './ExtensionRegistry';
+import { logger } from '../utils/logging';
 import { ExtensionDescriptor } from './extensions';
 
 export type DappWalletKind = 'shelley-software' | 'ledger' | 'trezor' | 'byron';
@@ -30,9 +31,7 @@ export class CapabilityService {
     return (
       context.walletKind !== 'byron' &&
       context.backendApiVersion === 1 &&
-      context.networkSupported &&
-      (context.walletKind === 'shelley-software' ||
-        this.deviceAllows(undefined, context))
+      context.networkSupported
     );
   }
 
@@ -47,7 +46,10 @@ export class CapabilityService {
     ) {
       return false;
     }
-    return !descriptor.requiresDevice || this.deviceAllows(cip, context);
+    return (
+      !descriptor.requiresDevice ||
+      this.deviceRefusalReasons(cip, context).length === 0
+    );
   }
 
   isEnabled(cip: number, enabledExtensions: readonly number[]): boolean {
@@ -64,6 +66,19 @@ export class CapabilityService {
     if (!resolved) throw refused();
 
     const cip = resolved.extension ?? resolved.override;
+    if (resolved.descriptor.requiresDevice) {
+      const reasons = this.deviceRefusalReasons(cip, context);
+      if (reasons.length > 0) {
+        logger.warn('CIP-30 hardware capability refused', {
+          method,
+          walletKind: context.walletKind,
+          requestedCip: cip,
+          reasons,
+          device: context.device ?? null,
+        });
+        throw refused();
+      }
+    }
     if (cip !== undefined && !this.isSupported(cip, context)) throw refused();
 
     const composition = this.registry.compositionTarget(
@@ -92,37 +107,45 @@ export class CapabilityService {
     );
   }
 
-  private deviceAllows(
+  private deviceRefusalReasons(
     cip: number | undefined,
     context: CapabilityContext
-  ): boolean {
-    if (context.walletKind === 'shelley-software') return true;
+  ): string[] {
+    if (context.walletKind === 'shelley-software') return [];
+    const reasons: string[] = [];
     const { device } = context;
+    if (!device) return ['missing-device-evidence'];
+    if (device.vendor !== context.walletKind)
+      reasons.push('wallet-kind-mismatch');
+    if (!hasText(device.matrixRevision))
+      reasons.push('missing-matrix-revision');
+    else if (device.matrixRevision !== HARDWARE_CONNECTOR_MATRIX_REVISION)
+      reasons.push('matrix-revision-mismatch');
+    if (!hasText(device.rowId)) reasons.push('missing-row-id');
+    if (!hasText(device.model)) reasons.push('missing-model');
+
     let version: string | undefined;
-    let versionMatches = false;
-    if (device?.vendor === 'ledger') {
+    if (device.vendor === 'ledger') {
       version = device.appVersion;
-      versionMatches =
-        hasText(version || '') && device.firmwareVersion === undefined;
-    }
-    if (device?.vendor === 'trezor') {
+      if (!hasText(version || '')) reasons.push('missing-ledger-app-version');
+      if (device.firmwareVersion !== undefined)
+        reasons.push('unexpected-ledger-firmware-version');
+    } else {
       version = device.firmwareVersion;
-      versionMatches =
-        hasText(version || '') && device.appVersion === undefined;
+      if (!hasText(version || ''))
+        reasons.push('missing-trezor-firmware-version');
+      if (device.appVersion !== undefined)
+        reasons.push('unexpected-trezor-app-version');
     }
-    return (
-      device !== undefined &&
-      device.vendor === context.walletKind &&
-      hasText(device.matrixRevision) &&
-      hasText(device.rowId) &&
-      hasText(device.model) &&
-      device.matrixRevision === HARDWARE_CONNECTOR_MATRIX_REVISION &&
-      device.rowId ===
-        hardwareConnectorRowId(device.vendor, device.model, version || '') &&
-      versionMatches &&
-      device.physicalCertified &&
-      device.packagedEnabled &&
-      (cip === undefined || device.certifiedExtensions.includes(cip))
-    );
+    if (
+      device.rowId !==
+      hardwareConnectorRowId(device.vendor, device.model, version || '')
+    )
+      reasons.push('row-id-mismatch');
+    if (!device.physicalCertified) reasons.push('unsupported-hardware-version');
+    if (!device.packagedEnabled) reasons.push('packaged-policy-disabled');
+    if (cip !== undefined && !device.certifiedExtensions.includes(cip))
+      reasons.push('extension-not-certified');
+    return reasons;
   }
 }

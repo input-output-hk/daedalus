@@ -73,6 +73,7 @@ const capabilityContext = {
     diagnosticsEnabled: true,
     cip104Revision: 0,
     cip142Revision: 0,
+    hardwareConnectorEnabled: true,
   }),
 };
 
@@ -172,7 +173,7 @@ describe('CIP-30 Dispatcher', () => {
       dispatcher.dispatch(
         parseDappCip30GatewayRequest({
           method: 'api.getCollateral',
-          args: [{ amount: '01' }],
+          args: [],
         }),
         authority,
         capabilityContext,
@@ -315,6 +316,7 @@ describe('CIP-30 Dispatcher', () => {
         diagnosticsEnabled: true,
         cip104Revision: 0,
         cip142Revision: 1,
+        hardwareConnectorEnabled: true,
       }),
     };
     const enabled = create([142]);

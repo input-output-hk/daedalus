@@ -75,6 +75,7 @@ import {
 import { consentCoordinator } from '../ipc/walletApproval';
 import { executeCip30WalletRequest } from '../ipc/cip30Wallet';
 import { DappTransactionContextServiceError } from '../cardano/DappTransactionContextService';
+import { logger } from '../utils/logging';
 import { CapabilityContext, CapabilityService } from './CapabilityService';
 import { ConsentCoordinator } from './ConsentCoordinator';
 import { Dispatcher, Cip30DispatchRejection } from './Dispatcher';
@@ -99,7 +100,7 @@ import {
 import { setCip30SessionRevoker } from './runtime';
 
 export const CARDANO_WALLET_SOURCE_REVISION =
-  'bc9b5b9c62cbf526a4806857f7692c3c9d2d2f5e';
+  '245c877a80d76138bee87f393fd2d36a75fdad47';
 
 const IMPLEMENTED_METHODS = new Set<DappCip30Method>([
   'api.getExtensions',
@@ -266,6 +267,9 @@ export class Cip30Broker {
   revoke(): void {
     this.options.sessions.revokeAll();
   }
+  revokeGuest(guestWebContentsId: number): void {
+    this.options.sessions.revokeGuest(guestWebContentsId);
+  }
 
   private binding(event: IpcMainInvokeEvent): Cip30BrokerBinding | null {
     const guest = this.options.authenticate(event);
@@ -360,9 +364,7 @@ export class Cip30Broker {
           ? {
               device: Object.freeze({
                 ...evidence.hardware,
-                packagedEnabled: dappLaunchPolicy.hardwareConnectorEnabled(
-                  evidence.hardware.rowId
-                ),
+                packagedEnabled: dappLaunchPolicy.hardwareConnectorEnabled(),
               }),
             }
           : {}),
@@ -1419,6 +1421,16 @@ export class Cip30Broker {
       } else {
         rejection = internal();
       }
+      logger.warn('CIP-30 request rejected', {
+        method: request?.method || 'invalid',
+        dappId:
+          binding.guest.launch.kind === 'catalog'
+            ? binding.guest.launch.catalogEntryId
+            : 'diagnostics',
+        rejectionType: rejection.type,
+        rejectionCode:
+          rejection.type === 'api-error' ? rejection.value.code : undefined,
+      });
       return request
         ? createDappCip30RejectedEnvelope(request.method, rejection)
         : { status: 'rejected', rejection };
@@ -1531,7 +1543,9 @@ export const handleCip30BrokerRequests = (): void => {
     sourceRevision: CARDANO_WALLET_SOURCE_REVISION,
     collateral: collateralService,
   });
-  setDappBrokerLifecycleRevoker(() => broker?.revoke());
+  setDappBrokerLifecycleRevoker((guestWebContentsId) =>
+    broker?.revokeGuest(guestWebContentsId)
+  );
   setCip30SessionRevoker(() => broker?.revoke());
   ipcMain.handle(DAPP_CIP30_GATEWAY_CHANNEL, broker.handle);
   registered = true;

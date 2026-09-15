@@ -64,6 +64,9 @@ const defaultProps = {
   diagnosticsAvailable: true,
   diagnosticsReady: true,
   isDappLaunching: false,
+  consoleCaptureAvailable: true,
+  consoleCaptureEnabled: false,
+  onConsoleCaptureChange: jest.fn(),
   onLaunchDapp: jest.fn(() => Promise.resolve()),
 };
 
@@ -109,5 +112,18 @@ describe('DaedalusDiagnostics', () => {
       'wallet-b',
       'Untrusted dApp'
     );
+  });
+
+  it('requires an explicit diagnostics opt-in for dApp console capture', () => {
+    const onConsoleCaptureChange = jest.fn();
+    renderComponent({ onConsoleCaptureChange });
+
+    fireEvent.click(
+      screen.getByRole('checkbox', {
+        name: 'Capture dApp console warnings and errors',
+      })
+    );
+
+    expect(onConsoleCaptureChange).toHaveBeenCalledWith(true);
   });
 });

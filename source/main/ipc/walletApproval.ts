@@ -76,9 +76,11 @@ export const consentCoordinator = new ConsentCoordinator({
 });
 
 export const handleWalletApprovalRequests = (window: BrowserWindow): void => {
-  setDappConsentLifecycleRevoker((reason) =>
+  setDappConsentLifecycleRevoker((reason, guestWebContentsId) =>
     consentCoordinator.cancel(
-      (identity) => identity.kind === 'dapp',
+      (identity) =>
+        identity.kind === 'dapp' &&
+        identity.guestWebContentsId === guestWebContentsId,
       changesAccount(reason) ? accountChange : undefined
     )
   );

@@ -83,7 +83,7 @@ jest.mock('@trezor/connect', () => ({
 }));
 jest.mock('../config', () => ({
   dappLaunchPolicy: {
-    hardwareConnectorEnabled: jest.fn((rowId) => rowId.endsWith('-signTx')),
+    hardwareConnectorEnabled: jest.fn(() => true),
   },
 }));
 
@@ -378,18 +378,6 @@ describe('HardwareWalletService', () => {
           },
         })
       ).rejects.toThrow('Hardware exact transaction is not enabled');
-      await expect(
-        request({
-          ...nativeRequest,
-          exact: {
-            ...nativeRequest.exact,
-            capability: {
-              ...native.capability,
-              rowId: `${vendor}-uncertified`,
-            },
-          },
-        })
-      ).rejects.toThrow('Hardware exact transaction is not enabled');
     }
     await expect(
       request({
@@ -408,7 +396,7 @@ describe('HardwareWalletService', () => {
     expect(trezor).toHaveBeenCalledTimes(2);
   });
 
-  it('rejects uncertified packaged message rows before device invocation', async () => {
+  it('rejects a disabled packaged connector before device invocation', async () => {
     const service = new HardwareWalletService();
     const { channels, handlers } = createChannels();
     await service.register(channels);
@@ -426,7 +414,7 @@ describe('HardwareWalletService', () => {
           appVersion: '8.0.0',
           certifiedExtensions: [95],
           physicalCertified: true,
-          packagedEnabled: true,
+          packagedEnabled: false,
         },
         message: {} as HardwareMessageRequest,
       })

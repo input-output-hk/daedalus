@@ -10,6 +10,7 @@ import type {
 const exposeInMainWorld = jest.fn();
 const executeInMainWorld = jest.fn();
 const invoke = jest.fn();
+const consoleError = jest.spyOn(console, 'error').mockImplementation();
 
 jest.mock('electron', () => ({
   contextBridge: { executeInMainWorld, exposeInMainWorld },
@@ -49,7 +50,11 @@ describe('dApp preload', () => {
     );
   });
 
-  beforeEach(() => invoke.mockReset());
+  beforeEach(() => {
+    invoke.mockReset();
+    consoleError.mockClear();
+  });
+  afterAll(() => consoleError.mockRestore());
 
   it('exposes only window.cardano.daedalus during preload evaluation', () => {
     expect(exposureCallCount).toBe(1);
@@ -227,6 +232,9 @@ describe('dApp preload', () => {
       expect(caught).toEqual(rejection.value);
       expect(caught).not.toBe(rejection.value);
       expect(caught).not.toBeInstanceOf(Error);
+      expect(consoleError).toHaveBeenCalledWith(
+        expect.stringContaining(JSON.stringify(rejection))
+      );
     }
   );
 

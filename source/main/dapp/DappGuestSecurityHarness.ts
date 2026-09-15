@@ -116,7 +116,7 @@ const testPackagedPolicy = (config: HarnessLauncherConfig): void => {
     diagnosticsEnabled: expectedEnabled,
     cip104Revision: expectedEnabled ? 1 : 0,
     cip142Revision: 0,
-    hardwareConnectorRows: [],
+    hardwareConnectorEnabled: true,
   });
   const enabled = {
     revision: DAPP_POLICY_REVISION,
@@ -125,6 +125,7 @@ const testPackagedPolicy = (config: HarnessLauncherConfig): void => {
     diagnosticsEnabled: true,
     cip104Revision: 1,
     cip142Revision: 1,
+    hardwareConnectorEnabled: true,
   } as const;
   const cases = [
     {

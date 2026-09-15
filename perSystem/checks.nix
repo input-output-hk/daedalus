@@ -99,7 +99,7 @@
           test ! -e "$root/share/applications"
           test "$(jq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
           test "$(jq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
-          jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorRows":[]}' \
+          jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorEnabled":true}' \
             "$root/config/launcher-config.yaml" >/dev/null
           test "$(jq -r .daedalusBin "$root/config/launcher-config.yaml")" = /opt/daedalus/mainnet/libexec/daedalus-frontend
           test "$(stat -c %a "$root/libexec/bundle-electron/lib/electron/chrome-sandbox")" = 755
@@ -281,7 +281,7 @@
         test ! -e "$package/libexec/update-runner"
         test "$(jq -r .applicationUpdateMode "$config")" = system-package-disabled
         test "$(jq -r 'has("updateRunnerBin")' "$config")" = false
-        jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorRows":[]}' \
+        jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorEnabled":true}' \
           "$config" >/dev/null
 
         if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update|update-runner|updateRunnerBin|\.patchelf-static' \
@@ -412,7 +412,7 @@
         test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
         test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
         test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
-        yq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorRows":[]}' \
+        yq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0,"hardwareConnectorEnabled":true}' \
           "$root/config/launcher-config.yaml" >/dev/null
         NODE_PATH=${node_modules}/node_modules node -e \
           "require('yamljs').parse(require('fs').readFileSync(process.argv[1], 'utf8'))" \
@@ -480,7 +480,7 @@
           then 1
           else 0;
         cip142Revision = 0;
-        hardwareConnectorRows = [];
+        hardwareConnectorEnabled = true;
       };
       rows =
         lib.concatMap (

@@ -20,7 +20,7 @@ const renderCatalog = (overrides: Partial<DappCatalogProps> = {}) => {
     available: true,
     ready: true,
     isOpen: false,
-    isLaunching: false,
+    launchingId: null,
     onLaunch: jest.fn(),
     onClose: jest.fn(),
     ...overrides,
@@ -77,7 +77,7 @@ describe('DappCatalog', () => {
             available
             ready
             isOpen={false}
-            isLaunching={false}
+            launchingId={null}
             onLaunch={onLaunch}
             onClose={jest.fn()}
           />
@@ -88,13 +88,18 @@ describe('DappCatalog', () => {
     expect(onLaunch).toHaveBeenCalledWith('example');
   });
 
-  it('offers close instead of launch while a session is open', () => {
+  it('keeps launch actions available and scopes launching text to one dApp', () => {
+    const secondEntry = { ...entry, id: 'second', name: 'Second dApp' };
     const onClose = jest.fn();
-    renderCatalog({ isOpen: true, onClose });
+    renderCatalog({
+      entries: [entry, secondEntry],
+      isOpen: true,
+      launchingId: 'example',
+      onClose,
+    });
 
-    expect(
-      screen.queryByRole('button', { name: 'Launch' })
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Launching…' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Launch' })).toBeDisabled();
     fireEvent.click(screen.getByRole('button', { name: 'Close dApp' }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });

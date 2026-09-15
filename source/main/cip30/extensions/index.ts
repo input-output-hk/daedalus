@@ -5,6 +5,7 @@ export type MethodDescriptor = Readonly<{
   path: DappCip30Method;
   scopes: readonly DappScope[];
   composesWith?: DappCip30Method;
+  requiresDevice?: boolean;
 }>;
 
 export type BaseDescriptor = Readonly<{
@@ -44,8 +45,8 @@ export const BASE_DESCRIPTOR: BaseDescriptor = Object.freeze({
     method('api.getUnusedAddresses', 'read'),
     method('api.getChangeAddress', 'read'),
     method('api.getRewardAddresses', 'read'),
-    method('api.signTx', 'transaction-signing'),
-    method('api.signData', 'data-signing'),
+    { ...method('api.signTx', 'transaction-signing'), requiresDevice: true },
+    { ...method('api.signData', 'data-signing'), requiresDevice: true },
     method('api.submitTx', 'transaction-submission'),
   ],
 });

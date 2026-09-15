@@ -461,6 +461,19 @@ export const messages = defineMessages({
     defaultMessage: '!!!Untrusted dApp',
     description: 'Local native window title for a Diagnostics dApp.',
   },
+  dappConsoleCapture: {
+    id: 'daedalus.diagnostics.dialog.dappConsoleCapture',
+    defaultMessage: '!!!Capture dApp console warnings and errors',
+    description:
+      'Opt-in checkbox label for recording untrusted dApp console diagnostics.',
+  },
+  dappConsoleCaptureWarning: {
+    id: 'daedalus.diagnostics.dialog.dappConsoleCaptureWarning',
+    defaultMessage:
+      '!!!Applies to newly opened dApps for this Daedalus session. DApps control these messages, which may contain sensitive data.',
+    description:
+      'Security warning shown below the opt-in dApp console capture checkbox.',
+  },
   epoch: {
     id: 'daedalus.diagnostics.dialog.epoch',
     defaultMessage: '!!!epoch',
@@ -504,6 +517,9 @@ type Props = {
   diagnosticsAvailable: boolean;
   diagnosticsReady: boolean;
   isDappLaunching: boolean;
+  consoleCaptureAvailable: boolean;
+  consoleCaptureEnabled: boolean;
+  onConsoleCaptureChange: (enabled: boolean) => void;
   onLaunchDapp: (
     url: string,
     walletId: string,
@@ -1020,6 +1036,26 @@ class DaedalusDiagnostics extends Component<Props, State> {
                     </option>
                   ))}
                 </select>
+                {this.props.consoleCaptureAvailable && (
+                  <div className={styles.dappConsoleCapture}>
+                    <label htmlFor="diagnostics-dapp-console-capture">
+                      <input
+                        id="diagnostics-dapp-console-capture"
+                        type="checkbox"
+                        checked={this.props.consoleCaptureEnabled}
+                        onChange={(event) =>
+                          this.props.onConsoleCaptureChange(
+                            event.target.checked
+                          )
+                        }
+                      />
+                      {intl.formatMessage(messages.dappConsoleCapture)}
+                    </label>
+                    <p>
+                      {intl.formatMessage(messages.dappConsoleCaptureWarning)}
+                    </p>
+                  </div>
+                )}
                 {this.state.dappLaunchFailed && (
                   <div className={styles.error} role="alert">
                     {intl.formatMessage(messages.dappBrowserLaunchFailed)}

@@ -205,10 +205,12 @@ export type DappBrowserDiagnosticsOpenRendererRequest = Readonly<{
   url: string;
   walletId: string;
   localName: string;
+  captureConsole: boolean;
 }>;
 export type DappBrowserCatalogOpenRendererRequest = Readonly<{
   catalogId: string;
   localName: string;
+  captureConsole: boolean;
 }>;
 export type DappBrowserOpenRendererRequest =
   | DappBrowserDiagnosticsOpenRendererRequest
@@ -225,6 +227,7 @@ export type DappBrowserStatusMainResponse = Readonly<{
   isOpen: boolean;
   catalogAvailable: boolean;
   diagnosticsAvailable: boolean;
+  consoleCaptureAvailable: boolean;
 }>;
 
 export const DAPP_BROWSER_STATE_CHANNEL = 'DAPP_BROWSER_STATE_CHANNEL';

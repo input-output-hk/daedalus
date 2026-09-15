@@ -46,7 +46,7 @@ export interface DappCip30MethodMap {
     result: string[] | null;
   };
   'api.getCollateral': {
-    args: [params: { amount: string }];
+    args: [params?: { amount: string }];
     result: string[] | null;
   };
   'api.getBalance': { args: []; result: string };

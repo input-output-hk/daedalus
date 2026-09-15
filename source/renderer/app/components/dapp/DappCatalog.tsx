@@ -19,7 +19,7 @@ export type DappCatalogProps = {
   available: boolean;
   ready: boolean;
   isOpen: boolean;
-  isLaunching: boolean;
+  launchingId: string | null;
   onLaunch: (id: string) => void;
   onClose: () => void;
 };
@@ -33,7 +33,7 @@ export function DappCatalog({
   available,
   ready,
   isOpen,
-  isLaunching,
+  launchingId,
   onLaunch,
   onClose,
 }: Props) {
@@ -80,6 +80,12 @@ export function DappCatalog({
                     <span className={styles.liqwidIcon} />
                   ) : entry.iconAsset === 'unfrack' ? (
                     <span className={styles.unfrackIcon} />
+                  ) : entry.iconAsset === 'strike' ? (
+                    <span className={styles.strikeIcon} />
+                  ) : entry.iconAsset === 'fluidtokens' ? (
+                    <span className={styles.fluidtokensIcon} />
+                  ) : entry.iconAsset === 'steelswap' ? (
+                    <span className={styles.steelswapIcon} />
                   ) : (
                     <span className={styles.fallbackIcon}>?</span>
                   )}
@@ -88,17 +94,17 @@ export function DappCatalog({
                   <h2>{entry.name}</h2>
                   <p>{entry.description}</p>
                 </div>
-                {!isOpen && (
-                  <Button
-                    className={styles.launchButton}
-                    skin={ButtonSkin}
-                    label={intl.formatMessage(
-                      isLaunching ? messages.launching : messages.launch
-                    )}
-                    disabled={!ready || isLaunching}
-                    onClick={() => onLaunch(entry.id)}
-                  />
-                )}
+                <Button
+                  className={styles.launchButton}
+                  skin={ButtonSkin}
+                  label={intl.formatMessage(
+                    launchingId === entry.id
+                      ? messages.launching
+                      : messages.launch
+                  )}
+                  disabled={!ready || launchingId !== null}
+                  onClick={() => onLaunch(entry.id)}
+                />
               </li>
             ))}
           </ul>

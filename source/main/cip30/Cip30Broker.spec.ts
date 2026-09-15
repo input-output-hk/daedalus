@@ -22,7 +22,11 @@ import { parseConwayTransactionEnvelope } from '../../common/cardano/transaction
 import * as transactionContext from '../../common/cardano/transactionContext';
 
 import { CapabilityService } from './CapabilityService';
-import { Cip30Broker, parseConfiguredNetwork } from './Cip30Broker';
+import {
+  CARDANO_WALLET_SOURCE_REVISION,
+  Cip30Broker,
+  parseConfiguredNetwork,
+} from './Cip30Broker';
 import type { Cip30BrokerOptions } from './Cip30Broker';
 import { Dispatcher } from './Dispatcher';
 import { ExtensionRegistry } from './ExtensionRegistry';
@@ -41,18 +45,15 @@ jest.mock('../../common/cardano/transactionContext', () => ({
 jest.mock('../config', () => {
   const { DappLaunchPolicy } = jest.requireActual('../dapp/DappLaunchPolicy');
   return {
-    dappLaunchPolicy: new DappLaunchPolicy(
-      {
-        revision: 1,
-        globalEnabled: true,
-        preferredCatalogEnabled: true,
-        diagnosticsEnabled: true,
-        cip104Revision: 1,
-        cip142Revision: 0,
-        hardwareConnectorRows: ['ledger:nanoSP:8.0.0:signData'],
-      },
-      ['ledger:nanoSP:8.0.0:signData']
-    ),
+    dappLaunchPolicy: new DappLaunchPolicy({
+      revision: 1,
+      globalEnabled: true,
+      preferredCatalogEnabled: true,
+      diagnosticsEnabled: true,
+      cip104Revision: 1,
+      cip142Revision: 0,
+      hardwareConnectorEnabled: true,
+    }),
     launcherConfig: {
       cluster: 'testnet',
       nodeConfig: {
@@ -602,6 +603,48 @@ describe('Cip30Broker', () => {
       value: [{ cip: 95 }, { cip: 103 }],
     });
     expect(fixture.dispatch).toHaveBeenCalledTimes(1);
+    fixture.cleanup();
+  });
+
+  it('keeps a disconnected hardware wallet read-only until it reconnects', async () => {
+    const fixture = create();
+    fixture.setWalletKind('ledger');
+    fixture.setHardware(undefined);
+
+    await expect(
+      fixture.broker.handle(event, request('provider.enable'))
+    ).resolves.toMatchObject({ status: 'fulfilled' });
+    await expect(
+      fixture.broker.handle(event, request('api.getExtensions'))
+    ).resolves.toMatchObject({ status: 'fulfilled' });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, dataSignature.payload])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+    });
+
+    fixture.setHardware({
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'ledger:nanoSP:8.0.0:signData',
+      vendor: 'ledger',
+      model: 'nanoSP',
+      appVersion: '8.0.0',
+      certifiedExtensions: [95, 104],
+      physicalCertified: true,
+    });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, dataSignature.payload])
+      )
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: dataSignature.result,
+    });
     fixture.cleanup();
   });
 
@@ -1697,6 +1740,12 @@ describe('Cip30Broker', () => {
       networkMagic: magic,
       genesisHash: network.genesisHash,
     });
+  });
+  it('targets the cardano-wallet revision packaged by Nix', () => {
+    const lock = JSON.parse(fs.readFileSync('flake.lock', 'utf8'));
+    expect(CARDANO_WALLET_SOURCE_REVISION).toBe(
+      lock.nodes['cardano-wallet'].locked.rev
+    );
   });
 
   it('accepts Shelley genesis and rejects missing configured magic', () => {
