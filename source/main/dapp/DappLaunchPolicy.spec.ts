@@ -7,6 +7,7 @@ const enabled = {
   diagnosticsEnabled: true,
   cip104Revision: 3,
   cip142Revision: 2,
+  hardwareConnectorEnabled: true,
 };
 
 describe('DappLaunchPolicy', () => {
@@ -50,29 +51,13 @@ describe('DappLaunchPolicy', () => {
     expect(Object.isFrozen(policy.config)).toBe(true);
   });
 
-  it('activates only exact physically certified hardware rows', () => {
-    const flex = 'ledger:europa:7.3.1:signData';
+  it('gates hardware connectors with one packaged switch', () => {
     expect(
       new DappLaunchPolicy({
         ...enabled,
-        hardwareConnectorRows: [flex],
-      }).hardwareConnectorEnabled(flex)
-    ).toBe(true);
-    const row = 'ledger:nanoSP:8.0.0:signData';
-    expect(
-      new DappLaunchPolicy({
-        ...enabled,
-        hardwareConnectorRows: [row],
-      }).hardwareConnectorEnabled(row)
+        hardwareConnectorEnabled: false,
+      }).hardwareConnectorEnabled()
     ).toBe(false);
-    const policy = new DappLaunchPolicy(
-      { ...enabled, hardwareConnectorRows: [row] },
-      [row]
-    );
-    expect(policy.hardwareConnectorEnabled(row)).toBe(true);
-    expect(policy.hardwareConnectorEnabled('ledger:nanoX:8.0.0:signData')).toBe(
-      false
-    );
-    expect(Object.isFrozen(policy.config.hardwareConnectorRows)).toBe(true);
+    expect(new DappLaunchPolicy(enabled).hardwareConnectorEnabled()).toBe(true);
   });
 });

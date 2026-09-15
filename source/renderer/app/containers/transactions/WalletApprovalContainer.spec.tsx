@@ -2,6 +2,7 @@ import React from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import WalletApprovalContainer from './WalletApprovalContainer';
+import type { TransactionApprovalDialogProps } from '../../components/transactions/TransactionApprovalDialog.types';
 
 jest.mock(
   '../../components/dapp-consent/DappConsentDialog',
@@ -13,7 +14,10 @@ jest.mock(
 jest.mock(
   '../../components/transactions/TransactionApprovalDialog',
   () =>
-    function TransactionConsent({ request }: any) {
+    function TransactionConsent({
+      request,
+      onSubmit,
+    }: Pick<TransactionApprovalDialogProps, 'request' | 'onSubmit'>) {
       return (
         <div
           data-testid={
@@ -21,6 +25,8 @@ jest.mock(
               ? 'transaction-consent'
               : 'batch-consent'
           }
+          data-operation={request.operation}
+          data-can-submit={String(Boolean(onSubmit))}
         />
       );
     }
@@ -48,6 +54,7 @@ const shared = {
   phase: 'ready' as const,
   submissionAuthorized: false,
   onApprove: jest.fn(),
+  onSubmit: jest.fn(),
   onReject: jest.fn(),
 };
 
@@ -89,10 +96,12 @@ describe('WalletApprovalContainer', () => {
     rerender(
       <WalletApprovalContainer
         {...shared}
+        submissionAuthorized
         request={{
           ...identity,
           kind: 'transaction-sign',
           authorization: { kind: 'software' },
+          canSubmit: true,
           review: {
             mode: 'sign',
             transactionId: '11'.repeat(32),
@@ -131,7 +140,14 @@ describe('WalletApprovalContainer', () => {
         onReject={jest.fn()}
       />
     );
-    expect(screen.getByTestId('transaction-consent')).toBeVisible();
+    expect(screen.getByTestId('transaction-consent')).toHaveAttribute(
+      'data-operation',
+      'sign-and-submit'
+    );
+    expect(screen.getByTestId('transaction-consent')).toHaveAttribute(
+      'data-can-submit',
+      'true'
+    );
 
     rerender(
       <WalletApprovalContainer

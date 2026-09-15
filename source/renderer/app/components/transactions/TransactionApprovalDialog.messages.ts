@@ -242,7 +242,7 @@ export const messages = defineMessages({
   signingGuidance: {
     id: 'transaction.approval.signingGuidance',
     defaultMessage:
-      '!!!Signing authorizes this transaction; the dApp may submit it.',
+      '!!!Sign transaction returns the signature to the dApp. Sign and send also submits it through Daedalus.',
   },
   submissionGuidance: {
     id: 'transaction.approval.submissionGuidance',

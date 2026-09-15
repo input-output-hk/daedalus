@@ -83,6 +83,14 @@
       "type": "array",
       "items": { "$ref": "#/definitions/extension" }
     },
+    "enableResult": {
+      "type": "object",
+      "required": ["extensions"],
+      "additionalProperties": false,
+      "properties": {
+        "extensions": { "$ref": "#/definitions/extensions" }
+      }
+    },
     "enableOptions": {
       "type": "object",
       "additionalProperties": false,

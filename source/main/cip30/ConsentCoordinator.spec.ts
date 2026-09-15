@@ -35,7 +35,6 @@ const setup = (timeout = 300_000, holdNativeResult = false) => {
   const presented: WalletApprovalPresentation[] = [];
   const terminal: string[] = [];
   const terminalResults: Array<WalletApprovalResult | undefined> = [];
-  const hidden: boolean[] = [];
   const progress: unknown[] = [];
   let dismissResult = (): void => undefined;
   const terminalGate = new Promise<void>((resolve) => {
@@ -53,7 +52,6 @@ const setup = (timeout = 300_000, holdNativeResult = false) => {
       terminalResults.push(result);
       if (holdNativeResult && result) await terminalGate;
     },
-    setGuestHidden: (value) => hidden.push(value),
     inactivityTimeoutMs: timeout,
   });
   return {
@@ -62,7 +60,6 @@ const setup = (timeout = 300_000, holdNativeResult = false) => {
     terminal,
     terminalResults,
     dismissResult,
-    hidden,
     progress,
   };
 };
@@ -108,6 +105,7 @@ const nativeDeclined = {
 };
 const transactionPresentation = ({
   kind: 'transaction-sign' as const,
+  canSubmit: true,
   origin: identity.origin,
   walletName: 'Wallet',
   networkName: 'Preview',
@@ -121,7 +119,7 @@ describe('ConsentCoordinator', () => {
   afterEach(() => jest.useRealTimers());
 
   it('queues requests FIFO and executes immutable broker-owned payloads', async () => {
-    const { coordinator, presented, terminal, hidden } = setup();
+    const { coordinator, presented, terminal } = setup();
     const payload = { bytes: 'aabb', nested: ['fixed'] };
     const firstExecute = jest.fn(async (value) => value);
     const secondExecute = jest.fn(async () => 'second');
@@ -147,7 +145,6 @@ describe('ConsentCoordinator', () => {
 
     coordinator.decide(presented[1].requestId, true);
     await expect(second).resolves.toBe('second');
-    expect(hidden).toEqual([true, true, false]);
   });
 
   it('pins the presentation wallet to the trusted consent identity', async () => {
@@ -374,6 +371,28 @@ describe('ConsentCoordinator', () => {
     expect(presented).toHaveLength(2);
     coordinator.decide(presented[1].requestId, true);
     await expect(next).resolves.toBe('next');
+  });
+
+  it('passes an explicit sign-and-submit choice into execution', async () => {
+    const { coordinator, presented } = setup();
+    const execute = jest.fn(async () => 'public-witness');
+    const signed = coordinator.request({
+      identity,
+      presentation: transactionPresentation,
+      payload: {},
+      declined,
+      execute,
+    });
+
+    coordinator.decide(presented[0].requestId, true, undefined, true);
+
+    await expect(signed).resolves.toBe('public-witness');
+    expect(execute).toHaveBeenCalledWith(
+      {},
+      expect.any(AbortSignal),
+      undefined,
+      expect.objectContaining({ submissionAuthorized: true })
+    );
   });
 
   it('retains a reported uncertain submission while preserving its public return', async () => {

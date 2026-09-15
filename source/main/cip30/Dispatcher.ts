@@ -216,7 +216,7 @@ export class Dispatcher {
           return apiError(-2, 'Internal error');
         return selectCip30Collateral(
           controlledCip30Utxos(snapshot),
-          params.amount,
+          params?.amount,
           snapshot.maxCollateralInputs
         );
       }

@@ -7,6 +7,7 @@ import {
   isAllowedDiagnosticsResourceUrl,
 } from './urlPolicy';
 import { DappEgressPolicy } from './DappEgressPolicy';
+import { logger } from '../utils/logging';
 
 const DISABLED_BLINK_FEATURES = ['DirectSockets', 'WebTransport'];
 
@@ -38,6 +39,7 @@ export const installDappSessionPolicy = async (
   allowedResourceOrigins: ReadonlySet<string> | undefined,
   diagnosticsPolicy?: DappUrlPolicy
 ): Promise<DappEgressPolicy> => {
+  const blockedOrigins = new Set<string>();
   guestSession.setPermissionCheckHandler(() => false);
   guestSession.setPermissionRequestHandler((_contents, _permission, callback) =>
     callback(false)
@@ -66,13 +68,25 @@ export const installDappSessionPolicy = async (
 
   guestSession.webRequest.onBeforeRequest(
     { urls: ['<all_urls>'] },
-    (details, callback) =>
-      callback({
-        cancel: diagnosticsPolicy
-          ? !isAllowedDiagnosticsResourceUrl(details.url, diagnosticsPolicy)
-          : !allowedResourceOrigins ||
-            !isAllowedDappResourceUrl(details.url, allowedResourceOrigins),
-      })
+    (details, callback) => {
+      const blocked = diagnosticsPolicy
+        ? !isAllowedDiagnosticsResourceUrl(details.url, diagnosticsPolicy)
+        : !allowedResourceOrigins ||
+          !isAllowedDappResourceUrl(details.url, allowedResourceOrigins);
+      if (blocked) {
+        let host = 'invalid';
+        try {
+          host = new URL(details.url).host;
+        } catch {
+          // Keep malformed URLs out of logs.
+        }
+        if (!blockedOrigins.has(host)) {
+          blockedOrigins.add(host);
+          logger.warn('DApp resource origin blocked', { host });
+        }
+      }
+      callback({ cancel: blocked });
+    }
   );
   guestSession.webRequest.onHeadersReceived(
     { urls: ['<all_urls>'] },

@@ -59,10 +59,16 @@ const transactionRequest = (
         | 'batch-sign'
         | 'batch-submit';
     }
-  >
+  >,
+  submissionAuthorized: boolean
 ): TransactionApprovalRequest => {
   const signing =
     request.kind === 'transaction-sign' || request.kind === 'batch-sign';
+  let operation: TransactionApprovalRequest['operation'] = signing
+    ? 'sign'
+    : 'submit';
+  if (request.kind === 'transaction-sign' && submissionAuthorized)
+    operation = 'sign-and-submit';
   let items: readonly TransactionApprovalItem[];
   let collection: TransactionApprovalRequest['collection'];
   if (request.kind === 'batch-sign' || request.kind === 'batch-submit') {
@@ -88,7 +94,7 @@ const transactionRequest = (
     requester: { kind: 'dapp', origin: request.origin },
     walletName: request.walletName,
     networkName: request.networkName,
-    operation: signing ? 'sign' : 'submit',
+    operation,
     authorization: request.authorization,
     items,
     collection,
@@ -138,6 +144,7 @@ type Props = {
   result?: WalletApprovalResult;
   receipts?: readonly TransactionReceiptDetails[];
   onApprove: (passphrase?: string) => void;
+  onSubmit?: (passphrase?: string) => void;
   onReject: () => void;
   onCancel?: () => void;
   onDismiss?: () => void;
@@ -174,7 +181,7 @@ export default function WalletApprovalContainer(props: Props) {
   )
     return (
       <TransactionApprovalDialog
-        request={transactionRequest(props.request)}
+        request={transactionRequest(props.request, props.submissionAuthorized)}
         assetDetails={props.assetDetails}
         deciding={props.deciding}
         phase={props.phase}
@@ -186,6 +193,11 @@ export default function WalletApprovalContainer(props: Props) {
         onDismiss={props.onDismiss}
         onViewTransaction={props.onViewTransaction}
         onApprove={props.onApprove}
+        onSubmit={
+          props.request.kind === 'transaction-sign' && props.request.canSubmit
+            ? props.onSubmit
+            : undefined
+        }
         onReject={props.onReject}
         onCancel={props.onReject}
       />

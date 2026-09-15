@@ -104,6 +104,7 @@ class App extends Component<{
                     submissionAuthorized={walletApproval.submissionAuthorized}
                     cancelling={walletApproval.cancelling}
                     onApprove={walletApproval.approve}
+                    onSubmit={walletApproval.submit}
                     onReject={walletApproval.reject}
                     onCancel={walletApproval.cancel}
                     onDismiss={walletApproval.dismissResult}

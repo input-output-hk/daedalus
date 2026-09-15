@@ -22,7 +22,11 @@ import { parseConwayTransactionEnvelope } from '../../common/cardano/transaction
 import * as transactionContext from '../../common/cardano/transactionContext';
 
 import { CapabilityService } from './CapabilityService';
-import { Cip30Broker, parseConfiguredNetwork } from './Cip30Broker';
+import {
+  CARDANO_WALLET_SOURCE_REVISION,
+  Cip30Broker,
+  parseConfiguredNetwork,
+} from './Cip30Broker';
 import type { Cip30BrokerOptions } from './Cip30Broker';
 import { Dispatcher } from './Dispatcher';
 import { ExtensionRegistry } from './ExtensionRegistry';
@@ -41,18 +45,15 @@ jest.mock('../../common/cardano/transactionContext', () => ({
 jest.mock('../config', () => {
   const { DappLaunchPolicy } = jest.requireActual('../dapp/DappLaunchPolicy');
   return {
-    dappLaunchPolicy: new DappLaunchPolicy(
-      {
-        revision: 1,
-        globalEnabled: true,
-        preferredCatalogEnabled: true,
-        diagnosticsEnabled: true,
-        cip104Revision: 1,
-        cip142Revision: 0,
-        hardwareConnectorRows: ['ledger:nanoSP:8.0.0:signData'],
-      },
-      ['ledger:nanoSP:8.0.0:signData']
-    ),
+    dappLaunchPolicy: new DappLaunchPolicy({
+      revision: 1,
+      globalEnabled: true,
+      preferredCatalogEnabled: true,
+      diagnosticsEnabled: true,
+      cip104Revision: 1,
+      cip142Revision: 0,
+      hardwareConnectorEnabled: true,
+    }),
     launcherConfig: {
       cluster: 'testnet',
       nodeConfig: {
@@ -357,6 +358,7 @@ const create = () => {
     | 'in_ledger'
     | 'expired' = 'submitted';
   let submissionFailure = false;
+  let submitAfterSigning = false;
   let submissionCalls = 0;
   let failedSubmissionIndexes = new Set<number>();
   const executeWallet = jest.fn<
@@ -464,6 +466,7 @@ const create = () => {
     request: jest.fn(async (pending: ConsentRequest<unknown>) =>
       pending.execute(pending.payload, new AbortController().signal, 'secret', {
         requestId: 'approval',
+        submissionAuthorized: submitAfterSigning,
         reportProgress: jest.fn(),
         reportResult: (result) => reportedResults.push(result),
       })
@@ -521,6 +524,9 @@ const create = () => {
       value: 'tx-proof-generation' | 'deprecated-certificate' | null
     ) => {
       witnessFailure = value;
+    },
+    setSubmitAfterSigning: (value: boolean) => {
+      submitAfterSigning = value;
     },
     setSubmission: (
       id: string,
@@ -602,6 +608,51 @@ describe('Cip30Broker', () => {
       value: [{ cip: 95 }, { cip: 103 }],
     });
     expect(fixture.dispatch).toHaveBeenCalledTimes(1);
+    fixture.cleanup();
+  });
+
+  it('keeps a disconnected hardware wallet read-only until it reconnects', async () => {
+    const fixture = create();
+    fixture.setWalletKind('ledger');
+    fixture.setHardware(undefined);
+
+    await expect(
+      fixture.broker.handle(event, request('provider.enable'))
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: { extensions: [] },
+    });
+    await expect(
+      fixture.broker.handle(event, request('api.getExtensions'))
+    ).resolves.toMatchObject({ status: 'fulfilled' });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, dataSignature.payload])
+      )
+    ).resolves.toEqual({
+      status: 'rejected',
+      rejection: { type: 'api-error', value: { code: -3, info: 'Refused' } },
+    });
+
+    fixture.setHardware({
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'ledger:nanoSP:8.0.0:signData',
+      vendor: 'ledger',
+      model: 'nanoSP',
+      appVersion: '8.0.0',
+      certifiedExtensions: [95, 104],
+      physicalCertified: true,
+    });
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signData', [dataSignature.address, dataSignature.payload])
+      )
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: dataSignature.result,
+    });
     fixture.cleanup();
   });
 
@@ -1179,6 +1230,7 @@ describe('Cip30Broker', () => {
     expect(pending.presentation).toMatchObject({
       kind: 'transaction-sign',
       scopes: ['transaction-signing'],
+      canSubmit: false,
       review: {
         transactionId: transactionSignature.bodyHash,
         fullCbor: transactionSignature.cbor,
@@ -1281,6 +1333,74 @@ describe('Cip30Broker', () => {
       },
     });
     expect(fixture.executeWallet).not.toHaveBeenCalled();
+    fixture.cleanup();
+  });
+
+  it('submits the verified signed envelope only after the Daedalus choice', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor, false])
+      )
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: transactionSignature.witnessSet,
+    });
+    expect(
+      fixture.executeWallet.mock.calls.some(
+        ([walletRequest]) => walletRequest.operation === 'submit-transaction'
+      )
+    ).toBe(false);
+    expect(
+      (fixture.consent.request as jest.Mock).mock.calls[0][0].presentation
+    ).toMatchObject({ kind: 'transaction-sign', canSubmit: true });
+
+    fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
+    fixture.setSubmitAfterSigning(true);
+
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.signTx', [transactionSignature.cbor, false])
+      )
+    ).resolves.toEqual({
+      status: 'fulfilled',
+      value: transactionSignature.witnessSet,
+    });
+
+    const pending = (fixture.consent.request as jest.Mock).mock.calls[0][0];
+    expect(pending.presentation).toMatchObject({
+      kind: 'transaction-sign',
+      canSubmit: true,
+    });
+    const submissions = fixture.executeWallet.mock.calls
+      .map(([walletRequest]) => walletRequest)
+      .filter(
+        (
+          walletRequest
+        ): walletRequest is Extract<
+          Cip30WalletRequest,
+          { operation: 'submit-transaction' }
+        > => walletRequest.operation === 'submit-transaction'
+      );
+    expect(submissions).toHaveLength(1);
+    expect(submissions[0].transaction).not.toBe(transactionSignature.cbor);
+    expect(
+      parseConwayTransactionEnvelope(
+        Buffer.from(submissions[0].transaction, 'hex')
+      ).transactionId
+    ).toBe(transactionSignature.bodyHash);
+    expect(fixture.reportedResults).toEqual([
+      {
+        status: 'submitted',
+        transactionIds: [transactionSignature.bodyHash],
+      },
+    ]);
     fixture.cleanup();
   });
 
@@ -1697,6 +1817,12 @@ describe('Cip30Broker', () => {
       networkMagic: magic,
       genesisHash: network.genesisHash,
     });
+  });
+  it('targets the cardano-wallet revision packaged by Nix', () => {
+    const lock = JSON.parse(fs.readFileSync('flake.lock', 'utf8'));
+    expect(CARDANO_WALLET_SOURCE_REVISION).toBe(
+      lock.nodes['cardano-wallet'].locked.rev
+    );
   });
 
   it('accepts Shelley genesis and rejects missing configured magic', () => {

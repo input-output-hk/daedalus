@@ -2,6 +2,7 @@ import {
   DAPP_POLICY_REVISION,
   DappLaunchPolicy,
 } from '../dapp/DappLaunchPolicy';
+import { logger } from '../utils/logging';
 import { CapabilityContext, CapabilityService } from './CapabilityService';
 import { ExtensionRegistry } from './ExtensionRegistry';
 import { Negotiator } from './Negotiator';
@@ -11,6 +12,10 @@ import {
   ExtensionDescriptor,
 } from './extensions';
 
+jest.mock('../utils/logging', () => ({
+  logger: { warn: jest.fn() },
+}));
+
 const policy = (cip104Revision = 0, cip142Revision = 0) =>
   new DappLaunchPolicy({
     revision: DAPP_POLICY_REVISION,
@@ -19,6 +24,7 @@ const policy = (cip104Revision = 0, cip142Revision = 0) =>
     diagnosticsEnabled: true,
     cip104Revision,
     cip142Revision,
+    hardwareConnectorEnabled: true,
   });
 
 const context = (
@@ -50,6 +56,8 @@ const thrownBy = (call: () => unknown): unknown => {
 };
 
 describe('CIP-30 extension engine', () => {
+  beforeEach(() => jest.clearAllMocks());
+
   it('rejects invalid descriptors at startup', () => {
     expect(
       () =>
@@ -145,6 +153,58 @@ describe('CIP-30 extension engine', () => {
     expect(
       registry.compositionTarget('api.cip103.signTxs', enabled)?.override
     ).toBe(95);
+  });
+
+  it('allows disconnected hardware reads while requiring a device to sign', () => {
+    const capabilities = new CapabilityService(new ExtensionRegistry());
+    const disconnected = context({
+      walletKind: 'ledger',
+      device: undefined,
+    });
+
+    expect(capabilities.isBaseSupported(disconnected)).toBe(true);
+    expect(
+      capabilities.requireInvocation('api.getUtxos', [], disconnected)
+        .descriptor.path
+    ).toBe('api.getUtxos');
+    expect(
+      thrownBy(() =>
+        capabilities.requireInvocation('api.signTx', [], disconnected)
+      )
+    ).toEqual({ code: -3, info: 'Refused' });
+  });
+
+  it('logs exact hardware evidence and failed signing gates', () => {
+    const capabilities = new CapabilityService(new ExtensionRegistry());
+    const unsupported = context({
+      walletKind: 'ledger',
+      device: {
+        matrixRevision: 'task-006-matrix-2026-08-14',
+        rowId: 'ledger:europa:2.2.0:signData',
+        vendor: 'ledger',
+        model: 'europa',
+        appVersion: '2.2.0',
+        certifiedExtensions: [],
+        physicalCertified: false,
+        packagedEnabled: true,
+      },
+    });
+
+    expect(
+      thrownBy(() =>
+        capabilities.requireInvocation('api.signTx', [], unsupported)
+      )
+    ).toEqual({ code: -3, info: 'Refused' });
+    expect(logger.warn).toHaveBeenCalledWith(
+      'CIP-30 hardware capability refused',
+      {
+        method: 'api.signTx',
+        walletKind: 'ledger',
+        requestedCip: undefined,
+        reasons: ['unsupported-hardware-version'],
+        device: unsupported.device,
+      }
+    );
   });
 
   it('rechecks Proposed policy and exact hardware evidence at invocation', () => {

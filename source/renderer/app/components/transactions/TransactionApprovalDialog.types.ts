@@ -68,6 +68,7 @@ export type TransactionApprovalDialogProps = Readonly<{
   result?: WalletApprovalResult;
   receipts?: readonly TransactionReceiptDetails[];
   onApprove: (passphrase?: string) => void;
+  onSubmit?: (passphrase?: string) => void;
   onReject: () => void;
   onCancel: () => void;
   onDismiss?: () => void;

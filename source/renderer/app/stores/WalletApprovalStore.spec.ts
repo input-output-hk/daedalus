@@ -204,6 +204,7 @@ describe('WalletApprovalStore', () => {
     const signRequest: DappConsentPresentation = {
       ...request,
       kind: 'transaction-sign',
+      canSubmit: true,
       authorization: { kind: 'software' },
       review: transactionReview,
     };
@@ -257,6 +258,84 @@ describe('WalletApprovalStore', () => {
       approved: true,
     });
   });
+  it('marks only the explicit sign-and-send decision for submission', async () => {
+    const store = createStore();
+    const decision = store.receive({
+      type: 'present',
+      request: {
+        ...request,
+        kind: 'transaction-sign',
+        canSubmit: true,
+        authorization: { kind: 'software' },
+        review: transactionReview,
+      },
+    });
+
+    store.submit('secret');
+
+    await expect(decision).resolves.toEqual({
+      requestId: request.requestId,
+      approved: true,
+      passphrase: 'secret',
+      submit: true,
+    });
+    await store.receive({
+      type: 'progress',
+      requestId: request.requestId,
+      phase: 'submitting',
+      itemIndex: 0,
+      submissionAuthorized: true,
+    });
+    const terminal = store.receive({
+      type: 'terminal',
+      requestId: request.requestId,
+      result: {
+        status: 'submitted',
+        transactionIds: [transactionReview.transactionId],
+      },
+    });
+    await Promise.resolve();
+    expect(store.stores.transactions.trackSubmission).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletId: request.walletId,
+        transactionId: transactionReview.transactionId,
+        state: 'pending',
+      })
+    );
+    store.dismissResult();
+    await terminal;
+  });
+  it('keeps the dApp route active after dismissing a signed result', async () => {
+    const store = createStore();
+    const pathname = store.stores.router.location.pathname;
+    const decision = store.receive({
+      type: 'present',
+      request: {
+        ...request,
+        kind: 'transaction-sign',
+        canSubmit: true,
+        authorization: { kind: 'hardware', vendor: 'ledger' },
+        review: transactionReview,
+      },
+    });
+    store.approve();
+    await decision;
+    const terminal = store.receive({
+      type: 'terminal',
+      requestId: request.requestId,
+      result: {
+        status: 'signed',
+        transactionIds: [transactionReview.transactionId],
+      },
+    });
+    await Promise.resolve();
+
+    store.dismissResult();
+
+    await terminal;
+    expect(store.current).toBeNull();
+    expect(store.stores.router.location.pathname).toBe(pathname);
+  });
   it('accepts only correlated execution progress for the active item', async () => {
     const store = createStore();
     const decision = store.receive({
@@ -264,6 +343,7 @@ describe('WalletApprovalStore', () => {
       request: {
         ...request,
         kind: 'transaction-sign',
+        canSubmit: true,
         authorization: { kind: 'hardware', vendor: 'ledger' },
         review: transactionReview,
       },

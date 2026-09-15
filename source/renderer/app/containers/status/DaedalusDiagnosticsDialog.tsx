@@ -34,6 +34,8 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
     await this.props.stores.dapp.launchDiagnostics(url, walletId, localName);
     this.props.actions.app.closeDaedalusDiagnosticsDialog.trigger();
   };
+  handleConsoleCaptureChange = (enabled: boolean): void =>
+    this.props.stores.dapp.setConsoleCaptureEnabled(enabled);
   render() {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
@@ -178,6 +180,9 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           diagnosticsAvailable={dapp.diagnosticsAvailable}
           diagnosticsReady={dapp.diagnosticsReady}
           isDappLaunching={dapp.isLaunching}
+          consoleCaptureAvailable={dapp.consoleCaptureAvailable}
+          consoleCaptureEnabled={dapp.consoleCaptureEnabled}
+          onConsoleCaptureChange={this.handleConsoleCaptureChange}
           onLaunchDapp={this.handleLaunchDapp}
         />
       </ReactModal>

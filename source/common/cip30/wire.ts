@@ -38,7 +38,10 @@ export type DataSignature = { signature: string; key: string };
 
 export interface DappCip30MethodMap {
   'provider.isEnabled': { args: []; result: boolean };
-  'provider.enable': { args: [options?: EnableOptions]; result: object };
+  'provider.enable': {
+    args: [options?: EnableOptions];
+    result: { extensions: Extension[] };
+  };
   'api.getExtensions': { args: []; result: Extension[] };
   'api.getNetworkId': { args: []; result: number };
   'api.getUtxos': {
@@ -46,7 +49,7 @@ export interface DappCip30MethodMap {
     result: string[] | null;
   };
   'api.getCollateral': {
-    args: [params: { amount: string }];
+    args: [params?: { amount: string }];
     result: string[] | null;
   };
   'api.getBalance': { args: []; result: string };
@@ -90,6 +93,7 @@ export type DappApprovalDecision = {
   requestId: string;
   approved: boolean;
   passphrase?: string;
+  submit?: true;
 };
 
 export interface Cip95Api {

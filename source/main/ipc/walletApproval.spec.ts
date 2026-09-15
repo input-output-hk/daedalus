@@ -40,7 +40,6 @@ jest.mock('./lib/trustedRendererIpcAuthority', () => ({
   onTrustedRendererInvalidated: () => () => {},
 }));
 jest.mock('./dappBrowser', () => ({
-  setDappBrowserConsentPending: jest.fn(),
   setDappConsentLifecycleRevoker: jest.fn(),
 }));
 
@@ -259,6 +258,7 @@ it('carries a signed-only dApp receipt without changing the signing result', asy
     },
     presentation: {
       kind: 'transaction-sign',
+      canSubmit: true,
       origin: 'https://example.test',
       walletName: 'Wallet',
       networkName: 'Preview',
@@ -285,7 +285,6 @@ it('carries a signed-only dApp receipt without changing the signing result', asy
     },
   });
 }, 1000);
-
 
 it('preserves authenticated input evidence when reviewing a native self-transfer', async () => {
   const { endpoint, renderer, webContents } = createRendererEndpoint();

@@ -158,9 +158,9 @@ export class Cip30WalletService {
             : 'ledger';
         }
         const hardware = wallet.isHardwareWallet
-          ? await this.stores.hardwareWallets.refreshDappConnectorCapability(
-              wallet.id
-            )
+          ? await this.stores.hardwareWallets
+              .refreshDappConnectorCapability(wallet.id)
+              .catch(() => undefined)
           : undefined;
         return Object.freeze({
           status: 'fulfilled',

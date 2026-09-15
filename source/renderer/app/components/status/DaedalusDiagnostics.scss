@@ -216,6 +216,30 @@
     margin: 0;
   }
 
+  .dappConsoleCapture {
+    font-family: var(--font-regular);
+
+    label {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      opacity: 1;
+    }
+
+    input {
+      margin: 0;
+      padding: 0;
+      width: auto;
+    }
+
+    p {
+      font-size: 12px;
+      line-height: 1.4;
+      margin: 4px 0 0 24px;
+      opacity: 0.7;
+    }
+  }
+
   .error {
     color: var(--theme-network-window-red-color);
     font-size: 12px;

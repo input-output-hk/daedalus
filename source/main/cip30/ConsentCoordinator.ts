@@ -53,6 +53,7 @@ export type ConsentRequest<T> = Readonly<{
     passphrase: string | undefined,
     context: Readonly<{
       requestId: string;
+      submissionAuthorized?: boolean;
       reportProgress: (
         phase: WalletApprovalProgressPhase,
         itemIndex?: number
@@ -75,6 +76,7 @@ type PendingConsent<T = unknown> = {
     passphrase: string | undefined,
     context: Readonly<{
       requestId: string;
+      submissionAuthorized?: boolean;
       reportProgress: (
         phase: WalletApprovalProgressPhase,
         itemIndex?: number
@@ -100,7 +102,6 @@ export type ConsentCoordinatorOptions = Readonly<{
     submissionAuthorized: boolean
   ) => Promise<void>;
   terminal: (requestId: string, result?: WalletApprovalResult) => Promise<void>;
-  setGuestHidden: (hidden: boolean) => void;
   inactivityTimeoutMs?: number;
 }>;
 
@@ -208,7 +209,12 @@ export class ConsentCoordinator {
     });
   }
 
-  decide(requestId: string, approved: boolean, passphrase?: string): void {
+  decide(
+    requestId: string,
+    approved: boolean,
+    passphrase?: string,
+    submit = false
+  ): void {
     const active = this.active;
     if (
       !active ||
@@ -221,10 +227,20 @@ export class ConsentCoordinator {
       this.finish(active, active.declined);
       return;
     }
+    if (
+      submit &&
+      (active.presentation.kind !== 'transaction-sign' ||
+        !active.presentation.canSubmit)
+    ) {
+      this.finish(active, active.declined);
+      return;
+    }
+    if (submit) active.submission = true;
 
     active.state = 'executing';
     const executionContext = Object.freeze({
       requestId: active.requestId,
+      submissionAuthorized: active.submission,
       reportProgress: (
         phase: WalletApprovalProgressPhase,
         itemIndex?: number
@@ -363,13 +379,9 @@ export class ConsentCoordinator {
   private advance(): void {
     if (this.active) return;
     const next = this.queue.shift();
-    if (!next) {
-      this.options.setGuestHidden(false);
-      return;
-    }
+    if (!next) return;
     this.active = next;
     next.state = 'presented';
-    this.options.setGuestHidden(next.identity.kind === 'dapp');
     this.startTimer(next);
     this.options.present(next.presentation).catch(() => {
       if (this.active === next && next.state === 'presented')

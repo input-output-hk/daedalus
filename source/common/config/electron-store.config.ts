@@ -19,6 +19,7 @@ export const STORAGE_KEYS: Record<string, StorageKey> = {
   // Whether the DRep directory and the stake pools screen show cards or a
   // table. Shared so the two sibling screens cannot drift apart.
   LIST_VIEW_PREFERENCES: 'LIST-VIEW-PREFERENCES',
+  DAPP_WINDOW_BOUNDS: 'DAPP-WINDOW-BOUNDS',
   HARDWARE_WALLETS: 'HARDWARE-WALLETS',
   HARDWARE_WALLET_DEVICES: 'HARDWARE-WALLET-DEVICES',
   SUBMISSION_TRANSACTIONS: 'SUBMISSION-TRANSACTIONS',

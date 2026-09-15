@@ -352,6 +352,7 @@ describe('main-owned dApp authority stores', () => {
         diagnosticsEnabled: true,
         cip104Revision: 0,
         cip142Revision: 0,
+        hardwareConnectorEnabled: true,
       }),
     };
 

@@ -346,6 +346,21 @@ describe('TransactionApprovalDialog', () => {
     );
   });
 
+  it('requires an explicit Daedalus sign-and-send click', () => {
+    const onApprove = jest.fn();
+    const onSubmit = jest.fn();
+    renderDialog({ onApprove, onSubmit });
+    const submit = screen.getByRole('button', { name: '!!!Sign and send' });
+    fireEvent.change(screen.getByLabelText('!!!Wallet spending password'), {
+      target: { value: 'secret' },
+    });
+
+    fireEvent.click(submit);
+
+    expect(onSubmit).toHaveBeenCalledWith('secret');
+    expect(onApprove).not.toHaveBeenCalled();
+  });
+
   it('requires action-specific consent before hardware authorization', () => {
     renderDialog({
       request: {

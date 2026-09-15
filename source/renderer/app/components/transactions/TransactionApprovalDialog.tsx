@@ -944,11 +944,20 @@ export function TransactionApprovalDialog(props: Props) {
         : messages.device;
   }
   const approveLabel = intl.formatMessage(approveMessage);
-  const approve = () => {
+  const submitLabel = intl.formatMessage(
+    request.authorization.kind === 'hardware'
+      ? messages.deviceAndSend
+      : messages.signAndSend
+  );
+  const decide = (action: (passphrase?: string) => void) => {
     const value = passphrase;
     setPassphrase('');
-    props.onApprove(software ? value : undefined);
+    action(software ? value : undefined);
   };
+  const approve = () => decide(props.onApprove);
+  const submit = () => props.onSubmit && decide(props.onSubmit);
+  const approvalDisabled =
+    props.deciding || !approvable || !acknowledged || (software && !passphrase);
   const reject = () => {
     setPassphrase('');
     props.onReject();
@@ -1040,15 +1049,20 @@ export function TransactionApprovalDialog(props: Props) {
                 disabled:
                   props.cancelling || (props.deciding && !props.canCancel),
               },
+              ...(props.onSubmit
+                ? [
+                    {
+                      label: approveLabel,
+                      onClick: approve,
+                      disabled: approvalDisabled,
+                    },
+                  ]
+                : []),
               {
                 className: 'confirmButton',
-                label: approveLabel,
-                onClick: approve,
-                disabled:
-                  props.deciding ||
-                  !approvable ||
-                  !acknowledged ||
-                  (software && !passphrase),
+                label: props.onSubmit ? submitLabel : approveLabel,
+                onClick: props.onSubmit ? submit : approve,
+                disabled: approvalDisabled,
                 primary: true,
               },
             ]

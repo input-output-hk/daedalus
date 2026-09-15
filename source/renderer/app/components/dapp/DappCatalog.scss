@@ -106,6 +106,30 @@
     height: 40px;
     width: 40px;
   }
+
+  // https://app.strikefinance.org/logo-dark.svg
+  .strikeIcon {
+    background: url('../../assets/images/dapp/strike.svg') center / contain
+      no-repeat;
+    height: 40px;
+    width: 40px;
+  }
+
+  // https://app.fluidtokens.com/assets/images/logo/fluidADA.png
+  .fluidtokensIcon {
+    background: url('../../assets/images/dapp/fluidtokens.png') center / contain
+      no-repeat;
+    height: 40px;
+    width: 40px;
+  }
+
+  // https://steelswap.io/steelswap_wide.png
+  .steelswapIcon {
+    background: url('../../assets/images/dapp/steelswap.png') center / contain
+      no-repeat;
+    height: 40px;
+    width: 40px;
+  }
 }
 
 .fallbackIcon {

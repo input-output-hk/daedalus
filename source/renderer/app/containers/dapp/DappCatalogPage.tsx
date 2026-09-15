@@ -17,6 +17,36 @@ export const dappCatalogMessages = defineMessages({
     defaultMessage: '!!!Borrow, lend, and earn yield on Cardano.',
     description: 'Description of Liqwid Finance in the curated dApp catalog.',
   },
+  fluidtokensName: {
+    id: 'dapp.catalog.fluidtokens.name',
+    defaultMessage: '!!!FluidTokens',
+    description: 'Name of the FluidTokens dApp in the curated catalog.',
+  },
+  fluidtokensDescription: {
+    id: 'dapp.catalog.fluidtokens.description',
+    defaultMessage: '!!!Use FluidTokens on Cardano.',
+    description: 'Description of FluidTokens in the curated dApp catalog.',
+  },
+  steelswapName: {
+    id: 'dapp.catalog.steelswap.name',
+    defaultMessage: '!!!SteelSwap',
+    description: 'Name of the SteelSwap dApp in the curated catalog.',
+  },
+  steelswapDescription: {
+    id: 'dapp.catalog.steelswap.description',
+    defaultMessage: '!!!Swap tokens on Cardano.',
+    description: 'Description of SteelSwap in the curated dApp catalog.',
+  },
+  strikeName: {
+    id: 'dapp.catalog.strike.name',
+    defaultMessage: '!!!Strike Finance',
+    description: 'Name of the Strike Finance dApp in the curated catalog.',
+  },
+  strikeDescription: {
+    id: 'dapp.catalog.strike.description',
+    defaultMessage: '!!!Use Strike Finance on Cardano.',
+    description: 'Description of Strike Finance in the curated dApp catalog.',
+  },
   unfrackName: {
     id: 'dapp.catalog.unfrack.name',
     defaultMessage: '!!!unfrack.it',
@@ -90,7 +120,7 @@ export default class DappCatalogPage extends Component<Props> {
         available={dapp.catalogAvailable}
         ready={dapp.ready}
         isOpen={dapp.guestOpen}
-        isLaunching={dapp.isLaunching}
+        launchingId={dapp.launchingCatalogId}
         beforeEntries={
           <CollateralPanel
             preference={this.props.stores!.collateral.snapshot?.preference}

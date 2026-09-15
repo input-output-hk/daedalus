@@ -549,7 +549,7 @@ describe('HardwareWalletsStore payment construction', () => {
     });
   });
 
-  it('discovers a connected Ledger after restart without exporting keys or retaining failed version evidence', async () => {
+  it('discovers a Ledger after restart while accepting newer compatible app versions', async () => {
     const request = jest.fn().mockResolvedValue(null);
     const store = new HardwareWalletsStore(
       ({
@@ -595,15 +595,17 @@ describe('HardwareWalletsStore payment construction', () => {
       .spyOn(getCardanoAdaAppChannel, 'request')
       .mockResolvedValue({
         major: '7',
-        minor: '3',
-        patch: '1',
+        minor: '4',
+        patch: '0',
       } as any);
     expect(store.getDappConnectorCapability('wallet')).toBeUndefined();
     await expect(
       store.refreshDappConnectorCapability('wallet')
     ).resolves.toMatchObject({
       model: 'europa',
-      appVersion: '7.3.1',
+      appVersion: '7.4.0',
+      certifiedExtensions: [95, 104],
+      physicalCertified: true,
     });
     app.mockRejectedValueOnce(new Error('Cardano app unavailable'));
     const capability = store.getDappConnectorCapability('wallet');

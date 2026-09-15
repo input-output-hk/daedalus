@@ -1,5 +1,5 @@
 import path from 'path';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, screen } from 'electron';
 import type {
   IpcMainInvokeEvent,
   Session,
@@ -7,7 +7,15 @@ import type {
   WebPreferences,
 } from 'electron';
 import type { DappEgressPolicy } from './DappEgressPolicy';
+import { STORAGE_KEYS } from '../../common/config/electron-store.config';
+import type { StoreMessage } from '../../common/types/electron-store.types';
+import { requestElectronStore } from '../ipc/electronStoreConversation';
+import {
+  restoreSavedWindowBounds,
+  saveWindowBoundsOnSizeAndPositionChange,
+} from '../windows/windowBounds';
 import { requireDappSandboxAvailable } from '../sandbox/dappSandboxAvailability';
+import { logDappConsole } from '../utils/logging';
 import {
   clearDappSession,
   createDappSession,
@@ -20,6 +28,35 @@ import { parseDappUrl, parseDiagnosticsDappUrl } from './urlPolicy';
 import type { DappUrlPolicy, ParsedDappUrl } from './urlPolicy';
 import type { DappGrantLaunch } from '../../common/types/dapp.types';
 
+const DAPP_CONSOLE_MESSAGE_LIMIT = 100;
+const DAPP_CONSOLE_MESSAGE_RATE_LIMIT = 10;
+const DAPP_CONSOLE_MESSAGE_LENGTH_LIMIT = 2048;
+
+const installDappConsoleCapture = (
+  webContents: BrowserWindow['webContents']
+): void => {
+  let captured = 0;
+  let capturedThisSecond = 0;
+  let secondStartedAt = Date.now();
+  webContents.on('console-message', (details) => {
+    if (details.level !== 'warning' && details.level !== 'error') return;
+    if (captured >= DAPP_CONSOLE_MESSAGE_LIMIT) return;
+    const now = Date.now();
+    if (now - secondStartedAt >= 1000) {
+      secondStartedAt = now;
+      capturedThisSecond = 0;
+    }
+    if (capturedThisSecond >= DAPP_CONSOLE_MESSAGE_RATE_LIMIT) return;
+    captured += 1;
+    capturedThisSecond += 1;
+    logDappConsole(
+      `dapp-console:${details.level} ${details.message.slice(
+        0,
+        DAPP_CONSOLE_MESSAGE_LENGTH_LIMIT
+      )}`
+    );
+  });
+};
 type ResolvedDappLaunch = Readonly<
   Pick<
     ResolvedCatalogLaunch,
@@ -60,7 +97,7 @@ type ActiveGuest = {
   readonly launch: ResolvedDappLaunch;
   readonly egressPolicy: DappEgressPolicy;
   initialLoad: boolean;
-  readonly documentGeneration: number;
+  documentGeneration: number;
   readonly grantLaunch: DappGrantLaunch;
   teardown?: Promise<void>;
   readonly diagnosticsPolicy?: DappUrlPolicy;
@@ -94,6 +131,7 @@ export const installDappGuestLifecyclePolicy = (
   windowTitle: string,
   isInitialLoad: () => boolean,
   isTearingDown: () => boolean,
+  refreshDocument: () => void,
   revoke: (reason: DappGuestRevocationReason) => void,
   diagnosticsPolicy?: DappUrlPolicy
 ): void => {
@@ -105,11 +143,12 @@ export const installDappGuestLifecyclePolicy = (
     preventDefault: () => void;
   }) => {
     try {
+      const parsed = event.url && parseLaunchUrl(event.url, diagnosticsPolicy);
       if (
-        isInitialLoad() &&
         event.isMainFrame !== false &&
-        event.url &&
-        parseLaunchUrl(event.url, diagnosticsPolicy).href === entryUrl
+        parsed &&
+        ((isInitialLoad() && parsed.href === entryUrl) ||
+          (!isInitialLoad() && parsed.origin === launchOrigin))
       )
         return;
     } catch {
@@ -132,7 +171,9 @@ export const installDappGuestLifecyclePolicy = (
         isAllowedNavigation =
           isMainFrame &&
           ((isInitialLoad() && parsed.href === entryUrl) ||
-            (isInPlace && parsed.origin === launchOrigin));
+            (!isInitialLoad() && parsed.origin === launchOrigin));
+        if (isAllowedNavigation && !isInitialLoad() && !isInPlace)
+          refreshDocument();
       } catch {
         // Invalid navigation is revoked below.
       }
@@ -172,30 +213,33 @@ export const installDappGuestLifecyclePolicy = (
 };
 
 export class DappBrowserManager {
-  private activeGuest?: ActiveGuest;
+  private readonly activeGuests = new Set<ActiveGuest>();
   private nextDocumentGeneration = 0;
 
-  readonly onRevoke: (_reason: DappGuestRevocationReason) => void;
+  readonly onRevoke: (
+    _reason: DappGuestRevocationReason,
+    _guestWebContentsId: number,
+    _isOpen: boolean
+  ) => void;
 
   constructor(
-    onRevoke: (_reason: DappGuestRevocationReason) => void = () => undefined
+    onRevoke: (
+      _reason: DappGuestRevocationReason,
+      _guestWebContentsId: number,
+      _isOpen: boolean
+    ) => void = () => undefined
   ) {
     this.onRevoke = onRevoke;
   }
 
   get isOpen(): boolean {
-    return this.activeGuest !== undefined;
-  }
-
-  setHidden(hidden: boolean): void {
-    const guestWindow = this.activeGuest?.window;
-    if (!guestWindow || guestWindow.isDestroyed()) return;
-    if (hidden) guestWindow.hide();
-    else guestWindow.show();
+    return this.activeGuests.size > 0;
   }
 
   authenticate(event: IpcMainInvokeEvent): DappGuestAuthority | null {
-    const guest = this.activeGuest;
+    const guest = [...this.activeGuests].find(
+      ({ window }) => window.webContents === event.sender
+    );
     const frame = event.senderFrame;
     if (
       !guest ||
@@ -204,12 +248,14 @@ export class DappBrowserManager {
       !this.isCurrentFrame(guest, frame, event.sender.id)
     )
       return null;
+    const documentGeneration = guest.documentGeneration;
     return Object.freeze({
       guestWebContentsId: guest.window.webContents.id,
-      documentGeneration: guest.documentGeneration,
+      documentGeneration,
       origin: guest.launch.canonicalOrigin,
       launch: guest.grantLaunch,
       isCurrent: () =>
+        guest.documentGeneration === documentGeneration &&
         this.isCurrentFrame(guest, frame, guest.window.webContents.id),
     });
   }
@@ -220,7 +266,7 @@ export class DappBrowserManager {
     senderId: number
   ): boolean {
     if (
-      this.activeGuest !== guest ||
+      !this.activeGuests.has(guest) ||
       guest.teardown !== undefined ||
       guest.window.isDestroyed() ||
       guest.window.webContents.isDestroyed() ||
@@ -244,7 +290,8 @@ export class DappBrowserManager {
   async launch(
     entry: DappCatalogEntry,
     networkGenesis: string,
-    localName: string
+    localName: string,
+    captureConsole: boolean
   ): Promise<void> {
     const launch = resolveCatalogLaunch(entry, networkGenesis, localName);
     return this.launchResolved(
@@ -253,7 +300,9 @@ export class DappBrowserManager {
         kind: 'catalog',
         catalogEntryId: launch.catalogId,
         catalogEntryIdentity: launch.catalogIdentity,
-      })
+      }),
+      undefined,
+      captureConsole
     );
   }
 
@@ -261,7 +310,8 @@ export class DappBrowserManager {
     entryUrl: string,
     canonicalOrigin: string,
     localName: string,
-    policy: DappUrlPolicy
+    policy: DappUrlPolicy,
+    captureConsole: boolean
   ): Promise<void> {
     return this.launchResolved(
       Object.freeze({
@@ -271,20 +321,35 @@ export class DappBrowserManager {
         windowTitle: localDappWindowTitle(localName),
       }),
       Object.freeze({ kind: 'diagnostics' }),
-      policy
+      policy,
+      captureConsole
     );
   }
 
   private async launchResolved(
     launch: ResolvedDappLaunch,
     grantLaunch: DappGrantLaunch,
-    diagnosticsPolicy?: DappUrlPolicy
+    diagnosticsPolicy: DappUrlPolicy | undefined,
+    captureConsole: boolean
   ): Promise<void> {
     await requireDappSandboxAvailable();
-    await this.close('replaced');
     const windowTitle = `${
       parseLaunchUrl(launch.entryUrl, diagnosticsPolicy).origin
     } — ${launch.windowTitle}`;
+    const windowStateId =
+      grantLaunch.kind === 'catalog'
+        ? grantLaunch.catalogEntryId
+        : Buffer.from(launch.canonicalOrigin).toString('base64url');
+    const storeWindowState = (request: StoreMessage) =>
+      requestElectronStore({
+        ...request,
+        key: STORAGE_KEYS.DAPP_WINDOW_BOUNDS,
+        id: windowStateId,
+      });
+    const savedWindowBounds = restoreSavedWindowBounds(
+      screen,
+      storeWindowState
+    );
 
     const guestSession = createDappSession();
     let egressPolicy: DappEgressPolicy;
@@ -312,6 +377,7 @@ export class DappBrowserManager {
         frame: true,
         fullscreenable: false,
         autoHideMenuBar: true,
+        ...(savedWindowBounds ?? {}),
         webPreferences: createDappGuestWebPreferences(guestSession),
       });
     } catch {
@@ -319,6 +385,7 @@ export class DappBrowserManager {
       await clearDappSession(guestSession);
       throw new Error('DApp guest failed to load');
     }
+    if (captureConsole) installDappConsoleCapture(guestWindow.webContents);
     const guest: ActiveGuest = {
       window: guestWindow,
       session: guestSession,
@@ -329,21 +396,23 @@ export class DappBrowserManager {
       documentGeneration: ++this.nextDocumentGeneration,
       grantLaunch,
     };
-    this.activeGuest = guest;
+    this.activeGuests.add(guest);
     installDappGuestLifecyclePolicy(
       guest.window,
       guest.launch.entryUrl,
       windowTitle,
       () => guest.initialLoad,
       () => guest.teardown !== undefined,
+      () => this.refreshDocument(guest),
       (reason) => this.teardown(guest, reason).catch(() => undefined),
       diagnosticsPolicy
     );
+    saveWindowBoundsOnSizeAndPositionChange(guestWindow, storeWindowState);
 
     try {
       await guestWindow.loadURL(launch.entryUrl);
       guest.initialLoad = false;
-      if (this.activeGuest !== guest || guestWindow.isDestroyed())
+      if (!this.activeGuests.has(guest) || guestWindow.isDestroyed())
         throw new Error('DApp guest closed during load');
       if (
         parseLaunchUrl(guestWindow.webContents.getURL(), diagnosticsPolicy)
@@ -359,8 +428,30 @@ export class DappBrowserManager {
     }
   }
 
+  revoke(reason: DappGuestRevocationReason): void {
+    this.activeGuests.forEach((guest) => {
+      try {
+        this.onRevoke(reason, guest.window.webContents.id, true);
+      } catch {
+        // Authority is already revoked; the guest remains open.
+      }
+    });
+  }
+
+  private refreshDocument(guest: ActiveGuest): void {
+    if (!this.activeGuests.has(guest) || guest.teardown) return;
+    guest.documentGeneration = ++this.nextDocumentGeneration;
+    try {
+      this.onRevoke('navigation', guest.window.webContents.id, true);
+    } catch {
+      // The new same-origin document remains isolated and open.
+    }
+  }
+
   async close(reason: DappGuestRevocationReason = 'closed'): Promise<void> {
-    if (this.activeGuest) await this.teardown(this.activeGuest, reason);
+    await Promise.all(
+      [...this.activeGuests].map((guest) => this.teardown(guest, reason))
+    );
   }
 
   private teardown(
@@ -370,9 +461,13 @@ export class DappBrowserManager {
     if (guest.teardown) return guest.teardown;
 
     guest.teardown = (async () => {
-      if (this.activeGuest === guest) this.activeGuest = undefined;
+      this.activeGuests.delete(guest);
       try {
-        this.onRevoke(reason);
+        this.onRevoke(
+          reason,
+          guest.window.webContents.id,
+          this.activeGuests.size > 0
+        );
       } catch {
         // Revocation state is already inactive; cleanup must still complete.
       }

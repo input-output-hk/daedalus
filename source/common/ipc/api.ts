@@ -205,10 +205,12 @@ export type DappBrowserDiagnosticsOpenRendererRequest = Readonly<{
   url: string;
   walletId: string;
   localName: string;
+  captureConsole: boolean;
 }>;
 export type DappBrowserCatalogOpenRendererRequest = Readonly<{
   catalogId: string;
   localName: string;
+  captureConsole: boolean;
 }>;
 export type DappBrowserOpenRendererRequest =
   | DappBrowserDiagnosticsOpenRendererRequest
@@ -225,6 +227,7 @@ export type DappBrowserStatusMainResponse = Readonly<{
   isOpen: boolean;
   catalogAvailable: boolean;
   diagnosticsAvailable: boolean;
+  consoleCaptureAvailable: boolean;
 }>;
 
 export const DAPP_BROWSER_STATE_CHANNEL = 'DAPP_BROWSER_STATE_CHANNEL';
@@ -302,7 +305,13 @@ export type DappConsentPresentation = DappConsentIdentity &
         requiresPassphrase?: boolean;
       }>
     | Readonly<{
-        kind: 'transaction-sign' | 'transaction-submit';
+        kind: 'transaction-sign';
+        authorization: TransactionAuthorization;
+        review: Cip30TransactionReview;
+        canSubmit: boolean;
+      }>
+    | Readonly<{
+        kind: 'transaction-submit';
         authorization: TransactionAuthorization;
         review: Cip30TransactionReview;
       }>
@@ -367,6 +376,7 @@ export type WalletApprovalRenderRendererResponse = Readonly<{
   requestId: string;
   approved: boolean;
   passphrase?: string;
+  submit?: true;
 }> | void;
 export const WALLET_TRANSACTION_APPROVAL_CHANNEL =
   'WALLET_TRANSACTION_APPROVAL_CHANNEL';
