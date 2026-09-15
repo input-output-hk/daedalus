@@ -531,7 +531,7 @@
      "id": "task-015",
      "title": "Open the hop branch: manifest, framework field, binaries and preview object",
      "description": "The configuration half of the hop. Move the Storybook dependency set to 8.6.x by hand, add the mandatory framework field, rename the CLI binaries and convert preview to a default-export object.",
-     "status": "pending",
+     "status": "completed",
      "priority": "critical",
      "estimatedHours": 8.0,
      "dependencies": [
@@ -550,7 +550,13 @@
       "Keep @storybook/addon-knobs installed, bumped from the pinned 6.4.0 (package.json:85) to 8.0.1, which peers @storybook/manager-api@^8.0.0 and builds at this line. @dump247/storybook-state is already gone by this point: task-063 removed it in phase 2, because it imports @storybook/addons, which this task's manifest edit deletes and which has no version in the 8 line.",
       "preview.tsx becomes a default-export Preview object carrying decorators and parameters. The frozen clock survives.",
       "The branch is red from here until task-025. That is expected and is why this is one landing.",
-      "Bump @storybook/addon-knobs from the pinned 6.4.0 (package.json:85) to 8.0.1 in the same manifest edit. 8.0.1 peers @storybook/theming, @storybook/components, @storybook/core-events and @storybook/manager-api at ^8.0.0, all of which publish 8.6.x."
+      "Bump @storybook/addon-knobs from the pinned 6.4.0 (package.json:85) to 8.0.1 in the same manifest edit. 8.0.1 peers @storybook/theming, @storybook/components, @storybook/core-events and @storybook/manager-api at ^8.0.0, all of which publish 8.6.x.",
+      "RED WINDOW opens here and closes at task-025. Measured at this commit, yarn compile reports exactly 70 errors and every one is owned by a later task: 68 TS2305, one per storiesOf call site, which task-017 and the five tranches remove, and 2 TS2307 for @storybook/addons in storybook/addons/DaedalusMenu, which task-016 removes. Nothing else fails. 70 is the number that has to reach zero.",
+      "CRITICAL, found here and fixed here: yarn storybook:build returned exit 0 on a hard build failure. At 8.6.x the CLI catches a build error and then tries to prompt for telemetry; with no TTY in the Nix sandbox the prompt resolves and the process exits 0, so the derivation succeeded while the manager build had failed with Could not resolve @storybook/addons. The required check would have reported green on every failure for the rest of this phase, which is the one check phase 3 leans on. Adding --disable-telemetry to both storybook scripts makes the failure propagate: the same tree then exits 1. Do not remove that flag.",
+      "Two dependencies were only present transitively through the Storybook 6.4.22 packages and had to be declared when those were removed. os-browserify, which storybook/main.ts require.resolve()s for the os fallback, and @types/webpack-env, which source/renderer/app/i18n/translations.ts:2 needs for require.context. Both were in the old lockfile and in neither manifest. Every other module webpackFinal resolves was checked against the manifest at the same time; those two were the only gaps.",
+      "@storybook/addon-knobs@8.0.1 peers @storybook/theming, @storybook/components, @storybook/core-events and @storybook/manager-api at ^8.0.0. Yarn 1 does not install peers, so all four are declared explicitly at 8.6.18, as the task-013 pre-flight had to do.",
+      "The config.resolve merge fix from task-013 is carried at storybook/main.ts. It is mandatory: assigning over config.resolve discards the alias @storybook/react-dom-shim sets to its react-16 build, and the preview then resolves react-dom/client, which React 16.14.0 does not have.",
+      "Signature rule for the tranches, measured in task-013 at 8.6.18 rather than assumed: the first render argument is the args object and the second is the story context. Do not rewrite a site reading the first argument to read the context; it reads undefined today and changing it is a behaviour change a visual diff would flag as a regression."
      ],
      "acceptance": [
       "The manifest resolves and yarn install completes on Yarn 1 without a partially hoisted Storybook tree",

@@ -5,7 +5,7 @@ import '!style-loader!css-loader!sass-loader!../source/renderer/app/themes/index
 
 import './stories/_support/environment';
 
-export const decorators = [(story) => <StoryWrapper>{story}</StoryWrapper>];
+const decorators = [(story) => <StoryWrapper>{story}</StoryWrapper>];
 
 // Sidebar order. storybook/main.ts indexes stories by glob, and without this the
 // tree renders in the order require.context happens to return files. The sequence
@@ -15,7 +15,7 @@ export const decorators = [(story) => <StoryWrapper>{story}</StoryWrapper>];
 // Order is applied per title segment: a nested array orders the level below the
 // name it follows. Story order inside a panel is not set here, so a panel built
 // from several files lists its stories in file order.
-export const parameters = {
+const parameters = {
   options: {
     storySort: {
       order: [
@@ -86,3 +86,7 @@ export const parameters = {
 timemachine.config({
   dateString: 'Sat, 01 Jan 2022 10:00:00 GMT',
 });
+
+// Storybook 8 takes a single default-export Preview object rather than named
+// decorators and parameters exports.
+export default { decorators, parameters };
