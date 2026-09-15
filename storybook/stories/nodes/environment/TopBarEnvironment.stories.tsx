@@ -16,6 +16,7 @@ import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-i
 import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import DiscreetToggleTopBar from '../../../../source/renderer/app/features/discreet-mode/ui/discreet-toggle-top-bar/DiscreetToggleTopBar';
 import { isShelleyTestnetTheme } from '../../_support/utils';
+import { currentThemeOf } from '../../_support/globals';
 
 const topBarTestEnv = (currentTheme) => (
   <TopBar
@@ -126,27 +127,27 @@ export default {
 };
 
 export const Testnet = {
-  render: (props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <SidebarLayout
-      topbar={topBarTestEnv(props.currentTheme)}
+      topbar={topBarTestEnv(currentThemeOf(context))}
       sidebar={<noscript />}
     />
   ),
 };
 
 export const Staging = {
-  render: (props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <SidebarLayout
-      topbar={topBarStagingEnv(props.currentTheme)}
+      topbar={topBarStagingEnv(currentThemeOf(context))}
       sidebar={<noscript />}
     />
   ),
 };
 
 export const Production = {
-  render: (props: { currentTheme: string }) => (
+  render: (_args, context) => (
     <SidebarLayout
-      topbar={topBarProductionEnv(props.currentTheme)}
+      topbar={topBarProductionEnv(currentThemeOf(context))}
       sidebar={<noscript />}
     />
   ),

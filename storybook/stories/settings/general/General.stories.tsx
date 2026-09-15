@@ -5,6 +5,7 @@ import { useGlobals } from '@storybook/preview-api';
 import { withState } from '../../_support/WithLocalState';
 import SettingsWrapper from '../utils/SettingsWrapper';
 import { themesIds } from '../../_support/config';
+import { localeOf } from '../../_support/globals';
 // Screens
 import ProfileSettingsForm from '../../../../source/renderer/app/components/widgets/forms/ProfileSettingsForm';
 import StakePoolsSettings from '../../../../source/renderer/app/components/settings/categories/StakePoolsSettings';
@@ -99,9 +100,9 @@ export const Themes = () => {
 };
 
 export const TermsOfService = {
-  render: (_, props) => {
+  render: (_args, context) => {
     const termsOfUseSource = require(
-      `../../../../source/renderer/app/i18n/locales/terms-of-use/${props.locale}.md`
+      `../../../../source/renderer/app/i18n/locales/terms-of-use/${localeOf(context)}.md`
     );
 
     return (

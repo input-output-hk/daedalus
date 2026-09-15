@@ -4,6 +4,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 import { NoDiskSpaceErrorStory } from './_support/NoDiskSpaceError';
 import { SystemTimeErrorStory } from './_support/SystemTimeError';
+import { localeOf } from '../../_support/globals';
 
 export default {
   title: 'Nodes / Errors',
@@ -18,5 +19,7 @@ export default {
 export const NoDiskSpaceError = NoDiskSpaceErrorStory;
 
 export const SystemTimeError = {
-  render: (_, props) => <SystemTimeErrorStory locale={props.locale} />,
+  render: (_args, context) => (
+    <SystemTimeErrorStory locale={localeOf(context)} />
+  ),
 };

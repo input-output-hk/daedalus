@@ -10,7 +10,7 @@ export default {
   decorators: [(story) => <StoryDecorator>{story()}</StoryDecorator>],
 };
 
-export const SelectLanguageInitial = withState(mockedLocaleState, (store) => (
+const SelectLanguageInitialStory = withState(mockedLocaleState, (store) => (
   <div>
     <InitialSettings
       onSubmit={action('submit')}
@@ -20,20 +20,23 @@ export const SelectLanguageInitial = withState(mockedLocaleState, (store) => (
   </div>
 ));
 
-SelectLanguageInitial.storyName = 'Select Language - initial';
+export const SelectLanguageInitial = {
+  render: SelectLanguageInitialStory,
+  name: 'Select Language - initial',
+};
 
-export const SelectLanguageSubmitting = withState(
-  mockedLocaleState,
-  (store) => (
-    <div>
-      <InitialSettings
-        onSubmit={action('submit')}
-        onChangeItem={(id, value) => onLocaleValueChange(store, id, value)}
-        isSubmitting
-        {...store.state}
-      />
-    </div>
-  )
-);
+const SelectLanguageSubmittingStory = withState(mockedLocaleState, (store) => (
+  <div>
+    <InitialSettings
+      onSubmit={action('submit')}
+      onChangeItem={(id, value) => onLocaleValueChange(store, id, value)}
+      isSubmitting
+      {...store.state}
+    />
+  </div>
+));
 
-SelectLanguageSubmitting.storyName = 'Select Language - submitting';
+export const SelectLanguageSubmitting = {
+  render: SelectLanguageSubmittingStory,
+  name: 'Select Language - submitting',
+};

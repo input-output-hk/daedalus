@@ -3,6 +3,7 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 import { applyEnvironmentOs } from '../../_support/environment';
+import { osNameOf } from '../../_support/globals';
 import SyncingConnectingMithrilPrompt from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt';
 import styles from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnectingMithrilPrompt.scss';
 import { computeBehindByEpochs } from '../../../../source/renderer/app/utils/mithrilBehindness';
@@ -26,14 +27,12 @@ const makePromptProps = (startFails: boolean) => ({
 const behindByEpochsKnob = () => loadingNumberKnob('behindByEpochs', 120);
 const startFailsKnob = () => loadingBooleanKnob('startFails', false);
 
-// StoryWrapper passes the OS selection to the story on the *context*, the
-// second render argument, not the args object, so read it from there and mirror
-// it onto global.environment. This is what lets the prompt's platform-aware
-// shortcut note ("Cmd + D" on macOS, "Ctrl + D" elsewhere) track the toolbar OS
-// switch. The selection is a Storybook global, so context.globals.osName holds
-// the same value.
+// The OS selection reaches a story on the context, the second render argument,
+// and this mirrors it onto global.environment so the prompt's platform-aware
+// shortcut note ("Cmd + D" on macOS, "Ctrl + D" elsewhere) tracks the toolbar
+// switch.
 const applyStoryOs = (context: unknown) =>
-  applyEnvironmentOs((context as { osName?: string }).osName ?? '');
+  applyEnvironmentOs(osNameOf(context));
 
 // Only the epoch is read by the behind-ness derivation.
 const makeTip = (epoch: number) => ({

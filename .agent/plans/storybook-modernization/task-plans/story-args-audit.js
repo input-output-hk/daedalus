@@ -26,6 +26,12 @@
  * exported top-level function assigned to a const, which is CSF's other story
  * form. Helper functions in the same file are not story renders and are not
  * reported.
+ *
+ * What it cannot see: a story whose render comes back from a call, such as
+ * `export const Thing = makeStory({ ... })`. Following that would mean
+ * analysing what the callee returns. Those are counted and listed separately
+ * rather than passed over, because a scan that silently ignores a shape is
+ * worse than one that says which shapes it skipped.
  */
 const fs = require('fs');
 const path = require('path');
@@ -85,6 +91,7 @@ function auditFile(file) {
 
   let metaDeclaresArgs = false;
   const renders = [];
+  const notAnalysed = [];
 
   const objectNamed = (name) => {
     let found = null;
@@ -137,6 +144,13 @@ function auditFile(file) {
           }
         } else if (isFunction(d.initializer)) {
           renders.push({ story: d.name.text, fn: d.initializer, ownArgs: false });
+        } else if (ts.isCallExpression(d.initializer)) {
+          notAnalysed.push({
+            file,
+            story: d.name.text,
+            callee: d.initializer.expression.getText(),
+            line: sf.getLineAndCharacterOfPosition(d.getStart()).line + 1,
+          });
         }
       }
     }
@@ -144,15 +158,18 @@ function auditFile(file) {
   };
   visit(sf);
 
-  return renders
-    .filter((r) => readsFirstArgument(r.fn))
-    .map((r) => ({
-      file,
-      story: r.story,
-      params: r.fn.parameters.map((p) => p.name.getText()).join(', '),
-      line: sf.getLineAndCharacterOfPosition(r.fn.getStart()).line + 1,
-      argsDeclared: metaDeclaresArgs || r.ownArgs,
-    }));
+  return {
+    findings: renders
+      .filter((r) => readsFirstArgument(r.fn))
+      .map((r) => ({
+        file,
+        story: r.story,
+        params: r.fn.parameters.map((p) => p.name.getText()).join(', '),
+        line: sf.getLineAndCharacterOfPosition(r.fn.getStart()).line + 1,
+        argsDeclared: metaDeclaresArgs || r.ownArgs,
+      })),
+    notAnalysed,
+  };
 }
 
 const roots = process.argv.slice(2).length ? process.argv.slice(2) : DEFAULT_ROOTS;
@@ -161,16 +178,26 @@ const files = roots
   .flatMap((r) => findStoryFiles(r, []))
   .sort();
 
-const rows = files.flatMap(auditFile);
+const results = files.map(auditFile);
+const rows = results.flatMap((r) => r.findings);
+const skipped = results.flatMap((r) => r.notAnalysed);
 const unfilled = rows.filter((r) => !r.argsDeclared);
 
 for (const r of unfilled) {
   console.log(`${r.file}:${r.line}  ${r.story}(${r.params})  reads args, none declared`);
+}
+if (skipped.length) {
+  console.log('');
+  console.log('Not analysed, because the render comes back from a call:');
+  for (const r of skipped) {
+    console.log(`  ${r.file}:${r.line}  ${r.story} = ${r.callee}(...)`);
+  }
 }
 console.log('');
 console.log(`story files scanned:                 ${files.length}`);
 console.log(`renders reading the first argument:  ${rows.length}`);
 console.log(`  with args declared:                ${rows.length - unfilled.length}`);
 console.log(`  with no args declared:             ${unfilled.length}`);
+console.log(`renders this scan cannot follow:     ${skipped.length}`);
 
 process.exit(unfilled.length ? 1 : 0);

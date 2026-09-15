@@ -3,6 +3,7 @@ import type { ComponentProps } from 'react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../../_support/StoryDecorator';
 import MithrilPartialSyncConfirmation from '../../../../source/renderer/app/components/status/MithrilPartialSyncConfirmation';
+import { currentThemeOf } from '../../_support/globals';
 
 type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;
 
@@ -13,15 +14,14 @@ const confirmationBaseProps: ConfirmationProps = {
   onConfirm: action('onConfirm'),
 };
 
-// StoryWrapper hands currentTheme to the story as a prop (first parameter);
-// keying the modal on it remounts per theme switch.
-const renderConfirmationStory = (
-  storyProps: Partial<ConfirmationProps> = {}
-): ((props: { currentTheme: string }) => JSX.Element) =>
-  function RenderConfirmationStory(props: { currentTheme: string }) {
+// Keying the modal on the selected theme remounts it when the theme switches.
+// The theme comes from the story context, the second argument a render function
+// is given; the first is the story's args and carries nothing here.
+const renderConfirmationStory = (storyProps: Partial<ConfirmationProps> = {}) =>
+  function RenderConfirmationStory(_args: unknown, context: unknown) {
     return (
       <MithrilPartialSyncConfirmation
-        key={props.currentTheme}
+        key={currentThemeOf(context)}
         {...confirmationBaseProps}
         {...storyProps}
       />
