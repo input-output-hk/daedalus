@@ -8,6 +8,7 @@ import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
 import WalletsSettingsPage from './containers/settings/categories/WalletsSettingsPage';
 import StakePoolsSettingsPage from './containers/settings/categories/StakePoolsSettingsPage';
+import AssetMetadataSettingsPage from './containers/settings/categories/AssetMetadataSettingsPage';
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import SecuritySettingsPage from './containers/settings/categories/SecuritySettingsPage';
@@ -137,6 +138,11 @@ export const Routes = withRouter(() => (
               pageTitle="Stake Pools Settings"
               path={ROUTES.SETTINGS.STAKE_POOLS}
               component={StakePoolsSettingsPage}
+            />
+            <TrackedRoute
+              pageTitle="Asset Metadata Settings"
+              path={ROUTES.SETTINGS.ASSET_METADATA}
+              component={AssetMetadataSettingsPage}
             />
             <TrackedRoute
               pageTitle="Terms of Use"

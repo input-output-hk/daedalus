@@ -1272,7 +1272,7 @@
      "id": "task-032",
      "title": "The asset metadata source settings page",
      "description": "A settings category in the shape of components/settings/categories/StakePoolsSettings.tsx and its container containers/settings/categories/StakePoolsSettingsPage.tsx: a Select over the three source types, an InlineEditingInput shown only for CUSTOM carrying the validator and the error state, and a description under the selection that changes with the type.",
-     "status": "pending",
+     "status": "completed",
      "priority": "high",
      "estimatedHours": 6.0,
      "dependencies": [
@@ -1281,6 +1281,7 @@
      "targetPaths": [
       "source/renderer/app/components/settings/categories/AssetMetadataSettings.tsx",
       "source/renderer/app/components/settings/categories/AssetMetadataSettings.scss",
+      "source/renderer/app/components/settings/categories/AssetMetadataSettings.spec.tsx",
       "source/renderer/app/containers/settings/categories/AssetMetadataSettingsPage.tsx",
       "source/renderer/app/routes-config.ts",
       "source/renderer/app/Routes.tsx",
@@ -1292,7 +1293,8 @@
       "The asset copy is smaller: there is no isSyncing gate and no server-side setting to push, so the disabled-select branch at StakePoolsSettings.tsx and the successfullyUpdated derivation from a loading flag both go.",
       "One entry each in routes-config.ts:46-55, Routes.tsx:136-140 and components/settings/menu/SettingsMenu.tsx:39-44, matching the STAKE_POOLS entries beside them.",
       "The DIRECT option is rendered in the Select and disabled, with a description saying it derives the same pointers from the chain the user already holds and is not available yet. Do not hide it: the enum carries it so the shape is visible.",
-      "i18n ids are namespace.context.messageKey, every message carries a description, and every new defaultMessage is prefixed !!!. yarn i18n:manage is a required check at perSystem/checks.nix."
+      "i18n ids are namespace.context.messageKey, every message carries a description, and every new defaultMessage is prefixed !!!. yarn i18n:manage is a required check at perSystem/checks.nix.",
+      "Three parts of StakePoolsSettings.tsx are deliberately not copied: the isSyncing gate, which exists because SMASH feeds the stake pool list; the successfullyUpdated derivation from a loading flag, which exists because its update is a round trip to cardano-wallet; and the selfnode omission of the default preset, which is unnecessary because a preset with no URL cannot be submitted. .scss.d.ts files are generated and gitignored, so the new stylesheet adds no tracked declaration file."
      ],
      "testCases": [
       "The preset is selected when the stored URL is the default",

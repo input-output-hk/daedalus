@@ -4432,6 +4432,91 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Some tokens publish their name on the chain instead of to the Cardano token registry. Daedalus finds those records through an index and confirms each one against your own node before using it. The index you choose learns which of these tokens this wallet holds, so it is worth choosing deliberately. Names and decimal places from the {link} are fetched separately and this setting does not affect them.",
+        "description": "description for the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.description"
+      },
+      {
+        "defaultMessage": "!!!Cardano token registry",
+        "description": "label of the registry link in the description on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionLinkLabel"
+      },
+      {
+        "defaultMessage": "!!!https://tokens.cardano.org/",
+        "description": "URL of the registry link in the description on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionLinkUrl"
+      },
+      {
+        "defaultMessage": "!!!On-chain metadata index",
+        "description": "label for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.label"
+      },
+      {
+        "defaultMessage": "!!!Koios (recommended)",
+        "description": "Koios option for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.koios"
+      },
+      {
+        "defaultMessage": "!!!Custom index",
+        "description": "custom option for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.custom"
+      },
+      {
+        "defaultMessage": "!!!From my own chain data (not available yet)",
+        "description": "direct option for the source selection on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.select.direct"
+      },
+      {
+        "defaultMessage": "!!!{link} is a public, community-run index of the Cardano chain. It is the default and needs no configuration. Daedalus sends it token identifiers and nothing else, and every record it returns is confirmed against your own node before it is stored.",
+        "description": "description of the Koios option on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionKoios"
+      },
+      {
+        "defaultMessage": "!!!Koios",
+        "description": "label of the Koios link on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionKoiosLinkLabel"
+      },
+      {
+        "defaultMessage": "!!!https://koios.rest/",
+        "description": "URL of the Koios link on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionKoiosLinkUrl"
+      },
+      {
+        "defaultMessage": "!!!An instance you run or trust, which keeps this wallet out of any public index. Daedalus checks that the address answers before saving it, and refuses one whose chain tip is far behind your own node.",
+        "description": "description of the custom option on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionCustom"
+      },
+      {
+        "defaultMessage": "!!!The same records, read from the chain data you already hold, with no third party involved. This option is not available yet.",
+        "description": "description of the direct option on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.descriptionDirect"
+      },
+      {
+        "defaultMessage": "!!!Index address",
+        "description": "label of the custom URL input on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.label"
+      },
+      {
+        "defaultMessage": "!!!Enter the address of your own instance",
+        "description": "placeholder of the custom URL input on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.placeholder"
+      },
+      {
+        "defaultMessage": "!!!Invalid address",
+        "description": "message shown for an address that does not match the accepted shape on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.invalidUrl"
+      },
+      {
+        "defaultMessage": "!!!The address should start with \"https://\"",
+        "description": "message shown for an address that is not https on the Asset Metadata settings page.",
+        "id": "settings.assetMetadata.url.input.invalidUrlPrefix"
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/AssetMetadataSettings.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Theme",
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "id": "settings.display.themeLabel"
@@ -4665,6 +4750,11 @@
         "defaultMessage": "!!!Wallets",
         "description": "Label for the \"Wallets\" link in the settings menu.",
         "id": "settings.menu.wallets.link.label"
+      },
+      {
+        "defaultMessage": "!!!Tokens",
+        "description": "Label for the \"Tokens\" link in the settings menu.",
+        "id": "settings.menu.assetMetadata.link.label"
       },
       {
         "defaultMessage": "!!!Stake Pools",
