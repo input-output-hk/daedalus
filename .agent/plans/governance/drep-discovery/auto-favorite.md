@@ -1,65 +1,40 @@
 # Auto-Favorite Feature
 
-When a user picks a DRep for delegation, it is automatically added to their favorites.
-This removes friction: the DReps users care about enough to delegate to are almost always ones
-they want in their favorites list.
+A DRep is automatically added to favorites after its delegation submits successfully.
+Selecting a candidate in the directory or detail page only carries the selection to the
+delegation form; leaving that flow, cancelling, or failing to submit does not save it.
 
-## Three trigger points
+## Two trigger points
 
-### 1. Explicit selection in the directory (DRepDirectoryPage)
+### 1. Successful delegation submission (VotingGovernancePage)
 
-**File:** `source/renderer/app/containers/governance/DRepDirectoryPage.tsx`
+**File:** `source/renderer/app/containers/voting/VotingGovernancePage.tsx`
 
-```typescript
-handleSelectForDelegation = (drepId: string) => {
-  const governanceStore = this.props.stores?.governance;
-  // ... set delegationNavState ...
+The confirmation dialog calls `onSubmit`, which awaits `voting.delegateVotes` and adds the
+chosen DRep only when the returned result has `success: true`. `delegateVotes` also resolves
+on failure, returning `success: false`, so completing the promise alone is not sufficient.
+The original result is returned to the dialog so its success and error behavior is preserved.
 
-  const isSentinel = drepId === 'abstain' || drepId === 'no_confidence';
-  if (!isSentinel && !governanceStore?.favoriteDRepIds.has(drepId)) {
-    governanceStore?.toggleFavorite(drepId);
-  }
+- The same callback handles software and hardware wallets.
+- Opening confirmation or preparing an unsigned transaction does not add a favorite.
+- Sentinel values (`abstain`, `no_confidence`) are never favorited: they have no DRep identity.
+- The `favoriteDRepIds.has(chosenOption)` guard avoids removing an existing favorite.
+- Success means submission accepted by the wallet flow, not confirmation on chain.
 
-  this.props.history.push(inherited?.from ?? ROUTES.VOTING.GOVERNANCE);
-};
-```
+### 2. Existing delegation when wallet is selected (VotingPowerDelegation + VotingGovernancePage)
 
-- Sentinel values (`'abstain'`, `'no_confidence'`) are never favorited (they have no DRep identity)
-- Guard: only calls `toggleFavorite` when not already in favorites (avoids un-toggling)
+A wallet with an existing DRep delegation keeps the convenience of automatically saving
+that DRep, including delegations made before this feature was introduced.
 
-### 2. Explicit selection in the detail page (DRepDetailPage)
-
-**File:** `source/renderer/app/containers/governance/DRepDetailPage.tsx`
-
-```typescript
-handleSelectForDelegation = (drepId: string) => {
-  const governanceStore = this.props.stores?.governance;
-  // ... set delegationNavState with verifiedName + anchorUrl from detail ...
-
-  if (!governanceStore?.favoriteDRepIds.has(drepId)) {
-    governanceStore?.toggleFavorite(drepId);
-  }
-
-  this.props.history.push(inherited?.from ?? ROUTES.VOTING.GOVERNANCE);
-};
-```
-
-No sentinel check needed here — the detail page only shows real DReps.
-
-### 3. Existing delegation when wallet is selected (VotingPowerDelegation + VotingGovernancePage)
-
-**Problem:** Users who delegated to a DRep *before* the auto-favorite feature was introduced will
-never have that DRep in favorites. They never go through `handleSelectForDelegation`.
-
-**Solution:** `VotingPowerDelegation` fires an effect whenever `currentVoteDRepId` changes
+**Solution:** `VotingPowerDelegation` fires an effect whenever `currentDRepId` changes
 (i.e., when the user selects a wallet that has an existing DRep delegation):
 
 ```typescript
 // VotingPowerDelegation.tsx
 useEffect(() => {
-  if (currentVote?.kind !== 'drep' || !onEnsureFavorited) return;
-  onEnsureFavorited(currentVote.drep.cip129 ?? currentVote.drep.raw);
-}, [currentVoteDRepId, onEnsureFavorited]);
+  if (currentDRep?.kind !== 'drep' || !onEnsureFavorited) return;
+  onEnsureFavorited(currentDRep.drep.cip129 ?? currentDRep.drep.raw);
+}, [currentDRepId, onEnsureFavorited]);
 ```
 
 The `onEnsureFavorited` callback is provided by `VotingGovernancePage`:
@@ -80,7 +55,7 @@ The `cip129 ?? raw` fallback handles legacy DRep delegations stored in CIP-105 f
 
 ## Favorite toggle button on the detail page
 
-In addition to auto-favoring on delegation select, the detail page provides an explicit toggle
+In addition to auto-favoring after successful delegation submission, the detail page provides an explicit toggle
 so users can manually add/remove a DRep from favorites without delegating.
 
 **File:** `source/renderer/app/components/governance/drep-detail/DRepDetailActions.tsx`

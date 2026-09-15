@@ -15,7 +15,7 @@ It is a living reference for agents working in this area; update it when the imp
 | [metadata-field-policy.md](./metadata-field-policy.md) | Which CIP-119 fields are shown, why no images, and how unknown JSON-LD terms are handled |
 | [smoke-test-runbook.md](./smoke-test-runbook.md) | The live checks automation cannot do, and what automation already covers |
 | [navigation-handoff.md](./navigation-handoff.md) | delegationNavState pattern; the round-trip routing solution |
-| [auto-favorite.md](./auto-favorite.md) | Auto-favorite on select: directory, detail, existing delegation |
+| [auto-favorite.md](./auto-favorite.md) | Auto-favorite after successful submission and for existing delegation |
 | [api.md](./api.md) | cardano-wallet REST endpoints and TypeScript types |
 | [routes.md](./routes.md) | ROUTES constants and which component handles each |
 | [design-decisions.md](./design-decisions.md) | Non-obvious decisions: sentinel cards, scroll-to-top, verified names, etc. |
