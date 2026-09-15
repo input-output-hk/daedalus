@@ -1,6 +1,6 @@
 # Phase 3 closing notes
 
-Status: open. Completed when `task-025` closes the window.
+Status: complete. The window closed at `task-025`.
 
 ## The recurring defect: an instrument that reports on something other than what it measures
 
@@ -74,6 +74,30 @@ in the sidebar under the right label with a component that is empty or wrong ins
 `story-args-audit.js` covers both, because both come down to the same question, which argument the
 value is expected to arrive on.
 
+## A check nobody runs is not green
+
+`jest` was failing from the moment the manifest moved to 8.6.18, and four tasks went past before
+anyone saw it. Nothing hid it. The window was being tracked by `compile`, `lint` and `storybook`,
+because those were the three expected to move, and `jest` was simply not being run. It surfaced at
+`task-025` only because that task runs everything the flake defines rather than the three under
+observation.
+
+The same shape appears twice more in this phase, smaller each time. Seven imports survived a file
+split unused, invisible to `tsc` under this configuration and to a lint rule that is off. Two
+`@ts-ignore` directives survived the change that made their subject disappear. In each case nothing
+was watching that particular thing, and nothing said so.
+
+## The count that went up
+
+The empty-render scan reported eleven, then thirteen. Nothing regressed: the scan could not see a
+story written as `export const Thing = SomeStory`, and two of the fourteen such bindings in the
+corpus read a parameter. The true figure had always been thirteen.
+
+Worth separating from a real regression, because from outside the two are indistinguishable. What
+tells them apart is the mechanism, and only whoever is holding the instrument can produce it. The
+rule that follows: when a count moves the wrong way, show why before continuing, and if the reason
+cannot be shown, stop.
+
 ## Defects found in the repository, not in the plan
 
 - **Undeclared transitive dependencies.** Written up in
@@ -85,3 +109,21 @@ value is expected to arrive on.
   produced 156 `Module parse failed` errors naming no file.
 - **`yarn compile` does not catch a dangling relative import.** Confirmed with a probe import that
   `compile` passed and `storybook:build` rejected.
+- **Jest cannot resolve a package `exports` map.** Jest 27 predates the feature, and Storybook 8
+  publishes almost everything behind one. Fixed with a resolver rather than a list of path mappings,
+  because each mapped path resolves to a bundle naming more of them.
+- **Three decorators branch on values that do not do what they look like.** A wallets wrapper tests
+  for two story names that have never existed under any wallets panel; a settings menu item points
+  at `Terms of service` where the story is `Terms of Service`; a wallet navigation layout strips a
+  `Wallets|` prefix from titles that have used ` / ` for years. All three predate this work and none
+  was touched by it.
+
+## What the window did
+
+70 compiler errors at `task-015`, 0 at `task-022`. 258 sidebar registrations across 49 panels before
+the conversion and the same 258 after, pair for pair, at every step. 13 stories rendering against
+nothing at the start and none at the end. All eight checks green.
+
+Twenty-two of the 272 baseline registrations differ from what is there now: fifteen removed by phase
+1, one restaged deliberately, and the rest of the difference is panels and groups emptied by those
+removals. Every one is enumerated in `task-023`.
