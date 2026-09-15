@@ -1101,7 +1101,7 @@
      "id": "task-027",
      "title": "Manual QA across the three platforms",
      "description": "The process boundary, the on-disk path and the migration notice cannot be exercised by Jest. CI covers x86_64-linux only, so Windows and macOS are checked by hand.",
-     "status": "pending",
+     "status": "blocked",
      "priority": "high",
      "estimatedHours": 8.0,
      "dependencies": [
@@ -1121,12 +1121,18 @@
       "The migration notice on first run after the update, and its absence on the second.",
       "Delete the cache directory while Daedalus is running, then reopen the token list.",
       "Confirm the database path on all three platforms against the table in the PRD. Windows is the one no contributor exercises daily.",
-      "On this development machine Electron needs ELECTRON_DISABLE_SANDBOX=true, exported in the shell profile rather than in .envrc, which is tracked."
+      "On this development machine Electron needs ELECTRON_DISABLE_SANDBOX=true, exported in the shell profile rather than in .envrc, which is tracked.",
+      "Selfnode: launcher-config.nix:448-450 adds metadataUrl only for networks that are not selfnode, so the endpoint for a selfnode run is chosen in code at assetRegistryClient.ts:97-107. If that branch were wrong the run would query the public registry and get a well-formed answer, so the failure is silent and nothing else catches it. The discriminator is a ticker in the bundled mock that no real issuer publishes, checked again with the mock stopped.",
+      "Every step names the artifact it produces. Four of the nine scenarios assert an absence, and for those the evidence is a log line, a directory listing or the same view under the opposite condition rather than a screenshot.",
+      "The mock registry's one subject carries no policy field and a logo value that decodes to ASCII text, so its decimals are not applied and no logo appears. Both are correct and are stated in the scenario so that neither is filed as a defect."
      ],
      "acceptance": [
-      "Every scenario above passes on Linux, macOS and Windows",
-      "The database appears at the documented path on each platform"
-     ]
+      "Every scenario passes on Linux, macOS and Windows, except the selfnode scenario, which is run once on any platform",
+      "The database path is recorded as the path itself on each platform, not as a screenshot",
+      "The operator checklist in task-027.md is completed and signed with the build identifier and date, and the named evidence is attached",
+      "Any failure is opened as a defect with its scenario number before the checklist is signed"
+     ],
+     "blockedReason": "manual_execution. This environment has no display, no macOS, no Windows, no funded wallet and no selfnode cluster, so no scenario can be run here and none has been. The procedure, the expected evidence per step and an operator checklist are in task-027.md; the task closes when a signed checklist comes back."
     },
     {
      "id": "task-028",
