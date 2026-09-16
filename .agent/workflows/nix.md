@@ -25,7 +25,6 @@ Daedalus uses **Nix** for reproducible builds. Nix provides:
 yarn nix:mainnet     # Mainnet
 yarn nix:preprod     # Preprod testnet
 yarn nix:preview     # Preview testnet
-yarn nix:selfnode    # Local self-node (testing)
 ```
 
 ### Verify Nix Shell
@@ -99,7 +98,6 @@ nix develop .#preprod --command echo "Nix works!"
 | Mainnet  | `yarn nix:mainnet`   | Production Cardano |
 | Preprod  | `yarn nix:preprod`   | Preprod testnet    |
 | Preview  | `yarn nix:preview`   | Preview testnet    |
-| Selfnode | `yarn nix:selfnode`  | Local testing node |
 
 ### What Each Shell Provides
 

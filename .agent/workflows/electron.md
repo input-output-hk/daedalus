@@ -448,8 +448,8 @@ ipcMain.handle(MY_CHANNEL, (event, request) => {
 
 ### Test Cardano Integration
 
-Use the selfnode for isolated testing:
+Use preprod for isolated testing:
 ```bash
-yarn nix:selfnode
+yarn nix:preprod
 yarn dev
 ```

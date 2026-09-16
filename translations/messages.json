@@ -1602,7 +1602,7 @@
         "id": "daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusGoodValue"
       },
       {
-        "defaultMessage": "!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 16 GB of RAM",
+        "defaultMessage": "!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 8 GB of RAM",
         "description": "Visible on hovering over Recommended system requirement status when status is Low",
         "id": "daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip"
       },
@@ -3322,7 +3322,7 @@
         "id": "knownIssues.rtsRecommendationOverlay.title"
       },
       {
-        "defaultMessage": "!!!<p>Your system specifications do not meet Daedalus’ recommended hardware requirements.</p><p>You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 16GB of RAM.</p><p>You can enable it now by clicking the ‘Enable and quit’ button. Note that you will have to restart Daedalus for this change to take effect. To enable or disable it at any time, go to the Help menu.</p>",
+        "defaultMessage": "!!!<p>Your system specifications do not meet Daedalus’ recommended hardware requirements.</p><p>You can enable RAM management (RTS Flags), an experimental setting that can reduce memory usage on computers with less than 8GB of RAM.</p><p>You can enable it now by clicking the ‘Enable and quit’ button. Note that you will have to restart Daedalus for this change to take effect. To enable or disable it at any time, go to the Help menu.</p>",
         "description": "Content of the RTS flags recommendation overlay",
         "id": "knownIssues.rtsRecommendationOverlay.content"
       },
