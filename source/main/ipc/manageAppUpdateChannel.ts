@@ -82,6 +82,16 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     return new Promise((resolve, reject) => {
       const { name: functionPrefix } = installUpdate;
       response(null, functionPrefix, 'installation begin.');
+      if (launcherConfig.applicationUpdateMode === 'system-package-disabled') {
+        reject(
+          response(
+            false,
+            functionPrefix,
+            'updates managed by system package manager'
+          )
+        );
+        return;
+      }
       const { updateRunnerBin } = launcherConfig;
       fs.chmodSync(filePath, 0o777);
       const updater = spawn(updateRunnerBin, [filePath]);

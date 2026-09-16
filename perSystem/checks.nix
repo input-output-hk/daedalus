@@ -37,6 +37,357 @@
         installPhase = "touch $out";
         dontFixup = true;
       };
+    linuxDebPackageContract =
+      pkgs.runCommand "linux-deb-package-contract" {
+        nativeBuildInputs = [pkgs.dpkg pkgs.jq pkgs.file pkgs.patchelf];
+      } ''
+          set -eu
+          deb=$(printf '%s\n' ${config.packages."deb-installer-mainnet"}/*.deb)
+          mkdir extracted
+          dpkg-deb --extract "$deb" extracted
+          dpkg-deb --control "$deb" control
+
+          root=extracted/opt/daedalus/mainnet
+          test -x "$root/bin/daedalus"
+          test -x "$root/libexec/daedalus-frontend"
+          test -x "$root/libexec/electron"
+          test ! -e "$root/libexec/update-runner"
+          test ! -e "$root/libexec/.patchelf-static"
+          test ! -e "$root/share/icon_large.png"
+          test ! -e "$root/share/applications"
+          test "$(jq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
+          test "$(jq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
+          jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0}' \
+            "$root/config/launcher-config.yaml" >/dev/null
+          test "$(jq -r .daedalusBin "$root/config/launcher-config.yaml")" = /opt/daedalus/mainnet/libexec/daedalus-frontend
+          test "$(stat -c %a "$root/libexec/bundle-electron/lib/electron/chrome-sandbox")" = 755
+          test "$(patchelf --print-interpreter "$root/libexec/bundle-electron/lib/electron/electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
+
+          for surface in \
+            "$root/bin/daedalus" \
+            "$root/libexec/daedalus-frontend" \
+            "$root/libexec/electron" \
+            "$root/config/launcher-config.yaml" \
+            extracted/usr/share/applications/Daedalus-mainnet.desktop \
+            control/preinst control/postinst control/prerm control/postrm; do
+            if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update' "$surface"; then
+              echo "forbidden portable or sandbox-bypass content in $surface" >&2
+              exit 1
+            fi
+          done
+
+          grep -F 'Exec=/opt/daedalus/mainnet/bin/daedalus' extracted/usr/share/applications/Daedalus-mainnet.desktop
+        grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" "$root/bin/daedalus"
+        grep -F 'abort-upgrade' control/preinst
+        grep -F 'install)' control/preinst
+        grep -F 'upgrade)' control/preinst
+        grep -F 'configure)' control/postinst
+        grep -F 'configure_transaction' control/postinst
+        grep -F 'rm -rf "$state_dir/previous"' control/postinst
+        grep -F 'abort-remove' control/postinst
+        grep -F 'rm -f "$state_dir/removing"' control/postinst
+        grep -F 'abort-deconfigure' control/postinst
+        grep -F 'failed-upgrade' control/prerm
+        grep -F 'remove)' control/prerm
+        grep -F 'disappear' control/postrm
+        grep -F 'abort-install' control/postrm
+        grep -F 'purge)' control/postrm
+        grep -F 'preserving modified sandbox manifest and package state' control/postrm
+        grep -F 'rmdir "$install_root/share" "$install_root"' control/postrm
+        grep -F 'task-108-matrix-2026-08-18' control/postinst
+        grep -F 'Package: daedalus-mainnet' control/control
+        grep -F 'Architecture: amd64' control/control
+        grep -F 'Depends: libcap2-bin, util-linux' control/control
+
+        sed '/^lock$/,$d' control/postinst >common.sh
+        . ./common.sh
+        install_root=$PWD/extracted/opt/daedalus/mainnet
+        state_dir=$PWD/manifest-state
+        manifest_path=$PWD/generated-manifest.json
+        profile_path=$install_root/share/apparmor/ubuntu-24.04
+        matrix_row=ubuntu-24.04
+        host_id=ubuntu
+        host_version=24.04
+        support_state=supported
+        reason=supported
+        policy_kind=apparmor
+        helper_mode=4755
+        mkdir "$state_dir"
+        chown() { :; }
+        write_manifest default-allow-userns-ubuntu-24.04
+        jq -e '
+          .matrixRow == "ubuntu-24.04"
+          and .distribution == {"id":"ubuntu","versionId":"24.04"}
+          and .policy.loadedProfileSuffix == " (unconfined)"
+        ' "$manifest_path" >/dev/null
+
+        install() {
+          mode=
+          while [ "$#" -gt 2 ]; do
+            if [ "$1" = -m ]; then
+              mode=$2
+            fi
+            shift 2
+          done
+          command cp "$1" "$2"
+          [ -z "$mode" ] || command chmod "$mode" "$2"
+        }
+        parser_log=$PWD/apparmor-parser.log
+        apparmor_parser() { printf '%s\n' "$*" >>"$parser_log"; }
+        helper_path=$PWD/rollback-helper
+        printf helper >"$helper_path"
+        helper_mode_state=$PWD/rollback-helper.mode
+        printf 755 >"$helper_mode_state"
+        chmod() {
+          if [ "$#" -eq 2 ] && [ "$2" = "$helper_path" ]; then
+            case "$1" in
+              0*) printf '%s' "$1" | cut -c2- >"$helper_mode_state" ;;
+              *) printf '%s' "$1" >"$helper_mode_state" ;;
+            esac
+          else
+            command chmod "$@"
+          fi
+        }
+        stat() {
+          if [ "$#" -eq 3 ] && [ "$1" = -c ] && [ "$2" = %a ] && [ "$3" = "$helper_path" ]; then
+            cat "$helper_mode_state"
+          else
+            command stat "$@"
+          fi
+        }
+
+        state_dir=$PWD/upgrade-state
+        profile_path=$PWD/upgrade-profile
+        manifest_path=$PWD/upgrade-manifest
+        mkdir "$state_dir"
+        printf old-profile >"$profile_path"
+        printf old-manifest >"$manifest_path"
+        sha256sum "$profile_path" | cut -d' ' -f1 >"$state_dir/profile.sha256"
+        sha256sum "$manifest_path" | cut -d' ' -f1 >"$state_dir/manifest.sha256"
+        printf old-version >"$state_dir/configured-version"
+        printf old-statoverride >"$state_dir/statoverride"
+        chmod 0755 "$helper_path"
+        snapshot_state
+        printf new-profile >"$profile_path"
+        printf new-manifest >"$manifest_path"
+        sha256sum "$profile_path" | cut -d' ' -f1 >"$state_dir/candidate-profile.sha256"
+        sha256sum "$profile_path" | cut -d' ' -f1 >"$state_dir/profile.sha256"
+        sha256sum "$manifest_path" | cut -d' ' -f1 >"$state_dir/manifest.sha256"
+        printf new-version >"$state_dir/configured-version"
+        printf new-statoverride >"$state_dir/statoverride"
+        chmod 4755 "$helper_path"
+        restore_state
+        test "$(cat "$profile_path")" = old-profile
+        test "$(cat "$manifest_path")" = old-manifest
+        test "$(cat "$state_dir/profile.sha256")" = "$(sha256sum "$profile_path" | cut -d' ' -f1)"
+        test "$(cat "$state_dir/manifest.sha256")" = "$(sha256sum "$manifest_path" | cut -d' ' -f1)"
+        test "$(cat "$state_dir/configured-version")" = old-version
+        test "$(cat "$state_dir/statoverride")" = old-statoverride
+        test "$(stat -c %a "$helper_path")" = 755
+        test ! -e "$state_dir/candidate-profile.sha256"
+        grep -F -- "-r $profile_path" "$parser_log"
+
+        rm -rf "$state_dir"
+        rm -f "$profile_path" "$manifest_path" "$parser_log" "$helper_path"
+        mkdir "$state_dir"
+        snapshot_state
+        configure_package() (
+          set -e
+          printf helper >"$helper_path"
+          printf 755 >"$helper_mode_state"
+          printf candidate-profile >"$profile_path"
+          printf candidate-manifest >"$manifest_path"
+          sha256sum "$profile_path" | cut -d' ' -f1 >"$state_dir/candidate-profile.sha256"
+          sha256sum "$profile_path" | cut -d' ' -f1 >"$state_dir/profile.sha256"
+          sha256sum "$manifest_path" | cut -d' ' -f1 >"$state_dir/manifest.sha256"
+          printf candidate-version >"$state_dir/configured-version"
+          printf candidate-statoverride >"$state_dir/statoverride"
+          chmod 4755 "$helper_path"
+          false
+          printf must-not-run >"$state_dir/errexit-broken"
+        )
+        set +e
+        configure_transaction
+        configure_status=$?
+        set -e
+        test "$configure_status" -ne 0
+        test ! -e "$state_dir/errexit-broken"
+        test ! -e "$profile_path"
+        test ! -e "$manifest_path"
+        test ! -e "$state_dir/profile.sha256"
+        test ! -e "$state_dir/manifest.sha256"
+        test ! -e "$state_dir/configured-version"
+        test ! -e "$state_dir/statoverride"
+        test ! -e "$state_dir/candidate-profile.sha256"
+        test "$(stat -c %a "$helper_path")" = 755
+        grep -F -- "-R $profile_path" "$parser_log"
+          touch "$out"
+      '';
+
+    linuxRpmPackageContract =
+      pkgs.runCommand "linux-rpm-package-contract" {
+        nativeBuildInputs = [pkgs.jq pkgs.libarchive nodejs pkgs.patchelf pkgs.rpm pkgs.yq-go];
+      } ''
+        set -eu
+        # rpm needs a writable database even for -qp (package-file) queries.
+        export HOME=$PWD
+        rpm --initdb --dbpath "$PWD/rpmdb"
+        printf '%%_dbpath %s/rpmdb\n' "$PWD" >>"$HOME/.rpmmacros"
+        rpm=$(printf '%s\n' ${config.packages."rpm-installer-mainnet"}/*.rpm)
+        mkdir extracted
+        (
+          cd extracted
+          bsdtar --no-same-permissions -xf "$rpm"
+        )
+
+        root=extracted/opt/daedalus/mainnet
+        helper="$root/libexec/bundle-electron/lib/electron/chrome-sandbox"
+        electron="$root/libexec/bundle-electron/lib/electron/electron"
+        manifest="$root/share/daedalus-sandbox-identity.json"
+        policy=extracted/usr/share/selinux/packages/daedalus-mainnet.cil
+        scripts=$PWD/scripts
+        rpm -qp --scripts "$rpm" >"$scripts"
+
+        test "$(rpm -qp --qf '%{NAME}\n%{ARCH}\n' "$rpm")" = $'daedalus-mainnet\nx86_64'
+        test -x "$root/bin/daedalus"
+        test -x "$root/libexec/daedalus-frontend"
+        test -x "$root/libexec/electron"
+        test ! -e "$root/libexec/update-runner"
+        test ! -e "$root/libexec/.patchelf-static"
+        test ! -e "$root/share/icon_large.png"
+        test ! -e "$root/share/applications"
+        test -f "$helper" -a ! -L "$helper"
+        rpm -qp --qf '[%{FILENAMES} %{FILEMODES:perms}\n]' "$rpm" >rpm-file-modes
+        grep -F '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox -rwsr-xr-x' rpm-file-modes
+        test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
+        test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
+        test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
+        jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0}' \
+          "$root/config/launcher-config.yaml" >/dev/null
+        NODE_PATH=${node_modules}/node_modules node -e \
+          "require('yamljs').parse(require('fs').readFileSync(process.argv[1], 'utf8'))" \
+          "$root/config/launcher-config.yaml"
+        jq -e '
+          .packageFamily == "rpm"
+          and .matrixRow == "fedora-43"
+          and .supportState == "supported"
+          and .helper.mode == "4755"
+          and .policy.module == "daedalus_mainnet"
+          and .policy.mainProcessType == "unconfined_t"
+          and .policy.rendererProcessType == "unconfined_t"
+          and .policy.electronFileContext == "system_u:object_r:bin_t:s0"
+          and .policy.helperFileContext == "system_u:object_r:chrome_sandbox_exec_t:s0"
+        ' "$manifest" >/dev/null
+
+        grep -F 'chrome_sandbox_exec_t' "$policy"
+        for forbidden in '(allow ' '(dontaudit ' '(typepermissive ' unconfined_domain_type; do
+          if grep -F "$forbidden" "$policy"; then
+            echo "forbidden SELinux policy construct: $forbidden" >&2
+            exit 1
+          fi
+        done
+        grep -F 'unconfined_chrome_sandbox_transition' "$scripts"
+        grep -F 'getenforce' "$scripts"
+        grep -F 'semodule -X 200' "$scripts"
+        grep -F 'restorecon' "$scripts"
+        grep -F 'chrome_sandbox_exec_t' "$scripts"
+        grep -F 'Exec=/opt/daedalus/mainnet/bin/daedalus' \
+          extracted/usr/share/applications/Daedalus-mainnet.desktop
+        grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" \
+          "$root/bin/daedalus"
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX' \
+          "$root/bin/daedalus" "$root/libexec/daedalus-frontend" \
+          "$root/libexec/electron" "$root/config/launcher-config.yaml" "$scripts"; then
+          echo 'portable updater, home restart, or sandbox bypass found in RPM launch or lifecycle surface' >&2
+          exit 1
+        fi
+
+        touch "$out"
+      '';
+
+    linuxArchPackageContract =
+      pkgs.runCommand "linux-arch-package-contract" {
+        nativeBuildInputs = [pkgs.jq pkgs.libarchive pkgs.pacman pkgs.patchelf pkgs.yq-go];
+      } ''
+        set -eu
+        package=$(printf '%s\n' ${config.packages."arch-installer-mainnet"}/*.pkg.tar.zst)
+        sha256sum -c ${config.packages."arch-installer-mainnet"}/SHA256SUMS
+        grep -F 'binary-dist' ${config.packages."arch-installer-mainnet"}/nix-support/hydra-build-products
+        mkdir extracted metadata
+        (
+          cd extracted
+          bsdtar --no-same-permissions -xf "$package"
+        )
+        bsdtar -xOf "$package" .PKGINFO >metadata/PKGINFO
+        bsdtar -xOf "$package" .INSTALL >metadata/INSTALL
+        bsdtar -tf "$package" >metadata/files
+
+        root=extracted/opt/daedalus/mainnet
+        helper="$root/libexec/bundle-electron/lib/electron/chrome-sandbox"
+        electron="$root/libexec/bundle-electron/lib/electron/electron"
+        manifest="$root/share/daedalus-sandbox-identity.base.json"
+        removal_hook=extracted/usr/share/libalpm/hooks/daedalus-mainnet-refuse-live.hook
+        removal_guard=extracted/usr/share/libalpm/scripts/daedalus-mainnet-refuse-live
+
+        grep -Fx 'pkgname = daedalus-mainnet' metadata/PKGINFO
+        grep -Fx 'arch = x86_64' metadata/PKGINFO
+        grep -Fx 'depend = jq' metadata/PKGINFO
+        grep -Fx '.INSTALL' metadata/files
+        grep -Fx '.MTREE' metadata/files
+        test -x "$root/bin/daedalus"
+        test -x "$root/libexec/daedalus-frontend"
+        test -x "$root/libexec/electron"
+        test -f "$helper" -a ! -L "$helper"
+        test "$(stat -c %a "$helper")" = 755
+        test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
+        test ! -e "$root/libexec/update-runner"
+        test ! -e "$root/libexec/.patchelf-static"
+        test ! -e "$root/share/icon_large.png"
+        test ! -e "$root/share/applications"
+        if find extracted -type l -lname '/nix/store/*' -print -quit | grep -q .; then
+          echo 'Nix-store link remains in Arch archive' >&2
+          exit 1
+        fi
+        test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
+        test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
+        jq -e '
+          .packageFamily == "arch"
+          and .matrixRevision == "task-111-matrix-2026-09-02"
+          and .matrixRow == "arch-2026.09.01"
+          and .supportState == "supported"
+          and .distribution == {"id":"arch","versionId":"2026.09.01","buildId":"rolling","kernelRelease":"7.2.2-arch1-1"}
+          and .helper.mode == "0755"
+          and .policy.kind == "none"
+          and .sandbox.mode == "userns-only"
+        ' "$manifest" >/dev/null
+        grep -F 'Exec=/opt/daedalus/mainnet/bin/daedalus' extracted/usr/share/applications/Daedalus-mainnet.desktop
+        grep -Fx 'post_install() {' metadata/INSTALL
+        grep -Fx 'post_upgrade() {' metadata/INSTALL
+        grep -Fx 'post_remove() {' metadata/INSTALL
+        grep -F 'arch::rolling:7.2.2-arch1-1)' metadata/INSTALL
+        grep -F 'omarchy:4.0.2:4.0.2:7.1.9-arch1-2)' metadata/INSTALL
+        grep -F 'support_state=wallet-only' metadata/INSTALL
+        grep -F 'chmod 0644 "$manifest_path.new"' metadata/INSTALL
+        test -x "$removal_guard"
+        grep -F 'Operation = Upgrade' "$removal_hook"
+        grep -F 'Operation = Remove' "$removal_hook"
+        grep -F 'When = PreTransaction' "$removal_hook"
+        grep -F 'AbortOnFail' "$removal_hook"
+        grep -F 'Exec = /usr/share/libalpm/scripts/daedalus-mainnet-refuse-live' "$removal_hook"
+        grep -F "electron='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron'" "$removal_guard"
+        grep -F 'exit 1' "$removal_guard"
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|DAEDALUS_ELECTRON_FLAGS|update-runner|updateRunnerBin|/nix/store' \
+          "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron" \
+          "$root/config/launcher-config.yaml"; then
+          echo 'Arch package contains a sandbox bypass, updater, or Nix link' >&2
+          exit 1
+        fi
+        if grep -E -- 'XDG_DATA_HOME|\.local/share|/Daedalus|rm -rf' metadata/INSTALL "$removal_guard" "$removal_hook"; then
+          echo 'Arch lifecycle accesses wallet state or removes recursively' >&2
+          exit 1
+        fi
+        touch "$out"
+      '';
   in {
     checks =
       # The suites that execute the code under test run natively on each OS we
@@ -150,6 +501,9 @@
             echo "prettier ${pinned} in package.json and in nix fmt"
             touch $out
           '';
+        linux-deb-package-contract = linuxDebPackageContract;
+        linux-rpm-package-contract = linuxRpmPackageContract;
+        linux-arch-package-contract = linuxArchPackageContract;
       };
   };
 }

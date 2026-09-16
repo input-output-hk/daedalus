@@ -83,6 +83,15 @@
             aarch64-darwin = lib.genAttrs installerClusters (cluster: self.packages.aarch64-darwin."installer-${cluster}");
             x86_64-windows = lib.genAttrs installerClusters (cluster: self.packages.x86_64-linux."installer-x86_64-windows-${cluster}");
           };
+          deb-installer.x86_64-linux =
+            lib.genAttrs installerClusters
+            (cluster: self.packages.x86_64-linux."deb-installer-${cluster}");
+          rpm-installer.x86_64-linux =
+            lib.genAttrs installerClusters
+            (cluster: self.packages.x86_64-linux."rpm-installer-${cluster}");
+          arch-installer.x86_64-linux =
+            lib.genAttrs installerClusters
+            (cluster: self.packages.x86_64-linux."arch-installer-${cluster}");
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
           nativeModules.x86_64-windows = self.packages.x86_64-linux.nativeModules-x86_64-windows;
@@ -106,6 +115,9 @@
             meta.description = "Jobs built by Hydra but not required to pass CI";
             constituents =
               lib.collect lib.isDerivation self.hydraJobs.installer
+              ++ lib.collect lib.isDerivation self.hydraJobs.deb-installer
+              ++ lib.collect lib.isDerivation self.hydraJobs.rpm-installer
+              ++ lib.collect lib.isDerivation self.hydraJobs.arch-installer
               ++ lib.collect lib.isDerivation self.hydraJobs.devshell
               ++ lib.collect lib.isDerivation
               (removeAttrs self.hydraJobs.checks ["x86_64-linux"]);
