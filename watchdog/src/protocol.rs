@@ -1,4 +1,11 @@
 use serde::{Deserialize, Serialize};
+use std::sync::OnceLock;
+
+static EVENT_TX: OnceLock<tokio::sync::mpsc::UnboundedSender<String>> = OnceLock::new();
+
+pub fn init_event_sink(tx: tokio::sync::mpsc::UnboundedSender<String>) {
+    EVENT_TX.set(tx).ok();
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(tag = "cmd", rename_all = "snake_case")]
@@ -142,29 +149,41 @@ pub enum Event {
         available_space_bytes: Option<u64>,
         required_space_bytes: u64,
     },
+    ElectronStarted {
+        pid: u32,
+    },
+    ElectronExited {
+        code: Option<i32>,
+        signal: Option<String>,
+    },
 }
 
 pub fn emit(event: &Event) {
-    use std::io::{ErrorKind, Write};
-    use std::sync::atomic::{AtomicBool, Ordering};
-
-    // Sticky flag set once the parent has closed our stdout. From then on
-    // events are silently dropped. We must NOT process::exit() here: that
-    // would skip Drop handlers (kill_on_drop on node/wallet/mithril children)
-    // and orphan them. A dead parent also closes our stdin, and the stdin
-    // reader in main.rs turns EOF into Command::Stop — the orderly path that
-    // stops the wallet and node before the runtime is torn down.
-    static STDOUT_GONE: AtomicBool = AtomicBool::new(false);
-    if STDOUT_GONE.load(Ordering::Relaxed) {
-        return;
-    }
     if let Ok(line) = serde_json::to_string(event) {
-        let stdout = std::io::stdout();
-        let mut lock = stdout.lock();
-        let write_err = writeln!(lock, "{line}").and_then(|_| lock.flush()).err();
-        if let Some(e) = write_err {
-            if e.kind() == ErrorKind::BrokenPipe {
-                STDOUT_GONE.store(true, Ordering::Relaxed);
+        if let Some(tx) = EVENT_TX.get() {
+            // Parent mode: drain task in main.rs writes to Electron's stdin.
+            let _ = tx.send(line);
+        } else {
+            // Standalone mode: write directly to our own stdout.
+            // STDOUT_GONE: sticky flag set once the parent has closed our stdout.
+            // From then on events are silently dropped. We must NOT process::exit()
+            // here: that would skip Drop handlers (kill_on_drop on node/wallet/mithril
+            // children) and orphan them. A dead parent also closes our stdin, and the
+            // stdin reader in main.rs turns EOF into Command::Stop — the orderly path
+            // that stops the wallet and node before the runtime is torn down.
+            use std::io::{ErrorKind, Write};
+            use std::sync::atomic::{AtomicBool, Ordering};
+            static STDOUT_GONE: AtomicBool = AtomicBool::new(false);
+            if STDOUT_GONE.load(Ordering::Relaxed) {
+                return;
+            }
+            let stdout = std::io::stdout();
+            let mut lock = stdout.lock();
+            let write_err = writeln!(lock, "{line}").and_then(|_| lock.flush()).err();
+            if let Some(e) = write_err {
+                if e.kind() == ErrorKind::BrokenPipe {
+                    STDOUT_GONE.store(true, Ordering::Relaxed);
+                }
             }
         }
     }
@@ -520,5 +539,34 @@ mod tests {
     #[test]
     fn unknown_command_fails() {
         assert!(serde_json::from_str::<Command>(r#"{"cmd":"restart"}"#).is_err());
+    }
+
+    #[test]
+    fn electron_started() {
+        let j = to_json(&Event::ElectronStarted { pid: 7777 });
+        assert_eq!(j["event"], "electron_started");
+        assert_eq!(j["pid"], 7777);
+    }
+
+    #[test]
+    fn electron_exited_with_code() {
+        let j = to_json(&Event::ElectronExited {
+            code: Some(0),
+            signal: None,
+        });
+        assert_eq!(j["event"], "electron_exited");
+        assert_eq!(j["code"], 0);
+        assert!(j["signal"].is_null());
+    }
+
+    #[test]
+    fn electron_exited_with_signal() {
+        let j = to_json(&Event::ElectronExited {
+            code: None,
+            signal: Some("SIGKILL".into()),
+        });
+        assert_eq!(j["event"], "electron_exited");
+        assert!(j["code"].is_null());
+        assert_eq!(j["signal"], "SIGKILL");
     }
 }

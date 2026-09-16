@@ -439,7 +439,7 @@
 
         logsPrefix = let
           path.linux = "${dataDir}/Logs";
-          path.windows = "Logs";
+          path.windows = "${dataDir}${dirSep}Logs";
           path.macos64 = "${dataDir}/Logs";
           path.macos64-arm = "${dataDir}/Logs";
         in

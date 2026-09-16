@@ -1,36 +1,10 @@
-import { spawn, ChildProcess } from 'child_process';
 import { createInterface } from 'readline';
-import { writeFileSync } from 'fs';
-import path from 'path';
+import type { Interface as ReadlineInterface } from 'readline';
 import { logger } from './utils/logging';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-export interface WatchdogConfig {
-  node: { exe: string; args: string[]; state_dir: string; socket_path: string };
-  wallet: {
-    exe: string;
-    args: string[];
-    state_dir: string;
-    api_port: number;
-    restart_delay_ms?: number;
-    max_restart_attempts?: number;
-  };
-  pub_logs_dir: string;
-  mithril?: {
-    mithril_bin: string;
-    snapshot_converter_bin: string;
-    converter_config: string;
-    aggregator_url: string;
-    genesis_vkey: string;
-    ancillary_vkey?: string;
-    state_dir: string;
-    chain_path: string;
-    behind_threshold?: number;
-  };
-}
 
 export interface MithrilProgress {
   filesDownloaded: number;
@@ -93,7 +67,7 @@ type EventHandler = (event: Record<string, unknown>) => void;
 const STOP_TIMEOUT_MS = 45_000;
 
 class WatchdogManager {
-  private proc: ChildProcess | null = null;
+  private rl: ReadlineInterface | null = null;
   private handlers: EventHandler[] = [];
   private state: WatchdogState = WatchdogManager.makeInitialState();
 
@@ -136,7 +110,9 @@ class WatchdogManager {
   // Lifecycle
   // ---------------------------------------------------------------------------
 
-  start(exePath: string, config: WatchdogConfig): void {
+  // In the new architecture watchdog is PID 1 and spawned Electron as a child.
+  // Events arrive on process.stdin; commands are sent on process.stdout.
+  start(): void {
     this.state = WatchdogManager.makeInitialState();
     this._pendingRejection = null;
 
@@ -145,45 +121,29 @@ class WatchdogManager {
       this._walletReadyReject = reject;
     });
 
-    const configPath = path.join(config.node.state_dir, 'watchdog-config.json');
-    const configJson = JSON.stringify(config, null, 2);
-    writeFileSync(configPath, configJson, 'utf8');
-    logger.info('WatchdogManager: wrote config', { configPath, config });
+    const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
+    this.rl = rl;
 
-    const proc = spawn(exePath, ['--config', configPath], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    this.proc = proc;
+    logger.info('WatchdogManager: listening on stdin (watchdog is parent)');
 
-    logger.info('WatchdogManager: spawned watchdog', {
-      pid: proc.pid,
-      exe: exePath,
-    });
-
-    // Read stdout line-by-line
-    const rl = createInterface({ input: proc.stdout!, crlfDelay: Infinity });
     rl.on('line', (line) => {
       if (!line.trim()) return;
       let event: Record<string, unknown>;
       try {
         event = JSON.parse(line);
       } catch (e) {
-        logger.warn('WatchdogManager: failed to parse stdout line', { line });
+        logger.warn('WatchdogManager: failed to parse stdin line', { line });
         return;
       }
       this.handleEvent(event);
     });
 
-    proc.stderr?.on('data', (chunk: Buffer) => {
-      logger.warn('WatchdogManager stderr', { text: chunk.toString() });
-    });
-
-    proc.on('exit', (code, signal) => {
-      logger.info('WatchdogManager: process exited', { code, signal });
+    // stdin closes when watchdog exits (pipe EOF from parent).
+    rl.on('close', () => {
+      logger.info('WatchdogManager: stdin closed (watchdog exited)');
       if (this._pendingRejection != null) {
         this._walletReadyReject?.(this._pendingRejection);
       } else {
-        // Unexpected exit — reject so BackendLifecycle can schedule a restart
         this._walletReadyReject?.('watchdog_exited_unexpectedly');
       }
       this._walletReadyResolve = null;
@@ -196,20 +156,20 @@ class WatchdogManager {
   // ---------------------------------------------------------------------------
 
   sendCommand(cmd: object): void {
-    if (!this.proc?.stdin?.writable) {
+    if (!process.stdout.writable) {
       logger.warn(
-        'WatchdogManager: sendCommand called but stdin not writable',
+        'WatchdogManager: sendCommand called but stdout not writable',
         { cmd }
       );
       return;
     }
-    this.proc.stdin.write(JSON.stringify(cmd) + '\n');
+    process.stdout.write(JSON.stringify(cmd) + '\n');
   }
 
   stop(): Promise<void> {
     return new Promise<void>((resolve) => {
-      const proc = this.proc;
-      if (!proc) {
+      const rl = this.rl;
+      if (!rl) {
         resolve();
         return;
       }
@@ -219,13 +179,12 @@ class WatchdogManager {
         resolve();
       }, STOP_TIMEOUT_MS);
 
-      proc.once('exit', () => {
+      rl.once('close', () => {
         clearTimeout(timer);
         resolve();
       });
 
       this.sendCommand({ cmd: 'stop' });
-      proc.stdin?.end();
     });
   }
 

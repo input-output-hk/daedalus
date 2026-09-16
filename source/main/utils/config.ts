@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import yamljs from 'yamljs';
 import type { LauncherConfig } from '../config';
 
 function recurseReplace(obj) {
@@ -57,8 +56,8 @@ function recurseReplace(obj) {
 export const readLauncherConfig = (
   configPath: string | null | undefined
 ): LauncherConfig => {
-  const inputYaml = configPath ? readFileSync(configPath, 'utf8') : '';
-  const parsed = yamljs.parse(inputYaml);
+  const inputYaml = configPath ? readFileSync(configPath, 'utf8') : '{}';
+  const parsed = JSON.parse(inputYaml);
   const finalYaml = recurseReplace(parsed);
   // @ts-ignore
   if (finalYaml === null || finalYaml === []) {

@@ -575,7 +575,7 @@
             Pop $0
             DetailPrint "liteFirewall::AddRule: $0"
 
-            CreateShortcut "$DESKTOP\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "" "$INSTDIR\${ic.spacedName}.exe" 0 SW_SHOWMINIMIZED
+            CreateShortcut "$DESKTOP\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\watchdog-config.json$\"" "$INSTDIR\${ic.spacedName}.exe" 0 SW_SHOWMINIMIZED
 
             WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "InstallLocation" "$INSTDIR"
             WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "Publisher" "IOHK"
@@ -594,7 +594,7 @@
           Section "Start Menu Shortcuts"
             CreateDirectory "$SMPROGRAMS\${ic.spacedName}"
             CreateShortcut "$SMPROGRAMS\${ic.spacedName}\Uninstall ${ic.spacedName}.lnk" "$INSTDIR/uninstall.exe" "" "$INSTDIR/uninstall.exe" 0
-            CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
+            CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\watchdog-config.json$\"" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
           SectionEnd
         '';
       in

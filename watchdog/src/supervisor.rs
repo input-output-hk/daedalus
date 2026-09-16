@@ -333,6 +333,12 @@ async fn pipe_to_log(
     }
 }
 
+fn pick_free_port() -> anyhow::Result<u16> {
+    use std::net::TcpListener;
+    let listener = TcpListener::bind("127.0.0.1:0")?;
+    Ok(listener.local_addr()?.port())
+}
+
 async fn wait_for_port(port: u16) {
     loop {
         if TcpStream::connect(("127.0.0.1", port)).await.is_ok() {
@@ -721,7 +727,11 @@ async fn run_node_wallet(
     after_mithril: bool,
     node_crash_count: &mut u32,
 ) -> Result<RunResult> {
-    let node_log = open_log(&format!("{}/node.log", config.pub_logs_dir));
+    let logs_dir = config
+        .pub_logs_dir
+        .as_deref()
+        .unwrap_or(&config.node.state_dir);
+    let node_log = open_log(&format!("{logs_dir}/node.log"));
 
     let mut shutdown_pipe = match ShutdownPipe::new() {
         Ok(p) => p,
@@ -961,9 +971,23 @@ async fn run_node_wallet(
 
     // Wallet supervisor loop
     let wallet_cfg = config.wallet.clone();
-    let wallet_log_path = format!("{}/cardano-wallet.log", config.pub_logs_dir);
+    let logs_dir = config
+        .pub_logs_dir
+        .as_deref()
+        .unwrap_or(&config.wallet.state_dir);
+    let wallet_log_path = format!("{logs_dir}/cardano-wallet.log");
     let mut attempt = 0u32;
     let mut node_rx = node_rx;
+
+    // Pick the wallet API port once; all restarts reuse the same port so
+    // Electron does not need to rediscover it after a wallet crash.
+    // When api_port is absent from config the watchdog auto-picks and injects
+    // --port <port> into the wallet command args. When api_port is present the
+    // caller is responsible for having it in wallet.args already.
+    let (wallet_port, inject_port_flag) = match wallet_cfg.api_port {
+        Some(p) => (p, false),
+        None => (pick_free_port()?, true),
+    };
 
     'supervisor: loop {
         if node_rx.borrow().is_some() {
@@ -973,8 +997,11 @@ async fn run_node_wallet(
         let wallet_log = open_log(&wallet_log_path);
 
         let mut wallet_cmd = Command::new(&wallet_cfg.exe);
+        wallet_cmd.args(&wallet_cfg.args);
+        if inject_port_flag {
+            wallet_cmd.arg("--port").arg(wallet_port.to_string());
+        }
         wallet_cmd
-            .args(&wallet_cfg.args)
             .current_dir(&wallet_cfg.state_dir)
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
@@ -1017,7 +1044,6 @@ async fn run_node_wallet(
             None,
         ));
 
-        let port = wallet_cfg.api_port;
         let wallet_wait_start = unix_ms();
 
         // Phase 1: wait for API ready OR early exit / node-death / stop.
@@ -1026,7 +1052,7 @@ async fn run_node_wallet(
         // normal startup sequence.
         'phase1: loop {
             tokio::select! {
-                _ = wait_for_port(port) => break 'phase1,
+                _ = wait_for_port(wallet_port) => break 'phase1,
                 status = wallet.wait() => {
                     let exit = extract_exit(status.ok());
                     warn!("wallet exited before ready (code={:?}, signal={:?})", exit.0, exit.1);
@@ -1129,10 +1155,10 @@ async fn run_node_wallet(
         }
 
         emit(&Event::WalletReady {
-            port,
+            port: wallet_port,
             waited_ms: unix_ms() - wallet_wait_start,
         });
-        info!("wallet API ready on port {port}");
+        info!("wallet API ready on port {wallet_port}");
 
         // The wallet recovered — max_restart_attempts caps *consecutive*
         // failed start cycles, so a rare-but-recurring crash (e.g. once a

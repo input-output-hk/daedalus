@@ -40,46 +40,31 @@ if (!isStartedByLauncher) {
   }
 }
 
-export type NodeConfig = {
-  configurationDir: string;
-  delegationCertificate?: string;
-  kind: 'byron' | 'shelley';
-  network: {
-    configFile: string;
-    genesisFile: string;
-    topologyFile: string;
-  };
-  signingKey?: string;
+/**
+ * The shape of the config params from launcher-config.yaml (UI-only fields).
+ * Binary paths, node/wallet args, and TLS config now live in watchdog-config.json.
+ */
+type InstallerManagedApplicationUpdateConfig = {
+  applicationUpdateMode?: 'installer-managed';
+  updateRunnerBin: string;
 };
 
-/**
- * The shape of the config params, usually provided to the cardano-node launcher
- */
+type DisabledApplicationUpdateConfig = {
+  applicationUpdateMode: 'system-package-disabled';
+  updateRunnerBin?: never;
+};
+
 export type LauncherConfig = {
   stateDir: string;
-  nodeConfig: NodeConfig;
-  tlsPath: string;
   logsPrefix: string;
   cluster: string;
-  syncTolerance: string;
   legacyStateDir: string;
   legacySecretKey: string;
   legacyWalletDB: string;
   isFlight: boolean;
-  isStaging: boolean;
   smashUrl?: string;
   metadataUrl?: string;
-  updateRunnerBin: string;
-  watchdogBin: string;
-  nodeBin: string;
-  walletBin: string;
-  mithrilBin?: string;
-  snapshotConverterBin?: string;
-  mithrilConverterConfig?: string;
-  mithrilAggregatorUrl?: string;
-  mithrilGenesisVkey?: string;
-  mithrilAncillaryVkey?: string;
-};
+} & (InstallerManagedApplicationUpdateConfig | DisabledApplicationUpdateConfig);
 type WindowOptionsType = {
   show: boolean;
   width: number;
@@ -166,7 +151,8 @@ export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks 
 // Used if token metadata server URL is not defined in launcher config
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =
   'https://metadata.world.dev.cardano.org';
-export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
+// Nominal threshold is 8 GB but some 8 GB machines report ~7.75 GB, so use 7 GB.
+export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 7 * 1024 * 1024 * 1024;
 
 // Used by mock-token-metadata-server
 // “localhost” breaks under new electron, which prefers ::1 (IPv6)

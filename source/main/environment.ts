@@ -25,12 +25,10 @@ import {
 } from '../common/utils/environmentCheckers';
 
 const version = `${packageJson.version}`;
-// Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
-// actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
-//
+// Nominal threshold is 8 GB but some 8 GB machines report ~7.75 GB, so use 7 GB.
 // TODO figure out better place for it - can't import from config.js as it would be a circular dep
 // https://input-output.atlassian.net/browse/DDW-928
-export const RECOMMENDED_RAM_IN_BYTES = 15 * 1024 * 1024 * 1024;
+export const RECOMMENDED_RAM_IN_BYTES = 7 * 1024 * 1024 * 1024;
 
 /* ==================================================================
 =                           Evaluations                             =
