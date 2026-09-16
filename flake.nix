@@ -37,9 +37,27 @@
     nixpkgs,
     ...
   } @ inputs: let
-    inherit ((import ./flake/lib.nix {inherit inputs;}).flake.lib) recursiveImports;
+    inherit ((import ./flake/lib/recursive-imports.nix {inherit inputs;}).flake.lib) recursiveImports;
     supportedSystems = ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"];
     inherit (nixpkgs) lib;
+    installerClusters = let
+      readClustersFile = fileName: let
+        unique = builtins.foldl' (acc: e:
+          if builtins.elem e acc
+          then acc
+          else acc ++ [e]) [];
+      in
+        unique (
+          builtins.map builtins.unsafeDiscardStringContext (
+            builtins.filter (el: builtins.isString el && el != "") (
+              builtins.split "[ \n\r\t]+" (
+                builtins.readFile fileName
+              )
+            )
+          )
+        );
+    in
+      readClustersFile (inputs.self + "/installer-clusters.cfg");
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports =
@@ -53,21 +71,21 @@
       systems = supportedSystems;
 
       flake = {
-        # Keep internal for backward compatibility and cross-compilation
-        internal = import ./nix/internal.nix {inherit inputs;};
-
         # Compatibility with older Nix
         defaultPackage = __mapAttrs (_: a: a.default) self.outputs.packages;
         devShell = __mapAttrs (_: a: a.default) self.outputs.devShells;
 
         # Hydra jobs
         hydraJobs = {
-          installer = lib.genAttrs (supportedSystems ++ ["x86_64-windows"]) (
-            targetSystem: self.internal.${targetSystem}.unsignedInstaller
-          );
+          installer = {
+            x86_64-linux = lib.genAttrs installerClusters (cluster: self.packages.x86_64-linux."installer-${cluster}");
+            x86_64-darwin = lib.genAttrs installerClusters (cluster: self.packages.x86_64-darwin."installer-${cluster}");
+            aarch64-darwin = lib.genAttrs installerClusters (cluster: self.packages.aarch64-darwin."installer-${cluster}");
+            x86_64-windows = lib.genAttrs installerClusters (cluster: self.packages.x86_64-linux."installer-x86_64-windows-${cluster}");
+          };
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
-          nativeModules.x86_64-windows = self.internal.x86_64-windows.nativeModulesZip;
+          nativeModules.x86_64-windows = self.packages.x86_64-linux.nativeModules-x86_64-windows;
           # Every system's checks, not only x86_64-linux. Pinned to one system,
           # a derivation added to `checks.aarch64-darwin` was a flake output
           # Hydra never evaluated and `required` never collected — present

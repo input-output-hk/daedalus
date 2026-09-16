@@ -17,7 +17,7 @@ find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
 # Let’s patch electron-rebuild to force correct Node.js headers to
 # build native modules against even in `nix-shell`, otherwise, it
 # doesn’t work reliably.
-nix run -L .#internal."${system:-x86_64-darwin}".common.patchElectronRebuild
+nix run -L .#patch-electron-rebuild
 
 # XXX: Electron requires c++17, not 14 (or old 1y):
 sed -r 's,std=c\+\+(14|1y),std=c++17,g' -i node_modules/usb/binding.gyp
@@ -32,7 +32,7 @@ find node_modules -depth -type d -name 'fsevents' -exec rm -rf '{}' ';' 2>/dev/n
 
 electron-rebuild --force -s
 
-if [[ $system == *linux* ]]; then
+if [[ "$(uname -s)" == *Linux* ]]; then
   # Rebuild usb in Debug mode: the debug build ships instead of Release because
   # the release build has issues with Ledger Nano S:
   electron-rebuild -w usb --force -s --debug
@@ -70,6 +70,6 @@ tryLink() {
 tryLink   "usb"           "usb_bindings.node"
 tryLink   "node-hid"      "HID.node"
 
-if [[ $system == *linux* ]]; then
+if [[ "$(uname -s)" == *Linux* ]]; then
   tryLink "node-hid"      "HID_hidraw.node"
 fi

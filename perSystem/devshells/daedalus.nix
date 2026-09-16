@@ -4,11 +4,21 @@
     system,
     lib,
     inputs',
+    pkgs,
+    common,
+    linuxBuild ? null,
+    darwinBuild ? null,
     ...
   }: let
-    internal = inputs.self.internal.${system};
-    inherit (internal) common;
-    pkgs = common.pkgs;
+    # Platform-specific build for devshell extras (relocatableElectron on Linux, darwin-launcher on Darwin)
+    platformBuild =
+      if pkgs.stdenv.hostPlatform.isLinux
+      then linuxBuild
+      else if pkgs.stdenv.hostPlatform.isDarwin
+      then darwinBuild
+      else null;
+
+    installerClusters = common.sourceLib.installerClusters;
 
     rustToolchain = with inputs'.fenix.packages;
       combine [
@@ -41,7 +51,6 @@
             common.nodejs
             common.yarn
             common.daedalus-bridge.${cluster}
-            common.mock-token-metadata-server
             regenerateDevCerts
             bash
             binutils
@@ -62,13 +71,13 @@
           ++ (
             if pkgs.stdenv.hostPlatform.isDarwin
             then [
-              internal.darwin-launcher
+              platformBuild.darwin-launcher
               pkgs.darwin.cctools
               pkgs.xcbuild
               pkgs.perl
             ]
             else [
-              internal.relocatableElectron
+              platformBuild.relocatableElectron
               pkgs.winePackages.minimal
             ]
           );
@@ -132,7 +141,7 @@
           ''}
 
           ${lib.optionalString pkgs.stdenv.isLinux ''
-            ln -svf ${internal.relocatableElectron}/bin/electron ./node_modules/electron/dist/electron
+            ln -svf ${platformBuild.relocatableElectron}/bin/electron ./node_modules/electron/dist/electron
           ''}
 
           echo 'jq < $LAUNCHER_CONFIG'
@@ -152,8 +161,11 @@
         '';
       };
 
-    daedalusShells = pkgs.lib.genAttrs inputs.self.internal.installerClusters mkDaedalusShell;
+    daedalusShells = pkgs.lib.genAttrs installerClusters mkDaedalusShell;
   in {
     devShells = daedalusShells // {default = daedalusShells.mainnet;};
+    # Exposed as a package so `nix run .#patch-electron-rebuild` works from
+    # rebuild-native-modules.sh without going through self.internal.
+    packages.patch-electron-rebuild = common.patchElectronRebuild;
   };
 }

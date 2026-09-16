@@ -14,6 +14,7 @@
     system,
     lib,
     pkgs,
+    linuxBuild ? null,
     ...
   }: {
     checks = lib.optionalAttrs (system == "x86_64-linux") {
@@ -34,7 +35,7 @@
             ${inputs.self}/scripts/check-bundle-integrity.sh
           echo
           bash ${inputs.self}/scripts/check-bundle-integrity.sh \
-            ${inputs.self.internal.x86_64-linux.relocatableElectron}
+            ${linuxBuild.relocatableElectron}
           touch $out
         '';
     };

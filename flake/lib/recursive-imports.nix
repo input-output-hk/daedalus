@@ -2,7 +2,7 @@
   flake.lib = inputs.nixpkgs.lib.extend (_self: lib: {
     recursiveImports = let
       # Recursively constructs an attrset of a given folder, recursing on
-      # directories, value of attrs is the filetype
+      # directories, value of attrs is the filetype.
       getDir = dir:
         lib.mapAttrs
         (

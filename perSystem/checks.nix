@@ -1,17 +1,23 @@
 {inputs, ...}: {
   perSystem = {
-    config,
     system,
     lib,
     pkgs,
+    config,
+    common,
+    linuxBuild ? null,
+    darwinBuild ? null,
     ...
   }: let
     # We reuse the pre-built node_modules from the installer pipeline so there's
     # no redundant yarn install. Resolved per-system rather than pinned to
     # x86_64-linux, so a check can run anywhere that pipeline already builds —
     # which is every system here, since the darwin installers depend on it.
-    internal = inputs.self.internal.${system};
-    inherit (internal) nodejs yarn srcWithoutNix node_modules;
+    inherit (common) nodejs yarn srcWithoutNix;
+    node_modules =
+      if system == "x86_64-linux"
+      then linuxBuild.node_modules
+      else darwinBuild.node_modules;
 
     mkJsCheck = name: command:
       pkgs.stdenv.mkDerivation {

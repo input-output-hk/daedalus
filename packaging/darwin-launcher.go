@@ -19,8 +19,8 @@ func main() {
 	installDir := filepath.Dir(ex)
 
 	os.Setenv("PATH", fmt.Sprintf("%s:%s", installDir, os.Getenv("PATH")))
+	os.Setenv("DAEDALUS_INSTALL_DIRECTORY", installDir)
 
-	launcherConfigPath := filepath.Join(installDir, "../Resources/launcher-config.yaml")
 	helperPath := filepath.Join(installDir, "../Resources/helper")
 
 	helperCmd := exec.Command(helperPath)
@@ -30,13 +30,15 @@ func main() {
 		panic(err)
 	}
 
+	watchdogConfigPath := filepath.Join(installDir, "../Resources/watchdog-config.json")
+
 	// Replace the current process (otherwise WDIO complains in end-to-end tests):
-	img := filepath.Join(installDir, "cardano-launcher")
-	argv := []string{"cardano-launcher", "--config", launcherConfigPath}
+	img := filepath.Join(installDir, "cardano-watchdog")
+	argv := []string{"cardano-watchdog", "--config", watchdogConfigPath}
 	env := os.Environ()
 	if err := syscall.Exec(img, argv, env); err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Fprintf(os.Stderr, "this won’t happen\n")
+	fmt.Fprintf(os.Stderr, "this won't happen\n")
 }
