@@ -1,10 +1,26 @@
 # Changelog
 
-## Unreleased
+## 11.4.0
 
 ### Fixes
 
 - Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
+
+- Analytics: updated Matomo tracking URL ([PR #3403](https://github.com/input-output-hk/daedalus/pull/3403)).
+
+- Governance: preserved the selected wallet across steps in the voting power delegation flow ([PR #3398](https://github.com/input-output-hk/daedalus/pull/3398)).
+
+- Governance: DRep status badge now carries its own font family so it renders correctly regardless of the surrounding context ([PR #3397](https://github.com/input-output-hk/daedalus/pull/3397)).
+
+- Governance: the selected DRep name now has an explicit color on the voting power delegation screen ([PR #3396](https://github.com/input-output-hk/daedalus/pull/3396)).
+
+### Chores
+
+- Bump `cardano-node` to 11.1.2 and `cardano-wallet` to v2026-09-16.
+
+- Windows: updated bundled mcfgthread DLL names from v1 to v2 (`libmcfgthread-2.dll`, `libmcfgthread-minimal-2.dll`) following a toolchain upgrade in the upstream node build.
+
+- Windows: removed `liblmdb.dll` from the installer; the LMDB UTxO backend was replaced by the LSM backend in cardano-node 11.x and the DLL is no longer present in the build output.
 
 ## 11.3.0
 
