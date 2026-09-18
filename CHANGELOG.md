@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Add a selected DRep to favorites only after delegation submits successfully, so abandoned or failed attempts do not save it ([#3395](https://github.com/input-output-hk/daedalus/issues/3395)).
 - Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
 
 - Analytics: updated Matomo tracking URL ([PR #3403](https://github.com/input-output-hk/daedalus/pull/3403)).

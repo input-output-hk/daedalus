@@ -13,7 +13,7 @@ or No Confidence. Abstain and No Confidence are "sentinel" values — they have 
 - Sentinel cards are rendered below the suggested cohort in the default (non-search, non-show-all) view
 - They call `onSelectForDelegation('abstain')` and `onSelectForDelegation('no_confidence')`
 - They have no favorite toggle, no metadata, and no "View details"
-- The sentinel check `drepId === 'abstain' || drepId === 'no_confidence'` gates auto-favorite
+- The sentinel check `chosenOption === 'abstain' || chosenOption === 'no_confidence'` gates auto-favorite after successful submission
 - Sentinel cards are hidden during search and show-all (they are not DReps; filtering would confuse them)
 - i18n strings for sentinel *labels* are kept out of directory/favorites namespaces to prevent
   accidental substring matches in search results
