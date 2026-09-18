@@ -429,53 +429,19 @@ async fn find_highest_slot(ledger_dir: &Path) -> Result<u64> {
         .ok_or_else(|| anyhow::anyhow!("No slot directories found in ledger dir"))
 }
 
-async fn run_converter(
-    cfg: &MithrilConfig,
-    staging_db: &Path,
+/// Wait for `proc` to exit, honouring cancel/stop commands from `cmd_rx`.
+/// Drains and logs stderr after the process exits.
+async fn run_subprocess(
+    label: &str,
+    proc: &mut tokio::process::Child,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
 ) -> ProcResult {
-    let ledger_dir = staging_db.join("ledger");
-    let slot = match find_highest_slot(&ledger_dir).await {
-        Ok(s) => s,
-        Err(e) => return ProcResult::Failed(e.to_string()),
-    };
-    let slot_str = slot.to_string();
-
-    let input_mem = ledger_dir.join(&slot_str);
-    let temp_input = staging_db.join(&slot_str);
-    let output_lsm_snapshot = ledger_dir.join(&slot_str);
-    let output_lsm_database = staging_db.join("lsm");
-
-    if let Err(e) = tokio::fs::rename(&input_mem, &temp_input).await {
-        return ProcResult::Failed(e.to_string());
-    }
-
-    let _ = tokio::fs::remove_dir_all(&output_lsm_database).await;
-
-    let mut converter_cmd = Command::new(&cfg.snapshot_converter_bin);
-    converter_cmd
-        .arg("--input-mem")
-        .arg(&temp_input)
-        .arg("--output-lsm-snapshot")
-        .arg(&output_lsm_snapshot)
-        .arg("--output-lsm-database")
-        .arg(&output_lsm_database)
-        .arg("--config")
-        .arg(&cfg.converter_config)
-        .stderr(std::process::Stdio::null())
-        .kill_on_drop(true);
-    tether_to_watchdog(&mut converter_cmd);
-    let mut proc = match converter_cmd.spawn() {
-        Ok(p) => p,
-        Err(e) => return ProcResult::Failed(e.to_string()),
-    };
-
     let result = loop {
         tokio::select! {
             result = proc.wait() => {
                 break match result {
                     Ok(s) if s.success() => ProcResult::Success,
-                    Ok(s) => ProcResult::Failed(format!("snapshot-converter exited with {s}")),
+                    Ok(s) => ProcResult::Failed(format!("{label} exited with {s}")),
                     Err(e) => ProcResult::Failed(e.to_string()),
                 };
             }
@@ -496,9 +462,116 @@ async fn run_converter(
             }
         }
     };
-
-    let _ = tokio::fs::remove_dir_all(&temp_input).await;
+    if let Some(stderr) = proc.stderr.take() {
+        use tokio::io::AsyncReadExt;
+        let mut buf = String::new();
+        let _ = tokio::io::BufReader::new(stderr)
+            .read_to_string(&mut buf)
+            .await;
+        let trimmed = buf.trim();
+        if !trimmed.is_empty() {
+            info!("mithril: {label} stderr:\n{trimmed}");
+        }
+    }
     result
+}
+
+async fn run_converter(
+    cfg: &MithrilConfig,
+    staging_db: &Path,
+    cmd_rx: &mut mpsc::Receiver<Cmd>,
+) -> ProcResult {
+    let ledger_dir = staging_db.join("ledger");
+    let slot = match find_highest_slot(&ledger_dir).await {
+        Ok(s) => s,
+        Err(e) => return ProcResult::Failed(e.to_string()),
+    };
+    let slot_str = slot.to_string();
+
+    let input_mem = ledger_dir.join(&slot_str);
+    let temp_input = staging_db.join(&slot_str);
+    let output_lsm_snapshot = ledger_dir.join(&slot_str);
+    let lsm_export_dir = staging_db.join("lsm-export");
+    let lsm_database = staging_db.join("lsm");
+
+    if let Err(e) = tokio::fs::rename(&input_mem, &temp_input).await {
+        return ProcResult::Failed(e.to_string());
+    }
+
+    let _ = tokio::fs::remove_dir_all(&lsm_export_dir).await;
+    let _ = tokio::fs::remove_dir_all(&lsm_database).await;
+
+    // Step 1: convert Mem snapshot → LSM snapshot + export tables
+    info!(
+        "mithril: {} convert --snapshot-in {} --snapshot-out {} --lsm-export-to {} --config {}",
+        cfg.snapshot_converter_bin,
+        temp_input.display(),
+        output_lsm_snapshot.display(),
+        lsm_export_dir.display(),
+        cfg.converter_config,
+    );
+
+    let mut convert_cmd = Command::new(&cfg.snapshot_converter_bin);
+    convert_cmd
+        .arg("convert")
+        .arg("--snapshot-in")
+        .arg(&temp_input)
+        .arg("--snapshot-out")
+        .arg(&output_lsm_snapshot)
+        .arg("--lsm-export-to")
+        .arg(&lsm_export_dir)
+        .arg("--config")
+        .arg(&cfg.converter_config)
+        .stderr(std::process::Stdio::piped())
+        .kill_on_drop(true);
+    tether_to_watchdog(&mut convert_cmd);
+
+    let mut proc = match convert_cmd.spawn() {
+        Ok(p) => p,
+        Err(e) => {
+            let _ = tokio::fs::remove_dir_all(&temp_input).await;
+            return ProcResult::Failed(e.to_string());
+        }
+    };
+    let convert_result = run_subprocess("snapshot-converter convert", &mut proc, cmd_rx).await;
+    let _ = tokio::fs::remove_dir_all(&temp_input).await;
+
+    match convert_result {
+        ProcResult::Success => {}
+        other => return other,
+    }
+
+    // Step 2: import exported tables into a fresh LSM database
+    info!(
+        "mithril: {} lsm import --lsm-database {} --lsm-import-from {} --snapshot {}",
+        cfg.snapshot_converter_bin,
+        lsm_database.display(),
+        lsm_export_dir.display(),
+        slot_str,
+    );
+
+    let mut import_cmd = Command::new(&cfg.snapshot_converter_bin);
+    import_cmd
+        .arg("lsm")
+        .arg("import")
+        .arg("--lsm-database")
+        .arg(&lsm_database)
+        .arg("--lsm-import-from")
+        .arg(&lsm_export_dir)
+        .arg("--snapshot")
+        .arg(&slot_str)
+        .stderr(std::process::Stdio::piped())
+        .kill_on_drop(true);
+    tether_to_watchdog(&mut import_cmd);
+
+    let mut proc = match import_cmd.spawn() {
+        Ok(p) => p,
+        Err(e) => return ProcResult::Failed(e.to_string()),
+    };
+    let import_result = run_subprocess("snapshot-converter lsm import", &mut proc, cmd_rx).await;
+    let _ = tokio::fs::remove_dir_all(&lsm_export_dir).await;
+
+    import_result
 }
 
 pub async fn run_pipeline(
