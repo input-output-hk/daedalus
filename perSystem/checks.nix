@@ -55,11 +55,9 @@
           test ! -e "$root/libexec/.patchelf-static"
           test ! -e "$root/share/icon_large.png"
           test ! -e "$root/share/applications"
-          test "$(jq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
-          test "$(jq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
-          jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0}' \
-            "$root/config/launcher-config.yaml" >/dev/null
-          test "$(jq -r .daedalusBin "$root/config/launcher-config.yaml")" = /opt/daedalus/mainnet/libexec/daedalus-frontend
+          test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
+          test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
+          jq -e '.electron.exe | endswith("/libexec/daedalus-frontend")' "$root/config/daedalus-config.json" >/dev/null
           test "$(stat -c %a "$root/libexec/bundle-electron/lib/electron/chrome-sandbox")" = 755
           test "$(patchelf --print-interpreter "$root/libexec/bundle-electron/lib/electron/electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
 
@@ -67,7 +65,6 @@
             "$root/bin/daedalus" \
             "$root/libexec/daedalus-frontend" \
             "$root/libexec/electron" \
-            "$root/config/launcher-config.yaml" \
             extracted/usr/share/applications/Daedalus-mainnet.desktop \
             control/preinst control/postinst control/prerm control/postrm; do
             if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|\.daedalus/.*/bin/daedalus|pre-auto-update' "$surface"; then
@@ -260,13 +257,8 @@
         rpm -qp --qf '[%{FILENAMES} %{FILEMODES:perms}\n]' "$rpm" >rpm-file-modes
         grep -F '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox -rwsr-xr-x' rpm-file-modes
         test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
-        test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
-        test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
-        jq -e '.dappBrowserPolicy == {"revision":1,"globalEnabled":false,"preferredCatalogEnabled":false,"diagnosticsEnabled":false,"cip104Revision":0,"cip142Revision":0}' \
-          "$root/config/launcher-config.yaml" >/dev/null
-        NODE_PATH=${node_modules}/node_modules node -e \
-          "require('yamljs').parse(require('fs').readFileSync(process.argv[1], 'utf8'))" \
-          "$root/config/launcher-config.yaml"
+        test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
+        test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
         jq -e '
           .packageFamily == "rpm"
           and .matrixRow == "fedora-43"
@@ -297,7 +289,7 @@
           "$root/bin/daedalus"
         if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX' \
           "$root/bin/daedalus" "$root/libexec/daedalus-frontend" \
-          "$root/libexec/electron" "$root/config/launcher-config.yaml" "$scripts"; then
+          "$root/libexec/electron" "$scripts"; then
           echo 'portable updater, home restart, or sandbox bypass found in RPM launch or lifecycle surface' >&2
           exit 1
         fi
@@ -348,8 +340,8 @@
           echo 'Nix-store link remains in Arch archive' >&2
           exit 1
         fi
-        test "$(yq -r .applicationUpdateMode "$root/config/launcher-config.yaml")" = system-package-disabled
-        test "$(yq -r 'has("updateRunnerBin")' "$root/config/launcher-config.yaml")" = false
+        test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
+        test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
         jq -e '
           .packageFamily == "arch"
           and .matrixRevision == "task-111-matrix-2026-09-02"
@@ -376,9 +368,8 @@
         grep -F 'Exec = /usr/share/libalpm/scripts/daedalus-mainnet-refuse-live' "$removal_hook"
         grep -F "electron='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron'" "$removal_guard"
         grep -F 'exit 1' "$removal_guard"
-        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|DAEDALUS_ELECTRON_FLAGS|update-runner|updateRunnerBin|/nix/store' \
-          "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron" \
-          "$root/config/launcher-config.yaml"; then
+        if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX|DAEDALUS_ELECTRON_FLAGS|update-runner|DAEDALUS_UPDATE_RUNNER|/nix/store' \
+          "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron"; then
           echo 'Arch package contains a sandbox bypass, updater, or Nix link' >&2
           exit 1
         fi

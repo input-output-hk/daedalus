@@ -20,7 +20,7 @@
 
       inherit
         (common)
-        launcherConfigs
+        daedalusConfigs
         cardanoNodeVersion
         cardanoWalletVersion
         ;
@@ -185,9 +185,9 @@
             destination = "/Resources/helper";
           })
           (pkgs.writeTextFile {
-            name = "watchdog-config";
+            name = "daedalus-config";
             text = ''{"stub":true}'';
-            destination = "/Resources/watchdog-config.json";
+            destination = "/Resources/daedalus-config.json";
           })
         ];
         postBuild = ''
@@ -343,7 +343,7 @@
 
             (
               cd installers/
-              cp -r ${launcherConfigs.${cluster}.configFiles}/. ./.
+              cp -r ${daedalusConfigs.${cluster}.configFiles}/. ./.
 
               echo "Creating icons ..."
               /usr/bin/iconutil --convert icns --output icons/electron.icns "icons/${cluster}.iconset"
@@ -354,11 +354,11 @@
             echo "Running electron packager script..."
             export "NODE_ENV" "production"
             yarn build:electron
-            yarn run package -- --name ${lib.escapeShellArg common.launcherConfigs.${cluster}.installerConfig.spacedName}
+            yarn run package -- --name ${lib.escapeShellArg common.daedalusConfigs.${cluster}.installerConfig.spacedName}
             echo "Size of Electron app is $(du -sh release)"
             find -name '*.node'
 
-            pathtoapp=release/darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app
+            pathtoapp=release/darwin-${archSuffix}/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}.app
             mkdir -p "$pathtoapp"/Contents/Resources/app/node_modules
             jq -r '.[]' ${../../../packaging/runtime-nodejs-deps.json} | while IFS= read -r pkg; do
               dest="$pathtoapp/Contents/Resources/app/node_modules"
@@ -378,7 +378,7 @@
             done
 
             jq >tmp-package.json <"$pathtoapp/Contents/Resources/app/package.json" \
-              --arg name ${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} \
+              --arg name ${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName} \
               '.productName = $name'
             mv tmp-package.json "$pathtoapp/Contents/Resources/app/package.json"
 
@@ -388,8 +388,7 @@
             mkdir -p "$dir" "$dataDir"
 
             echo "Preparing files ..."
-            cp installers/launcher-config.yaml "$dataDir"/
-            cp installers/watchdog-config.json "$dataDir"/
+            cp installers/daedalus-config.json "$dataDir"/
 
             cp -r ${bundle-cardano-node}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-cardano-watchdog}/. "$dir"/ && chmod -R +w "$dir/"
@@ -423,21 +422,21 @@
             # node-hid v3+ uses pkg-prebuilds/bindings.
             ${bundleNodeJsNativeModule} "$pathtoapp/Contents/Resources/app/node_modules/node-hid/build/Release/HID.node"
 
-            mv "$dir"/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName} "$dir"/Frontend
+            mv "$dir"/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName} "$dir"/Frontend
             chmod +x "$dir"/Frontend
 
             cat ${pkgs.writeText "helper" ''
               #!/usr/bin/env bash
-              mkdir -p "${launcherConfigs.${cluster}.installerConfig.dataDir}/Secrets-1.0"
-              mkdir -p "${launcherConfigs.${cluster}.installerConfig.dataDir}/Logs/pub"
+              mkdir -p "${daedalusConfigs.${cluster}.installerConfig.dataDir}/Secrets-1.0"
+              mkdir -p "${daedalusConfigs.${cluster}.installerConfig.dataDir}/Logs/pub"
             ''} >"$dataDir"/helper
             chmod +x "$dataDir"/helper
 
-            cp ${darwin-launcher}/bin/darwin-launcher "$dir"/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}
+            cp ${darwin-launcher}/bin/darwin-launcher "$dir"/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}
           '';
           installPhase = ''
             mkdir -p $out/Applications/
-            cp -r release/darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app $out/Applications/
+            cp -r release/darwin-${archSuffix}/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}-darwin-${archSuffix}/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}.app $out/Applications/
 
             echo 'Deleting all redundant node_modules/*.node files:'
             (
@@ -456,7 +455,7 @@
             mkdir -p $out/bin/
             cat >$out/bin/${pname} << EOF
             #!/bin/sh
-            exec $out/Applications/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app/Contents/MacOS/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}
+            exec $out/Applications/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}.app/Contents/MacOS/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}
             EOF
             chmod +x $out/bin/${pname}
 
@@ -519,7 +518,7 @@
             eval $(${readConfigs})
 
             workDir=$(mktemp -d)
-            appName=${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app
+            appName=${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}.app
             appDir=${package.${cluster}}/Applications/"$appName"
 
             echo "Info: workDir = $workDir"
@@ -539,12 +538,12 @@
             scriptsDir=$(mktemp -d)
             cat ${pkgs.writeText "preinstall" ''
               #!/bin/sh
-              rm -rf /Applications/${lib.escapeShellArg launcherConfigs.${cluster}.installerConfig.spacedName}.app
+              rm -rf /Applications/${lib.escapeShellArg daedalusConfigs.${cluster}.installerConfig.spacedName}.app
               exit 0
             ''} >"$scriptsDir/preinstall"
             chmod +x "$scriptsDir/preinstall"
             /usr/bin/pkgbuild \
-              --identifier ${lib.escapeShellArg ("org." + launcherConfigs.${cluster}.installerConfig.macPackageName + ".pkg")} \
+              --identifier ${lib.escapeShellArg ("org." + daedalusConfigs.${cluster}.installerConfig.macPackageName + ".pkg")} \
               --component "$workDir/$appName" \
               --scripts "$scriptsDir" \
               --install-location /Applications \

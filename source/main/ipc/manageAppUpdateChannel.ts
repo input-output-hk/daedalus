@@ -12,7 +12,7 @@ import type {
 import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/appUpdateConfig';
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
-import { launcherConfig } from '../config';
+import { updateMode, updateRunnerBin } from '../config';
 // IpcChannel<Incoming, Outgoing>
 const manageAppUpdateChannel: MainIpcChannel<Request, Response> =
   new MainIpcChannel(MANAGE_APP_UPDATE);
@@ -82,7 +82,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     return new Promise((resolve, reject) => {
       const { name: functionPrefix } = installUpdate;
       response(null, functionPrefix, 'installation begin.');
-      if (launcherConfig.applicationUpdateMode === 'system-package-disabled') {
+      if (updateMode === 'system-package-disabled') {
         reject(
           response(
             false,
@@ -92,7 +92,6 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
         );
         return;
       }
-      const { updateRunnerBin } = launcherConfig;
       fs.chmodSync(filePath, 0o777);
       const updater = spawn(updateRunnerBin, [filePath]);
       let success = true;

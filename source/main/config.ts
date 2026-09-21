@@ -1,7 +1,6 @@
 import path from 'path';
 import { app, dialog } from 'electron';
 import { environment } from './environment';
-import { readLauncherConfig } from './utils/config';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
 
 const {
@@ -13,9 +12,9 @@ const {
   network,
   version,
 } = environment;
-// Make sure Daedalus is started with required configuration
-const { LAUNCHER_CONFIG } = process.env;
-const isStartedByLauncher = !!LAUNCHER_CONFIG;
+
+// Make sure Daedalus is started with required configuration (injected by watchdog)
+const isStartedByLauncher = !!process.env.DAEDALUS_CLUSTER;
 const isWindows = process.platform === 'win32';
 
 if (!isStartedByLauncher) {
@@ -39,32 +38,6 @@ if (!isStartedByLauncher) {
     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
   }
 }
-
-/**
- * The shape of the config params from launcher-config.yaml (UI-only fields).
- * Binary paths, node/wallet args, and TLS config now live in watchdog-config.json.
- */
-type InstallerManagedApplicationUpdateConfig = {
-  applicationUpdateMode?: 'installer-managed';
-  updateRunnerBin: string;
-};
-
-type DisabledApplicationUpdateConfig = {
-  applicationUpdateMode: 'system-package-disabled';
-  updateRunnerBin?: never;
-};
-
-export type LauncherConfig = {
-  stateDir: string;
-  logsPrefix: string;
-  cluster: string;
-  legacyStateDir: string;
-  legacySecretKey: string;
-  legacyWalletDB: string;
-  isFlight: boolean;
-  smashUrl?: string;
-  metadataUrl?: string;
-} & (InstallerManagedApplicationUpdateConfig | DisabledApplicationUpdateConfig);
 type WindowOptionsType = {
   show: boolean;
   width: number;
@@ -95,16 +68,15 @@ export const windowOptions: WindowOptionsType = {
   },
   useContentSize: true,
 };
-export const launcherConfig: LauncherConfig =
-  readLauncherConfig(LAUNCHER_CONFIG);
-export const {
-  cluster,
-  stateDir,
-  legacyStateDir,
-  logsPrefix,
-  isFlight,
-  smashUrl,
-} = launcherConfig;
+export const cluster = process.env.DAEDALUS_CLUSTER ?? '';
+export const stateDir = process.env.DAEDALUS_STATE_DIR ?? '';
+export const logsPrefix = process.env.DAEDALUS_LOGS_DIR ?? '';
+export const legacyStateDir = process.env.DAEDALUS_LEGACY_STATE_DIR ?? '';
+export const isFlight = process.env.DAEDALUS_IS_FLIGHT === 'true';
+export const smashUrl = process.env.DAEDALUS_SMASH_URL;
+export const updateMode = (process.env.DAEDALUS_UPDATE_MODE ??
+  'system-package-disabled') as 'installer-managed' | 'system-package-disabled';
+export const updateRunnerBin = process.env.DAEDALUS_UPDATE_RUNNER ?? '';
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;

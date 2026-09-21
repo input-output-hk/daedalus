@@ -1,3 +1,10 @@
+// On Windows, build as a GUI app so no console window appears when launched
+// from a shortcut or the installer. Pipe-based IPC with Electron still works
+// (STARTF_USESTDHANDLES overrides stdio regardless of subsystem), and the
+// absence of an inherited console handle table keeps Electron's libuv stdio
+// initialization clean.
+#![cfg_attr(windows, windows_subsystem = "windows")]
+
 mod chain_validation;
 mod config;
 mod mithril;
@@ -274,14 +281,52 @@ async fn main() -> Result<()> {
             .map(Stdio::from)
             .unwrap_or_else(|_| Stdio::null());
 
+        // ── Windows: named-pipe IPC ──────────────────────────────────────────
+        // Chromium may reassign or close the inherited stdin/stdout handles
+        // during browser-process startup (before Node.js/libuv claims them),
+        // making pipe-based IPC unreliable on Windows. A named pipe is a
+        // dedicated OS object that Chromium never touches, so it is the
+        // correct IPC transport on Windows.
+        //
+        // We create the server before spawning Electron so the pipe name
+        // exists in the kernel when Electron starts. Electron connects to it
+        // via the DAEDALUS_IPC_PIPE env var. Electron's stdin/stdout are set
+        // to null so Chromium has nothing to interfere with.
+        //
+        // ── Non-Windows: stdin/stdout IPC ───────────────────────────────────
+        // On Linux and macOS the standard handles are inherited cleanly and
+        // Chromium does not redirect them, so the original pipe-based approach
+        // works without modification.
+        #[cfg(windows)]
+        let ipc_pipe_name = format!(r"\\.\pipe\daedalus-ipc-{}", std::process::id());
+
+        #[cfg(windows)]
+        let ipc_server = {
+            use tokio::net::windows::named_pipe::ServerOptions;
+            ServerOptions::new()
+                .first_pipe_instance(true)
+                .create(&ipc_pipe_name)
+                .map_err(|e| anyhow::anyhow!("Failed to create IPC named pipe: {e}"))?
+        };
+
         let mut electron_cmd = TokioCommand::new(&electron_cfg.exe);
         electron_cmd
             .args(&electron_cfg.args)
             .envs(&electron_cfg.env)
+            .kill_on_drop(true);
+
+        #[cfg(windows)]
+        electron_cmd
+            .env("DAEDALUS_IPC_PIPE", &ipc_pipe_name)
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(electron_stderr);
+
+        #[cfg(not(windows))]
+        electron_cmd
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(electron_stderr)
-            .kill_on_drop(true);
+            .stderr(electron_stderr);
 
         supervisor::tether_to_watchdog(&mut electron_cmd);
 
@@ -293,37 +338,94 @@ async fn main() -> Result<()> {
         tracing::info!("Electron started (PID {electron_pid})");
         protocol::emit(&protocol::Event::ElectronStarted { pid: electron_pid });
 
-        // Drain event channel → Electron's stdin.
-        let mut electron_stdin = electron.stdin.take().unwrap();
-        let drain_cmd_tx = cmd_tx.clone();
-        tokio::spawn(async move {
-            while let Some(line) = event_rx.recv().await {
-                let mut buf = line.into_bytes();
-                buf.push(b'\n');
-                if electron_stdin.write_all(&buf).await.is_err()
-                    || electron_stdin.flush().await.is_err()
-                {
-                    tracing::warn!("Electron stdin closed (broken pipe); stopping");
-                    let _ = drain_cmd_tx.send(protocol::Command::Stop).await;
-                    return;
+        // ── Windows: accept the named-pipe connection ────────────────────────
+        // Electron connects when its Node.js main-process code runs. We wait
+        // up to 60 s to allow for slow Windows startup and AV scanning. Once
+        // connected the pipe is split into a write half (events → Electron)
+        // and a read half (commands ← Electron).
+        #[cfg(windows)]
+        {
+            use tokio::time::{Duration, timeout};
+
+            tracing::info!("Waiting for Electron to connect to IPC pipe: {ipc_pipe_name}");
+            match timeout(Duration::from_secs(60), ipc_server.connect()).await {
+                Ok(Ok(_)) => tracing::info!("Electron connected to IPC named pipe"),
+                Ok(Err(e)) => return Err(anyhow::anyhow!("IPC named pipe accept failed: {e}")),
+                Err(_) => {
+                    return Err(anyhow::anyhow!(
+                        "Electron did not connect to IPC pipe within 60 s"
+                    ));
                 }
             }
-        });
 
-        // Read commands from Electron's stdout.
-        let electron_stdout = electron.stdout.take().unwrap();
-        let mut reader = BufReader::new(electron_stdout);
-        let stdout_cmd_tx = cmd_tx.clone();
-        tokio::spawn(async move {
-            while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
-                if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
-                    if stdout_cmd_tx.send(cmd).await.is_err() {
-                        break;
+            let (ipc_read, mut ipc_write) = tokio::io::split(ipc_server);
+
+            // Events → Electron via named pipe
+            tokio::spawn(async move {
+                while let Some(line) = event_rx.recv().await {
+                    let mut buf = line.into_bytes();
+                    buf.push(b'\n');
+                    if ipc_write.write_all(&buf).await.is_err() || ipc_write.flush().await.is_err()
+                    {
+                        tracing::warn!("IPC pipe write failed; discarding remaining events");
+                        while event_rx.recv().await.is_some() {}
+                        return;
                     }
                 }
-            }
-            let _ = stdout_cmd_tx.send(protocol::Command::Stop).await;
-        });
+            });
+
+            // Commands ← Electron via named pipe.
+            // EOF on the pipe means Electron closed its end (e.g. process exit).
+            // The Electron process monitor task below handles the actual Stop.
+            let mut reader = BufReader::new(ipc_read);
+            let ipc_cmd_tx = cmd_tx.clone();
+            tokio::spawn(async move {
+                while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
+                    if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
+                        if ipc_cmd_tx.send(cmd).await.is_err() {
+                            break;
+                        }
+                    }
+                }
+                tracing::info!("IPC pipe reader: Electron disconnected");
+            });
+        }
+
+        // ── Non-Windows: stdin/stdout IPC ────────────────────────────────────
+        #[cfg(not(windows))]
+        {
+            // Drain event channel → Electron's stdin.
+            let mut electron_stdin = electron.stdin.take().unwrap();
+            let drain_cmd_tx = cmd_tx.clone();
+            tokio::spawn(async move {
+                while let Some(line) = event_rx.recv().await {
+                    let mut buf = line.into_bytes();
+                    buf.push(b'\n');
+                    if electron_stdin.write_all(&buf).await.is_err()
+                        || electron_stdin.flush().await.is_err()
+                    {
+                        tracing::warn!("Electron stdin closed (broken pipe); stopping");
+                        let _ = drain_cmd_tx.send(protocol::Command::Stop).await;
+                        return;
+                    }
+                }
+            });
+
+            // Read commands from Electron's stdout.
+            let electron_stdout = electron.stdout.take().unwrap();
+            let mut reader = BufReader::new(electron_stdout);
+            let stdout_cmd_tx = cmd_tx.clone();
+            tokio::spawn(async move {
+                while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
+                    if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
+                        if stdout_cmd_tx.send(cmd).await.is_err() {
+                            break;
+                        }
+                    }
+                }
+                let _ = stdout_cmd_tx.send(protocol::Command::Stop).await;
+            });
+        }
 
         // Monitor Electron exit → stop the stack.
         let exit_cmd_tx = cmd_tx.clone();

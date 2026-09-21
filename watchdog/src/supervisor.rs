@@ -127,7 +127,17 @@ pub(crate) fn tether_to_watchdog(cmd: &mut Command) {
             });
         }
     }
-    #[cfg(not(target_os = "linux"))]
+    // Suppress blank console windows for child processes. Watchdog is a GUI-subsystem
+    // app (no console), so any console-app child would otherwise get its own visible
+    // console. CREATE_NO_WINDOW keeps them hidden. Callers that also need
+    // CREATE_NEW_PROCESS_GROUP (node, wallet) combine both flags in their own
+    // creation_flags() call, which overrides this one — that is intentional.
+    #[cfg(windows)]
+    {
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        cmd.creation_flags(CREATE_NO_WINDOW);
+    }
+    #[cfg(not(any(target_os = "linux", windows)))]
     let _ = cmd;
 }
 
@@ -759,11 +769,13 @@ async fn run_node_wallet(
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
 
-    // Windows: spawn in its own process group so CTRL_BREAK_EVENT can target it
+    // Windows: own process group for CTRL_BREAK targeting; CREATE_NO_WINDOW prevents
+    // a blank console window from appearing (watchdog is a GUI app with no console).
     #[cfg(windows)]
     {
         const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
-        node_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP);
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        node_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW);
     }
 
     shutdown_pipe.setup_node_cmd(&mut node_cmd);
@@ -1007,11 +1019,13 @@ async fn run_node_wallet(
             .stderr(std::process::Stdio::piped())
             .kill_on_drop(true);
 
-        // Windows: own process group for CTRL_BREAK targeting
+        // Windows: own process group for CTRL_BREAK targeting; CREATE_NO_WINDOW prevents
+        // a blank console window from appearing (watchdog is a GUI app with no console).
         #[cfg(windows)]
         {
             const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
-            wallet_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP);
+            const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+            wallet_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW);
         }
 
         tether_to_watchdog(&mut wallet_cmd);

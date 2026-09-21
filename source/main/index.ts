@@ -17,12 +17,7 @@ import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
-import {
-  pubLogsFolderPath,
-  RTS_FLAGS,
-  stateDirectoryPath,
-  launcherConfig,
-} from './config';
+import { pubLogsFolderPath, RTS_FLAGS, stateDirectoryPath } from './config';
 import { backendLifecycle } from './BackendLifecycle';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { buildAppMenus } from './utils/buildAppMenus';
@@ -231,7 +226,7 @@ const onAppReady = async () => {
   await handleCheckDiskSpace();
 
   // Start watchdog IPC — watchdog is our parent process; node/wallet are its
-  // children. Binary paths, args, and TLS config live in watchdog-config.json
+  // children. Binary paths, args, and TLS config live in daedalus-config.json
   // (generated at Nix build time). We just wire up stdin/stdout.
   backendLifecycle.setWindowProvider(() => mainWindow);
   const defaultChainPath = path.join(stateDirectoryPath, 'chain');

@@ -1,5 +1,6 @@
 import { createInterface } from 'readline';
 import type { Interface as ReadlineInterface } from 'readline';
+import net from 'net';
 import { logger } from './utils/logging';
 
 // ---------------------------------------------------------------------------
@@ -68,6 +69,7 @@ const STOP_TIMEOUT_MS = 45_000;
 
 class WatchdogManager {
   private rl: ReadlineInterface | null = null;
+  private socket: net.Socket | null = null;
   private handlers: EventHandler[] = [];
   private state: WatchdogState = WatchdogManager.makeInitialState();
 
@@ -111,7 +113,9 @@ class WatchdogManager {
   // ---------------------------------------------------------------------------
 
   // In the new architecture watchdog is PID 1 and spawned Electron as a child.
-  // Events arrive on process.stdin; commands are sent on process.stdout.
+  // On Windows, events and commands travel over a named pipe (DAEDALUS_IPC_PIPE)
+  // because Chromium may reassign stdin/stdout handles during browser-process
+  // startup. On other platforms stdin/stdout are used as before.
   start(): void {
     this.state = WatchdogManager.makeInitialState();
     this._pendingRejection = null;
@@ -121,10 +125,28 @@ class WatchdogManager {
       this._walletReadyReject = reject;
     });
 
-    const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
-    this.rl = rl;
+    const pipeName = process.env.DAEDALUS_IPC_PIPE;
 
-    logger.info('WatchdogManager: listening on stdin (watchdog is parent)');
+    let rl: ReadlineInterface;
+
+    if (pipeName) {
+      logger.info('WatchdogManager: connecting to IPC named pipe', {
+        pipeName,
+      });
+      const socket = net.createConnection({ path: pipeName });
+      this.socket = socket;
+
+      socket.on('error', (err) => {
+        logger.error('WatchdogManager: IPC pipe error', { error: String(err) });
+      });
+
+      rl = createInterface({ input: socket, crlfDelay: Infinity });
+    } else {
+      logger.info('WatchdogManager: listening on stdin (watchdog is parent)');
+      rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
+    }
+
+    this.rl = rl;
 
     rl.on('line', (line) => {
       if (!line.trim()) return;
@@ -132,15 +154,16 @@ class WatchdogManager {
       try {
         event = JSON.parse(line);
       } catch (e) {
-        logger.warn('WatchdogManager: failed to parse stdin line', { line });
+        logger.warn('WatchdogManager: failed to parse IPC line', { line });
         return;
       }
       this.handleEvent(event);
     });
 
-    // stdin closes when watchdog exits (pipe EOF from parent).
+    // Pipe/socket closes when watchdog exits or disconnects.
     rl.on('close', () => {
-      logger.info('WatchdogManager: stdin closed (watchdog exited)');
+      logger.info('WatchdogManager: IPC channel closed (watchdog exited)');
+      this.socket = null;
       if (this._pendingRejection != null) {
         this._walletReadyReject?.(this._pendingRejection);
       } else {
@@ -156,6 +179,18 @@ class WatchdogManager {
   // ---------------------------------------------------------------------------
 
   sendCommand(cmd: object): void {
+    const line = JSON.stringify(cmd) + '\n';
+    if (this.socket) {
+      if (!this.socket.writable) {
+        logger.warn(
+          'WatchdogManager: sendCommand called but IPC pipe not writable',
+          { cmd }
+        );
+        return;
+      }
+      this.socket.write(line);
+      return;
+    }
     if (!process.stdout.writable) {
       logger.warn(
         'WatchdogManager: sendCommand called but stdout not writable',
@@ -163,7 +198,7 @@ class WatchdogManager {
       );
       return;
     }
-    process.stdout.write(JSON.stringify(cmd) + '\n');
+    process.stdout.write(line);
   }
 
   stop(): Promise<void> {

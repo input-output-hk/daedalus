@@ -30,7 +30,7 @@ func main() {
 		panic(err)
 	}
 
-	watchdogConfigPath := filepath.Join(installDir, "../Resources/watchdog-config.json")
+	watchdogConfigPath := filepath.Join(installDir, "../Resources/daedalus-config.json")
 
 	// Replace the current process (otherwise WDIO complains in end-to-end tests):
 	img := filepath.Join(installDir, "cardano-watchdog")

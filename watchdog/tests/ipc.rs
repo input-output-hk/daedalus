@@ -108,8 +108,8 @@ impl Watchdog {
         let state_dir = parsed["node"]["state_dir"]
             .as_str()
             .expect("node.state_dir");
-        let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
-        std::fs::write(&config_path, config).expect("write watchdog-config.json");
+        let config_path = std::path::Path::new(state_dir).join("daedalus-config.json");
+        std::fs::write(&config_path, config).expect("write daedalus-config.json");
 
         let mut child = Command::new(env!("CARGO_BIN_EXE_cardano-watchdog"))
             .arg("--config")

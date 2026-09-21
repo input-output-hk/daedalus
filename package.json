@@ -6,7 +6,7 @@
   "main": "./dist/main/index.js",
   "scripts": {
     "dev": "concurrently --kill-others --success first --names renderer,main 'yarn dev:renderer' 'wait-on http://localhost:8080 && yarn dev:main'",
-    "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Testnet\" LAUNCHER_CONFIG=\"C:\\Program Files\\Daedalus Testnet\\launcher-config.yaml\" yarn dev",
+    "dev:windows": "cross-env DAEDALUS_INSTALL_DIRECTORY=\"C:\\Program Files\\Daedalus Testnet\" DAEDALUS_CLUSTER=preprod DAEDALUS_NETWORK_NAME=preprod DAEDALUS_IS_FLIGHT=false DAEDALUS_UPDATE_MODE=installer-managed DAEDALUS_STATE_DIR=\"C:\\Users\\user\\AppData\\Roaming\\Daedalus Pre-Prod\" DAEDALUS_LOGS_DIR=\"C:\\Users\\user\\AppData\\Roaming\\Daedalus Pre-Prod\\Logs\" DAEDALUS_LEGACY_STATE_DIR=\"C:\\Users\\user\\AppData\\Roaming\\Daedalus Pre-Prod\" yarn dev",
     "dev:main": "cross-env NODE_ENV=development yarn build:main --watch",
     "dev:renderer": "concurrently 'yarn typedef:sass --watch' 'cross-env NODE_ENV=development yarn webpack serve -c source/renderer/webpack.config.js --progress'",
     "build": "yarn build:cleanup && yarn build:main && yarn build:renderer",

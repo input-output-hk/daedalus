@@ -11,14 +11,14 @@
   }:
     lib.mkIf (system == "x86_64-linux") (let
       clusters = common.sourceLib.installerClusters;
-      inherit (common) sourceLib launcherConfigs;
+      inherit (common) sourceLib daedalusConfigs;
       inherit (linuxBuild) originalPackageJson daedalusJs newPackage;
       genClusters = lib.genAttrs clusters;
 
       commonPackagingArgs = cluster: {
         inherit pkgs lib cluster;
         bundle = systemPackageBundle.${cluster};
-        icon = launcherConfigs.${cluster}.installerConfig.iconPath.base + "/512x512.png";
+        icon = daedalusConfigs.${cluster}.installerConfig.iconPath.base + "/512x512.png";
         version = originalPackageJson.version;
         inherit (sourceLib) buildCounter buildRev buildRevShort;
         sourceDateEpoch = inputs.self.lastModified or sourceLib.daedalusEpoch;
@@ -73,35 +73,9 @@
           prerm = ../packaging/linux/deb-prerm.sh;
           postrm = ../packaging/linux/deb-postrm.sh;
         };
-        lc = launcherConfigs.${cluster}.launcherConfig;
-        nativeLauncherConfig = builtins.toJSON (
-          builtins.removeAttrs
-          (lc
-            // {
-              applicationUpdateMode = "system-package-disabled";
-              daedalusBin = "${installRoot}/libexec/daedalus-frontend";
-              nodeBin = "${installRoot}/libexec/cardano-node";
-              cliBin = "${installRoot}/libexec/cardano-cli";
-              walletBin = "${installRoot}/libexec/cardano-wallet";
-              cardanoAddressBin = "${installRoot}/libexec/cardano-address";
-              dappBrowserPolicy = {
-                revision = 1;
-                globalEnabled = false;
-                preferredCatalogEnabled = false;
-                diagnosticsEnabled = false;
-                cip104Revision = 0;
-                cip142Revision = 0;
-              };
-            }
-            // lib.optionalAttrs (lc ? selfnodeBin) {selfnodeBin = "${installRoot}/libexec/local-cluster";}
-            // lib.optionalAttrs (lc ? mockTokenMetadataServerBin) {mockTokenMetadataServerBin = "${installRoot}/libexec/mock-token-metadata-server";})
-          ["updateRunnerBin"]
-        );
       in
         pkgs.runCommand "daedalus-${cluster}-${packageVersion}-deb" {
           nativeBuildInputs = [pkgs.dpkg pkgs.jq pkgs.patchelf pkgs.findutils pkgs.coreutils pkgs.file];
-          inherit nativeLauncherConfig;
-          passAsFile = ["nativeLauncherConfig"];
           SOURCE_DATE_EPOCH = toString sourceDateEpoch;
         } ''
           set -eu
@@ -156,7 +130,7 @@
           mkdir -p "''${DAEDALUS_DIR}/${cluster}/Logs/pub" "''${DAEDALUS_DIR}/${cluster}/Secrets"
           cd "''${DAEDALUS_DIR}/${cluster}"
           exec '${installRoot}/libexec/cardano-watchdog' \
-            --config '${installRoot}/config/watchdog-config.json' \
+            --config '${installRoot}/config/daedalus-config.json' \
             --pub-logs-dir "''${DAEDALUS_DIR}/${cluster}/Logs/pub" \
             --tls-dir "''${DAEDALUS_DIR}/${cluster}/tls"
           EOF
@@ -174,8 +148,6 @@
           exec '${installRoot}/libexec/bundle-electron/lib/electron/electron' "$@"
           EOF
           chmod 0755 "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron"
-
-          cp "$nativeLauncherConfigPath" "$root/config/launcher-config.yaml"
 
           mkdir -p "$root/share/apparmor"
           for row in ubuntu-24.04 ubuntu-26.04; do
@@ -333,30 +305,6 @@
           then ../packaging/linux/rpm-dev.spec.in
           else ../packaging/linux/rpm.spec.in;
         payloadTarball = "/usr/share/daedalus-${cluster}/payload.tar.zst";
-        lc = launcherConfigs.${cluster}.launcherConfig;
-        nativeLauncherConfig = builtins.toJSON (
-          builtins.removeAttrs
-          (lc
-            // {
-              applicationUpdateMode = "system-package-disabled";
-              daedalusBin = "${installRoot}/libexec/daedalus-frontend";
-              nodeBin = "${installRoot}/libexec/cardano-node";
-              cliBin = "${installRoot}/libexec/cardano-cli";
-              walletBin = "${installRoot}/libexec/cardano-wallet";
-              cardanoAddressBin = "${installRoot}/libexec/cardano-address";
-              dappBrowserPolicy = {
-                revision = 1;
-                globalEnabled = false;
-                preferredCatalogEnabled = false;
-                diagnosticsEnabled = false;
-                cip104Revision = 0;
-                cip142Revision = 0;
-              };
-            }
-            // lib.optionalAttrs (lc ? selfnodeBin) {selfnodeBin = "${installRoot}/libexec/local-cluster";}
-            // lib.optionalAttrs (lc ? mockTokenMetadataServerBin) {mockTokenMetadataServerBin = "${installRoot}/libexec/mock-token-metadata-server";})
-          ["updateRunnerBin"]
-        );
       in
         pkgs.runCommand "${packageName}-${version}-${release}-rpm" {
           nativeBuildInputs =
@@ -371,8 +319,6 @@
               pkgs.rpm
             ]
             ++ lib.optionals devBuild [pkgs.zstd];
-          inherit nativeLauncherConfig;
-          passAsFile = ["nativeLauncherConfig"];
           SOURCE_DATE_EPOCH = toString sourceDateEpoch;
         } ''
           set -eu
@@ -431,7 +377,7 @@
           mkdir -p "''${DAEDALUS_DIR}/${cluster}/Logs/pub" "''${DAEDALUS_DIR}/${cluster}/Secrets"
           cd "''${DAEDALUS_DIR}/${cluster}"
           exec '${installRoot}/libexec/cardano-watchdog' \
-            --config '${installRoot}/config/watchdog-config.json' \
+            --config '${installRoot}/config/daedalus-config.json' \
             --pub-logs-dir "''${DAEDALUS_DIR}/${cluster}/Logs/pub" \
             --tls-dir "''${DAEDALUS_DIR}/${cluster}/tls"
           EOF
@@ -450,8 +396,6 @@
           exec '${installRoot}/libexec/bundle-electron/lib/electron/electron' "$@"
           EOF
           chmod 0755 "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron"
-
-          cp "$nativeLauncherConfigPath" "$root/config/launcher-config.yaml"
 
           cat >"$payload/usr/bin/daedalus-${cluster}" <<'EOF'
           #!/bin/sh
@@ -607,30 +551,6 @@
           if builtins.match "[0-9a-f]{9}" buildRevShort != null
           then buildRevShort
           else lib.substring 0 9 (builtins.hashString "sha256" (toString bundle));
-        lc = launcherConfigs.${cluster}.launcherConfig;
-        nativeLauncherConfig = builtins.toJSON (
-          builtins.removeAttrs
-          (lc
-            // {
-              applicationUpdateMode = "system-package-disabled";
-              daedalusBin = "${installRoot}/libexec/daedalus-frontend";
-              nodeBin = "${installRoot}/libexec/cardano-node";
-              cliBin = "${installRoot}/libexec/cardano-cli";
-              walletBin = "${installRoot}/libexec/cardano-wallet";
-              cardanoAddressBin = "${installRoot}/libexec/cardano-address";
-              dappBrowserPolicy = {
-                revision = 1;
-                globalEnabled = false;
-                preferredCatalogEnabled = false;
-                diagnosticsEnabled = false;
-                cip104Revision = 0;
-                cip142Revision = 0;
-              };
-            }
-            // lib.optionalAttrs (lc ? selfnodeBin) {selfnodeBin = "${installRoot}/libexec/local-cluster";}
-            // lib.optionalAttrs (lc ? mockTokenMetadataServerBin) {mockTokenMetadataServerBin = "${installRoot}/libexec/mock-token-metadata-server";})
-          ["updateRunnerBin"]
-        );
       in
         pkgs.runCommand "arch-installer-${cluster}" {
           nativeBuildInputs = [
@@ -646,8 +566,6 @@
             pkgs.patchelf
             pkgs.zstd
           ];
-          inherit nativeLauncherConfig;
-          passAsFile = ["nativeLauncherConfig"];
           SOURCE_DATE_EPOCH = toString sourceDateEpoch;
         } ''
           set -eu
@@ -698,7 +616,7 @@
           mkdir -p "''${DAEDALUS_DIR}/${cluster}/Logs/pub" "''${DAEDALUS_DIR}/${cluster}/Secrets"
           cd "''${DAEDALUS_DIR}/${cluster}"
           exec '${installRoot}/libexec/cardano-watchdog' \
-            --config '${installRoot}/config/watchdog-config.json' \
+            --config '${installRoot}/config/daedalus-config.json' \
             --pub-logs-dir "''${DAEDALUS_DIR}/${cluster}/Logs/pub" \
             --tls-dir "''${DAEDALUS_DIR}/${cluster}/tls"
           EOF
@@ -717,8 +635,6 @@
           exec '${installRoot}/libexec/bundle-electron/lib/electron/electron' "$@"
           EOF
           chmod 0755 "$root/bin/daedalus" "$root/libexec/daedalus-frontend" "$root/libexec/electron"
-
-          cp "$nativeLauncherConfigPath" "$root/config/launcher-config.yaml"
 
           mkdir -p \
             "$payload/usr/bin" \
@@ -870,7 +786,7 @@
           buildCommand = ''
             mkdir -p $out/{bin,libexec,config,share}
 
-            cp -r ${launcherConfigs.${cluster}.configFiles}/. $out/config/
+            cp -r ${daedalusConfigs.${cluster}.configFiles}/. $out/config/
 
             # daedalus-bridge is a static musl binary — no nix-bundle-exe needed on NixOS.
             ln -sf ${common.daedalus-bridge.${cluster}} $out/libexec/bundle-daedalus-bridge
@@ -905,7 +821,7 @@
               cd "''${DAEDALUS_DIR}/${cluster}/"
 
               exec cardano-watchdog \
-                --config "$ENTRYPOINT_DIR/config/watchdog-config.json" \
+                --config "$ENTRYPOINT_DIR/config/daedalus-config.json" \
                 --pub-logs-dir "''${DAEDALUS_DIR}/${cluster}/Logs/pub" \
                 --tls-dir "''${DAEDALUS_DIR}/${cluster}/tls"
             ''} $out/bin/daedalus-${cluster}

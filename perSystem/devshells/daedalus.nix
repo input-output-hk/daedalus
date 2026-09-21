@@ -29,13 +29,13 @@
       ];
 
     mkDaedalusShell = cluster: let
-      launcherConfigs = common.mkLauncherConfigs {
+      daedalusConfigs = common.mkDaedalusConfigs {
         inherit cluster;
         devShell = true;
       };
       regenerateDevCerts = let
         moddedConfig = pkgs.writeText "launcher-config.yaml" (builtins.toJSON (
-          launcherConfigs.launcherConfig // {daedalusBin = "true";}
+          daedalusConfigs.daedalusConfig // {daedalusBin = "true";}
         ));
       in
         pkgs.writeShellScriptBin "regenerate-dev-certs" ''
@@ -82,13 +82,15 @@
             ]
           );
         buildCommand = "export >$out";
-        LAUNCHER_CONFIG = DAEDALUS_CONFIG + "/launcher-config.yaml";
         CARDANO_NODE_VERSION = common.cardanoNodeVersion;
         CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
-        DAEDALUS_CONFIG = pkgs.runCommand "daedalus-config" {} ''
-          mkdir -pv $out
-          cp ${pkgs.writeText "launcher-config.yaml" (builtins.toJSON launcherConfigs.launcherConfig)} $out/launcher-config.yaml
-        '';
+        DAEDALUS_CLUSTER = daedalusConfigs.daedalusConfig.cluster;
+        DAEDALUS_NETWORK_NAME = daedalusConfigs.daedalusConfig.networkName;
+        DAEDALUS_IS_FLIGHT =
+          if daedalusConfigs.daedalusConfig.isFlight
+          then "true"
+          else "false";
+        DAEDALUS_UPDATE_MODE = "system-package-disabled";
         DAEDALUS_INSTALL_DIRECTORY = "./";
         DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
         CLUSTER = cluster;
@@ -115,7 +117,7 @@
           source <(cardano-address --bash-completion-script cardano-address)
           [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
 
-          cp -f ${launcherConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
+          cp -f ${daedalusConfigs.installerConfig.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
           ln -svf $(type -P cardano-node)
           ln -svf $(type -P cardano-wallet)
@@ -144,11 +146,10 @@
             ln -svf ${platformBuild.relocatableElectron}/bin/electron ./node_modules/electron/dist/electron
           ''}
 
-          echo 'jq < $LAUNCHER_CONFIG'
-
-          echo 'Resolving environment variables to absolute paths…'
-          # XXX: they originally contain references to HOME or XDG_DATA_HOME in launcher-config.yaml:
-          export CARDANO_WALLET_TLS_PATH="${launcherConfigs.launcherConfig.tlsPath}"
+          export DAEDALUS_STATE_DIR="${daedalusConfigs.daedalusConfig.stateDir}"
+          export DAEDALUS_LOGS_DIR="${daedalusConfigs.daedalusConfig.logsPrefix}"
+          export DAEDALUS_LEGACY_STATE_DIR="${daedalusConfigs.daedalusConfig.legacyStateDir}"
+          export CARDANO_WALLET_TLS_PATH="${daedalusConfigs.daedalusConfig.tlsPath}"
 
           echo 'Re-generating dev certificates for cardano-wallet…'
           mkdir -p "$CARDANO_WALLET_TLS_PATH"

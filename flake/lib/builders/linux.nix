@@ -83,7 +83,7 @@
           CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
           CARDANO_NODE_VERSION = common.cardanoNodeVersion;
           CI = "nix";
-          NETWORK = common.launcherConfigs.${cluster}.launcherConfig.networkName;
+          NETWORK = common.daedalusConfigs.${cluster}.daedalusConfig.networkName;
           BUILD_REV = sourceLib.buildRev;
           BUILD_REV_SHORT = sourceLib.buildRevShort;
           BUILD_COUNTER = sourceLib.buildCounter;
@@ -98,7 +98,7 @@
             '';
           patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
             pkgs.lib.recursiveUpdate originalPackageJson {
-              productName = common.launcherConfigs.${cluster}.installerConfig.spacedName;
+              productName = common.daedalusConfigs.${cluster}.installerConfig.spacedName;
               main = "dist/main/index.js";
             }
           ));
@@ -314,7 +314,7 @@
           buildCommand = ''
             mkdir -p $out/{bin,libexec,config}
 
-            cp -r ${common.launcherConfigs.${cluster}.configFiles}/. $out/config/
+            cp -r ${common.daedalusConfigs.${cluster}.configFiles}/. $out/config/
 
             ln -sf ${import inputs.nix-bundle-exe {inherit pkgs;} common.daedalus-bridge.${cluster}} $out/libexec/bundle-daedalus-bridge
             ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ ; )
@@ -348,7 +348,7 @@
               cd "''${DAEDALUS_DIR}/${cluster}/"
 
               exec cardano-watchdog \
-                --config "$ENTRYPOINT_DIR/config/watchdog-config.json" \
+                --config "$ENTRYPOINT_DIR/config/daedalus-config.json" \
                 --pub-logs-dir "''${DAEDALUS_DIR}/${cluster}/Logs/pub" \
                 --tls-dir "''${DAEDALUS_DIR}/${cluster}/tls"
             ''} $out/bin/daedalus
@@ -381,7 +381,7 @@
             chmod +x $out/bin/* $out/libexec/{daedalus-frontend,update-runner}
 
             mkdir -p $out/share/applications
-            cp ${common.launcherConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
+            cp ${common.daedalusConfigs.${cluster}.installerConfig.iconPath.large} $out/share/icon_large.png
             (
               cd $out/share/applications/
               cp ${desktopItemTemplate.${cluster}}/share/applications/*.desktop ./Daedalus-${cluster}.desktop
@@ -400,7 +400,7 @@
           genericName = "Crypto-Currency Wallet";
           categories = ["Application" "Network"];
           icon = "INSERT_ICON_PATH_HERE";
-          startupWMClass = common.launcherConfigs.${cluster}.installerConfig.spacedName;
+          startupWMClass = common.daedalusConfigs.${cluster}.installerConfig.spacedName;
         });
 
       selfExtractingArchive = genClusters (cluster: let

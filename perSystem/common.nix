@@ -1,4 +1,4 @@
-# Inlines: lib/source-lib.nix, lib/cardano-bridge.nix, lib/watchdog-config.nix, lib/common.nix
+# Inlines: lib/source-lib.nix, lib/cardano-bridge.nix, lib/daedalus-config.nix, lib/common.nix
 # Provides _module.args.common and _module.args.mkCommon for all perSystem modules.
 {inputs, ...}: {
   perSystem = {
@@ -252,9 +252,9 @@
       cardanoWalletVersion = daedalus-bridge.mainnet.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
 
       # ---------------------------------------------------------------------------
-      # Inlined watchdog-config.nix as a function
+      # Inlined daedalus-config.nix as a function
       # ---------------------------------------------------------------------------
-      mkLauncherConfigsImpl = {
+      mkDaedalusConfigsImpl = {
         devShell ? false,
         cluster,
       }: let
@@ -473,7 +473,7 @@
 
         launcherLogsPrefix = "${logsPrefix}${dirSep}pub";
 
-        defaultLauncherConfig = {
+        defaultDaedalusConfig = {
           inherit logsPrefix launcherLogsPrefix tlsConfig;
           walletLogging = false;
           daedalusBin = mkBinPath "frontend";
@@ -498,7 +498,7 @@
           nodeImplementation = "cardano";
         };
 
-        mkConfigFiles = nodeConfigFiles: launcherConfig: installerConfig: let
+        mkConfigFiles = nodeConfigFiles: daedalusConfig: installerConfig: let
           isLinux = os == "linux";
           isWindows = os == "windows";
 
@@ -540,11 +540,6 @@
             if isLinux
             then "\${ENTRYPOINT_DIR}/config/topology.yaml"
             else mkConfigPath nodeConfigFiles "topology.yaml";
-          wLauncherConfigYaml =
-            if isLinux
-            then "\${ENTRYPOINT_DIR}/config/launcher-config.yaml"
-            else mkConfigPath nodeConfigFiles "launcher-config.yaml";
-
           wByronGenesisPath = mkConfigPath nodeConfigFiles "genesis-byron.json";
           wNetworkMagicArgs =
             if (envCfg.nodeConfig.RequiresNetworkMagic or "RequiresMagic") == "RequiresNoMagic"
@@ -558,7 +553,7 @@
 
           wElectronArgs = [];
 
-          watchdogConfig =
+          daedalusConfigJson =
             {
               node = {
                 exe = wNodeBin;
@@ -594,39 +589,56 @@
               electron = {
                 exe = wElectronBin;
                 args = wElectronArgs;
-                env = {
-                  LAUNCHER_CONFIG = wLauncherConfigYaml;
-                };
+                env =
+                  {
+                    DAEDALUS_STATE_DIR = wStateDir;
+                    DAEDALUS_LOGS_DIR = logsPrefix;
+                    DAEDALUS_CLUSTER = daedalusConfig.cluster;
+                    DAEDALUS_NETWORK_NAME = daedalusConfig.networkName;
+                    DAEDALUS_LEGACY_STATE_DIR = daedalusConfig.legacyStateDir;
+                    DAEDALUS_IS_FLIGHT =
+                      if daedalusConfig.isFlight
+                      then "true"
+                      else "false";
+                    DAEDALUS_UPDATE_MODE =
+                      if isLinux
+                      then "system-package-disabled"
+                      else "installer-managed";
+                  }
+                  // lib.optionalAttrs (!isLinux) {
+                    DAEDALUS_UPDATE_RUNNER = daedalusConfig.updateRunnerBin;
+                  }
+                  // lib.optionalAttrs (daedalusConfig ? smashUrl) {
+                    DAEDALUS_SMASH_URL = daedalusConfig.smashUrl;
+                  };
               };
             }
             // (lib.optionalAttrs (!isLinux) {
               pub_logs_dir = "${wStateDir}${dirSep}Logs${dirSep}pub";
               tls_dir = "${wStateDir}${dirSep}tls";
             })
-            // (lib.optionalAttrs (launcherConfig ? mithrilAggregatorUrl) {
+            // (lib.optionalAttrs (daedalusConfig ? mithrilAggregatorUrl) {
               mithril = {
                 mithril_bin = wMithrilBin;
                 snapshot_converter_bin = wSnapshotConverterBin;
                 converter_config = wConfigYaml;
-                aggregator_url = launcherConfig.mithrilAggregatorUrl;
-                genesis_vkey = launcherConfig.mithrilGenesisVkey;
-                ancillary_vkey = launcherConfig.mithrilAncillaryVkey;
+                aggregator_url = daedalusConfig.mithrilAggregatorUrl;
+                genesis_vkey = daedalusConfig.mithrilGenesisVkey;
+                ancillary_vkey = daedalusConfig.mithrilAncillaryVkey;
                 state_dir = wStateDir;
                 chain_path = wChainPath;
               };
             });
         in
           pkgs.runCommand "cfg-files" {
-            launcherConfig = builtins.toJSON launcherConfig;
             installerConfig = builtins.toJSON installerConfig;
-            watchdogConfig = builtins.toJSON watchdogConfig;
-            passAsFile = ["launcherConfig" "installerConfig" "watchdogConfig"];
+            daedalusConfigJson = builtins.toJSON daedalusConfigJson;
+            passAsFile = ["installerConfig" "daedalusConfigJson"];
           } ''
             mkdir $out
             cp ${nodeConfigFiles}/* $out/
-            cp $launcherConfigPath $out/launcher-config.yaml
             cp $installerConfigPath $out/installer-config.json
-            cp $watchdogConfigPath $out/watchdog-config.json
+            cp $daedalusConfigJsonPath $out/daedalus-config.json
             ${lib.optionalString (envCfg.nodeConfig ? ByronGenesisFile) "cp ${envCfg.nodeConfig.ByronGenesisFile} $out/genesis-byron.json"}
             ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
             ${lib.optionalString (envCfg.nodeConfig ? AlonzoGenesisFile) "cp ${envCfg.nodeConfig.AlonzoGenesisFile} $out/genesis-alonzo.json"}
@@ -731,8 +743,8 @@
           in
             path.${os};
 
-          launcherConfig =
-            defaultLauncherConfig
+          daedalusConfig =
+            defaultDaedalusConfig
             // {
               inherit
                 nodeBin
@@ -790,20 +802,20 @@
             ];
           };
         in {
-          inherit nodeConfigFiles launcherConfig installerConfig;
-          configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
+          inherit nodeConfigFiles daedalusConfig installerConfig;
+          configFiles = mkConfigFiles nodeConfigFiles daedalusConfig installerConfig;
         };
       in
         mkConfigCardano;
 
-      mkLauncherConfigs = {
+      mkDaedalusConfigs = {
         devShell ? false,
         cluster,
       }:
-        mkLauncherConfigsImpl {inherit devShell cluster;};
+        mkDaedalusConfigsImpl {inherit devShell cluster;};
 
-      launcherConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
-        mkLauncherConfigs {
+      daedalusConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
+        mkDaedalusConfigs {
           devShell = false;
           inherit cluster;
         });
@@ -1015,8 +1027,8 @@
         daedalus-bridge
         cardanoNodeVersion
         cardanoWalletVersion
-        mkLauncherConfigs
-        launcherConfigs
+        mkDaedalusConfigs
+        daedalusConfigs
         originalPackageJson
         nodejs
         yarn

@@ -29,7 +29,7 @@
       # Windows-target items from windows common:
       cardano-watchdog = commonWindows.cardano-watchdog;
       daedalus-bridge = commonWindows.daedalus-bridge;
-      launcherConfigs = commonWindows.launcherConfigs;
+      daedalusConfigs = commonWindows.daedalusConfigs;
       cardanoWalletVersion = commonWindows.cardanoWalletVersion;
       cardanoNodeVersion = commonWindows.cardanoNodeVersion;
       patchElectronRebuild = common.patchElectronRebuild;
@@ -411,7 +411,7 @@
         '');
 
       nsisFiles = genClusters (cluster: let
-        ic = launcherConfigs.${cluster}.installerConfig;
+        ic = daedalusConfigs.${cluster}.installerConfig;
         ver = originalPackageJson.version;
         verParts = lib.splitString "." ver;
         viProductVersion =
@@ -567,15 +567,14 @@
             File "zlib1.dll"
             File "libz.dll"
             File "libsnappy.dll"
-            File "launcher-config.yaml"
-            File "watchdog-config.json"
+            File "daedalus-config.json"
             File /r "..\release\win32-x64\${ic.spacedName}-win32-x64\"
 
             liteFirewall::AddRule "$INSTDIR\cardano-node.exe" "Cardano Node"
             Pop $0
             DetailPrint "liteFirewall::AddRule: $0"
 
-            CreateShortcut "$DESKTOP\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\watchdog-config.json$\"" "$INSTDIR\${ic.spacedName}.exe" 0 SW_SHOWMINIMIZED
+            CreateShortcut "$DESKTOP\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\daedalus-config.json$\"" "$INSTDIR\${ic.spacedName}.exe" 0 SW_SHOWMINIMIZED
 
             WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "InstallLocation" "$INSTDIR"
             WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "Publisher" "IOHK"
@@ -594,7 +593,7 @@
           Section "Start Menu Shortcuts"
             CreateDirectory "$SMPROGRAMS\${ic.spacedName}"
             CreateShortcut "$SMPROGRAMS\${ic.spacedName}\Uninstall ${ic.spacedName}.lnk" "$INSTDIR/uninstall.exe" "" "$INSTDIR/uninstall.exe" 0
-            CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\watchdog-config.json$\"" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
+            CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\daedalus-config.json$\"" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
           SectionEnd
         '';
       in
@@ -602,7 +601,7 @@
           mkdir $out
           cp ${uninstallerNsi} $out/uninstaller.nsi
           cp ${installerNsi} $out/daedalus.nsi
-          cp -v ${launcherConfigs.${cluster}.configFiles}/* $out/
+          cp -v ${daedalusConfigs.${cluster}.configFiles}/* $out/
         '');
 
       unsignedUninstaller = genClusters (cluster:
@@ -621,7 +620,7 @@
         '');
 
       preSigning = genClusters (cluster: let
-        installDir = launcherConfigs.${cluster}.installerConfig.spacedName;
+        installDir = daedalusConfigs.${cluster}.installerConfig.spacedName;
       in
         pkgs.runCommand "pre-signing" {buildInputs = [pkgs.unzip];} ''
           mkdir $out
@@ -704,7 +703,7 @@
           CARDANO_WALLET_VERSION = cardanoWalletVersion;
           CARDANO_NODE_VERSION = cardanoNodeVersion;
           CI = "nix";
-          NETWORK = launcherConfigs.${cluster}.launcherConfig.networkName;
+          NETWORK = daedalusConfigs.${cluster}.daedalusConfig.networkName;
           BUILD_REV = sourceLib.buildRev;
           BUILD_REV_SHORT = sourceLib.buildRevShort;
           BUILD_COUNTER = sourceLib.buildCounter;
@@ -719,7 +718,7 @@
             '';
           patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
             pkgs.lib.recursiveUpdate originalPackageJson {
-              productName = launcherConfigs.${cluster}.installerConfig.spacedName;
+              productName = daedalusConfigs.${cluster}.installerConfig.spacedName;
             }
           ));
           buildPhase = ''
@@ -756,7 +755,7 @@
               done
             )
 
-            rm -rf $out/resources/app/{installers,launcher-config.yaml,gulpfile.js,home}
+            rm -rf $out/resources/app/{installers,gulpfile.js,home}
 
             mkdir -pv $out/resources/app/node_modules
             jq -r '.[]' <${../../../packaging/runtime-nodejs-deps.json} | while IFS= read -r rtdep ; do
