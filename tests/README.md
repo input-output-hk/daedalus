@@ -46,19 +46,6 @@ Example:
 generates and validates mnemonics as long as you keep it
 running (the number of executions is updated in the terminal)
 
-### Run end-to-end tests with Cardano "Selfnode"
-
-1. Make sure Daedalus is properly installed (see above).
-2. Make sure your state directory is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
-3. Run Daedalus frontend tests:
-
-```bash
-$ cd daedalus/
-$ yarn nix:selfnode
-$ yarn build
-$ yarn test:e2e
-```
-
 #### Re-running in case of failing test cases
 
 If one test case fails, it + all remaining test cases are immediately skipped and saved into `tests/@rerun.txt`.
@@ -68,9 +55,7 @@ still broken.
 
 ### Running tests for development
 1. Mark the test or scenario you are working with @watch annotation
-2. Make sure you are in the nix shell (`yarn nix:selfnode`)
-3. Make sure your state is clean (`rm -rf ~/Library/Application\ Support/Daedalus\ Selfnode/`)
-4. Run tests with `yarn test:e2e:watch:once`
+2. Run tests with `yarn test:e2e:watch:once`
 
 ### Run all tests
 

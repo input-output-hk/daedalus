@@ -225,39 +225,6 @@ describe('DRepDirectoryPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('keeps the selfnode empty state across remounts', () => {
-    const selfnodeOverrides = {
-      suggestedDReps: [],
-      allDReps: [],
-      error: {
-        message:
-          'DRep data is unavailable in selfnode mode. A synced node is required.',
-        type: 'SELFNODE_CLI_UNSUPPORTED',
-      },
-      refreshState: GovernanceRefreshState.Failed,
-    };
-
-    const first = renderPage({ governanceOverrides: selfnodeOverrides });
-
-    expect(
-      screen.getByText(
-        'DRep directory data is unavailable on the selfnode cluster.'
-      )
-    ).toBeInTheDocument();
-    expect(screen.queryByText('Voting power:')).not.toBeInTheDocument();
-    expect(first.governance.refresh).toHaveBeenCalledTimes(1);
-    first.unmount();
-
-    const second = renderPage({ governanceOverrides: selfnodeOverrides });
-
-    expect(
-      screen.getByText(
-        'DRep directory data is unavailable on the selfnode cluster.'
-      )
-    ).toBeInTheDocument();
-    expect(second.governance.refresh).toHaveBeenCalledTimes(1);
-  });
-
   it('auto-favorites the DRep when it is selected for delegation', () => {
     const { governance } = renderPage();
 

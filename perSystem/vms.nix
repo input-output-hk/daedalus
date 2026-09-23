@@ -20,6 +20,8 @@
       }:
         pkgs.writeText "user-data-${cluster}" ''
           #cloud-config
+          hostname: daedalus-vm
+          manage_etc_hosts: true
           users:
             - name: tester
               groups: wheel
@@ -79,6 +81,7 @@
             - printf 'daedalus-pkg\t/mnt/daedalus-pkg\t9p\ttrans=virtio,version=9p2000.L,ro,_netdev\t0\t0\n' >> /etc/fstab
             - printf 'daedalus-state\t/home/tester/.local/share/Daedalus/${cluster}\tvirtiofs\tdefaults,_netdev\t0\t0\n' >> /etc/fstab
             - mount /home/tester/.local/share/Daedalus/${cluster} || true
+            - mount --make-rslave /
             - systemctl enable daedalus-reinstall.service
             - systemctl set-default graphical.target
             - systemctl enable lightdm
@@ -133,7 +136,7 @@
             PACKAGE_PATH="${package}"
             VNC_PORT="''${VM_VNC_PORT:-${toString vncPort}}"
             SSH_PORT="''${VM_SSH_PORT:-${toString sshPort}}"
-            VM_DAEDALUS_DIR="''${VM_DAEDALUS_DIR:-$HOME/.local/share/Daedalus/${cluster}}"
+            VM_DAEDALUS_DIR="''${VM_DAEDALUS_DIR:-''${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus/${cluster}}"
             VNC_DISPLAY=$((VNC_PORT - 5900))
 
             mkdir -p "$(dirname "$IMAGE_CACHE")"
@@ -223,6 +226,7 @@
             # shellcheck disable=SC2086
             qemu-system-x86_64 \
               -enable-kvm \
+              -cpu host \
               -machine ${
               if useEfi
               then "q35"
@@ -263,7 +267,156 @@
           '';
         };
 
-      # Port assignments (i = cluster index: mainnet=0, preprod=1, preview=2, selfnode=3)
+      # ── Evidence collection ───────────────────────────────────────────────────
+      # collect-evidence-<distro>-<cluster> apps run the linux-chromium-sandbox-probe
+      # against a *running* test VM and write the output to the evidence directory.
+      #
+      # Usage (two-terminal workflow):
+      #   Terminal 1:  nix run .#test-vm-deb-preprod      # boot VM, leave running
+      #   Terminal 2:  nix run .#collect-evidence-deb-preprod   # collect + write files
+      #
+      # The script waits for SSH, copies the probe into the guest, runs it, and
+      # writes the resulting JSON to scripts/linux-chromium-sandbox-probe/evidence/.
+      #
+      # Check mode (--check flag): fails with a diff if evidence would change; use
+      # this locally before committing to verify the files are up to date.
+      #
+      # The sandbox-evidence CI check validates the committed evidence files
+      # statically (no VM needed) — it checks that every index.json references
+      # the matrixRevision declared in main.cjs and that all listed files exist.
+      mkCollectEvidence = {
+        distro,
+        cluster,
+        sshPort,
+        matrixRow,
+        matrixRevision,
+        sandboxClass,
+        # Absolute path to the electron binary inside the guest OS.
+        electronPath,
+        # Evidence subdirectory name (e.g. "task-112").
+        taskDir,
+      }: let
+        probeScript = ../scripts/linux-chromium-sandbox-probe/main.cjs;
+        evidenceDir = ../scripts/linux-chromium-sandbox-probe/evidence;
+      in
+        pkgs.writeShellApplication {
+          name = "collect-evidence-${distro}-${cluster}";
+          runtimeInputs = with pkgs; [openssh gnused jq git];
+          text = ''
+            CHECK_MODE=0
+            for arg in "$@"; do [ "$arg" = "--check" ] && CHECK_MODE=1; done
+
+            SSH_PORT="${toString sshPort}"
+            SSH_OPTS=(-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR)
+            SSH_TARGET="tester@127.0.0.1"
+            EVIDENCE_DIR="${toString evidenceDir}/${taskDir}"
+
+            # Wait for SSH to be ready (cloud-init + package install can take ~5 min).
+            echo "Waiting for VM SSH on port $SSH_PORT (up to 10 min)..."
+            for i in $(seq 1 120); do
+              if ssh "''${SSH_OPTS[@]}" -p "$SSH_PORT" -o ConnectTimeout=3 "$SSH_TARGET" true 2>/dev/null; then
+                echo "SSH ready."
+                break
+              fi
+              [ "$i" -eq 120 ] && { echo "ERROR: VM did not become reachable after 10 min."; exit 1; }
+              sleep 5
+            done
+
+            # Wait for the package to be installed (cloud-init runcmd writes a sentinel).
+            echo "Waiting for package install to finish..."
+            for i in $(seq 1 60); do
+              if ssh "''${SSH_OPTS[@]}" -p "$SSH_PORT" "$SSH_TARGET" "[ -x '${electronPath}' ]" 2>/dev/null; then
+                echo "Package installed."
+                break
+              fi
+              [ "$i" -eq 60 ] && { echo "ERROR: electron binary not found after 5 min."; exit 1; }
+              sleep 5
+            done
+
+            # Copy probe script into guest.
+            scp "''${SSH_OPTS[@]}" -P "$SSH_PORT" "${toString probeScript}" "$SSH_TARGET:/tmp/daedalus-probe.cjs"
+
+            # Run probe, capturing stdout.
+            # GBM_BACKENDS_PATH must point to the bundled libgbm — without it
+            # Electron loads the system mesa snap's GBM backends which SIGILL.
+            EVIDENCE=$(ssh "''${SSH_OPTS[@]}" -p "$SSH_PORT" "$SSH_TARGET" \
+              "DISPLAY=:0.0 \
+               XAUTHORITY=/home/tester/.Xauthority \
+               LIBGL_ALWAYS_SOFTWARE=1 \
+               GBM_BACKENDS_PATH='/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/lib' \
+               CHROME_DEVEL_SANDBOX='/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/chrome-sandbox' \
+               LAUNCHER_CONFIG='/opt/daedalus/${cluster}/config/daedalus-config.json' \
+               DAEDALUS_PROBE_MATRIX_ROW='${matrixRow}' \
+               DAEDALUS_PROBE_MATRIX_REVISION='${matrixRevision}' \
+               DAEDALUS_PROBE_SANDBOX_CLASS='${sandboxClass}' \
+               DAEDALUS_PROBE_CLUSTER='${cluster}' \
+               '${electronPath}' /tmp/daedalus-probe.cjs 2>/dev/null") || true
+
+            RESULT=$(printf '%s' "$EVIDENCE" | jq -r '.result // "unknown"' 2>/dev/null || echo "unknown")
+            echo "Probe result: $RESULT"
+            if [ "$RESULT" != "pass" ]; then
+              echo "ERROR: probe did not pass."
+              printf '%s\n' "$EVIDENCE" | jq .
+              exit 1
+            fi
+
+            OUT_FILE="$EVIDENCE_DIR/${matrixRow}-positive.json"
+            mkdir -p "$EVIDENCE_DIR"
+
+            if [ "$CHECK_MODE" = "1" ]; then
+              CURRENT=$(cat "$OUT_FILE" 2>/dev/null || echo "")
+              NEW=$(printf '%s\n' "$EVIDENCE" | jq --sort-keys .)
+              CURRENT_SORTED=$(printf '%s\n' "$CURRENT" | jq --sort-keys . 2>/dev/null || echo "")
+              if [ "$CURRENT_SORTED" != "$NEW" ]; then
+                echo "ERROR: evidence is stale. Run without --check to update:"
+                echo "  nix run .#collect-evidence-${distro}-${cluster}"
+                diff <(printf '%s\n' "$CURRENT") <(printf '%s\n' "$EVIDENCE") || true
+                exit 1
+              fi
+              echo "Evidence is up to date."
+            else
+              printf '%s\n' "$EVIDENCE" | jq . > "$OUT_FILE"
+              echo "Written: $OUT_FILE"
+              # Regenerate index.json listing all evidence files in the task dir.
+              mapfile -t EVIDENCE_FILES < <(find "$EVIDENCE_DIR" -maxdepth 1 -name '*.json' ! -name 'index.json' -printf '%f\n' | sort)
+              DATE=$(date +%Y-%m-%d)
+              jq -n \
+                --arg date "$DATE" \
+                --arg matrixRevision "${matrixRevision}" \
+                --arg task "${taskDir}" \
+                --argjson files "$(printf '%s\n' "''${EVIDENCE_FILES[@]}" | jq -R . | jq -s .)" \
+                '{date:$date,matrixRevision:$matrixRevision,task:$task,evidence:$files}' \
+                > "$EVIDENCE_DIR/index.json"
+              echo "Updated: $EVIDENCE_DIR/index.json"
+            fi
+          '';
+        };
+
+      mkCollectEvidenceForDistro = {
+        distro,
+        sshBase,
+        matrixRows, # list of {cluster, matrixRow, sandboxClass}
+        matrixRevision,
+        electronPathFn, # cluster -> guest electron path
+        taskDir,
+      }:
+        lib.imap0 (i: entry: {
+          name = "collect-evidence-${distro}-${entry.cluster}";
+          value = {
+            type = "app";
+            program = lib.getExe (mkCollectEvidence {
+              inherit distro matrixRevision taskDir;
+              cluster = entry.cluster;
+              sshPort = sshBase + i;
+              matrixRow = entry.matrixRow;
+              sandboxClass = entry.sandboxClass;
+              electronPath = electronPathFn entry.cluster;
+            });
+          };
+        })
+        matrixRows;
+
+      # Port assignments (i = cluster index: mainnet=0, preprod=1, preview=2)
       #   VNC:  deb 5930+i, rpm 5940+i, arch 5950+i
       #   SSH:  deb 2230+i, rpm 2240+i, arch 2250+i
       mkVmsForDistro = {
@@ -289,8 +442,23 @@
           };
         })
         clusters;
+      # Evidence task tag for this PR's builds (watchdog-as-entrypoint + linux pkgs).
+      # Bump when the process tree or sandbox policy changes; re-collect evidence.
+      evidenceTask = "task-112";
+      # deb and rpm rows use the upstream MATRIX_REVISION (sandbox policy unchanged).
+      debRpmMatrixRevision = "task-108-matrix-2026-08-18";
+      archMatrixRevision = "task-111-matrix-2026-09-02";
+      nixosMatrixRevision = "task-112-matrix-2026-09-11";
+
+      debElectronPath = cluster: "/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/electron";
+      rpmElectronPath = cluster: "/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/electron";
+      archElectronPath = cluster: "/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/electron";
     in {
       apps = lib.listToAttrs (
+        # ── Test VMs (manual QA tools — boot with `nix run`, connect via VNC/SSH) ──
+        # These are interactive dev/QA tools for a test engineer to boot and manually
+        # exercise Daedalus. They are NOT automated CI checks; use collect-evidence-*
+        # apps to capture sandbox probe evidence after manual testing.
         mkVmsForDistro {
           distro = "deb";
           packageDistro = "deb-dev";
@@ -318,6 +486,53 @@
           vncBase = 5950;
           sshBase = 2250;
           userDataFn = archUserData;
+        }
+        # ── Evidence collection (run against a live test VM) ─────────────────────
+        # Usage: nix run .#collect-evidence-<distro>-<cluster>
+        # Collects sandbox canary evidence and writes to
+        # scripts/linux-chromium-sandbox-probe/evidence/<task>/.
+        # Add --check to fail if evidence would change (verify before committing).
+        ++ mkCollectEvidenceForDistro {
+          distro = "deb";
+          sshBase = 2230;
+          matrixRevision = debRpmMatrixRevision;
+          taskDir = evidenceTask;
+          electronPathFn = debElectronPath;
+          matrixRows =
+            lib.imap0 (i: cluster: {
+              inherit cluster;
+              matrixRow = "ubuntu-24.04";
+              sandboxClass = "suid-only";
+            })
+            clusters;
+        }
+        ++ mkCollectEvidenceForDistro {
+          distro = "rpm";
+          sshBase = 2240;
+          matrixRevision = debRpmMatrixRevision;
+          taskDir = evidenceTask;
+          electronPathFn = rpmElectronPath;
+          matrixRows =
+            lib.imap0 (i: cluster: {
+              inherit cluster;
+              matrixRow = "fedora-43";
+              sandboxClass = "suid-only";
+            })
+            clusters;
+        }
+        ++ mkCollectEvidenceForDistro {
+          distro = "arch";
+          sshBase = 2250;
+          matrixRevision = archMatrixRevision;
+          taskDir = evidenceTask;
+          electronPathFn = archElectronPath;
+          matrixRows =
+            lib.imap0 (i: cluster: {
+              inherit cluster;
+              matrixRow = "arch-2026.09.01";
+              sandboxClass = "userns-only";
+            })
+            clusters;
         }
       );
     });

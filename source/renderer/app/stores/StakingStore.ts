@@ -210,10 +210,7 @@ export default class StakingStore extends Store {
       (smashServerUrl === SMASH_SERVER_TYPES.DIRECT &&
         localSmashServer !== SMASH_SERVER_TYPES.DIRECT)
     ) {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'Sta... Remove this comment to see the full error message
-      smashServerUrl = this.environment.isSelfnode
-        ? SMASH_SERVERS_LIST.direct.url
-        : SMASH_SERVERS_LIST.iohk.url;
+      smashServerUrl = SMASH_SERVERS_LIST.iohk.url;
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       await this.updateSmashSettingsRequest.execute(smashServerUrl);
     }

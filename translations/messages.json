@@ -322,11 +322,6 @@
         "id": "environment.network.development"
       },
       {
-        "defaultMessage": "!!!Selfnode",
-        "description": "\"selfnode\" Cardano network",
-        "id": "environment.network.selfnode"
-      },
-      {
         "defaultMessage": "!!!years",
         "description": "Label for years value in duration.",
         "id": "global.duration.years"
@@ -1430,11 +1425,6 @@
         "defaultMessage": "!!!Preview",
         "description": "Label for preview with version.",
         "id": "test.environment.previewLabel"
-      },
-      {
-        "defaultMessage": "!!!Selfnode vx",
-        "description": "Label for selfnode with version.",
-        "id": "test.environment.selfnodeLabel"
       },
       {
         "defaultMessage": "!!!Development vx",
@@ -2590,11 +2580,6 @@
         "defaultMessage": "!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.",
         "description": "Directory fallback while the node has not reached the tip",
         "id": "governance.drepDirectory.empty.noSync"
-      },
-      {
-        "defaultMessage": "!!!DRep directory data is unavailable on the selfnode cluster.",
-        "description": "Directory empty state on the selfnode cluster",
-        "id": "governance.drepDirectory.empty.selfnode"
       },
       {
         "defaultMessage": "!!!No DReps meet the suggestion criteria. {ShowAll} instead, or modify the criteria above.",

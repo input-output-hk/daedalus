@@ -14,7 +14,6 @@ export type Environment = {
   isPreprod: boolean;
   isPreview: boolean;
   isShelleyQA: boolean;
-  isSelfnode: boolean;
   isDevelopment: boolean;
   build: string;
   buildNumber: string;
@@ -53,7 +52,6 @@ export const ALONZO_PURPLE = 'alonzo_purple';
 export const VASIL_DEV = 'vasil_dev';
 export const PREPROD = 'preprod';
 export const PREVIEW = 'preview';
-export const SELFNODE = 'selfnode';
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';
@@ -73,7 +71,6 @@ export type Network =
   | 'vasil_dev'
   | 'preprod'
   | 'preview'
-  | 'selfnode'
   | 'development';
 export const networkPrettyNames = {
   mainnet: 'Mainnet',
@@ -84,7 +81,6 @@ export const networkPrettyNames = {
   vasil_dev: 'Vasil-Dev',
   preprod: 'Pre-Prod',
   preview: 'Preview',
-  selfnode: 'Selfnode',
   development: 'Development',
 };
 export type CpuThreadData = {

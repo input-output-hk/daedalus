@@ -87,7 +87,7 @@ optionsParser detectedOS = Options
       (BuildJob     <$> optText "build-counter"     'v' "‘inputs.self.sourceInfo.revCount’"))
   <*> (fromMaybe detectedOS <$> (optional $
                    optReadLower "os"                  's' "OS, defaults to host OS.  One of:  linux64 win64"))
-  <*> (fromMaybe Selfnode   <$> (optional $
+  <*> (fromMaybe Mainnet    <$> (optional $
                    optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet, staging, or testnet"))
   <*> (fromMaybe "daedalus" <$> (optional $
       (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))

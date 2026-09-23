@@ -7,7 +7,6 @@ import {
   VASIL_DEV,
   PREPROD,
   PREVIEW,
-  SELFNODE,
 } from './environment.types';
 
 export type NetworkNames =
@@ -19,7 +18,6 @@ export type NetworkNames =
   | 'vasil_dev'
   | 'preprod'
   | 'preview'
-  | 'selfnode'
   | 'development'
   | string;
 export type PlatformNames = 'win32' | 'linux' | 'darwin' | string;
@@ -32,7 +30,6 @@ export const NetworkNameOptions = {
   vasil_dev: 'vasil_dev',
   preprod: 'preprod',
   preview: 'preview',
-  selfnode: 'selfnode',
   development: 'development',
 };
 
@@ -46,7 +43,6 @@ export const NetworkMagics: {
   preprod: NetworkMagicType;
   preview: NetworkMagicType;
   shelley_qa: NetworkMagicType;
-  selfnode: NetworkMagicType;
 } = {
   [MAINNET]: [1, null],
   [STAGING]: [633343913, 1],
@@ -56,7 +52,6 @@ export const NetworkMagics: {
   [PREPROD]: [1, 0],
   [PREVIEW]: [2, 0],
   [SHELLEY_QA]: [3, 0],
-  [SELFNODE]: [1, null],
 };
 
 export enum BlockSyncType {

@@ -17,7 +17,6 @@ export const NETWORK_TO_ANALYTICS_SITE_ID_MAP: Record<Network, number> = {
   staging: 4,
   shelley_qa: 6,
   alonzo_purple: 7,
-  selfnode: 11,
   development: 11,
   vasil_dev: 8,
 };

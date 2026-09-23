@@ -56,7 +56,6 @@ describe('isAddressForNetwork', () => {
   });
 
   it('treats every other network as a testnet', () => {
-    expect(isAddressForNetwork(TESTNET_ADDRESS, 'selfnode')).toBe(true);
     expect(isAddressForNetwork(MAINNET_ADDRESS, 'development')).toBe(false);
   });
 

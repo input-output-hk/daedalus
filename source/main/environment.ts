@@ -17,7 +17,6 @@ import {
   checkIsMainnet,
   checkIsStaging,
   checkIsTestnet,
-  checkIsSelfnode,
   checkIsDevelopment,
   checkIsMacOS,
   checkIsWindows,
@@ -47,7 +46,6 @@ const isVasilDev = checkIsVasilDev(NETWORK);
 const isPreprod = checkIsPreprod(NETWORK);
 const isPreview = checkIsPreview(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
-const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const analyticsFeatureEnabled = true;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
@@ -106,7 +104,6 @@ export const environment: Environment = Object.assign(
     isPreprod,
     isPreview,
     isShelleyQA,
-    isSelfnode,
     isDevelopment,
     build: BUILD,
     buildNumber: BUILD_NUMBER,

@@ -53,7 +53,6 @@ const {
   isDev,
   isTest,
   isBlankScreenFixActive,
-  isSelfnode,
   network,
   os: osName,
   version: daedalusVersion,
@@ -260,44 +259,6 @@ const onAppReady = async () => {
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
     await backendLifecycle.stop();
-
-    if (isSelfnode) {
-      if (keepLocalClusterRunning || isTest) {
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-        logger.info(
-          'ipcMain: Keeping the local cluster running while exiting Daedalus',
-          {
-            keepLocalClusterRunning,
-          }
-        );
-        return safeExitWithCode(0);
-      }
-
-      const exitSelfnodeDialogOptions = {
-        buttons: ['Yes', 'No'],
-        type: 'warning' as const,
-        title: 'Daedalus is about to close',
-        message: 'Do you want to keep the local cluster running?',
-        defaultId: 0,
-        cancelId: 1,
-        noLink: true,
-      };
-      const { response } = await dialog.showMessageBox(
-        mainWindow,
-        exitSelfnodeDialogOptions
-      );
-
-      if (response === 0) {
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-        logger.info(
-          'ipcMain: Keeping the local cluster running while exiting Daedalus'
-        );
-        return safeExitWithCode(0);
-      }
-
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info('ipcMain: Exiting local cluster together with Daedalus');
-    }
 
     await safeExit();
   });

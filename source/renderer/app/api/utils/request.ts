@@ -17,7 +17,6 @@ export type RequestOptions = {
   };
 };
 const ALLOWED_ERROR_EXCEPTION_PATHS = [];
-const { isSelfnode } = global.environment;
 const agent = new global.https.Agent({
   maxCachedSessions: 256,
   // Default: 100 | 0 - Disable TLS session caching
@@ -118,18 +117,7 @@ function typedRequest<Response>(
       };
     }
 
-    const httpOnlyOptions = omit(options, [
-      'agent',
-      'ca',
-      'cert',
-      'key',
-      'ciphers',
-      'minVersion',
-      'maxVersion',
-    ]);
-    const httpsRequest = isSelfnode
-      ? global.http.request(httpOnlyOptions)
-      : global.https.request(options);
+    const httpsRequest = global.https.request(options);
 
     if (hasRequestBody) {
       if (isOctetStreamRequest) {

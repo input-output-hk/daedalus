@@ -241,11 +241,6 @@ export default defineMessages({
     defaultMessage: '!!!Development',
     description: '"development" Cardano network',
   },
-  network_selfnode: {
-    id: 'environment.network.selfnode',
-    defaultMessage: '!!!Selfnode',
-    description: '"selfnode" Cardano network',
-  },
   years: {
     id: 'global.duration.years',
     defaultMessage: '!!!years',
