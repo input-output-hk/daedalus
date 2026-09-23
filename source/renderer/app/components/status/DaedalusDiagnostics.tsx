@@ -84,7 +84,7 @@ export const messages = defineMessages({
   hasMetHardwareRequirementsStatusLowTooltip: {
     id: 'daedalus.diagnostics.dialog.hasMetHardwareRequirementsStatusLowTooltip',
     defaultMessage:
-      '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 16 GB of RAM',
+      '!!!Your system specifications do not meet Daedalus’ recommended hardware requirements. We suggest using a machine with at least 8 GB of RAM',
     description:
       'Visible on hovering over Recommended system requirement status when status is Low',
   },

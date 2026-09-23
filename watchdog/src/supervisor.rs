@@ -127,7 +127,17 @@ pub(crate) fn tether_to_watchdog(cmd: &mut Command) {
             });
         }
     }
-    #[cfg(not(target_os = "linux"))]
+    // Suppress blank console windows for child processes. Watchdog is a GUI-subsystem
+    // app (no console), so any console-app child would otherwise get its own visible
+    // console. CREATE_NO_WINDOW keeps them hidden. Callers that also need
+    // CREATE_NEW_PROCESS_GROUP (node, wallet) combine both flags in their own
+    // creation_flags() call, which overrides this one — that is intentional.
+    #[cfg(windows)]
+    {
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        cmd.creation_flags(CREATE_NO_WINDOW);
+    }
+    #[cfg(not(any(target_os = "linux", windows)))]
     let _ = cmd;
 }
 
@@ -331,6 +341,12 @@ async fn pipe_to_log(
             }
         }
     }
+}
+
+fn pick_free_port() -> anyhow::Result<u16> {
+    use std::net::TcpListener;
+    let listener = TcpListener::bind("127.0.0.1:0")?;
+    Ok(listener.local_addr()?.port())
 }
 
 async fn wait_for_port(port: u16) {
@@ -721,7 +737,11 @@ async fn run_node_wallet(
     after_mithril: bool,
     node_crash_count: &mut u32,
 ) -> Result<RunResult> {
-    let node_log = open_log(&format!("{}/node.log", config.pub_logs_dir));
+    let logs_dir = config
+        .pub_logs_dir
+        .as_deref()
+        .unwrap_or(&config.node.state_dir);
+    let node_log = open_log(&format!("{logs_dir}/node.log"));
 
     let mut shutdown_pipe = match ShutdownPipe::new() {
         Ok(p) => p,
@@ -749,11 +769,13 @@ async fn run_node_wallet(
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
 
-    // Windows: spawn in its own process group so CTRL_BREAK_EVENT can target it
+    // Windows: own process group for CTRL_BREAK targeting; CREATE_NO_WINDOW prevents
+    // a blank console window from appearing (watchdog is a GUI app with no console).
     #[cfg(windows)]
     {
         const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
-        node_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP);
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        node_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW);
     }
 
     shutdown_pipe.setup_node_cmd(&mut node_cmd);
@@ -961,9 +983,23 @@ async fn run_node_wallet(
 
     // Wallet supervisor loop
     let wallet_cfg = config.wallet.clone();
-    let wallet_log_path = format!("{}/cardano-wallet.log", config.pub_logs_dir);
+    let logs_dir = config
+        .pub_logs_dir
+        .as_deref()
+        .unwrap_or(&config.wallet.state_dir);
+    let wallet_log_path = format!("{logs_dir}/cardano-wallet.log");
     let mut attempt = 0u32;
     let mut node_rx = node_rx;
+
+    // Pick the wallet API port once; all restarts reuse the same port so
+    // Electron does not need to rediscover it after a wallet crash.
+    // When api_port is absent from config the watchdog auto-picks and injects
+    // --port <port> into the wallet command args. When api_port is present the
+    // caller is responsible for having it in wallet.args already.
+    let (wallet_port, inject_port_flag) = match wallet_cfg.api_port {
+        Some(p) => (p, false),
+        None => (pick_free_port()?, true),
+    };
 
     'supervisor: loop {
         if node_rx.borrow().is_some() {
@@ -973,18 +1009,23 @@ async fn run_node_wallet(
         let wallet_log = open_log(&wallet_log_path);
 
         let mut wallet_cmd = Command::new(&wallet_cfg.exe);
+        wallet_cmd.args(&wallet_cfg.args);
+        if inject_port_flag {
+            wallet_cmd.arg("--port").arg(wallet_port.to_string());
+        }
         wallet_cmd
-            .args(&wallet_cfg.args)
             .current_dir(&wallet_cfg.state_dir)
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
             .kill_on_drop(true);
 
-        // Windows: own process group for CTRL_BREAK targeting
+        // Windows: own process group for CTRL_BREAK targeting; CREATE_NO_WINDOW prevents
+        // a blank console window from appearing (watchdog is a GUI app with no console).
         #[cfg(windows)]
         {
             const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
-            wallet_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP);
+            const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+            wallet_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW);
         }
 
         tether_to_watchdog(&mut wallet_cmd);
@@ -1017,7 +1058,6 @@ async fn run_node_wallet(
             None,
         ));
 
-        let port = wallet_cfg.api_port;
         let wallet_wait_start = unix_ms();
 
         // Phase 1: wait for API ready OR early exit / node-death / stop.
@@ -1026,7 +1066,7 @@ async fn run_node_wallet(
         // normal startup sequence.
         'phase1: loop {
             tokio::select! {
-                _ = wait_for_port(port) => break 'phase1,
+                _ = wait_for_port(wallet_port) => break 'phase1,
                 status = wallet.wait() => {
                     let exit = extract_exit(status.ok());
                     warn!("wallet exited before ready (code={:?}, signal={:?})", exit.0, exit.1);
@@ -1129,10 +1169,10 @@ async fn run_node_wallet(
         }
 
         emit(&Event::WalletReady {
-            port,
+            port: wallet_port,
             waited_ms: unix_ms() - wallet_wait_start,
         });
-        info!("wallet API ready on port {port}");
+        info!("wallet API ready on port {wallet_port}");
 
         // The wallet recovered — max_restart_attempts caps *consecutive*
         // failed start cycles, so a rare-but-recurring crash (e.g. once a

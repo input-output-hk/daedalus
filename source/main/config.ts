@@ -1,7 +1,6 @@
 import path from 'path';
 import { app, dialog } from 'electron';
 import { environment } from './environment';
-import { readLauncherConfig } from './utils/config';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
 
 const {
@@ -13,9 +12,9 @@ const {
   network,
   version,
 } = environment;
-// Make sure Daedalus is started with required configuration
-const { LAUNCHER_CONFIG } = process.env;
-const isStartedByLauncher = !!LAUNCHER_CONFIG;
+
+// Make sure Daedalus is started with required configuration (injected by watchdog)
+const isStartedByLauncher = !!process.env.DAEDALUS_CLUSTER;
 const isWindows = process.platform === 'win32';
 
 if (!isStartedByLauncher) {
@@ -39,47 +38,6 @@ if (!isStartedByLauncher) {
     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
   }
 }
-
-export type NodeConfig = {
-  configurationDir: string;
-  delegationCertificate?: string;
-  kind: 'byron' | 'shelley';
-  network: {
-    configFile: string;
-    genesisFile: string;
-    topologyFile: string;
-  };
-  signingKey?: string;
-};
-
-/**
- * The shape of the config params, usually provided to the cardano-node launcher
- */
-export type LauncherConfig = {
-  stateDir: string;
-  nodeConfig: NodeConfig;
-  tlsPath: string;
-  logsPrefix: string;
-  cluster: string;
-  syncTolerance: string;
-  legacyStateDir: string;
-  legacySecretKey: string;
-  legacyWalletDB: string;
-  isFlight: boolean;
-  isStaging: boolean;
-  smashUrl?: string;
-  metadataUrl?: string;
-  updateRunnerBin: string;
-  watchdogBin: string;
-  nodeBin: string;
-  walletBin: string;
-  mithrilBin?: string;
-  snapshotConverterBin?: string;
-  mithrilConverterConfig?: string;
-  mithrilAggregatorUrl?: string;
-  mithrilGenesisVkey?: string;
-  mithrilAncillaryVkey?: string;
-};
 type WindowOptionsType = {
   show: boolean;
   width: number;
@@ -110,16 +68,15 @@ export const windowOptions: WindowOptionsType = {
   },
   useContentSize: true,
 };
-export const launcherConfig: LauncherConfig =
-  readLauncherConfig(LAUNCHER_CONFIG);
-export const {
-  cluster,
-  stateDir,
-  legacyStateDir,
-  logsPrefix,
-  isFlight,
-  smashUrl,
-} = launcherConfig;
+export const cluster = process.env.DAEDALUS_CLUSTER ?? '';
+export const stateDir = process.env.DAEDALUS_STATE_DIR ?? '';
+export const logsPrefix = process.env.DAEDALUS_LOGS_DIR ?? '';
+export const legacyStateDir = process.env.DAEDALUS_LEGACY_STATE_DIR ?? '';
+export const isFlight = process.env.DAEDALUS_IS_FLIGHT === 'true';
+export const smashUrl = process.env.DAEDALUS_SMASH_URL;
+export const updateMode = (process.env.DAEDALUS_UPDATE_MODE ??
+  'system-package-disabled') as 'installer-managed' | 'system-package-disabled';
+export const updateRunnerBin = process.env.DAEDALUS_UPDATE_RUNNER ?? '';
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;
@@ -166,7 +123,8 @@ export const DISK_SPACE_CHECK_TIMEOUT = 9 * 1000; // Timeout for checking disks 
 // Used if token metadata server URL is not defined in launcher config
 export const FALLBACK_TOKEN_METADATA_SERVER_URL =
   'https://metadata.world.dev.cardano.org';
-export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 16 * 1024 * 1024 * 1024; // 16gb RAM
+// Nominal threshold is 8 GB but some 8 GB machines report ~7.75 GB, so use 7 GB.
+export const MINIMUM_AMOUNT_OF_RAM_FOR_RTS_FLAGS = 7 * 1024 * 1024 * 1024;
 
 // Used by mock-token-metadata-server
 // “localhost” breaks under new electron, which prefers ::1 (IPv6)

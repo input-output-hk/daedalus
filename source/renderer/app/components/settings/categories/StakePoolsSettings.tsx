@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { map, omit } from 'lodash';
+import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Link } from 'react-polymorph/lib/components/Link';
 import SVGInline from 'react-svg-inline';
@@ -149,8 +149,6 @@ type State = {
   successfullyUpdated: boolean;
   wasLoading: boolean;
 };
-const { isSelfnode } = global.environment;
-
 @observer
 class StakePoolsSettings extends Component<Props, State> {
   static contextTypes = {
@@ -227,12 +225,7 @@ class StakePoolsSettings extends Component<Props, State> {
     const smashServerType = getSmashServerIdFromUrl(
       editingSmashServerUrl || ''
     );
-    const smashServerTypes = isSelfnode
-      ? omit(
-          SMASH_SERVER_TYPES,
-          SMASH_SERVERS_LIST[SMASH_SERVER_TYPES.IOHK].name
-        )
-      : SMASH_SERVER_TYPES;
+    const smashServerTypes = SMASH_SERVER_TYPES;
     const smashSelectOptions = map(smashServerTypes, (value) => ({
       label: this.smashSelectMessages[value] || value,
       value,

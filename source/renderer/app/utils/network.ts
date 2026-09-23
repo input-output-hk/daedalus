@@ -20,8 +20,8 @@ import {
 
 // Networks served by explorer.cardano.org, which expects
 // `{root}/{network}/{tx|address|drep}/{identifier}`.
-// Networks that are not listed here (staging, development, selfnode, the
-// retired testnet, or an undefined `env.NETWORK`) have no explorer of their
+// Networks that are not listed here (staging, development, the retired testnet,
+// or an undefined `env.NETWORK`) have no explorer of their
 // own and fall back to mainnet.
 const EXPLORER_NETWORK_PATHS: Record<string, string> = {
   [MAINNET]: 'mainnet',

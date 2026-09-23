@@ -14,7 +14,6 @@ export type Environment = {
   isPreprod: boolean;
   isPreview: boolean;
   isShelleyQA: boolean;
-  isSelfnode: boolean;
   isDevelopment: boolean;
   build: string;
   buildNumber: string;
@@ -45,7 +44,7 @@ export const DEVELOPMENT = 'development';
 export const TEST = 'test';
 // cardano-node networks
 export const MAINNET = 'mainnet';
-export const MAINNET_FLIGHT = 'mainnet_flight';
+export const MAINNET_FLIGHT = 'mainnet-flight';
 export const TESTNET = 'testnet';
 export const STAGING = 'staging';
 export const SHELLEY_QA = 'shelley_qa';
@@ -53,7 +52,6 @@ export const ALONZO_PURPLE = 'alonzo_purple';
 export const VASIL_DEV = 'vasil_dev';
 export const PREPROD = 'preprod';
 export const PREVIEW = 'preview';
-export const SELFNODE = 'selfnode';
 export const MAC_OS = 'darwin';
 export const WINDOWS = 'win32';
 export const LINUX = 'linux';
@@ -65,7 +63,7 @@ export const OS_NAMES = {
 export type Platform = 'darwin' | 'darwin-arm' | 'win32' | 'linux';
 export type Network =
   | 'mainnet'
-  | 'mainnet_flight'
+  | 'mainnet-flight'
   | 'testnet'
   | 'staging'
   | 'shelley_qa'
@@ -73,7 +71,6 @@ export type Network =
   | 'vasil_dev'
   | 'preprod'
   | 'preview'
-  | 'selfnode'
   | 'development';
 export const networkPrettyNames = {
   mainnet: 'Mainnet',
@@ -84,7 +81,6 @@ export const networkPrettyNames = {
   vasil_dev: 'Vasil-Dev',
   preprod: 'Pre-Prod',
   preview: 'Preview',
-  selfnode: 'Selfnode',
   development: 'Development',
 };
 export type CpuThreadData = {

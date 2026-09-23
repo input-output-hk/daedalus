@@ -252,7 +252,7 @@ fn spawn_watchdog(config: &Value) -> (Child, ChildStdin, mpsc::Receiver<Value>) 
     let state_dir = config["node"]["state_dir"]
         .as_str()
         .expect("node.state_dir");
-    let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
+    let config_path = std::path::Path::new(state_dir).join("daedalus-config.json");
     std::fs::write(&config_path, serde_json::to_string_pretty(config).unwrap()).unwrap();
 
     let mut child = Command::new(WATCHDOG)
@@ -602,7 +602,7 @@ fn stdout_close_does_not_orphan_children() {
     let (cfg, wallet_port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
 
     let state_dir = cfg["node"]["state_dir"].as_str().expect("node.state_dir");
-    let config_path = std::path::Path::new(state_dir).join("watchdog-config.json");
+    let config_path = std::path::Path::new(state_dir).join("daedalus-config.json");
     std::fs::write(&config_path, serde_json::to_string_pretty(&cfg).unwrap()).unwrap();
 
     let mut child = Command::new(WATCHDOG)

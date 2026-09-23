@@ -17,12 +17,6 @@ const messages = defineMessages({
       '!!!Your node is still syncing. DRep data becomes available once the node reaches the tip.',
     description: 'Directory fallback while the node has not reached the tip',
   },
-  selfnode: {
-    id: 'governance.drepDirectory.empty.selfnode',
-    defaultMessage:
-      '!!!DRep directory data is unavailable on the selfnode cluster.',
-    description: 'Directory empty state on the selfnode cluster',
-  },
   noSuggestions: {
     id: 'governance.drepDirectory.empty.noSuggestions',
     defaultMessage:
@@ -64,8 +58,7 @@ export type DRepEmptyStateVariant =
   | 'noSync'
   | 'noSuggestions'
   | 'noResults'
-  | 'noFavorites'
-  | 'selfnode';
+  | 'noFavorites';
 
 interface Props {
   variant: DRepEmptyStateVariant;
@@ -82,16 +75,6 @@ function DRepEmptyState({
   onBackToDirectory,
   intl,
 }: Props) {
-  if (variant === 'selfnode') {
-    return (
-      <div className={styles.container} data-variant={variant}>
-        <p className={styles.message}>
-          {intl.formatMessage(messages.selfnode)}
-        </p>
-      </div>
-    );
-  }
-
   // The cohort came back empty because nothing on the network qualifies, not
   // because a query or a filter excluded everything. Saying "no DReps match
   // your filters" there names a cause the reader did not create and offers to

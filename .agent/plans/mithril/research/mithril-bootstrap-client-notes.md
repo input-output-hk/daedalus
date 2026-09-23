@@ -30,7 +30,10 @@
   - `nix/internal/any-darwin.nix`
 - Nix dev shell failed copying empty bin globs in `nix/internal/cardano-bridge.nix`. Fix by adding `|| true` to the `cp` lines for:
   - `${cardano-wallet}`, `${cardano-address}`, `${cardano-launcher}`, `${cardano-node}`, `${cardano-cli}`, `${mithril-client}`
-- Electron dev on Linux may fail with SUID sandbox error; use `ELECTRON_DISABLE_SANDBOX=1 yarn start:dev` (optionally `--no-sandbox`).
+- Historical note, superseded by task-108: Electron sandbox failures must not be
+  bypassed with `ELECTRON_DISABLE_SANDBOX` or `--no-sandbox`. Use the supported
+  system package or diagnose the development host while keeping remote dApp
+  content disabled.
 - `launcherConfig.wipeChain` default in nix launcher config overrides env; remove default or ensure precedence favors env/argv.
 - Mithril `cardano-db` subcommands differ by client version; detect whether `download` is under `cardano-db` or `cardano-db snapshot`.
 - Verification keys are fetched from mithril-infra URLs and must be converted from JSON byte arrays into hex strings for `mithril-client` env vars.

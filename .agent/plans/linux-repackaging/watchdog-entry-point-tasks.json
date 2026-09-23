@@ -1,0 +1,360 @@
+{
+  "metadata": {
+    "title": "Watchdog as Entry Point Tasks",
+    "created": "2026-09-15",
+    "updated": "2026-09-15",
+    "version": "1.0.0",
+    "totalTasks": 11,
+    "prdReference": ".agent/plans/linux-repackaging/watchdog-entry-point-prd.md",
+    "description": "Invert the process hierarchy: cardano-watchdog becomes PID 1, spawns Electron via anonymous stdio pipes, generates TLS certs in Rust, removes cardano-launcher, and eliminates the nix/ directory in favour of perSystem/ and flake/lib/.",
+    "sourceFiles": [
+      "watchdog/src/protocol.rs",
+      "watchdog/src/config.rs",
+      "watchdog/src/main.rs",
+      "watchdog/src/supervisor.rs",
+      "watchdog/Cargo.toml",
+      "source/main/WatchdogManager.ts",
+      "source/main/BackendLifecycle.ts",
+      "source/main/index.ts",
+      "source/main/config.ts",
+      "nix/internal/launcher-config.nix",
+      "nix/internal/common.nix",
+      "nix/internal/x86_64-linux.nix",
+      "nix/internal/any-darwin.nix",
+      "nix/internal/x86_64-windows.nix",
+      "perSystem/linux.nix",
+      "perSystem/packages.nix",
+      "flake/lib.nix"
+    ],
+    "importantNote": "Standalone watchdog mode (electron section absent from config) must remain fully functional throughout — this is the development and CI mode. The nix/ directory is eliminated entirely; all Nix logic moves to flake/lib/ or perSystem/; non-Nix assets move to packaging/."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Rust Core",
+      "description": "Abstract event emission, add Electron spawn logic, generate TLS certs — all in Rust. No TypeScript or Nix changes yet.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Abstract emit() via OnceLock event channel",
+          "description": "Decouple emit() from stdout so events can be routed to Electron's stdin pipe (parent mode) or watchdog's own stdout (standalone mode) without changing any call sites in supervisor.rs or mithril.rs.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 2.0,
+          "dependencies": [],
+          "targetPath": "watchdog/src/protocol.rs",
+          "implementationNotes": [
+            "Add: static EVENT_TX: OnceLock<tokio::sync::mpsc::UnboundedSender<String>> = OnceLock::new();",
+            "Add: pub fn init_event_sink(tx: UnboundedSender<String>) { EVENT_TX.set(tx).ok(); }",
+            "Update emit(): if let Some(tx) = EVENT_TX.get() { let _ = tx.send(line); } else { println!(\"{line}\"); }",
+            "Keep STDOUT_GONE AtomicBool guard only in the println! fallback branch",
+            "Add event variants: ElectronStarted { pid: u32 }, ElectronExited { code: Option<i32>, signal: Option<String> }",
+            "Zero call-site changes to emit() in supervisor.rs or mithril.rs"
+          ]
+        },
+        {
+          "id": "task-002",
+          "title": "Add ElectronConfig and spawn Electron in main.rs",
+          "description": "Add ElectronConfig to config.rs, make api_port optional. In main.rs: create event channel, init sink, pick free port, spawn Electron with piped stdio, redirect command reader to Electron's stdout, monitor Electron exit.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 4.0,
+          "dependencies": ["task-001"],
+          "targetPaths": [
+            "watchdog/src/config.rs",
+            "watchdog/src/main.rs"
+          ],
+          "implementationNotes": [
+            "config.rs: add ElectronConfig { exe: String, args: Vec<String>, #[serde(default)] env: HashMap<String,String> }",
+            "config.rs: WatchdogConfig gains electron: Option<ElectronConfig>",
+            "config.rs: WalletConfig api_port: Option<u16> (None = auto-pick at runtime)",
+            "config.rs: WatchdogConfig gains pub_logs_dir: Option<String> and tls_dir: Option<String> (CLI overrides)",
+            "main.rs: add #[arg(long)] pub_logs_dir: Option<String> and #[arg(long)] tls_dir: Option<String> to Args; merge into config after parsing",
+            "main.rs: if api_port is None, bind TcpListener to '127.0.0.1:0', get assigned port, close listener",
+            "main.rs: if electron is Some — spawn with stdin: Stdio::piped(), stdout: Stdio::piped(), stderr: log file; call tether_to_watchdog() on child",
+            "main.rs: create mpsc::unbounded_channel(); call init_event_sink(tx)",
+            "main.rs: drain task — receive from rx, write to child.stdin (detect EPIPE → cmd_tx.send(Stop))",
+            "main.rs: replace tokio::io::stdin() command reader with child.stdout reader using same read_bounded_line() logic",
+            "main.rs: spawn task: child.wait().await → emit ElectronExited, send Command::Stop",
+            "If electron is None: drain rx → tokio::io::stdout(); read commands from tokio::io::stdin() (unchanged standalone behavior)",
+            "tether_to_watchdog() already implemented in supervisor.rs — call it on the Electron child process"
+          ]
+        },
+        {
+          "id": "task-003",
+          "title": "TLS cert generation in Rust",
+          "description": "Add rcgen to Cargo.toml. New module watchdog/src/tls.rs with generate_certs(tls_dir). Called in main.rs before spawning wallet or Electron; cert paths injected into wallet args and Electron env.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-002"],
+          "targetPaths": [
+            "watchdog/Cargo.toml",
+            "watchdog/src/tls.rs",
+            "watchdog/src/main.rs",
+            "watchdog/src/supervisor.rs"
+          ],
+          "implementationNotes": [
+            "Cargo.toml: add rcgen = '0.13' (pure-Rust, no system OpenSSL); add rustls-pki-types if needed by rcgen API",
+            "tls.rs: pub struct TlsPaths { pub ca: PathBuf, pub server_cert: PathBuf, pub server_key: PathBuf, pub client_cert: PathBuf, pub client_key: PathBuf }",
+            "tls.rs: pub fn generate_certs(tls_dir: &Path) -> anyhow::Result<TlsPaths>",
+            "tls.rs: generate self-signed CA (10-year expiry), server cert signed by CA (1-year), client cert signed by CA (1-year)",
+            "tls.rs: write to tls_dir/server/ca.pem, server.pem, server.key; tls_dir/client/client.pem, client.key",
+            "tls.rs: skip generation if cert files already exist and are not expired (idempotent across launches)",
+            "main.rs: if config.tls_dir is Some, call generate_certs(); inject --tls-ca, --tls-server-cert, --tls-server-key into wallet args; set TLS_CA_CERT, TLS_CLIENT_CERT, TLS_CLIENT_KEY in electron.env",
+            "supervisor.rs: wallet spawn adds --port <picked_port> and TLS args from main.rs context (or accept as params)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "TypeScript Refactor",
+      "description": "Replace WatchdogManager's spawn-and-pipe with process.stdin/process.stdout. Slim BackendLifecycle and index.ts. Update LauncherConfig type.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-004",
+          "title": "Refactor WatchdogManager.ts to use process.stdin/stdout",
+          "description": "Remove spawn, config file writing, and proc.stdout wiring. Replace with readline on process.stdin. Send commands via process.stdout.write(). handleEvent() is entirely unchanged.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-002"],
+          "targetPath": "source/main/WatchdogManager.ts",
+          "implementationNotes": [
+            "start() signature: start(): void (remove exePath and config params)",
+            "Remove: spawn(), writeFileSync(configPath, ...), proc.stdout readline wiring, proc.on('exit', ...)",
+            "Add: createInterface({ input: process.stdin, crlfDelay: Infinity }); rl.on('line', (line) => { /* same handleEvent() call as today */ })",
+            "rl.on('close', () => { /* replaces proc.on('exit') for wallet-ready rejection */ })",
+            "sendCommand(): process.stdout.write(JSON.stringify(cmd) + '\\n') instead of this.proc.stdin.write(...)",
+            "stop(): send stop command to process.stdout; resolve when process.stdin closes (watchdog closes our stdin after backends shut down); remove proc.stdin?.end()",
+            "handleEvent() — all 130 lines unchanged"
+          ]
+        },
+        {
+          "id": "task-005",
+          "title": "Slim BackendLifecycle.ts and update index.ts + config.ts",
+          "description": "Remove start() binary-path params, port-picking, arg-building, and TLS cert reading. TLS cert paths now arrive as env vars. Remove binary-path fields from LauncherConfig type.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-004"],
+          "targetPaths": [
+            "source/main/BackendLifecycle.ts",
+            "source/main/index.ts",
+            "source/main/config.ts"
+          ],
+          "implementationNotes": [
+            "BackendLifecycle.ts: start() becomes start(): void (remove watchdogBin, config params)",
+            "BackendLifecycle.ts: remove getFreePort() calls, node/wallet arg-building, config object construction",
+            "BackendLifecycle.ts: remove TLS cert reading from disk — cert paths now in process.env.TLS_CA_CERT, TLS_CLIENT_CERT, TLS_CLIENT_KEY (set by watchdog before spawning Electron)",
+            "BackendLifecycle.ts: remove restart scheduler (watchdog kills Electron via tether; no Electron-side restart needed)",
+            "BackendLifecycle.ts: keep event routing to IPC channels, wallet-ready promise wiring, mithril event relay (all unchanged)",
+            "index.ts: remove binary-path extraction from launcherConfig; change backendLifecycle.start(watchdogBin, config) → backendLifecycle.start()",
+            "config.ts: remove from LauncherConfig type: watchdogBin, nodeBin, walletBin, mithrilBin, snapshotConverterBin, cardanoAddressBin, daedalusBin, updateRunnerBin, updaterArgs, updaterPath, updateArchive, updateWindowsRunner, walletLogging",
+            "config.ts: keep: cluster, networkName, stateDir, logsPrefix, launcherLogsPrefix, tlsPath (if referenced by renderer), nodeConfig paths, metadataUrl, smashUrl, isFlight, isStaging, legacyStateDir, legacyWalletDB, legacySecretKey"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Nix Architecture Migration",
+      "description": "Eliminate the nix/ directory. All Nix logic moves to perSystem/ or flake/lib/. Non-Nix assets move to packaging/. Generate watchdog-config.json in perSystem/.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-006",
+          "title": "Migrate flake/lib/ and flake/nixosModules.nix; split perSystem/packages/",
+          "description": "Rename flake/lib.nix → flake/lib/recursive.nix. Create flake/lib/daedalus.nix absorbing common.nix and source-lib.nix. Move launcher-config.nix, cardano-bridge.nix, selfnode-config.nix to flake/lib/. Split perSystem/packages.nix into perSystem/packages/{linux,darwin,windows}.nix.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 4.0,
+          "dependencies": ["task-003"],
+          "targetPaths": [
+            "flake/lib/recursive.nix",
+            "flake/lib/daedalus.nix",
+            "flake/lib/launcher-config.nix",
+            "flake/lib/cardano-bridge.nix",
+            "flake/lib/selfnode-config.nix",
+            "perSystem/packages/linux.nix",
+            "perSystem/packages/darwin.nix",
+            "perSystem/packages/windows.nix"
+          ],
+          "implementationNotes": [
+            "flake/lib/recursive.nix: rename current flake/lib.nix; no content change; update any imports that reference flake/lib.nix",
+            "flake/lib/daedalus.nix: absorb nix/internal/common.nix and nix/internal/source-lib.nix; export as { inputs, ... }: { lib.daedalus = { installerClusters, buildRev, buildRevShort, buildCounter, mkBinPath, mkPlatformPackages }; }",
+            "flake/lib/daedalus.nix: mkPlatformPackages targetSystem returns all of common.nix's current attrs (walletPackages, nodePackages, mithrilPackages, nodejs, yarn, launcherConfigs, daedalus-bridge, cardano-node, cardano-wallet, etc.); remove cardano-launcher and temporaryNodeModulesPatches (cardano-launcher patches) from it",
+            "flake/lib/launcher-config.nix: move from nix/internal/launcher-config.nix; slim binary-path and auto-update fields (remove daedalusBin, watchdogBin, nodeBin, walletBin, mithrilBin, snapshotConverterBin, cardanoAddressBin, updateRunnerBin, updaterArgs, updaterPath, updateArchive, updateWindowsRunner, walletLogging, tlsConfig)",
+            "flake/lib/cardano-bridge.nix: move from nix/internal/cardano-bridge.nix; update import paths",
+            "flake/lib/selfnode-config.nix: move from nix/internal/selfnode-config.nix",
+            "perSystem/packages/linux.nix, darwin.nix, windows.nix: split perSystem/packages.nix into platform files; each exports perSystem = { packages = ...; }; flake-parts merges via lib.mkMerge; delete perSystem/packages.nix",
+            "nix/internal.nix: delete (self.internal pattern replaced by self.lib.daedalus)",
+            "nix/packages.nix: delete (absorbed into perSystem/packages/)",
+            "nix/internal/common.nix, source-lib.nix: delete after content moved to flake/lib/daedalus.nix",
+            "nix/internal/launcher-config.nix, cardano-bridge.nix, selfnode-config.nix: delete after content moved to flake/lib/"
+          ]
+        },
+        {
+          "id": "task-007",
+          "title": "New perSystem/watchdog-config.nix generating per-cluster watchdog-config.json",
+          "description": "New perSystem/ file that generates watchdog-config.json per cluster using binary paths from self.lib.daedalus. Runtime-variable fields (pub_logs_dir, tls_dir) are NOT baked in — passed as CLI flags from bin/daedalus.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 3.0,
+          "dependencies": ["task-006"],
+          "targetPath": "perSystem/watchdog-config.nix",
+          "implementationNotes": [
+            "New file: perSystem/watchdog-config.nix (auto-discovered by recursiveImports)",
+            "lib.mkIf (system == 'x86_64-linux') for Linux-only generation; extend with darwin/windows platform guards in task-008",
+            "lib.genAttrs installerClusters (from inputs.self.lib.daedalus.installerClusters) to produce per-cluster configs",
+            "Access binaries via platform = inputs.self.lib.daedalus.mkPlatformPackages system",
+            "node.exe: platform.cardano-node binary path; node.args: --config, --topology, --socket-path, --database-path, --shutdown-ipc 3 (paths from slimmed launcher-config nodeConfigFiles)",
+            "wallet.exe: platform.cardano-wallet binary path; wallet.args: --node-socket, --database, --sync-tolerance; omit --port and --tls-* (watchdog adds at runtime)",
+            "electron.exe: platform.electron binary; electron.args: ['--disable-setuid-sandbox', '--no-sandbox']; electron.env: LAUNCHER_CONFIG, CHROME_DEVEL_SANDBOX",
+            "mithril: from launcherConfigs.${cluster}.launcherConfig mithril fields",
+            "pub_logs_dir and tls_dir: NOT in JSON — passed as --pub-logs-dir and --tls-dir CLI flags by bin/daedalus (see task-008)"
+          ]
+        },
+        {
+          "id": "task-008",
+          "title": "Migrate Linux build to perSystem/linux.nix; eliminate nix/internal/x86_64-linux.nix",
+          "description": "Inline all of x86_64-linux.nix into perSystem/linux.nix (JS compilation, electron patching, binary assembly, self-extracting archive). Add bin/daedalus generation (execs watchdog). Copy watchdog-config.json into package config dir. Delete x86_64-linux.nix and all remaining nix/internal/ files.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 5.0,
+          "dependencies": ["task-007"],
+          "targetPaths": [
+            "perSystem/linux.nix",
+            "packaging/macos/darwin-launcher.go",
+            "packaging/patches/"
+          ],
+          "implementationNotes": [
+            "perSystem/linux.nix: inline daedalusJs, relocatableElectron, newPackage, newBundle, selfExtractingArchive from x86_64-linux.nix; reference helpers from inputs.self.lib.daedalus.mkPlatformPackages 'x86_64-linux'",
+            "perSystem/linux.nix: add bin/daedalus script generation using pkgs.writeShellScript; script execs cardano-watchdog --config, --pub-logs-dir, --tls-dir (passes runtime paths as CLI flags)",
+            "perSystem/linux.nix: copy watchdog-config.json (from packages.watchdog-config-${cluster}) into $out/config/ alongside launcher-config.yaml",
+            "perSystem/linux.nix: remove daedalus-frontend and update-runner script generation (deleted, not migrated)",
+            "perSystem/linux.nix: inline nix/tests/shellcheck.nix into perSystem/checks.nix (or delete if covered by existing checks)",
+            "packaging/macos/darwin-launcher.go: move from nix/internal/darwin-launcher.go; update exec target from cardano-launcher to cardano-watchdog; update --config arg to watchdog-config.json; runtime paths (pub-logs-dir, tls-dir) computed from DAEDALUS_INSTALL_DIRECTORY in Go",
+            "packaging/patches/: move all .patch files from nix/internal/",
+            "packaging/runtime-nodejs-deps.json: move from nix/internal/",
+            "nix/internal/x86_64-linux.nix: DELETE",
+            "nix/internal/darwin-launcher.nix: inline into perSystem/darwin.nix (task-009)",
+            "Move linux-self-extracting-archive.sh if not already in packaging/linux/"
+          ]
+        },
+        {
+          "id": "task-009",
+          "title": "Migrate macOS and Windows builds to perSystem/darwin.nix + perSystem/windows.nix",
+          "description": "New perSystem/darwin.nix inlines any-darwin.nix and darwin-launcher.nix. New perSystem/windows.nix inlines x86_64-windows.nix including NSIS files. Update darwin exec target. Update Windows NSIS shortcut. Delete nix/ directory entirely.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5.0,
+          "dependencies": ["task-008"],
+          "targetPaths": [
+            "perSystem/darwin.nix",
+            "perSystem/windows.nix"
+          ],
+          "implementationNotes": [
+            "perSystem/darwin.nix: new file; lib.mkIf (lib.elem system [\"x86_64-darwin\" \"aarch64-darwin\"]); inline any-darwin.nix logic; inline darwin-launcher.nix (58 lines, small enough); reference inputs.self.lib.daedalus.mkPlatformPackages for binaries; reference packaging/macos/darwin-launcher.go as source",
+            "perSystem/darwin.nix: update darwin-launcher exec target to: cardano-watchdog --config ../Resources/watchdog-config.json; runtime paths (pub-logs-dir, tls-dir) derived from DAEDALUS_INSTALL_DIRECTORY in the Go binary",
+            "perSystem/darwin.nix: copy watchdog-config.json into macOS bundle Resources/ alongside launcher-config.yaml",
+            "perSystem/windows.nix: new file; lib.mkIf (system == \"x86_64-linux\") for cross-compilation from Linux; inline x86_64-windows.nix logic; inline nsis*.nix and fastlist.nix (all Nix stays in perSystem/)",
+            "perSystem/windows.nix: NSIS shortcut target → cardano-watchdog.exe; remove cardano-launcher.exe from File install list; generate watchdog-config.json into $INSTDIR/",
+            "perSystem/windows.nix: reference packaging/runtime-nodejs-deps.json and packaging/patches/ for assets",
+            "nix/internal/any-darwin.nix: DELETE after inline",
+            "nix/internal/x86_64-windows.nix: DELETE after inline",
+            "nix/internal/darwin-launcher.nix: DELETE after inline",
+            "nix/ directory: DELETE entirely once all files moved or deleted"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Cleanup",
+      "description": "Remove cardano-launcher from all package manifests. Delete manifest file. Verify absence across all bundles.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-010",
+          "title": "Remove cardano-launcher from Linux package manifests",
+          "description": "Remove cardano-launcher from file manifests, integrity checks, and installed-file lists in deb, rpm, arch, and NixOS packages.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": ["task-008"],
+          "targetPaths": [
+            "packaging/linux/linux-deb-common.sh"
+          ],
+          "implementationNotes": [
+            "deb: remove cardano-launcher from file manifests and md5sums in linux-deb-common.sh",
+            "rpm: remove from %files section in rpm spec",
+            "arch: remove from package() function file list in PKGBUILD",
+            "NixOS: remove from activation script and package derivation in perSystem/linux.nix (handled in task-008)",
+            "Nix bundle: remove from self-extracting archive contents; update or remove --extract shim"
+          ]
+        },
+        {
+          "id": "task-011",
+          "title": "Delete cardano-launcher.exe.manifest and verify complete absence",
+          "description": "Delete the Windows manifest file for cardano-launcher. Verify cardano-launcher binary is absent from all platform bundles.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": ["task-009", "task-010"],
+          "targetPath": "installers/cardano-launcher.exe.manifest",
+          "implementationNotes": [
+            "Delete installers/cardano-launcher.exe.manifest",
+            "Verify Linux: ls /opt/daedalus/${cluster}/libexec/cardano-launcher → not found",
+            "Verify macOS: ls *.app/Contents/MacOS/cardano-launcher → not found",
+            "Verify Windows: check $INSTDIR for cardano-launcher.exe → not found",
+            "Verify Nix: grep -r cardano-launcher flake/ perSystem/ packaging/ → only in comments/docs if any"
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 4,
+    "totalTasks": 11,
+    "estimatedTotalHours": 34.0,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-003",
+      "task-006",
+      "task-007",
+      "task-008",
+      "task-009"
+    ],
+    "keyFiles": [
+      "watchdog/src/protocol.rs",
+      "watchdog/src/main.rs",
+      "watchdog/src/config.rs",
+      "watchdog/src/tls.rs",
+      "source/main/WatchdogManager.ts",
+      "source/main/BackendLifecycle.ts",
+      "perSystem/watchdog-config.nix",
+      "perSystem/linux.nix",
+      "perSystem/darwin.nix",
+      "perSystem/windows.nix",
+      "flake/lib/daedalus.nix",
+      "flake/lib/launcher-config.nix"
+    ],
+    "riskAreas": [
+      "emit() abstraction must maintain zero call-site changes in supervisor.rs and mithril.rs",
+      "Standalone mode (electron section absent from config) must remain fully functional for dev/CI",
+      "rcgen cert format must exactly match what cardano-wallet expects for TLS mutual auth",
+      "Electron stdin/stdout as IPC channel — Electron must not use process.stdin/stdout for anything else",
+      "perSystem/watchdog-config.nix binary paths differ between NixOS (Nix store) and native packages (/opt/daedalus/...) — must handle both",
+      "flake/lib/daedalus.nix mkPlatformPackages must preserve Windows cross-compilation (x86_64-windows builds on x86_64-linux)",
+      "nix/ directory elimination is a large structural change — all import paths referencing nix/ must be updated",
+      "darwin-launcher.go test (symlinkJoin with mock cardano-launcher) must be updated to mock cardano-watchdog"
+    ],
+    "testingNotes": "cargo test in watchdog/ → yarn compile → treefmt → nix build .#packages.x86_64-linux.daedalus-mainnet → integration smoke test (Linux native pkg) → shutdown test → crash test (kill -9 electron) → TLS test → absence test (no cardano-launcher anywhere) → macOS and Windows smoke flows",
+    "rollbackPlan": "All changes are on sl/linux-packaging. Rollback: git revert to pre-task-001 state. Watchdog standalone mode is unchanged throughout so intermediate Rust-only states are safe to ship if needed."
+  }
+}

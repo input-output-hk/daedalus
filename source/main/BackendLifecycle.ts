@@ -2,10 +2,7 @@ import { readFileSync } from 'fs';
 import { BrowserWindow } from 'electron';
 import { logger } from './utils/logging';
 import WatchdogManager from './WatchdogManager';
-import type {
-  WatchdogConfig,
-  WatchdogState as InternalWatchdogState,
-} from './WatchdogManager';
+import type { WatchdogState as InternalWatchdogState } from './WatchdogManager';
 import type {
   MithrilProgress,
   WatchdogState,
@@ -21,21 +18,14 @@ import {
   watchdogStoppedChannel,
 } from './ipc/nodePushChannel';
 
-export type { WatchdogConfig };
-
-const RESTART_DELAY_MS = 3_000;
-
 type EventHandler = (event: Record<string, unknown>) => void;
 
 class BackendLifecycle {
   private manager: WatchdogManager | null = null;
   private getWindow: () => BrowserWindow | null = () => null;
   private eventHandlers: EventHandler[] = [];
-  private _exePath = '';
-  private _config: WatchdogConfig | null = null;
   private _defaultChainPath: string | null = null;
   private _customChainPath: string | null = null;
-  private _tlsPath: string | null = null;
 
   // ---------------------------------------------------------------------------
   // Setup
@@ -53,21 +43,13 @@ class BackendLifecycle {
     this._customChainPath = customChainPath;
   }
 
-  setTlsPath(tlsPath: string): void {
-    this._tlsPath = tlsPath;
-  }
-
   // ---------------------------------------------------------------------------
   // Start
   // ---------------------------------------------------------------------------
 
-  // start() returns as soon as the watchdog process is spawned; wallet-ready
-  // and error handling happen internally so callers (including setCustomChainPath)
-  // don't block waiting for the full startup sequence.
-  start(exePath: string, config: WatchdogConfig): void {
-    this._exePath = exePath;
-    this._config = config;
-
+  // start() wires up process.stdin/stdout IPC with the watchdog parent process.
+  // wallet-ready and error handling happen internally without blocking the caller.
+  start(): void {
     const manager = new WatchdogManager();
     this.manager = manager;
 
@@ -76,7 +58,7 @@ class BackendLifecycle {
       manager.onEvent(handler);
     }
 
-    // Push mithril events to the renderer window
+    // Push events to the renderer window
     manager.onEvent((event) => {
       const win = this.getWindow();
       if (!win) return;
@@ -113,7 +95,7 @@ class BackendLifecycle {
       }
     });
 
-    manager.start(exePath, config);
+    manager.start();
 
     // Handle wallet-ready promise internally without blocking the caller
     manager.walletReadyPromise
@@ -121,36 +103,30 @@ class BackendLifecycle {
         logger.info('BackendLifecycle: wallet ready', { port });
         const win = this.getWindow();
         if (!win) return;
+        // TLS cert paths are injected by the watchdog into our environment.
         let ca: number[] = [];
         let cert: number[] = [];
         let key: number[] = [];
-        if (this._tlsPath) {
-          try {
-            const path = require('path') as typeof import('path');
-            ca = Array.from(
-              readFileSync(path.join(this._tlsPath, 'client/ca.crt'))
-            );
-            cert = Array.from(
-              readFileSync(path.join(this._tlsPath, 'client/client.pem'))
-            );
-            key = Array.from(
-              readFileSync(path.join(this._tlsPath, 'client/client.key'))
-            );
-          } catch (e) {
-            logger.error('BackendLifecycle: failed to read TLS certs', {
-              error: e,
-            });
+        try {
+          const caPath = process.env.TLS_CA_CERT;
+          const certPath = process.env.TLS_CLIENT_CERT;
+          const keyPath = process.env.TLS_CLIENT_KEY;
+          if (caPath && certPath && keyPath) {
+            ca = Array.from(readFileSync(caPath));
+            cert = Array.from(readFileSync(certPath));
+            key = Array.from(readFileSync(keyPath));
           }
+        } catch (e) {
+          logger.error('BackendLifecycle: failed to read TLS certs', {
+            error: e,
+          });
         }
         walletPortChannel.send({ port, ca, cert, key }, win.webContents);
       })
       .catch((reason) => {
-        logger.error('BackendLifecycle: startup failed, scheduling restart', {
-          reason,
-        });
-        setTimeout(() => {
-          this.start(exePath, config);
-        }, RESTART_DELAY_MS);
+        // When watchdog exits it also kills Electron (via tether_to_watchdog),
+        // so there is nothing useful to do here except log the reason.
+        logger.error('BackendLifecycle: watchdog stopped', { reason });
       });
   }
 
@@ -160,34 +136,12 @@ class BackendLifecycle {
 
   async setCustomChainPath(customPath: string | null): Promise<void> {
     this._customChainPath = customPath;
-
-    if (!this._config || !this._exePath) {
-      logger.warn('BackendLifecycle: setCustomChainPath called before start');
-      return;
-    }
-
-    // Build updated config with new chain_path
-    const effectivePath = customPath
-      ? require('path').join(customPath, 'chain')
-      : this._defaultChainPath;
-
-    const newConfig: WatchdogConfig = {
-      ...this._config,
-      mithril: this._config.mithril
-        ? {
-            ...this._config.mithril,
-            chain_path: effectivePath ?? this._config.mithril.chain_path,
-          }
-        : undefined,
-    };
-
-    logger.info('BackendLifecycle: restarting watchdog with new chain path', {
-      customPath,
-      effectivePath,
-    });
-
-    await this.stop();
-    this.start(this._exePath, newConfig);
+    // In the inverted architecture watchdog is the parent process and cannot be
+    // restarted by Electron. Chain-path changes take effect on the next launch.
+    logger.warn(
+      'BackendLifecycle: setCustomChainPath — change will apply on next launch',
+      { customPath }
+    );
   }
 
   // ---------------------------------------------------------------------------

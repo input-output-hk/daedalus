@@ -16,7 +16,6 @@ const environment: Environment = {
   isPreprod: false,
   isPreview: false,
   isShelleyQA: false,
-  isSelfnode: false,
   isDevelopment: true,
   build: 'storybook',
   buildNumber: 'storybook',

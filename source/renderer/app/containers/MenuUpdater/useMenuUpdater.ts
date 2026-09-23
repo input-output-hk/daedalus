@@ -40,6 +40,7 @@ const useMenuUpdater = ({
     });
   }, [
     app.activeDialog,
+    profile.analyticsAcceptanceStatus,
     profile.areTermsOfUseAccepted,
     profile.currentLocale,
     router.location?.pathname,

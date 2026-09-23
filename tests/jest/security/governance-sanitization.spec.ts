@@ -358,10 +358,6 @@ describe('Governance sanitization — call boundaries', () => {
   });
 
   it('redacts DRep IDs before logger payloads are emitted by AdaApi', async () => {
-    (global as any).environment = {
-      ...(global as any).environment,
-      isSelfnode: false,
-    };
     (global as any).https = require('https');
 
     const loggerSpy = jest
@@ -391,10 +387,6 @@ describe('Governance sanitization — call boundaries', () => {
   it('redacts the vote target from the AdaApi wallet-list poll log', async () => {
     const FIXTURE_DREP =
       'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
-    (global as any).environment = {
-      ...(global as any).environment,
-      isSelfnode: false,
-    };
     (global as any).https = require('https');
     (global as any).daedalus = {
       api: {

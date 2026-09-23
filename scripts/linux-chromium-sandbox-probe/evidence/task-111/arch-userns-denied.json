@@ -1,0 +1,29 @@
+{
+  "assertions": null,
+  "diagnostics": {
+    "byteCount": 556,
+    "category": "other",
+    "exitCode": 133,
+    "rawHostDataExported": false,
+    "sanitized": true,
+    "sanitizedExcerpt": "<CHROMIUM_PROCESS_PREFIX>:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:166] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that <INSTALL_ROOT>/libexec/bundle-electron/lib/electron/chrome-sandbox is owned by root and has mode 4755.\n",
+    "sha256": "72d10aec4a5e40aaaa7c32e477cad3a96982543034ba3981cbeeb9aa0f109ee4",
+    "stderrSummaryRequired": false,
+    "truncated": false
+  },
+  "directories": null,
+  "failure": {
+    "category": "other",
+    "code": "missing-probe-evidence"
+  },
+  "files": null,
+  "host": null,
+  "main": null,
+  "matrix": null,
+  "paths": null,
+  "policy": null,
+  "renderer": null,
+  "result": "fail",
+  "schemaVersion": 2,
+  "versions": null
+}

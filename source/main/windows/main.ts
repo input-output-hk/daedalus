@@ -5,7 +5,7 @@ import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
-import { buildLabel, launcherConfig } from '../config';
+import { buildLabel, stateDirectoryPath } from '../config';
 import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
 import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 
@@ -60,7 +60,7 @@ export const createMainWindow = (
   };
 
   if (isLinux) {
-    windowOptions.icon = path.join(launcherConfig.stateDir, 'icon.png');
+    windowOptions.icon = path.join(stateDirectoryPath, 'icon.png');
   }
 
   // Construct new BrowserWindow

@@ -497,9 +497,6 @@ function DRepDirectory({
       case refreshState === GovernanceRefreshState.Loading:
         return <DRepDirectorySkeleton />;
 
-      case error?.type === 'SELFNODE_CLI_UNSUPPORTED':
-        return <DRepEmptyState variant="selfnode" />;
-
       case showNoSyncFallback:
         return <DRepEmptyState variant="noSync" />;
 

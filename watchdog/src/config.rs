@@ -1,11 +1,25 @@
 use serde::Deserialize;
+use std::collections::HashMap;
 
 #[derive(Debug, Deserialize)]
 pub struct WatchdogConfig {
     pub node: NodeConfig,
     pub wallet: WalletConfig,
-    pub pub_logs_dir: String,
+    #[serde(default)]
+    pub pub_logs_dir: Option<String>,
     pub mithril: Option<MithrilConfig>,
+    #[serde(default)]
+    pub tls_dir: Option<String>,
+    pub electron: Option<ElectronConfig>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct ElectronConfig {
+    pub exe: String,
+    #[serde(default)]
+    pub args: Vec<String>,
+    #[serde(default)]
+    pub env: HashMap<String, String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -37,7 +51,7 @@ pub struct WalletConfig {
     pub exe: String,
     pub args: Vec<String>,
     pub state_dir: String,
-    pub api_port: u16,
+    pub api_port: Option<u16>,
     #[serde(default = "default_restart_delay_ms")]
     pub restart_delay_ms: u64,
     #[serde(default = "default_max_restart_attempts")]
@@ -78,8 +92,7 @@ mod tests {
         format!(
             r#"{{
                 "node": {{"exe":"n","args":[],"state_dir":"/","socket_path":"/s"}},
-                "wallet": {{"exe":"w","args":[],"state_dir":"/","api_port":8090{}}},
-                "pub_logs_dir":"/logs"
+                "wallet": {{"exe":"w","args":[],"state_dir":"/"{}}}
             }}"#,
             extra_wallet
         )
@@ -98,9 +111,58 @@ mod tests {
         assert_eq!(c.node.exe, "/bin/cardano-node");
         assert_eq!(c.node.args, vec!["--config", "cfg.json"]);
         assert_eq!(c.node.socket_path, "/state/node/node.socket");
-        assert_eq!(c.wallet.api_port, 8090);
+        assert_eq!(c.wallet.api_port, Some(8090));
         assert_eq!(c.wallet.restart_delay_ms, 2000);
-        assert_eq!(c.pub_logs_dir, "/logs");
+        assert_eq!(c.pub_logs_dir.as_deref(), Some("/logs"));
+    }
+
+    #[test]
+    fn parse_config_without_optional_fields() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s"},
+            "wallet": {"exe":"w","args":[],"state_dir":"/"}
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        assert!(c.wallet.api_port.is_none());
+        assert!(c.pub_logs_dir.is_none());
+        assert!(c.tls_dir.is_none());
+        assert!(c.electron.is_none());
+        assert!(c.mithril.is_none());
+    }
+
+    #[test]
+    fn parse_electron_config() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s"},
+            "wallet": {"exe":"w","args":[],"state_dir":"/"},
+            "electron": {
+                "exe": "/usr/bin/electron",
+                "args": ["--no-sandbox", "/app/js"],
+                "env": {"LAUNCHER_CONFIG": "/config/launcher.yaml"}
+            }
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        let el = c.electron.unwrap();
+        assert_eq!(el.exe, "/usr/bin/electron");
+        assert_eq!(el.args, vec!["--no-sandbox", "/app/js"]);
+        assert_eq!(
+            el.env.get("LAUNCHER_CONFIG").map(|s| s.as_str()),
+            Some("/config/launcher.yaml")
+        );
+    }
+
+    #[test]
+    fn parse_electron_config_minimal() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s"},
+            "wallet": {"exe":"w","args":[],"state_dir":"/"},
+            "electron": {"exe": "/bin/electron"}
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        let el = c.electron.unwrap();
+        assert_eq!(el.exe, "/bin/electron");
+        assert!(el.args.is_empty());
+        assert!(el.env.is_empty());
     }
 
     #[test]
@@ -120,8 +182,7 @@ mod tests {
         let json = r#"{
             "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s",
                      "crash_restart_delay_ms":100,"max_crash_attempts":3},
-            "wallet": {"exe":"w","args":[],"state_dir":"/","api_port":8090},
-            "pub_logs_dir":"/logs"
+            "wallet": {"exe":"w","args":[],"state_dir":"/"}
         }"#;
         let c: WatchdogConfig = serde_json::from_str(json).unwrap();
         assert_eq!(c.node.crash_restart_delay_ms, 100);
@@ -156,8 +217,7 @@ mod tests {
 
     #[test]
     fn missing_node_field_fails() {
-        let json = r#"{"wallet":{"exe":"w","args":[],"state_dir":"/","api_port":8090},
-                       "pub_logs_dir":"/logs"}"#;
+        let json = r#"{"wallet":{"exe":"w","args":[],"state_dir":"/"}}"#;
         assert!(serde_json::from_str::<WatchdogConfig>(json).is_err());
     }
 
@@ -165,8 +225,7 @@ mod tests {
     fn missing_socket_path_fails() {
         let json = r#"{
             "node":{"exe":"n","args":[],"state_dir":"/"},
-            "wallet":{"exe":"w","args":[],"state_dir":"/","api_port":8090},
-            "pub_logs_dir":"/logs"
+            "wallet":{"exe":"w","args":[],"state_dir":"/"}
         }"#;
         assert!(serde_json::from_str::<WatchdogConfig>(json).is_err());
     }
@@ -178,12 +237,11 @@ mod tests {
         for port in [0u16, 1, 80, 443, 1024, 8090, 49152, 65535] {
             let json = format!(
                 r#"{{"node":{{"exe":"n","args":[],"state_dir":"/","socket_path":"/s"}},
-                    "wallet":{{"exe":"w","args":[],"state_dir":"/","api_port":{port}}},
-                    "pub_logs_dir":"/logs"}}"#
+                    "wallet":{{"exe":"w","args":[],"state_dir":"/","api_port":{port}}}}}"#
             );
             let c: WatchdogConfig = serde_json::from_str(&json)
                 .unwrap_or_else(|e| panic!("failed for port {port}: {e}"));
-            assert_eq!(c.wallet.api_port, port, "port {port} not preserved");
+            assert_eq!(c.wallet.api_port, Some(port), "port {port} not preserved");
         }
     }
 
@@ -210,8 +268,7 @@ mod tests {
     #[test]
     fn numeric_field_rejects_string_value() {
         let bad = r#"{"node":{"exe":"n","args":[],"state_dir":"/","socket_path":"/s"},
-                      "wallet":{"exe":"w","args":[],"state_dir":"/","api_port":"not-a-number"},
-                      "pub_logs_dir":"/logs"}"#;
+                      "wallet":{"exe":"w","args":[],"state_dir":"/","api_port":"not-a-number"}}"#;
         assert!(
             serde_json::from_str::<WatchdogConfig>(bad).is_err(),
             "expected parse error for string api_port"
@@ -244,8 +301,7 @@ mod tests {
             let args_json = serde_json::to_string(&args).unwrap();
             let json = format!(
                 r#"{{"node":{{"exe":"n","args":{args_json},"state_dir":"/","socket_path":"/s"}},
-                    "wallet":{{"exe":"w","args":{args_json},"state_dir":"/","api_port":8090}},
-                    "pub_logs_dir":"/logs"}}"#
+                    "wallet":{{"exe":"w","args":{args_json},"state_dir":"/"}}}}"#
             );
             let c: WatchdogConfig = serde_json::from_str(&json).unwrap();
             assert_eq!(c.node.args, args);

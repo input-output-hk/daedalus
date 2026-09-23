@@ -10,7 +10,7 @@ import {
 const { isFlight, environment } = global;
 const { network } = environment;
 const pathPrefix = isFlight
-  ? `${NEWS_HASH_PATH_PREFIX}/newsfeed-verification/mainnet_flight`
+  ? `${NEWS_HASH_PATH_PREFIX}/newsfeed-verification/mainnet-flight`
   : `${NEWS_HASH_PATH_PREFIX}/newsfeed-verification/${network}`;
 export const getNewsHash = (timestamp: number): Promise<string> =>
   externalRequest(

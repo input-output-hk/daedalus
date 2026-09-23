@@ -11,7 +11,6 @@ import {
   MAINNET,
   MAINNET_FLIGHT,
   PRODUCTION,
-  SELFNODE,
   STAGING,
   TEST,
   TESTNET,
@@ -74,7 +73,6 @@ export const checkIsPreprod = (network: string) => network === PREPROD;
 export const checkIsPreview = (network: string) => network === PREVIEW;
 export const checkIsShelleyQA = (network: string) => network === SHELLEY_QA;
 export const checkIsStaging = (network: string) => network === STAGING;
-export const checkIsSelfnode = (network: string) => network === SELFNODE;
 export const checkIsDevelopment = (network: string) => network === DEVELOPMENT;
 export const checkIsMacOS = (platform: string) => platform === MAC_OS;
 export const checkIsWindows = (platform: string) => platform === WINDOWS;

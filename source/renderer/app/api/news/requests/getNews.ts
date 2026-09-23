@@ -10,7 +10,7 @@ import {
 const { isFlight, environment } = global;
 const { network } = environment;
 const filename = isFlight
-  ? 'newsfeed_mainnet_flight.json'
+  ? 'newsfeed_mainnet-flight.json'
   : `newsfeed_${network}.json`;
 const path = `${NEWS_PATH_PREFIX}/newsfeed/${filename}`;
 export const newsUrl = `${NEWS_PROTOCOL}://${NEWS_HOSTNAME}${NEWS_PORT !== undefined ? `:${NEWS_PORT}` : ''}${path}`;

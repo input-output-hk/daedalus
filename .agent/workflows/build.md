@@ -36,7 +36,6 @@ Node.js 14.18.1+ is required. Nix shell provides the correct version.
 yarn nix:mainnet     # Mainnet
 yarn nix:preprod     # Preprod testnet
 yarn nix:preview     # Preview testnet
-yarn nix:selfnode    # Local self-node
 ```
 
 This provides:

@@ -63,7 +63,6 @@
     "nix:mainnet": "cross-env GC_DONT_GC=1 nix develop -L .#mainnet",
     "nix:preview": "cross-env GC_DONT_GC=1 nix develop -L .#preview",
     "nix:preprod": "cross-env GC_DONT_GC=1 nix develop -L .#preprod",
-    "nix:selfnode": "cross-env GC_DONT_GC=1 nix develop -L .#selfnode",
     "byron:wallet:importer": "yarn node-swc utils/api-importer/byron-wallet-importer.ts",
     "shelley:wallet:importer": "yarn node-swc utils/api-importer/shelley-wallet-importer.ts",
     "mary:wallet:importer": "yarn node-swc utils/api-importer/mary-wallet-importer.ts",

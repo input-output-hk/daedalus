@@ -139,3 +139,6 @@ yalc.lock
 
 # Typescript
 *.scss.d.ts
+
+# Generated tool outputs
+review_output.json

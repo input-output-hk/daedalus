@@ -17,7 +17,6 @@ import {
   checkIsMainnet,
   checkIsStaging,
   checkIsTestnet,
-  checkIsSelfnode,
   checkIsDevelopment,
   checkIsMacOS,
   checkIsWindows,
@@ -25,12 +24,10 @@ import {
 } from '../common/utils/environmentCheckers';
 
 const version = `${packageJson.version}`;
-// Daedalus requires minimum 16 gigabytes of RAM, but some devices having 16 GB
-// actually have a slightly smaller RAM size (eg. 15.99 GB), therefore we used 15 GB threshold
-//
+// Nominal threshold is 8 GB but some 8 GB machines report ~7.75 GB, so use 7 GB.
 // TODO figure out better place for it - can't import from config.js as it would be a circular dep
 // https://input-output.atlassian.net/browse/DDW-928
-export const RECOMMENDED_RAM_IN_BYTES = 15 * 1024 * 1024 * 1024;
+export const RECOMMENDED_RAM_IN_BYTES = 7 * 1024 * 1024 * 1024;
 
 /* ==================================================================
 =                           Evaluations                             =
@@ -49,7 +46,6 @@ const isVasilDev = checkIsVasilDev(NETWORK);
 const isPreprod = checkIsPreprod(NETWORK);
 const isPreview = checkIsPreview(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
-const isSelfnode = checkIsSelfnode(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
 const analyticsFeatureEnabled = true;
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
@@ -108,7 +104,6 @@ export const environment: Environment = Object.assign(
     isPreprod,
     isPreview,
     isShelleyQA,
-    isSelfnode,
     isDevelopment,
     build: BUILD,
     buildNumber: BUILD_NUMBER,

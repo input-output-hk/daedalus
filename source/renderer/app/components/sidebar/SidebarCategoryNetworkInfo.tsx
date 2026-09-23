@@ -49,11 +49,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Preview',
     description: 'Label for preview with version.',
   },
-  selfnode: {
-    id: 'test.environment.selfnodeLabel',
-    defaultMessage: '!!!Selfnode vx',
-    description: 'Label for selfnode with version.',
-  },
   development: {
     id: 'test.environment.developmentLabel',
     defaultMessage: '!!!Development vx',

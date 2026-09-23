@@ -51,12 +51,11 @@ describe('isAddressForNetwork', () => {
   });
 
   it('treats the flight build as mainnet', () => {
-    expect(isAddressForNetwork(MAINNET_ADDRESS, 'mainnet_flight')).toBe(true);
-    expect(isAddressForNetwork(TESTNET_ADDRESS, 'mainnet_flight')).toBe(false);
+    expect(isAddressForNetwork(MAINNET_ADDRESS, 'mainnet-flight')).toBe(true);
+    expect(isAddressForNetwork(TESTNET_ADDRESS, 'mainnet-flight')).toBe(false);
   });
 
   it('treats every other network as a testnet', () => {
-    expect(isAddressForNetwork(TESTNET_ADDRESS, 'selfnode')).toBe(true);
     expect(isAddressForNetwork(MAINNET_ADDRESS, 'development')).toBe(false);
   });
 

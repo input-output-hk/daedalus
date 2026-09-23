@@ -49,8 +49,7 @@ data OS
   deriving (Bounded, Enum, Eq, Read, Show)
 
 data Cluster
-  = Selfnode
-  | Mainnet
+  = Mainnet
   | Mainnet_Flight
   | Staging
   | Shelley_QA
@@ -103,9 +102,8 @@ tt = format fp
 -- | Value of the NETWORK variable used by the npm build.
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
-clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
-clusterNetwork Mainnet_Flight = "mainnet_flight"
+clusterNetwork Mainnet_Flight = "mainnet-flight"
 clusterNetwork Staging = "staging"
 clusterNetwork Shelley_QA = "shelley_qa"
 clusterNetwork Testnet = "testnet"

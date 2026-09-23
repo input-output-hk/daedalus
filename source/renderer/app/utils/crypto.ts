@@ -122,8 +122,8 @@ export const encodeBech32 = (prefix: string, data: Buffer): string =>
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Buffer' is not assignable to par... Remove this comment to see the full error message
   bech32.encode(prefix, bech32.toWords(data));
 export const getStakeAddressFromStakeKey = (stakeKey: string): string => {
-  const { isMainnet, isStaging, isSelfnode } = global.environment;
-  const isMainnetLikeNetwork = isMainnet || isStaging || isSelfnode;
+  const { isMainnet, isStaging } = global.environment;
+  const isMainnetLikeNetwork = isMainnet || isStaging;
   const stakeKeyHex: Buffer = decodeBech32(stakeKey);
   const stakeKeyHash: Uint8Array = blake2b224(stakeKeyHex);
   const networkPrefix = Buffer.from(isMainnetLikeNetwork ? 'e1' : 'e0', 'hex');

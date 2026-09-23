@@ -36,7 +36,7 @@ describe('Function getNetworkExplorerPath returns:', () => {
     expect(getNetworkExplorerPath('preview')).toBe('preview');
   });
   it('the default path for networks without an explorer', () => {
-    for (const network of ['testnet', 'staging', 'development', 'selfnode']) {
+    for (const network of ['testnet', 'staging', 'development']) {
       expect(getNetworkExplorerPath(network)).toBe(
         DEFAULT_EXPLORER_NETWORK_PATH
       );
@@ -72,7 +72,7 @@ describe('Function getNetworkExplorerUrlByType returns:', () => {
     );
   });
   it('a mainnet-scoped Url for networks without an explorer', () => {
-    for (const network of ['testnet', 'staging', 'development', 'selfnode']) {
+    for (const network of ['testnet', 'staging', 'development']) {
       expect(getNetworkExplorerUrlByType('tx', MAINNET_TX_ID, network)).toBe(
         `https://explorer.cardano.org/mainnet/tx/${MAINNET_TX_ID}`
       );
