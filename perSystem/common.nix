@@ -271,7 +271,7 @@
 
         clustersAvailable = rec {
           mainnet = fromCardanoPlayground "mainnet";
-          mainnet_flight = mainnet;
+          "mainnet-flight" = mainnet;
           shelley_qa = fromCardanoPlayground "shelley_qa";
           vasil_dev = fromCardanoPlayground "vasil-dev";
           preprod = fromCardanoPlayground "preprod";
@@ -392,7 +392,7 @@
         installDirectorySuffix = let
           supportedNetworks = {
             mainnet = "Mainnet";
-            mainnet_flight = "Flight";
+            "mainnet-flight" = "Flight";
             local = "Local";
             staging = "Staging";
             testnet = "Testnet";
@@ -493,7 +493,7 @@
             if __hasAttr network clustersAvailable
             then clustersAvailable.${network}.networkName
             else network;
-          isFlight = network == "mainnet_flight";
+          isFlight = network == "mainnet-flight";
           isStaging = envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic";
           nodeImplementation = "cardano";
         };
@@ -689,7 +689,7 @@
             mainnet =
               mkNetworkCfg "release-mainnet"
               "https://aggregator.release-mainnet.api.mithril.network/aggregator";
-            mainnet_flight = mainnet;
+            "mainnet-flight" = mainnet;
             preprod =
               mkNetworkCfg "release-preprod"
               "https://aggregator.release-preprod.api.mithril.network/aggregator";
@@ -739,7 +739,7 @@
             '';
 
           legacyStateDir =
-            if (network == "mainnet_flight") || (network == "mainnet")
+            if (network == "mainnet-flight") || (network == "mainnet")
             then legacyDataDir
             else dataDir;
 

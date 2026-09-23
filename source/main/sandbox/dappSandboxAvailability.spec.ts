@@ -240,7 +240,7 @@ describe('dApp sandbox availability', () => {
 
   test.each([
     ['mainnet', 'Daedalus Mainnet'],
-    ['mainnet_flight', 'Daedalus Flight'],
+    ['mainnet-flight', 'Daedalus Flight'],
     ['preprod', 'Daedalus Pre-Prod'],
     ['preview', 'Daedalus Preview'],
   ])('accepts the shipped Windows %s package identity', (cluster, appName) => {
@@ -296,7 +296,7 @@ describe('dApp sandbox availability', () => {
           launcherConfigPath: `${installRoot}/Contents/Resources/launcher-config.yaml`,
           resourcesPath: `${installRoot}/Contents/Resources`,
         },
-        'mainnet_flight'
+        'mainnet-flight'
       )
     ).toBe(true);
   });

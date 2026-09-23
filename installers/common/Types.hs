@@ -103,7 +103,7 @@ tt = format fp
 -- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
 clusterNetwork Mainnet = "mainnet"
-clusterNetwork Mainnet_Flight = "mainnet_flight"
+clusterNetwork Mainnet_Flight = "mainnet-flight"
 clusterNetwork Staging = "staging"
 clusterNetwork Shelley_QA = "shelley_qa"
 clusterNetwork Testnet = "testnet"

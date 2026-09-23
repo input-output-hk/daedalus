@@ -10,7 +10,7 @@ export const DEV_MODE_SITE_MAP_ID = 11;
 // IDs used when Daedalus is launched as a binary (installed with installer)
 export const NETWORK_TO_ANALYTICS_SITE_ID_MAP: Record<Network, number> = {
   mainnet: 2,
-  mainnet_flight: 12,
+  'mainnet-flight': 12,
   testnet: 3,
   preprod: 9,
   preview: 10,

@@ -25,7 +25,7 @@ const FORBIDDEN_SWITCHES = [
 const WINDOWS_PROGRAM_FILES = 'C:\\Program Files';
 const DAPP_PRODUCT_NAMES: Readonly<Record<string, string>> = {
   mainnet: 'Daedalus Mainnet',
-  mainnet_flight: 'Daedalus Flight',
+  'mainnet-flight': 'Daedalus Flight',
   preprod: 'Daedalus Pre-Prod',
   preview: 'Daedalus Preview',
 };

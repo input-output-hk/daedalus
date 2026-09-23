@@ -44,7 +44,7 @@ export const DEVELOPMENT = 'development';
 export const TEST = 'test';
 // cardano-node networks
 export const MAINNET = 'mainnet';
-export const MAINNET_FLIGHT = 'mainnet_flight';
+export const MAINNET_FLIGHT = 'mainnet-flight';
 export const TESTNET = 'testnet';
 export const STAGING = 'staging';
 export const SHELLEY_QA = 'shelley_qa';
@@ -63,7 +63,7 @@ export const OS_NAMES = {
 export type Platform = 'darwin' | 'darwin-arm' | 'win32' | 'linux';
 export type Network =
   | 'mainnet'
-  | 'mainnet_flight'
+  | 'mainnet-flight'
   | 'testnet'
   | 'staging'
   | 'shelley_qa'
