@@ -455,10 +455,27 @@
       archElectronPath = cluster: "/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/electron";
     in {
       apps = lib.listToAttrs (
-        # ── Test VMs (manual QA tools — boot with `nix run`, connect via VNC/SSH) ──
-        # These are interactive dev/QA tools for a test engineer to boot and manually
-        # exercise Daedalus. They are NOT automated CI checks; use collect-evidence-*
-        # apps to capture sandbox probe evidence after manual testing.
+        # ── Test VMs (dev convenience tools — NOT sandbox certification) ──────────
+        #
+        # These apps exist so a developer can interactively boot a guest OS, poke
+        # around, and smoke-test a package build.  They are explicitly NOT part of
+        # sandbox certification:
+        #
+        #  • Image URLs are intentionally mutable (ubuntu .../current/..., arch
+        #    .../latest/...).  No SHA-256 is pinned and the guest identity is not
+        #    verified.  Rotating images will silently change what is tested, which
+        #    is acceptable for ad-hoc dev use but not for a reproducible audit.
+        #
+        #  • There is no guest pass/fail channel: QEMU exits 0 when the guest
+        #    powers off regardless of what happened inside the VM.
+        #
+        # Sandbox certification uses a separate, evidence-based workflow:
+        #   1. Boot a test VM:   nix run .#test-vm-<distro>-<cluster>
+        #   2. Collect evidence: nix run .#collect-evidence-<distro>-<cluster>
+        #   3. Commit the JSON output under scripts/linux-chromium-sandbox-probe/evidence/
+        #   4. CI enforces consistency via the sandbox-evidence check in checks.nix,
+        #      which validates every committed file against the matrix revisions
+        #      declared in main.cjs without requiring a VM.
         mkVmsForDistro {
           distro = "deb";
           packageDistro = "deb-dev";
