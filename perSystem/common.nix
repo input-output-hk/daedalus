@@ -553,6 +553,8 @@
 
           wElectronArgs = [];
 
+          dappEnabled = daedalusConfig.cluster != "mainnet" && !daedalusConfig.isFlight;
+
           daedalusConfigJson =
             {
               node = {
@@ -610,6 +612,20 @@
                   }
                   // lib.optionalAttrs (daedalusConfig ? smashUrl) {
                     DAEDALUS_SMASH_URL = daedalusConfig.smashUrl;
+                  }
+                  // {
+                    DAEDALUS_DAPP_BROWSER_POLICY = builtins.toJSON {
+                      revision = 1;
+                      globalEnabled = dappEnabled;
+                      preferredCatalogEnabled = dappEnabled;
+                      diagnosticsEnabled = dappEnabled;
+                      cip104Revision =
+                        if dappEnabled
+                        then 1
+                        else 0;
+                      cip142Revision = 0;
+                      hardwareConnectorEnabled = true;
+                    };
                   };
               };
             }

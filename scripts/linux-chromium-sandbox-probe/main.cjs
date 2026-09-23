@@ -11,6 +11,7 @@ const SCHEMA_VERSION = 2;
 const IDENTITY_SCHEMA_VERSION = 2;
 const MATRIX_REVISION = 'task-108-matrix-2026-08-18';
 const ARCH_MATRIX_REVISION = 'task-111-matrix-2026-09-02';
+const NIXOS_MATRIX_REVISION = 'task-112-matrix-2026-09-11';
 const APPARMOR_LOADED_PROFILE_SUFFIX = ' (unconfined)';
 const STDERR_LIMIT_BYTES = 8192;
 const PROBE_TIMEOUT_MS = 15000;
@@ -120,6 +121,16 @@ const SUPPORT_MATRIX = {
       buildId: '4.0.2',
       kernelRelease: '7.1.9-arch1-2',
     },
+  },
+  'nixos-26.05': {
+    packageFamily: 'nix',
+    policy: 'none',
+    supportState: 'supported',
+    reason: 'supported',
+    helperMode: '0755',
+    matrixRevision: NIXOS_MATRIX_REVISION,
+    distributionId: 'nixos',
+    versionPattern: /^26\.05$/,
   },
 };
 const FORBIDDEN_SWITCHES = [
@@ -807,13 +818,18 @@ function readContractSelection(installRoot) {
   if (row.supportState !== 'supported') throw new Error(`wallet-only-matrix-row:${row.reason}`);
   if (row.packageFamily === 'arch')
     assert.strictEqual(sandboxClass, 'userns-only', 'arch-requires-userns-only');
+  if (row.packageFamily === 'nix')
+    assert.strictEqual(sandboxClass, 'userns-only', 'nix-requires-userns-only');
   if (!SANDBOX_CLASSES.has(sandboxClass)) throw new Error('unsupported-sandbox-class');
   if (!/^[a-z0-9][a-z0-9-]*$/.test(cluster)) throw new Error('invalid-cluster');
-  assert.strictEqual(
-    installRoot,
-    `/opt/daedalus/${cluster}`,
-    'unexpected-install-root'
-  );
+  // NixOS installs to the Nix store (path varies by derivation hash); skip the
+  // fixed-root assertion that applies to deb/rpm/arch packages.
+  if (row.packageFamily !== 'nix')
+    assert.strictEqual(
+      installRoot,
+      `/opt/daedalus/${cluster}`,
+      'unexpected-install-root'
+    );
   return {
     ...row,
     matrixRow,
@@ -2080,6 +2096,7 @@ async function runSelfTest() {
     'fedora-43',
     'arch-2026.09.01',
     'omarchy-4.0.2',
+    'nixos-26.05',
   ]);
   assert.strictEqual(SUPPORT_MATRIX['ubuntu-24.04'].policy, 'apparmor');
   assert.strictEqual(SUPPORT_MATRIX['ubuntu-22.04'].supportState, 'wallet-only');
@@ -2095,6 +2112,9 @@ async function runSelfTest() {
   assert.strictEqual(SUPPORT_MATRIX['opensuse-leap-15.6'], undefined);
   assert.strictEqual(MATRIX_REVISION, 'task-108-matrix-2026-08-18');
   assert.strictEqual(ARCH_MATRIX_REVISION, 'task-111-matrix-2026-09-02');
+  assert.strictEqual(NIXOS_MATRIX_REVISION, 'task-112-matrix-2026-09-11');
+  assert.strictEqual(SUPPORT_MATRIX['nixos-26.05'].packageFamily, 'nix');
+  assert.strictEqual(SUPPORT_MATRIX['nixos-26.05'].matrixRevision, NIXOS_MATRIX_REVISION);
   const matrixVersionFixtures = {
     'ubuntu-22.04': ['22.04', '22.04.5', '24.04'],
     'ubuntu-24.04': ['24.04', '24.04.3', '25.10'],

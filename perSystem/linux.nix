@@ -770,6 +770,13 @@
           packageFamily = "nix";
           matrixRevision = "task-112-matrix-2026-09-11";
           matrixRow = "nixos-26.05";
+          supportState = "supported";
+          cluster = cluster;
+          distribution = {
+            id = "nixos";
+            versionId = "26.05";
+          };
+          policy = {kind = "none";};
           helper = {
             mode = "0755";
             sha256 = helperSha256;

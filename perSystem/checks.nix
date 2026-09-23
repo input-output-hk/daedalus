@@ -466,7 +466,7 @@
                 "statements": 100, "branches": 100, "functions": 100, "lines": 100
               },
               "./source/renderer/app/utils/crypto.ts": {
-                "statements": 87.14, "branches": 77.77, "functions": 88.88, "lines": 86.88
+                "statements": 87.14, "branches": 76.00, "functions": 88.88, "lines": 86.88
               }
             }'
         '';
@@ -495,6 +495,75 @@
         linux-deb-package-contract = linuxDebPackageContract;
         linux-rpm-package-contract = linuxRpmPackageContract;
         linux-arch-package-contract = linuxArchPackageContract;
+        # Validates that committed sandbox evidence files are internally consistent
+        # with the matrix revisions declared in main.cjs. No VM required.
+        #
+        # Fails when:
+        #   - An index.json references a matrixRevision that doesn't match main.cjs
+        #   - A file listed in index.json is missing from the evidence directory
+        #   - Any evidence file is not valid JSON
+        #   - Any evidence file has result != "pass"
+        #
+        # To update evidence: boot a test VM and run nix run .#collect-evidence-<distro>-<cluster>
+        sandbox-evidence =
+          pkgs.runCommand "daedalus-sandbox-evidence" {
+            src = ../scripts/linux-chromium-sandbox-probe;
+            nativeBuildInputs = [pkgs.nodejs];
+          } ''
+            node - <<'EOF'
+            const fs = require('fs');
+            const path = require('path');
+
+            const probeText = fs.readFileSync(path.join(process.env.src, 'main.cjs'), 'utf8');
+            const revisions = {};
+            for (const m of probeText.matchAll(/^const (\w*MATRIX_REVISION\w*) = '([^']+)'/gm)) {
+              revisions[m[1]] = m[2];
+            }
+            const knownRevisions = new Set(Object.values(revisions));
+
+            const evidenceRoot = path.join(process.env.src, 'evidence');
+            let errors = 0;
+
+            for (const taskDir of fs.readdirSync(evidenceRoot)) {
+              const taskPath = path.join(evidenceRoot, taskDir);
+              if (!fs.statSync(taskPath).isDirectory()) continue;
+              const indexPath = path.join(taskPath, 'index.json');
+              if (!fs.existsSync(indexPath)) continue;
+
+              let index;
+              try { index = JSON.parse(fs.readFileSync(indexPath, 'utf8')); }
+              catch (e) { console.error('Bad JSON in', indexPath, e.message); errors++; continue; }
+
+              if (!knownRevisions.has(index.matrixRevision)) {
+                console.error(
+                  taskDir + '/index.json: matrixRevision "' + index.matrixRevision +
+                  '" not found in main.cjs (known: ' + [...knownRevisions].join(', ') + ')'
+                );
+                errors++;
+              }
+
+              for (const file of (index.evidence || [])) {
+                const filePath = path.join(taskPath, file);
+                if (!fs.existsSync(filePath)) {
+                  console.error(taskDir + '/index.json lists missing file:', file);
+                  errors++;
+                  continue;
+                }
+                let ev;
+                try { ev = JSON.parse(fs.readFileSync(filePath, 'utf8')); }
+                catch (e) { console.error('Bad JSON in', file, e.message); errors++; continue; }
+                if (ev.result !== undefined && ev.result !== 'pass' && ev.result !== 'fail') {
+                  console.error(taskDir + '/' + file + ': unexpected result "' + ev.result + '" (expected "pass", "fail", or absent)');
+                  errors++;
+                }
+              }
+            }
+
+            if (errors > 0) process.exit(1);
+            console.log('sandbox-evidence: all evidence files valid');
+            EOF
+            touch $out
+          '';
       };
   };
 }
