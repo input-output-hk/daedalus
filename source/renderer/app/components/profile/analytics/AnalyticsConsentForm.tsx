@@ -1,18 +1,18 @@
-import React, { useCallback } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { useCallback, useEffect, useState } from 'react';
+import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Link } from 'react-polymorph/lib/components/Link';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import classnames from 'classnames';
 import styles from './AnalyticsConsentForm.scss';
 import { Intl } from '../../../types/i18nTypes';
 import { messages } from './AnalyticsConsentForm.messages';
 import { CollectedDataOverview } from './CollectedDataOverview';
-import { PRIVACY_POLICY_LINK } from '../../../config/analyticsConfig';
+import { analyticsConsent } from '../../../ipc/ariadneAnalytics';
 
 interface AnalyticsConsentFormProps {
   intl: Intl;
   loading: boolean;
+  saveFailed?: boolean;
   onSubmit: (analyticsAccepted: boolean) => void;
   onExternalLinkClick: (url: string) => void;
 }
@@ -20,24 +20,29 @@ interface AnalyticsConsentFormProps {
 function AnalyticsConsentForm({
   intl,
   loading,
+  saveFailed,
   onSubmit,
-  onExternalLinkClick,
 }: AnalyticsConsentFormProps) {
+  const [available, setAvailable] = useState(false);
+  useEffect(() => {
+    let mounted = true;
+    analyticsConsent({ get: true })
+      .then((view) => {
+        if (mounted) setAvailable(!!view?.enabled);
+      })
+      .catch(() => {
+        if (mounted) setAvailable(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const handleAllow = useCallback(() => {
     onSubmit(true);
-  }, []);
+  }, [onSubmit]);
   const handleSkip = useCallback(() => {
     onSubmit(false);
-  }, []);
-
-  const privacyPolicyLink = (
-    <Link
-      className={styles.privacyPolicyLink}
-      onClick={() => onExternalLinkClick(PRIVACY_POLICY_LINK)}
-      label={intl.formatMessage(messages.privacyPolicyLink)}
-      hasIconAfter={false}
-    />
-  );
+  }, [onSubmit]);
 
   return (
     <div className={styles.component}>
@@ -48,13 +53,12 @@ function AnalyticsConsentForm({
         </p>
         <CollectedDataOverview />
         <p className={styles.privacyPolicyDescription}>
-          <FormattedMessage
-            {...messages.analyticsSectionPrivacyPolicy}
-            values={{
-              privacyPolicyLink,
-            }}
-          />
+          {intl.formatMessage(messages.analyticsSectionPrivacyPolicy)}
         </p>
+        {!available && <p>{intl.formatMessage(messages.disabled)}</p>}
+        {saveFailed && (
+          <p role="alert">{intl.formatMessage(messages.saveFailed)}</p>
+        )}
         <div className={styles.actions}>
           <Button
             className={classnames(styles.disallowButton, 'flat')}
@@ -62,12 +66,14 @@ function AnalyticsConsentForm({
             skin={ButtonSpinnerSkin}
             loading={loading}
             onClick={handleSkip}
+            disabled={loading}
           />
           <Button
             label={intl.formatMessage(messages.allowButton)}
             skin={ButtonSpinnerSkin}
             loading={loading}
             onClick={handleAllow}
+            disabled={!available || loading}
           />
         </div>
       </div>

@@ -1,5 +1,7 @@
 import path from 'path';
+import { pathToFileURL } from 'url';
 import { app, BrowserWindow, ipcMain, Menu, Rectangle } from 'electron';
+import { registerAriadneAnalytics } from '../ipc/ariadneAnalytics';
 import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
@@ -80,11 +82,11 @@ export const createMainWindow = (
     if (event.sender !== window.webContents) return;
     window.close();
   });
-  if (isDev) {
-    window.loadURL(`http://127.0.0.1:8080`);
-  } else {
-    window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  }
+  const rendererUrl = isDev
+    ? 'http://127.0.0.1:8080/'
+    : pathToFileURL(path.join(__dirname, '../renderer/index.html')).href;
+  registerAriadneAnalytics(window, rendererUrl);
+  window.loadURL(rendererUrl);
   window.on('page-title-updated', (event) => {
     event.preventDefault();
   });

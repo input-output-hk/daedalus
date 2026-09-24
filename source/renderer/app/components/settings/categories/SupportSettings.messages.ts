@@ -62,20 +62,19 @@ export const messages = defineMessages({
       '"download your logs here" link in the Logs section on the support settings page',
   },
   analyticsSectionTitle: {
-    id: 'analytics.form.title',
-    defaultMessage: '!!!Analytics data collection',
+    id: 'ariadne.analytics.settings.title',
+    defaultMessage: '!!!Ariadne analytics (provisional)',
     description: 'Analytics form title',
   },
   analyticsAcceptedDescription: {
-    id: 'analytics.form.analyticsAcceptedDescription',
+    id: 'ariadne.analytics.settings.accepted',
     defaultMessage:
-      '!!!You have <strong>opted in</strong> to analytics data collection. You can {changeAnalyticsSettingsLink}.',
+      '!!!Ariadne analytics is enabled with your permission. Revoking stops collection but does not delete previously received events. ',
     description: 'Analytics data collection description when user opted in',
   },
   analyticsDeclinedDescription: {
-    id: 'analytics.form.analyticsDeclinedDescription',
-    defaultMessage:
-      '!!!You have <strong>opted out</strong> of analytics data collection. You can {changeAnalyticsSettingsLink}.',
+    id: 'ariadne.analytics.settings.off',
+    defaultMessage: '!!!Ariadne analytics collection is off. ',
     description: 'Analytics data collection description when user opted out ',
   },
   changeAnalyticsSettings: {

@@ -4172,114 +4172,39 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Analytics data collection",
-        "description": "Analytics form title",
-        "id": "analytics.form.title"
+        "defaultMessage": "!!!Ariadne analytics — provisional notice v2",
+        "description": "Draft consent copy for local review, not approved release wording",
+        "id": "ariadne.analytics.v2.title"
       },
       {
-        "defaultMessage": "!!!Help and support",
-        "description": "Title \"Help and support\" on the support settings page.",
-        "id": "settings.support.faq.title"
+        "defaultMessage": "!!!Optional pseudonymous usage data is sent to the configured Ariadne support deployment to improve Daedalus. A separate random installation identifier links your events across accepted restarts. This is pseudonymous information, not anonymous data. Events are not linked to support tickets. Previous Matomo permission does not apply.",
+        "description": "Recipient and purpose; provisional review copy",
+        "id": "ariadne.analytics.v2.description"
       },
       {
-        "defaultMessage": "!!!If you are experiencing a problem, please look for guidance using the list of {faqLink} on the support pages. If you can’t find a solution, please submit a support ticket.",
-        "description": "Content for the \"Help and support\" section on the support settings page.",
-        "id": "settings.support.faq.content"
+        "defaultMessage": "!!!Allow Ariadne analytics",
+        "description": "Explicit fresh acceptance",
+        "id": "ariadne.analytics.v2.allow"
       },
       {
-        "defaultMessage": "!!!Known Issues",
-        "description": "\"Known Issues\" link in the \"Help and support\" section on the support settings page",
-        "id": "settings.support.faq.faqLink"
+        "defaultMessage": "!!!Keep off / revoke",
+        "description": "Reject or withdraw consent",
+        "id": "ariadne.analytics.v2.reject"
       },
       {
-        "defaultMessage": "!!!Steps for creating a support request:",
-        "description": "Title \"Steps for creating a support request\" on the support settings page.",
-        "id": "settings.support.steps.title"
+        "defaultMessage": "!!!Events are retained for up to 24 months; private backups follow the deployment retention policy. Revoking stops collection, discards unsent events and clears this installation identifier. It does not delete events already received. Accepting again creates a new identifier. Do not share recovery phrases or spending passwords. Final recipient, privacy notice, backup retention and deletion-request arrangements require review before release.",
+        "description": "Provisional retention, revocation and outstanding policy decisions",
+        "id": "ariadne.analytics.v2.retention"
       },
       {
-        "defaultMessage": "!!!Download the logs",
-        "description": "Title \"Download the logs\" on the support settings page.",
-        "id": "settings.support.steps.downloadLogs.title"
+        "defaultMessage": "!!!Collection is disabled or unavailable in this configuration. Wallet features remain available.",
+        "description": "Main-process disabled configuration",
+        "id": "ariadne.analytics.v2.disabled"
       },
       {
-        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
-        "description": "Description of \"Download the logs\" on the support settings page.",
-        "id": "settings.support.steps.downloadLogs.description"
-      },
-      {
-        "defaultMessage": "!!!download your logs here",
-        "description": "\"download your logs here\" link in the Logs section on the support settings page",
-        "id": "settings.support.steps.downloadLogs.link"
-      },
-      {
-        "defaultMessage": "!!!Report a problem",
-        "description": "Title \"Report a problem\" on the support settings page.",
-        "id": "settings.support.steps.reportProblem.title"
-      },
-      {
-        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
-        "description": "Description of \"Download the logs\" on the support settings page.",
-        "id": "settings.support.steps.reportProblem.description"
-      },
-      {
-        "defaultMessage": "!!!download your logs here",
-        "description": "\"download your logs here\" link in the Logs section on the support settings page",
-        "id": "settings.support.steps.reportProblem.link"
-      },
-      {
-        "defaultMessage": "!!!You have <strong>opted in</strong> to analytics data collection. You can {changeAnalyticsSettingsLink}.",
-        "description": "Analytics data collection description when user opted in",
-        "id": "analytics.form.analyticsAcceptedDescription"
-      },
-      {
-        "defaultMessage": "!!!You have <strong>opted out</strong> of analytics data collection. You can {changeAnalyticsSettingsLink}.",
-        "description": "Analytics data collection description when user opted out ",
-        "id": "analytics.form.analyticsDeclinedDescription"
-      },
-      {
-        "defaultMessage": "!!!You can {changeAnalyticsSettingsLink}.",
-        "description": "Change analytics settings link",
-        "id": "analytics.form.changeAnalyticsSettings"
-      },
-      {
-        "defaultMessage": "!!!change this setting here",
-        "description": "Change analytics settings link text",
-        "id": "analytics.form.changeAnalyticsSettingsLink"
-      }
-    ],
-    "path": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!All data is anonymous and is used only for product development purposes.",
-        "description": "Analytics data collection description",
-        "id": "analytics.form.description"
-      },
-      {
-        "defaultMessage": "!!!Allow anonymous data collection",
-        "description": "Data collection agreement switch button label",
-        "id": "analytics.form.dataCollectionSwitchText"
-      },
-      {
-        "defaultMessage": "!!!Allow",
-        "description": "Analytics data collection allow button text",
-        "id": "analytics.form.allowButton"
-      },
-      {
-        "defaultMessage": "!!!Skip",
-        "description": "Analytics data collection skip button text",
-        "id": "analytics.form.disallowButton"
-      },
-      {
-        "defaultMessage": "!!!Daedalus Privacy Policy",
-        "description": "Daedalus Privacy Policy link text",
-        "id": "analytics.form.privacyPolicyLink"
-      },
-      {
-        "defaultMessage": "!!!Read more about our privacy practices in the {privacyPolicyLink}.",
-        "description": "Analytics data collection description, under collapsible details",
-        "id": "analytics.form.analyticsSectionPrivacyPolicy"
+        "defaultMessage": "!!!The choice could not be saved. Collection is stopped for this session. Retry before restarting to ensure your choice is preserved.",
+        "description": "Consent persistence failed; no raw error details",
+        "id": "ariadne.analytics.v2.saveFailed"
       }
     ],
     "path": "source/renderer/app/components/profile/analytics/AnalyticsConsentForm.messages.ts"
@@ -4287,29 +4212,29 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!We collect data on (1) User click behavior and (2) Device information.",
-        "description": "Data collection details title",
-        "id": "analytics.form.dataCollectionDetailsTitle"
+        "defaultMessage": "!!!What Ariadne receives",
+        "description": "Provisional data inventory heading",
+        "id": "ariadne.analytics.v2.details"
       },
       {
-        "defaultMessage": "!!!User click behavior",
-        "description": "Title for the user behaviour data collection",
-        "id": "analytics.form.dataCollectionDetailsUserBehaviourTitle"
+        "defaultMessage": "!!!Usage events",
+        "description": "Event inventory heading",
+        "id": "ariadne.analytics.v2.eventsTitle"
       },
       {
-        "defaultMessage": "!!!Clicks, page visits, page scrolling, number of wallets, number of native assets, session duration, type of wallets (soft vs hardware wallets), geolocation (country of location), and page performance.",
-        "description": "Description for the user behaviour data collection",
-        "id": "analytics.form.dataCollectionDetailsUserBehaviorText"
+        "defaultMessage": "!!!Allowlisted page names and actions, event time, network, installation identifier and hardware/software wallet type where applicable. Delegation submission and voting registration setup also send start, completion or pre-submission cancellation steps with a separate random identifier for each attempt. No wallet addresses, balances, transaction identifiers, messages, recovery material, raw routes or free-text labels. IP addresses are not analytics fields; separate infrastructure access logs may contain IP addresses.",
+        "description": "Exact v1/v2 event inventory, provisional copy",
+        "id": "ariadne.analytics.v2.events"
       },
       {
-        "defaultMessage": "!!!Device info",
-        "description": "Title for the device info data collection",
-        "id": "analytics.form.dataCollectionDetailsDeviceInfoTitle"
+        "defaultMessage": "!!!Device categories",
+        "description": "Device heading",
+        "id": "ariadne.analytics.v2.deviceTitle"
       },
       {
-        "defaultMessage": "!!!Operating system, RAM, and disk space.",
-        "description": "Description for the device info data collection",
-        "id": "analytics.form.dataCollectionDetailsDeviceInfoText"
+        "defaultMessage": "!!!Operating system and numeric version where supported, CPU family, rounded RAM size, Daedalus version, and whether legacy or hardware wallets are present. These fields are pseudonymous, not anonymous.",
+        "description": "Exact v1/v2 dimensions",
+        "id": "ariadne.analytics.v2.device"
       },
       {
         "defaultMessage": "!!!Expand details",
@@ -4563,6 +4488,86 @@
       }
     ],
     "path": "source/renderer/app/components/widgets/forms/InlineEditingInput.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Help and support",
+        "description": "Title \"Help and support\" on the support settings page.",
+        "id": "settings.support.faq.title"
+      },
+      {
+        "defaultMessage": "!!!If you are experiencing a problem, please look for guidance using the list of {faqLink} on the support pages. If you can’t find a solution, please submit a support ticket.",
+        "description": "Content for the \"Help and support\" section on the support settings page.",
+        "id": "settings.support.faq.content"
+      },
+      {
+        "defaultMessage": "!!!Known Issues",
+        "description": "\"Known Issues\" link in the \"Help and support\" section on the support settings page",
+        "id": "settings.support.faq.faqLink"
+      },
+      {
+        "defaultMessage": "!!!Steps for creating a support request:",
+        "description": "Title \"Steps for creating a support request\" on the support settings page.",
+        "id": "settings.support.steps.title"
+      },
+      {
+        "defaultMessage": "!!!Download the logs",
+        "description": "Title \"Download the logs\" on the support settings page.",
+        "id": "settings.support.steps.downloadLogs.title"
+      },
+      {
+        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
+        "description": "Description of \"Download the logs\" on the support settings page.",
+        "id": "settings.support.steps.downloadLogs.description"
+      },
+      {
+        "defaultMessage": "!!!download your logs here",
+        "description": "\"download your logs here\" link in the Logs section on the support settings page",
+        "id": "settings.support.steps.downloadLogs.link"
+      },
+      {
+        "defaultMessage": "!!!Report a problem",
+        "description": "Title \"Report a problem\" on the support settings page.",
+        "id": "settings.support.steps.reportProblem.title"
+      },
+      {
+        "defaultMessage": "!!!Please {downloadLogsLink} and attach the downloaded file when submitting a support request to help the support team investigate the issue. Logs do not contain sensitive information.",
+        "description": "Description of \"Download the logs\" on the support settings page.",
+        "id": "settings.support.steps.reportProblem.description"
+      },
+      {
+        "defaultMessage": "!!!download your logs here",
+        "description": "\"download your logs here\" link in the Logs section on the support settings page",
+        "id": "settings.support.steps.reportProblem.link"
+      },
+      {
+        "defaultMessage": "!!!Ariadne analytics (provisional)",
+        "description": "Analytics form title",
+        "id": "ariadne.analytics.settings.title"
+      },
+      {
+        "defaultMessage": "!!!Ariadne analytics is enabled with your permission. Revoking stops collection but does not delete previously received events.",
+        "description": "Analytics data collection description when user opted in",
+        "id": "ariadne.analytics.settings.accepted"
+      },
+      {
+        "defaultMessage": "!!!Ariadne analytics collection is off.",
+        "description": "Analytics data collection description when user opted out ",
+        "id": "ariadne.analytics.settings.off"
+      },
+      {
+        "defaultMessage": "!!!You can {changeAnalyticsSettingsLink}.",
+        "description": "Change analytics settings link",
+        "id": "analytics.form.changeAnalyticsSettings"
+      },
+      {
+        "defaultMessage": "!!!change this setting here",
+        "description": "Change analytics settings link text",
+        "id": "analytics.form.changeAnalyticsSettingsLink"
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/SupportSettings.messages.ts"
   },
   {
     "descriptors": [

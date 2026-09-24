@@ -62,7 +62,7 @@ declare global {
   var isFlight: boolean;
   var ipcRenderer: Pick<
     IpcRenderer,
-    'on' | 'once' | 'send' | 'removeListener' | 'removeAllListeners'
+    'on' | 'once' | 'send' | 'invoke' | 'removeListener' | 'removeAllListeners'
   >;
   /* eslint-enable no-var, vars-on-top */
 }

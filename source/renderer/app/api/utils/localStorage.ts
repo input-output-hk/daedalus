@@ -30,6 +30,8 @@ import {
   WalletLocalData,
 } from '../../types/localDataTypes';
 import { AnalyticsAcceptanceStatus } from '../../analytics';
+import { analyticsConsent } from '../../ipc/ariadneAnalytics';
+import { ARIADNE_CONSENT_VERSION } from '../../../../common/analytics/contract';
 
 export type SetHardwareWalletLocalDataRequestType = {
   walletId: string;
@@ -124,18 +126,29 @@ export default class LocalStorageApi {
     LocalStorageApi.set(keys.TERMS_OF_USE_ACCEPTANCE, true);
   unsetTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
-  getAnalyticsAcceptance = (): Promise<AnalyticsAcceptanceStatus> =>
-    LocalStorageApi.get(
-      keys.ANALYTICS_ACCEPTANCE,
-      AnalyticsAcceptanceStatus.PENDING
-    );
-  setAnalyticsAcceptance = (status: AnalyticsAcceptanceStatus): Promise<void> =>
-    LocalStorageApi.set(keys.ANALYTICS_ACCEPTANCE, status);
+  getAnalyticsAcceptance = async (): Promise<AnalyticsAcceptanceStatus> => {
+    try {
+      return (
+        ((await analyticsConsent({ get: true }))
+          ?.status as AnalyticsAcceptanceStatus) ||
+        AnalyticsAcceptanceStatus.REJECTED
+      );
+    } catch {
+      return AnalyticsAcceptanceStatus.REJECTED;
+    }
+  };
+  setAnalyticsAcceptance = async (
+    status: AnalyticsAcceptanceStatus
+  ): Promise<void> => {
+    const result = await analyticsConsent({
+      version: ARIADNE_CONSENT_VERSION,
+      status,
+    });
+    if (!result || result.status !== status)
+      throw new Error('Analytics choice could not be saved');
+  };
   unsetAnalyticsAcceptance = (): Promise<void> =>
-    LocalStorageApi.set(
-      keys.ANALYTICS_ACCEPTANCE,
-      AnalyticsAcceptanceStatus.PENDING
-    );
+    this.setAnalyticsAcceptance(AnalyticsAcceptanceStatus.PENDING);
   getUserID = async (): Promise<string> => {
     let userId: string = await LocalStorageApi.get(keys.USER_ID, null);
 

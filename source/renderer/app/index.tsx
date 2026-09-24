@@ -19,7 +19,8 @@ import {
   DiscreetModeFeatureProvider,
   LocalStorageFeatureProvider,
 } from './features';
-import { MatomoAnalyticsTracker } from './analytics/MatomoAnalyticsTracker';
+import { AriadneAnalyticsTracker } from './analytics/AriadneAnalyticsTracker';
+import { analyticsConsent, analyticsEvent } from './ipc/ariadneAnalytics';
 import { AnalyticsProvider } from './components/analytics';
 // run MobX in strict mode
 // 'observed' (not 'always'): only block mutations to currently-observed observables outside
@@ -39,12 +40,28 @@ const initializeDaedalus = () => {
   const api = setupApi(isTest);
   const hashHistory = createHashHistory();
   const routingStore = new RouterStore();
-  const analyticsTracker = new MatomoAnalyticsTracker(
-    environment,
-    api.localStorage,
-    api.ada
+  const analyticsTracker = new AriadneAnalyticsTracker(
+    () => analyticsConsent({ get: true }),
+    analyticsEvent
   );
   const stores = setUpStores(api, actions, routingStore, analyticsTracker);
+  analyticsTracker.setWalletSnapshot(() => {
+    const request = stores.wallets.walletsRequest;
+    if (
+      !request.wasExecuted ||
+      request.isExecuting ||
+      request.isError ||
+      !request.result
+    )
+      return null;
+    return {
+      uses_legacy_wallet: request.result.some((wallet) => wallet.isLegacy),
+      uses_hardware_wallet: request.result.some(
+        (wallet) => wallet.isHardwareWallet
+      ),
+    };
+  });
+  analyticsTracker.enableTracking();
   const history = syncHistoryWithStore(hashHistory, routingStore);
   // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message
   window.daedalus = {

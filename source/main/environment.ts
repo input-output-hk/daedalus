@@ -47,7 +47,9 @@ const isPreprod = checkIsPreprod(NETWORK);
 const isPreview = checkIsPreview(NETWORK);
 const isShelleyQA = checkIsShelleyQA(NETWORK);
 const isDevelopment = checkIsDevelopment(NETWORK);
-const analyticsFeatureEnabled = true;
+// UI hint only: the main-process owner independently validates configuration.
+const analyticsFeatureEnabled =
+  process.env.DAEDALUS_ARIADNE_ANALYTICS_ENABLED === 'true';
 const keepLocalClusterRunning = process.env.KEEP_LOCAL_CLUSTER_RUNNING;
 const CARDANO_WALLET_VERSION = process.env.CARDANO_WALLET_VERSION || 'dev';
 const CARDANO_NODE_VERSION = process.env.CARDANO_NODE_VERSION || 'dev';

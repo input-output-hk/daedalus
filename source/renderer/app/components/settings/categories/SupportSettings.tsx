@@ -132,7 +132,7 @@ class SupportSettings extends Component<SupportSettingsProps> {
             {...(this.props.analyticsAccepted
               ? messages.analyticsAcceptedDescription
               : messages.analyticsDeclinedDescription)}
-          />
+          />{' '}
           <FormattedMessage
             {...messages.changeAnalyticsSettings}
             values={{
