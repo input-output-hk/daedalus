@@ -31,6 +31,7 @@ import Wallet from '../domains/Wallet';
 import ApiError from '../domains/ApiError';
 import { GenericApiError } from '../api/common/errors';
 import { logger } from '../utils/logging';
+import { FunnelCapture } from '../analytics/FunnelCapture';
 
 export type VotingRegistrationKeyType = {
   bytes: (...args: Array<any>) => any;
@@ -95,6 +96,10 @@ const parseApiCode = <ErrorCode extends string>(
 };
 
 export default class VotingStore extends Store {
+  readonly registrationAnalytics = new FunnelCapture(
+    this.analytics,
+    'voting_registration_setup'
+  );
   @observable
   registrationStep = 1;
   @observable
@@ -214,6 +219,7 @@ export default class VotingStore extends Store {
   };
   @action
   _resetRegistration = () => {
+    this.registrationAnalytics.close();
     this.isConfirmationDialogOpen = false;
     this.registrationStep = 1;
     this.selectedWalletId = null;
@@ -541,6 +547,8 @@ export default class VotingStore extends Store {
       throw new Error(
         'Selected wallet required before send voting registration.'
       );
+    // Capture the current visit before any asynchronous preparation can outlive it.
+    this.registrationAnalytics.submission();
     const [address] =
       await this.stores.addresses.getAddressesByWalletId(walletId);
     const selectedWallet = this.stores.wallets.getWalletById(walletId);
@@ -615,6 +623,7 @@ export default class VotingStore extends Store {
     }
   };
   _generateQrCode = async (pinCode: number) => {
+    const analyticsAttempt = this.registrationAnalytics.current();
     const { symmetric_encrypt: symmetricEncrypt } = await walletUtils;
     const password = new Uint8Array(4);
     pinCode
@@ -633,6 +642,8 @@ export default class VotingStore extends Store {
     );
 
     this._setQrCode(formattedArrayBufferToHexString(encrypt));
+    // Local setup produced its QR artifact. This is not a vote or proof of confirmation.
+    this.registrationAnalytics.complete(analyticsAttempt);
 
     this._nextRegistrationStep();
     this.analytics.sendEvent(EventCategories.VOTING, 'Registered for voting');

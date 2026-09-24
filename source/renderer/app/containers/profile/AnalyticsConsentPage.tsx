@@ -18,14 +18,14 @@ export function AnalyticsConsentPage() {
     );
   }, []);
 
-  const { setAnalyticsAcceptanceRequest } = profile;
   const { isShelleyActivated } = networkStatus;
 
   const topbar = <TopBar isShelleyActivated={isShelleyActivated} />;
   return (
     <TopBarLayout topbar={topbar}>
       <AnalyticsConsentForm
-        loading={setAnalyticsAcceptanceRequest.isExecuting}
+        loading={profile.analyticsConsentSaving}
+        saveFailed={profile.analyticsConsentSaveFailed}
         onSubmit={handleSubmit}
         onExternalLinkClick={app.openExternalLink}
       />

@@ -1,5 +1,16 @@
 # Daedalus System Architecture
 
+## Optional Ariadne analytics
+
+The active analytics tracker feeds an optional main-process owner through strict
+IPC contracts. The owner controls versioned consent, a separate installation UUID,
+normalization, a bounded memory queue and cancellable HTTP delivery. It is disabled
+by default and does not link telemetry to tickets or wallet identities. Renderer
+messages cannot choose destinations or UUIDs. Consent storage is isolated from
+generic renderer settings, and pending/rejected/revoked generations never dispatch.
+See [the Ariadne analytics SOP](../SOPs/ariadne-analytics.md) for the contract,
+provisional consent wording, privacy/rollout prerequisites and local validation.
+
 > **Source of truth for system-wide architectural decisions.**
 
 This document provides the definitive overview of the Daedalus system architecture, process relationships, and core design patterns.
@@ -586,3 +597,10 @@ dist/
 5. **Modular Stores**: Each domain has its own MobX store
 6. **Hardware Wallet Support**: First-class Ledger and Trezor integration
 7. **Nix Builds**: Reproducible builds across platforms
+
+Local analytics v2 adds main-owned random attempt IDs, a bounded renderer step
+lane and exact delegation-submission/registration-setup instrumentation. No
+transaction or wallet identifier enters the telemetry contract. Capture async
+completion against its original attempt; consent changes invalidate queued work.
+See `.agent/SOPs/ariadne-analytics.md` and `ariadne-analytics-validation.md`.
+Matomo replacement/fallback remains an explicit unresolved decision for Sam and Adam.

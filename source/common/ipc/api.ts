@@ -541,3 +541,10 @@ export type ConfirmChainStorageMainResponse = void;
 export const GOVERNANCE_DREP_ANCHOR_CHANNEL = 'GOVERNANCE_DREP_ANCHOR_CHANNEL';
 export type GovernanceDRepAnchorRendererRequest = DRepAnchorPresence;
 export type GovernanceDRepAnchorMainResponse = DRepAnchorResult;
+export const ARIADNE_ANALYTICS_CONSENT = 'ARIADNE_ANALYTICS_CONSENT_V1';
+export const ARIADNE_ANALYTICS_EVENT = 'ARIADNE_ANALYTICS_EVENT_V1';
+export type {
+  ConsentCommand,
+  ConsentView,
+  EventMessage,
+} from '../analytics/contract';

@@ -51,6 +51,9 @@ import { formatUptime } from '../utils/formatUptime';
 import { AnalyticsAcceptanceStatus, EventCategories } from '../analytics/types';
 
 export default class ProfileStore extends Store {
+  @observable analyticsConsentSaveFailed = false;
+  @observable analyticsConsentSaving = false;
+  private analyticsConsentChange = 0;
   @observable
   systemLocale: Locale = LOCALES.english;
   @observable
@@ -114,10 +117,6 @@ export default class ProfileStore extends Store {
   @observable
   getAnalyticsAcceptanceRequest: Request<AnalyticsAcceptanceStatus> =
     new Request(this.api.localStorage.getAnalyticsAcceptance);
-  @observable
-  setAnalyticsAcceptanceRequest: Request<string> = new Request(
-    this.api.localStorage.setAnalyticsAcceptance
-  );
   @observable
   getDataLayerMigrationAcceptanceRequest: Request<boolean> = new Request(
     this.api.localStorage.getDataLayerMigrationAcceptance
@@ -429,17 +428,36 @@ export default class ProfileStore extends Store {
   _getTermsOfUseAcceptance = () => {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
-  _setAnalyticsAcceptanceStatus = (status: AnalyticsAcceptanceStatus) => {
+  _setAnalyticsAcceptanceStatus = async (status: AnalyticsAcceptanceStatus) => {
     const previousStatus = this.analyticsAcceptanceStatus;
-
-    this.setAnalyticsAcceptanceRequest.execute(status);
-    this.getAnalyticsAcceptanceRequest.execute();
-
-    if (status === AnalyticsAcceptanceStatus.ACCEPTED) {
-      this.analytics.enableTracking();
-    } else if (status === AnalyticsAcceptanceStatus.REJECTED) {
-      this.analytics.disableTracking();
+    const change = ++this.analyticsConsentChange;
+    this.analytics.disableTracking();
+    runInAction(() => {
+      this.analyticsConsentSaveFailed = false;
+      this.analyticsConsentSaving = true;
+    });
+    try {
+      // Do not use Request.execute here: its coalescing could discard a revoke
+      // received while an acceptance is still awaiting its IPC acknowledgement.
+      await this.api.localStorage.setAnalyticsAcceptance(status);
+      if (change !== this.analyticsConsentChange) return;
+      await this.getAnalyticsAcceptanceRequest.execute().promise;
+      if (change !== this.analyticsConsentChange) return;
+      if (status === AnalyticsAcceptanceStatus.ACCEPTED)
+        await this.analytics.enableTracking();
+    } catch {
+      if (change === this.analyticsConsentChange)
+        runInAction(() => {
+          this.analyticsConsentSaveFailed = true;
+        });
+      return;
+    } finally {
+      if (change === this.analyticsConsentChange)
+        runInAction(() => {
+          this.analyticsConsentSaving = false;
+        });
     }
+    if (change !== this.analyticsConsentChange) return;
 
     if (previousStatus === AnalyticsAcceptanceStatus.PENDING) {
       this._redirectToRoot();
