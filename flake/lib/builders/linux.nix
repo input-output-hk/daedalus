@@ -99,6 +99,7 @@
           patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
             pkgs.lib.recursiveUpdate originalPackageJson {
               productName = common.daedalusConfigs.${cluster}.installerConfig.spacedName;
+              desktopName = "Daedalus-${cluster}.desktop";
               main = "dist/main/index.js";
             }
           ));
@@ -400,7 +401,7 @@
           genericName = "Crypto-Currency Wallet";
           categories = ["Application" "Network"];
           icon = "INSERT_ICON_PATH_HERE";
-          startupWMClass = common.daedalusConfigs.${cluster}.installerConfig.spacedName;
+          startupWMClass = "Daedalus-${cluster}";
         });
 
       selfExtractingArchive = genClusters (cluster: let

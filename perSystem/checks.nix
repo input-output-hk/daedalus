@@ -40,7 +40,7 @@
       };
     linuxDebPackageContract =
       pkgs.runCommand "linux-deb-package-contract" {
-        nativeBuildInputs = [pkgs.dpkg pkgs.jq pkgs.file pkgs.patchelf];
+        nativeBuildInputs = [pkgs.dpkg pkgs.jq pkgs.file pkgs.patchelf pkgs.desktop-file-utils];
       } ''
           set -eu
           deb=$(printf '%s\n' ${config.packages."deb-installer-mainnet"}/*.deb)
@@ -77,6 +77,14 @@
           done
 
           grep -F 'Exec=/opt/daedalus/mainnet/bin/daedalus' extracted/usr/share/applications/Daedalus-mainnet.desktop
+          desktop=extracted/usr/share/applications/Daedalus-mainnet.desktop
+          desktop-file-validate "$desktop"
+          desktop_name=$(jq -r '.desktopName' "$root/libexec/daedalus-js/package.json")
+          test "$desktop_name" = "$(basename "$desktop")"
+          grep -Fx "StartupWMClass=''${desktop_name%.desktop}" "$desktop"
+          icon=$(grep '^Icon=' "$desktop" | cut -d= -f2)
+          test -f "extracted/usr/share/icons/hicolor/512x512/apps/$icon.png"
+          grep -Fx "export DAEDALUS_WINDOW_ICON='/usr/share/icons/hicolor/512x512/apps/$icon.png'" "$root/libexec/daedalus-frontend"
         grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" "$root/bin/daedalus"
         grep -F 'abort-upgrade' control/preinst
         grep -F 'install)' control/preinst

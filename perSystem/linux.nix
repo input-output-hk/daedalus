@@ -137,6 +137,7 @@
           cat >"$root/libexec/daedalus-frontend" <<'EOF'
           #!/bin/sh
           set -eu
+          export DAEDALUS_WINDOW_ICON='/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png'
           exec '${installRoot}/libexec/electron' '${installRoot}/libexec/daedalus-js' "$@"
           EOF
           cat >"$root/libexec/electron" <<'EOF'
@@ -174,7 +175,7 @@
           Exec=${installRoot}/bin/daedalus
           Icon=daedalus-${cluster}
           Categories=Application;Network;
-          StartupWMClass=Daedalus ${cluster}
+          StartupWMClass=Daedalus-${cluster}
           Terminal=false
           EOF
           install -m 0644 ${icon} "$stage/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
@@ -384,6 +385,7 @@
           cat >"$root/libexec/daedalus-frontend" <<'EOF'
           #!/bin/sh
           set -eu
+          export DAEDALUS_WINDOW_ICON='/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png'
           exec '${installRoot}/libexec/electron' '${installRoot}/libexec/daedalus-js' "$@"
           EOF
           rm -f "$root/libexec/electron"
@@ -410,7 +412,7 @@
           Exec=${installRoot}/bin/daedalus
           Icon=daedalus-${cluster}
           Categories=Application;Network;
-          StartupWMClass=Daedalus ${cluster}
+          StartupWMClass=Daedalus-${cluster}
           Terminal=false
           EOF
           install -m 0644 ${icon} "$payload/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
@@ -623,6 +625,7 @@
           cat >"$root/libexec/daedalus-frontend" <<'EOF'
           #!/bin/sh
           set -eu
+          export DAEDALUS_WINDOW_ICON='/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png'
           exec '${installRoot}/libexec/electron' '${installRoot}/libexec/daedalus-js' "$@"
           EOF
           rm -f "$root/libexec/electron"
@@ -681,7 +684,7 @@
           Exec=${installRoot}/bin/daedalus
           Icon=daedalus-${cluster}
           Categories=Application;Network;
-          StartupWMClass=Daedalus ${cluster}
+          StartupWMClass=Daedalus-${cluster}
           Terminal=false
           EOF
           install -m 0644 ${icon} "$payload/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
@@ -791,7 +794,7 @@
           meta.mainProgram = "daedalus-${cluster}";
           dontUnpack = true;
           buildCommand = ''
-            mkdir -p $out/{bin,libexec,config,share}
+            mkdir -p $out/{bin,libexec,config,share/applications,share/icons/hicolor/512x512/apps}
 
             cp -r ${daedalusConfigs.${cluster}.configFiles}/. $out/config/
 
@@ -800,6 +803,19 @@
             ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ ; )
 
             ln -sf ${daedalusJs.${cluster}}/share/daedalus $out/libexec/daedalus-js
+            cat >$out/share/applications/Daedalus-${cluster}.desktop <<EOF
+            [Desktop Entry]
+            Type=Application
+            Name=Daedalus ${cluster}
+            GenericName=Crypto-Currency Wallet
+            Exec=$out/bin/daedalus-${cluster}
+            Icon=daedalus-${cluster}
+            Categories=Application;Network;
+            StartupWMClass=Daedalus-${cluster}
+            Terminal=false
+            EOF
+            install -m 0644 ${daedalusConfigs.${cluster}.installerConfig.iconPath.base}/512x512.png \
+              $out/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png
 
             cp ${pkgs.writeText "daedalus-${cluster}-launcher" ''
               #!/bin/sh
@@ -836,6 +852,7 @@
             cp ${pkgs.writeText "daedalus-frontend-nixos-${cluster}" ''
               #!/bin/sh
               set -xe
+              export DAEDALUS_WINDOW_ICON="$ENTRYPOINT_DIR/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
               # daedalus-frontend execs the real electron binary directly so
               # process.execPath matches manifest.launch.electron exactly.
               # shellcheck disable=SC2086

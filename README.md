@@ -333,6 +333,9 @@ package identity failure, or the local renderer canary failing also keeps dApp
 launch unavailable. There is no unsandboxed retry, and the remaining guest and
 release gates still apply.
 
+The `nixos-package-<cluster>` output also includes a cluster-specific desktop
+entry and icon for use through NixOS `environment.systemPackages`.
+
 #### Migrate a legacy portable installation
 
 New releases do not provide a replacement `.bin` or portable automatic update.
@@ -393,6 +396,11 @@ Use these non-destructive steps separately for each installed cluster:
    Configure that value consistently in the login/desktop environment before
    later desktop launches. A different or missing value can make wallets
    appear absent even though their data was not deleted.
+
+   On Linux desktops, the running window uses the cluster's installed launcher
+   icon. On Ubuntu, right-click it and select **Pin to Dash** to keep it there
+   after closing Daedalus.
+
 5. Confirm the expected wallets and application state before considering any
    cleanup of the legacy executable. Keep both `$HOME/.daedalus` and
    `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus` untouched during this check.

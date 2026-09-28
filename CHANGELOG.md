@@ -10,6 +10,8 @@
 
 ### Fixes
 
+- Linux: match each `.deb`, `.rpm`, Arch, and NixOS Daedalus window to its cluster's desktop launcher and icon; include the launcher and icon in the NixOS package.
+
 - Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
 
 - Analytics: updated Matomo tracking URL ([PR #3403](https://github.com/input-output-hk/daedalus/pull/3403)).

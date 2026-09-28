@@ -67,7 +67,8 @@ export const createMainWindow = (
   };
 
   if (isLinux) {
-    windowOptions.icon = path.join(stateDirectoryPath, 'icon.png');
+    windowOptions.icon =
+      process.env.DAEDALUS_WINDOW_ICON || path.join(stateDirectoryPath, 'icon.png');
   }
 
   // Construct new BrowserWindow
