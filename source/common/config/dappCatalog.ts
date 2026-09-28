@@ -40,7 +40,7 @@ export const defineDappCatalog = (
 export const dappCatalog = defineDappCatalog([
   {
     id: 'liqwid-finance',
-    availableIn: ['mainnet', 'mainnet_flight'],
+    availableIn: ['mainnet', 'mainnet-flight'],
     nameMessageId: 'dapp.catalog.liqwid.name',
     descriptionMessageId: 'dapp.catalog.liqwid.description',
     iconAsset: 'liqwid',
@@ -59,7 +59,7 @@ export const dappCatalog = defineDappCatalog([
   },
   {
     id: 'unfrack-it',
-    availableIn: ['mainnet', 'mainnet_flight', 'preprod', 'preview'],
+    availableIn: ['mainnet', 'mainnet-flight', 'preprod', 'preview'],
     nameMessageId: 'dapp.catalog.unfrack.name',
     descriptionMessageId: 'dapp.catalog.unfrack.description',
     iconAsset: 'unfrack',
@@ -78,7 +78,7 @@ export const dappCatalog = defineDappCatalog([
   },
   {
     id: 'strike-finance-mainnet',
-    availableIn: ['mainnet', 'mainnet_flight'],
+    availableIn: ['mainnet', 'mainnet-flight'],
     nameMessageId: 'dapp.catalog.strike.name',
     descriptionMessageId: 'dapp.catalog.strike.description',
     iconAsset: 'strike',
@@ -104,7 +104,7 @@ export const dappCatalog = defineDappCatalog([
   },
   {
     id: 'fluidtokens-mainnet',
-    availableIn: ['mainnet', 'mainnet_flight'],
+    availableIn: ['mainnet', 'mainnet-flight'],
     nameMessageId: 'dapp.catalog.fluidtokens.name',
     descriptionMessageId: 'dapp.catalog.fluidtokens.description',
     iconAsset: 'fluidtokens',
@@ -116,7 +116,7 @@ export const dappCatalog = defineDappCatalog([
   },
   {
     id: 'steelswap-mainnet',
-    availableIn: ['mainnet', 'mainnet_flight'],
+    availableIn: ['mainnet', 'mainnet-flight'],
     nameMessageId: 'dapp.catalog.steelswap.name',
     descriptionMessageId: 'dapp.catalog.steelswap.description',
     iconAsset: 'steelswap',
@@ -151,11 +151,9 @@ export const getDappCatalogPresentation = (
   isFlight: boolean
 ): readonly DappCatalogPresentationEntry[] =>
   Object.freeze(
-    getDappCatalog(
-      network,
-      isFlight
-    ).map(({ id, nameMessageId, descriptionMessageId, iconAsset }) =>
-      Object.freeze({ id, nameMessageId, descriptionMessageId, iconAsset })
+    getDappCatalog(network, isFlight).map(
+      ({ id, nameMessageId, descriptionMessageId, iconAsset }) =>
+        Object.freeze({ id, nameMessageId, descriptionMessageId, iconAsset })
     )
   );
 

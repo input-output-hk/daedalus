@@ -16,6 +16,9 @@ module.exports = {
   },
   mode: isDevelopment ? 'development' : 'production',
   target: 'web',
+  externals: {
+    crypto: 'commonjs crypto',
+  },
   devtool: isDevelopment ? 'eval-source-map' : 'source-map',
   optimization: {
     minimize: false,

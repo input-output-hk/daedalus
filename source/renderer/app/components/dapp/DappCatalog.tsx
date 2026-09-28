@@ -6,6 +6,14 @@ import type { Intl } from '../../types/i18nTypes';
 import messages from './DappCatalog.messages';
 import styles from './DappCatalog.scss';
 
+const iconClasses: Record<string, string> = {
+  liqwid: styles.liqwidIcon,
+  unfrack: styles.unfrackIcon,
+  strike: styles.strikeIcon,
+  fluidtokens: styles.fluidtokensIcon,
+  steelswap: styles.steelswapIcon,
+};
+
 export type DappCatalogEntry = {
   id: string;
   name: string;
@@ -76,16 +84,8 @@ export function DappCatalog({
             {entries.map((entry) => (
               <li className={styles.entry} key={entry.id}>
                 <div className={styles.icon} aria-hidden="true">
-                  {entry.iconAsset === 'liqwid' ? (
-                    <span className={styles.liqwidIcon} />
-                  ) : entry.iconAsset === 'unfrack' ? (
-                    <span className={styles.unfrackIcon} />
-                  ) : entry.iconAsset === 'strike' ? (
-                    <span className={styles.strikeIcon} />
-                  ) : entry.iconAsset === 'fluidtokens' ? (
-                    <span className={styles.fluidtokensIcon} />
-                  ) : entry.iconAsset === 'steelswap' ? (
-                    <span className={styles.steelswapIcon} />
+                  {iconClasses[entry.iconAsset] ? (
+                    <span className={iconClasses[entry.iconAsset]} />
                   ) : (
                     <span className={styles.fallbackIcon}>?</span>
                   )}

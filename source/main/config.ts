@@ -3,6 +3,7 @@ import { app, dialog } from 'electron';
 import { environment } from './environment';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
 import { DappLaunchPolicy } from './dapp/DappLaunchPolicy';
+import { readDappRuntimeConfig } from './utils/config';
 
 const {
   isTest,
@@ -39,10 +40,6 @@ if (!isStartedByLauncher) {
     throw new Error(`${dialogTitle}\n\n${dialogMessage}\n`);
   }
 }
-
-
-
-
 
 type WindowOptionsType = {
   show: boolean;
@@ -83,6 +80,12 @@ export const smashUrl = process.env.DAEDALUS_SMASH_URL;
 export const updateMode = (process.env.DAEDALUS_UPDATE_MODE ??
   'system-package-disabled') as 'installer-managed' | 'system-package-disabled';
 export const updateRunnerBin = process.env.DAEDALUS_UPDATE_RUNNER ?? '';
+export const dappRuntimeConfig = readDappRuntimeConfig(
+  process.env.DAEDALUS_CONFIG_FILE
+);
+export const dappLaunchPolicy = new DappLaunchPolicy(
+  dappRuntimeConfig.dappBrowserPolicy
+);
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;

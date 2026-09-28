@@ -33,14 +33,6 @@
         inherit cluster;
         devShell = true;
       };
-      regenerateDevCerts = let
-        moddedConfig = pkgs.writeText "launcher-config.yaml" (builtins.toJSON (
-          daedalusConfigs.daedalusConfig // {daedalusBin = "true";}
-        ));
-      in
-        pkgs.writeShellScriptBin "regenerate-dev-certs" ''
-          ${common.daedalus-bridge.${cluster}}/bin/cardano-launcher --config ${moddedConfig}
-        '';
     in
       pkgs.stdenv.mkDerivation rec {
         name = "daedalus";
@@ -51,7 +43,6 @@
             common.nodejs
             common.yarn
             common.daedalus-bridge.${cluster}
-            regenerateDevCerts
             bash
             binutils
             coreutils
@@ -100,6 +91,10 @@
         NODE_IMPLEMENTATION = "cardano";
         BUILDTYPE = "Debug";
         shellHook = ''
+          export DAEDALUS_DEV_ROOT="$(pwd -P)"
+          export DAEDALUS_CONFIG_FILE="${daedalusConfigs.configFiles}/daedalus-config.json"
+          export DAEDALUS_INSTALL_DIRECTORY="$DAEDALUS_DEV_ROOT"
+          export DAEDALUS_DIR="$DAEDALUS_DEV_ROOT"
           warn() {
              (echo "###"; echo "### WARNING:  $*"; echo "###") >&2
           }
@@ -151,9 +146,6 @@
           export DAEDALUS_LEGACY_STATE_DIR="${daedalusConfigs.daedalusConfig.legacyStateDir}"
           export CARDANO_WALLET_TLS_PATH="${daedalusConfigs.daedalusConfig.tlsPath}"
 
-          echo 'Re-generating dev certificates for cardano-wallet…'
-          mkdir -p "$CARDANO_WALLET_TLS_PATH"
-          regenerate-dev-certs >/dev/null
 
           ${common.temporaryNodeModulesPatches}
 

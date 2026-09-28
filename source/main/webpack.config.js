@@ -2,14 +2,13 @@ const webpack = require('webpack');
 const path = require('path');
 const { spawn } = require('child_process');
 
-class ManageElectronProcessPlugin {
+class ManageWatchdogProcessPlugin {
   isRunning = false;
   _process = null;
   _shouldRestart = false;
   start() {
-    this._process = spawn('yarn', ['electron', '.'], {
+    this._process = spawn(process.execPath, ['scripts/start-watchdog.cjs'], {
       stdio: 'inherit',
-      shell: true,
     });
     this.isRunning = true;
     // Handle next electron shutdown
@@ -125,6 +124,6 @@ module.exports = {
       IS_WATCH_MODE: 'false',
       KEEP_LOCAL_CLUSTER_RUNNING: 'false',
     }),
-    new ManageElectronProcessPlugin(),
+    new ManageWatchdogProcessPlugin(),
   ].filter(Boolean),
 };

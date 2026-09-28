@@ -1,3 +1,10 @@
+import { EventEmitter } from 'events';
+import { ipcMain } from 'electron';
+import { IpcChannel } from '../../common/ipc/lib/IpcChannel';
+import { DAPP_CIP30_WALLET_CHANNEL } from '../../common/ipc/api';
+import { currentWindowSender } from './lib/currentWindowSender';
+import { executeCip30WalletRequest } from './cip30Wallet';
+
 jest.mock('../utils/logging', () => ({ logger: { error: jest.fn() } }));
 jest.mock('electron', () => ({
   ipcMain: new (require('events').EventEmitter)(),
@@ -7,13 +14,6 @@ jest.mock('./lib/trustedRendererIpcAuthority', () => ({
   isTrustedRendererEvent: () => true,
   onTrustedRendererInvalidated: () => () => {},
 }));
-
-import { EventEmitter } from 'events';
-import { ipcMain } from 'electron';
-import { IpcChannel } from '../../common/ipc/lib/IpcChannel';
-import { DAPP_CIP30_WALLET_CHANNEL } from '../../common/ipc/api';
-import { currentWindowSender } from './lib/currentWindowSender';
-import { executeCip30WalletRequest } from './cip30Wallet';
 
 it('settles a wallet executor request when the renderer reports a backend failure', async () => {
   const renderer = new EventEmitter();

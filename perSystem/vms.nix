@@ -345,7 +345,7 @@
                LIBGL_ALWAYS_SOFTWARE=1 \
                GBM_BACKENDS_PATH='/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/lib' \
                CHROME_DEVEL_SANDBOX='/opt/daedalus/${cluster}/libexec/bundle-electron/lib/electron/chrome-sandbox' \
-               LAUNCHER_CONFIG='/opt/daedalus/${cluster}/config/daedalus-config.json' \
+               DAEDALUS_CONFIG_FILE='/opt/daedalus/${cluster}/config/daedalus-config.json' \
                DAEDALUS_PROBE_MATRIX_ROW='${matrixRow}' \
                DAEDALUS_PROBE_MATRIX_REVISION='${matrixRevision}' \
                DAEDALUS_PROBE_SANDBOX_CLASS='${sandboxClass}' \

@@ -1,72 +1,83 @@
 import { readFileSync } from 'fs';
-import yamljs from 'yamljs';
-import type { LauncherConfig } from '../config';
+import path from 'path';
 
-function recurseReplace(obj) {
-  if (Array.isArray(obj)) {
-    const out = [];
+const PACKAGE_CLUSTERS = [
+  'mainnet',
+  'mainnet-flight',
+  'preprod',
+  'preview',
+] as const;
+type DappPackageCluster = (typeof PACKAGE_CLUSTERS)[number];
+type DappNetworkCluster = Exclude<DappPackageCluster, 'mainnet-flight'>;
 
-    for (let idx in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, idx)) {
-        // @ts-ignore ts-migrate(2322) FIXME: Type 'number' is not assignable to type 'string'.
-        idx = parseInt(idx, 10);
-        out[idx] = recurseReplace(obj[idx]);
-      }
-    }
+export type DappRuntimeConfig = Readonly<{
+  dappBrowserPolicy: unknown;
+  dappSandboxPackageCluster: DappPackageCluster;
+  dappNetwork: Readonly<{
+    cluster: DappNetworkCluster;
+    genesisFile: string;
+    genesisHash: string;
+  }>;
+}>;
 
-    return out;
+type RawDappRuntimeConfig = Partial<{
+  dappBrowserPolicy: unknown;
+  dappSandboxPackageCluster: unknown;
+  dappNetwork: unknown;
+}>;
+
+export const readDappRuntimeConfig = (
+  configPath: string | undefined
+): DappRuntimeConfig => {
+  try {
+    if (!configPath || !path.isAbsolute(configPath))
+      throw new Error('invalid path');
+    const parsed: unknown = JSON.parse(readFileSync(configPath, 'utf8'));
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed))
+      throw new Error('invalid config');
+
+    const config = parsed as RawDappRuntimeConfig;
+    const packageCluster = config.dappSandboxPackageCluster;
+    const network = config.dappNetwork;
+    if (
+      typeof packageCluster !== 'string' ||
+      !PACKAGE_CLUSTERS.includes(
+        packageCluster as (typeof PACKAGE_CLUSTERS)[number]
+      ) ||
+      network === null ||
+      typeof network !== 'object' ||
+      Array.isArray(network)
+    )
+      throw new Error('invalid identity');
+    const trustedPackageCluster = packageCluster as DappPackageCluster;
+    const networkIdentity = network as Partial<{
+      cluster: unknown;
+      genesisFile: unknown;
+      genesisHash: unknown;
+    }>;
+
+    const expectedCluster: DappNetworkCluster =
+      trustedPackageCluster === 'mainnet-flight'
+        ? 'mainnet'
+        : trustedPackageCluster;
+    if (
+      networkIdentity.cluster !== expectedCluster ||
+      networkIdentity.genesisFile !== 'genesis.json' ||
+      typeof networkIdentity.genesisHash !== 'string' ||
+      !/^[0-9a-f]{64}$/u.test(networkIdentity.genesisHash)
+    )
+      throw new Error('invalid network');
+
+    return Object.freeze({
+      dappBrowserPolicy: config.dappBrowserPolicy,
+      dappSandboxPackageCluster: trustedPackageCluster,
+      dappNetwork: Object.freeze({
+        cluster: expectedCluster,
+        genesisFile: path.resolve(path.dirname(configPath), 'genesis.json'),
+        genesisHash: networkIdentity.genesisHash,
+      }),
+    });
+  } catch {
+    throw new Error('Invalid Daedalus configuration');
   }
-
-  if (obj === null) return null;
-
-  switch (typeof obj) {
-    case 'string': {
-      return obj.replace(/\${([^}]+)}/g, (a, b) => {
-        if (process.env[b]) {
-          return process.env[b];
-        }
-
-        // eslint-disable-next-line no-console
-        console.log('readLauncherConfig: warning var undefined:', b);
-        return '';
-      });
-    }
-
-    case 'object': {
-      const out = {};
-
-      for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          out[key] = recurseReplace(obj[key]);
-        }
-      }
-
-      return out;
-    }
-
-    default:
-      return obj;
-  }
-}
-
-/**
- * Reads and parses the launcher config yaml file on given path.
- * @param configPath {String}
- * @returns {LauncherConfig}
- */
-export const readLauncherConfig = (
-  configPath: string | null | undefined
-): LauncherConfig => {
-  const inputYaml = configPath ? readFileSync(configPath, 'utf8') : '';
-  const parsed = inputYaml.trimStart().startsWith('{')
-    ? JSON.parse(inputYaml)
-    : yamljs.parse(inputYaml);
-  const finalYaml = recurseReplace(parsed);
-  // @ts-ignore
-  if (finalYaml === null || finalYaml === []) {
-    throw new Error('Daedalus requires a valid launcher config file to work');
-  }
-
-  // @ts-ignore
-  return finalYaml;
 };

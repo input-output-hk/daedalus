@@ -1,3 +1,5 @@
+/** @jest-environment node */
+
 import { generateKeyPairSync, sign as signBytes } from 'crypto';
 import { blake2b } from 'blakejs';
 import cbor from 'cbor';
@@ -54,15 +56,15 @@ jest.mock('../config', () => {
       cip142Revision: 0,
       hardwareConnectorEnabled: true,
     }),
-    launcherConfig: {
-      cluster: 'testnet',
-      nodeConfig: {
-        network: {
-          genesisFile: '/tmp/genesis.json',
-          genesisHash: '11'.repeat(32),
-        },
+    dappRuntimeConfig: {
+      dappSandboxPackageCluster: 'preprod',
+      dappNetwork: {
+        cluster: 'testnet',
+        genesisFile: '/tmp/genesis.json',
+        genesisHash: '11'.repeat(32),
       },
     },
+    isFlight: false,
     stateDirectoryPath: '/tmp',
   };
 });
@@ -100,10 +102,12 @@ const request = (method: string, args: unknown[] = []) => ({ method, args });
 
 const createDataSignatureFixture = () => {
   const keys = generateKeyPairSync('ed25519');
-  const publicDer = keys.publicKey.export({
-    format: 'der',
-    type: 'spki',
-  }) as Buffer;
+  const publicDer = Buffer.from(
+    keys.publicKey.export({
+      format: 'der',
+      type: 'spki',
+    })
+  );
   const publicKey = publicDer.subarray(-32);
   const credential = Buffer.from(blake2b(publicKey, undefined, 28));
   const address = Buffer.concat([Buffer.from([0x60]), credential]).toString(
@@ -248,7 +252,9 @@ const create = () => {
   let unapprovableReview = false;
   let omitProofOwnership = false;
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cip30-broker-'));
-  (transactionContext.reconcileTransactionContext as jest.Mock).mockImplementation(
+  (
+    transactionContext.reconcileTransactionContext as jest.Mock
+  ).mockImplementation(
     (
       _value,
       expectation: {
@@ -344,10 +350,8 @@ const create = () => {
   let signatureResponse = dataSignature.response;
   let signatureFailure: 'address-not-pk' | 'proof-generation' | null = null;
   let witnessSet: string | undefined;
-  let witnessFailure:
-    | 'tx-proof-generation'
-    | 'deprecated-certificate'
-    | null = null;
+  let witnessFailure: 'tx-proof-generation' | 'deprecated-certificate' | null =
+    null;
   let submissionId: string | undefined;
   let submissionStatus:
     | 'authorized'
@@ -462,7 +466,7 @@ const create = () => {
     };
   });
   const reportedResults: unknown[] = [];
-  const consent = ({
+  const consent = {
     request: jest.fn(async (pending: ConsentRequest<unknown>) =>
       pending.execute(pending.payload, new AbortController().signal, 'secret', {
         requestId: 'approval',
@@ -471,7 +475,7 @@ const create = () => {
         reportResult: (result) => reportedResults.push(result),
       })
     ),
-  } as unknown) as Cip30BrokerOptions['consent'];
+  } as unknown as Cip30BrokerOptions['consent'];
   const options: Cip30BrokerOptions = {
     authenticate: () => guest,
     currentLease: () => currentLease,
@@ -586,8 +590,7 @@ describe('Cip30Broker', () => {
       (fixture.consent.request as jest.Mock).mock.calls[0][0].presentation.kind
     ).toBe('key-disclosure');
     expect(fixture.sessions.currentForGuest(9)?.enabledExtensions).toEqual([
-      95,
-      103,
+      95, 103,
     ]);
 
     await expect(
@@ -686,9 +689,9 @@ describe('Cip30Broker', () => {
         request('api.cip103.submitTxs', [transactions])
       )
     ).resolves.toEqual({ status: 'fulfilled', value: transactionIds });
-    expect(
-      fixture.reportedResults[fixture.reportedResults.length - 1]
-    ).toEqual({ status: 'submitted', transactionIds });
+    expect(fixture.reportedResults[fixture.reportedResults.length - 1]).toEqual(
+      { status: 'submitted', transactionIds }
+    );
 
     expect(fixture.sessions.currentForGuest(9)?.enabledExtensions).toEqual([
       103,

@@ -490,10 +490,10 @@
           cp -r ${tarball}/. $out/dat${tarball}/
         '');
 
-      # Use pkgs.electron.unwrapped (from nixpkgs) directly.
+      # The pinned binary Electron derivation exposes the runtime under libexec.
       electronBin = pkgs.runCommand "electron-${electronVersion}" {} ''
         mkdir -p $out/lib $out/bin
-        cp -r ${pkgs.electron.unwrapped}/libexec/electron $out/lib/
+        cp -r ${pkgs.electron}/libexec/electron $out/lib/
         ln -sf $out/lib/electron/electron $out/bin/electron
       '';
 

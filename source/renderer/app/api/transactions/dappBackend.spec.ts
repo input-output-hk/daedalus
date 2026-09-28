@@ -1,7 +1,7 @@
 const nodeHttps = require('https');
 
 global.https = nodeHttps;
-global.environment = { ...global.environment, isSelfnode: false };
+global.environment = { ...global.environment };
 
 const { getOctetStreamBody } = require('../utils/request');
 const {

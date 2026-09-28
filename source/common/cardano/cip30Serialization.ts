@@ -243,10 +243,10 @@ export const getCip30Utxos = (
       if (isCovered()) break;
       prefix.push(utxo);
       coin += utxo.value.coin;
-      utxo.value.assets.forEach(({ policyId, assetName, quantity }) => {
+      for (const { policyId, assetName, quantity } of utxo.value.assets) {
         const key = `${policyId}:${assetName}`;
         quantities.set(key, (quantities.get(key) || BigInt(0)) + quantity);
-      });
+      }
     }
     if (!isCovered()) return null;
     selected = prefix;

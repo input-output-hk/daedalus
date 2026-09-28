@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
+
 export function StakingUndelegateConfirmationResultStory({
   locale,
 }: {

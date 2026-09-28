@@ -2,6 +2,12 @@
 
 ## 11.4.0
 
+### Features
+
+- Rebases the CIP-30 dApp browser onto the watchdog-parent release packaging. Packaged dApp policy, sandbox identity, and network genesis now come from the installed `daedalus-config.json`; mainnet remains launch-disabled, while Flight, preprod, and preview have launch enabled by generated policy, subject to installed sandbox validation.
+
+- Refuse a Linux guest when its renderer shares the host mount namespace, matching the installed Chromium sandbox probe's isolation requirement.
+
 ### Fixes
 
 - Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
@@ -16,7 +22,7 @@
 
 ### Chores
 
-- Bump `cardano-node` to 11.1.2 and `cardano-wallet` to v2026-09-16.
+- Pin `cardano-node` to 11.1.0 and the CIP-30-compatible `cardano-wallet` fork (`245c877a80d76138bee87f393fd2d36a75fdad47`).
 
 - Windows: updated bundled mcfgthread DLL names from v1 to v2 (`libmcfgthread-2.dll`, `libmcfgthread-minimal-2.dll`) following a toolchain upgrade in the upstream node build.
 

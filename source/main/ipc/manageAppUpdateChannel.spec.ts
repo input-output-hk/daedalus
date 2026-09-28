@@ -10,10 +10,8 @@ jest.mock('./lib/MainIpcChannel', () => ({
 }));
 
 jest.mock('../config', () => ({
-  launcherConfig: {
-    applicationUpdateMode: 'installer-managed',
-    updateRunnerBin: '/dangerous/update-runner',
-  },
+  updateMode: 'installer-managed',
+  updateRunnerBin: '/dangerous/update-runner',
 }));
 
 jest.mock('../environment', () => ({
@@ -81,14 +79,15 @@ describe('manageAppUpdateChannel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     channel.onRequest.mockReset();
-    const { launcherConfig } = jest.requireMock('../config');
-    launcherConfig.applicationUpdateMode = 'installer-managed';
-    launcherConfig.updateRunnerBin = '/dangerous/update-runner';
+    const config = jest.requireMock('../config');
+    config.updateMode = 'installer-managed';
+    config.updateRunnerBin = '/dangerous/update-runner';
     jest.requireMock('../environment').environment.isLinux = true;
   });
 
-  it('rejects Linux before file, process, shell, or window side effects', async () => {
+  it('rejects package-managed Linux before installer side effects', async () => {
     const handleManageAppUpdateRequests = loadHandler();
+    jest.requireMock('../config').updateMode = 'system-package-disabled';
     const window = { close: jest.fn() };
 
     handleManageAppUpdateRequests(window);
@@ -112,8 +111,7 @@ describe('manageAppUpdateChannel', () => {
   it('rejects system-package mode before installer side effects on any OS', async () => {
     const handleManageAppUpdateRequests = loadHandler();
     jest.requireMock('../environment').environment.isLinux = false;
-    jest.requireMock('../config').launcherConfig.applicationUpdateMode =
-      'system-package-disabled';
+    jest.requireMock('../config').updateMode = 'system-package-disabled';
     const window = { close: jest.fn() };
 
     handleManageAppUpdateRequests(window);

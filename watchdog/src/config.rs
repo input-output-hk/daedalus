@@ -137,17 +137,17 @@ mod tests {
             "wallet": {"exe":"w","args":[],"state_dir":"/"},
             "electron": {
                 "exe": "/usr/bin/electron",
-                "args": ["--no-sandbox", "/app/js"],
-                "env": {"LAUNCHER_CONFIG": "/config/launcher.yaml"}
+                "args": ["/app/js"],
+                "env": {"SAMPLE_ENV": "/config/value"}
             }
         }"#;
         let c: WatchdogConfig = serde_json::from_str(json).unwrap();
         let el = c.electron.unwrap();
         assert_eq!(el.exe, "/usr/bin/electron");
-        assert_eq!(el.args, vec!["--no-sandbox", "/app/js"]);
+        assert_eq!(el.args, vec!["/app/js"]);
         assert_eq!(
-            el.env.get("LAUNCHER_CONFIG").map(|s| s.as_str()),
-            Some("/config/launcher.yaml")
+            el.env.get("SAMPLE_ENV").map(|s| s.as_str()),
+            Some("/config/value")
         );
     }
 

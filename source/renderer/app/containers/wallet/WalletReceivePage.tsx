@@ -180,13 +180,8 @@ class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { actions, stores } = this.props;
-    const {
-      uiDialogs,
-      addresses,
-      sidebar,
-      hardwareWallets,
-      walletSettings,
-    } = stores;
+    const { uiDialogs, addresses, sidebar, hardwareWallets, walletSettings } =
+      stores;
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
@@ -199,20 +194,16 @@ class WalletReceivePage extends Component<Props, State> {
       checkIsTrezorByWalletId,
     } = hardwareWallets;
     const { getLocalWalletDataById } = walletSettings;
-    const localWalletData:
-      | WalletLocalData
-      | null
-      | undefined = getLocalWalletDataById(activeWallet ? activeWallet.id : '');
+    const localWalletData: WalletLocalData | null | undefined =
+      getLocalWalletDataById(activeWallet ? activeWallet.id : '');
     const { showUsedAddresses } = localWalletData || {};
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
     const { hasPassword, isRandom, singleAddressMode } = activeWallet;
-    const walletAddresses = singleAddressMode
-      ? addresses.active
-        ? [addresses.active]
-        : []
-      : addresses.all.slice().reverse();
+    let walletAddresses = addresses.all.slice().reverse();
+    if (singleAddressMode)
+      walletAddresses = addresses.active ? [addresses.active] : [];
     const byronWalletAddress = addresses.active ? addresses.active.id : '';
     const isByronWalletAddressUsed = addresses.active
       ? addresses.active.used

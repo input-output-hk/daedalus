@@ -120,12 +120,13 @@ export class ExtensionRegistry {
     const base = this.base.methods.find(({ path }) => path === method);
     if (!base) return undefined;
     for (const descriptor of this.descriptors) {
-      if (!enabledExtensions.includes(descriptor.cip)) continue;
-      const override = descriptor.baseOverrides.find(
-        ({ path }) => path === method
-      );
-      if (override) {
-        return { descriptor: override, override: descriptor.cip };
+      if (enabledExtensions.includes(descriptor.cip)) {
+        const override = descriptor.baseOverrides.find(
+          ({ path }) => path === method
+        );
+        if (override) {
+          return { descriptor: override, override: descriptor.cip };
+        }
       }
     }
     return { descriptor: base };

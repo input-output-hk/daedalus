@@ -15,7 +15,7 @@ export type DappCatalogEntry = Readonly<{
   id: string;
   availableIn: readonly (
     | 'mainnet'
-    | 'mainnet_flight'
+    | 'mainnet-flight'
     | 'preprod'
     | 'preview'
   )[];

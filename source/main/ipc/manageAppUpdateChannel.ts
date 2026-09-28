@@ -1,6 +1,7 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
+import { spawn } from 'child_process';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { MANAGE_APP_UPDATE } from '../../common/ipc/api';
@@ -17,10 +18,8 @@ import {
   currentWindowSender,
 } from './lib/currentWindowSender';
 // IpcChannel<Incoming, Outgoing>
-const manageAppUpdateChannel: MainIpcChannel<
-  Request,
-  Response
-> = new MainIpcChannel(MANAGE_APP_UPDATE);
+const manageAppUpdateChannel: MainIpcChannel<Request, Response> =
+  new MainIpcChannel(MANAGE_APP_UPDATE);
 const logPrefix = 'appUpdateInstall';
 
 const getMessage = (functionPrefix: string, message?: string): string => {
@@ -30,7 +29,7 @@ const getMessage = (functionPrefix: string, message?: string): string => {
 };
 
 export const handleManageAppUpdateRequests = (
-  _window: Pick<BrowserWindow, 'close'>
+  window: Pick<BrowserWindow, 'close'> & { daedalusExitCode?: number }
 ) => {
   const response = (
     success: boolean | null | undefined,
@@ -187,7 +186,7 @@ export const handleManageAppUpdateRequests = (
 
         // We need to also wait for `cardano-node` to exit cleanly, otherwise the new auto-updated version
         // is showing the new node crashing, because the old one is still running for around 30 seconds:
-        (window as any).daedalusExitCode = 20;
+        window.daedalusExitCode = 20;
         window.close();
         return resolve(response(true, functionPrefix));
       });
@@ -196,10 +195,7 @@ export const handleManageAppUpdateRequests = (
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ filePath, hash: expectedHash ... Remove this comment to see the full error message
   manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {
     const functionPrefix = 'onRequest';
-    if (
-      environment.isLinux ||
-      launcherConfig.applicationUpdateMode === 'system-package-disabled'
-    ) {
+    if (updateMode === 'system-package-disabled') {
       return response(
         false,
         functionPrefix,
@@ -216,6 +212,7 @@ export const handleManageAppUpdateRequests = (
       });
     const installerHash = checkInstallerHash(filePath, expectedHash);
     if (!installerHash) return response(false, functionPrefix);
+    if (environment.isLinux) return installUpdate(filePath, updateRunnerBin);
     // macOS and Windows open the verified installer after the app has closed.
     app.on('quit', () => {
       shell.openPath(filePath);

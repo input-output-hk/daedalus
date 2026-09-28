@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+import fs from 'fs';
 import type { ProcessMetric } from 'electron';
 import {
   hasSandboxBypass,
@@ -7,6 +9,7 @@ import {
   validatePackageIdentity,
   validateRendererEvidence,
   validateWindowsPackageIdentity,
+  validateNixOSProductionPackage,
 } from './dappSandboxAvailability';
 
 jest.mock('electron', () => ({
@@ -76,8 +79,7 @@ const windowsPackage = {
   executablePath: 'C:\\Program Files\\Daedalus Mainnet\\Daedalus Mainnet.exe',
   installRoot: 'C:\\Program Files\\Daedalus Mainnet',
   isPackaged: true,
-  launcherConfigPath:
-    'C:\\Program Files\\Daedalus Mainnet\\launcher-config.yaml',
+  configPath: 'C:\\Program Files\\Daedalus Mainnet\\daedalus-config.json',
   resourcesPath: 'C:\\Program Files\\Daedalus Mainnet\\resources',
 };
 
@@ -88,8 +90,8 @@ const darwinPackage = {
   executablePath: '/Applications/Daedalus Preview.app/Contents/MacOS/Frontend',
   installRoot: '/Applications/Daedalus Preview.app',
   isPackaged: true,
-  launcherConfigPath:
-    '/Applications/Daedalus Preview.app/Contents/Resources/launcher-config.yaml',
+  configPath:
+    '/Applications/Daedalus Preview.app/Contents/Resources/daedalus-config.json',
   resourcesPath: '/Applications/Daedalus Preview.app/Contents/Resources',
 };
 
@@ -164,14 +166,14 @@ describe('dApp sandbox availability', () => {
           id: 'omarchy',
           versionId: '4.0.2',
           buildId: '4.0.2',
-          kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
+          kernelRelease: '7.1.9-arch1-2',
         },
       },
       host: {
         id: 'omarchy',
         versionId: '4.0.2',
         buildId: '4.0.2',
-        kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
+        kernelRelease: '7.1.9-arch1-2',
       },
       accepted: true,
     },
@@ -253,7 +255,7 @@ describe('dApp sandbox availability', () => {
           appPath: `${installRoot}\\resources\\app`,
           executablePath: `${installRoot}\\${appName}.exe`,
           installRoot,
-          launcherConfigPath: `${installRoot}\\launcher-config.yaml`,
+          configPath: `${installRoot}\\daedalus-config.json`,
           resourcesPath: `${installRoot}\\resources`,
         },
         cluster
@@ -275,7 +277,7 @@ describe('dApp sandbox availability', () => {
           appPath: `${installRoot}/Contents/Resources/app`,
           executablePath: `${installRoot}/Contents/MacOS/Frontend`,
           installRoot,
-          launcherConfigPath: `${installRoot}/Contents/Resources/launcher-config.yaml`,
+          configPath: `${installRoot}/Contents/Resources/daedalus-config.json`,
           resourcesPath: `${installRoot}/Contents/Resources`,
         },
         'preview'
@@ -293,7 +295,7 @@ describe('dApp sandbox availability', () => {
           appPath: `${installRoot}/Contents/Resources/app`,
           executablePath: `${installRoot}/Contents/MacOS/Frontend`,
           installRoot,
-          launcherConfigPath: `${installRoot}/Contents/Resources/launcher-config.yaml`,
+          configPath: `${installRoot}/Contents/Resources/daedalus-config.json`,
           resourcesPath: `${installRoot}/Contents/Resources`,
         },
         'mainnet-flight'
@@ -320,8 +322,8 @@ describe('dApp sandbox availability', () => {
       'preview',
     ],
     [
-      'external launcher config',
-      { ...darwinPackage, launcherConfigPath: '/tmp/launcher-config.yaml' },
+      'external config',
+      { ...darwinPackage, configPath: '/tmp/daedalus-config.json' },
       'preview',
     ],
     [
@@ -509,6 +511,13 @@ describe('dApp sandbox availability', () => {
       },
     },
     {
+      name: 'shared mount namespace',
+      evidence: {
+        ...rendererEvidence,
+        namespaces: { ...rendererEvidence.namespaces, mnt: 'mnt:[10]' },
+      },
+    },
+    {
       name: 'wrong observed PID',
       evidence: {
         ...rendererEvidence,
@@ -524,5 +533,100 @@ describe('dApp sandbox availability', () => {
       name: 'DappSandboxUnavailableError',
       reason: 'not-checked',
     });
+  });
+});
+
+describe('NixOS package identity', () => {
+  const root = '/nix/store/aaaaaaaa-daedalus';
+  const configPath = `${root}/config/daedalus-config.json`;
+  const electronPath = `${root}/libexec/bundle-electron/lib/electron/electron`;
+  const manifestPath = '/var/lib/daedalus/preprod/sandbox-identity.json';
+  const helperPath = '/var/lib/daedalus/preprod/chrome-sandbox';
+  const helper = Buffer.from('sandbox helper');
+  const helperHash = crypto.createHash('sha256').update(helper).digest('hex');
+  const execPath = Object.getOwnPropertyDescriptor(process, 'execPath');
+
+  const installFixture = (
+    options: {
+      host?: string;
+      helperHash?: string;
+      root?: string;
+    } = {}
+  ) => {
+    const fixtureRoot = options.root || root;
+    process.env.ENTRYPOINT_DIR = fixtureRoot;
+    process.env.DAEDALUS_CONFIG_FILE = `${fixtureRoot}/config/daedalus-config.json`;
+    Object.defineProperty(process, 'execPath', {
+      configurable: true,
+      value: electronPath,
+    });
+    jest.spyOn(fs, 'realpathSync').mockImplementation((value) => String(value));
+    jest.spyOn(fs, 'lstatSync').mockImplementation(((value: fs.PathLike) => {
+      const file = String(value);
+      let mode = 0o444;
+      if (file === helperPath) mode = 0o755;
+      else if (file === manifestPath) mode = 0o644;
+      return {
+        gid: 0,
+        isFile: () => true,
+        isSymbolicLink: () => false,
+        mode,
+        uid: 0,
+      };
+    }) as typeof fs.lstatSync);
+    jest.spyOn(fs, 'readFileSync').mockImplementation(((
+      value: fs.PathLike | number
+    ) => {
+      const file = String(value);
+      if (file === '/etc/os-release')
+        return options.host || 'ID=nixos\nVERSION_ID=26.05\n';
+      if (file === manifestPath)
+        return JSON.stringify({
+          schemaVersion: 2,
+          packageFamily: 'nix',
+          matrixRevision: 'task-112-matrix-2026-09-11',
+          matrixRow: 'nixos-26.05',
+          distribution: { id: 'nixos', versionId: '26.05' },
+          supportState: 'supported',
+          cluster: 'preprod',
+          policy: { kind: 'none' },
+          helper: { mode: '0755', sha256: options.helperHash || helperHash },
+          launch: { electron: electronPath },
+        });
+      if (file === helperPath) return helper;
+      throw new Error(`unexpected read: ${file}`);
+    }) as typeof fs.readFileSync);
+  };
+
+  afterEach(() => {
+    delete process.env.ENTRYPOINT_DIR;
+    delete process.env.DAEDALUS_CONFIG_FILE;
+    if (execPath) Object.defineProperty(process, 'execPath', execPath);
+    jest.restoreAllMocks();
+  });
+
+  test('accepts the exact store config, manifest, helper, and Electron identity', () => {
+    installFixture();
+    expect(validateNixOSProductionPackage('preprod')).toEqual({
+      failure: null,
+      usernsOnly: true,
+    });
+  });
+
+  test.each([
+    ['an unknown host', { host: 'ID=nixos\nVERSION_ID=unstable\n' }],
+    ['a helper hash mismatch', { helperHash: '0'.repeat(64) }],
+    ['an entrypoint outside the Nix store', { root: '/tmp/daedalus' }],
+  ])('rejects %s', (_name, options) => {
+    installFixture(options);
+    expect(validateNixOSProductionPackage('preprod').failure).not.toBeNull();
+  });
+
+  test('rejects a substituted config path', () => {
+    installFixture();
+    process.env.DAEDALUS_CONFIG_FILE = '/tmp/daedalus-config.json';
+    expect(validateNixOSProductionPackage('preprod').failure).toBe(
+      'unsupported-package'
+    );
   });
 });

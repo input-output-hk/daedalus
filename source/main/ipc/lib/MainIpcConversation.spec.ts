@@ -1,3 +1,6 @@
+import { IpcConversation } from '../../../common/ipc/lib/IpcConversation';
+import { MainIpcConversation } from './MainIpcConversation';
+
 jest.mock('electron', () => ({
   ipcMain: { on: jest.fn(), removeListener: jest.fn() },
 }));
@@ -7,10 +10,8 @@ jest.mock('./trustedRendererIpcAuthority', () => ({
   onTrustedRendererInvalidated: jest.fn(() => () => {}),
 }));
 
-import { IpcConversation } from '../../../common/ipc/lib/IpcConversation';
-import { MainIpcConversation } from './MainIpcConversation';
-
 const { ipcMain: mockedIpcMain } = require('electron');
+
 const mockMain = mockedIpcMain as any;
 
 describe('MainIpcConversation', () => {

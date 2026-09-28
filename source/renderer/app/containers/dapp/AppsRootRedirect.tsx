@@ -7,7 +7,7 @@ import { buildRoute } from '../../utils/routing';
 
 type Props = { stores?: InjectedProps['stores'] };
 
-const AppsRootRedirect = ({ stores }: Props) => {
+function AppsRootRedirect({ stores }: Props) {
   const activeWallet = stores!.wallets.active;
   const wallet =
     activeWallet && !activeWallet.isLegacy
@@ -22,6 +22,6 @@ const AppsRootRedirect = ({ stores }: Props) => {
       }
     />
   );
-};
+}
 
 export default inject('stores')(observer(AppsRootRedirect));
