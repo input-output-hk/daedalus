@@ -107,7 +107,7 @@ type DesktopPackageIdentity = {
   executablePath: string;
   installRoot: string;
   isPackaged: boolean;
-  launcherConfigPath: string;
+  configPath: string;
   resourcesPath: string;
 };
 
@@ -163,9 +163,9 @@ export const validateWindowsPackageIdentity = (
       normalizeWindowsPath(path.win32.join(expectedRoot, 'resources')) &&
     normalizeWindowsPath(identity.appPath) ===
       normalizeWindowsPath(path.win32.join(expectedRoot, 'resources', 'app')) &&
-    normalizeWindowsPath(identity.launcherConfigPath) ===
+    normalizeWindowsPath(identity.configPath) ===
       normalizeWindowsPath(
-        path.win32.join(expectedRoot, 'launcher-config.yaml')
+        path.win32.join(expectedRoot, 'daedalus-config.json')
       )
   );
 };
@@ -192,8 +192,8 @@ export const validateDarwinPackageIdentity = (
       path.posix.join(root, 'Contents/MacOS/Frontend') &&
     identity.resourcesPath === resourcesPath &&
     identity.appPath === path.posix.join(resourcesPath, 'app') &&
-    identity.launcherConfigPath ===
-      path.posix.join(resourcesPath, 'launcher-config.yaml')
+    identity.configPath ===
+      path.posix.join(resourcesPath, 'daedalus-config.json')
   );
 };
 
@@ -286,6 +286,7 @@ export const validateRendererEvidence = (
     (filterCount === undefined || Number(filterCount) > 0) &&
     /^0+$/.test(rendererEvidence.status.CapEff || '') &&
     rendererEvidence.namespaces.pid !== mainEvidence.namespaces.pid &&
+    rendererEvidence.namespaces.mnt !== mainEvidence.namespaces.mnt &&
     (!requireUserNamespace ||
       rendererEvidence.namespaces.user !== mainEvidence.namespaces.user)
   );
@@ -421,7 +422,7 @@ const supportedHost = (
         id: 'omarchy',
         versionId: '4.0.2',
         buildId: '4.0.2',
-        kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
+        kernelRelease: '7.1.9-arch1-2',
       },
       helperMode: 0o755,
       usernsOnly: true,
@@ -490,6 +491,19 @@ const validateProductionPackage = (
   try {
     if (fs.realpathSync(installRoot) !== expectedRoot)
       return unsupportedPackage;
+    const configPath = path.join(expectedRoot, 'config/daedalus-config.json');
+    const configStat = fs.lstatSync(configPath);
+    if (
+      process.env.DAEDALUS_CONFIG_FILE !== configPath ||
+      fs.realpathSync(configPath) !== configPath ||
+      !configStat.isFile() ||
+      configStat.isSymbolicLink() ||
+      configStat.uid !== 0 ||
+      configStat.gid !== 0 ||
+      (configStat.mode & 0o22) !== 0
+    )
+      return unsupportedPackage;
+
     const manifestPath = path.join(
       expectedRoot,
       'share/daedalus-sandbox-identity.json'
@@ -548,13 +562,36 @@ const validateProductionPackage = (
   }
 };
 
-const validateNixOSProductionPackage = (cluster: string): PackageValidation => {
+export const validateNixOSProductionPackage = (
+  cluster: string
+): PackageValidation => {
   const unsupportedPackage = {
     failure: 'unsupported-package' as const,
     usernsOnly: false,
   };
 
   try {
+    const entrypointDir = process.env.ENTRYPOINT_DIR;
+    if (!entrypointDir) return unsupportedPackage;
+    const canonicalRoot = fs.realpathSync(entrypointDir);
+    if (
+      path.resolve(entrypointDir) !== canonicalRoot ||
+      !canonicalRoot.startsWith('/nix/store/')
+    )
+      return unsupportedPackage;
+    const configPath = path.join(canonicalRoot, 'config/daedalus-config.json');
+    const configStat = fs.lstatSync(configPath);
+    if (
+      process.env.DAEDALUS_CONFIG_FILE !== configPath ||
+      fs.realpathSync(configPath) !== configPath ||
+      !configStat.isFile() ||
+      configStat.isSymbolicLink() ||
+      configStat.uid !== 0 ||
+      configStat.gid !== 0 ||
+      (configStat.mode & 0o22) !== 0
+    )
+      return unsupportedPackage;
+
     const manifestPath = `/var/lib/daedalus/${cluster}/sandbox-identity.json`;
     const manifestStat = fs.lstatSync(manifestPath);
     if (
@@ -581,7 +618,11 @@ const validateNixOSProductionPackage = (cluster: string): PackageValidation => {
       typeof manifest.launch?.electron === 'string'
         ? manifest.launch.electron
         : null;
-    if (!electronPath) return unsupportedPackage;
+    if (
+      !electronPath ||
+      !electronPath.startsWith(`${canonicalRoot}${path.sep}`)
+    )
+      return unsupportedPackage;
 
     const helperPath = `/var/lib/daedalus/${cluster}/chrome-sandbox`;
     const electronStat = fs.lstatSync(electronPath);
@@ -591,6 +632,9 @@ const validateNixOSProductionPackage = (cluster: string): PackageValidation => {
       fs.realpathSync(process.execPath) !== electronPath ||
       !electronStat.isFile() ||
       electronStat.isSymbolicLink() ||
+      electronStat.uid !== 0 ||
+      electronStat.gid !== 0 ||
+      (electronStat.mode & 0o22) !== 0 ||
       !helperStat.isFile() ||
       helperStat.isSymbolicLink() ||
       helperStat.uid !== 0 ||
@@ -617,7 +661,7 @@ const validateWindowsProductionPackage = (
   };
   const installRoot =
     configuredInstallRoot || path.win32.dirname(process.execPath);
-  const launcherConfigPath = process.env.LAUNCHER_CONFIG || '';
+  const configPath = process.env.DAEDALUS_CONFIG_FILE || '';
   if (
     !validateWindowsPackageIdentity(
       {
@@ -627,7 +671,7 @@ const validateWindowsProductionPackage = (
         executablePath: process.execPath,
         installRoot,
         isPackaged: app.isPackaged,
-        launcherConfigPath,
+        configPath,
         resourcesPath: process.resourcesPath,
       },
       cluster
@@ -641,7 +685,7 @@ const validateWindowsProductionPackage = (
       [process.execPath, 'file'],
       [process.resourcesPath, 'directory'],
       [app.getAppPath(), 'directory'],
-      [launcherConfigPath, 'file'],
+      [configPath, 'file'],
     ];
     if (
       entries.some(([entryPath, kind]) => {
@@ -670,7 +714,7 @@ const validateDarwinProductionPackage = (
   const installRoot =
     configuredInstallRoot ||
     path.resolve(path.dirname(process.execPath), '..', '..');
-  const launcherConfigPath = process.env.LAUNCHER_CONFIG || '';
+  const configPath = process.env.DAEDALUS_CONFIG_FILE || '';
   if (
     !validateDarwinPackageIdentity(
       {
@@ -680,7 +724,7 @@ const validateDarwinProductionPackage = (
         executablePath: process.execPath,
         installRoot,
         isPackaged: app.isPackaged,
-        launcherConfigPath,
+        configPath,
         resourcesPath: process.resourcesPath,
       },
       cluster
@@ -725,7 +769,7 @@ const validateDarwinProductionPackage = (
         'Contents/Resources/helper',
         'file',
       ],
-      [launcherConfigPath, 'Contents/Resources/launcher-config.yaml', 'file'],
+      [configPath, 'Contents/Resources/daedalus-config.json', 'file'],
     ];
     const canonicalRoot = fs.realpathSync(installRoot);
     if (

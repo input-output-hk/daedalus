@@ -55,7 +55,7 @@ type State = {
 
 const mapOfTxErrorCodeToIntl: Record<
   InitializeVPDelegationTxError,
-  typeof messages[keyof typeof messages]
+  (typeof messages)[keyof typeof messages]
 > = {
   generic: messages.initializeTxErrorGeneric,
   same_vote: messages.initializeTxErrorSameVote,
@@ -115,10 +115,8 @@ function VotingPowerDelegation({
     onEnsureFavorited(currentDRep.drep.cip129 ?? currentDRep.drep.raw);
   }, [currentDRepId, onEnsureFavorited]);
 
-  const [
-    currentDRepEntry,
-    setCurrentDRepEntry,
-  ] = useState<AppDRepDirectoryEntry | null>(null);
+  const [currentDRepEntry, setCurrentDRepEntry] =
+    useState<AppDRepDirectoryEntry | null>(null);
   // The lookup settling is the signal, so no timer is needed: a rejection or
   // an empty result is an answer, and only the wait before one is loading.
   const [isLookingUpDRep, setIsLookingUpDRep] = useState(false);
@@ -150,10 +148,8 @@ function VotingPowerDelegation({
     };
   }, [currentDRepId, onFetchDRep]);
 
-  const [
-    selectedDRepEntry,
-    setSelectedDRepEntry,
-  ] = useState<AppDRepDirectoryEntry | null>(null);
+  const [selectedDRepEntry, setSelectedDRepEntry] =
+    useState<AppDRepDirectoryEntry | null>(null);
 
   useEffect(() => {
     if (!selectedDRepId || !onFetchDRep) {
@@ -209,7 +205,6 @@ function VotingPowerDelegation({
       });
       if (result.success === true) {
         onSuccess(selectedWallet.id);
-        return;
       } else {
         setState({
           selectedWalletId: selectedWallet.id,

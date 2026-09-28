@@ -142,6 +142,8 @@ async fn main() -> Result<()> {
     }
 
     let args = Args::parse();
+    let config_path = std::path::absolute(&args.config)
+        .map_err(|e| anyhow::anyhow!("Failed to resolve config file path: {e}"))?;
 
     // Kill-on-close job object: children must not survive watchdog death.
     #[cfg(windows)]
@@ -161,9 +163,12 @@ async fn main() -> Result<()> {
         }
     }
 
-    let config_text = tokio::fs::read_to_string(&args.config)
-        .await
-        .map_err(|e| anyhow::anyhow!("Failed to read config file '{}': {e}", args.config))?;
+    let config_text = tokio::fs::read_to_string(&config_path).await.map_err(|e| {
+        anyhow::anyhow!(
+            "Failed to read config file '{}': {e}",
+            config_path.display()
+        )
+    })?;
 
     let config_text = substitute_env_vars(&config_text);
 

@@ -296,62 +296,83 @@ export const bindPaymentChange = async (
       )
     )
       throw new Error('Invalid payment output asset quantity');
+    const normalizedAssets: Array<{
+      policyId: string;
+      assetName: string;
+      quantity: bigint;
+    }> = [];
+    for (const asset of assets)
+      normalizedAssets.push({
+        ...asset,
+        quantity: BigInt(asset.quantity),
+      });
     const address = Buffer.from(
       utils.bech32_decodeAddress(output.address)
     ).toString('hex');
-    const index = [...remaining].find((candidate) => {
+    let index: number | undefined;
+    for (const candidate of remaining) {
       const actual = exact.transaction.outputs[candidate];
-      return (
+      const matches =
         actual.address === address &&
         actual.value.coin === BigInt(output.amount.quantity.toString()) &&
-        actual.value.assets.length === assets.length &&
+        actual.value.assets.length === normalizedAssets.length &&
         actual.value.assets.every((asset) =>
-          assets.some(
+          normalizedAssets.some(
             (expected) =>
               expected.policyId === asset.policyId &&
               expected.assetName === asset.assetName &&
-              BigInt(expected.quantity) === asset.quantity
+              expected.quantity === asset.quantity
           )
-        )
-      );
-    });
+        );
+      if (matches) {
+        index = candidate;
+        break;
+      }
+    }
     if (index === undefined)
       throw new Error('Payment output does not match exact transaction');
     remaining.delete(index);
-    if (!output.derivationPath) continue;
-    const path = output.derivationPath;
-    const role = Number(path[3]);
-    const childIndex = Number(path[4]);
-    if (
-      path.length !== 5 ||
-      path[0] !== '1852H' ||
-      path[1] !== '1815H' ||
-      path[2] !== '0H' ||
-      (path[3] !== '1' && !(path[3] === '0' && path[4] === '0')) ||
-      !/^(0|[1-9][0-9]*)$/u.test(path[4]) ||
-      !Number.isSafeInteger(childIndex) ||
-      childIndex >= 0x80000000
-    )
-      throw new Error('Invalid payment change path');
-    const paymentPath = [0x8000073c, 0x80000717, 0x80000000, role, childIndex];
-    const stakePath = [0x8000073c, 0x80000717, 0x80000000, 2, 0];
-    const paymentKey = await derive(paymentPath, accountXpub);
-    const stakeKey = await derive(stakePath, accountXpub);
-    const derived = Buffer.concat([
-      Buffer.from([exact.network.networkId]),
-      Buffer.from(blake2b(paymentKey.subarray(0, 32), undefined, 28)),
-      Buffer.from(blake2b(stakeKey.subarray(0, 32), undefined, 28)),
-    ]).toString('hex');
-    if (derived !== address)
-      throw new Error('Change address does not belong to paired wallet');
-    ownedOutputs.push(
-      Object.freeze({
-        address,
-        outputIndex: index,
-        paymentPath: Object.freeze(paymentPath),
-        stakePath: Object.freeze(stakePath),
-      })
-    );
+    if (output.derivationPath) {
+      const path = output.derivationPath;
+      const role = Number(path[3]);
+      const childIndex = Number(path[4]);
+      if (
+        path.length !== 5 ||
+        path[0] !== '1852H' ||
+        path[1] !== '1815H' ||
+        path[2] !== '0H' ||
+        (path[3] !== '1' && !(path[3] === '0' && path[4] === '0')) ||
+        !/^(0|[1-9][0-9]*)$/u.test(path[4]) ||
+        !Number.isSafeInteger(childIndex) ||
+        childIndex >= 0x80000000
+      )
+        throw new Error('Invalid payment change path');
+      const paymentPath = [
+        0x8000073c,
+        0x80000717,
+        0x80000000,
+        role,
+        childIndex,
+      ];
+      const stakePath = [0x8000073c, 0x80000717, 0x80000000, 2, 0];
+      const paymentKey = await derive(paymentPath, accountXpub);
+      const stakeKey = await derive(stakePath, accountXpub);
+      const derived = Buffer.concat([
+        Buffer.from([exact.network.networkId]),
+        Buffer.from(blake2b(paymentKey.subarray(0, 32), undefined, 28)),
+        Buffer.from(blake2b(stakeKey.subarray(0, 32), undefined, 28)),
+      ]).toString('hex');
+      if (derived !== address)
+        throw new Error('Change address does not belong to paired wallet');
+      ownedOutputs.push(
+        Object.freeze({
+          address,
+          outputIndex: index,
+          paymentPath: Object.freeze(paymentPath),
+          stakePath: Object.freeze(stakePath),
+        })
+      );
+    }
   }
   if (remaining.size) throw new Error('Unaccounted exact payment output');
   return Object.freeze({ ...exact, ownedOutputs: Object.freeze(ownedOutputs) });

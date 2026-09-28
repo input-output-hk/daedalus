@@ -12,7 +12,7 @@ const entry = (
   id: string,
   availableIn: DappCatalogEntry['availableIn'] = [
     'mainnet',
-    'mainnet_flight',
+    'mainnet-flight',
     'preprod',
     'preview',
   ]
@@ -33,7 +33,7 @@ describe('dapp catalog', () => {
   it('selects entries by the effective Daedalus variant', () => {
     const networks: Network[] = [
       'mainnet',
-      'mainnet_flight',
+      'mainnet-flight',
       'testnet',
       'staging',
       'shelley_qa',
@@ -41,24 +41,29 @@ describe('dapp catalog', () => {
       'vasil_dev',
       'preprod',
       'preview',
-      'selfnode',
       'development',
     ];
+    const expectedByNetwork: Partial<Record<Network, string[]>> = {
+      mainnet: [
+        'liqwid-finance',
+        'unfrack-it',
+        'strike-finance-mainnet',
+        'fluidtokens-mainnet',
+        'steelswap-mainnet',
+      ],
+      'mainnet-flight': [
+        'liqwid-finance',
+        'unfrack-it',
+        'strike-finance-mainnet',
+        'fluidtokens-mainnet',
+        'steelswap-mainnet',
+      ],
+      preprod: ['unfrack-it', 'strike-finance-preprod'],
+      preview: ['unfrack-it'],
+    };
     for (const network of networks)
       expect(getDappCatalog(network, false).map(({ id }) => id)).toEqual(
-        network === 'mainnet' || network === 'mainnet_flight'
-          ? [
-              'liqwid-finance',
-              'unfrack-it',
-              'strike-finance-mainnet',
-              'fluidtokens-mainnet',
-              'steelswap-mainnet',
-            ]
-          : network === 'preprod'
-          ? ['unfrack-it', 'strike-finance-preprod']
-          : network === 'preview'
-          ? ['unfrack-it']
-          : []
+        expectedByNetwork[network] || []
       );
     expect(
       findDappCatalogEntry(dappCatalog, 'strike-finance-mainnet')
@@ -88,7 +93,7 @@ describe('dapp catalog', () => {
 
     const injected = defineDappCatalog([
       entry('supported'),
-      entry('flight', ['mainnet_flight']),
+      entry('flight', ['mainnet-flight']),
       entry('disabled', []),
     ]);
     expect(
@@ -108,7 +113,7 @@ describe('dapp catalog', () => {
     );
     const invalid = { ...entry('invalid'), availableIn: undefined };
     expect(() =>
-      defineDappCatalog([(invalid as unknown) as DappCatalogEntry])
+      defineDappCatalog([invalid as unknown as DappCatalogEntry])
     ).toThrow('Invalid dApp catalog availability');
     expect(
       findDappCatalogEntry(defineDappCatalog([entry('one')]), 'one')

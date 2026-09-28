@@ -23,6 +23,7 @@ const sha256 = (value) =>
   crypto.createHash('sha256').update(value).digest('hex');
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
 const formatJson = (value) => prettier.format(JSON.stringify(value), { parser: 'json' });
+async function main() {
 const manifest = readJson(manifestPath);
 const root = path.resolve(path.dirname(manifestPath), '../../../../..');
 const manifestDigest = sha256(fs.readFileSync(manifestPath));
@@ -196,7 +197,7 @@ const boundaryFixtureDocument = {
     structuralValidation: recipe.structuralValidation,
   })),
 };
-const boundaryFixtureBytes = Buffer.from(formatJson(boundaryFixtureDocument));
+const boundaryFixtureBytes = Buffer.from(await formatJson(boundaryFixtureDocument));
 const txBoundaries = new Map(
   [...boundaryTransactions.entries()].map(([length, recipe]) => {
     const identity = {
@@ -925,7 +926,7 @@ for (const model of manifest.modelRows) {
 
 cases.sort((left, right) => left.id.localeCompare(right.id));
 const output = { schemaVersion: 4, matrixRevision: manifest.revision, cases };
-fs.writeFileSync(outputPath, formatJson(output));
+fs.writeFileSync(outputPath, await formatJson(output));
 if (inputRecipesPath) fs.writeFileSync(inputRecipesPath, boundaryFixtureBytes);
 
 const artifactDigest = (artifact) =>
@@ -1111,7 +1112,7 @@ if (evidenceSchemaPath) {
   const groups = [];
   while (bindings.length > 0) groups.push({ oneOf: bindings.splice(0, 50) });
   schema.allOf[0] = { oneOf: groups };
-  fs.writeFileSync(evidenceSchemaPath, formatJson(schema));
+  fs.writeFileSync(evidenceSchemaPath, await formatJson(schema));
 }
 
 if (evidenceExamplesPath) {
@@ -1238,6 +1239,12 @@ if (evidenceExamplesPath) {
   ].map(([name, property, value, target]) => ({ name, property, value, ...(target ? { target } : {}) }));
   fs.writeFileSync(
     evidenceExamplesPath,
-    formatJson({ valid, promotedValid, invalid, promotedInvalid })
+    await formatJson({ valid, promotedValid, invalid, promotedInvalid })
   );
 }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

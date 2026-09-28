@@ -4,6 +4,8 @@ import MainLayout from '../MainLayout';
 
 type Props = { children: ReactNode };
 
-const Apps = ({ children }: Props) => <MainLayout>{children}</MainLayout>;
+function Apps({ children }: Props) {
+  return <MainLayout>{children}</MainLayout>;
+}
 
 export default Apps;

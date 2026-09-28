@@ -9,6 +9,7 @@ import {
 } from './utils/directLaunch';
 import { parseNetworkMagic } from './utils/chainStorageValidate';
 import { DappLaunchPolicy } from './dapp/DappLaunchPolicy';
+import { readDappRuntimeConfig } from './utils/config';
 
 const {
   isTest,
@@ -79,10 +80,6 @@ if (!isStartedByLauncher && !isHandedOver) {
   }
 }
 
-
-
-
-
 type WindowOptionsType = {
   show: boolean;
   width: number;
@@ -126,6 +123,12 @@ export const smashUrl = process.env.DAEDALUS_SMASH_URL;
 export const updateMode = (process.env.DAEDALUS_UPDATE_MODE ??
   'system-package-disabled') as 'installer-managed' | 'system-package-disabled';
 export const updateRunnerBin = process.env.DAEDALUS_UPDATE_RUNNER ?? '';
+export const dappRuntimeConfig = readDappRuntimeConfig(
+  process.env.DAEDALUS_CONFIG_FILE
+);
+export const dappLaunchPolicy = new DappLaunchPolicy(
+  dappRuntimeConfig.dappBrowserPolicy
+);
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;

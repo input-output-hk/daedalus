@@ -1,3 +1,5 @@
+/** @jest-environment node */
+
 import fs from 'fs';
 import path from 'path';
 import { generateKeyPairSync, sign } from 'crypto';
@@ -32,10 +34,12 @@ import {
 } from '../../../common/hardware/trezorTransaction';
 
 const keys = generateKeyPairSync('ed25519');
-const publicKey = (keys.publicKey.export({
-  format: 'der',
-  type: 'spki',
-}) as Buffer).subarray(-32);
+const publicKey = (
+  keys.publicKey.export({
+    format: 'der',
+    type: 'spki',
+  }) as Buffer
+).subarray(-32);
 const credential = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
   'hex'
 );
@@ -784,9 +788,9 @@ describe('verified payment change', () => {
       account.toString('hex')
     );
     const request = toExactLedgerSignTransactionRequest(bound);
-    expect(
-      request.tx.outputs.map((output) => output.destination.type)
-    ).toEqual(['device_owned', 'third_party']);
+    expect(request.tx.outputs.map((output) => output.destination.type)).toEqual(
+      ['device_owned', 'third_party']
+    );
     expect(request.tx.outputs.map((output) => output.amount)).toEqual([
       '410080283',
       '5000000',

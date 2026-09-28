@@ -1,3 +1,5 @@
+/** @jest-environment node */
+
 import fs from 'fs';
 import path from 'path';
 import { blake2b } from 'blakejs';
@@ -233,8 +235,7 @@ describe('Conway semantic transaction', () => {
     });
     expect(transaction.mint).toHaveLength(1);
     expect(transaction.certificates.map(({ value }) => value.kind)).toEqual([
-      0,
-      9,
+      0, 9,
     ]);
     expect(transaction.withdrawals).toHaveLength(1);
     expect(transaction.requiredSigners).toEqual([keyHash.toString('hex')]);
@@ -273,6 +274,45 @@ describe('Conway semantic transaction', () => {
     expect(transaction.mint[0].quantity).toBe(BigInt(-1));
     expect(transaction.effects).toContainEqual(
       expect.objectContaining({ kind: 'burn' })
+    );
+  });
+
+  it('accepts the exact signed mint limit and rejects the next quantity', () => {
+    const nativeScript = [0, keyHash];
+    const policyId = Buffer.from(
+      blake2b(
+        Buffer.concat([Buffer.from([0]), encode(nativeScript)]),
+        undefined,
+        28
+      )
+    );
+    const transaction = (quantity: string) =>
+      decodeConwayTransaction(
+        parseConwayTransactionEnvelope(
+          Buffer.concat([
+            Buffer.from('84a4', 'hex'),
+            encode(0),
+            encode([]),
+            encode(1),
+            encode([[Buffer.alloc(0), 0]]),
+            encode(2),
+            encode(0),
+            encode(9),
+            Buffer.from('a1', 'hex'),
+            encode(policyId),
+            Buffer.from('a1', 'hex'),
+            encode(Buffer.alloc(0)),
+            Buffer.from(`1b${quantity}`, 'hex'),
+            encode(new Map([[1, [nativeScript]]])),
+            Buffer.from('f4f6', 'hex'),
+          ])
+        )
+      );
+    expect(transaction('7fffffffffffffff').mint[0].quantity).toBe(
+      BigInt('9223372036854775807')
+    );
+    expect(() => transaction('8000000000000000')).toThrow(
+      TransactionSemanticError
     );
   });
 
@@ -330,23 +370,7 @@ describe('Conway semantic transaction', () => {
     const transaction = decodeConwayTransaction(parse(bodyValue));
 
     expect(transaction.certificates.map(({ value }) => value.kind)).toEqual([
-      0,
-      1,
-      2,
-      3,
-      4,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      18,
+      0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
     ]);
     expect(
       transaction.certificates

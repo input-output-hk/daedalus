@@ -2,7 +2,6 @@ import ElectronStore from 'electron-store';
 import { ELECTRON_STORE_CHANNEL } from '../../common/ipc/api';
 import { MainIpcConversation } from './lib/MainIpcConversation';
 import { environment } from '../environment';
-import { launcherConfig } from '../config';
 import {
   STORAGE_TYPES as types,
   STORAGE_KEYS as keys,
@@ -10,11 +9,7 @@ import {
 import type { ElectronStoreMessage } from '../../common/ipc/api';
 import type { StorageKey } from '../../common/types/electron-store.types';
 
-const store = new ElectronStore(
-  launcherConfig.electronStoreDir
-    ? { cwd: launcherConfig.electronStoreDir }
-    : undefined
-);
+const store = new ElectronStore();
 // MainIpcChannel<Incoming, Outgoing>
 export const electronStoreConversation: MainIpcConversation<
   ElectronStoreMessage,

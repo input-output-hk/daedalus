@@ -3,6 +3,9 @@ import { blake2b } from 'blakejs';
 import { bytesForSpan, CborItem, CborSpan, parseCborItem } from './cborSlices';
 import { ExactTransactionEnvelope } from './transactionEnvelope';
 
+const INT64_MIN = BigInt('-9223372036854775808');
+const INT64_MAX = BigInt('9223372036854775807');
+
 export class TransactionSemanticError extends Error {
   public constructor(message = 'invalid Conway transaction semantics') {
     super(message);
@@ -521,11 +524,7 @@ const nativeScript = (source: Buffer, item: CborItem): void => {
     array(parts[1]).forEach((child) => nativeScript(source, child));
   else if (tag === BigInt(3) && parts.length === 3) {
     const threshold = integer(parts[1]);
-    if (
-      threshold < BigInt(-9223372036854775808) ||
-      threshold > BigInt(9223372036854775807)
-    )
-      fail();
+    if (threshold < INT64_MIN || threshold > INT64_MAX) fail();
     array(parts[2]).forEach((child) => nativeScript(source, child));
   } else if ((tag === BigInt(4) || tag === BigInt(5)) && parts.length === 2)
     uint(parts[1]);
@@ -822,38 +821,13 @@ const poolParameters = (source: Buffer, item: CborItem): void => {
   }
 };
 const protocolUpdate = (item: CborItem): void => {
-  const update = only(item, [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    30,
-    31,
-    32,
-    33,
-  ]);
+  const update = only(
+    item,
+    [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+      25, 26, 27, 28, 29, 30, 31, 32, 33,
+    ]
+  );
   for (const [field, candidate] of update) {
     if ([0, 1, 5, 6, 16, 17, 30, 31].includes(field)) uint(candidate);
     else if ([2, 3, 7, 22, 28, 29, 32].includes(field))
@@ -865,14 +839,10 @@ const protocolUpdate = (item: CborItem): void => {
     else if (field === 18)
       for (const model of map(candidate)) {
         boundedUint(model.key, BigInt(255));
-        array(model.value).forEach((cost) => {
+        for (const cost of array(model.value)) {
           const value = integer(cost);
-          if (
-            value < BigInt(-9223372036854775808) ||
-            value > BigInt(9223372036854775807)
-          )
-            fail();
-        });
+          if (value < INT64_MIN || value > INT64_MAX) fail();
+        }
       }
     else if (field === 19) {
       const prices = array(candidate);
@@ -933,10 +903,7 @@ const certificate = (source: Buffer, item: CborItem): Certificate => {
   if ([14, 15, 16, 17, 18].includes(tag)) collect(parts[1]);
   if ([2, 10, 11, 13].includes(tag)) poolId = hex(source, parts[2], 28);
   if ([9, 10, 12, 13].includes(tag))
-    collectTarget(
-      parts[tag === 9 ? 2 : tag === 10 ? 3 : tag === 12 ? 2 : 3],
-      true
-    );
+    collectTarget(parts[tag === 9 || tag === 12 ? 2 : 3], true);
   if (tag === 3) {
     poolParameters(source, parts[1]);
     poolId = hex(source, array(parts[1])[0], 28);
@@ -1144,28 +1111,10 @@ export const decodeConwayTransaction = (
   context: CommitmentContext = {}
 ): SemanticTransaction => {
   const source = envelope.cbor;
-  const body = only(envelope.body, [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    7,
-    8,
-    9,
-    11,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-  ]);
+  const body = only(
+    envelope.body,
+    [0, 1, 2, 3, 4, 5, 7, 8, 9, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+  );
   const witnesses = only(envelope.witnessSet, [0, 1, 2, 3, 4, 5, 6, 7]);
   const normal = decodeInputs(source, body.get(0) || fail());
   const collateralInputs = body.has(13)
@@ -1230,12 +1179,7 @@ export const decodeConwayTransaction = (
         const assetName = hex(source, name);
         if (Buffer.from(assetName, 'hex').length > 32) fail();
         const quantity = integer(amount);
-        if (
-          !quantity ||
-          quantity < BigInt(-9223372036854775808) ||
-          quantity > BigInt(9223372036854775807)
-        )
-          fail();
+        if (!quantity || quantity < INT64_MIN || quantity > INT64_MAX) fail();
         noDuplicate(seen, `${policyId}:${assetName}`);
         mint.push({ policyId, assetName, quantity });
         count += 1;
@@ -1353,7 +1297,7 @@ export const decodeConwayTransaction = (
     }
   ([3, 6, 7] as const).forEach((field) => {
     if (!witnesses.has(field)) return;
-    const version = field === 3 ? 1 : field === 6 ? 2 : 3;
+    const version = { 3: 1, 6: 2, 7: 3 }[field];
     const languageId = version - 1;
     for (const item of set(witnesses.get(field)!, true)) {
       const bytes = payload(source, item);
@@ -1390,9 +1334,8 @@ export const decodeConwayTransaction = (
       .map((vote) => `vote:${vote.voter}`),
     proposal: proposals.map((_, index) => `proposal:${index}`),
   };
-  const redeemers = (witnesses.has(5)
-    ? decodeRedeemers(source, witnesses.get(5)!)
-    : []
+  const redeemers = (
+    witnesses.has(5) ? decodeRedeemers(source, witnesses.get(5)!) : []
   ).map((redeemer) => {
     const target = targetLists[redeemer.purpose][Number(redeemer.index)];
     if (!target) fail('unbound redeemer');
@@ -1667,26 +1610,29 @@ export const decodeConwayTransaction = (
   for (const [target, hashes] of expectedByTarget) {
     for (const expected of hashes) {
       const material = materialByHash.get(expected);
-      if (!material) {
+      if (!material)
         requirements.push({
           kind: 'script',
           target: expected,
           reason: 'required script material is unavailable',
         });
-        continue;
-      }
-      const redeemer = redeemers.find(
-        (candidate) => candidate.target === target
-      );
-      if (material.language === 'native') {
-        if (redeemer && context.redeemerScriptHashes?.get(target) === expected)
-          fail('native script cannot bind a redeemer');
-      } else if (!redeemer) {
-        requirements.push({
-          kind: 'script',
-          target,
-          reason: 'Plutus script target requires a redeemer',
-        });
+      else {
+        const redeemer = redeemers.find(
+          (candidate) => candidate.target === target
+        );
+        if (material.language === 'native') {
+          if (
+            redeemer &&
+            context.redeemerScriptHashes?.get(target) === expected
+          )
+            fail('native script cannot bind a redeemer');
+        } else if (!redeemer) {
+          requirements.push({
+            kind: 'script',
+            target,
+            reason: 'Plutus script target requires a redeemer',
+          });
+        }
       }
     }
   }
@@ -1736,6 +1682,19 @@ export const decodeConwayTransaction = (
   const decodedAuxiliaryData = isNull(source, envelope.auxiliaryData)
     ? undefined
     : exact(source, envelope.auxiliaryData);
+  let collateralLossEffects: SemanticTransaction['effects'] = [];
+  if (calculatedCollateralLoss !== undefined)
+    collateralLossEffects = [
+      { kind: 'maximum-collateral-loss', value: calculatedCollateralLoss },
+    ];
+  else if (maximumLossRequirement)
+    collateralLossEffects = [
+      {
+        kind: 'maximum-collateral-loss-unresolved',
+        value: maximumLossRequirement,
+      },
+    ];
+
   const effects: SemanticTransaction['effects'] = [
     ...normal.map((outpoint) => ({
       kind: 'input',
@@ -1851,16 +1810,7 @@ export const decodeConwayTransaction = (
       ? []
       : [{ kind: 'treasury-value', value: treasuryValue }]),
     ...(donation === undefined ? [] : [{ kind: 'donation', value: donation }]),
-    ...(calculatedCollateralLoss === undefined
-      ? maximumLossRequirement
-        ? [
-            {
-              kind: 'maximum-collateral-loss-unresolved',
-              value: maximumLossRequirement,
-            },
-          ]
-        : []
-      : [{ kind: 'maximum-collateral-loss', value: calculatedCollateralLoss }]),
+    ...collateralLossEffects,
   ];
   return {
     envelope,

@@ -23,7 +23,7 @@ import {
   getDappCatalog,
 } from '../../common/config/dappCatalog';
 import type { DappCatalogEntry } from '../../common/types/dapp.types';
-import { dappLaunchPolicy, launcherConfig } from '../config';
+import { dappLaunchPolicy, dappRuntimeConfig, isFlight } from '../config';
 import { environment } from '../environment';
 import { DappBrowserManager } from '../dapp/DappBrowserManager';
 import type { DappGuestRevocationReason } from '../dapp/DappBrowserManager';
@@ -99,8 +99,8 @@ export class DappBrowserController {
     this.manager = manager;
     this.policy = policy;
     this.catalog = getDappCatalog(
-      environment.network,
-      launcherConfig.isFlight,
+      dappRuntimeConfig.dappNetwork.cluster,
+      isFlight,
       catalog
     );
     this.onState = onState;
@@ -139,8 +139,8 @@ export class DappBrowserController {
       catalogAvailable: this.policy.allows('preferred'),
       diagnosticsAvailable: this.policy.allows('diagnostics'),
       consoleCaptureAvailable: isDappConsoleCaptureSupported(
-        environment.network,
-        launcherConfig.isFlight
+        dappRuntimeConfig.dappNetwork.cluster,
+        isFlight
       ),
     });
   }
@@ -152,8 +152,8 @@ export class DappBrowserController {
       if (
         request.captureConsole &&
         !isDappConsoleCaptureSupported(
-          environment.network,
-          launcherConfig.isFlight
+          dappRuntimeConfig.dappNetwork.cluster,
+          isFlight
         )
       )
         throw new Error('DApp console capture is unavailable');
@@ -185,8 +185,8 @@ export class DappBrowserController {
     if (
       request.captureConsole &&
       !isDappConsoleCaptureSupported(
-        environment.network,
-        launcherConfig.isFlight
+        dappRuntimeConfig.dappNetwork.cluster,
+        isFlight
       )
     )
       throw new Error('DApp console capture is unavailable');
@@ -272,7 +272,7 @@ const browserController = new DappBrowserController(
     onDappBrokerLifecycleRevoked(guestWebContentsId);
     publishDappBrowserState(isOpen);
   }),
-  launcherConfig.nodeConfig.network.genesisHash,
+  dappRuntimeConfig.dappNetwork.genesisHash,
   dappLaunchPolicy,
   dappCatalog,
   (isOpen) => publishDappBrowserState(isOpen)

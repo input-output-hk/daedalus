@@ -1,6 +1,7 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
+import { spawn } from 'child_process';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { MANAGE_APP_UPDATE } from '../../common/ipc/api';
@@ -18,10 +19,8 @@ import {
   currentWindowSender,
 } from './lib/currentWindowSender';
 // IpcChannel<Incoming, Outgoing>
-const manageAppUpdateChannel: MainIpcChannel<
-  Request,
-  Response
-> = new MainIpcChannel(MANAGE_APP_UPDATE);
+const manageAppUpdateChannel: MainIpcChannel<Request, Response> =
+  new MainIpcChannel(MANAGE_APP_UPDATE);
 const logPrefix = 'appUpdateInstall';
 
 const getMessage = (functionPrefix: string, message?: string): string => {
@@ -31,7 +30,7 @@ const getMessage = (functionPrefix: string, message?: string): string => {
 };
 
 export const handleManageAppUpdateRequests = (
-  _window: Pick<BrowserWindow, 'close'>
+  window: Pick<BrowserWindow, 'close'> & { daedalusExitCode?: number }
 ) => {
   const response = (
     success: boolean | null | undefined,

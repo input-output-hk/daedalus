@@ -72,12 +72,12 @@ describe('transactionsCsvGenerator', () => {
     {
       locale: 'en-US',
       messages: enTranslations,
-      statuses: ['Pending', 'Confirmed', 'Failed'],
+      statuses: ['Pending', 'Confirmed', 'Expired'],
     },
     {
       locale: 'ja-JP',
       messages: jaTranslations,
-      statuses: ['保留中', '承認済み', '失敗しました'],
+      statuses: ['保留中', '承認済み', '有効期限切れ'],
     },
   ])(
     'exports transaction statuses in $locale',

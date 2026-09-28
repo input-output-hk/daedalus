@@ -9,10 +9,10 @@ import {
 
 jest.mock('../config', () => ({
   dappLaunchPolicy: { allows: () => false },
-  launcherConfig: {
-    isFlight: false,
-    nodeConfig: { network: { genesisHash: 'genesis' } },
+  dappRuntimeConfig: {
+    dappNetwork: { cluster: 'preprod', genesisHash: 'genesis' },
   },
+  isFlight: false,
 }));
 jest.mock('../environment', () => ({
   environment: { isDev: false, network: 'preprod' },
@@ -57,25 +57,24 @@ describe('DappBrowserController', () => {
     close: jest.fn(() => Promise.resolve()),
     revoke: jest.fn(),
   });
-  const { launcherConfig } = jest.requireMock('../config');
-  const { environment } = jest.requireMock('../environment');
+  const runtimeConfig = jest.requireMock('../config');
 
   afterEach(() => {
-    launcherConfig.isFlight = false;
-    environment.network = 'preprod';
+    runtimeConfig.dappRuntimeConfig.dappNetwork.cluster = 'preprod';
+    runtimeConfig.isFlight = false;
   });
 
   it('stages diagnostics until the exact wallet route commits and consumes it once', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy()
     );
     let navigate:
       | ((_event: unknown, url: string, isMainFrame: boolean) => void)
       | undefined;
-    controller.observeWindow(({
+    controller.observeWindow({
       webContents: {
         on: jest.fn((name, callback) => {
           if (name === 'did-navigate-in-page') navigate = callback;
@@ -83,7 +82,7 @@ describe('DappBrowserController', () => {
         once: jest.fn(),
         getURL: jest.fn(),
       },
-    } as unknown) as Electron.BrowserWindow);
+    } as unknown as Electron.BrowserWindow);
 
     await controller.open({
       url: 'https://example.com/app',
@@ -109,14 +108,14 @@ describe('DappBrowserController', () => {
   it('revokes guest authority without closing it before a trusted renderer reload', () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy()
     );
     let startNavigation:
       | ((_event: { isMainFrame: boolean; isSameDocument: boolean }) => void)
       | undefined;
-    controller.observeWindow(({
+    controller.observeWindow({
       webContents: {
         on: jest.fn((name, callback) => {
           if (name === 'did-start-navigation') startNavigation = callback;
@@ -124,7 +123,7 @@ describe('DappBrowserController', () => {
         once: jest.fn(),
         getURL: jest.fn(),
       },
-    } as unknown) as Electron.BrowserWindow);
+    } as unknown as Electron.BrowserWindow);
     controller.routeLease.observeTrustedRoute(
       'file:///app/index.html#/apps/wallet-a'
     );
@@ -139,7 +138,7 @@ describe('DappBrowserController', () => {
   it('rejects diagnostics independently without affecting preferred launch', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy(true, false),
       [entry]
@@ -172,13 +171,13 @@ describe('DappBrowserController', () => {
   it('exposes preferred availability without enabling diagnostics or requiring an entry', () => {
     const manager = makeManager();
     const preferred = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy(true, false),
       []
     );
     const diagnosticsOnly = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy(false, true),
       [entry]
@@ -204,10 +203,10 @@ describe('DappBrowserController', () => {
     expect(isDappConsoleCaptureSupported('preview', false)).toBe(true);
     expect(isDappConsoleCaptureSupported('mainnet', false)).toBe(false);
 
-    environment.network = 'mainnet';
+    runtimeConfig.dappRuntimeConfig.dappNetwork.cluster = 'mainnet';
     const manager = makeManager();
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy(),
       [entry]
@@ -229,7 +228,7 @@ describe('DappBrowserController', () => {
   it('resolves a preferred catalog ID only from the injected main catalog', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy(),
       [entry]
@@ -267,7 +266,7 @@ describe('DappBrowserController', () => {
       availableIn: ['mainnet'] as const,
     };
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy(),
       [entry, hidden]
@@ -289,7 +288,7 @@ describe('DappBrowserController', () => {
   it('enforces bundled visibility for Preprod and normalized Mainnet Flight', async () => {
     const preprodManager = makeManager();
     const preprod = new DappBrowserController(
-      (preprodManager as unknown) as DappBrowserManager,
+      preprodManager as unknown as DappBrowserManager,
       'preprod-genesis',
       enabledPolicy(),
       dappCatalog
@@ -317,11 +316,11 @@ describe('DappBrowserController', () => {
       false
     );
 
-    environment.network = 'mainnet';
-    launcherConfig.isFlight = true;
+    runtimeConfig.dappRuntimeConfig.dappNetwork.cluster = 'mainnet';
+    runtimeConfig.isFlight = true;
     const flightManager = makeManager();
     const flight = new DappBrowserController(
-      (flightManager as unknown) as DappBrowserManager,
+      flightManager as unknown as DappBrowserManager,
       'mainnet-genesis',
       enabledPolicy(),
       dappCatalog
@@ -346,7 +345,7 @@ describe('DappBrowserController', () => {
     const manager = makeManager();
     const state = jest.fn();
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy(),
       [entry],
@@ -370,14 +369,14 @@ describe('DappBrowserController', () => {
   it('consumes a pending diagnostics launch on a wrong-wallet route', async () => {
     const manager = makeManager();
     const controller = new DappBrowserController(
-      (manager as unknown) as DappBrowserManager,
+      manager as unknown as DappBrowserManager,
       'genesis',
       enabledPolicy()
     );
     let navigate:
       | ((_event: unknown, url: string, isMainFrame: boolean) => void)
       | undefined;
-    controller.observeWindow(({
+    controller.observeWindow({
       webContents: {
         on: jest.fn((name, callback) => {
           if (name === 'did-navigate-in-page') navigate = callback;
@@ -385,7 +384,7 @@ describe('DappBrowserController', () => {
         once: jest.fn(),
         getURL: jest.fn(),
       },
-    } as unknown) as Electron.BrowserWindow);
+    } as unknown as Electron.BrowserWindow);
     await controller.open({
       url: 'https://example.com',
       walletId: 'wallet-a',

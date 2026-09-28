@@ -125,6 +125,8 @@ const statusMessages: Record<
   pending: messages.valueStatusPending,
   in_ledger: messages.valueStatusConfirmed,
   expired: messages.valueStatusFailed,
+  failed: messages.valueStatusFailed,
+  'submission-unknown': messages.valueStatusUnknown,
 };
 
 type Params = {

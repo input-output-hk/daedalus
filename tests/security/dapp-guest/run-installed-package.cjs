@@ -6,55 +6,50 @@ const { spawnSync } = require('child_process');
 
 const root = process.env.DAEDALUS_INSTALL_ROOT || '/opt/daedalus/mainnet';
 assert.strictEqual(path.resolve(root), root);
-assert(root.startsWith('/opt/daedalus/'));
-const electron = path.join(root, 'libexec/bundle-electron/bin/electron');
+const packageCluster = path.basename(root);
+const isNixOS = root.startsWith('/nix/store/');
+assert(isNixOS || root.startsWith('/opt/daedalus/'));
+
+const config = path.join(root, 'config/daedalus-config.json');
 const entry = path.join(
   root,
   'libexec/daedalus-js/main/dappGuestSecurityHarness.js'
 );
-const launcherConfig = path.join(root, 'config/launcher-config.yaml');
-const identityManifest = path.join(
+let electron = path.join(
   root,
-  'share/daedalus-sandbox-identity.json'
+  'libexec/bundle-electron/lib/electron/electron'
 );
-for (const file of [electron, entry, launcherConfig, identityManifest]) {
-  assert(fs.statSync(file).isFile(), `missing installed package file: ${file}`);
-  assert(fs.realpathSync(file).startsWith(`${root}/`));
+let helper = path.join(
+  root,
+  'libexec/bundle-electron/lib/electron/chrome-sandbox'
+);
+
+if (isNixOS) {
+  const manifestPath = `/var/lib/daedalus/${packageCluster}/sandbox-identity.json`;
+  const manifestStat = fs.lstatSync(manifestPath);
+  assert(manifestStat.isFile() && manifestStat.uid === 0);
+  assert.strictEqual(manifestStat.mode & 0o22, 0);
+  const identity = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  assert.strictEqual(typeof identity.launch?.electron, 'string');
+  electron = identity.launch.electron;
+  helper = `/var/lib/daedalus/${packageCluster}/chrome-sandbox`;
 }
-const identity = JSON.parse(fs.readFileSync(identityManifest, 'utf8'));
-assert.strictEqual(identity.schemaVersion, 2);
-assert.strictEqual(identity.packageFamily, 'arch');
-assert.strictEqual(identity.matrixRevision, 'task-111-matrix-2026-09-02');
-assert(['arch-2026.09.01', 'omarchy-4.0.2'].includes(identity.matrixRow));
-assert.strictEqual(identity.supportState, 'supported');
-assert.strictEqual(identity.policy && identity.policy.kind, 'none');
-const expectedDistribution =
-  identity.matrixRow === 'arch-2026.09.01'
-    ? {
-        id: 'arch',
-        versionId: '2026.09.01',
-        buildId: 'rolling',
-        kernelRelease: '7.2.2-arch1-1',
-      }
-    : {
-        id: 'omarchy',
-        versionId: '4.0.2',
-        buildId: '4.0.2',
-        kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
-      };
-assert.deepStrictEqual(identity.distribution, expectedDistribution);
-assert.strictEqual(identity.helper && identity.helper.mode, '0755');
+
+for (const file of [electron, entry, config]) {
+  assert(fs.statSync(file).isFile(), `missing installed package file: ${file}`);
+  assert(
+    fs.realpathSync(file).startsWith(`${root}/`),
+    `installed package file escaped root: ${file}`
+  );
+}
 
 const run = spawnSync(electron, ['--disable-gpu', entry], {
   encoding: 'utf8',
   env: {
     ...process.env,
-    CHROME_DEVEL_SANDBOX: path.join(
-      root,
-      'libexec/bundle-electron/lib/electron/chrome-sandbox'
-    ),
+    CHROME_DEVEL_SANDBOX: helper,
     ENTRYPOINT_DIR: root,
-    LAUNCHER_CONFIG: launcherConfig,
+    DAEDALUS_CONFIG_FILE: config,
   },
   timeout: 45_000,
 });

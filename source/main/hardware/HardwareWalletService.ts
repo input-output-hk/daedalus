@@ -595,7 +595,8 @@ export class HardwareWalletService {
         )
           throw this.operationError('signTx', 'proof-generation');
         const seen = new Set<string>();
-        const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = [];
+        const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] =
+          [];
         for (const witness of signed.witnesses) {
           const path = witness.path.join('/');
           const expectedWitness = expected.find(
@@ -654,8 +655,8 @@ export class HardwareWalletService {
           !Array.isArray(payload.witnesses)
         )
           throw this.operationError('signTx', 'proof-generation');
-        const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] = payload.witnesses.map(
-          ({ type, pubKey, signature, chainCode }) => {
+        const witnesses: HardwareTransactionWitnessResponse['witnesses'][number][] =
+          payload.witnesses.map(({ type, pubKey, signature, chainCode }) => {
             if (
               chainCode !== undefined ||
               type !== 1 ||
@@ -664,8 +665,7 @@ export class HardwareWalletService {
             )
               throw this.operationError('signTx', 'proof-generation');
             return { publicKey: pubKey, signature };
-          }
-        );
+          });
         try {
           return verifyHardwareTransactionWitnesses(exact, {
             bodyHash: payload.hash,
@@ -863,8 +863,8 @@ export class HardwareWalletService {
         }
         const signed = parseConwayTransactionEnvelope(signedBytes);
         for (const field of ['body', 'isValid', 'auxiliaryData'] as const) {
-          const left = unsigned.spans[field],
-            right = signed.spans[field];
+          const left = unsigned.spans[field];
+          const right = signed.spans[field];
           if (
             !unsigned.cbor
               .subarray(left.start, left.end)
@@ -1488,12 +1488,11 @@ export class HardwareWalletService {
             logger.info(
               '[TREZOR-CONNECT] Calling TrezorConnect.cardanoGetPublicKey()'
             );
-            const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
-              {
+            const extendedPublicKeyResponse =
+              await TrezorConnect.cardanoGetPublicKey({
                 path: `m/${path}`,
                 showOnTrezor: true,
-              }
-            );
+              });
 
             if (!extendedPublicKeyResponse.success) {
               throw extendedPublicKeyResponse.payload;
@@ -1552,7 +1551,7 @@ export class HardwareWalletService {
       if (!devicePath) throw new Error('Device not connected!');
       return this.withLedgerOperation(devicePath, async (connection) => {
         // The trusted UI still sends the legacy reduced request; task-602 replaces it.
-        const request = ({
+        const request = {
           signingMode,
           additionalWitnessPaths,
           tx: {
@@ -1568,10 +1567,10 @@ export class HardwareWalletService {
             withdrawals,
             auxiliaryData,
           },
-        } as unknown) as Parameters<AppAda['signTransaction']>[0];
-        return ((await connection.signTransaction(
+        } as unknown as Parameters<AppAda['signTransaction']>[0];
+        return (await connection.signTransaction(
           request
-        )) as unknown) as LedgerSignTransactionResponse;
+        )) as unknown as LedgerSignTransactionResponse;
       });
     });
 

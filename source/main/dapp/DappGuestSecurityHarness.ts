@@ -1,10 +1,11 @@
 import assert from 'assert';
-import fs from 'fs';
 import http from 'http';
 import path from 'path';
 import { once } from 'events';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import type { Session, WebFrameMain } from 'electron';
+import { IpcChannel } from '../../common/ipc/lib/IpcChannel';
+import { IpcConversation } from '../../common/ipc/lib/IpcConversation';
 import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
 import { MainIpcConversation } from '../ipc/lib/MainIpcConversation';
 import { bindTrustedRenderer } from '../ipc/lib/trustedRendererIpcAuthority';
@@ -24,6 +25,7 @@ import {
   installDappSessionPolicy,
   installDappTransportRestrictions,
 } from './DappSessionPolicy';
+import { readDappRuntimeConfig, type DappRuntimeConfig } from '../utils/config';
 
 installDappTransportRestrictions(app.commandLine);
 app.on('window-all-closed', () => undefined);
@@ -38,12 +40,7 @@ const unhandledRejections: unknown[] = [];
 process.on('unhandledRejection', (error) => unhandledRejections.push(error));
 
 const fixtureOrigin = 'https://fixture.invalid';
-type HarnessLauncherConfig = {
-  cluster?: unknown;
-  isFlight?: unknown;
-  dappBrowserPolicy?: unknown;
-  dappSandboxPackageCluster?: unknown;
-};
+type HarnessRuntimeConfig = DappRuntimeConfig;
 
 const fixtureHtml = `<!doctype html><meta charset="utf-8"><title>fixture</title><body>fixture</body>`;
 
@@ -100,14 +97,8 @@ const createWindow = (
   return window;
 };
 
-const testPackagedPolicy = (config: HarnessLauncherConfig): void => {
-  if (
-    typeof config.cluster !== 'string' ||
-    typeof config.isFlight !== 'boolean'
-  )
-    throw new Error('Invalid packaged policy identity');
-  const expectedEnabled =
-    config.cluster !== 'mainnet' || config.isFlight === true;
+const testPackagedPolicy = (config: HarnessRuntimeConfig): void => {
+  const expectedEnabled = config.dappSandboxPackageCluster !== 'mainnet';
   const packagedPolicy = new DappLaunchPolicy(config.dappBrowserPolicy);
   assert.deepStrictEqual(packagedPolicy.config, {
     revision: DAPP_POLICY_REVISION,
@@ -202,12 +193,22 @@ const testPrivilegedIpc = async (): Promise<number> => {
   const incoming = privilegedIpcManifest.filter(
     ({ receive }) => receive !== 'none'
   );
+  const conversations = IpcConversation._instances as Record<
+    string,
+    MainIpcConversation<unknown, unknown>
+  >;
+  const channels = IpcChannel._instances as Record<
+    string,
+    MainIpcChannel<unknown, unknown>
+  >;
   let effects = 0;
   incoming.forEach((entry) => {
     const channel =
       entry.transport === 'conversation'
-        ? new MainIpcConversation<unknown, unknown>(entry.channel)
-        : new MainIpcChannel<unknown, unknown>(entry.channel);
+        ? conversations[entry.channel] ||
+          new MainIpcConversation<unknown, unknown>(entry.channel)
+        : channels[entry.channel] ||
+          new MainIpcChannel<unknown, unknown>(entry.channel);
     const register =
       entry.receive === 'broadcast'
         ? channel.onReceive.bind(channel)
@@ -269,9 +270,11 @@ const syntheticDenialChecks = (guest: BrowserWindow, guestSession: Session) => {
     };
   };
   const emit = (target: unknown, name: string, ...args: unknown[]): boolean =>
-    (target as {
-      emit: (eventName: string, ...values: unknown[]) => boolean;
-    }).emit(name, ...args);
+    (
+      target as {
+        emit: (eventName: string, ...values: unknown[]) => boolean;
+      }
+    ).emit(name, ...args);
 
   const certificate = event();
   let certificateAllowed: boolean | undefined;
@@ -539,20 +542,15 @@ const cleanup = async (): Promise<void> => {
 
 app.whenReady().then(async () => {
   try {
-    const launcherConfigPath = process.env.LAUNCHER_CONFIG;
-    assert(launcherConfigPath);
-    const launcherConfig = JSON.parse(
-      fs.readFileSync(launcherConfigPath, 'utf8')
-    ) as HarnessLauncherConfig;
-    const packageCluster =
-      launcherConfig.dappSandboxPackageCluster || launcherConfig.cluster;
-    if (typeof packageCluster !== 'string')
-      throw new Error('Invalid packaged cluster');
+    const configPath = process.env.DAEDALUS_CONFIG_FILE;
+    assert(configPath);
+    const runtimeConfig = readDappRuntimeConfig(configPath);
+    const packageCluster = runtimeConfig.dappSandboxPackageCluster;
     const installRoot =
       process.env.ENTRYPOINT_DIR ||
       (process.platform === 'darwin'
         ? path.resolve(path.dirname(process.execPath), '..', '..')
-        : path.dirname(path.dirname(launcherConfigPath)));
+        : path.dirname(path.dirname(configPath)));
     assert.deepStrictEqual(
       await startDappSandboxAvailabilityCheck({
         isDevelopment: false,
@@ -562,7 +560,7 @@ app.whenReady().then(async () => {
       { status: 'available' }
     );
     process.stderr.write('sandbox available\n');
-    testPackagedPolicy(launcherConfig);
+    testPackagedPolicy(runtimeConfig);
     process.stderr.write('policy variants passed\n');
     const manifestChannels = await testPrivilegedIpc();
     process.stderr.write('privileged IPC passed\n');

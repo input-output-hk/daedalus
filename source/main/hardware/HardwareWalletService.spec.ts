@@ -1,4 +1,3 @@
-import type { SignExactHardwareTransactionMainResponse } from '../../common/ipc/api';
 import { generateKeyPairSync, sign } from 'crypto';
 import { blake2b } from 'blakejs';
 import {
@@ -6,16 +5,13 @@ import {
   derivePrivate,
   sign as signExtended,
 } from 'cardano-crypto.js';
-import { requestElectronStore } from '../ipc/electronStoreConversation';
-jest.mock('../ipc/electronStoreConversation', () => ({
-  requestElectronStore: jest.fn(),
-}));
-const walletId = 'ab'.repeat(20);
 import type { BrowserWindow } from 'electron';
 import type AppAda from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import type TransportNodeHid from '@ledgerhq/hw-transport-node-hid-noevents';
 import TrezorConnect from '@trezor/connect';
 import cbor from 'cbor';
+import { requestElectronStore } from '../ipc/electronStoreConversation';
+import type { SignExactHardwareTransactionMainResponse } from '../../common/ipc/api';
 
 import type {
   HardwareExactTransaction,
@@ -37,6 +33,11 @@ import {
   HardwareWalletService,
   LedgerServiceDependencies,
 } from './HardwareWalletService';
+
+jest.mock('../ipc/electronStoreConversation', () => ({
+  requestElectronStore: jest.fn(),
+}));
+const walletId = 'ab'.repeat(20);
 
 jest.mock('@ledgerhq/hw-transport-node-hid-noevents', () => ({
   __esModule: true,
@@ -148,20 +149,22 @@ const flush = async (): Promise<void> => {
 };
 
 const withResolvers = <T>() =>
-  ((Promise as unknown) as {
-    withResolvers<U>(): {
-      promise: Promise<U>;
-      resolve: (value: U | PromiseLike<U>) => void;
-      reject: (reason?: unknown) => void;
-    };
-  }).withResolvers<T>();
+  (
+    Promise as unknown as {
+      withResolvers<U>(): {
+        promise: Promise<U>;
+        resolve: (value: U | PromiseLike<U>) => void;
+        reject: (reason?: unknown) => void;
+      };
+    }
+  ).withResolvers<T>();
 
 describe('HardwareWalletService', () => {
   it('owns detection, transport cancellation, and late-result suppression', async () => {
     let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
     const unsubscribe = jest.fn();
     const close = jest.fn(() => Promise.resolve());
-    const transport = ({ close } as unknown) as TransportNodeHid;
+    const transport = { close } as unknown as TransportNodeHid;
     const connection = {} as AppAda;
     const dependencies: LedgerServiceDependencies = {
       open: jest.fn(() => Promise.resolve(transport)),
@@ -256,7 +259,7 @@ describe('HardwareWalletService', () => {
     const transaction = decodeConwayTransaction(
       parseConwayTransactionEnvelope(transactionCbor)
     );
-    const incomplete = ({
+    const incomplete = {
       transaction,
       bodyHash: transaction.transactionId,
       capability: {
@@ -264,7 +267,7 @@ describe('HardwareWalletService', () => {
         physicalCertified: true,
         productEnabled: true,
       },
-    } as unknown) as HardwareExactTransaction;
+    } as unknown as HardwareExactTransaction;
     await expect(
       request({
         vendor: 'ledger',
@@ -273,7 +276,7 @@ describe('HardwareWalletService', () => {
       })
     ).rejects.toThrow('Hardware exact transaction is not enabled');
     expect(ledger).not.toHaveBeenCalled();
-    const exact = ({
+    const exact = {
       ...incomplete,
       capability: {
         matrixRevision: 'task-006-matrix-2026-08-14',
@@ -286,7 +289,7 @@ describe('HardwareWalletService', () => {
         productEnabled: true,
         familyDispositions: {},
       },
-    } as unknown) as HardwareExactTransaction;
+    } as unknown as HardwareExactTransaction;
 
     await expect(
       request({ vendor: 'ledger', ledgerPath: 'ledger-path', walletId, exact })
@@ -311,7 +314,7 @@ describe('HardwareWalletService', () => {
       'Hardware exact transaction is not enabled'
     );
 
-    const trezorExact = ({
+    const trezorExact = {
       ...exact,
       capability: {
         ...exact.capability,
@@ -319,7 +322,7 @@ describe('HardwareWalletService', () => {
         rowId: 'trezor-signTx',
         vendor: 'trezor',
       },
-    } as unknown) as HardwareExactTransaction;
+    } as unknown as HardwareExactTransaction;
     await expect(
       request({ vendor: 'trezor', exact: trezorExact })
     ).resolves.toEqual({
@@ -486,16 +489,16 @@ describe('HardwareWalletService', () => {
         chainCodeHex: '00'.repeat(32),
       })
     );
-    const connection = ({
+    const connection = {
       signTransaction,
       getExtendedPublicKey,
-    } as unknown) as AppAda;
+    } as unknown as AppAda;
     let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
     const dependencies: LedgerServiceDependencies = {
       open: jest.fn(() =>
-        Promise.resolve(({
+        Promise.resolve({
           close: jest.fn(() => Promise.resolve()),
-        } as unknown) as TransportNodeHid)
+        } as unknown as TransportNodeHid)
       ),
       list: jest.fn(() => Promise.resolve(['ledger-path'])),
       getDevices: jest.fn(() => [detectedDevice.device]),
@@ -512,7 +515,7 @@ describe('HardwareWalletService', () => {
     await handlers.get('handleInitLedgerConnectChannel')!();
     onAdd!(detectedDevice);
     await flush();
-    const exact = ({
+    const exact = {
       bodyHash,
       transaction,
       capability: {
@@ -534,7 +537,7 @@ describe('HardwareWalletService', () => {
         missingKeyHashes: [],
         unexpectedKeyHashes: [],
       },
-    } as unknown) as HardwareExactTransaction;
+    } as unknown as HardwareExactTransaction;
 
     await expect(
       service.signExactLedgerTransaction('ledger-path', exact, walletId)
@@ -733,10 +736,12 @@ describe('HardwareWalletService', () => {
 
   it('releases only verified exact Shelley witnesses from Trezor', async () => {
     const keys = generateKeyPairSync('ed25519');
-    const publicKey = (keys.publicKey.export({
-      format: 'der',
-      type: 'spki',
-    }) as Buffer).subarray(-32);
+    const publicKey = (
+      keys.publicKey.export({
+        format: 'der',
+        type: 'spki',
+      }) as Buffer
+    ).subarray(-32);
     const keyHash = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
       'hex'
     );
@@ -746,7 +751,7 @@ describe('HardwareWalletService', () => {
       Buffer.from(bodyHash, 'hex'),
       keys.privateKey
     ).toString('hex');
-    const exact = ({
+    const exact = {
       bodyHash,
       partialSign: false,
       signers: [{ keyHash, path: [0x8000073c, 0x80000717, 0x80000000, 0, 0] }],
@@ -757,7 +762,7 @@ describe('HardwareWalletService', () => {
         missingKeyHashes: [],
         unexpectedKeyHashes: [],
       },
-    } as unknown) as HardwareExactTransaction;
+    } as unknown as HardwareExactTransaction;
     const signTransaction = TrezorConnect.cardanoSignTransaction as jest.Mock;
     const validPayload = {
       hash: bodyHash,
@@ -883,10 +888,12 @@ describe('HardwareWalletService', () => {
 
   it('rebuilds verified CIP-8 from exact Ledger and Trezor message proofs', async () => {
     const keys = generateKeyPairSync('ed25519');
-    const publicKey = (keys.publicKey.export({
-      format: 'der',
-      type: 'spki',
-    }) as Buffer).subarray(-32);
+    const publicKey = (
+      keys.publicKey.export({
+        format: 'der',
+        type: 'spki',
+      }) as Buffer
+    ).subarray(-32);
     const credential = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
       'hex'
     );
@@ -930,13 +937,13 @@ describe('HardwareWalletService', () => {
       };
     };
     const signMessage = jest.fn();
-    const connection = ({ signMessage } as unknown) as AppAda;
+    const connection = { signMessage } as unknown as AppAda;
     let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
     const service = new HardwareWalletService({
       open: jest.fn(() =>
-        Promise.resolve(({
+        Promise.resolve({
           close: jest.fn(() => Promise.resolve()),
-        } as unknown) as TransportNodeHid)
+        } as unknown as TransportNodeHid)
       ),
       list: jest.fn(() => Promise.resolve(['ledger-path'])),
       getDevices: jest.fn(() => [detectedDevice.device]),
@@ -1060,17 +1067,17 @@ describe('HardwareWalletService', () => {
   });
 
   it('opens a Ledger already present before the renderer starts waiting', async () => {
-    const transport = ({
+    const transport = {
       close: jest.fn(() => Promise.resolve()),
       deviceModel: detectedDevice.deviceModel,
-    } as unknown) as TransportNodeHid;
+    } as unknown as TransportNodeHid;
     const dependencies: LedgerServiceDependencies = {
       open: jest.fn(() => Promise.resolve(transport)),
       list: jest.fn(() => Promise.resolve(['ledger-path'])),
       getDevices: jest.fn(() => [detectedDevice.device]),
       detect: jest.fn(() => jest.fn()),
       wait: jest.fn(),
-      createApp: jest.fn(() => ({} as AppAda)),
+      createApp: jest.fn(() => ({}) as AppAda),
     };
     const service = new HardwareWalletService(dependencies);
     const { channels, handlers } = createChannels();
@@ -1093,9 +1100,9 @@ describe('HardwareWalletService', () => {
 
   it('reuses a detected Ledger when the stored path is stale', async () => {
     let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
-    const transport = ({
+    const transport = {
       close: jest.fn(() => Promise.resolve()),
-    } as unknown) as TransportNodeHid;
+    } as unknown as TransportNodeHid;
     const getVersion = jest.fn(() =>
       Promise.resolve({ version: { major: 7, minor: 3, patch: 1 } })
     );
@@ -1108,7 +1115,7 @@ describe('HardwareWalletService', () => {
         return jest.fn();
       }),
       wait: jest.fn(),
-      createApp: jest.fn(() => (({ getVersion } as unknown) as AppAda)),
+      createApp: jest.fn(() => ({ getVersion }) as unknown as AppAda),
     };
     const service = new HardwareWalletService(dependencies);
     const { channels, handlers } = createChannels();
@@ -1147,21 +1154,21 @@ describe('HardwareWalletService', () => {
   it('keeps every legacy trusted channel behind one service registration', async () => {
     const { channels, handlers } = createChannels();
 
-    const service = ({
+    const service = {
       register: jest.fn(() => Promise.resolve()),
-    } as unknown) as HardwareWalletService;
+    } as unknown as HardwareWalletService;
 
     await handleHardwareWalletRequests({} as BrowserWindow, channels, service);
     expect(service.register).toHaveBeenCalledWith(channels);
 
-    const realService = new HardwareWalletService(({
+    const realService = new HardwareWalletService({
       open: jest.fn(),
       list: jest.fn(),
       getDevices: jest.fn(),
       detect: jest.fn(() => jest.fn()),
       wait: jest.fn(),
       createApp: jest.fn(),
-    } as unknown) as LedgerServiceDependencies);
+    } as unknown as LedgerServiceDependencies);
     await realService.register(channels);
     expect([...handlers.keys()].sort()).toEqual(
       channelNames

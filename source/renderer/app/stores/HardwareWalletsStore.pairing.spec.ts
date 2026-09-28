@@ -1,13 +1,3 @@
-jest.mock('@trezor/connect', () => ({}));
-jest.mock('../utils/logging', () => ({
-  logger: {
-    debug: jest.fn(),
-    error: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-  },
-}));
-
 import HardwareWalletsStore from './HardwareWalletsStore';
 import {
   DeviceModels,
@@ -17,6 +7,16 @@ import { HwDeviceStatuses } from '../domains/Wallet';
 import type { Api } from '../api';
 import type { ActionsMap } from '../actions';
 import type { AnalyticsTracker } from '../analytics';
+
+jest.mock('@trezor/connect', () => ({}));
+jest.mock('../utils/logging', () => ({
+  logger: {
+    debug: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
 
 const extendedPublicKey = {
   publicKeyHex: '11'.repeat(32),
@@ -28,7 +28,7 @@ describe('HardwareWalletsStore wallet pairing', () => {
   it('waits for a wallet name before creating an unrecognized wallet', async () => {
     const request = jest.fn();
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {
           selectCoins: request,
           createExternalTransaction: request,
@@ -46,7 +46,7 @@ describe('HardwareWalletsStore wallet pairing', () => {
           unsetHardwareWalletDevicesAll: request,
           unsetHardwareWalletLocalDataAll: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );

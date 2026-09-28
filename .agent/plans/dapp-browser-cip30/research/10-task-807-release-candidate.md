@@ -1,5 +1,19 @@
 # Task 807 release-candidate gate
 
+## Rebase status
+
+This document certifies only the immutable 11.3.0 task-807 artifact below. The `amw/cip30` rebase onto master `6c57eb94753211f66d3a63f49d031bf746044755` is a new 11.4.0 candidate, not the same package or a continuation of its VM evidence. Its historical Windows/macOS waivers, old launcher-policy hashes, and old Linux/Omarchy matrix observations cannot certify rebased packages. The current launch contract is the watchdog-provided `daedalus-config.json` with `dappBrowserPolicy`, `dappSandboxPackageCluster`, and `dappNetwork`, and the Linux package identity remains mandatory before guest construction. Record fresh installed-package VM results and hashes separately before any release approval.
+
+### Rebased 11.4.0 verification (not a release approval)
+
+The current tree is dirty relative to `655488e49d7272148cff769923de5c5e95bec3f0`; its package is not an immutable release artifact. On a fresh disposable Ubuntu 24.04 VM (kernel `6.8.0-142-generic`), an earlier rebased preprod DEB SHA-256 `b00ffea56eae51f33b3c74761280ba160c6895a196e685b037c40eaa6c9b327f` installed after removing an earlier same-version disposable build. The package rejected a same-version replacement with different contents as a downgrade; no production package was modified. The installed watchdog was Electron's parent, pointed at `/opt/daedalus/preprod/config/daedalus-config.json`, and the onboarding UI rendered. That earlier snapshot's installed hostile-guest harness passed its six task-802 matrices, policy variants, sandboxed-renderer assertion, and zero-side-effect/zero-unhandled-rejection checks (`manifestChannels: 64`). The packaged config reported `preprod`, `genesis.json`, and enabled launch. This SHA does **not** represent the current source after the mount-namespace fail-closed change.
+
+After enforcing mount-namespace isolation, the rebuilt disposable preprod DEB SHA-256 `c182b2d76a6d7bf3a4a337edb711ef0ff8f26d93273dea99122fcdf1dcebf51b` installed and started its watchdog/UI. Its installed guest harness refused at the pre-launch canary with `{ "status": "unavailable", "reason": "canary-failed" }` on this host, rather than constructing a guest in the shared mount namespace. The six hostile matrices cannot be claimed as passes for this final package on this VM.
+
+The separate installed Chromium sandbox probe **failed** with `evidence-invalid:shared-mount-namespace` on that mutable VM image, confirming the reason for the final package's fail-closed canary. No positive sandbox certification is claimed. Full Jest passed 175 suites/1,758 tests before the final sandbox regression was added, but the hardware capability-matrix suite failed two dependency-tree identity assertions after a local Yarn install (installed package-tree hashes differ from its frozen evidence). Do not repin those hashes without a reviewed dependency/physical-evidence decision. TypeScript compilation, source lint, watchdog Rust tests (141), Clippy, Linux DEB/RPM/Arch package contracts, the generated policy matrix, and the Electron trusted IPC/session/egress/canary smoke checks passed. Rust formatting and whole-repository Prettier checks still report formatting drift. Windows, macOS, NixOS, RPM/Arch installed VMs, and a clean pinned-image Ubuntu sandbox probe remain unexecuted for this rebased artifact.
+
+The legacy Spectron E2E bootstrap in `tests/setup-e2e.ts` still launches Electron directly and was not run; the new watchdog-parent development launcher was exercised separately with a real watchdog and child config-path precedence. Spectron's direct launch is not evidence for the production parent topology.
+
 Completed: 2026-09-02
 
 ## Disposition

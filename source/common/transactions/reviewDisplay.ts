@@ -213,16 +213,13 @@ const parseAddress = (
     return { address: rendered, control: 'key', ownership: 'other' };
   if (walletMember && evidence && evidence.ownership !== 'owned_key')
     fail('Wallet membership contradicts payment ownership');
+  let ownership: TransactionReviewOwnership = 'unknown';
+  if (walletMember || evidence?.ownership === 'owned_key') ownership = 'wallet';
+  else if (evidence?.ownership === 'unowned') ownership = 'other';
   return {
     address: rendered,
     control: 'key',
-    ownership: walletMember
-      ? 'wallet'
-      : evidence?.ownership === 'owned_key'
-      ? 'wallet'
-      : evidence?.ownership === 'unowned'
-      ? 'other'
-      : 'unknown',
+    ownership,
   };
 };
 
@@ -254,7 +251,9 @@ const createTransactionReviewEntry = (
   classified: Classified,
   outpoint: TransactionReviewEntry['outpoint']
 ): TransactionReviewEntry => {
-  const kind = role === 'input' ? 'input' : role === 'output' ? 'output' : role;
+  let kind = role;
+  if (role === 'input') kind = 'input';
+  else if (role === 'output') kind = 'output';
   const effectIndex = effectIndexes(transaction, kind)[position];
   if (effectIndex === undefined) fail(`Missing ${kind} effect`);
   return Object.freeze({
@@ -394,11 +393,9 @@ export const createTransactionReviewDisplay = (
       if (!credential || credential.type === Cardano.CredentialType.ScriptHash)
         return 'other';
       const evidence = evidenceFor(context.ownership, 'stake', credential.hash);
-      return evidence?.ownership === 'owned_key'
-        ? 'wallet'
-        : evidence?.ownership === 'unowned'
-        ? 'other'
-        : 'unknown';
+      if (evidence?.ownership === 'owned_key') return 'wallet';
+      if (evidence?.ownership === 'unowned') return 'other';
+      return 'unknown';
     } catch {
       return 'unknown';
     }

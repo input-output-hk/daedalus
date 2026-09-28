@@ -26,23 +26,20 @@ storiesOf('Wallets / Receive', module)
       spendingPath: "1852'/1815'/0'/0/0",
     });
     const canonicalAvailable = boolean('canonicalAvailable', true);
+    let walletAddresses = [
+      ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
+        generateAddress(true)
+      ),
+      ...Array.from(Array(number('Addresses', 10))).map(() =>
+        generateAddress()
+      ),
+    ];
+    if (singleAddressMode)
+      walletAddresses = canonicalAvailable ? [canonicalAddress] : [];
     return (
       <VerticalFlexContainer>
         <WalletReceiveSequential
-          walletAddresses={
-            singleAddressMode
-              ? canonicalAvailable
-                ? [canonicalAddress]
-                : []
-              : [
-                  ...Array.from(Array(number('Addresses (used)', 2))).map(() =>
-                    generateAddress(true)
-                  ),
-                  ...Array.from(Array(number('Addresses', 10))).map(() =>
-                    generateAddress()
-                  ),
-                ]
-          }
+          walletAddresses={walletAddresses}
           onShareAddress={action('onShareAddress')}
           onCopyAddress={action('onCopyAddress')}
           // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.

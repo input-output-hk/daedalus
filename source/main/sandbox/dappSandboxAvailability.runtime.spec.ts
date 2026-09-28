@@ -21,7 +21,7 @@ const processDescriptors = {
   execPath: Object.getOwnPropertyDescriptor(process, 'execPath'),
   resourcesPath: Object.getOwnPropertyDescriptor(process, 'resourcesPath'),
 };
-const launcherConfig = process.env.LAUNCHER_CONFIG;
+const configFile = process.env.DAEDALUS_CONFIG_FILE;
 
 type RuntimeOptions = {
   metrics?: readonly (readonly ProcessMetric[])[];
@@ -41,7 +41,7 @@ const loadRuntime = (options: RuntimeOptions = {}) => {
   setProcessValue('arch', 'arm64');
   setProcessValue('execPath', darwinExecutable);
   setProcessValue('resourcesPath', darwinResources);
-  process.env.LAUNCHER_CONFIG = `${darwinResources}/launcher-config.yaml`;
+  process.env.DAEDALUS_CONFIG_FILE = `${darwinResources}/daedalus-config.json`;
 
   const canarySession = {
     isPersistent: jest.fn(() => false),
@@ -106,7 +106,7 @@ const loadRuntime = (options: RuntimeOptions = {}) => {
 const restoreProcessValue = (name: keyof typeof processDescriptors): void => {
   const descriptor = processDescriptors[name];
   if (descriptor) Object.defineProperty(process, name, descriptor);
-  else delete ((process as unknown) as Record<string, unknown>)[name];
+  else delete (process as unknown as Record<string, unknown>)[name];
 };
 
 afterEach(() => {
@@ -114,8 +114,8 @@ afterEach(() => {
   restoreProcessValue('arch');
   restoreProcessValue('execPath');
   restoreProcessValue('resourcesPath');
-  if (launcherConfig === undefined) delete process.env.LAUNCHER_CONFIG;
-  else process.env.LAUNCHER_CONFIG = launcherConfig;
+  if (configFile === undefined) delete process.env.DAEDALUS_CONFIG_FILE;
+  else process.env.DAEDALUS_CONFIG_FILE = configFile;
   jest.resetModules();
   jest.restoreAllMocks();
   jest.dontMock('electron');

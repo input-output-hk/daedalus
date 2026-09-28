@@ -62,7 +62,8 @@ import type {
 import { getDappCatalog } from '../../common/config/dappCatalog';
 import {
   dappLaunchPolicy,
-  launcherConfig,
+  dappRuntimeConfig,
+  isFlight,
   stateDirectoryPath,
 } from '../config';
 import { environment } from '../environment';
@@ -341,9 +342,7 @@ export class Cip30Broker {
     return response;
   }
 
-  private async capabilityEvidence(
-    binding: Cip30BrokerBinding
-  ): Promise<{
+  private async capabilityEvidence(binding: Cip30BrokerBinding): Promise<{
     evidence: Cip30WalletCapabilities;
     context: CapabilityContext;
   }> {
@@ -1501,14 +1500,14 @@ export const parseConfiguredNetwork = (
   });
 };
 
-const readNetwork = (): Cip30WalletNetwork =>
-  parseConfiguredNetwork(
-    JSON.parse(
-      fs.readFileSync(launcherConfig.nodeConfig.network.genesisFile, 'utf8')
-    ),
-    launcherConfig.cluster,
-    launcherConfig.nodeConfig.network.genesisHash
+const readNetwork = (): Cip30WalletNetwork => {
+  const { cluster, genesisFile, genesisHash } = dappRuntimeConfig.dappNetwork;
+  return parseConfiguredNetwork(
+    JSON.parse(fs.readFileSync(genesisFile, 'utf8')),
+    cluster,
+    genesisHash
   );
+};
 
 const registry = new ExtensionRegistry();
 const capabilities = new CapabilityService(registry);
@@ -1549,10 +1548,9 @@ export const handleCip30BrokerRequests = (): void => {
   );
   grants.pruneCatalog(
     new Map(
-      getDappCatalog(
-        environment.network,
-        launcherConfig.isFlight
-      ).map((entry) => [entry.id, dappCatalogEntryIdentity(entry)])
+      getDappCatalog(dappRuntimeConfig.dappNetwork.cluster, isFlight).map(
+        (entry) => [entry.id, dappCatalogEntryIdentity(entry)]
+      )
     )
   );
   connectionService = new DappConnectionService(
@@ -1572,7 +1570,7 @@ export const handleCip30BrokerRequests = (): void => {
     negotiator,
     dispatcher,
     network,
-    networkName: launcherConfig.cluster,
+    networkName: dappRuntimeConfig.dappNetwork.cluster,
     sourceRevision: CARDANO_WALLET_SOURCE_REVISION,
     collateral: collateralService,
   });

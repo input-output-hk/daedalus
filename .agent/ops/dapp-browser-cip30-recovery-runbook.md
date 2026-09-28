@@ -1,10 +1,16 @@
 # dApp Browser And CIP-30 Recovery Runbook
 
+## Current rebased package
+
+The watchdog starts Electron and passes the absolute installed `DAEDALUS_CONFIG_FILE` path. The same `daedalus-config.json` contains `dappBrowserPolicy`, `dappSandboxPackageCluster`, and `dappNetwork` (logical cluster, `genesis.json`, and lowercase genesis hash). The dApp reader accepts no launcher YAML or policy environment override. Flight uses the `mainnet-flight` package identity and mainnet network genesis; mainnet launch is disabled, Flight/preprod/preview launch is enabled by the generated policy. A malformed config refuses dApp initialization, never silently enables launch.
+
+For a recovery, rebuild and install a reviewed package rather than editing the installed config. Verify the package root, adjacent genesis hash, policy fields, sandbox helper/manifest, and watchdog child environment before attempting a guest. Backend failure revokes active CIP-30 sessions even when no trusted window remains; durable grants and wallet state are unaffected. The earlier task-807 hashes and waivers below describe only that historical release candidate and do not certify this rebased tree.
+
 ## Scope And Baseline
 
 This runbook controls the already-audited dApp browser release. It does not authorize source, dependency, backend, package, catalog, resource-policy, hardware-row, or activation changes.
 
-The immutable task-807 release-candidate identities and evidence are recorded in [the release-candidate gate](../plans/dapp-browser-cip30/research/10-task-807-release-candidate.md). Its original packaged policy had every dApp control disabled and catalog revision 1 had no entries. Later reviewed releases enabled Windows global/Diagnostics launch and CIP-104 revision 1, while task-901's separate operator-directed mainnet pilot enables global/preferred launch with CIP-104 and CIP-142 disabled. Linux and macOS production launch remain disabled.
+The immutable task-807 release-candidate identities and evidence are recorded in [the release-candidate gate](../plans/dapp-browser-cip30/research/10-task-807-release-candidate.md). Its original packaged policy had every dApp control disabled and catalog revision 1 had no entries. Later releases enabled Windows global/Diagnostics launch; task-901 separately piloted mainnet launch. Those historical platform gates do not describe the rebased package: current generated policy disables mainnet and enables Flight/preprod/preview on supported platforms, subject to installed sandbox validation.
 
 Every policy, catalog, backend-pin, or hardware-row change requires a reviewed release artifact and application restart. There is no remote or in-process policy service. Compare every proposed change with the task-807 baseline and rerun the affected package, security, backend, hardware, and interoperability gates before rollout.
 
@@ -12,7 +18,7 @@ Every policy, catalog, backend-pin, or hardware-row change requires a reviewed r
 
 | Role | Decision and evidence owner |
 |---|---|
-| Release Owner | Approves the exact packaged launcher configuration and rollout manifest; verifies artifact identity; sequences disable, restart, and restore; rejects unexplained baseline drift. |
+| Release Owner | Approves the exact packaged JSON configuration and rollout manifest; verifies artifact identity; sequences disable, restart, and restore; rejects unexplained baseline drift. |
 | Catalog Steward | Proposes catalog additions, updates, and removals with exact entry identity, network URLs, canonical origin, resource-origin allowlist, supported wallet kinds/extensions, compatibility evidence, and catalog revision. |
 | Security Owner / Incident Commander | Classifies incidents; approves catalog origin/resource changes, emergency removal, and launch disablement; decides whether grants may be retained or need a separately reviewed migration. |
 | Backend Owner | Triages backend incompatibility, owns pending-submission reconciliation, and approves rollback only when database and API compatibility or a rollback migration is proven. |
@@ -22,7 +28,7 @@ The Catalog Steward proposes a catalog change. The Security Owner approves its s
 
 ## Independent Launcher Controls
 
-The launcher supplies one immutable `dappBrowserPolicy`. Invalid or absent policy fails closed through [`DappLaunchPolicy`](../../source/main/dapp/DappLaunchPolicy.ts).
+The watchdog passes one immutable `dappBrowserPolicy` from `daedalus-config.json`. Invalid or absent policy fails closed through [`DappLaunchPolicy`](../../source/main/dapp/DappLaunchPolicy.ts).
 
 | Control | Effect | Baseline and recovery rule |
 |---|---|---|
@@ -40,7 +46,7 @@ The launcher supplies one immutable `dappBrowserPolicy`. Invalid or absent polic
 
 ### Disable
 
-1. Incident Commander records the affected platform, cluster, package hash, launcher-policy identity, catalog revision, backend pin, symptom, and time. Do not record URLs containing credentials, addresses, transaction CBOR, signatures, keys, passphrases, or other wallet material.
+1. Incident Commander records the affected platform, cluster, package hash, packaged JSON configuration identity, catalog revision, backend pin, symptom, and time. Do not record URLs containing credentials, addresses, transaction CBOR, signatures, keys, passphrases, or other wallet material.
 2. Release Owner selects the smallest containment:
    - all launch: set `globalEnabled=false`;
    - preferred only: set `preferredCatalogEnabled=false`;
@@ -48,7 +54,7 @@ The launcher supplies one immutable `dappBrowserPolicy`. Invalid or absent polic
    - CIP-142 only: set `cip142Revision=0`;
    - hardware signing: set `hardwareConnectorEnabled=false`;
    - CIP-104 only: set `cip104Revision=0`.
-3. Produce and review a normal packaged launcher update. Do not patch a running process or introduce a remote flag.
+3. Produce and review a normal packaged JSON configuration update. Do not patch a running process or introduce a remote flag.
 4. Install the update and restart Daedalus. Restart tears down the prior process and guest. Confirm new launch attempts are refused for the disabled mode.
 5. Preserve the grant repository, collateral preference, wallet database, and cardano-wallet pending-submission records. Do not use connection repair or delete wallet state as part of launch disablement.
 6. Record the installed artifact/configuration hashes and the applicable focused or packaged verification results.

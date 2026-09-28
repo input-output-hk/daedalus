@@ -5,6 +5,7 @@ import type {
 } from '../../../common/types/collateral.types';
 import { dappCollateralChannel } from '../ipc/collateral';
 import Store from './lib/Store';
+
 const COLLATERAL_REQUEST_TIMEOUT_MS = 30_000;
 
 export default class CollateralStore extends Store {
