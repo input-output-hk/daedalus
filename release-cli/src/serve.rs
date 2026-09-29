@@ -16,6 +16,7 @@
 
 use crate::hash::{Hashes, hash_file};
 use crate::installers::{InstallerDir, Platform};
+use crate::linux_repo_cmd::write_linux_repos_to_dir;
 use crate::version_json::VersionJson;
 use anyhow::{Context, Result};
 use axum::{
@@ -90,13 +91,29 @@ pub async fn serve(
     println!("  newsfeed : {base}/newsfeed/newsfeed_{env}.json");
     println!("  nf-verify: {base}/newsfeed-verification/{env}/<timestamp>.txt");
 
+    // ── Linux repos (optional) ────────────────────────────────────────────────
+    let gpg_user = std::env::var("GPG_USER").ok();
+    let repo_tmp = std::env::temp_dir().join(format!("drt-serve-repos-{}", {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis()
+    }));
+    let has_repos = write_linux_repos_to_dir(&installer_dir.dir, gpg_user.as_deref(), &repo_tmp)
+        .unwrap_or_else(|e| {
+            eprintln!("Warning: linux repo generation failed: {e}");
+            false
+        });
+    let signed_repos =
+        gpg_user.is_some() && has_repos && repo_tmp.join("apt/dists/stable/Release.gpg").exists();
+
     let state = Arc::new(AppState {
         version_json_bytes,
         by_hash,
     });
 
     // ── Build router ──────────────────────────────────────────────────────────
-    let app = Router::new()
+    let mut app = Router::new()
         .route("/daedalus-latest-version.json", get(version_json_handler))
         .route("/by-hash/:hash", get(by_hash_handler))
         .nest_service("/newsfeed", ServeDir::new(newsfeed_tmp.join("newsfeed")))
@@ -106,6 +123,13 @@ pub async fn serve(
         )
         .fallback_service(ServeDir::new(&installer_dir.dir))
         .with_state(state);
+
+    if has_repos {
+        app = app
+            .nest_service("/apt", ServeDir::new(repo_tmp.join("apt")))
+            .nest_service("/yum", ServeDir::new(repo_tmp.join("yum")))
+            .nest_service("/arch", ServeDir::new(repo_tmp.join("arch")));
+    }
 
     let addr: SocketAddr = format!("{host}:{port}")
         .parse()
@@ -131,6 +155,37 @@ pub async fn serve(
     println!();
     println!("Paste into launcher-config.yaml:");
     println!("  update: \"{base}/daedalus-latest-version.json\"");
+
+    if has_repos {
+        println!();
+        if signed_repos {
+            println!("=== Linux repos (GPG signed) ===");
+            println!("  APT  : {base}/apt");
+            println!("  YUM  : {base}/yum");
+            println!("  Arch : {base}/arch");
+            println!();
+            println!(
+                "APT:  echo 'deb [signed-by=/etc/apt/keyrings/daedalus-local.gpg] {base}/apt stable main' | sudo tee /etc/apt/sources.list.d/daedalus-local.list"
+            );
+            println!(
+                "YUM:  baseurl={base}/yum  gpgcheck=1  gpgkey={base}/yum/daedalus-release.gpg"
+            );
+            println!("Arch: Server = {base}/arch  SigLevel = Required DatabaseOptional");
+        } else {
+            println!("=== Linux repos (unsigned — local testing only) ===");
+            println!("  APT  : {base}/apt");
+            println!("  YUM  : {base}/yum");
+            println!("  Arch : {base}/arch");
+            println!();
+            println!(
+                "APT:  echo 'deb [trusted=yes] {base}/apt stable main' | sudo tee /etc/apt/sources.list.d/daedalus-local.list"
+            );
+            println!("YUM:  baseurl={base}/yum  gpgcheck=0");
+            println!("Arch: Server = {base}/arch  SigLevel = Never");
+            println!("(Set GPG_USER to sign the repo metadata)");
+        }
+    }
+
     println!();
     println!("Press Ctrl-C to stop.");
 

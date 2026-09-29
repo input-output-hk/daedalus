@@ -143,6 +143,64 @@ pub enum Commands {
         command: NewsfeedCommands,
     },
 
+    /// Build and publish APT, YUM, and Arch Linux package repositories
+    /// to a Cloudflare R2 (or any S3-compatible) bucket.
+    ///
+    /// Scans INSTALLERS_DIR for .deb, .rpm, and .pkg.tar.zst files, reads
+    /// their package metadata, uploads them to structured repo paths, then
+    /// generates and GPG-signs the repository index metadata (APT Release /
+    /// InRelease, YUM repomd.xml, Arch daedalus.db.tar.gz).
+    ///
+    /// Credentials are read from the standard AWS SDK chain:
+    ///   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ENDPOINT_URL
+    ///
+    /// For Cloudflare R2, set AWS_ENDPOINT_URL to your R2 endpoint and
+    /// pass --no-acl (R2 buckets manage public access at the bucket level).
+    PublishLinuxRepos {
+        /// Directory containing .deb, .rpm, and/or .pkg.tar.zst files.
+        #[arg(default_value = "installers")]
+        installers_dir: PathBuf,
+
+        /// S3/R2 bucket name.
+        #[arg(long, env = "REPO_BUCKET")]
+        bucket: String,
+
+        /// Public base URL for the bucket, without protocol
+        /// (e.g. pkgs.daedaluswallet.io).
+        #[arg(long, env = "REPO_BUCKET_URL")]
+        bucket_url: String,
+
+        /// GPG key ID / e-mail for signing (overrides GPG_USER env var).
+        #[arg(long)]
+        gpg_user: Option<String>,
+
+        /// S3-compatible endpoint URL (e.g. https://<id>.r2.cloudflarestorage.com).
+        /// Overrides AWS_ENDPOINT_URL when set.
+        #[arg(long)]
+        endpoint_url: Option<String>,
+
+        /// Skip S3 ACL on all uploads.
+        /// Required when the bucket does not support per-object ACLs (Cloudflare R2 default).
+        #[arg(long)]
+        no_acl: bool,
+
+        /// Print what would happen without uploading anything.
+        #[arg(long)]
+        dry_run: bool,
+
+        /// Skip APT (.deb) repository generation.
+        #[arg(long)]
+        skip_apt: bool,
+
+        /// Skip YUM (.rpm) repository generation.
+        #[arg(long)]
+        skip_yum: bool,
+
+        /// Skip Arch (.pkg.tar.zst) repository generation.
+        #[arg(long)]
+        skip_arch: bool,
+    },
+
     /// Run a local HTTP server that emulates the S3 update bucket plus
     /// the newsfeed endpoints, for end-to-end tester workflows.
     ///
@@ -154,7 +212,7 @@ pub enum Commands {
         port: u16,
 
         /// Address to bind to.
-        #[arg(long, default_value = "127.0.0.1")]
+        #[arg(long, default_value = "0.0.0.0")]
         host: String,
 
         /// Directory with installer files and a 'meta.json' file.

@@ -79,6 +79,12 @@
               pkgs.gnupg
               pkgs.awscli2
               pkgs.cargo-watch
+              # publish-linux-repos: metadata extraction from Linux packages
+              pkgs.dpkg # dpkg-deb --field  (DEB control metadata)
+              pkgs.rpm # rpm --qf          (RPM header metadata)
+              pkgs.libarchive # bsdtar            (Arch .PKGINFO extraction)
+              pkgs.minio # local S3-compatible server for testing
+              pkgs.minio-client # mc — bucket setup / verification
             ];
             shellHook = ''
               echo "drt release-cli devShell"
