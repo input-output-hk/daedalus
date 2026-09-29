@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { injectIntl } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
@@ -7,36 +7,22 @@ import styles from './AnalyticsConsentForm.scss';
 import { Intl } from '../../../types/i18nTypes';
 import { messages } from './AnalyticsConsentForm.messages';
 import { CollectedDataOverview } from './CollectedDataOverview';
-import { analyticsConsent } from '../../../ipc/ariadneAnalytics';
 
 interface AnalyticsConsentFormProps {
   intl: Intl;
   loading: boolean;
+  available: boolean;
   saveFailed?: boolean;
   onSubmit: (analyticsAccepted: boolean) => void;
-  onExternalLinkClick: (url: string) => void;
 }
 
 function AnalyticsConsentForm({
   intl,
   loading,
+  available,
   saveFailed,
   onSubmit,
 }: AnalyticsConsentFormProps) {
-  const [available, setAvailable] = useState(false);
-  useEffect(() => {
-    let mounted = true;
-    analyticsConsent({ get: true })
-      .then((view) => {
-        if (mounted) setAvailable(!!view?.enabled);
-      })
-      .catch(() => {
-        if (mounted) setAvailable(false);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
   const handleAllow = useCallback(() => {
     onSubmit(true);
   }, [onSubmit]);

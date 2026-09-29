@@ -3,6 +3,7 @@ import path from 'path';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
+import { createAriadneAnalyticsRegistration } from './ipc/ariadneAnalytics';
 import { WalletSettingsStateEnum } from '../common/ipc/api';
 import { requestElectronStore } from './ipc/electronStoreConversation';
 import { logger } from './utils/logging';
@@ -49,6 +50,7 @@ import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
+const analyticsRegistration = createAriadneAnalyticsRegistration();
 const {
   isDev,
   isTest,
@@ -165,9 +167,15 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
     userLocale,
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Electron.Screen' is not assignab... Remove this comment to see the full error message
-    () => restoreSavedWindowBounds(screen, requestElectronStore)
+    () => restoreSavedWindowBounds(screen, requestElectronStore),
+    analyticsRegistration,
+    (window) => {
+      mainWindow?.removeListener('close', handleWindowClose);
+      mainWindow = window;
+      saveWindowBoundsOnSizeAndPositionChange(window, requestElectronStore);
+      window.on('close', handleWindowClose);
+    }
   );
-  saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
   const currentRtsFlags = getRtsFlagsSettings(network) || [];
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, userLocale, {
@@ -212,7 +220,7 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
     return Promise.resolve(handleWindowClose());
   });
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow);
+  const handleCheckDiskSpace = handleDiskSpace(() => mainWindow);
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -237,7 +245,6 @@ const onAppReady = async () => {
   backendLifecycle.setChainPaths(defaultChainPath, customChainPath);
   backendLifecycle.start();
 
-  mainWindow.on('close', handleWindowClose);
   // Security feature: Prevent creation of new browser windows
   // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
   app.on('web-contents-created', (_, contents) => {

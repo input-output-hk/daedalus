@@ -20,7 +20,7 @@ import {
   LocalStorageFeatureProvider,
 } from './features';
 import { AriadneAnalyticsTracker } from './analytics/AriadneAnalyticsTracker';
-import { analyticsConsent, analyticsEvent } from './ipc/ariadneAnalytics';
+import { analyticsEvent } from './ipc/ariadneAnalytics';
 import { AnalyticsProvider } from './components/analytics';
 // run MobX in strict mode
 // 'observed' (not 'always'): only block mutations to currently-observed observables outside
@@ -41,10 +41,10 @@ const initializeDaedalus = () => {
   const hashHistory = createHashHistory();
   const routingStore = new RouterStore();
   const analyticsTracker = new AriadneAnalyticsTracker(
-    () => analyticsConsent({ get: true }),
+    () => Promise.resolve(stores.analyticsConsent.trackingView),
     analyticsEvent
   );
-  const stores = setUpStores(api, actions, routingStore, analyticsTracker);
+  let stores = setUpStores(api, actions, routingStore, analyticsTracker);
   analyticsTracker.setWalletSnapshot(() => {
     const request = stores.wallets.walletsRequest;
     if (
@@ -61,7 +61,6 @@ const initializeDaedalus = () => {
       ),
     };
   });
-  analyticsTracker.enableTracking();
   const history = syncHistoryWithStore(hashHistory, routingStore);
   // @ts-ignore ts-migrate(2339) FIXME: Property 'daedalus' does not exist on type 'Window... Remove this comment to see the full error message
   window.daedalus = {
@@ -73,7 +72,7 @@ const initializeDaedalus = () => {
     translations,
     reset: action(() => {
       Action.resetAllActions();
-      setUpStores(api, actions, routingStore, analyticsTracker);
+      stores = setUpStores(api, actions, routingStore, analyticsTracker);
     }),
   };
   const rootElement = document.getElementById('root');

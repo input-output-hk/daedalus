@@ -2,11 +2,7 @@ import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import AnalyticsConsentForm from './AnalyticsConsentForm';
-import { analyticsConsent } from '../../../ipc/ariadneAnalytics';
 
-jest.mock('../../../ipc/ariadneAnalytics', () => ({
-  analyticsConsent: jest.fn(),
-}));
 jest.mock('react-polymorph/lib/components/Button', () => ({
   Button: ({ label, disabled, onClick }) => (
     <button type="button" disabled={disabled} onClick={onClick}>
@@ -20,13 +16,12 @@ jest.mock('./CollectedDataOverview', () => ({
 
 test('consent is an explicit Ariadne decision; disabled configuration cannot be accepted; save failures are visible', async () => {
   const submit = jest.fn();
-  (analyticsConsent as jest.Mock).mockResolvedValue({ enabled: false });
-  const { unmount } = render(
+  const { rerender } = render(
     <IntlProvider locale="en">
       <AnalyticsConsentForm
         loading={false}
         onSubmit={submit}
-        onExternalLinkClick={jest.fn()}
+        available={false}
       />
     </IntlProvider>
   );
@@ -41,15 +36,13 @@ test('consent is an explicit Ariadne decision; disabled configuration cannot be 
   expect(
     screen.getByText(/does not delete events already received/)
   ).toBeTruthy();
-  unmount();
-  (analyticsConsent as jest.Mock).mockResolvedValue({ enabled: true });
-  render(
+  rerender(
     <IntlProvider locale="en">
       <AnalyticsConsentForm
         loading={false}
         saveFailed
         onSubmit={submit}
-        onExternalLinkClick={jest.fn()}
+        available
       />
     </IntlProvider>
   );

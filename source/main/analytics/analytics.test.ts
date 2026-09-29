@@ -9,6 +9,7 @@ import {
   ARIADNE_CONSENT_VERSION,
 } from '../../common/analytics/contract';
 import {
+  analyticsNetworks,
   analyticsActions,
   analyticsPages,
 } from '../../common/analytics/vocabulary';
@@ -262,9 +263,12 @@ describe('contract and trust boundaries', () => {
           DAEDALUS_ARIADNE_ANALYTICS_URL:
             'https://example.invalid/api/analytics/event',
         },
-        true
+        true,
+        'https://release.example.invalid/api/analytics/event'
       )
-    ).not.toBeNull();
+    ).toEqual({
+      endpoint: 'https://release.example.invalid/api/analytics/event',
+    });
   });
   test('only exact main window/frame/document can use IPC; URL lookalikes and frames fail', () => {
     const frame = {};
@@ -420,4 +424,35 @@ describe('contract and trust boundaries', () => {
     tracker.sendPageNavigationEvent('Wallet Summary');
     expect(send).toHaveBeenCalledTimes(1);
   });
+});
+
+test('all wire networks survive normalization, Flight maps to Ariadne and unknown networks fail closed', () => {
+  for (const network of analyticsNetworks)
+    expect(
+      normalizeEvent(event(), id, { ...device, network }, now)?.site_id
+    ).toBe(network);
+  expect(
+    normalizeEvent(event(), id, { ...device, network: 'mainnet-flight' }, now)
+      ?.site_id
+  ).toBe('mainnet_flight');
+  expect(
+    normalizeEvent(event(), id, { ...device, network: 'unknown' }, now)
+  ).toBeNull();
+});
+
+test('packaged configuration ignores launcher destinations and fails closed without a built destination', () => {
+  const env = {
+    DAEDALUS_ARIADNE_ANALYTICS_ENABLED: 'true',
+    DAEDALUS_ARIADNE_ANALYTICS_URL:
+      'https://runtime.example.invalid/api/analytics/event',
+  };
+  expect(analyticsConfig(env, true, '')).toBeNull();
+  expect(
+    analyticsConfig(
+      env,
+      true,
+      'https://signed.example.invalid/api/analytics/event'
+    )
+  ).toEqual({ endpoint: 'https://signed.example.invalid/api/analytics/event' });
+  expect(analyticsConfig(env, true, endpoint)).toBeNull();
 });

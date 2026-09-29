@@ -1,5 +1,6 @@
-import { randomBytes } from 'crypto';
 import { setTimeout, clearTimeout } from 'timers';
+import { analyticsUuid } from './uuid';
+import { FunnelAttempts } from './FunnelAttempts';
 import {
   ARIADNE_CONSENT_VERSION,
   ConsentView,
@@ -26,13 +27,6 @@ type Queued = {
   expires: number;
   generation: number;
 };
-const uuid = () => {
-  const bytes = randomBytes(16);
-  bytes[6] = (bytes[6] & 15) | 64;
-  bytes[8] = (bytes[8] & 63) | 128;
-  const hex = bytes.toString('hex');
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
-};
 
 export class AnalyticsOwner {
   private saved: SavedConsent;
@@ -46,11 +40,7 @@ export class AnalyticsOwner {
   private nextSend = 0;
   private sentAt: number[] = [];
   private failures = 0;
-  private attempts = new Map<
-    number,
-    { id: string; flow: string; started: number; terminal: boolean }
-  >();
-  private lastAttempt = 0;
+  private attempts = new FunnelAttempts();
   constructor(
     private config: AnalyticsConfig,
     private storage: ConsentStorage,
@@ -117,7 +107,7 @@ export class AnalyticsOwner {
       next.id =
         this.saved.status === 'ACCEPTED' && this.saved.id
           ? this.saved.id
-          : uuid();
+          : analyticsUuid();
     this.saved = next;
     try {
       this.storage.write(next);
@@ -137,35 +127,11 @@ export class AnalyticsOwner {
     )
       return false;
     if (!validMessage(input, this.now())) return false;
-    // Bound transient attempt ownership; no renderer UUID is accepted.
-    for (const [key, value] of this.attempts)
-      if (value.started + 30 * 60_000 < this.now()) this.attempts.delete(key);
-    let attempt:
-      | { id: string; flow: string; started: number; terminal: boolean }
-      | undefined;
-    if (input.type === 'funnel_step') {
-      attempt = this.attempts.get(input.attempt);
-      if (input.stage === 'started') {
-        if (
-          attempt ||
-          input.attempt <= this.lastAttempt ||
-          this.attempts.size >= 8
-        )
-          return false;
-        attempt = {
-          id: uuid(),
-          flow: input.action,
-          started: Date.parse(input.ts),
-          terminal: false,
-        };
-      } else if (
-        !attempt ||
-        attempt.terminal ||
-        attempt.flow !== input.action ||
-        Date.parse(input.ts) < attempt.started
-      )
-        return false;
-    }
+    const attempt =
+      input.type === 'funnel_step'
+        ? this.attempts.prepare(input, this.now())
+        : undefined;
+    if (input.type === 'funnel_step' && !attempt) return false;
     const event = normalizeEvent(
       input,
       this.saved.id,
@@ -178,12 +144,7 @@ export class AnalyticsOwner {
     const bytes = Buffer.byteLength(body);
     if (bytes > 2048 || this.queue.length >= 32 || this.bytes + bytes > 65536)
       return false;
-    if (input.type === 'funnel_step') {
-      if (input.stage === 'started') {
-        this.lastAttempt = input.attempt;
-        this.attempts.set(input.attempt, attempt);
-      } else this.attempts.delete(input.attempt);
-    }
+    if (input.type === 'funnel_step') this.attempts.commit(input, attempt);
     this.queue.push({
       body,
       bytes,
@@ -268,7 +229,6 @@ export class AnalyticsOwner {
     this.generation++;
     this.queue = [];
     this.attempts.clear();
-    this.lastAttempt = 0;
     this.bytes = 0;
     if (this.timer) clearTimeout(this.timer);
     this.timer = null;

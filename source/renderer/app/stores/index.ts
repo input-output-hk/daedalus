@@ -13,6 +13,7 @@ import HardwareWalletsStore from './HardwareWalletsStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
 import ProfileStore from './ProfileStore';
+import AnalyticsConsentStore from './AnalyticsConsentStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
@@ -42,6 +43,7 @@ export const storeClasses = {
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
+  analyticsConsent: AnalyticsConsentStore,
   sidebar: SidebarStore,
   staking: StakingStore,
   transactions: TransactionsStore,
@@ -67,6 +69,7 @@ export type StoresMap = {
   networkStatus: NetworkStatusStore;
   newsFeed: NewsFeedStore;
   profile: ProfileStore;
+  analyticsConsent: AnalyticsConsentStore;
   router: RouterStore;
   sidebar: SidebarStore;
   staking: StakingStore;
@@ -120,6 +123,7 @@ export const setUpStores = action(
       networkStatus: createStoreInstanceOf(NetworkStatusStore),
       newsFeed: createStoreInstanceOf(NewsFeedStore),
       profile: createStoreInstanceOf(ProfileStore),
+      analyticsConsent: createStoreInstanceOf(AnalyticsConsentStore),
       router,
       sidebar: createStoreInstanceOf(SidebarStore),
       staking: createStoreInstanceOf(StakingStore),

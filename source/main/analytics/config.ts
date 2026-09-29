@@ -1,13 +1,18 @@
 export type AnalyticsConfig = { endpoint: string } | null;
 
-// Main-process configuration only. No endpoint is built in or accepted over IPC.
+// The direct process.env expression is replaced by webpack EnvironmentPlugin.
+// Packaged builds never read the endpoint from the launcher environment.
+const builtEndpoint = process.env.DAEDALUS_ARIADNE_ANALYTICS_URL;
 export function analyticsConfig(
   env: Readonly<Record<string, string | undefined>>,
-  packaged: boolean
+  packaged: boolean,
+  releaseEndpoint = builtEndpoint
 ): AnalyticsConfig {
   if (env.DAEDALUS_ARIADNE_ANALYTICS_ENABLED !== 'true') return null;
   try {
-    const url = new URL(env.DAEDALUS_ARIADNE_ANALYTICS_URL || '');
+    const url = new URL(
+      (packaged ? releaseEndpoint : env.DAEDALUS_ARIADNE_ANALYTICS_URL) || ''
+    );
     if (
       url.username ||
       url.password ||

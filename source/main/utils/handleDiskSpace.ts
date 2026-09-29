@@ -76,7 +76,7 @@ const getDiskCheckReport = async (
   return Promise.race([diskCheckPromise, timeoutPromise]);
 };
 
-export const handleDiskSpace = (mainWindow: BrowserWindow) => {
+export const handleDiskSpace = (getMainWindow: () => BrowserWindow) => {
   let diskSpaceCheckInterval;
   let diskSpaceCheckIntervalLength = DISK_SPACE_CHECK_LONG_INTERVAL;
 
@@ -148,7 +148,7 @@ export const handleDiskSpace = (mainWindow: BrowserWindow) => {
       response.hadNotEnoughSpaceLeft = hadNotEnoughSpaceFlag;
     }
 
-    await getDiskSpaceStatusChannel.send(response, mainWindow.webContents);
+    await getDiskSpaceStatusChannel.send(response, getMainWindow().webContents);
     return response;
   };
 
@@ -281,7 +281,10 @@ export const handleDiskSpace = (mainWindow: BrowserWindow) => {
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
   getDiskSpaceStatusChannel.onReceive(async () => {
     const diskReport = await getDiskCheckReport(diskCheckPath);
-    await getDiskSpaceStatusChannel.send(diskReport, mainWindow.webContents);
+    await getDiskSpaceStatusChannel.send(
+      diskReport,
+      getMainWindow().webContents
+    );
     return diskReport;
   });
   return handleCheckDiskSpace;

@@ -7,4 +7,10 @@ import StoryDecorator from '../../../../../../storybook/stories/_support/StoryDe
 storiesOf('Analytics', module)
   .addDecorator(withKnobs)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Analytics Consent Form', () => <AnalyticsConsentForm />);
+  .add('Analytics Consent Form', () => (
+    <AnalyticsConsentForm
+      loading={false}
+      available={false}
+      onSubmit={() => {}}
+    />
+  ));

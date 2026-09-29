@@ -2,12 +2,17 @@
 
 ## Optional Ariadne analytics
 
+The renderer uses one `AnalyticsConsentStore` snapshot behind a dedicated
+`AnalyticsConsentApi` IPC boundary; containers pass consent state to components.
 The active analytics tracker feeds an optional main-process owner through strict
 IPC contracts. The owner controls versioned consent, a separate installation UUID,
 normalization, a bounded memory queue and cancellable HTTP delivery. It is disabled
 by default and does not link telemetry to tickets or wallet identities. Renderer
 messages cannot choose destinations or UUIDs. Consent storage is isolated from
 generic renderer settings, and pending/rejected/revoked generations never dispatch.
+The app owns analytics registration and rebinds recovered windows without
+discarding admitted events. Funnel attempt state is isolated in `FunnelAttempts`.
+Packaged endpoints are webpack build-time constants with an empty default.
 See [the Ariadne analytics SOP](../SOPs/ariadne-analytics.md) for the contract,
 provisional consent wording, privacy/rollout prerequisites and local validation.
 

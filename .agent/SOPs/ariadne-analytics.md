@@ -7,8 +7,8 @@ branch is `feature/ariadne-analytics-upstream`. The event vocabulary was recheck
 against the earlier integration-plan revision; its v1 literals are unchanged.
 
 This replaces the active Matomo tracker at the existing AnalyticsTracker boundary.
-Old Matomo settings/UUID and implementation files remain untouched and are not
-used by the new tracker. The feature is disabled by default, with no built-in
+Old Matomo settings/UUID remain untouched. The retained implementation is
+explicitly marked inactive and is not used by the new tracker. The feature is disabled by default, with no built-in
 endpoint, new dependency or wallet-data migration. No ticket identity linking or release anomaly claims are implemented. v2
 instruments delegation submission and voting registration setup as explicit
 attempts; neither means on-chain success or a cast ballot. See the coordinated
@@ -20,19 +20,24 @@ when disabled/rejected/unavailable; legacy Matomo code and settings remain.
 
 ## Configuration and consent
 
-The main process reads these explicit launcher environment values:
+The main process uses the following configuration. The URL is a build-time
+constant in packaged applications; the other switches remain runtime controls.
 
 | Variable | Default / rule |
 | --- | --- |
 | `DAEDALUS_ARIADNE_ANALYTICS_ENABLED` | Off; only exact `true` opts in |
-| `DAEDALUS_ARIADNE_ANALYTICS_URL` | Unset; exact `/api/analytics/event` path, no credentials, query or fragment |
+| `DAEDALUS_ARIADNE_ANALYTICS_URL` | Build-time EnvironmentPlugin value (empty default) in packaged builds; runtime only when unpackaged; exact `/api/analytics/event` path, no credentials, query or fragment |
 | `DAEDALUS_ARIADNE_ALLOW_LOOPBACK_HTTP` | Off; exact `true` allows HTTP only to `localhost`, `127.0.0.1` or `[::1]`, only with `NODE_ENV=development` and `app.isPackaged === false` |
 
 Packaged applications and production configurations require HTTPS even if the
 loopback exception is set. Invalid configuration fails closed. Renderer messages
 cannot supply a URL, UUID, network or device fingerprint. Changing the configured
-recipient requires fresh consent. Release/launcher owners must choose and review
-the recipient; this patch enables no release endpoint.
+recipient requires fresh consent. Release owners must choose and review
+the recipient at build time; this patch enables no release endpoint. Nix installers
+receive `common.ariadneAnalyticsUrl` (empty) through the Linux, Windows and Darwin
+builder environments; a caller's shell environment is not the installer input. Do not add
+the endpoint to the watchdog environment. See [team decisions](ariadne-analytics-team-decisions.md)
+for the required policy link, agreement and proposed final wording.
 
 Consent notice version 2 is explicitly **provisional for local review**. It
 describes pseudonymous data, purpose, fields, retention and revocation. Final
@@ -75,7 +80,8 @@ Wallet flags are synchronously derived from the already-loaded wallet-store
 snapshot at occurrence; no extra wallet API request/cache is added. Unknown,
 loading or failed snapshots drop the event. No wallet records enter IPC.
 
-The sender adds trusted network/package version/device dimensions: Windows,
+The sender maps Daedalus `mainnet-flight` to Ariadne's accepted `mainnet_flight`
+wire name. It adds trusted network/package version/device dimensions: Windows,
 Linux or macOS; numeric OS version or null; allowlisted CPU family or Other; RAM
 rounded upward to integer GiB (1–2048); exact three-part numeric application
 version. Unsupported prerelease versions drop events rather than masquerading as
@@ -93,7 +99,9 @@ are dropped. The cross-repository test checks vocabulary equality with Ariadne.
 - Main independently requires enabled configuration, persisted consent and the
   current consent generation before admission and again before dispatch. Revoke
   invalidates renderer enable work and sender generations, clears queue/timers and
-  aborts the active request. Window close/app quit cancels all work.
+  aborts the active request. Active window close/app quit cancels all work.
+  An app-owned registration rebinds a replacement renderer to the same owner,
+  retaining admitted events and rate budget; the replaced window loses access.
 - At most 30 dispatches per rolling minute, including failed attempts. Consent
   toggles do not reset this budget. No retry of any attempted event, including an
   ambiguous disconnect/timeout. 429 discards the item and delays future dispatches
@@ -146,3 +154,22 @@ supersedes the earlier Node 22 / missing-Nix/native-tool report.
 Validation limitations are also recorded in the coordinated Ariadne integration plan.
 Issue #9 remains open. Ariadne ingestion/dashboard stay in one eventual PR to
 `staging`; this Daedalus branch requires its own coordinated PR and local approval.
+
+
+## Renderer consent boundary (Sam review)
+
+`AnalyticsConsentApi` owns consent IPC. `AnalyticsConsentStore` keeps the one
+observable acknowledged view, saving/error state and write-race guard. The
+tracker reads the store snapshot; the observer container supplies form props.
+A write disables tracking synchronously, is never coalesced, and only its current
+acknowledgement can re-enable tracking. Failed writes leave tracking stopped and
+retain the previous acknowledgement/availability so users can retry. Teardown
+invalidates pending responses and the observed tracking snapshot. Reads started
+before a write or a newer read cannot restore stale consent; refresh is blocked
+during a write or after a failed save. The tracker consumes the store's gated
+`trackingView`, not a separate IPC read. `FunnelAttempts` separately owns attempt
+lifecycle. Rebinding invalidates even captured old IPC callbacks; final disposal
+is terminal. Recovery updates the app's current window and close/bounds wiring,
+ignores replaced-window failures/close, and resolves disk notifications through
+the current-window provider without creating additional pollers.
+See [the item-by-item response](ariadne-analytics-sam-review.md).

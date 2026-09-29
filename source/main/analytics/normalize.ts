@@ -38,13 +38,16 @@ export function normalizeEvent(
     device.platform
   ];
   const ram = Math.ceil(device.ram / 1024 ** 3);
+  // Daedalus renamed the cluster; Ariadne's v1/v2 wire name is unchanged.
+  const network =
+    device.network === 'mainnet-flight' ? 'mainnet_flight' : device.network;
   if (
     !os ||
     !Number.isInteger(ram) ||
     ram < 1 ||
     ram > 2048 ||
     !/^\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(device.appVersion) ||
-    !(analyticsNetworks as readonly string[]).includes(device.network)
+    !(analyticsNetworks as readonly string[]).includes(network)
   )
     return null;
   const cpu = (analyticsCpus as readonly string[]).includes(device.cpu)
@@ -53,7 +56,7 @@ export function normalizeEvent(
   return {
     version: input.type === 'funnel_step' ? 2 : 1,
     user_id: id,
-    site_id: device.network,
+    site_id: network,
     type: input.type,
     action: input.action,
     ...(input.type === 'funnel_step'

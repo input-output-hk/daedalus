@@ -115,6 +115,8 @@ module.exports = {
       )
     ),
     new webpack.EnvironmentPlugin({
+      // Release destination requires team approval; empty builds stay disabled.
+      DAEDALUS_ARIADNE_ANALYTICS_URL: '',
       CARDANO_WALLET_VERSION: 'dev',
       CARDANO_NODE_VERSION: 'dev',
       NETWORK: 'development',

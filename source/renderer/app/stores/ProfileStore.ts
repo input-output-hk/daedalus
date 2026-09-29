@@ -51,9 +51,6 @@ import { formatUptime } from '../utils/formatUptime';
 import { AnalyticsAcceptanceStatus, EventCategories } from '../analytics/types';
 
 export default class ProfileStore extends Store {
-  @observable analyticsConsentSaveFailed = false;
-  @observable analyticsConsentSaving = false;
-  private analyticsConsentChange = 0;
   @observable
   systemLocale: Locale = LOCALES.english;
   @observable
@@ -114,9 +111,6 @@ export default class ProfileStore extends Store {
   setTermsOfUseAcceptanceRequest: Request<string> = new Request(
     this.api.localStorage.setTermsOfUseAcceptance
   );
-  @observable
-  getAnalyticsAcceptanceRequest: Request<AnalyticsAcceptanceStatus> =
-    new Request(this.api.localStorage.getAnalyticsAcceptance);
   @observable
   getDataLayerMigrationAcceptanceRequest: Request<boolean> = new Request(
     this.api.localStorage.getDataLayerMigrationAcceptance
@@ -192,8 +186,6 @@ export default class ProfileStore extends Store {
     ]);
 
     this._getTermsOfUseAcceptance();
-
-    this._getAnalyticsAcceptance();
 
     this._getDataLayerMigrationAcceptance();
 
@@ -320,7 +312,8 @@ export default class ProfileStore extends Store {
 
   @computed
   get analyticsAcceptanceStatus(): AnalyticsAcceptanceStatus {
-    return this.getAnalyticsAcceptanceRequest.result;
+    return this.stores.analyticsConsent.view
+      ?.status as AnalyticsAcceptanceStatus;
   }
 
   @computed
@@ -430,34 +423,7 @@ export default class ProfileStore extends Store {
   };
   _setAnalyticsAcceptanceStatus = async (status: AnalyticsAcceptanceStatus) => {
     const previousStatus = this.analyticsAcceptanceStatus;
-    const change = ++this.analyticsConsentChange;
-    this.analytics.disableTracking();
-    runInAction(() => {
-      this.analyticsConsentSaveFailed = false;
-      this.analyticsConsentSaving = true;
-    });
-    try {
-      // Do not use Request.execute here: its coalescing could discard a revoke
-      // received while an acceptance is still awaiting its IPC acknowledgement.
-      await this.api.localStorage.setAnalyticsAcceptance(status);
-      if (change !== this.analyticsConsentChange) return;
-      await this.getAnalyticsAcceptanceRequest.execute().promise;
-      if (change !== this.analyticsConsentChange) return;
-      if (status === AnalyticsAcceptanceStatus.ACCEPTED)
-        await this.analytics.enableTracking();
-    } catch {
-      if (change === this.analyticsConsentChange)
-        runInAction(() => {
-          this.analyticsConsentSaveFailed = true;
-        });
-      return;
-    } finally {
-      if (change === this.analyticsConsentChange)
-        runInAction(() => {
-          this.analyticsConsentSaving = false;
-        });
-    }
-    if (change !== this.analyticsConsentChange) return;
+    if (!(await this.stores.analyticsConsent.save(status))) return;
 
     if (previousStatus === AnalyticsAcceptanceStatus.PENDING) {
       this._redirectToRoot();
@@ -466,9 +432,6 @@ export default class ProfileStore extends Store {
         route: ROUTES.SETTINGS.SUPPORT,
       });
     }
-  };
-  _getAnalyticsAcceptance = () => {
-    this.getAnalyticsAcceptanceRequest.execute();
   };
   _acceptDataLayerMigration = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message

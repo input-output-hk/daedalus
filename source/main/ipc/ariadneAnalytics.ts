@@ -11,18 +11,65 @@ import { isAnalyticsSender } from '../analytics/sender';
 import { environment } from '../environment';
 import { getShortCpuDescription } from '../../common/analytics/cpu';
 
-let registeredCleanup: (() => void) | null = null;
+// App-owned registration. Rebinding a recovered renderer retains the owner,
+// queue, consent generation and rolling dispatch budget.
+export function createAriadneAnalyticsRegistration() {
+  let owner: AnalyticsOwner | null = null;
+  let detachWindow: (() => void) | null = null;
+  let registered = false;
+  let disposed = false;
+  let binding = 0;
 
-export function registerAriadneAnalytics(
-  window: BrowserWindow,
-  expectedUrl: string
-) {
-  // Renderer recovery can create a replacement window before closing the old one.
-  // Transfer ownership, rather than registering duplicate global IPC handlers.
-  registeredCleanup?.();
+  const dispose = () => {
+    disposed = true;
+    binding++;
+    detachWindow?.();
+    detachWindow = null;
+    owner?.close();
+    app.removeListener('before-quit', dispose);
+    if (registered) {
+      ipcMain.removeHandler(ARIADNE_ANALYTICS_CONSENT);
+      ipcMain.removeHandler(ARIADNE_ANALYTICS_EVENT);
+      registered = false;
+    }
+  };
+
+  const register = (window: BrowserWindow, expectedUrl: string) => {
+    if (disposed) throw new Error('Analytics registration is closed');
+    const currentBinding = ++binding;
+    detachWindow?.();
+    if (!owner) owner = createOwner();
+    if (registered) {
+      ipcMain.removeHandler(ARIADNE_ANALYTICS_CONSENT);
+      ipcMain.removeHandler(ARIADNE_ANALYTICS_EVENT);
+    } else app.once('before-quit', dispose);
+    const trusted = (event: Electron.IpcMainInvokeEvent) =>
+      !disposed &&
+      currentBinding === binding &&
+      isAnalyticsSender(
+        event,
+        window.webContents,
+        event.senderFrame?.url || '',
+        expectedUrl
+      );
+    ipcMain.handle(ARIADNE_ANALYTICS_CONSENT, (event, command: unknown) =>
+      trusted(event) ? owner.consent(command) : null
+    );
+    ipcMain.handle(
+      ARIADNE_ANALYTICS_EVENT,
+      (event, payload: unknown) => trusted(event) && owner.enqueue(payload)
+    );
+    registered = true;
+    window.once('closed', dispose);
+    detachWindow = () => window.removeListener('closed', dispose);
+  };
+  return { register, dispose };
+}
+
+function createOwner() {
   // Separate from generic renderer-accessible settings; UUID never crosses IPC.
   let storage: ElectronStore;
-  const owner = new AnalyticsOwner(
+  return new AnalyticsOwner(
     analyticsConfig(process.env, app.isPackaged),
     {
       read: () => {
@@ -41,31 +88,4 @@ export function registerAriadneAnalytics(
     },
     postAnalytics
   );
-  const trusted = (event: Electron.IpcMainInvokeEvent) =>
-    isAnalyticsSender(
-      event,
-      window.webContents,
-      event.senderFrame?.url || '',
-      expectedUrl
-    );
-  ipcMain.handle(ARIADNE_ANALYTICS_CONSENT, (event, command: unknown) =>
-    trusted(event) ? owner.consent(command) : null
-  );
-  ipcMain.handle(
-    ARIADNE_ANALYTICS_EVENT,
-    (event, payload: unknown) => trusted(event) && owner.enqueue(payload)
-  );
-  const stop = () => owner.close();
-  app.on('before-quit', stop);
-  const dispose = () => {
-    if (registeredCleanup !== dispose) return;
-    registeredCleanup = null;
-    stop();
-    app.removeListener('before-quit', stop);
-    window.removeListener('closed', dispose);
-    ipcMain.removeHandler(ARIADNE_ANALYTICS_CONSENT);
-    ipcMain.removeHandler(ARIADNE_ANALYTICS_EVENT);
-  };
-  registeredCleanup = dispose;
-  window.once('closed', dispose);
 }

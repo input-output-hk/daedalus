@@ -2,8 +2,11 @@
 import { EventEmitter } from 'events';
 import { BrowserWindow, app, ipcMain } from 'electron';
 import ElectronStore from 'electron-store';
-import { ARIADNE_CONSENT_VERSION } from '../../common/analytics/contract';
-import { registerAriadneAnalytics } from './ariadneAnalytics';
+import {
+  ARIADNE_CONSENT_VERSION,
+  ConsentView,
+} from '../../common/analytics/contract';
+import { createAriadneAnalyticsRegistration } from './ariadneAnalytics';
 import { postAnalytics } from '../analytics/transport';
 import {
   ARIADNE_ANALYTICS_CONSENT,
@@ -39,6 +42,7 @@ jest.mock('../analytics/transport', () => ({
 }));
 
 test('registered handlers check caller and payload, return no UUID and cancel on shutdown', async () => {
+  const registration = createAriadneAnalyticsRegistration();
   const original = { ...process.env };
   process.env.DAEDALUS_ARIADNE_ANALYTICS_ENABLED = 'true';
   process.env.DAEDALUS_ARIADNE_ANALYTICS_URL =
@@ -49,7 +53,7 @@ test('registered handlers check caller and payload, return no UUID and cancel on
   const contents = { mainFrame: frame, isDestroyed: () => false };
   const window = Object.assign(new EventEmitter(), { webContents: contents });
   try {
-    registerAriadneAnalytics(
+    registration.register(
       window as unknown as BrowserWindow,
       'http://127.0.0.1:8080/'
     );
@@ -105,25 +109,115 @@ test('registered handlers check caller and payload, return no UUID and cancel on
   expect(ipcMain.removeHandler).toHaveBeenCalledWith(ARIADNE_ANALYTICS_EVENT);
 });
 
-test('replacement windows dispose the old owner and old close cannot remove new handlers', () => {
+test('replacement windows reuse the owner and old close cannot remove new handlers', () => {
+  const registration = createAriadneAnalyticsRegistration();
+  (ElectronStore as unknown as jest.Mock).mockClear();
   const first = Object.assign(new EventEmitter(), {
     webContents: { mainFrame: {}, isDestroyed: () => false },
   });
   const second = Object.assign(new EventEmitter(), {
     webContents: { mainFrame: {}, isDestroyed: () => false },
   });
-  registerAriadneAnalytics(
+  registration.register(
     first as unknown as BrowserWindow,
     'http://127.0.0.1:8080/'
   );
   (ipcMain.removeHandler as jest.Mock).mockClear();
-  registerAriadneAnalytics(
+  registration.register(
     second as unknown as BrowserWindow,
     'http://127.0.0.1:8080/'
   );
   expect(ipcMain.removeHandler).toHaveBeenCalledTimes(2);
+  expect(ElectronStore).toHaveBeenCalledTimes(1);
   first.emit('closed');
   expect(ipcMain.removeHandler).toHaveBeenCalledTimes(2);
   second.emit('closed');
   expect(ipcMain.removeHandler).toHaveBeenCalledTimes(4);
+});
+
+test('recovery preserves admitted events and consent, rejects the previous sender and still aborts on final close', async () => {
+  const original = { ...process.env };
+  process.env.DAEDALUS_ARIADNE_ANALYTICS_ENABLED = 'true';
+  process.env.DAEDALUS_ARIADNE_ANALYTICS_URL =
+    'http://127.0.0.1:3000/api/analytics/event';
+  process.env.NODE_ENV = 'development';
+  process.env.DAEDALUS_ARIADNE_ALLOW_LOOPBACK_HTTP = 'true';
+  const makeWindow = () => {
+    const frame = { url: 'http://127.0.0.1:8080/' };
+    return Object.assign(new EventEmitter(), {
+      webContents: { mainFrame: frame, isDestroyed: () => false },
+    });
+  };
+  const first = makeWindow();
+  const second = makeWindow();
+  const registration = createAriadneAnalyticsRegistration();
+  const caller = (window: typeof first) => ({
+    sender: window.webContents,
+    senderFrame: window.webContents.mainFrame,
+  });
+  const handlers = () =>
+    new Map<string, (event: unknown, payload: unknown) => unknown>(
+      (ipcMain.handle as jest.Mock).mock.calls
+    );
+  try {
+    registration.register(
+      first as unknown as BrowserWindow,
+      'http://127.0.0.1:8080/'
+    );
+    const consent = handlers().get(ARIADNE_ANALYTICS_CONSENT);
+    const oldSend = handlers().get(ARIADNE_ANALYTICS_EVENT);
+    const view = consent(caller(first), {
+      version: ARIADNE_CONSENT_VERSION,
+      status: 'ACCEPTED',
+    }) as ConsentView;
+    const payload = {
+      generation: view.generation,
+      type: 'page_view',
+      action: 'Wallet Summary',
+      uses_legacy_wallet: false,
+      uses_hardware_wallet: false,
+      ts: new Date().toISOString(),
+    };
+    expect(
+      handlers().get(ARIADNE_ANALYTICS_EVENT)(caller(first), payload)
+    ).toBe(true);
+    expect(
+      handlers().get(ARIADNE_ANALYTICS_EVENT)(caller(first), payload)
+    ).toBe(true);
+    registration.register(
+      second as unknown as BrowserWindow,
+      'http://127.0.0.1:8080/'
+    );
+    expect(
+      consent(caller(first), {
+        version: ARIADNE_CONSENT_VERSION,
+        status: 'REJECTED',
+      })
+    ).toBeNull();
+    expect(oldSend(caller(first), payload)).toBe(false);
+    first.emit('closed');
+    expect(
+      handlers().get(ARIADNE_ANALYTICS_CONSENT)(caller(second), { get: true })
+    ).toEqual(view);
+    expect(
+      handlers().get(ARIADNE_ANALYTICS_EVENT)(caller(first), payload)
+    ).toBe(false);
+    for (let i = 0; i < 20; i++) await Promise.resolve();
+    expect(postAnalytics).toHaveBeenCalledTimes(2);
+    expect(
+      handlers().get(ARIADNE_ANALYTICS_EVENT)(caller(second), payload)
+    ).toBe(true);
+    second.emit('closed');
+    expect(() =>
+      registration.register(
+        second as unknown as BrowserWindow,
+        'http://127.0.0.1:8080/'
+      )
+    ).toThrow('Analytics registration is closed');
+    for (let i = 0; i < 20; i++) await Promise.resolve();
+    expect(postAnalytics).toHaveBeenCalledTimes(2);
+  } finally {
+    registration.dispose();
+    process.env = original;
+  }
 });
