@@ -425,6 +425,18 @@
           rm -rf .i18n-locales-before .i18n-messages-before.json
         '';
         storybook = mkJsCheck "daedalus-storybook-build" "yarn storybook:build";
+        # The node writes its host name to stdout in the console code page on
+        # Windows, so the shipped configuration must give it a fixed ASCII one.
+        node-config-host-name =
+          pkgs.runCommand "node-config-host-name" {
+            nativeBuildInputs = [pkgs.jq];
+          } ''
+            ${lib.concatMapStringsSep "\n" (cluster: ''
+                test "$(jq -r '.TraceOptionNodeName' ${common.daedalusConfigs.${cluster}.configFiles}/config.yaml)" = daedalus
+              '')
+              common.sourceLib.installerClusters}
+            touch $out
+          '';
         shellcheck = pkgs.callPackage ../tests/shellcheck.nix {src = inputs.self;};
         # Documentation drifts silently because prose cannot fail. This asserts
         # the parts of it that are mechanically decidable: that links resolve,

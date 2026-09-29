@@ -26,6 +26,7 @@ const MOCK_NODE: &str = env!("CARGO_BIN_EXE_mock-node");
 const MOCK_NODE_CRASH: &str = env!("CARGO_BIN_EXE_mock-node-crash");
 const MOCK_NODE_NO_SOCKET: &str = env!("CARGO_BIN_EXE_mock-node-no-socket");
 const MOCK_NODE_STARTUP_LOG: &str = env!("CARGO_BIN_EXE_mock-node-startup-log");
+const MOCK_NODE_NON_UTF8: &str = env!("CARGO_BIN_EXE_mock-node-non-utf8-output");
 const MOCK_WALLET: &str = env!("CARGO_BIN_EXE_mock-wallet");
 const MOCK_WALLET_CRASH: &str = env!("CARGO_BIN_EXE_mock-wallet-crash");
 const MOCK_MITHRIL: &str = env!("CARGO_BIN_EXE_mock-mithril-client");
@@ -760,6 +761,126 @@ fn startup_log_phase_parsing() {
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
+}
+
+// ── Tests: non-UTF-8 child output ─────────────────────────────────────────────
+
+/// Poll until the mock has recorded `done`, then return its write results.
+fn mock_write_results(socket_path: &Path) -> Vec<String> {
+    let path = format!("{}.writes", socket_path.display());
+    let deadline = std::time::Instant::now() + Duration::from_secs(10);
+    loop {
+        let text = std::fs::read_to_string(&path).unwrap_or_default();
+        if text.lines().last() == Some("done") {
+            return text.lines().map(String::from).collect();
+        }
+        assert!(
+            std::time::Instant::now() < deadline,
+            "mock node did not finish writing"
+        );
+        std::thread::sleep(Duration::from_millis(50));
+    }
+}
+
+/// Run the non-UTF-8 mock node, optionally writing the bad line before the
+/// startup phases, and assert the watchdog keeps draining its output.
+fn assert_non_utf8_output_drained(label: &str, node_args: &[&str]) {
+    let dir = TempDir::new(label);
+    dir.populate_chain();
+    let mut cfg = Cfg::new(&dir, MOCK_NODE_NON_UTF8, MOCK_WALLET);
+    cfg.node_args
+        .extend(node_args.iter().map(|a| a.to_string()));
+    let socket_path = cfg.socket_path.clone();
+    let (cfg, _port) = cfg.build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "node_started");
+    expect_with(&rx, "node_startup_status", |v| v["phase"] == "chainDbReady");
+    expect(&rx, "node_socket_ready");
+
+    let writes = mock_write_results(&socket_path);
+    assert!(
+        writes.iter().all(|w| w == "ok" || w == "done"),
+        "node saw a failed write to stdout: {writes:?}"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    let log = std::fs::read(dir.path().join("logs").join("node.log")).unwrap();
+    let log = String::from_utf8(log).expect("node.log must be valid UTF-8");
+    assert!(log.contains("J\u{FFFD}rgen"), "bad line missing: {log}");
+    assert!(
+        log.contains("after bad line 0\n"),
+        "first later line missing"
+    );
+    assert!(
+        log.contains("after bad line 19\n"),
+        "last later line missing"
+    );
+}
+
+/// A line that is not valid UTF-8 must not stop the watchdog reading node
+/// output: later lines are logged and the node's writes keep succeeding.
+#[test]
+fn node_non_utf8_output_keeps_pipe_open() {
+    assert_non_utf8_output_drained("non-utf8", &[]);
+}
+
+/// The same line arriving before the startup phase lines must not hide them:
+/// the watchdog still reaches chainDbReady and node_socket_ready.
+#[test]
+fn node_non_utf8_output_before_startup_phases() {
+    assert_non_utf8_output_drained("non-utf8-early", &["before-startup"]);
+}
+
+/// Run the mock node under a watchdog started with `inherited` as the value of
+/// TRACE_DISPATCHER_LOGGING_HOSTNAME (or unset) and return the value the node
+/// saw, which the mock echoes as the first line of its output.
+fn node_trace_hostname(label: &str, inherited: Option<&str>) -> String {
+    let dir = TempDir::new(label);
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let env: Vec<(&str, &str)> = inherited
+        .map(|v| ("TRACE_DISPATCHER_LOGGING_HOSTNAME", v))
+        .into_iter()
+        .collect();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "node_started");
+    expect_with(&rx, "node_startup_status", |v| v["phase"] == "chainDbReady");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    let log = std::fs::read(dir.path().join("logs").join("node.log")).unwrap();
+    let log = String::from_utf8_lossy(&log).into_owned();
+    log.lines()
+        .find_map(|l| l.strip_prefix("TRACE_DISPATCHER_LOGGING_HOSTNAME="))
+        .unwrap_or_else(|| panic!("mock node did not echo the variable: {log}"))
+        .to_string()
+}
+
+/// The node is spawned with a fixed ASCII host name for its trace lines.
+#[test]
+fn node_gets_fixed_trace_hostname() {
+    assert_eq!(node_trace_hostname("trace-host", None), "daedalus");
+}
+
+/// A value inherited from the environment does not reach the node: a
+/// non-ASCII machine name there would reintroduce the failure.
+#[test]
+fn node_trace_hostname_overrides_inherited() {
+    assert_eq!(
+        node_trace_hostname("trace-host-inherited", Some("J\u{fc}rgen-PC")),
+        "daedalus"
+    );
 }
 
 // ── Tests: protocol robustness ────────────────────────────────────────────────

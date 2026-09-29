@@ -704,6 +704,14 @@
               else __fromJSON (__readFile null);
           in
             builtins.toJSON (filterMonitoring (nodeConfigAttrs
+              // {
+                # cardano-node defaults this to the machine host name, which it
+                # writes to stdout in the console code page and crashes on when
+                # the name has characters outside it. The watchdog sets
+                # TRACE_DISPATCHER_LOGGING_HOSTNAME to the same value for the
+                # host field on each trace line.
+                TraceOptionNodeName = "daedalus";
+              }
               // (lib.optionalAttrs (!devShell || network == "local") ({
                   ByronGenesisFile = "genesis-byron.json";
                   ShelleyGenesisFile = "genesis-shelley.json";

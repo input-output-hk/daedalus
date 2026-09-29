@@ -8,6 +8,11 @@ fn main() {
     }
     // Emit the full startup phase sequence so the state machine reaches chainDbReady.
     use std::io::Write as _;
+    // Echo the host name the watchdog gave the node, so tests can assert on it.
+    println!(
+        "TRACE_DISPATCHER_LOGGING_HOSTNAME={}",
+        std::env::var("TRACE_DISPATCHER_LOGGING_HOSTNAME").unwrap_or_default()
+    );
     println!("StartedOpeningDB");
     println!("StartedOpeningImmutableDB");
     println!("OpenedImmutableDB");
