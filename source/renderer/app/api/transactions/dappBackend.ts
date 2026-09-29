@@ -187,6 +187,7 @@ const REQUIRED_CAPABILITIES = [
 ];
 const DAPP_ERRORS = {
   dapp_invalid_request: 'Invalid backend request',
+  dapp_unsupported_era: 'Unsupported backend era',
   dapp_context_conflict: 'Backend context conflict',
   dapp_identity_conflict: 'Submission identity conflict',
   dapp_account_changed: 'Wallet or network changed',
@@ -202,6 +203,7 @@ const DAPP_ERRORS = {
 type DappErrorCode = keyof typeof DAPP_ERRORS;
 const CONTEXT_ERRORS: DappErrorCode[] = [
   'dapp_invalid_request',
+  'dapp_unsupported_era',
   'dapp_context_conflict',
   'dapp_account_changed',
   'dapp_context_unavailable',
@@ -209,6 +211,7 @@ const CONTEXT_ERRORS: DappErrorCode[] = [
 ];
 const WITNESS_ERRORS: DappErrorCode[] = [
   'dapp_invalid_request',
+  'dapp_unsupported_era',
   'dapp_context_conflict',
   'dapp_tx_proof_generation',
   'dapp_deprecated_certificate',
@@ -219,6 +222,7 @@ const WITNESS_ERRORS: DappErrorCode[] = [
 const DATA_SIGNATURE_ERRORS: DappErrorCode[] = [
   'dapp_invalid_request',
   'dapp_data_address_not_pk',
+  'dapp_unsupported_era',
   'dapp_data_proof_generation',
   'dapp_account_changed',
   'dapp_context_unavailable',
@@ -226,10 +230,12 @@ const DATA_SIGNATURE_ERRORS: DappErrorCode[] = [
 ];
 const KEY_STATE_ERRORS: DappErrorCode[] = [
   'dapp_account_changed',
+  'dapp_unsupported_era',
   'dapp_context_unavailable',
 ];
 const SUBMISSION_ERRORS: DappErrorCode[] = [
   'dapp_invalid_request',
+  'dapp_unsupported_era',
   'dapp_identity_conflict',
   'dapp_account_changed',
   'dapp_submission_failed',

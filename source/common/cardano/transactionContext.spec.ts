@@ -211,6 +211,16 @@ test('reconciles all input roles into one immutable trusted snapshot', () => {
   expect(Object.isFrozen(snapshot)).toBe(true);
 });
 
+test('refuses non-Conway context before binding it to an approval', () => {
+  const fixture = makeResponse(makeTransaction(), undefined, protocolParameters);
+  expect(() =>
+    reconcileTransactionContext(
+      { ...fixture.response, era: 'babbage' },
+      fixture.expectation
+    )
+  ).toThrow('unsupported context revision');
+});
+
 test('verifies script-data commitments against authenticated Plutus V1/V2/V3 cost models', () => {
   const scripts = [Buffer.alloc(9, 1), Buffer.alloc(9, 2), Buffer.alloc(9, 3)];
   const policies = scripts.map((script, language) =>

@@ -1,3 +1,5 @@
+import alonzoFixture from '../cardano/fixtures/exact-cbor/alonzo-compatible.json';
+import babbageFixture from '../cardano/fixtures/exact-cbor/babbage-compatible.json';
 import semanticFixture from '../cardano/fixtures/exact-cbor/semantic-conway-v1.json';
 import { decodeConwayTransaction } from '../cardano/transaction';
 import { parseConwayTransactionEnvelope } from '../cardano/transactionEnvelope';
@@ -42,6 +44,44 @@ describe('CIP-30 transaction review', () => {
     expect(submission.auxiliaryDataCbor).toBe('f6');
     expect(parseCip30TransactionReview(submission)).toEqual(submission);
   });
+
+  it.each([
+    ['Alonzo', alonzoFixture, true],
+    ['Babbage', babbageFixture, true],
+    ['Conway', semanticFixture, false],
+  ] as const)(
+    'displays exact %s-family effects and approves only authenticated semantics',
+    (_family, fixture, mint) => {
+      const envelope = parseConwayTransactionEnvelope(
+        Buffer.from(fixture.cborHex, 'hex')
+      );
+      const unresolved = decodeConwayTransaction(envelope);
+      const tx = decodeConwayTransaction(envelope, {
+        resolvedInputs: unresolved.inputs.normal.map((outpoint) => ({
+          outpoint,
+          value: { coin: BigInt(10_000_000), assets: [] },
+        })),
+      });
+      const review = createCip30TransactionReview(tx, 'submit', context);
+      expect(review.approvable).toBe(true);
+      expect(review.fullCbor).toBe(fixture.cborHex);
+      expect(review.bodyCbor).toBe(
+        envelope.cbor.subarray(envelope.spans.body.start, envelope.spans.body.end).toString('hex')
+      );
+      expect(review.effects.map(({ kind }) => kind)).toEqual(
+        expect.arrayContaining(mint
+          ? ['output', 'fee', 'mint', 'native-script', 'auxiliary-data']
+          : ['output', 'fee'])
+      );
+      expect(review.effects.some(({ kind }) => kind === 'mint')).toBe(mint);
+      expect(review.display.fee).toBe(mint ? '999' : '0');
+      expect(review.display.entries.find(({ role }) => role === 'output')?.value?.coin)
+        .toBe(mint ? '100' : '0');
+      expect(review.display.mint.map(({ assetName, quantity }) => [assetName, quantity]))
+        .toEqual(mint ? [['6173736574', '1']] : []);
+      expect(parseCip30TransactionReview(review)).toEqual(review);
+    }
+  );
 
   it('warns about preferred collateral spending without blocking approval', () => {
     const review = createCip30TransactionReview(transaction, 'sign', context, [

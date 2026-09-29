@@ -335,6 +335,34 @@
       }
     },
     {
+      "id": "alonzo-ledger-compatible",
+      "file": "alonzo-compatible.json",
+      "expected": {
+        "byteLength": 348,
+        "body": { "start": 1, "end": 268 },
+        "witnessSet": { "start": 268, "end": 303 },
+        "isValid": { "start": 303, "end": 304 },
+        "auxiliaryData": { "start": 304, "end": 348 },
+        "outputs": [{ "start": 42, "end": 185 }],
+        "collateralReturn": null,
+        "bodyHashBlake2b256": "f248e12e76a664c248ea8a67276a51b726f31794496cb36a39a4d73e700ceb7e"
+      }
+    },
+    {
+      "id": "babbage-ledger-compatible",
+      "file": "babbage-compatible.json",
+      "expected": {
+        "byteLength": 316,
+        "body": { "start": 1, "end": 236 },
+        "witnessSet": { "start": 236, "end": 271 },
+        "isValid": { "start": 271, "end": 272 },
+        "auxiliaryData": { "start": 272, "end": 316 },
+        "outputs": [{ "start": 42, "end": 153 }],
+        "collateralReturn": null,
+        "bodyHashBlake2b256": "3e0b8c44c7e8e3447709b926410c16b9810f1a7f404cb9556c4c0de27758c214"
+      }
+    },
+    {
       "id": "alonzo-ledger-golden-auxiliary-data",
       "file": "alonzo-golden.json",
       "expected": {

@@ -34,7 +34,9 @@ const fixture = (expected: Expected): Fixture =>
   ) as Fixture;
 const raw = (expected: Expected): Buffer =>
   Buffer.from(fixture(expected).cborHex, 'hex');
-const accepted = manifest.fixtures.filter(({ id }) => id.startsWith('conway-'));
+const accepted = manifest.fixtures.filter(
+  ({ id }) => id.startsWith('conway-') || id.endsWith('-compatible')
+);
 const parse = (bytes: Buffer) => parseConwayTransactionEnvelope(bytes);
 const reject = (bytes: Buffer) =>
   expect(() => parse(bytes)).toThrow(TransactionEnvelopeError);

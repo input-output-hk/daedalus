@@ -99,6 +99,28 @@ describe('dApp backend client contracts', () => {
     ).toThrow('Invalid dApp backend response');
   });
 
+  it('refuses non-Conway capability and context evidence', () => {
+    for (const invalid of [
+      { ...capabilities, network: { ...capabilities.network, current_era: 'babbage' } },
+      {
+        ...capabilities,
+        capabilities: capabilities.capabilities.map((item, index) =>
+          index === 0 ? { ...item, available_eras: ['babbage'] } : item
+        ),
+      },
+      { ...capabilities, capabilities: capabilities.capabilities.slice(1) },
+    ])
+      expect(() =>
+        validateDappCapabilities(invalid, {
+          sourceRevision: 'e'.repeat(40),
+          network,
+        })
+      ).toThrow('Invalid dApp backend response');
+    expect(() =>
+      validateDappTransactionContext({ ...context, era: 'babbage' })
+    ).toThrow('Invalid dApp backend response');
+  });
+
   it('validates every dApp success response before use', () => {
     expect(validateDappTransactionContext(context)).toBe(context);
     expect(
@@ -172,5 +194,25 @@ describe('dApp backend client contracts', () => {
     expect(() =>
       validateDappError(canonical, ['dapp_account_changed'])
     ).toThrow('Invalid dApp backend response');
+  });
+
+  it('accepts only the fixed unsupported-era error at permitted boundaries', () => {
+    const unsupported = {
+      code: 'dapp_unsupported_era',
+      message: 'Unsupported backend era',
+    };
+    let actual;
+    try {
+      validateDappError(unsupported, [unsupported.code]);
+    } catch (error) {
+      actual = error;
+    }
+    expect(actual).toBe(unsupported);
+    expect(() =>
+      validateDappError({ ...unsupported, message: 'Node is babbage' })
+    ).toThrow('Invalid dApp backend response');
+    expect(() => validateDappError(unsupported, ['dapp_invalid_request'])).toThrow(
+      'Invalid dApp backend response'
+    );
   });
 });

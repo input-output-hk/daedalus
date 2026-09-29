@@ -1,0 +1,16 @@
+{
+  "id": "alonzo-ledger-compatible",
+  "description": "Alonzo ledger golden tx.cbor projected onto Conway-admitted fields: original input/output/fee, re-committed auxiliary data and a bound native-script mint. Derived compatibility vector, not the original signed ledger transaction.",
+  "cborHex": "84a70081825820ee155ace9c40292074cb6aff8c9ccdd273c81648ff1149ef36bcea6ebb8a3e2500018183583900cb9358529df4729c3246a2a033cb9821abbfd16de4888005904abc410d6a577e9441ad8ed9663931906e4d43ece8f82c712b1d0235affb06821864a1581ca646474b8f5431261506b6c273d307c7569a4eb6c96b42dd4a29520aa14a636f75747473436f696e1903e85820ee155ace9c40292074cb6aff8c9ccdd273c81648ff1149ef36bcea6ebb8a3e25021903e703040758204d5237e1601e3d0ceeda753ef90f94c09309c18da21eca29fd660c3488f30be9080209a1581c5334c8c55ec6518f2e262da617d3170bf0722f43813d64dbaf0ff0b9a145617373657401a101818200581c11111111111111111111111111111111111111111111111111111111f5d90103a300a40166737472696e67024562797465730382010204a10341620181820180028146450100002261",
+  "provenance": {
+    "repository": "https://github.com/IntersectMBO/cardano-ledger",
+    "tag": "cardano-ledger-conway-1.22.1.0",
+    "commit": "226b002d5b5e83e24355f8a28ab214f3259eabda",
+    "sourcePath": "eras/alonzo/test-suite/golden/tx.cbor",
+    "sourceBlob": "07fa93f4aec98354d0a942ded4727be0e09e3f0c",
+    "sourceSha256": "4d36863697dee9beb3f57d74af3e8cf7ff96641d0458b03790eb4861d917bdb1",
+    "extraction": "From alonzo-golden.json retain body keys 0,1,2,3,8 and the source output and auxiliary data; canonical-encode the auxiliary, recompute body key 7, add native-script mint with its computed policy hash and witness key 1; re-encode the four-item envelope. Original signatures and unrelated historical fields removed.",
+    "fixtureSha256": "6f5ab3e13fa3fe41bd0ff76347de601a0519cb44e2076e3362f4df457bda9a58",
+    "ledgerTxId": "f248e12e76a664c248ea8a67276a51b726f31794496cb36a39a4d73e700ceb7e"
+  }
+}
