@@ -217,7 +217,8 @@ pub async fn cmd_newsfeed_publish(
         return Ok(());
     }
 
-    let s3 = crate::s3::S3Client::new(bucket.to_string(), bucket_url.to_string()).await?;
+    let s3 = crate::s3::S3Client::new(bucket.to_string(), bucket_url.to_string(), None, true, None)
+        .await?;
 
     // no-store: newsfeed changes on every update; avoid stale hashes being served.
     s3.upload_bytes(
