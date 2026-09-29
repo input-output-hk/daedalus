@@ -138,6 +138,8 @@
   "daedalus.diagnostics.dialog.code": "code",
   "daedalus.diagnostics.dialog.connected": "Connected",
   "daedalus.diagnostics.dialog.connectionError": "CONNECTION ERROR",
+  "daedalus.diagnostics.dialog.copiedDiagnostics": "!!!Copied",
+  "daedalus.diagnostics.dialog.copyDiagnostics": "!!!Copy",
   "daedalus.diagnostics.dialog.coreInfo": "CORE INFO",
   "daedalus.diagnostics.dialog.cpu": "CPU",
   "daedalus.diagnostics.dialog.daedalusBuildNumber": "Daedalus build number",

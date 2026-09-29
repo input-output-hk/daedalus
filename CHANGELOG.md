@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Features
+
+- Diagnostics: added a Copy button that copies the full diagnostic information to the clipboard as a fenced text block ready to paste into a bug report ([PR #3418](https://github.com/input-output-hk/daedalus/pull/3418)).
+
 ## 11.4.0
 
 ### Fixes
