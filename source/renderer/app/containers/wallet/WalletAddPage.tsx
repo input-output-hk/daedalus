@@ -45,7 +45,8 @@ class WalletAddPage extends Component<Props> {
       environment,
     } = wallets;
     const { walletMigrationStep } = walletMigration;
-    const { isMainnet, isTestnet, isProduction } = environment;
+    const { isMainnet, isTestnet, isPreprod, isPreview, isProduction } =
+      environment;
     const onCreateWallet = createWalletUseNewProcess
       ? () => actions.wallets.createWalletBegin.trigger() // TODO: Remove once the new wallet creation process is ready
       : () =>
@@ -103,6 +104,8 @@ class WalletAddPage extends Component<Props> {
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
           isMainnet={isMainnet}
           isTestnet={isTestnet}
+          isPreprod={isPreprod}
+          isPreview={isPreview}
           isProduction={isProduction}
         />
         {activeDialog}
