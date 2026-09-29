@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Mithril: a partial sync no longer leaves part of the local blockchain missing. Previously the most recent local chunk could be kept incomplete, after which the node could reject blocks or stop at "Replaying ledger". This prevents new gaps but does not repair an installation that is already affected; its chain data must be repaired or synced again ([PR #3420](https://github.com/input-output-hk/daedalus/pull/3420)).
+
 ## 11.4.0
 
 ### Fixes
