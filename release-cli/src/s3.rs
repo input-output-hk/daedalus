@@ -11,6 +11,7 @@
 
 use anyhow::{Context, Result};
 use aws_config::BehaviorVersion;
+use aws_credential_types::Credentials;
 use aws_sdk_s3::{Client, primitives::ByteStream, types::ObjectCannedAcl};
 use bytes::Bytes;
 use std::path::Path;
@@ -24,23 +25,57 @@ pub struct S3Client {
     pub key_prefix: String,
     /// CDN base URL used to build public download links.
     pub bucket_url: String,
+    /// When true, omit S3 ACL from all PutObject/CopyObject requests.
+    /// Required for Cloudflare R2 buckets that have not enabled per-object ACLs.
+    pub use_acl: bool,
 }
 
 impl S3Client {
     /// `bucket_arg` may be `"my-bucket"` or `"my-bucket/some/prefix"`.
     /// The part before the first `/` is the S3 bucket name; the rest is the key prefix.
-    pub async fn new(bucket_arg: String, bucket_url: String) -> Result<Self> {
+    ///
+    /// `endpoint_url` overrides the S3 endpoint (e.g. Cloudflare R2).
+    /// `use_acl` — set to false for R2 or any S3-compatible store that does not
+    /// support per-object ACLs; set to true for AWS S3 where public-read ACL
+    /// controls object visibility.
+    /// `credentials` — when Some, bypasses the standard AWS credential chain and
+    /// injects the key/secret directly. Used by `publish-linux-repos` so R2 creds
+    /// (`REPO_ACCESS_KEY_ID` / `REPO_SECRET_ACCESS_KEY`) don't collide with the S3
+    /// creds (`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`) used by `drt release`.
+    pub async fn new(
+        bucket_arg: String,
+        bucket_url: String,
+        endpoint_url: Option<String>,
+        use_acl: bool,
+        credentials: Option<(String, String)>,
+    ) -> Result<Self> {
         let (bucket, key_prefix) = match bucket_arg.find('/') {
             Some(i) => (bucket_arg[..i].to_string(), bucket_arg[i + 1..].to_string()),
             None => (bucket_arg, String::new()),
         };
-        let config = aws_config::load_defaults(BehaviorVersion::latest()).await;
-        let client = Client::new(&config);
+        let config = {
+            let mut builder = aws_config::from_env().behavior_version(BehaviorVersion::latest());
+            if let Some((key_id, secret)) = credentials {
+                builder = builder
+                    .credentials_provider(Credentials::new(key_id, secret, None, None, "r2"));
+                // R2 requires one of its own region names; override whatever
+                // ~/.aws/config says. REPO_REGION defaults to "auto".
+                let region = std::env::var("REPO_REGION").unwrap_or_else(|_| "auto".to_string());
+                builder = builder.region(aws_config::Region::new(region));
+            }
+            builder.load().await
+        };
+        let mut s3_cfg = aws_sdk_s3::config::Builder::from(&config);
+        if let Some(url) = endpoint_url {
+            s3_cfg = s3_cfg.endpoint_url(url);
+        }
+        let client = Client::from_conf(s3_cfg.build());
         Ok(Self {
             client,
             bucket,
             key_prefix,
             bucket_url,
+            use_acl,
         })
     }
 
@@ -103,13 +138,16 @@ impl S3Client {
                 .await
                 .with_context(|| format!("opening {}", path.display()))?;
 
-            self.client
+            let mut req = self
+                .client
                 .put_object()
                 .bucket(&self.bucket)
                 .key(&hash_key)
-                .acl(ObjectCannedAcl::PublicRead)
-                .body(body)
-                .send()
+                .body(body);
+            if self.use_acl {
+                req = req.acl(ObjectCannedAcl::PublicRead);
+            }
+            req.send()
                 .await
                 .with_context(|| format!("S3 PutObject {hash_key}"))?;
         }
@@ -119,13 +157,16 @@ impl S3Client {
         } else {
             println!("  [{filename}] copying {hash_key} → {filename_key}");
             let copy_source = format!("{}/{hash_key}", self.bucket);
-            self.client
+            let mut req = self
+                .client
                 .copy_object()
                 .copy_source(&copy_source)
                 .bucket(&self.bucket)
-                .key(&filename_key)
-                .acl(ObjectCannedAcl::PublicRead)
-                .send()
+                .key(&filename_key);
+            if self.use_acl {
+                req = req.acl(ObjectCannedAcl::PublicRead);
+            }
+            req.send()
                 .await
                 .with_context(|| format!("S3 CopyObject {hash_key} → {filename_key}"))?;
         }
@@ -133,7 +174,7 @@ impl S3Client {
         Ok(self.cdn_url(filename))
     }
 
-    /// Upload a GPG detached-signature file with public-read ACL.
+    /// Upload a GPG detached-signature file.
     pub async fn upload_signature(&self, path: &Path, filename: &str) -> Result<()> {
         if self.object_exists(filename).await? {
             println!("  [sig] {filename} already uploaded, skipping");
@@ -145,20 +186,23 @@ impl S3Client {
             .await
             .with_context(|| format!("opening {}", path.display()))?;
 
-        self.client
+        let mut req = self
+            .client
             .put_object()
             .bucket(&self.bucket)
             .key(&key)
-            .acl(ObjectCannedAcl::PublicRead)
-            .body(body)
-            .send()
+            .body(body);
+        if self.use_acl {
+            req = req.acl(ObjectCannedAcl::PublicRead);
+        }
+        req.send()
             .await
             .with_context(|| format!("S3 PutObject {key}"))?;
 
         Ok(())
     }
 
-    /// Upload arbitrary bytes under `key` (prefixed) with public-read ACL.
+    /// Upload arbitrary bytes under `key` (prefixed).
     /// Pass `cache_control = Some("no-store")` to prevent CDN caching.
     pub async fn upload_bytes(
         &self,
@@ -174,9 +218,11 @@ impl S3Client {
             .put_object()
             .bucket(&self.bucket)
             .key(&prefixed)
-            .acl(ObjectCannedAcl::PublicRead)
             .content_type(content_type)
             .body(ByteStream::from(Bytes::copy_from_slice(bytes)));
+        if self.use_acl {
+            req = req.acl(ObjectCannedAcl::PublicRead);
+        }
         if let Some(cc) = cache_control {
             req = req.cache_control(cc);
         }
@@ -186,19 +232,21 @@ impl S3Client {
         Ok(())
     }
 
-    /// Upload `daedalus-latest-version.json` with public-read ACL.
-    /// Returns the CDN URL.
+    /// Upload `daedalus-latest-version.json`. Returns the CDN URL.
     pub async fn upload_version_json(&self, json: &[u8]) -> Result<String> {
         let key = self.prefixed_key("daedalus-latest-version.json");
         println!("  [version] uploading {key}");
-        self.client
+        let mut req = self
+            .client
             .put_object()
             .bucket(&self.bucket)
             .key(&key)
-            .acl(ObjectCannedAcl::PublicRead)
             .content_type("application/json")
-            .body(ByteStream::from(Bytes::copy_from_slice(json)))
-            .send()
+            .body(ByteStream::from(Bytes::copy_from_slice(json)));
+        if self.use_acl {
+            req = req.acl(ObjectCannedAcl::PublicRead);
+        }
+        req.send()
             .await
             .with_context(|| format!("S3 PutObject {key}"))?;
 

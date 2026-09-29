@@ -27,6 +27,7 @@ hex = "0.4"
 
 # S3
 aws-config = { version = "1", features = ["behavior-version-latest"] }
+aws-credential-types = "1"
 aws-sdk-s3 = "1"
 bytes = "1"
 
@@ -37,6 +38,16 @@ reqwest = { version = "0.12", default-features = false, features = ["json", "str
 axum = "0.7"
 tower-http = { version = "0.5", features = ["fs", "trace"] }
 tokio-util = { version = "0.7", features = ["io"] }
+
+# Compression (APT Packages.gz, YUM primary.xml.gz, Arch DB)
+flate2 = "1"
+
+# Hashing (APT Packages needs MD5 + SHA1 in addition to SHA-256)
+md5 = { package = "md-5", version = "0.10" }
+sha1 = "0.10"
+
+# Tar archive building (Arch .db.tar.gz)
+tar = "0.4"
 
 # Error handling + logging
 anyhow = "1"
