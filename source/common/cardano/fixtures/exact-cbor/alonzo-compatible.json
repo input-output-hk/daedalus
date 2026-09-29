@@ -1,16 +1,16 @@
 {
   "id": "alonzo-ledger-compatible",
-  "description": "Alonzo ledger golden tx.cbor projected onto Conway-admitted fields: original input/output/fee, re-committed auxiliary data and a bound native-script mint. Derived compatibility vector, not the original signed ledger transaction.",
-  "cborHex": "84a70081825820ee155ace9c40292074cb6aff8c9ccdd273c81648ff1149ef36bcea6ebb8a3e2500018183583900cb9358529df4729c3246a2a033cb9821abbfd16de4888005904abc410d6a577e9441ad8ed9663931906e4d43ece8f82c712b1d0235affb06821864a1581ca646474b8f5431261506b6c273d307c7569a4eb6c96b42dd4a29520aa14a636f75747473436f696e1903e85820ee155ace9c40292074cb6aff8c9ccdd273c81648ff1149ef36bcea6ebb8a3e25021903e703040758204d5237e1601e3d0ceeda753ef90f94c09309c18da21eca29fd660c3488f30be9080209a1581c5334c8c55ec6518f2e262da617d3170bf0722f43813d64dbaf0ff0b9a145617373657401a101818200581c11111111111111111111111111111111111111111111111111111111f5d90103a300a40166737472696e67024562797465730382010204a10341620181820180028146450100002261",
+  "description": "Derived from the pinned Alonzo ledger golden: its input, Byron output, fee and auxiliary data, plus a bound native-script mint. Conway-compatible vector, not the original signed ledger transaction.",
+  "cborHex": "84a70081825820ee155ace9c40292074cb6aff8c9ccdd273c81648ff1149ef36bcea6ebb8a3e2500018182584782d818583d83581c239e480f0260bfe927d69166886a0315eee294eec1098977656f8e10a20157566120636f6d70726573736564206c656e6e612e706e67024100001a359e595f1a000186a002030304075820196a928ad0bf1009d0eae6df1d245a585d455c4a999fbbdd11279a894370cfec080209a1581c5334c8c55ec6518f2e262da617d3170bf0722f43813d64dbaf0ff0b9a145617373657401a101818200581c11111111111111111111111111111111111111111111111111111111f5d90103a300a50166737472696e670245627974657303010482010205a10341620181830302838201828204008205098202828200581c0d94e174732ef9aae73f395ab44507bfa983d65023c11a951f0c32e48200581ce0a714319812c3f773ba04ec5d6b3ffcd5aad85006805b047b0825418200581cc7b31a062855f437a05caf5060582ea40e840ebe4b431ffdf84780db028146450100002261",
   "provenance": {
     "repository": "https://github.com/IntersectMBO/cardano-ledger",
-    "tag": "cardano-ledger-conway-1.22.1.0",
-    "commit": "226b002d5b5e83e24355f8a28ab214f3259eabda",
-    "sourcePath": "eras/alonzo/test-suite/golden/tx.cbor",
-    "sourceBlob": "07fa93f4aec98354d0a942ded4727be0e09e3f0c",
-    "sourceSha256": "4d36863697dee9beb3f57d74af3e8cf7ff96641d0458b03790eb4861d917bdb1",
-    "extraction": "From alonzo-golden.json retain body keys 0,1,2,3,8 and the source output and auxiliary data; canonical-encode the auxiliary, recompute body key 7, add native-script mint with its computed policy hash and witness key 1; re-encode the four-item envelope. Original signatures and unrelated historical fields removed.",
-    "fixtureSha256": "6f5ab3e13fa3fe41bd0ff76347de601a0519cb44e2076e3362f4df457bda9a58",
-    "ledgerTxId": "f248e12e76a664c248ea8a67276a51b726f31794496cb36a39a4d73e700ceb7e"
+    "tag": "cardano-ledger-conway-1.23.0.0",
+    "commit": "f649f9751074d2ab3de033fc3912f29c9862c1f5",
+    "sourcePath": "eras/alonzo/impl/golden/tx.cbor",
+    "sourceBlob": "a093b3778f14014ab447886138c4eea43ff432a1",
+    "sourceSha256": "cb0062914f0eddcce70452dedc48d17731faaf87163a80c79cd981b51eb49dc1",
+    "extraction": "From the pinned Alonzo golden retain body keys 0,2,3,8, output index 3 and auxiliary; canonical-encode auxiliary, recompute body key 7, add native-script mint with its computed policy hash and witness key 1; encode the four-item envelope. Retired fields and original signatures are removed.",
+    "fixtureSha256": "ef3ff53dcafae10809ce4a2d26136298b87e679de18563a202d2af46427b16dc",
+    "ledgerTxId": "be8816b7cce7efc08b8a7336239f96c66a982135e4a34e5ee503b17ea6685813"
   }
 }

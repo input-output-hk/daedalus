@@ -337,29 +337,31 @@
     {
       "id": "alonzo-ledger-compatible",
       "file": "alonzo-compatible.json",
+      "source": "cardano-ledger-conway-1.23.0.0:eras/alonzo/impl/golden/tx.cbor",
       "expected": {
-        "byteLength": 348,
-        "body": { "start": 1, "end": 268 },
-        "witnessSet": { "start": 268, "end": 303 },
-        "isValid": { "start": 303, "end": 304 },
-        "auxiliaryData": { "start": 304, "end": 348 },
-        "outputs": [{ "start": 42, "end": 185 }],
+        "byteLength": 393,
+        "body": { "start": 1, "end": 202 },
+        "witnessSet": { "start": 202, "end": 237 },
+        "isValid": { "start": 237, "end": 238 },
+        "auxiliaryData": { "start": 238, "end": 393 },
+        "outputs": [{ "start": 42, "end": 121 }],
         "collateralReturn": null,
-        "bodyHashBlake2b256": "f248e12e76a664c248ea8a67276a51b726f31794496cb36a39a4d73e700ceb7e"
+        "bodyHashBlake2b256": "be8816b7cce7efc08b8a7336239f96c66a982135e4a34e5ee503b17ea6685813"
       }
     },
     {
       "id": "babbage-ledger-compatible",
       "file": "babbage-compatible.json",
+      "source": "cardano-ledger-conway-1.23.0.0:eras/babbage/impl/golden/tx.cbor",
       "expected": {
-        "byteLength": 316,
-        "body": { "start": 1, "end": 236 },
-        "witnessSet": { "start": 236, "end": 271 },
-        "isValid": { "start": 271, "end": 272 },
-        "auxiliaryData": { "start": 272, "end": 316 },
-        "outputs": [{ "start": 42, "end": 153 }],
+        "byteLength": 468,
+        "body": { "start": 1, "end": 266 },
+        "witnessSet": { "start": 266, "end": 301 },
+        "isValid": { "start": 301, "end": 302 },
+        "auxiliaryData": { "start": 302, "end": 468 },
+        "outputs": [{ "start": 42, "end": 185 }],
         "collateralReturn": null,
-        "bodyHashBlake2b256": "3e0b8c44c7e8e3447709b926410c16b9810f1a7f404cb9556c4c0de27758c214"
+        "bodyHashBlake2b256": "d284c1c512bbb781a5a66fdd4f8c5b4f2a48be733b0d7b4a760a35c319963fe1"
       }
     },
     {

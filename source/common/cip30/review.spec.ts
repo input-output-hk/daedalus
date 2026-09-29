@@ -51,7 +51,7 @@ describe('CIP-30 transaction review', () => {
     ['Conway', semanticFixture, false],
   ] as const)(
     'displays exact %s-family effects and approves only authenticated semantics',
-    (_family, fixture, mint) => {
+    (family, fixture, mint) => {
       const envelope = parseConwayTransactionEnvelope(
         Buffer.from(fixture.cborHex, 'hex')
       );
@@ -74,11 +74,16 @@ describe('CIP-30 transaction review', () => {
           : ['output', 'fee'])
       );
       expect(review.effects.some(({ kind }) => kind === 'mint')).toBe(mint);
-      expect(review.display.fee).toBe(mint ? '999' : '0');
+      expect(review.display.fee).toBe(mint ? '3' : '0');
       expect(review.display.entries.find(({ role }) => role === 'output')?.value?.coin)
-        .toBe(mint ? '100' : '0');
+        .toBe(family === 'Alonzo' ? '100000' : family === 'Babbage' ? '100' : '0');
       expect(review.display.mint.map(({ assetName, quantity }) => [assetName, quantity]))
         .toEqual(mint ? [['6173736574', '1']] : []);
+      if (family === 'Babbage')
+        expect(review.display.entries.find(({ role }) => role === 'output')).toMatchObject({
+          hasDatum: true,
+          hasReferenceScript: true,
+        });
       expect(parseCip30TransactionReview(review)).toEqual(review);
     }
   );
