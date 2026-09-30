@@ -108,6 +108,18 @@ describe('dApp backend client contracts', () => {
           index === 0 ? { ...item, available_eras: ['babbage'] } : item
         ),
       },
+      {
+        ...capabilities,
+        capabilities: capabilities.capabilities.map((item, index) =>
+          index === 0 ? { ...item, available_eras: ['conway', 'babbage'] } : item
+        ),
+      },
+      {
+        ...capabilities,
+        capabilities: capabilities.capabilities.map((item, index) =>
+          index === 0 ? { ...item, name: 'durable-wallet-submit' } : item
+        ),
+      },
       { ...capabilities, capabilities: capabilities.capabilities.slice(1) },
     ])
       expect(() =>
