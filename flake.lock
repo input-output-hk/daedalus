@@ -3,16 +3,16 @@
     "cardano-node": {
       "flake": false,
       "locked": {
-        "lastModified": 1789605875,
-        "narHash": "sha256-5uiWOPDAt/5pB1MHjS1z5BNA8kuh45WQgDSfyOjTSgk=",
+        "lastModified": 1790286962,
+        "narHash": "sha256-2ra+PXU9/rfXaDzO8RrU1bF9dTQ2UmeCOijIuJd8Gs8=",
         "owner": "IntersectMBO",
         "repo": "cardano-node",
-        "rev": "fef83fed01d7926f3de83b3b917be5a4a48768b5",
+        "rev": "938cba990357ae7c4b7f95c8f75dd9d31174bbeb",
         "type": "github"
       },
       "original": {
         "owner": "IntersectMBO",
-        "ref": "11.1.2",
+        "ref": "11.1.3",
         "repo": "cardano-node",
         "type": "github"
       }

@@ -102,6 +102,8 @@ type Props = {
   isMaxNumberOfWalletsReached: boolean;
   isMainnet: boolean;
   isTestnet: boolean;
+  isPreprod: boolean;
+  isPreview: boolean;
   isProduction: boolean;
 };
 
@@ -113,6 +115,8 @@ class WalletAdd extends Component<Props> {
   static defaultProps = {
     isMainnet: false,
     isTestnet: false,
+    isPreprod: false,
+    isPreview: false,
   };
 
   render() {
@@ -125,6 +129,8 @@ class WalletAdd extends Component<Props> {
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
+      isPreprod,
+      isPreview,
       isProduction,
     } = this.props;
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -176,7 +182,8 @@ class WalletAdd extends Component<Props> {
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
                 isMaxNumberOfWalletsReached ||
-                (isProduction && !(isMainnet || isTestnet))
+                (isProduction &&
+                  !(isMainnet || isTestnet || isPreprod || isPreview))
               }
             />
           </div>
