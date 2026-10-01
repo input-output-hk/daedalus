@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Restore wallet import from a Daedalus key file on the preprod and preview networks ([PR #3417](https://github.com/input-output-hk/daedalus/pull/3417)).
+
 ## 11.4.0
 
 ### Fixes
