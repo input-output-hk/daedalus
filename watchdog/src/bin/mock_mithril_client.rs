@@ -6,8 +6,14 @@
 //     → prints snapshot metadata JSON to stdout and exits 0.
 //
 //   cardano-db download latest --download-dir <dir> [--include-ancillary]
+//       [--start <n> --end <m>]
 //     → emits JSON progress lines, creates a valid staged-DB layout under
-//       <dir>, and exits 0.
+//       <dir>, and exits 0.  With --start/--end it also writes the immutable
+//       trio for every number in the range, containing "certified <n>", and
+//       with --include-ancillary the trio for <m> + 1, containing "ancillary".
+//
+// MOCK_MITHRIL_ARGS_FILE, if set, receives the download arguments as a JSON
+// array so tests can assert what the watchdog passed.
 //
 // The snapshot's immutable_file_number is set very high (999_999) so the
 // behind-ness probe always concludes that a sync is needed when force=false.
@@ -42,6 +48,9 @@ fn main() {
     if is_download {
         let download_dir = get_flag(&args, "--download-dir")
             .expect("mock-mithril-client download requires --download-dir");
+        if let Ok(path) = env::var("MOCK_MITHRIL_ARGS_FILE") {
+            fs::write(path, serde_json::to_string(&args[1..]).unwrap()).unwrap();
+        }
 
         // Emit JSON progress lines (watchdog reads these from both stdout/stderr).
         for i in 1u64..=5 {
@@ -68,5 +77,21 @@ fn main() {
         fs::create_dir_all(db.join("ledger").join("12345")).unwrap();
         fs::write(db.join("clean"), b"").unwrap();
         fs::write(db.join("protocolMagicId"), b"764824073").unwrap();
+
+        let start = get_flag(&args, "--start").and_then(|v| v.parse::<u64>().ok());
+        let end = get_flag(&args, "--end").and_then(|v| v.parse::<u64>().ok());
+        if let (Some(start), Some(end)) = (start, end) {
+            let write_trio = |n: u64, content: &str| {
+                for ext in ["chunk", "primary", "secondary"] {
+                    fs::write(db.join("immutable").join(format!("{n:05}.{ext}")), content).unwrap();
+                }
+            };
+            for n in start..=end {
+                write_trio(n, &format!("certified {n}"));
+            }
+            if args.iter().any(|a| a == "--include-ancillary") {
+                write_trio(end + 1, "ancillary");
+            }
+        }
     }
 }
