@@ -1722,6 +1722,16 @@
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn"
       },
       {
+        "defaultMessage": "!!!Copy",
+        "description": "Label of the button that copies all diagnostic information to the clipboard",
+        "id": "daedalus.diagnostics.dialog.copyDiagnostics"
+      },
+      {
+        "defaultMessage": "!!!Copied",
+        "description": "Label of the copy button after the diagnostic information has been copied to the clipboard",
+        "id": "daedalus.diagnostics.dialog.copiedDiagnostics"
+      },
+      {
         "defaultMessage": "!!!CONNECTION ERROR",
         "description": "CONNECTION ERROR",
         "id": "daedalus.diagnostics.dialog.connectionError"

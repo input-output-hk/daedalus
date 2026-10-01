@@ -17,6 +17,8 @@ import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
+import { formatDiagnosticsText } from '../../utils/formatDiagnosticsText';
+import type { DiagnosticsTextSection } from '../../utils/formatDiagnosticsText';
 import { getSupportUrl } from '../../../../common/utils/reporting';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -218,6 +220,18 @@ export const messages = defineMessages({
     id: 'daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn',
     defaultMessage: '!!!Open',
     description: 'Open',
+  },
+  copyDiagnostics: {
+    id: 'daedalus.diagnostics.dialog.copyDiagnostics',
+    defaultMessage: '!!!Copy',
+    description:
+      'Label of the button that copies all diagnostic information to the clipboard',
+  },
+  copiedDiagnostics: {
+    id: 'daedalus.diagnostics.dialog.copiedDiagnostics',
+    defaultMessage: '!!!Copied',
+    description:
+      'Label of the copy button after the diagnostic information has been copied to the clipboard',
   },
   connectionError: {
     id: 'daedalus.diagnostics.dialog.connectionError',
@@ -466,7 +480,9 @@ type Props = {
 type State = {
   isNodeRestarting: boolean;
   isWalletRestarting: boolean;
+  isDiagnosticsCopied: boolean;
 };
+const COPIED_FEEDBACK_DURATION = 2000;
 const FINAL_CARDANO_NODE_STATES = [
   CardanoNodeStates.RUNNING,
   CardanoNodeStates.UPDATED,
@@ -487,7 +503,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
     this.state = {
       isNodeRestarting: false,
       isWalletRestarting: false,
+      isDiagnosticsCopied: false,
     };
+  }
+
+  copiedTimeout: ReturnType<typeof setTimeout> | null | undefined;
+
+  componentWillUnmount() {
+    if (this.copiedTimeout) clearTimeout(this.copiedTimeout);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -623,7 +646,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
       nodeSocketWaitMs,
       walletReadyWaitMs,
     } = coreInfo;
-    const { isNodeRestarting, isWalletRestarting } = this.state;
+    const { isNodeRestarting, isWalletRestarting, isDiagnosticsCopied } =
+      this.state;
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError as ErrorType;
     const unknownDiskSpaceSupportUrl = getSupportUrl(intl.locale);
@@ -644,7 +668,23 @@ class DaedalusDiagnostics extends Component<Props, State> {
         <div className={styles.tables}>
           <div className={styles.table}>
             <div>
-              {getSectionRow('systemInfo')}
+              {getSectionRow(
+                'systemInfo',
+                <span style={{ display: 'flex', float: 'right' }}>
+                  <CopyToClipboard
+                    text={this.getDiagnosticsText()}
+                    onCopy={this.handleCopyDiagnostics}
+                  >
+                    <button className={styles.cardanoNodeStatusBtn}>
+                      {intl.formatMessage(
+                        isDiagnosticsCopied
+                          ? messages.copiedDiagnostics
+                          : messages.copyDiagnostics
+                      )}
+                    </button>
+                  </CopyToClipboard>
+                </span>
+              )}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
               {getRow('cpu', <PopOver content={cpu}>{cpu}</PopOver>)}
@@ -916,6 +956,185 @@ class DaedalusDiagnostics extends Component<Props, State> {
       </div>
     );
   }
+
+  handleCopyDiagnostics = () => {
+    if (this.copiedTimeout) clearTimeout(this.copiedTimeout);
+    this.setState({ isDiagnosticsCopied: true });
+    this.copiedTimeout = setTimeout(() => {
+      this.setState({ isDiagnosticsCopied: false });
+    }, COPIED_FEEDBACK_DURATION);
+  };
+
+  getDiagnosticsText = (): string => {
+    const { intl } = this.context;
+    const {
+      systemInfo,
+      coreInfo,
+      cardanoNodeState,
+      isNodeResponding,
+      isNodeSyncing,
+      isNodeInSync,
+      isNodeTimeCorrect,
+      isConnected,
+      isSynced,
+      syncPercentage,
+      localTimeDifference,
+      isSystemTimeCorrect,
+      isSystemTimeIgnored,
+      isCheckingSystemTime,
+      localTip,
+      networkTip,
+      nodeConnectionError,
+    } = this.props;
+    const { formatMessage } = intl;
+    const onOff = (value: boolean) =>
+      formatMessage(value ? messages.statusOn : messages.statusOff);
+    const onOffForUserSettings = (value: boolean) =>
+      formatMessage(
+        value
+          ? messages.statusOnForUserSettings
+          : messages.statusOffForUserSettings
+      );
+    const tip = (value: TipInfo | null | undefined) =>
+      `${formatMessage(messages.epoch)}: ${
+        value && value.epoch ? formattedNumber(value.epoch) : '-'
+      } ${formatMessage(messages.slot)}: ${
+        value && value.slot ? formattedNumber(value.slot) : '-'
+      }`;
+    const row = (messageId: string, value: string | number) => ({
+      label: formatMessage(messages[messageId]),
+      value,
+    });
+    const availableDiskSpace =
+      formattedSize(systemInfo.availableDiskSpace) ||
+      formatMessage(messages.unknownDiskSpace);
+    const { message, code } = get(
+      nodeConnectionError,
+      'values',
+      '{}'
+    ) as ErrorType;
+    const sections: Array<DiagnosticsTextSection> = [
+      {
+        title: formatMessage(messages.systemInfo),
+        rows: [
+          row('platform', systemInfo.platform),
+          row('platformVersion', systemInfo.platformVersion),
+          row('cpu', systemInfo.cpu),
+          row('ram', systemInfo.ram),
+          row('availableDiskSpace', availableDiskSpace),
+          row(
+            'hasMetHardwareRequirementsLabel',
+            formatMessage(
+              systemInfo.hasMetHardwareRequirements
+                ? messages.hasMetHardwareRequirementsStatusGoodValue
+                : messages.hasMetHardwareRequirementsStatusLowValue
+            )
+          ),
+          row(
+            'isRTSFlagsModeEnabled',
+            onOffForUserSettings(systemInfo.isRTSFlagsModeEnabled)
+          ),
+        ],
+      },
+      {
+        title: formatMessage(messages.coreInfo),
+        rows: [
+          row('daedalusVersion', coreInfo.daedalusVersion),
+          row('daedalusBuildNumber', coreInfo.daedalusBuildNumber),
+          row('daedalusMainProcessID', coreInfo.daedalusMainProcessID),
+          row('daedalusProcessID', coreInfo.daedalusProcessID),
+          row(
+            'blankScreenFix',
+            onOffForUserSettings(coreInfo.isBlankScreenFixActive)
+          ),
+          row('stateDirectoryPath', coreInfo.daedalusStateDirectoryPath),
+          row('cardanoNodeVersion', coreInfo.cardanoNodeVersion),
+          row('cardanoNodePID', coreInfo.cardanoNodePID || '-'),
+          row('cardanoNodeUptime', coreInfo.cardanoNodeUptime),
+          row('cardanoWalletVersion', coreInfo.cardanoWalletVersion),
+          row('cardanoWalletPID', coreInfo.cardanoWalletPID || '-'),
+          row('cardanoWalletUptime', coreInfo.cardanoWalletUptime),
+          row('cardanoWalletApiPort', coreInfo.cardanoWalletApiPort || '-'),
+          row('cardanoWalletRestartCount', coreInfo.cardanoWalletRestartCount),
+          ...(coreInfo.watchdogPid != null && coreInfo.watchdogPid > 0
+            ? [row('watchdogPid', coreInfo.watchdogPid)]
+            : []),
+          ...(coreInfo.nodeForceKilled != null
+            ? [row('nodeForceKilled', onOff(coreInfo.nodeForceKilled))]
+            : []),
+          ...(coreInfo.cardanoWalletRestartCount > 0 &&
+          coreInfo.lastWalletExitCode != null
+            ? [
+                row(
+                  'cardanoWalletLastExitCode',
+                  String(coreInfo.lastWalletExitCode)
+                ),
+              ]
+            : []),
+          ...(coreInfo.nodeSocketWaitMs != null
+            ? [row('nodeSocketWaitMs', `${coreInfo.nodeSocketWaitMs}ms`)]
+            : []),
+          ...(coreInfo.walletReadyWaitMs != null
+            ? [row('walletReadyWaitMs', `${coreInfo.walletReadyWaitMs}ms`)]
+            : []),
+        ],
+      },
+      {
+        title: formatMessage(messages.connectionError),
+        rows:
+          isConnected && nodeConnectionError
+            ? [
+                {
+                  label: formatMessage(messages.message),
+                  value: message || '-',
+                },
+                { label: formatMessage(messages.code), value: code || '-' },
+              ]
+            : [],
+      },
+      {
+        title: formatMessage(messages.daedalusStatus),
+        rows: [
+          row(
+            'cardanoNetwork',
+            formatMessage(globalMessages[`network_${coreInfo.cardanoNetwork}`])
+          ),
+          row('connected', onOff(isConnected)),
+          row('synced', onOff(isSynced)),
+          row('syncPercentage', `${formattedNumber(syncPercentage, 2)}%`),
+          row('lastNetworkBlock', tip(networkTip)),
+          row('lastSynchronizedBlock', tip(localTip)),
+          row(
+            'localTimeDifference',
+            localTimeDifference != null
+              ? `${formattedNumber(localTimeDifference)} \u03bcs`
+              : formatMessage(messages.serviceUnreachable)
+          ),
+          row('systemTimeCorrect', onOff(isSystemTimeCorrect)),
+          row('systemTimeIgnored', onOff(isSystemTimeIgnored)),
+          row('checkingNodeTime', onOff(isCheckingSystemTime)),
+        ],
+      },
+      {
+        title: formatMessage(messages.cardanoNodeStatus),
+        rows: [
+          row(
+            'cardanoNodeState',
+            upperFirst(
+              cardanoNodeState != null
+                ? formatMessage(this.getLocalisationForCardanoNodeState())
+                : 'unknown'
+            )
+          ),
+          row('cardanoNodeResponding', onOff(isNodeResponding)),
+          row('cardanoNodeTimeCorrect', onOff(isNodeTimeCorrect)),
+          row('cardanoNodeSyncing', onOff(isNodeSyncing)),
+          row('cardanoNodeInSync', onOff(isNodeInSync)),
+        ],
+      },
+    ];
+    return formatDiagnosticsText(sections);
+  };
 
   getLocalisationForCardanoNodeState = () => {
     const { cardanoNodeState } = this.props;
