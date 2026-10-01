@@ -249,6 +249,15 @@ impl<'a> Cfg<'a> {
 }
 
 fn spawn_watchdog(config: &Value) -> (Child, ChildStdin, mpsc::Receiver<Value>) {
+    spawn_watchdog_with_env(config, &[])
+}
+
+/// Like `spawn_watchdog`, with extra environment variables that the watchdog
+/// passes on to the mock binaries it spawns.
+fn spawn_watchdog_with_env(
+    config: &Value,
+    envs: &[(&str, &str)],
+) -> (Child, ChildStdin, mpsc::Receiver<Value>) {
     let state_dir = config["node"]["state_dir"]
         .as_str()
         .expect("node.state_dir");
@@ -258,6 +267,7 @@ fn spawn_watchdog(config: &Value) -> (Child, ChildStdin, mpsc::Receiver<Value>) 
     let mut child = Command::new(WATCHDOG)
         .arg("--config")
         .arg(&config_path)
+        .envs(envs.iter().copied())
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
@@ -443,6 +453,67 @@ fn partial_sync_while_running() {
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Partial sync with the local chain behind the certified tip: the highest
+/// local chunk (the one the node was still appending to) is downloaded again
+/// and replaced, so no blocks are missing between it and the next chunk.
+#[test]
+fn partial_sync_replaces_incomplete_highest_local_chunk() {
+    let dir = TempDir::new("partial-sync-gap");
+    let immutable = dir.path().join("chain").join("immutable");
+    std::fs::create_dir_all(&immutable).unwrap();
+    let trio = ["chunk", "primary", "secondary"];
+    for n in 0..=5u64 {
+        let content = if n == 5 {
+            "local 5 prefix".to_string()
+        } else {
+            format!("local {n}")
+        };
+        for ext in trio {
+            std::fs::write(immutable.join(format!("{n:05}.{ext}")), &content).unwrap();
+        }
+    }
+    let args_file = dir.path().join("mithril-download-args.json");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_CERTIFIED_IMMUTABLE", "30"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "start_mithril", "force": true}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    let flag = |name: &str| args.windows(2).find(|w| w[0] == name).map(|w| w[1].clone());
+    assert_eq!(flag("--start").as_deref(), Some("5"), "args: {args:?}");
+    assert_eq!(flag("--end").as_deref(), Some("30"), "args: {args:?}");
+    assert!(
+        args.iter().any(|a| a == "--allow-override"),
+        "args: {args:?}"
+    );
+
+    let read = |n: u64, ext: &str| {
+        std::fs::read_to_string(immutable.join(format!("{n:05}.{ext}"))).unwrap()
+    };
+    for ext in trio {
+        assert_eq!(read(4, ext), "local 4");
+        assert_eq!(read(5, ext), "certified 5");
+        assert_eq!(read(30, ext), "certified 30");
+        assert_eq!(read(31, ext), "ancillary");
+    }
 
     stop(&mut stdin);
     expect(&rx, "stopped");

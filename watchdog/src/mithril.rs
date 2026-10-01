@@ -71,6 +71,11 @@ pub async fn write_marker(state_dir: &str, state: &str) -> Result<()> {
     Ok(())
 }
 
+/// Parses the chunk number from an immutable file name ("09170.chunk" → 9170).
+fn immutable_file_number(file_name: &str) -> Option<u64> {
+    file_name.split('.').next()?.parse().ok()
+}
+
 /// Returns the highest immutable chunk number found in chain_path/immutable/,
 /// by parsing the numeric prefix of each filename (e.g. "09170.chunk" → 9170).
 /// Returns None if the directory is missing or empty.
@@ -79,15 +84,27 @@ async fn highest_local_immutable(chain_path: &str) -> Option<u64> {
     let mut entries = tokio::fs::read_dir(dir).await.ok()?;
     let mut max_num: Option<u64> = None;
     while let Ok(Some(entry)) = entries.next_entry().await {
-        let name = entry.file_name();
-        let name_str = name.to_string_lossy();
-        if let Some(stem) = name_str.split('.').next() {
-            if let Ok(n) = stem.parse::<u64>() {
-                max_num = Some(max_num.unwrap_or(0).max(n));
-            }
+        if let Some(n) = immutable_file_number(&entry.file_name().to_string_lossy()) {
+            max_num = Some(max_num.unwrap_or(0).max(n));
         }
     }
     max_num
+}
+
+/// The inclusive `--start`/`--end` immutable file range for a partial sync, or
+/// None for a bootstrap (no local immutable files), which downloads everything.
+///
+/// The highest local chunk is the one cardano-node was still appending to, so
+/// it is usually a strict prefix of the certified chunk with the same number.
+/// The range therefore starts at that chunk, not after it: skipping it would
+/// install the following chunks after an incomplete one and leave the blocks
+/// missing from its tail permanently absent from the ImmutableDB.
+///
+/// When the local chain is at or ahead of the certified tip, only the
+/// certified chunk is downloaded, because `--include-ancillary` requires the
+/// range to contain it.
+fn download_range(local_highest: Option<u64>, certified: u64) -> Option<(u64, u64)> {
+    local_highest.map(|local| (local.min(certified), certified))
 }
 
 pub(crate) async fn probe(cfg: &MithrilConfig) -> Result<(Option<u64>, u64)> {
@@ -143,19 +160,12 @@ async fn run_download(
     .arg("--include-ancillary")
     .env("AGGREGATOR_ENDPOINT", &cfg.aggregator_url)
     .env("GENESIS_VERIFICATION_KEY", &cfg.genesis_vkey);
-    if let Some(local) = local_highest {
-        // When at or ahead of the certified tip, download just the certified chunk
-        // to get the ledger state; --allow-override handles the overlap harmlessly.
-        let start = if local >= certified {
-            certified
-        } else {
-            local + 1
-        };
+    if let Some((start, end)) = download_range(local_highest, certified) {
         cmd.args([
             "--start",
             &start.to_string(),
             "--end",
-            &certified.to_string(),
+            &end.to_string(),
             "--allow-override",
         ]);
     }
@@ -377,13 +387,34 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
     }
 
     // Partial sync: move new immutable files into the existing chain directory.
+    // A staged file replaces the local file of the same name, which is how the
+    // incomplete highest local chunk is swapped for the certified one.
     let src_immutable = staging_db.join("immutable");
     let dst_immutable = chain_path.join("immutable");
+    let mut highest_staged: Option<u64> = None;
     let mut entries = tokio::fs::read_dir(&src_immutable).await?;
     while let Some(entry) = entries.next_entry().await? {
+        if let Some(n) = immutable_file_number(&entry.file_name().to_string_lossy()) {
+            highest_staged = Some(highest_staged.unwrap_or(0).max(n));
+        }
         let src = entry.path();
         let dst = dst_immutable.join(entry.file_name());
         move_file(&src, &dst).await?;
+    }
+
+    // The highest staged chunk comes from the ancillary archive and is not
+    // finalized, so it can be shorter than a local chunk with the same number.
+    // Any local chunk after it would then follow a gap; remove those so the
+    // ImmutableDB ends at the installed tip and the node syncs the rest.
+    if let Some(highest_staged) = highest_staged {
+        let mut entries = tokio::fs::read_dir(&dst_immutable).await?;
+        while let Some(entry) = entries.next_entry().await? {
+            let above_tip = immutable_file_number(&entry.file_name().to_string_lossy())
+                .is_some_and(|n| n > highest_staged);
+            if above_tip {
+                tokio::fs::remove_file(entry.path()).await?;
+            }
+        }
     }
 
     // Replace ledger directory.
@@ -841,6 +872,136 @@ pub async fn run_pipeline(
 
 #[cfg(test)]
 mod tests {
+    mod download_range {
+        use super::super::download_range;
+
+        #[test]
+        fn starts_at_the_highest_local_chunk_when_behind() {
+            assert_eq!(download_range(Some(9170), 9172), Some((9170, 9172)));
+        }
+
+        #[test]
+        fn starts_at_chunk_zero_when_only_chunk_zero_exists() {
+            assert_eq!(download_range(Some(0), 5), Some((0, 5)));
+        }
+
+        #[test]
+        fn downloads_only_the_certified_chunk_when_level() {
+            assert_eq!(download_range(Some(9172), 9172), Some((9172, 9172)));
+        }
+
+        #[test]
+        fn downloads_only_the_certified_chunk_when_ahead() {
+            assert_eq!(download_range(Some(9180), 9172), Some((9172, 9172)));
+        }
+
+        #[test]
+        fn downloads_everything_without_local_chunks() {
+            assert_eq!(download_range(None, 9172), None);
+        }
+    }
+
+    mod partial_install {
+        use super::super::install_staged;
+        use std::fs;
+        use std::path::{Path, PathBuf};
+
+        struct TempDir(PathBuf);
+
+        impl TempDir {
+            fn new(label: &str) -> Self {
+                let p = std::env::temp_dir().join(format!(
+                    "wdg-partial-{}-{}-{}",
+                    label,
+                    std::process::id(),
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap()
+                        .subsec_nanos()
+                ));
+                fs::create_dir_all(&p).unwrap();
+                TempDir(p)
+            }
+        }
+
+        impl Drop for TempDir {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+
+        const TRIO: [&str; 3] = ["chunk", "primary", "secondary"];
+
+        fn write_trio(immutable: &Path, n: u64, content: &str) {
+            fs::create_dir_all(immutable).unwrap();
+            for ext in TRIO {
+                fs::write(immutable.join(format!("{n:05}.{ext}")), content).unwrap();
+            }
+        }
+
+        fn read(immutable: &Path, n: u64, ext: &str) -> Option<String> {
+            fs::read_to_string(immutable.join(format!("{n:05}.{ext}"))).ok()
+        }
+
+        /// A staged DB as mithril-client lays it out for `--start first --end
+        /// certified --include-ancillary`: certified chunks first..=certified
+        /// plus the unfinalized chunk certified + 1 from the ancillary archive.
+        fn make_staging(root: &Path, first: u64, certified: u64) -> PathBuf {
+            let staging = root.join("staging");
+            let immutable = staging.join("immutable");
+            for n in first..=certified {
+                write_trio(&immutable, n, &format!("certified {n}"));
+            }
+            write_trio(&immutable, certified + 1, "ancillary");
+            fs::create_dir_all(staging.join("ledger").join("12345")).unwrap();
+            fs::write(staging.join("clean"), b"").unwrap();
+            staging
+        }
+
+        #[tokio::test]
+        async fn replaces_the_incomplete_highest_local_chunk() {
+            let root = TempDir::new("behind");
+            let chain = root.0.join("chain");
+            let immutable = chain.join("immutable");
+            for n in 0..5 {
+                write_trio(&immutable, n, &format!("local {n}"));
+            }
+            write_trio(&immutable, 5, "local 5 prefix");
+
+            let staging = make_staging(&root.0, 5, 8);
+            install_staged(&staging, &chain, true).await.unwrap();
+
+            for ext in TRIO {
+                assert_eq!(read(&immutable, 4, ext).as_deref(), Some("local 4"));
+                assert_eq!(read(&immutable, 5, ext).as_deref(), Some("certified 5"));
+                assert_eq!(read(&immutable, 8, ext).as_deref(), Some("certified 8"));
+                assert_eq!(read(&immutable, 9, ext).as_deref(), Some("ancillary"));
+            }
+        }
+
+        #[tokio::test]
+        async fn removes_local_chunks_after_the_installed_tip() {
+            let root = TempDir::new("ahead");
+            let chain = root.0.join("chain");
+            let immutable = chain.join("immutable");
+            for n in 0..=12 {
+                write_trio(&immutable, n, &format!("local {n}"));
+            }
+
+            let staging = make_staging(&root.0, 8, 8);
+            install_staged(&staging, &chain, true).await.unwrap();
+
+            for ext in TRIO {
+                assert_eq!(read(&immutable, 7, ext).as_deref(), Some("local 7"));
+                assert_eq!(read(&immutable, 8, ext).as_deref(), Some("certified 8"));
+                assert_eq!(read(&immutable, 9, ext).as_deref(), Some("ancillary"));
+                for n in 10..=12 {
+                    assert_eq!(read(&immutable, n, ext), None, "{n:05}.{ext} kept");
+                }
+            }
+        }
+    }
+
     // Real NTFS junction tests.
     //
     // The parallel TypeScript suite (chainStorageWindows.realfs.spec.ts) covers
