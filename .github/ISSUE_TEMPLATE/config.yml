@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Daedalus Customer Support
+    url: https://github.com/input-output-hk/daedalus/blob/master/SUPPORT.md
+    about: Get help using Daedalus or troubleshooting an individual wallet issue.

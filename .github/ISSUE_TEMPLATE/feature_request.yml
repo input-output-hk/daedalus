@@ -1,0 +1,87 @@
+name: Feature Request
+description: Suggest an improvement or new capability for Daedalus
+title: "[FEATURE] "
+labels:
+  - enhancement
+  - needs triage
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement to Daedalus.
+
+        GitHub feature requests are intended for public product and engineering discussion.
+
+        If you need help using Daedalus or troubleshooting an existing problem, please review the [Daedalus support guidance](https://github.com/se7en-labs-inc/daedalus/blob/master/SUPPORT.md).
+
+        Please do not include wallet recovery phrases, seed phrases, private keys, spending passwords or other wallet secrets.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or need
+      description: Describe the problem, limitation or user need that this feature would address.
+      placeholder: Explain the problem rather than only describing the proposed solution.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      description: Describe the feature or change you would like to see.
+      placeholder: Explain how you think Daedalus could address the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-benefit
+    attributes:
+      label: User benefit
+      description: Explain how this change would improve Daedalus or benefit its users.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe any alternative approaches, workarounds or existing functionality you have considered.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Add any other information that may help maintainers understand or evaluate the request.
+
+        Screenshots, mockups and examples may be included when they do not contain personal or sensitive information.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: existing-issues
+    attributes:
+      label: Existing requests
+      options:
+        - label: I searched the existing Daedalus issues and did not find an existing issue describing the same request.
+          required: true
+
+  - type: checkboxes
+    id: public-report
+    attributes:
+      label: Public submission
+      options:
+        - label: I understand that this feature request and anything I submit here will be publicly visible.
+          required: true
+
+  - type: checkboxes
+    id: sensitive-information
+    attributes:
+      label: Sensitive information
+      options:
+        - label: I have not included a recovery phrase, seed phrase, private key, spending password or other wallet secret.
+          required: true
