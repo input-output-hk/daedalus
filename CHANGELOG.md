@@ -2,6 +2,8 @@
 
 ## vNext
 
+## 11.5.0
+
 ### Features
 
 - Diagnostics: added a Copy button that copies the full diagnostic information to the clipboard as a fenced text block ready to paste into a bug report ([PR #3418](https://github.com/input-output-hk/daedalus/pull/3418)).
@@ -10,9 +12,17 @@
 
 - Restore wallet import from a Daedalus key file on the preprod and preview networks ([PR #3417](https://github.com/input-output-hk/daedalus/pull/3417)).
 
+- Linux: the watchdog is now the OS-level entry point and spawns Electron as a child process, replacing `launcher-config.yaml` with `DAEDALUS_*` environment variables injected directly into Electron at startup ([PR #3411](https://github.com/input-output-hk/daedalus/pull/3411)).
+
+- Linux: native system packages for Debian (`.deb`), RPM-based (`.rpm`), Arch (`.pkg.tar.zst`), and NixOS distributions. Debian, RPM, and Arch packages configure the Chromium sandbox via installation scripts; NixOS provides a `services.daedalus` module. All packages include a sandbox availability check that validates package identity and renderer isolation at startup ([PR #3411](https://github.com/input-output-hk/daedalus/pull/3411)).
+
 ### Fixes
 
 - Windows: on a computer whose name contains non-English characters, cardano-node could fail at startup or stop syncing with a broken pipe error. The node now reports the fixed host name `daedalus` instead of the computer name, and Daedalus keeps reading the node's output when a line is not valid UTF-8 ([PR #3419](https://github.com/input-output-hk/daedalus/pull/3419)).
+
+### Chores
+
+- Bump `cardano-node` to 11.1.3 ([PR #3422](https://github.com/input-output-hk/daedalus/pull/3422)).
 
 ## 11.4.0
 
