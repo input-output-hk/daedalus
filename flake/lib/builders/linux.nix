@@ -347,6 +347,10 @@
               mkdir -p "''${DAEDALUS_DIR}/${cluster}"/Secrets
               cd "''${DAEDALUS_DIR}/${cluster}/"
 
+              if [ -e "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update ] ; then
+                rm "''${DAEDALUS_DIR}/${cluster}"/daedalus_lockfile.pre-auto-update || true
+              fi
+
               exec cardano-watchdog \
                 --config "$ENTRYPOINT_DIR/config/daedalus-config.json" \
                 --pub-logs-dir "''${DAEDALUS_DIR}/${cluster}/Logs/pub" \
