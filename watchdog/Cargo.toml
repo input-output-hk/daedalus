@@ -45,6 +45,10 @@ name = "mock-node-startup-log"
 path = "src/bin/mock_node_startup_log.rs"
 
 [[bin]]
+name = "mock-node-non-utf8-output"
+path = "src/bin/mock_node_non_utf8_output.rs"
+
+[[bin]]
 name = "mock-mithril-client-fail"
 path = "src/bin/mock_mithril_client_fail.rs"
 

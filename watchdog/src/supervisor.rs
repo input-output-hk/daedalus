@@ -8,7 +8,7 @@ use file_rotate::suffix::AppendCount;
 use file_rotate::{ContentLimit, FileRotate};
 
 use anyhow::Result;
-use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::net::TcpStream;
 use tokio::process::{Child, Command};
 use tokio::sync::{mpsc, oneshot, watch};
@@ -305,6 +305,23 @@ fn try_parse_block_sync(line: &str) -> Option<(&'static str, f64)> {
     Some((kind, progress))
 }
 
+/// Environment variable trace-dispatcher reads for the host field of each trace line.
+const TRACE_HOSTNAME_ENV: &str = "TRACE_DISPATCHER_LOGGING_HOSTNAME";
+
+/// Value for `TRACE_HOSTNAME_ENV`. Matches `TraceOptionNodeName` in the shipped
+/// node configuration (`perSystem/common.nix`).
+const TRACE_HOSTNAME: &str = "daedalus";
+
+/// Longest run of child output held in memory before it is logged. A line
+/// longer than this is split into consecutive chunks, each written to the log
+/// as it fills, so a child that never writes a newline cannot grow the buffer.
+const MAX_LOG_LINE_BYTES: u64 = 1024 * 1024;
+
+/// Copy a child's output pipe into `log`, feeding startup and sync-progress
+/// parsers when `parse_sync_progress` is set. Output is decoded lossily, so
+/// bytes that are not valid UTF-8 (a Windows user name in the active code page,
+/// for instance) are logged with replacement characters and reading continues:
+/// stopping would close the pipe and make the child's next write fail.
 async fn pipe_to_log(
     reader: impl tokio::io::AsyncRead + Unpin + Send + 'static,
     log: RotatingLog,
@@ -312,12 +329,21 @@ async fn pipe_to_log(
     startup_tx: Option<mpsc::UnboundedSender<&'static str>>,
 ) {
     let mut buf = BufReader::new(reader);
-    let mut line = String::new();
+    let mut raw: Vec<u8> = Vec::new();
     loop {
-        line.clear();
-        match buf.read_line(&mut line).await {
-            Ok(0) | Err(_) => break,
+        raw.clear();
+        match (&mut buf)
+            .take(MAX_LOG_LINE_BYTES)
+            .read_until(b'\n', &mut raw)
+            .await
+        {
+            Ok(0) => break,
+            Err(e) => {
+                warn!("child output pipe read failed; no longer logging it: {e}");
+                break;
+            }
             Ok(_) => {
+                let line = String::from_utf8_lossy(&raw);
                 if parse_sync_progress {
                     if let Some((kind, progress)) = try_parse_block_sync(&line) {
                         emit(&Event::NodeBlockSyncProgress {
@@ -777,6 +803,14 @@ async fn run_node_wallet(
         const CREATE_NO_WINDOW: u32 = 0x0800_0000;
         node_cmd.creation_flags(CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW);
     }
+
+    // Fixed ASCII host name for trace-dispatcher's host field. The default is
+    // the machine host name, which cardano-node writes to stdout in the console
+    // code page on Windows: invalid UTF-8 for names inside the code page, a
+    // crash for names outside it. Set unconditionally, so an inherited value
+    // cannot reintroduce the machine name. The child's environment only; the
+    // user's is untouched.
+    node_cmd.env(TRACE_HOSTNAME_ENV, TRACE_HOSTNAME);
 
     shutdown_pipe.setup_node_cmd(&mut node_cmd);
     tether_to_watchdog(&mut node_cmd);
@@ -1309,6 +1343,44 @@ async fn run_node_wallet(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // ── pipe_to_log ───────────────────────────────────────────────────────────
+
+    /// Run `input` through `pipe_to_log` and return what reached the log file.
+    async fn piped_log(label: &str, input: Vec<u8>) -> Vec<u8> {
+        let dir = std::env::temp_dir().join(format!("wdg-unit-{label}-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("out.log");
+        let log = open_log(path.to_str().unwrap());
+        pipe_to_log(std::io::Cursor::new(input), log, false, None).await;
+        let out = std::fs::read(&path).unwrap();
+        let _ = std::fs::remove_dir_all(&dir);
+        out
+    }
+
+    #[tokio::test]
+    async fn pipe_to_log_keeps_reading_after_invalid_utf8() {
+        let out = piped_log("latin1", b"before\nJ\xFCrgen\nafter\n".to_vec()).await;
+        assert_eq!(
+            String::from_utf8(out).unwrap(),
+            "before\nJ\u{FFFD}rgen\nafter\n"
+        );
+    }
+
+    #[tokio::test]
+    async fn pipe_to_log_logs_final_line_without_newline() {
+        let out = piped_log("no-newline", b"one\ntwo".to_vec()).await;
+        assert_eq!(out, b"one\ntwo");
+    }
+
+    #[tokio::test]
+    async fn pipe_to_log_splits_overlong_line_without_losing_bytes() {
+        let mut input = vec![b'a'; MAX_LOG_LINE_BYTES as usize * 2 + 10];
+        input.extend_from_slice(b"\nnext\n");
+        let expected = input.clone();
+        let out = piped_log("overlong", input).await;
+        assert_eq!(out, expected);
+    }
 
     // ── try_parse_startup_status ──────────────────────────────────────────────
 

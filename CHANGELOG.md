@@ -10,6 +10,9 @@
 
 - Restore wallet import from a Daedalus key file on the preprod and preview networks ([PR #3417](https://github.com/input-output-hk/daedalus/pull/3417)).
 
+### Fixes
+
+- Windows: on a computer whose name contains non-English characters, cardano-node could fail at startup or stop syncing with a broken pipe error. The node now reports the fixed host name `daedalus` instead of the computer name, and Daedalus keeps reading the node's output when a line is not valid UTF-8 ([PR #3419](https://github.com/input-output-hk/daedalus/pull/3419)).
 
 ## 11.4.0
 
