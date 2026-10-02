@@ -230,28 +230,77 @@ pub fn build_newsfeed(
         .unwrap_or_default()
         .as_millis() as u64;
 
-    // Build softwareUpdate entries for each platform present.
-    let mut software_update = serde_json::Map::new();
-    let mut target_platforms = Vec::new();
+    // Build separate softwareUpdate maps for Linux (.bin only, with deprecation
+    // notice) and non-Linux platforms.  Package-manager formats have no
+    // newsfeed key and are skipped by newsfeed_key() returning None.
+    let mut linux_sw = serde_json::Map::new();
+    let mut other_sw = serde_json::Map::new();
+    let mut linux_platforms: Vec<&str> = Vec::new();
+    let mut other_platforms: Vec<&str> = Vec::new();
+
     for inst in &installer_dir.installers {
-        let key = inst.platform.newsfeed_key();
-        if let (Some(h), Some(url)) = (hashes.get(&inst.platform), urls.get(&inst.platform)) {
-            software_update.insert(
-                key.to_string(),
-                serde_json::json!({
+        if let Some(key) = inst.platform.newsfeed_key() {
+            if let (Some(h), Some(url)) = (hashes.get(&inst.platform), urls.get(&inst.platform)) {
+                let entry = serde_json::json!({
                     "version": version,
                     "hash": h.sha256,
                     "url": url,
-                }),
-            );
-            target_platforms.push(key);
+                });
+                if key == "linux" {
+                    linux_sw.insert(key.to_string(), entry);
+                    linux_platforms.push(key);
+                } else {
+                    other_sw.insert(key.to_string(), entry);
+                    other_platforms.push(key);
+                }
+            }
         }
     }
-    target_platforms.sort();
+    linux_platforms.sort();
+    other_platforms.sort();
 
-    let newsfeed = serde_json::json!({
-        "updatedAt": timestamp_ms,
-        "items": [{
+    let update_target = format!("<{version}");
+
+    let mut items: Vec<serde_json::Value> = Vec::new();
+
+    if !linux_platforms.is_empty() {
+        items.push(serde_json::json!({
+            "title": {
+                "en-US": format!("Daedalus {version} — final Linux binary update"),
+                "ja-JP": format!("Daedalus {version} — Linux バイナリの最終アップデート"),
+            },
+            "content": {
+                "en-US": format!(
+                    "Daedalus {version} is now available — this is the last automatic update \
+                     for Linux users delivered via the self-extracting binary.\n\n\
+                     Going forward, please install Daedalus using your system package manager \
+                     (APT, DNF/YUM, or Pacman). Visit daedaluswallet.io/download for \
+                     step-by-step installation instructions."
+                ),
+                "ja-JP": format!(
+                    "Daedalus {version} が利用可能になりました — これはセルフ展開バイナリによる \
+                     Linuxユーザー向けの最後の自動アップデートです。\n\n\
+                     今後は、システムのパッケージマネージャー（APT、DNF/YUM、またはPacman）を使用して \
+                     Daedalusをインストールしてください。インストール手順については \
+                     daedaluswallet.io/download をご覧ください。"
+                ),
+            },
+            "target": { "daedalusVersion": &update_target, "platforms": &linux_platforms },
+            "action": {
+                "label": { "en-US": "Installation instructions", "ja-JP": "インストール手順" },
+                "url": {
+                    "en-US": "https://daedaluswallet.io/download",
+                    "ja-JP": "https://daedaluswallet.io/download",
+                },
+            },
+            "date": timestamp_ms,
+            "type": "software-update",
+            "softwareUpdate": serde_json::Value::Object(linux_sw),
+        }));
+    }
+
+    if !other_platforms.is_empty() {
+        items.push(serde_json::json!({
             "title": {
                 "en-US": format!("Daedalus {version} now available"),
                 "ja-JP": format!("Daedalus {version} 現在配信中"),
@@ -266,18 +315,20 @@ pub fn build_newsfeed(
                      すべてのDaedalusユーザーはこのバージョンにアップグレードすることが推奨されます。"
                 ),
             },
-            "target": {
-                "daedalusVersion": format!("<{version}"),
-                "platforms": target_platforms,
-            },
+            "target": { "daedalusVersion": &update_target, "platforms": &other_platforms },
             "action": {
                 "label": { "en-US": "", "ja-JP": "" },
                 "url":   { "en-US": "", "ja-JP": "" },
             },
             "date": timestamp_ms,
             "type": "software-update",
-            "softwareUpdate": software_update,
-        }]
+            "softwareUpdate": serde_json::Value::Object(other_sw),
+        }));
+    }
+
+    let newsfeed = serde_json::json!({
+        "updatedAt": timestamp_ms,
+        "items": items,
     });
 
     let bytes = serde_json::to_vec_pretty(&newsfeed)?;

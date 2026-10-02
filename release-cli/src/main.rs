@@ -261,7 +261,7 @@ async fn cmd_sign(
                 }
             }
             match inst.platform {
-                installers::Platform::DarwinArm => {
+                installers::Platform::MacOsArm => {
                     if skip_darwin {
                         println!("  {} [skip — --skip-darwin]", inst.filename);
                     } else {
@@ -293,7 +293,7 @@ async fn cmd_sign(
                         }
                     }
                 }
-                installers::Platform::DarwinX86 => {
+                installers::Platform::MacOsX86 => {
                     if skip_darwin_legacy {
                         println!("  {} [skip — --skip-darwin-legacy]", inst.filename);
                     } else {
@@ -356,7 +356,10 @@ async fn cmd_sign(
                         }
                     }
                 }
-                installers::Platform::Linux => {
+                installers::Platform::LinuxBin
+                | installers::Platform::LinuxDeb
+                | installers::Platform::LinuxRpm
+                | installers::Platform::LinuxArch => {
                     println!("  {} [no code signing for Linux]", inst.filename);
                 }
             }
