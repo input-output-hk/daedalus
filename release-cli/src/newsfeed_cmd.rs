@@ -9,7 +9,6 @@ use reqwest::Client;
 use serde::Deserialize;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
-use std::collections::HashMap;
 use std::io::{BufRead, Write};
 use std::path::Path;
 
@@ -28,8 +27,31 @@ struct VersionPlatform {
 }
 
 #[derive(Deserialize)]
+struct VersionJsonLinux {
+    bin: Option<VersionPlatform>,
+}
+
+#[derive(Deserialize)]
+struct VersionJsonMacOs {
+    aarch64: Option<VersionPlatform>,
+    x86_64: Option<VersionPlatform>,
+}
+
+#[derive(Deserialize)]
+struct VersionJsonWindows {
+    exe: Option<VersionPlatform>,
+}
+
+#[derive(Deserialize)]
+struct VersionJsonPlatforms {
+    linux: Option<VersionJsonLinux>,
+    macos: Option<VersionJsonMacOs>,
+    windows: Option<VersionJsonWindows>,
+}
+
+#[derive(Deserialize)]
 struct VersionJson {
-    platforms: HashMap<String, VersionPlatform>,
+    platforms: VersionJsonPlatforms,
 }
 
 // ── newsfeed release ─────────────────────────────────────────────────────────
@@ -58,16 +80,36 @@ pub async fn cmd_newsfeed_release(
         .await
         .context("parsing installer JSON")?;
 
-    let version = vj
-        .platforms
-        .values()
-        .next()
-        .map(|p| p.version.clone())
+    // Flatten the nested version JSON to (newsfeed_key, entry) pairs.
+    // Package-manager formats (deb/rpm/arch) have no newsfeed key — only the
+    // self-extracting .bin is included for the auto-update mechanism.
+    let mut nf_entries: Vec<(&'static str, &VersionPlatform)> = Vec::new();
+    if let Some(linux) = &vj.platforms.linux {
+        if let Some(bin) = &linux.bin {
+            nf_entries.push(("linux", bin));
+        }
+    }
+    if let Some(macos) = &vj.platforms.macos {
+        if let Some(arm) = &macos.aarch64 {
+            nf_entries.push(("darwin-arm", arm));
+        }
+        if let Some(x86) = &macos.x86_64 {
+            nf_entries.push(("darwin", x86));
+        }
+    }
+    if let Some(windows) = &vj.platforms.windows {
+        if let Some(exe) = &windows.exe {
+            nf_entries.push(("win32", exe));
+        }
+    }
+
+    let version = nf_entries
+        .first()
+        .map(|(_, p)| p.version.clone())
         .ok_or_else(|| anyhow::anyhow!("installer JSON has no platforms"))?;
 
     {
-        let mut keys: Vec<&str> = vj.platforms.keys().map(String::as_str).collect();
-        keys.sort();
+        let keys: Vec<&str> = nf_entries.iter().map(|(k, _)| *k).collect();
         println!("Version   : {version}");
         println!("Platforms : {}", keys.join(", "));
     }
@@ -80,37 +122,73 @@ pub async fn cmd_newsfeed_release(
 
     let (now_ms, updated_at) = timestamps();
 
-    // Build softwareUpdate map and platform list (newsfeed keys).
-    // The version JSON uses "windows"; the newsfeed uses "win32".
-    let mut sw_map = serde_json::Map::new();
-    let mut nf_platforms: Vec<String> = Vec::new();
+    // Build separate softwareUpdate maps for Linux (deprecation notice) and
+    // non-Linux (normal update). Linux .bin is the last auto-update delivery;
+    // future Linux installations use the package manager.
+    let mut linux_sw_map = serde_json::Map::new();
+    let mut other_sw_map = serde_json::Map::new();
+    let mut linux_platforms: Vec<String> = Vec::new();
+    let mut other_platforms: Vec<String> = Vec::new();
+    let mut all_platforms: Vec<String> = Vec::new();
 
-    let mut entries: Vec<(&String, &VersionPlatform)> = vj.platforms.iter().collect();
-    entries.sort_by_key(|(k, _)| k.as_str());
-
-    for (vj_key, plat) in &entries {
-        let nf_key = if vj_key.as_str() == "windows" {
-            "win32"
+    for (nf_key, plat) in &nf_entries {
+        let entry = json!({ "version": &plat.version, "hash": &plat.sha256, "url": &plat.url });
+        all_platforms.push(nf_key.to_string());
+        if *nf_key == "linux" {
+            linux_sw_map.insert(nf_key.to_string(), entry);
+            linux_platforms.push(nf_key.to_string());
         } else {
-            vj_key.as_str()
-        };
-        nf_platforms.push(nf_key.to_string());
-        sw_map.insert(
-            nf_key.to_string(),
-            json!({ "version": &plat.version, "hash": &plat.sha256, "url": &plat.url }),
-        );
+            other_sw_map.insert(nf_key.to_string(), entry);
+            other_platforms.push(nf_key.to_string());
+        }
     }
-    nf_platforms.sort();
+    all_platforms.sort();
 
     let update_target = format!(">={MIN_AUTO_UPDATE_VERSION} <{version}");
 
-    // Give the two items distinct dates: software-update 30 min before
-    // updatedAt, announcement at updatedAt.
+    // Give items distinct dates: software-update items 30 min before updatedAt,
+    // announcement at updatedAt.
     const THIRTY_MIN_MS: u64 = 30 * 60 * 1000;
     let date_update = updated_at - THIRTY_MIN_MS;
     let date_announce = updated_at;
 
-    let update_item = json!({
+    let linux_update_item = json!({
+        "title": {
+            "en-US": format!("Daedalus {version} — final Linux binary update"),
+            "ja-JP": format!("Daedalus {version} — Linux バイナリの最終アップデート"),
+        },
+        "content": {
+            "en-US": format!(
+                "Daedalus {version} is now available — this is the last automatic update \
+                 for Linux users delivered via the self-extracting binary.\n\n\
+                 Going forward, please install Daedalus using your system package manager \
+                 (APT, DNF/YUM, or Pacman). Visit daedaluswallet.io/download for \
+                 step-by-step installation instructions.\n\n\
+                 Please read the release notes for more information."
+            ),
+            "ja-JP": format!(
+                "Daedalus {version} が利用可能になりました — これはセルフ展開バイナリによる \
+                 Linuxユーザー向けの最後の自動アップデートです。\n\n\
+                 今後は、システムのパッケージマネージャー（APT、DNF/YUM、またはPacman）を使用して \
+                 Daedalusをインストールしてください。インストール手順については \
+                 daedaluswallet.io/download をご覧ください。\n\n\
+                 詳細についてはリリースノートをご確認ください。"
+            ),
+        },
+        "target": { "daedalusVersion": &update_target, "platforms": &linux_platforms },
+        "action": {
+            "label": { "en-US": "Installation instructions", "ja-JP": "インストール手順" },
+            "url":   {
+                "en-US": "https://daedaluswallet.io/download",
+                "ja-JP": "https://daedaluswallet.io/download",
+            },
+        },
+        "date": date_update,
+        "type": "software-update",
+        "softwareUpdate": Value::Object(linux_sw_map),
+    });
+
+    let other_update_item = json!({
         "title": {
             "en-US": format!("NEW Daedalus {version} update"),
             "ja-JP": format!("Daedalus {version} の新バージョンがリリースされました"),
@@ -127,14 +205,14 @@ pub async fn cmd_newsfeed_release(
                  詳細についてはリリースノートをご確認ください。"
             ),
         },
-        "target": { "daedalusVersion": &update_target, "platforms": &nf_platforms },
+        "target": { "daedalusVersion": &update_target, "platforms": &other_platforms },
         "action": {
             "label": { "en-US": "", "ja-JP": "" },
             "url":   { "en-US": "", "ja-JP": "" },
         },
         "date": date_update,
         "type": "software-update",
-        "softwareUpdate": Value::Object(sw_map),
+        "softwareUpdate": Value::Object(other_sw_map),
     });
 
     let announce_item = json!({
@@ -152,7 +230,7 @@ pub async fn cmd_newsfeed_release(
                  すべてのユーザーに、このバージョンへのアップグレードを推奨します。"
             ),
         },
-        "target": { "daedalusVersion": &version, "platforms": &nf_platforms },
+        "target": { "daedalusVersion": &version, "platforms": &all_platforms },
         "action": {
             "label": { "en-US": "Release notes", "ja-JP": "リリースノート" },
             "url":   { "en-US": release_notes_url, "ja-JP": release_notes_url_ja },
@@ -162,10 +240,23 @@ pub async fn cmd_newsfeed_release(
     });
 
     println!();
-    println!("  • Fill in the ja-JP content fields (marked TODO)");
-    println!("  • The softwareUpdate hashes and URLs are pre-filled from the installer JSON");
+    println!(
+        "  • Linux update item carries the .bin deprecation notice — review before committing"
+    );
+    println!("  • Review ja-JP content fields");
+    println!("  • softwareUpdate hashes and URLs are pre-filled from the installer JSON");
 
-    let new_items = open_editor_draft(&json!([update_item, announce_item]), now_ms)?;
+    // Omit items whose platform list is empty (e.g. no Linux .bin in the release).
+    let mut draft_items: Vec<Value> = Vec::new();
+    if !linux_platforms.is_empty() {
+        draft_items.push(linux_update_item);
+    }
+    if !other_platforms.is_empty() {
+        draft_items.push(other_update_item);
+    }
+    draft_items.push(announce_item);
+
+    let new_items = open_editor_draft(&Value::Array(draft_items), now_ms)?;
 
     apply_and_write(
         &mut newsfeed,
