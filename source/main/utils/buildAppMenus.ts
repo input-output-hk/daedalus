@@ -7,15 +7,17 @@ import { logger } from './logging';
 import { DIALOGS, PAGES } from '../../common/ipc/constants';
 import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { getTranslation } from './getTranslation';
+import { backendLifecycle } from '../BackendLifecycle';
 
 interface Data {
   isNavigationEnabled: boolean;
   walletSettingsState: WalletSettingsStateEnum;
+  rtsEnabled?: boolean;
 }
 export const buildAppMenus = async (
   mainWindow: BrowserWindow,
   locale: string,
-  { isNavigationEnabled, walletSettingsState }: Data
+  { isNavigationEnabled, walletSettingsState, rtsEnabled = false }: Data
 ) => {
   const {
     ABOUT,
@@ -54,27 +56,23 @@ export const buildAppMenus = async (
   };
 
   const restartWithBlankScreenFix = async () => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Restarting in BlankScreenFix...');
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Exiting Daedalus with code 21', {
-      code: 21,
+    logger.info(
+      'BlankScreenFix: signalling watchdog to restart with --safe-mode'
+    );
+    backendLifecycle.sendMithrilCommand({
+      cmd: 'set_electron_flags',
+      flags: ['--safe-mode'],
     });
-    // We have to make sure that cardano-node exits, otherwise we get DB locked errors at startup:
-    (mainWindow as any).daedalusExitCode = 21;
-    mainWindow.close();
   };
 
   const restartWithoutBlankScreenFix = async () => {
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Restarting without BlankScreenFix...');
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    logger.info('Exiting Daedalus with code 22', {
-      code: 22,
+    logger.info(
+      'BlankScreenFix: signalling watchdog to restart without --safe-mode'
+    );
+    backendLifecycle.sendMithrilCommand({
+      cmd: 'set_electron_flags',
+      flags: [],
     });
-    // We have to make sure that cardano-node exits, otherwise we get DB locked errors at startup:
-    (mainWindow as any).daedalusExitCode = 22;
-    mainWindow.close();
   };
 
   const toggleBlankScreenFix = async (item) => {
@@ -138,7 +136,8 @@ export const buildAppMenus = async (
         translations,
         locale,
         isNavigationEnabled,
-        walletSettingsState
+        walletSettingsState,
+        rtsEnabled
       )
     );
     Menu.setApplicationMenu(menu);
@@ -152,7 +151,8 @@ export const buildAppMenus = async (
         translations,
         locale,
         isNavigationEnabled,
-        walletSettingsState
+        walletSettingsState,
+        rtsEnabled
       )
     );
     mainWindow.setMenu(menu);

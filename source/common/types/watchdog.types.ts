@@ -31,6 +31,8 @@ export interface WatchdogState {
   // Chain storage paths (Daedalus config, not watchdog state)
   defaultChainPath: string | null;
   customChainPath: string | null;
+  // Runtime overrides (from watchdog-state.json)
+  nodeExtraArgs: string[];
 }
 
 // MithrilProgress — from mithril_progress events
@@ -64,7 +66,16 @@ export type MithrilCommand =
   | { cmd: 'cancel_mithril' }
   | { cmd: 'probe_mithril' }
   | { cmd: 'restart_node' }
-  | { cmd: 'restart_wallet' };
+  | { cmd: 'restart_wallet' }
+  | { cmd: 'set_chain_path'; path: string | null }
+  | { cmd: 'set_node_extra_args'; args: string[] }
+  | { cmd: 'set_electron_flags'; flags: string[] }
+  | {
+      cmd: 'migrate_state';
+      chain_path: string | null;
+      electron_flags: string[];
+      node_extra_args: string[];
+    };
 
 // MithrilPhase — string discriminant from mithril_status events
 export type MithrilPhase =

@@ -24,7 +24,8 @@ use nix::{
 use crate::chain_validation;
 use crate::config::WatchdogConfig;
 use crate::mithril;
-use crate::protocol::{Command as Cmd, Event, emit};
+use crate::protocol::{Command as Cmd, ElectronRestartPayload, Event, emit};
+use crate::state;
 
 type ExitInfo = (Option<i32>, Option<String>);
 
@@ -249,6 +250,22 @@ enum NodeStartupState {
     OpeningLedgerDb,
     ReplayingLedger,
     OpenedLedgerDb,
+}
+
+impl NodeStartupState {
+    fn as_phase_str(&self) -> Option<&'static str> {
+        match self {
+            NodeStartupState::Init => None,
+            NodeStartupState::OpeningChainDb => Some("openingChainDb"),
+            NodeStartupState::OpeningImmutableDb => Some("openingImmutableDb"),
+            NodeStartupState::OpenedImmutableDb => Some("openedImmutableDb"),
+            NodeStartupState::OpeningVolatileDb => Some("openingVolatileDb"),
+            NodeStartupState::OpenedVolatileDb => Some("openedVolatileDb"),
+            NodeStartupState::OpeningLedgerDb => Some("openingLedgerDb"),
+            NodeStartupState::ReplayingLedger => Some("replayingLedger"),
+            NodeStartupState::OpenedLedgerDb => Some("openedLedgerDb"),
+        }
+    }
 }
 
 /// Parse the ChainDB startup phase from a cardano-node log line.
@@ -521,19 +538,36 @@ impl Drop for ShutdownPipe {
     }
 }
 
-/// Returns true if the chain directory exists and contains at least one entry.
-async fn chain_has_data(state_dir: &str) -> bool {
-    let chain = Path::new(state_dir).join("chain");
+/// Returns true if the effective chain directory exists and contains at least one entry.
+/// Uses `chain_path_override` if set; otherwise falls back to `{state_dir}/chain`.
+async fn chain_has_data(state_dir: &str, chain_path_override: Option<&str>) -> bool {
+    let chain = match chain_path_override {
+        Some(p) => std::path::PathBuf::from(p),
+        None => Path::new(state_dir).join("chain"),
+    };
     let Ok(mut entries) = tokio::fs::read_dir(&chain).await else {
         return false;
     };
     entries.next_entry().await.ok().flatten().is_some()
 }
 
-pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Result<()> {
+pub async fn run(
+    mut config: WatchdogConfig,
+    mut cmd_rx: mpsc::Receiver<Cmd>,
+    base_node_args: Vec<String>,
+    mut wstate: state::WatchdogState,
+    el_restart_tx: Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
+) -> Result<()> {
     let watchdog_pid = std::process::id();
     info!("watchdog started (PID {watchdog_pid})");
-    emit(&Event::WatchdogStarted { pid: watchdog_pid });
+    emit(&Event::WatchdogStarted {
+        pid: watchdog_pid,
+        node_extra_args: wstate.node_extra_args.clone(),
+    });
+    info!(
+        "watchdog state: chain_path={:?} electron_flags={:?} node_extra_args={:?}",
+        wstate.chain_path, wstate.electron_flags, wstate.node_extra_args
+    );
 
     // Check for Mithril resume state
     let mut after_mithril = if let Some(ref mc) = config.mithril {
@@ -561,8 +595,69 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
         false
     };
 
+    // On the first launch after an upgrade from a pre-watchdog-state.json build,
+    // ask Electron to return whatever overrides it has in its electron-store so we
+    // can seed watchdog-state.json before making decisions that depend on chain_path.
+    if !state::exists(&config.node.state_dir).await {
+        info!("watchdog-state.json absent; requesting migration data from Electron");
+        emit(&Event::MigrateStateRequest);
+        let migrated = timeout(Duration::from_secs(10), async {
+            loop {
+                match cmd_rx.recv().await {
+                    Some(Cmd::MigrateState {
+                        chain_path,
+                        electron_flags,
+                        node_extra_args,
+                    }) => return Some((chain_path, electron_flags, node_extra_args)),
+                    Some(Cmd::Stop) | None => return None,
+                    _ => {} // ignore anything else until we get the migration response
+                }
+            }
+        })
+        .await;
+
+        match migrated {
+            Ok(Some((chain_path, electron_flags, node_extra_args))) => {
+                info!(
+                    "migrate_state received: chain_path={chain_path:?} \
+                     electron_flags={electron_flags:?} node_extra_args={node_extra_args:?}"
+                );
+                wstate.chain_path = chain_path;
+                wstate.electron_flags = electron_flags;
+                wstate.node_extra_args = node_extra_args;
+                if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
+                    warn!("Failed to save migrated watchdog state: {e}");
+                }
+                state::apply_to_config(&mut config, &base_node_args, &wstate);
+                // Restart Electron if flags differ from the empty default so it
+                // launches with the correct flags (e.g. --safe-mode) this session.
+                if !wstate.electron_flags.is_empty() {
+                    if let Some(ref tx) = el_restart_tx {
+                        let _ = tx.send(ElectronRestartPayload {
+                            flags: wstate.electron_flags.clone(),
+                            wallet_port: None,
+                            node_extra_args: wstate.node_extra_args.clone(),
+                            startup_phase: None,
+                        });
+                    }
+                }
+            }
+            Ok(None) => {
+                emit(&Event::Stopped);
+                return Ok(());
+            }
+            Err(_) => {
+                // Electron didn't respond in time (old version or crash).
+                // Proceed with defaults; watchdog-state.json stays absent so
+                // migration is attempted again on the next launch.
+                warn!("migrate_state timed out after 10s; proceeding with defaults");
+            }
+        }
+    }
+
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.
-    let has_chain = chain_has_data(&config.node.state_dir).await || after_mithril;
+    let has_chain =
+        chain_has_data(&config.node.state_dir, wstate.chain_path.as_deref()).await || after_mithril;
     info!("chain status: has_chain={has_chain}");
     emit(&Event::ChainStatus { has_chain });
 
@@ -611,6 +706,44 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
                         required_space_bytes,
                     );
                 }
+                Some(Cmd::SetChainPath { path }) => {
+                    wstate.chain_path = path;
+                    info!("chain_path updated: {:?}", wstate.chain_path);
+                    if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
+                        warn!("Failed to save watchdog state: {e}");
+                    }
+                    state::apply_to_config(&mut config, &base_node_args, &wstate);
+                }
+                Some(Cmd::SetNodeExtraArgs { args }) => {
+                    wstate.node_extra_args = args;
+                    info!(
+                        "node_extra_args updated (RTS flags): {:?}",
+                        wstate.node_extra_args
+                    );
+                    if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
+                        warn!("Failed to save watchdog state: {e}");
+                    }
+                    state::apply_to_config(&mut config, &base_node_args, &wstate);
+                }
+                Some(Cmd::SetElectronFlags { flags }) => {
+                    wstate.electron_flags = flags.clone();
+                    info!(
+                        "electron_flags updated (blank screen fix): {:?}",
+                        wstate.electron_flags
+                    );
+                    if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
+                        warn!("Failed to save watchdog state: {e}");
+                    }
+                    if let Some(ref tx) = el_restart_tx {
+                        let _ = tx.send(ElectronRestartPayload {
+                            flags,
+                            wallet_port: None,
+                            node_extra_args: wstate.node_extra_args.clone(),
+                            startup_phase: None,
+                        });
+                    }
+                    emit(&Event::ElectronRestarting);
+                }
                 _ => {}
             }
         }
@@ -618,8 +751,16 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
 
     let mut node_crash_count = 0u32;
     loop {
-        let result =
-            run_node_wallet(&config, &mut cmd_rx, after_mithril, &mut node_crash_count).await?;
+        let result = run_node_wallet(
+            &mut config,
+            &mut cmd_rx,
+            after_mithril,
+            &mut node_crash_count,
+            &base_node_args,
+            &mut wstate,
+            &el_restart_tx,
+        )
+        .await?;
         after_mithril = false;
 
         match result {
@@ -758,10 +899,13 @@ pub async fn run(config: WatchdogConfig, mut cmd_rx: mpsc::Receiver<Cmd>) -> Res
 }
 
 async fn run_node_wallet(
-    config: &WatchdogConfig,
+    config: &mut WatchdogConfig,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     after_mithril: bool,
     node_crash_count: &mut u32,
+    base_node_args: &[String],
+    wstate: &mut state::WatchdogState,
+    el_restart_tx: &Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
 ) -> Result<RunResult> {
     let logs_dir = config
         .pub_logs_dir
@@ -1006,6 +1150,52 @@ async fn run_node_wallet(
                         emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
                         return Ok(RunResult::RestartRequested);
                     }
+                    Cmd::SetChainPath { path } => {
+                        wstate.chain_path = path;
+                        info!("chain_path updated: {:?}", wstate.chain_path);
+                        if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                            warn!("Failed to save watchdog state: {e}");
+                        }
+                        state::apply_to_config(config, base_node_args, wstate);
+                        let shutdown_start = unix_ms();
+                        shutdown_pipe.close_write();
+                        let force_killed =
+                            wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
+                        let shutdown_ms = unix_ms() - shutdown_start;
+                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        return Ok(RunResult::RestartRequested);
+                    }
+                    Cmd::SetNodeExtraArgs { args } => {
+                        wstate.node_extra_args = args;
+                        info!("node_extra_args updated (RTS flags): {:?}", wstate.node_extra_args);
+                        if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                            warn!("Failed to save watchdog state: {e}");
+                        }
+                        state::apply_to_config(config, base_node_args, wstate);
+                        let shutdown_start = unix_ms();
+                        shutdown_pipe.close_write();
+                        let force_killed =
+                            wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
+                        let shutdown_ms = unix_ms() - shutdown_start;
+                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        return Ok(RunResult::RestartRequested);
+                    }
+                    Cmd::SetElectronFlags { flags } => {
+                        wstate.electron_flags = flags.clone();
+                        info!("electron_flags updated (blank screen fix): {:?}", wstate.electron_flags);
+                        if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                            warn!("Failed to save watchdog state: {e}");
+                        }
+                        if let Some(ref tx) = el_restart_tx {
+                            let _ = tx.send(ElectronRestartPayload {
+                                flags,
+                                wallet_port: None,
+                                node_extra_args: wstate.node_extra_args.clone(),
+                                startup_phase: startup_state.as_phase_str().map(String::from),
+                            });
+                        }
+                        emit(&Event::ElectronRestarting);
+                    }
                     _ => {} // stale command: ignore and keep waiting
                 }
             }
@@ -1196,6 +1386,56 @@ async fn run_node_wallet(
                             });
                             continue 'supervisor;
                         }
+                        Cmd::SetChainPath { path } => {
+                            wstate.chain_path = path;
+                            info!("chain_path updated: {:?}", wstate.chain_path);
+                            if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                                warn!("Failed to save watchdog state: {e}");
+                            }
+                            state::apply_to_config(config, base_node_args, wstate);
+                            stop_child(&mut wallet, 10).await;
+                            let shutdown_start = unix_ms();
+                            shutdown_pipe.close_write();
+                            let node_rx_shutdown = node_rx.clone();
+                            let force_killed =
+                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            return Ok(RunResult::RestartRequested);
+                        }
+                        Cmd::SetNodeExtraArgs { args } => {
+                            wstate.node_extra_args = args;
+                            info!("node_extra_args updated (RTS flags): {:?}", wstate.node_extra_args);
+                            if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                                warn!("Failed to save watchdog state: {e}");
+                            }
+                            state::apply_to_config(config, base_node_args, wstate);
+                            stop_child(&mut wallet, 10).await;
+                            let shutdown_start = unix_ms();
+                            shutdown_pipe.close_write();
+                            let node_rx_shutdown = node_rx.clone();
+                            let force_killed =
+                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            return Ok(RunResult::RestartRequested);
+                        }
+                        Cmd::SetElectronFlags { flags } => {
+                            wstate.electron_flags = flags.clone();
+                            info!("electron_flags updated (blank screen fix): {:?}", wstate.electron_flags);
+                            if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                                warn!("Failed to save watchdog state: {e}");
+                            }
+                            if let Some(ref tx) = el_restart_tx {
+                                let _ = tx.send(ElectronRestartPayload {
+                                    flags,
+                                    wallet_port: None,
+                                    node_extra_args: wstate.node_extra_args.clone(),
+                                    startup_phase: None,
+                                });
+                            }
+                            emit(&Event::ElectronRestarting);
+                        }
                         _ => {} // stale command (e.g. CancelMithril): ignore and loop
                     }
                 }
@@ -1312,6 +1552,56 @@ async fn run_node_wallet(
                                 last_exit_signal: None,
                             });
                             continue 'supervisor;
+                        }
+                        Cmd::SetChainPath { path } => {
+                            wstate.chain_path = path;
+                            info!("chain_path updated: {:?}", wstate.chain_path);
+                            if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                                warn!("Failed to save watchdog state: {e}");
+                            }
+                            state::apply_to_config(config, base_node_args, wstate);
+                            stop_child(&mut wallet, 10).await;
+                            let shutdown_start = unix_ms();
+                            shutdown_pipe.close_write();
+                            let node_rx_shutdown = node_rx.clone();
+                            let force_killed =
+                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            return Ok(RunResult::RestartRequested);
+                        }
+                        Cmd::SetNodeExtraArgs { args } => {
+                            wstate.node_extra_args = args;
+                            info!("node_extra_args updated (RTS flags): {:?}", wstate.node_extra_args);
+                            if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                                warn!("Failed to save watchdog state: {e}");
+                            }
+                            state::apply_to_config(config, base_node_args, wstate);
+                            stop_child(&mut wallet, 10).await;
+                            let shutdown_start = unix_ms();
+                            shutdown_pipe.close_write();
+                            let node_rx_shutdown = node_rx.clone();
+                            let force_killed =
+                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
+                            let shutdown_ms = unix_ms() - shutdown_start;
+                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            return Ok(RunResult::RestartRequested);
+                        }
+                        Cmd::SetElectronFlags { flags } => {
+                            wstate.electron_flags = flags.clone();
+                            info!("electron_flags updated (blank screen fix): {:?}", wstate.electron_flags);
+                            if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                                warn!("Failed to save watchdog state: {e}");
+                            }
+                            if let Some(ref tx) = el_restart_tx {
+                                let _ = tx.send(ElectronRestartPayload {
+                                    flags,
+                                    wallet_port: Some(wallet_port),
+                                    node_extra_args: wstate.node_extra_args.clone(),
+                                    startup_phase: None,
+                                });
+                            }
+                            emit(&Event::ElectronRestarting);
                         }
                         _ => {} // stale command: ignore and loop
                     }

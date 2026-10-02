@@ -65,6 +65,8 @@ export default class BackendStore extends Store {
   // Chain storage paths (from BackendLifecycle, included in state poll)
   @observable defaultChainPath: string | null = null;
   @observable customChainPath: string | null = null;
+  // Runtime overrides (from watchdog-state.json via watchdog_started event)
+  @observable nodeExtraArgs: string[] = [];
   // True once user has confirmed their chain storage location this session;
   // survives watchdog restarts so we skip the picker on the second chain_status.
   @observable chainPathConfirmed = false;
@@ -143,6 +145,7 @@ export default class BackendStore extends Store {
         }
         this.defaultChainPath = state.defaultChainPath;
         this.customChainPath = state.customChainPath;
+        this.nodeExtraArgs = state.nodeExtraArgs ?? [];
       });
     } catch (error) {} // eslint-disable-line
   };
@@ -185,6 +188,10 @@ export default class BackendStore extends Store {
   @action
   _onNodeStartupStatus = async (event: { phase: string }): Promise<void> => {
     runInAction('update nodeStartupPhase from push', () => {
+      // Node is starting up — the old wallet port is no longer valid. Clearing
+      // it immediately forces loadingPhase to 'node-starting' so the startup
+      // progress screen shows without waiting for the 2-second poll cycle.
+      this.walletPort = null;
       this.nodeStartupPhase = event.phase;
     });
   };
@@ -293,14 +300,14 @@ export default class BackendStore extends Store {
   validateChainStorageDirectory = async (
     path: string
   ): Promise<ChainStorageValidation> => {
-    return validateChainStorageChannel.send({ path });
+    return validateChainStorageChannel.request({ path });
   };
 
   @action
   setChainStorageDirectory = async (
     customPath: string | null
   ): Promise<ChainStorageValidation | null> => {
-    await confirmChainStorageChannel.send({ customPath });
+    await confirmChainStorageChannel.request({ customPath });
     runInAction('set chainPathConfirmed after setChainStorageDirectory', () => {
       this.chainPathConfirmed = true;
     });
@@ -310,7 +317,7 @@ export default class BackendStore extends Store {
   @action
   resetChainStorageDirectory =
     async (): Promise<ChainStorageValidation | null> => {
-      await confirmChainStorageChannel.send({ customPath: null });
+      await confirmChainStorageChannel.request({ customPath: null });
       runInAction(
         'set chainPathConfirmed after resetChainStorageDirectory',
         () => {

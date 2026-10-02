@@ -17,6 +17,16 @@ import {
   nodeBlockSyncProgressChannel,
   watchdogStoppedChannel,
 } from './ipc/nodePushChannel';
+import { requestElectronStore } from './ipc/electronStoreConversation';
+import {
+  STORAGE_KEYS as keys,
+  STORAGE_TYPES as types,
+} from '../common/config/electron-store.config';
+import {
+  getRtsFlagsSettings,
+  deleteRtsFlagsSettings,
+} from './utils/rtsFlagsSettings';
+import { environment } from './environment';
 
 type EventHandler = (event: Record<string, unknown>) => void;
 
@@ -58,12 +68,37 @@ class BackendLifecycle {
       manager.onEvent(handler);
     }
 
+    const sendWalletPort = (port: number) => {
+      const win = this.getWindow();
+      if (!win) return;
+      let ca: number[] = [];
+      let cert: number[] = [];
+      let key: number[] = [];
+      try {
+        const caPath = process.env.TLS_CA_CERT;
+        const certPath = process.env.TLS_CLIENT_CERT;
+        const keyPath = process.env.TLS_CLIENT_KEY;
+        if (caPath && certPath && keyPath) {
+          ca = Array.from(readFileSync(caPath));
+          cert = Array.from(readFileSync(certPath));
+          key = Array.from(readFileSync(keyPath));
+        }
+      } catch (e) {
+        logger.error('BackendLifecycle: failed to read TLS certs', {
+          error: e,
+        });
+      }
+      walletPortChannel.send({ port, ca, cert, key }, win.webContents);
+    };
+
     // Push events to the renderer window
     manager.onEvent((event) => {
       const win = this.getWindow();
       if (!win) return;
       const eventType = event.event as string | undefined;
-      if (eventType === 'mithril_progress') {
+      if (eventType === 'wallet_ready') {
+        sendWalletPort(event.port as number);
+      } else if (eventType === 'mithril_progress') {
         const progress: MithrilProgress = {
           filesDownloaded: event.files_downloaded as number,
           filesTotal: event.files_total as number,
@@ -92,42 +127,21 @@ class BackendLifecycle {
         );
       } else if (eventType === 'stopped') {
         watchdogStoppedChannel.send(undefined, win.webContents);
+      } else if (eventType === 'migrate_state_request') {
+        this._handleMigrateStateRequest(manager);
       }
     });
 
     manager.start();
 
-    // Handle wallet-ready promise internally without blocking the caller
-    manager.walletReadyPromise
-      .then((port) => {
-        logger.info('BackendLifecycle: wallet ready', { port });
-        const win = this.getWindow();
-        if (!win) return;
-        // TLS cert paths are injected by the watchdog into our environment.
-        let ca: number[] = [];
-        let cert: number[] = [];
-        let key: number[] = [];
-        try {
-          const caPath = process.env.TLS_CA_CERT;
-          const certPath = process.env.TLS_CLIENT_CERT;
-          const keyPath = process.env.TLS_CLIENT_KEY;
-          if (caPath && certPath && keyPath) {
-            ca = Array.from(readFileSync(caPath));
-            cert = Array.from(readFileSync(certPath));
-            key = Array.from(readFileSync(keyPath));
-          }
-        } catch (e) {
-          logger.error('BackendLifecycle: failed to read TLS certs', {
-            error: e,
-          });
-        }
-        walletPortChannel.send({ port, ca, cert, key }, win.webContents);
-      })
-      .catch((reason) => {
-        // When watchdog exits it also kills Electron (via tether_to_watchdog),
-        // so there is nothing useful to do here except log the reason.
-        logger.error('BackendLifecycle: watchdog stopped', { reason });
-      });
+    // walletReadyPromise resolves once (first wallet ready); the onEvent handler
+    // above covers subsequent wallet restarts. Keep the promise for callers
+    // (e.g. BackendLifecycle.getWalletPort()) but the port push is now event-driven.
+    manager.walletReadyPromise.catch((reason) => {
+      // When watchdog exits it also kills Electron (via tether_to_watchdog),
+      // so there is nothing useful to do here except log the reason.
+      logger.error('BackendLifecycle: watchdog stopped', { reason });
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -136,12 +150,52 @@ class BackendLifecycle {
 
   async setCustomChainPath(customPath: string | null): Promise<void> {
     this._customChainPath = customPath;
-    // In the inverted architecture watchdog is the parent process and cannot be
-    // restarted by Electron. Chain-path changes take effect on the next launch.
-    logger.warn(
-      'BackendLifecycle: setCustomChainPath — change will apply on next launch',
-      { customPath }
-    );
+    if (this.manager) {
+      this.manager.sendCommand({ cmd: 'set_chain_path', path: customPath });
+      logger.info('BackendLifecycle: setCustomChainPath — sent to watchdog', {
+        customPath,
+      });
+    } else {
+      logger.warn(
+        'BackendLifecycle: setCustomChainPath called before manager started',
+        { customPath }
+      );
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Migration
+  // ---------------------------------------------------------------------------
+
+  private _handleMigrateStateRequest(manager: WatchdogManager): void {
+    const { network } = environment;
+
+    const chainPath =
+      (requestElectronStore({
+        type: types.GET,
+        key: keys.CUSTOM_CHAIN_PATH,
+      }) as string | undefined) ?? null;
+
+    // Raw RTS flags stored as e.g. ['-c']; wrap in +RTS/-RTS delimiters for cardano-node.
+    const rawRtsFlags = getRtsFlagsSettings(network) ?? [];
+    const nodeExtraArgs =
+      rawRtsFlags.length > 0 ? ['+RTS', ...rawRtsFlags, '-RTS'] : [];
+
+    logger.info('BackendLifecycle: responding to migrate_state_request', {
+      chainPath,
+      nodeExtraArgs,
+    });
+
+    manager.sendCommand({
+      cmd: 'migrate_state',
+      chain_path: chainPath,
+      electron_flags: [],
+      node_extra_args: nodeExtraArgs,
+    });
+
+    // Remove migrated keys so watchdog-state.json is the single source of truth.
+    requestElectronStore({ type: types.DELETE, key: keys.CUSTOM_CHAIN_PATH });
+    deleteRtsFlagsSettings(network);
   }
 
   // ---------------------------------------------------------------------------

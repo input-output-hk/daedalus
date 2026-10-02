@@ -87,6 +87,7 @@ export default (window: BrowserWindow) => {
         lastWalletExitSignal: null,
         defaultChainPath: null,
         customChainPath: null,
+        nodeExtraArgs: [],
       }
     )
   );

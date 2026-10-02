@@ -57,6 +57,8 @@ export interface WatchdogState {
   nodeForceKilled: boolean;
   lastWalletExitCode: number | null;
   lastWalletExitSignal: string | null;
+  // Runtime overrides (from watchdog-state.json)
+  nodeExtraArgs: string[];
 }
 
 type EventHandler = (event: Record<string, unknown>) => void;
@@ -105,6 +107,7 @@ class WatchdogManager {
       nodeForceKilled: false,
       lastWalletExitCode: null,
       lastWalletExitSignal: null,
+      nodeExtraArgs: [],
     };
   }
 
@@ -253,6 +256,7 @@ class WatchdogManager {
     switch (eventType) {
       case 'watchdog_started':
         s.watchdogPid = event.pid as number;
+        s.nodeExtraArgs = (event.node_extra_args as string[]) ?? [];
         break;
 
       case 'chain_status':
@@ -309,6 +313,10 @@ class WatchdogManager {
       case 'wallet_ready':
         s.walletPort = event.port as number;
         s.walletReadyWaitMs = event.waited_ms as number;
+        // Wallet ready implies chain data exists — set hasChain so loadingPhase
+        // can progress past 'starting' when Electron restarts mid-session and
+        // the watchdog skips re-emitting chain_status.
+        s.hasChain = true;
         this._walletReadyResolve?.(event.port as number);
         this._walletReadyResolve = null;
         this._walletReadyReject = null;

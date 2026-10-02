@@ -39,10 +39,7 @@ import {
   restoreSavedWindowBounds,
   saveWindowBoundsOnSizeAndPositionChange,
 } from './windows/windowBounds';
-import {
-  getRtsFlagsSettings,
-  storeRtsFlagsSettings,
-} from './utils/rtsFlagsSettings';
+import { getRtsFlagsSettings } from './utils/rtsFlagsSettings';
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
@@ -168,11 +165,12 @@ const onAppReady = async () => {
     () => restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
-  const currentRtsFlags = getRtsFlagsSettings(network) || [];
+  let rtsEnabled = containsRTSFlags(getRtsFlagsSettings(network) || []);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, userLocale, {
     isNavigationEnabled: false,
     walletSettingsState: WalletSettingsStateEnum.hidden,
+    rtsEnabled,
   });
   rebuildApplicationMenu.onReceive(
     ({ walletSettingsState, isNavigationEnabled }) =>
@@ -182,6 +180,7 @@ const onAppReady = async () => {
         buildAppMenus(mainWindow, locale, {
           isNavigationEnabled,
           walletSettingsState,
+          rtsEnabled,
         });
         // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
         mainWindow.updateTitle(locale);
@@ -207,10 +206,24 @@ const onAppReady = async () => {
   );
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
   toggleRTSFlagsModeChannel.onReceive(() => {
-    const flagsToSet = containsRTSFlags(currentRtsFlags) ? [] : RTS_FLAGS;
-    storeRtsFlagsSettings(environment.network, flagsToSet);
-    // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-    return Promise.resolve(handleWindowClose());
+    rtsEnabled = !rtsEnabled;
+    const flagsToSet = rtsEnabled ? RTS_FLAGS : [];
+    // Wrap bare RTS flags (e.g. ['-c']) in the +RTS/-RTS delimiters that
+    // cardano-node expects when extra args follow its own argument list.
+    const nodeExtraArgs =
+      flagsToSet.length > 0 ? ['+RTS', ...flagsToSet, '-RTS'] : [];
+    backendLifecycle.sendMithrilCommand({
+      cmd: 'set_node_extra_args',
+      args: nodeExtraArgs,
+    });
+    // Rebuild menus so the checkmark reflects the new state immediately.
+    // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
+    buildAppMenus(mainWindow, getLocale(network), {
+      isNavigationEnabled: true,
+      walletSettingsState: WalletSettingsStateEnum.hidden,
+      rtsEnabled,
+    });
+    return Promise.resolve();
   });
   const handleCheckDiskSpace = handleDiskSpace(mainWindow);
 
@@ -235,6 +248,20 @@ const onAppReady = async () => {
       key: 'CUSTOM-CHAIN-PATH',
     }) as string | undefined) ?? null;
   backendLifecycle.setChainPaths(defaultChainPath, customChainPath);
+  // Sync rtsEnabled from watchdog_started so the menu checkmark is correct
+  // even after electron-store migration deletes the old key.
+  backendLifecycle.onEvent((event) => {
+    if ((event.event as string) === 'watchdog_started') {
+      const args = (event.node_extra_args as string[]) ?? [];
+      rtsEnabled = args.includes('+RTS');
+      // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+      buildAppMenus(mainWindow, getLocale(network), {
+        isNavigationEnabled: true,
+        walletSettingsState: WalletSettingsStateEnum.hidden,
+        rtsEnabled,
+      });
+    }
+  });
   backendLifecycle.start();
 
   mainWindow.on('close', handleWindowClose);

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import globalMessages from '../../../i18n/global-messages';
@@ -16,12 +15,12 @@ const messages = defineMessages({
   enableRTSFlagsModeExplanation: {
     id: 'knownIssues.dialog.enableRtsFlagsMode.explanation',
     defaultMessage:
-      '!!!When enabled, the Cardano node will attempt to reduce its RAM usage. You will need to restart Daedalus for this change to take effect.',
+      '!!!When enabled, the Cardano node will attempt to reduce its RAM usage. The node will restart automatically to apply this change.',
     description: 'Main body of the dialog - when enabling',
   },
   enableRTSFlagsModeActionButton: {
     id: 'knownIssues.dialog.enableRtsFlagsMode.actionButton',
-    defaultMessage: '!!!Enable and quit',
+    defaultMessage: '!!!Enable',
     description: 'Enable RTS flags button label',
   },
   disableRTSFlagsModeHeadline: {
@@ -32,19 +31,13 @@ const messages = defineMessages({
   disableRTSFlagsModeExplanation: {
     id: 'knownIssues.dialog.disableRtsFlagsMode.explanation',
     defaultMessage:
-      '!!!When disabled, the Cardano node will start in default mode. You will need to restart Daedalus for this change to take effect.',
+      '!!!When disabled, the Cardano node will run in default mode. The node will restart automatically to apply this change.',
     description: 'Main body of the dialog - when disabling',
   },
   disableRTSFlagsModeActionButton: {
     id: 'knownIssues.dialog.disableRtsFlagsMode.actionButton',
-    defaultMessage: '!!!Disable and quit',
+    defaultMessage: '!!!Disable',
     description: 'Disable RTS flags button label',
-  },
-  manualRelaunchConfirmationCheckboxLabel: {
-    id: 'knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel',
-    defaultMessage:
-      '!!!I understand that I will need to launch Daedalus manually',
-    description: 'Manual relaunch confirmation checkbox label',
   },
 });
 type Props = {
@@ -52,28 +45,16 @@ type Props = {
   onConfirm: () => void;
   isRTSFlagsModeEnabled: boolean;
 };
-type State = {
-  isConfirmationCheckboxChecked: boolean;
-};
 
 @observer
-class ToggleRTSFlagsDialog extends Component<Props, State> {
+class ToggleRTSFlagsDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-  state = {
-    isConfirmationCheckboxChecked: false,
-  };
-  handleCheckboxToggle = () => {
-    this.setState((prevState) => ({
-      isConfirmationCheckboxChecked: !prevState.isConfirmationCheckboxChecked,
-    }));
   };
 
   render() {
     const { intl } = this.context;
     const { isRTSFlagsModeEnabled, onClose, onConfirm } = this.props;
-    const { isConfirmationCheckboxChecked } = this.state;
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
@@ -87,7 +68,6 @@ class ToggleRTSFlagsDialog extends Component<Props, State> {
         ),
         primary: true,
         onClick: onConfirm,
-        disabled: !isConfirmationCheckboxChecked,
       },
     ];
     return (
@@ -110,13 +90,6 @@ class ToggleRTSFlagsDialog extends Component<Props, State> {
               : messages.enableRTSFlagsModeExplanation
           )}
         </p>
-        <Checkbox
-          label={intl.formatMessage(
-            messages.manualRelaunchConfirmationCheckboxLabel
-          )}
-          onChange={this.handleCheckboxToggle}
-          checked={isConfirmationCheckboxChecked}
-        />
       </Dialog>
     );
   }

@@ -1,6 +1,5 @@
 import { shell } from 'electron';
 import type { MenuItem } from 'electron';
-import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
 import { environment } from '../environment';
 import type { MenuActions } from './MenuActions.types';
 import { getTranslation } from '../utils/getTranslation';
@@ -8,11 +7,10 @@ import { getTranslation } from '../utils/getTranslation';
 export const buildKnownIssueFixesSubmenu = (
   actions: MenuActions,
   translations: {},
+  rtsEnabled: boolean,
   translate: (...args: Array<any>) => any = getTranslation(translations, 'menu')
 ): MenuItem[] => {
-  const { isBlankScreenFixActive, network } = environment;
-  const rtsFlags = getRtsFlagsSettings(network);
-  const areRTSFlagsEnabled = !!rtsFlags?.length && rtsFlags.length > 0;
+  const { isBlankScreenFixActive } = environment;
   return [
     // @ts-ignore ts-migrate(2740) FIXME: Type '{ label: any; click(): void; }' is missing t... Remove this comment to see the full error message
     {
@@ -37,12 +35,10 @@ export const buildKnownIssueFixesSubmenu = (
     {
       label: translate('helpSupport.usingRtsFlags'),
       type: 'checkbox',
-      checked: areRTSFlagsEnabled,
+      checked: rtsEnabled,
 
-      click(item) {
-        actions.openToggleRTSFlagsModeDialog(!areRTSFlagsEnabled);
-        // keep previous setting until app restart
-        item.checked = areRTSFlagsEnabled;
+      click() {
+        actions.openToggleRTSFlagsModeDialog(!rtsEnabled);
       },
     },
   ];
