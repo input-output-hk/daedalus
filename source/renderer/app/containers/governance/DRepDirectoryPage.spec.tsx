@@ -225,13 +225,13 @@ describe('DRepDirectoryPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('auto-favorites the DRep when it is selected for delegation', () => {
-    const { governance } = renderPage();
+  it('does not auto-favorite the DRep when it is selected for delegation', () => {
+    const { governance, history } = renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
 
-    expect(governance.toggleFavorite).toHaveBeenCalledTimes(1);
-    expect(governance.toggleFavorite).toHaveBeenCalledWith(drepEntry.drepId);
+    expect(governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(history.location.pathname).toBe(ROUTES.GOVERNANCE.DELEGATE);
   });
 
   it('does not call toggleFavorite when the selected DRep is already favorited', () => {

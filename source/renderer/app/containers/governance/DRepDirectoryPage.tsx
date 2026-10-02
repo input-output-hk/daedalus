@@ -73,10 +73,6 @@ class DRepDirectoryPage extends React.Component<Props> {
       selectedDRepVerifiedName: entry?.verifiedName ?? null,
       selectedDRepAnchorUrl: entry?.anchor?.url ?? null,
     });
-    const isSentinel = drepId === 'abstain' || drepId === 'no_confidence';
-    if (!isSentinel && !governanceStore?.favoriteDRepIds.has(drepId)) {
-      governanceStore?.toggleFavorite(drepId);
-    }
     this.props.history.push(inherited?.from ?? ROUTES.GOVERNANCE.DELEGATE);
   };
 
