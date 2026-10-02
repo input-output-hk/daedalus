@@ -324,6 +324,7 @@
           BUILD_REV = sourceLib.buildRev;
           BUILD_REV_SHORT = sourceLib.buildRevShort;
           BUILD_COUNTER = sourceLib.buildCounter;
+          DAEDALUS_ARIADNE_ANALYTICS_URL = common.ariadneAnalyticsUrl;
           CARDANO_WALLET_VERSION = cardanoWalletVersion;
           CARDANO_NODE_VERSION = cardanoNodeVersion;
           configurePhase =

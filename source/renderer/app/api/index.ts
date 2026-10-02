@@ -1,8 +1,10 @@
 import AdaApi from './api';
+import AnalyticsConsentApi from './analyticsConsent';
 import LocalStorageApi from './utils/localStorage';
 
 export type Api = {
   ada: AdaApi;
+  analyticsConsent: AnalyticsConsentApi;
   localStorage: LocalStorageApi;
   setFaultyNodeSettingsApi?: boolean;
 };
@@ -16,4 +18,5 @@ export const setupApi = (isTest: boolean): Api => ({
     cert: Uint8Array.from([]),
   }),
   localStorage: new LocalStorageApi(),
+  analyticsConsent: new AnalyticsConsentApi(),
 });

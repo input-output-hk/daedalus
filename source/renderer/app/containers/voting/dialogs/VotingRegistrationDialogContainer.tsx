@@ -68,6 +68,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.stores.voting.registrationAnalytics.open();
   }
 
   componentWillUnmount() {
@@ -113,6 +114,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
   };
   handleRestart = () => {
     this.props.actions.voting.resetRegistration.trigger();
+    this.props.stores.voting.registrationAnalytics.open();
     this.props.stores.hardwareWallets.sendMoneyRequest.reset();
   };
   handleContinue = () => {

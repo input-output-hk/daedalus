@@ -1,4 +1,5 @@
-import React, { FC, useCallback } from 'react';
+import React, { useCallback } from 'react';
+import { observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import AnalyticsConsentForm from '../../components/profile/analytics/AnalyticsConsentForm';
@@ -6,9 +7,9 @@ import { AnalyticsAcceptanceStatus } from '../../analytics/types';
 import { useActions } from '../../hooks/useActions';
 import { useStores } from '../../hooks/useStores';
 
-export function AnalyticsConsentPage() {
+export const AnalyticsConsentPage = observer(() => {
   const actions = useActions();
-  const { networkStatus, profile, app } = useStores();
+  const { networkStatus, analyticsConsent } = useStores();
 
   const handleSubmit = useCallback(async (analyticsAccepted: boolean) => {
     await actions.profile.acceptAnalytics.trigger(
@@ -18,19 +19,19 @@ export function AnalyticsConsentPage() {
     );
   }, []);
 
-  const { setAnalyticsAcceptanceRequest } = profile;
   const { isShelleyActivated } = networkStatus;
 
   const topbar = <TopBar isShelleyActivated={isShelleyActivated} />;
   return (
     <TopBarLayout topbar={topbar}>
       <AnalyticsConsentForm
-        loading={setAnalyticsAcceptanceRequest.isExecuting}
+        loading={analyticsConsent.saving}
+        saveFailed={analyticsConsent.saveFailed}
         onSubmit={handleSubmit}
-        onExternalLinkClick={app.openExternalLink}
+        available={!!analyticsConsent.view?.enabled}
       />
     </TopBarLayout>
   );
-}
+});
 
 export default AnalyticsConsentPage;

@@ -707,6 +707,7 @@
           BUILD_REV = sourceLib.buildRev;
           BUILD_REV_SHORT = sourceLib.buildRevShort;
           BUILD_COUNTER = sourceLib.buildCounter;
+          DAEDALUS_ARIADNE_ANALYTICS_URL = common.ariadneAnalyticsUrl;
           NODE_ENV = "production";
           BUILDTYPE = "Release";
           configurePhase =

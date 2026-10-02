@@ -1,5 +1,7 @@
 import path from 'path';
+import { pathToFileURL } from 'url';
 import { app, BrowserWindow, ipcMain, Menu, Rectangle } from 'electron';
+import { createAriadneAnalyticsRegistration } from '../ipc/ariadneAnalytics';
 import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
@@ -40,7 +42,9 @@ type WindowOptionsType = {
 };
 export const createMainWindow = (
   locale: string,
-  getSavedWindowBounds: () => Rectangle
+  getSavedWindowBounds: () => Rectangle,
+  analytics: ReturnType<typeof createAriadneAnalyticsRegistration>,
+  onCreated: (window: BrowserWindow) => void
 ) => {
   const windowOptions: WindowOptionsType = {
     show: false,
@@ -65,7 +69,9 @@ export const createMainWindow = (
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
-  rendererErrorHandler.setup(window, createMainWindow);
+  rendererErrorHandler.setup(window, () =>
+    createMainWindow(locale, getSavedWindowBounds, analytics, onCreated)
+  );
   const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
   window.setMinimumSize(minWindowsWidth, minWindowsHeight);
   // Initialize our ipc api methods that can be called by the render processes
@@ -80,11 +86,11 @@ export const createMainWindow = (
     if (event.sender !== window.webContents) return;
     window.close();
   });
-  if (isDev) {
-    window.loadURL(`http://127.0.0.1:8080`);
-  } else {
-    window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  }
+  const rendererUrl = isDev
+    ? 'http://127.0.0.1:8080/'
+    : pathToFileURL(path.join(__dirname, '../renderer/index.html')).href;
+  analytics.register(window, rendererUrl);
+  window.loadURL(rendererUrl);
   window.on('page-title-updated', (event) => {
     event.preventDefault();
   });
@@ -158,6 +164,7 @@ export const createMainWindow = (
   });
   // 'closed' fires after the window is destroyed and takes no parameters
   window.on('closed', () => {
+    if (rendererErrorHandler.window !== window) return;
     if (ledgerStatus.listening && !!ledgerStatus.Listener) {
       ledgerStatus.Listener.unsubscribe();
       setTimeout(() => app.quit(), 5000);
@@ -166,11 +173,13 @@ export const createMainWindow = (
     }
   });
   window.webContents.on('did-fail-load', (err) => {
-    rendererErrorHandler.onError('did-fail-load', err);
+    if (rendererErrorHandler.window === window)
+      rendererErrorHandler.onError('did-fail-load', err);
   });
   // 'crashed' was renamed to 'render-process-gone' in Electron 23+
   window.webContents.on('render-process-gone', (_event, details) => {
-    rendererErrorHandler.onError('render-process-gone', details);
+    if (rendererErrorHandler.window === window)
+      rendererErrorHandler.onError('render-process-gone', details);
   });
 
   // @ts-ignore ts-migrate(2339) FIXME: Property 'updateTitle' does not exist on type 'Bro... Remove this comment to see the full error message
@@ -178,5 +187,6 @@ export const createMainWindow = (
     window.setTitle(getWindowTitle(locale));
   };
 
+  onCreated(window);
   return window;
 };

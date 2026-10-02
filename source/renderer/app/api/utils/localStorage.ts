@@ -29,7 +29,6 @@ import {
   UnpairedHardwareWalletData,
   WalletLocalData,
 } from '../../types/localDataTypes';
-import { AnalyticsAcceptanceStatus } from '../../analytics';
 
 export type SetHardwareWalletLocalDataRequestType = {
   walletId: string;
@@ -124,18 +123,10 @@ export default class LocalStorageApi {
     LocalStorageApi.set(keys.TERMS_OF_USE_ACCEPTANCE, true);
   unsetTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
-  getAnalyticsAcceptance = (): Promise<AnalyticsAcceptanceStatus> =>
-    LocalStorageApi.get(
-      keys.ANALYTICS_ACCEPTANCE,
-      AnalyticsAcceptanceStatus.PENDING
-    );
-  setAnalyticsAcceptance = (status: AnalyticsAcceptanceStatus): Promise<void> =>
-    LocalStorageApi.set(keys.ANALYTICS_ACCEPTANCE, status);
-  unsetAnalyticsAcceptance = (): Promise<void> =>
-    LocalStorageApi.set(
-      keys.ANALYTICS_ACCEPTANCE,
-      AnalyticsAcceptanceStatus.PENDING
-    );
+  // Legacy Matomo storage only; never reads Ariadne's IPC consent.
+  getLegacyMatomoAcceptance = (): Promise<string> =>
+    LocalStorageApi.get(keys.ANALYTICS_ACCEPTANCE, 'PENDING');
+  // Inactive Matomo compatibility only; Ariadne never reads this identity.
   getUserID = async (): Promise<string> => {
     let userId: string = await LocalStorageApi.get(keys.USER_ID, null);
 

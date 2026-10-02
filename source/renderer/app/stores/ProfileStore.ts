@@ -112,13 +112,6 @@ export default class ProfileStore extends Store {
     this.api.localStorage.setTermsOfUseAcceptance
   );
   @observable
-  getAnalyticsAcceptanceRequest: Request<AnalyticsAcceptanceStatus> =
-    new Request(this.api.localStorage.getAnalyticsAcceptance);
-  @observable
-  setAnalyticsAcceptanceRequest: Request<string> = new Request(
-    this.api.localStorage.setAnalyticsAcceptance
-  );
-  @observable
   getDataLayerMigrationAcceptanceRequest: Request<boolean> = new Request(
     this.api.localStorage.getDataLayerMigrationAcceptance
   );
@@ -193,8 +186,6 @@ export default class ProfileStore extends Store {
     ]);
 
     this._getTermsOfUseAcceptance();
-
-    this._getAnalyticsAcceptance();
 
     this._getDataLayerMigrationAcceptance();
 
@@ -321,7 +312,8 @@ export default class ProfileStore extends Store {
 
   @computed
   get analyticsAcceptanceStatus(): AnalyticsAcceptanceStatus {
-    return this.getAnalyticsAcceptanceRequest.result;
+    return this.stores.analyticsConsent.view
+      ?.status as AnalyticsAcceptanceStatus;
   }
 
   @computed
@@ -429,17 +421,9 @@ export default class ProfileStore extends Store {
   _getTermsOfUseAcceptance = () => {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
-  _setAnalyticsAcceptanceStatus = (status: AnalyticsAcceptanceStatus) => {
+  _setAnalyticsAcceptanceStatus = async (status: AnalyticsAcceptanceStatus) => {
     const previousStatus = this.analyticsAcceptanceStatus;
-
-    this.setAnalyticsAcceptanceRequest.execute(status);
-    this.getAnalyticsAcceptanceRequest.execute();
-
-    if (status === AnalyticsAcceptanceStatus.ACCEPTED) {
-      this.analytics.enableTracking();
-    } else if (status === AnalyticsAcceptanceStatus.REJECTED) {
-      this.analytics.disableTracking();
-    }
+    if (!(await this.stores.analyticsConsent.save(status))) return;
 
     if (previousStatus === AnalyticsAcceptanceStatus.PENDING) {
       this._redirectToRoot();
@@ -448,9 +432,6 @@ export default class ProfileStore extends Store {
         route: ROUTES.SETTINGS.SUPPORT,
       });
     }
-  };
-  _getAnalyticsAcceptance = () => {
-    this.getAnalyticsAcceptanceRequest.execute();
   };
   _acceptDataLayerMigration = async () => {
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message

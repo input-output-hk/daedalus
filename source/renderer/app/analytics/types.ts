@@ -1,3 +1,9 @@
+import type { FunnelName } from '../../../common/analytics/contract';
+
+export interface CapturedAttempt {
+  complete(): void;
+  cancel(): void;
+}
 export interface AnalyticsClient {
   sendPageNavigationEvent(pageTitle: string): Promise<void>;
   sendEvent(
@@ -15,6 +21,7 @@ export enum AnalyticsAcceptanceStatus {
 }
 
 export interface AnalyticsTracker {
+  beginFunnel?(flow: FunnelName): CapturedAttempt | undefined;
   enableTracking(): Promise<void>;
   disableTracking(): void;
   sendPageNavigationEvent(pageTitle: string): void;

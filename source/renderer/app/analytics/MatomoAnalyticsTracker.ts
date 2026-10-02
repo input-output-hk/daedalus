@@ -1,3 +1,5 @@
+// Inactive Matomo implementation. Not wired into the app; retained pending
+// Sam/Adam replacement-versus-fallback decision. Never an Ariadne fallback.
 import { AnalyticsAcceptanceStatus, AnalyticsTracker } from '.';
 import { AnalyticsClient } from './types';
 import { Environment } from '../../../common/types/environment.types';
@@ -58,7 +60,7 @@ export class MatomoAnalyticsTracker implements AnalyticsTracker {
 
   async #enableTrackingIfAccepted() {
     const analyticsAccepted =
-      (await this.localStorageApi.getAnalyticsAcceptance()) ===
+      (await this.localStorageApi.getLegacyMatomoAcceptance()) ===
       AnalyticsAcceptanceStatus.ACCEPTED;
 
     if (this.environment.analyticsFeatureEnabled && analyticsAccepted) {

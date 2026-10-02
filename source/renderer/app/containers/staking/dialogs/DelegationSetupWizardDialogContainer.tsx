@@ -58,10 +58,12 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
+    this.props.stores.staking.delegationAnalytics.open();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+    this.props.stores.staking.delegationAnalytics.close();
   }
 
   handleIsWalletAcceptable = (

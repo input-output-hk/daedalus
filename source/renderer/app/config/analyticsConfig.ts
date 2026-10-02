@@ -1,3 +1,5 @@
+// Inactive Matomo implementation. Not wired into the app; retained pending
+// Sam/Adam replacement-versus-fallback decision. Never an Ariadne fallback.
 import { Network } from '../../../common/types/environment.types';
 
 export const ANALYTICS_API_ENDPOINT = 'https://matomo.k8s.iog.io/matomo.php';

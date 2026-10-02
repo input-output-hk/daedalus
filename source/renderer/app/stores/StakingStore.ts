@@ -37,8 +37,13 @@ import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import { EventCategories } from '../analytics';
+import { FunnelCapture } from '../analytics/FunnelCapture';
 
 export default class StakingStore extends Store {
+  readonly delegationAnalytics = new FunnelCapture(
+    this.analytics,
+    'delegation_submit'
+  );
   @observable
   isDelegationTransactionPending = false;
   @observable
@@ -362,6 +367,7 @@ export default class StakingStore extends Store {
   };
   @action
   _joinStakePool = async (request: JoinStakePoolRequest) => {
+    const analyticsAttempt = this.delegationAnalytics.submission();
     const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
     // Set join transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
@@ -384,6 +390,8 @@ export default class StakingStore extends Store {
         });
       }
 
+      // Completion means backend submission returned successfully, not on-chain delegation.
+      this.delegationAnalytics.complete(analyticsAttempt);
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,

@@ -844,6 +844,10 @@
           inherit cluster;
         });
 
+      # One reviewed build-time destination for every installer/network. Keep empty
+      # until release approval; never source this from the watchdog environment.
+      ariadneAnalyticsUrl = "";
+
       originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
 
       nodejs = let
@@ -1054,6 +1058,7 @@
         mkDaedalusConfigs
         daedalusConfigs
         originalPackageJson
+        ariadneAnalyticsUrl
         nodejs
         yarn
         yarn2nix

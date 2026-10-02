@@ -1,3 +1,5 @@
+// Inactive Matomo implementation. Not wired into the app; retained pending
+// Sam/Adam replacement-versus-fallback decision. Never an Ariadne fallback.
 import MatomoTracker from 'matomo-tracker';
 import { AnalyticsClient } from './types';
 import { Environment } from '../../../common/types/environment.types';
