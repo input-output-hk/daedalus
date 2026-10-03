@@ -16,6 +16,7 @@
 
 use crate::hash::{Hashes, hash_file};
 use crate::installers::{InstallerDir, Platform};
+use crate::linux_repo_cmd::write_linux_repos_to_dir;
 use crate::version_json::VersionJson;
 use anyhow::{Context, Result};
 use axum::{
@@ -90,13 +91,29 @@ pub async fn serve(
     println!("  newsfeed : {base}/newsfeed/newsfeed_{env}.json");
     println!("  nf-verify: {base}/newsfeed-verification/{env}/<timestamp>.txt");
 
+    // ── Linux repos (optional) ────────────────────────────────────────────────
+    let gpg_user = std::env::var("GPG_USER").ok();
+    let repo_tmp = std::env::temp_dir().join(format!("drt-serve-repos-{}", {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis()
+    }));
+    let has_repos = write_linux_repos_to_dir(&installer_dir.dir, gpg_user.as_deref(), &repo_tmp)
+        .unwrap_or_else(|e| {
+            eprintln!("Warning: linux repo generation failed: {e}");
+            false
+        });
+    let signed_repos =
+        gpg_user.is_some() && has_repos && repo_tmp.join("apt/dists/stable/Release.gpg").exists();
+
     let state = Arc::new(AppState {
         version_json_bytes,
         by_hash,
     });
 
     // ── Build router ──────────────────────────────────────────────────────────
-    let app = Router::new()
+    let mut app = Router::new()
         .route("/daedalus-latest-version.json", get(version_json_handler))
         .route("/by-hash/:hash", get(by_hash_handler))
         .nest_service("/newsfeed", ServeDir::new(newsfeed_tmp.join("newsfeed")))
@@ -106,6 +123,13 @@ pub async fn serve(
         )
         .fallback_service(ServeDir::new(&installer_dir.dir))
         .with_state(state);
+
+    if has_repos {
+        app = app
+            .nest_service("/apt", ServeDir::new(repo_tmp.join("apt")))
+            .nest_service("/yum", ServeDir::new(repo_tmp.join("yum")))
+            .nest_service("/arch", ServeDir::new(repo_tmp.join("arch")));
+    }
 
     let addr: SocketAddr = format!("{host}:{port}")
         .parse()
@@ -131,6 +155,37 @@ pub async fn serve(
     println!();
     println!("Paste into launcher-config.yaml:");
     println!("  update: \"{base}/daedalus-latest-version.json\"");
+
+    if has_repos {
+        println!();
+        if signed_repos {
+            println!("=== Linux repos (GPG signed) ===");
+            println!("  APT  : {base}/apt");
+            println!("  YUM  : {base}/yum");
+            println!("  Arch : {base}/arch");
+            println!();
+            println!(
+                "APT:  echo 'deb [signed-by=/etc/apt/keyrings/daedalus-local.gpg] {base}/apt stable main' | sudo tee /etc/apt/sources.list.d/daedalus-local.list"
+            );
+            println!(
+                "YUM:  baseurl={base}/yum  gpgcheck=1  gpgkey={base}/yum/daedalus-release.gpg"
+            );
+            println!("Arch: Server = {base}/arch  SigLevel = Required DatabaseOptional");
+        } else {
+            println!("=== Linux repos (unsigned — local testing only) ===");
+            println!("  APT  : {base}/apt");
+            println!("  YUM  : {base}/yum");
+            println!("  Arch : {base}/arch");
+            println!();
+            println!(
+                "APT:  echo 'deb [trusted=yes] {base}/apt stable main' | sudo tee /etc/apt/sources.list.d/daedalus-local.list"
+            );
+            println!("YUM:  baseurl={base}/yum  gpgcheck=0");
+            println!("Arch: Server = {base}/arch  SigLevel = Never");
+            println!("(Set GPG_USER to sign the repo metadata)");
+        }
+    }
+
     println!();
     println!("Press Ctrl-C to stop.");
 
@@ -175,28 +230,77 @@ pub fn build_newsfeed(
         .unwrap_or_default()
         .as_millis() as u64;
 
-    // Build softwareUpdate entries for each platform present.
-    let mut software_update = serde_json::Map::new();
-    let mut target_platforms = Vec::new();
+    // Build separate softwareUpdate maps for Linux (.bin only, with deprecation
+    // notice) and non-Linux platforms.  Package-manager formats have no
+    // newsfeed key and are skipped by newsfeed_key() returning None.
+    let mut linux_sw = serde_json::Map::new();
+    let mut other_sw = serde_json::Map::new();
+    let mut linux_platforms: Vec<&str> = Vec::new();
+    let mut other_platforms: Vec<&str> = Vec::new();
+
     for inst in &installer_dir.installers {
-        let key = inst.platform.newsfeed_key();
-        if let (Some(h), Some(url)) = (hashes.get(&inst.platform), urls.get(&inst.platform)) {
-            software_update.insert(
-                key.to_string(),
-                serde_json::json!({
+        if let Some(key) = inst.platform.newsfeed_key() {
+            if let (Some(h), Some(url)) = (hashes.get(&inst.platform), urls.get(&inst.platform)) {
+                let entry = serde_json::json!({
                     "version": version,
                     "hash": h.sha256,
                     "url": url,
-                }),
-            );
-            target_platforms.push(key);
+                });
+                if key == "linux" {
+                    linux_sw.insert(key.to_string(), entry);
+                    linux_platforms.push(key);
+                } else {
+                    other_sw.insert(key.to_string(), entry);
+                    other_platforms.push(key);
+                }
+            }
         }
     }
-    target_platforms.sort();
+    linux_platforms.sort();
+    other_platforms.sort();
 
-    let newsfeed = serde_json::json!({
-        "updatedAt": timestamp_ms,
-        "items": [{
+    let update_target = format!("<{version}");
+
+    let mut items: Vec<serde_json::Value> = Vec::new();
+
+    if !linux_platforms.is_empty() {
+        items.push(serde_json::json!({
+            "title": {
+                "en-US": format!("Daedalus {version} — final Linux binary update"),
+                "ja-JP": format!("Daedalus {version} — Linux バイナリの最終アップデート"),
+            },
+            "content": {
+                "en-US": format!(
+                    "Daedalus {version} is now available — this is the last automatic update \
+                     for Linux users delivered via the self-extracting binary.\n\n\
+                     Going forward, please install Daedalus using your system package manager \
+                     (APT, DNF/YUM, or Pacman). Visit daedaluswallet.io/download for \
+                     step-by-step installation instructions."
+                ),
+                "ja-JP": format!(
+                    "Daedalus {version} が利用可能になりました — これはセルフ展開バイナリによる \
+                     Linuxユーザー向けの最後の自動アップデートです。\n\n\
+                     今後は、システムのパッケージマネージャー（APT、DNF/YUM、またはPacman）を使用して \
+                     Daedalusをインストールしてください。インストール手順については \
+                     daedaluswallet.io/download をご覧ください。"
+                ),
+            },
+            "target": { "daedalusVersion": &update_target, "platforms": &linux_platforms },
+            "action": {
+                "label": { "en-US": "Installation instructions", "ja-JP": "インストール手順" },
+                "url": {
+                    "en-US": "https://daedaluswallet.io/download",
+                    "ja-JP": "https://daedaluswallet.io/download",
+                },
+            },
+            "date": timestamp_ms,
+            "type": "software-update",
+            "softwareUpdate": serde_json::Value::Object(linux_sw),
+        }));
+    }
+
+    if !other_platforms.is_empty() {
+        items.push(serde_json::json!({
             "title": {
                 "en-US": format!("Daedalus {version} now available"),
                 "ja-JP": format!("Daedalus {version} 現在配信中"),
@@ -211,18 +315,20 @@ pub fn build_newsfeed(
                      すべてのDaedalusユーザーはこのバージョンにアップグレードすることが推奨されます。"
                 ),
             },
-            "target": {
-                "daedalusVersion": format!("<{version}"),
-                "platforms": target_platforms,
-            },
+            "target": { "daedalusVersion": &update_target, "platforms": &other_platforms },
             "action": {
                 "label": { "en-US": "", "ja-JP": "" },
                 "url":   { "en-US": "", "ja-JP": "" },
             },
             "date": timestamp_ms,
             "type": "software-update",
-            "softwareUpdate": software_update,
-        }]
+            "softwareUpdate": serde_json::Value::Object(other_sw),
+        }));
+    }
+
+    let newsfeed = serde_json::json!({
+        "updatedAt": timestamp_ms,
+        "items": items,
     });
 
     let bytes = serde_json::to_vec_pretty(&newsfeed)?;
