@@ -40,6 +40,33 @@ pub enum Command {
     /// Kill and restart cardano-wallet without touching cardano-node. Resets
     /// the wallet restart-attempt counter so the limit is not consumed.
     RestartWallet,
+    /// Override the chain-storage directory used by cardano-node and Mithril.
+    /// None resets to the built-in default from daedalus-config.json.
+    /// Takes effect after a node restart (which is triggered automatically).
+    SetChainPath {
+        path: Option<String>,
+    },
+    /// Replace the extra args appended to cardano-node's argument list.
+    /// An empty vec clears any previously set args.
+    /// Takes effect after a node restart (which is triggered automatically).
+    SetNodeExtraArgs {
+        args: Vec<String>,
+    },
+    /// Set extra flags appended to Electron's argv on the next spawn.
+    /// Persisted to watchdog-state.json; takes effect on next Daedalus start.
+    SetElectronFlags {
+        flags: Vec<String>,
+    },
+    /// Response to `migrate_state_request`. Carries values from the Electron-store
+    /// that predate watchdog-state.json so the watchdog can seed its state file
+    /// on the first launch after an upgrade.
+    MigrateState {
+        chain_path: Option<String>,
+        #[serde(default)]
+        electron_flags: Vec<String>,
+        #[serde(default)]
+        node_extra_args: Vec<String>,
+    },
 }
 
 #[derive(Debug, Serialize)]
@@ -47,6 +74,7 @@ pub enum Command {
 pub enum Event {
     WatchdogStarted {
         pid: u32,
+        node_extra_args: Vec<String>,
     },
     NodeStarted {
         pid: u32,
@@ -130,6 +158,10 @@ pub enum Event {
         code: String,
         message: String,
     },
+    /// Emitted once on startup if watchdog-state.json is absent, before chain_status.
+    /// Electron should respond with a `migrate_state` command carrying any persisted
+    /// overrides from the old electron-store (custom chain path, RTS flags, etc.).
+    MigrateStateRequest,
     /// Emitted once on startup. When `has_chain` is false the supervisor waits
     /// for a `start_node` or `start_mithril` command before doing anything.
     ChainStatus {
@@ -152,10 +184,27 @@ pub enum Event {
     ElectronStarted {
         pid: u32,
     },
+    #[allow(dead_code)]
     ElectronExited {
         code: Option<i32>,
         signal: Option<String>,
     },
+    /// Emitted when watchdog has saved new electron_flags to watchdog-state.json.
+    /// The Electron process should call app.quit(); on the next Daedalus start
+    /// the flags will be applied automatically.
+    ElectronRestarting,
+}
+
+/// Payload sent through the Electron restart channel when SetElectronFlags fires.
+/// Carries everything the Electron manager needs to re-emit startup state to the
+/// newly-spawned Electron process.
+pub struct ElectronRestartPayload {
+    pub flags: Vec<String>,
+    pub wallet_port: Option<u16>,
+    pub node_extra_args: Vec<String>,
+    /// Current node startup phase to re-emit after Electron reconnects.
+    /// None when node has not started yet or when startup is already complete.
+    pub startup_phase: Option<String>,
 }
 
 pub fn emit(event: &Event) {
@@ -199,7 +248,10 @@ mod tests {
 
     #[test]
     fn watchdog_started() {
-        let j = to_json(&Event::WatchdogStarted { pid: 1234 });
+        let j = to_json(&Event::WatchdogStarted {
+            pid: 1234,
+            node_extra_args: vec![],
+        });
         assert_eq!(j["event"], "watchdog_started");
         assert_eq!(j["pid"], 1234);
     }
@@ -539,6 +591,67 @@ mod tests {
     #[test]
     fn unknown_command_fails() {
         assert!(serde_json::from_str::<Command>(r#"{"cmd":"restart"}"#).is_err());
+    }
+
+    #[test]
+    fn set_chain_path_with_value() {
+        let cmd: Command =
+            serde_json::from_str(r#"{"cmd":"set_chain_path","path":"/custom/chain"}"#).unwrap();
+        match cmd {
+            Command::SetChainPath { path } => assert_eq!(path.as_deref(), Some("/custom/chain")),
+            _ => panic!("wrong variant"),
+        }
+    }
+
+    #[test]
+    fn set_chain_path_null_resets_to_default() {
+        let cmd: Command = serde_json::from_str(r#"{"cmd":"set_chain_path","path":null}"#).unwrap();
+        match cmd {
+            Command::SetChainPath { path } => assert!(path.is_none()),
+            _ => panic!("wrong variant"),
+        }
+    }
+
+    #[test]
+    fn set_node_extra_args_command() {
+        let cmd: Command =
+            serde_json::from_str(r#"{"cmd":"set_node_extra_args","args":["+RTS","-c","-RTS"]}"#)
+                .unwrap();
+        match cmd {
+            Command::SetNodeExtraArgs { args } => {
+                assert_eq!(args, vec!["+RTS", "-c", "-RTS"]);
+            }
+            _ => panic!("wrong variant"),
+        }
+    }
+
+    #[test]
+    fn set_node_extra_args_empty() {
+        let cmd: Command =
+            serde_json::from_str(r#"{"cmd":"set_node_extra_args","args":[]}"#).unwrap();
+        match cmd {
+            Command::SetNodeExtraArgs { args } => assert!(args.is_empty()),
+            _ => panic!("wrong variant"),
+        }
+    }
+
+    #[test]
+    fn set_electron_flags_command() {
+        let cmd: Command =
+            serde_json::from_str(r#"{"cmd":"set_electron_flags","flags":["--safe-mode"]}"#)
+                .unwrap();
+        match cmd {
+            Command::SetElectronFlags { flags } => {
+                assert_eq!(flags, vec!["--safe-mode"]);
+            }
+            _ => panic!("wrong variant"),
+        }
+    }
+
+    #[test]
+    fn electron_restarting_event() {
+        let j = to_json(&Event::ElectronRestarting);
+        assert_eq!(j["event"], "electron_restarting");
     }
 
     #[test]

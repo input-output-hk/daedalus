@@ -3342,12 +3342,12 @@
         "id": "knownIssues.dialog.enableRtsFlagsMode.title"
       },
       {
-        "defaultMessage": "!!!When enabled, the Cardano node will attempt to reduce its RAM usage. You will need to restart Daedalus for this change to take effect.",
+        "defaultMessage": "!!!When enabled, the Cardano node will attempt to reduce its RAM usage. The node will restart automatically to apply this change.",
         "description": "Main body of the dialog - when enabling",
         "id": "knownIssues.dialog.enableRtsFlagsMode.explanation"
       },
       {
-        "defaultMessage": "!!!Enable and quit",
+        "defaultMessage": "!!!Enable",
         "description": "Enable RTS flags button label",
         "id": "knownIssues.dialog.enableRtsFlagsMode.actionButton"
       },
@@ -3357,19 +3357,14 @@
         "id": "knownIssues.dialog.disableRtsFlagsMode.title"
       },
       {
-        "defaultMessage": "!!!When disabled, the Cardano node will start in default mode. You will need to restart Daedalus for this change to take effect.",
+        "defaultMessage": "!!!When disabled, the Cardano node will run in default mode. The node will restart automatically to apply this change.",
         "description": "Main body of the dialog - when disabling",
         "id": "knownIssues.dialog.disableRtsFlagsMode.explanation"
       },
       {
-        "defaultMessage": "!!!Disable and quit",
+        "defaultMessage": "!!!Disable",
         "description": "Disable RTS flags button label",
         "id": "knownIssues.dialog.disableRtsFlagsMode.actionButton"
-      },
-      {
-        "defaultMessage": "!!!I understand that I will need to launch Daedalus manually",
-        "description": "Manual relaunch confirmation checkbox label",
-        "id": "knownIssues.dialog.toggleRtsFlagsMode.manualRelaunchConfirmationCheckboxLabel"
       }
     ],
     "path": "source/renderer/app/components/knownIssues/ToggleRTSFlagsDialog/ToggleRTSFlagsDialog.tsx"

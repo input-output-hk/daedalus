@@ -23,6 +23,7 @@ class Root extends Component<Props> {
     const {
       app,
       appUpdate,
+      backend,
       networkStatus,
       profile,
       staking,
@@ -84,6 +85,7 @@ class Root extends Component<Props> {
 
     if (
       !isConnected ||
+      backend.loadingPhase !== 'ready' ||
       !hasLoadedWallets ||
       isNotEnoughDiskSpace ||
       !isSystemTimeCorrect ||

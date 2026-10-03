@@ -47,7 +47,9 @@ export default class NetworkStatusStore extends Store {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   _networkParametersPollingInterval: IntervalID | null | undefined = null;
   // Initialize store observables
-  @observable isRTSFlagsModeEnabled = false;
+  @computed get isRTSFlagsModeEnabled(): boolean {
+    return this.stores.backend.nodeExtraArgs.includes('+RTS');
+  }
   @observable
   isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
 
@@ -213,7 +215,7 @@ export default class NetworkStatusStore extends Store {
     );
   };
   // DEFINE ACTIONS
-  @action _toggleRTSFlagsMode = async () => {
+  _toggleRTSFlagsMode = async () => {
     this.analytics.sendEvent(
       EventCategories.SETTINGS,
       `RTS flags ${this.isRTSFlagsModeEnabled ? 'disabled' : 'enabled'}`
@@ -324,8 +326,15 @@ export default class NetworkStatusStore extends Store {
   };
   @action
   _updateNetworkStatus = async () => {
-    // Wallet is not yet ready — skip to avoid flooding the console with errors.
-    if (this.stores.backend.walletPort === null) return;
+    // Wallet is not yet ready — skip API call to avoid flooding console with errors.
+    // If we were previously connected (isNodeResponding), force-disconnect now so
+    // that wallets reload correctly when the wallet comes back up after a node restart.
+    if (this.stores.backend.walletPort === null) {
+      if (this.isNodeResponding) {
+        this._setDisconnected(this.isConnected);
+      }
+      return;
+    }
 
     // Record connection status before running network status call
     const wasConnected = this.isConnected;

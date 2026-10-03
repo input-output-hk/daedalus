@@ -16,6 +16,7 @@ class ToggleRTSFlagsDialogContainer extends Component<Props> {
   };
   onConfirm = () => {
     this.props.actions.networkStatus.toggleRTSFlagsMode.trigger();
+    this.props.actions.app.closeToggleRTSFlagsModeDialog.trigger();
   };
   onClose = () => {
     this.props.actions.app.closeToggleRTSFlagsModeDialog.trigger();

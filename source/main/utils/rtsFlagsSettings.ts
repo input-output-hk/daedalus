@@ -32,3 +32,7 @@ export const storeRtsFlagsSettings = (
   );
   store.set(getStoreKey(network), flags);
 };
+
+export const deleteRtsFlagsSettings = (network: string): void => {
+  store.delete(getStoreKey(network) as any);
+};

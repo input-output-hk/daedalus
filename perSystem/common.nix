@@ -585,7 +585,11 @@
                     "--sync-tolerance"
                     "300s"
                   ]
-                  ++ wNetworkMagicArgs;
+                  ++ wNetworkMagicArgs
+                  ++ lib.optionals (daedalusConfig ? metadataUrl) [
+                    "--token-metadata-server"
+                    daedalusConfig.metadataUrl
+                  ];
                 state_dir = wStateDir;
               };
               electron = {

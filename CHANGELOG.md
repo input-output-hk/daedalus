@@ -12,11 +12,13 @@
 
 - Restore wallet import from a Daedalus key file on the preprod and preview networks ([PR #3417](https://github.com/input-output-hk/daedalus/pull/3417)).
 
-- Linux: the watchdog is now the OS-level entry point and spawns Electron as a child process, replacing `launcher-config.yaml` with `DAEDALUS_*` environment variables injected directly into Electron at startup ([PR #3411](https://github.com/input-output-hk/daedalus/pull/3411)).
+- The watchdog process supervisor is now the OS-level entry point on all platforms (Linux, Windows, macOS), spawning Electron as a child process. Configuration switches from `launcher-config.yaml` to `DAEDALUS_*` environment variables injected into Electron at startup. Additional behavioural changes: `+RTS -N` performance flags are no longer passed to cardano-node by default; the app closes instead of retrying after ten consecutive backend crashes ([PR #3411](https://github.com/input-output-hk/daedalus/pull/3411)).
 
 - Linux: native system packages for Debian (`.deb`), RPM-based (`.rpm`), Arch (`.pkg.tar.zst`), and NixOS distributions. Debian, RPM, and Arch packages configure the Chromium sandbox via installation scripts; NixOS provides a `services.daedalus` module. All packages include a sandbox availability check that validates package identity and renderer isolation at startup ([PR #3411](https://github.com/input-output-hk/daedalus/pull/3411)).
 
 ### Fixes
+
+- Governance: a selected DRep is now added to favourites only after delegation submits successfully, so abandoned or failed attempts no longer save it ([PR #3423](https://github.com/input-output-hk/daedalus/pull/3423)).
 
 - Windows: on a computer whose name contains non-English characters, cardano-node could fail at startup or stop syncing with a broken pipe error. The node now reports the fixed host name `daedalus` instead of the computer name, and Daedalus keeps reading the node's output when a line is not valid UTF-8 ([PR #3419](https://github.com/input-output-hk/daedalus/pull/3419)).
 
@@ -28,7 +30,6 @@
 
 ### Fixes
 
-- Add a selected DRep to favorites only after delegation submits successfully, so abandoned or failed attempts do not save it ([#3395](https://github.com/input-output-hk/daedalus/issues/3395)).
 - Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
 
 - Analytics: updated Matomo tracking URL ([PR #3403](https://github.com/input-output-hk/daedalus/pull/3403)).

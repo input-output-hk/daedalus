@@ -23,6 +23,7 @@ export const osxMenu = (
   locale: string,
   isNavigationEnabled: boolean,
   walletSettingsState: WalletSettingsStateEnum,
+  rtsEnabled: boolean,
   translation: (...args: Array<any>) => any = getTranslation(translations, id)
 ) => [
   {
@@ -166,7 +167,12 @@ export const osxMenu = (
   {
     label: translation('helpSupport'),
     submenu: compact([
-      ...buildKnownIssueFixesSubmenu(actions, translations, translation),
+      ...buildKnownIssueFixesSubmenu(
+        actions,
+        translations,
+        rtsEnabled,
+        translation
+      ),
       {
         type: 'separator',
       },
