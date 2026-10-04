@@ -7,6 +7,7 @@
 
 mod chain_validation;
 mod config;
+mod instance;
 mod mithril;
 mod protocol;
 mod state;
@@ -201,6 +202,25 @@ async fn main() -> Result<()> {
         .with(file_layer)
         .init();
 
+    // One watchdog per cluster. Claimed before anything that touches shared
+    // state (TLS certs, watchdog-state.json, the node socket, the chain
+    // database) or spawns a child. A second launch hands over to the running
+    // instance here and exits.
+    match instance::claim(&config.node.state_dir).await {
+        // Never released by hand: the OS releases it when the process exits,
+        // after the runtime has torn down the children, so a waiting launch
+        // cannot start while this instance's Electron is still alive.
+        Ok(Some(lock)) => {
+            Box::leak(Box::new(lock));
+        }
+        Ok(None) => return Ok(()),
+        Err(e) => {
+            tracing::error!("{e:#}");
+            return Err(e);
+        }
+    }
+    let window = instance::WindowState::starting();
+
     let (cmd_tx, cmd_rx) = mpsc::channel::<protocol::Command>(8);
 
     // SIGTERM/SIGINT handler: treat as an orderly stop so children are not orphaned.
@@ -325,6 +345,7 @@ async fn main() -> Result<()> {
         let reader_cmd_tx_base = cmd_tx.clone();
         let electron_exe = electron_cfg.exe.clone();
         let electron_env = electron_cfg.env.clone();
+        let window_mgr = Arc::clone(&window);
 
         // Windows: restart counter for unique named-pipe names per Electron instance.
         #[cfg(windows)]
@@ -394,6 +415,7 @@ async fn main() -> Result<()> {
                         }
                     };
                     let electron_pid = electron.id().unwrap_or(0);
+                    window_mgr.set_present(electron_pid);
                     tracing::info!("Electron started (PID {electron_pid})");
                     protocol::emit(&protocol::Event::ElectronStarted { pid: electron_pid });
 
@@ -511,6 +533,7 @@ async fn main() -> Result<()> {
                         }
                     };
                     let electron_pid = electron.id().unwrap_or(0);
+                    window_mgr.set_present(electron_pid);
                     tracing::info!("Electron started (PID {electron_pid})");
                     protocol::emit(&protocol::Event::ElectronStarted { pid: electron_pid });
 
@@ -593,12 +616,18 @@ async fn main() -> Result<()> {
                     }
                 }
             }
+            // Electron is gone for good: a second launch now waits for this
+            // instance to exit instead of asking for a window.
+            window_mgr.set_gone();
         });
     } else {
         // ── Standalone mode ──────────────────────────────────────────────────
         // No Electron section in config: emit() writes directly to stdout (the
         // original behaviour — no channel, no race on shutdown). Read commands
         // from stdin; EOF on stdin triggers Stop.
+        // The stdin/stdout client is the window: present until it hangs up.
+        window.set_present(0);
+        let stdin_window = std::sync::Arc::clone(&window);
         let mut reader = BufReader::new(tokio::io::stdin());
         let stdin_cmd_tx = cmd_tx.clone();
         tokio::spawn(async move {
@@ -610,9 +639,14 @@ async fn main() -> Result<()> {
                 }
             }
             // stdin EOF — treat as stop
+            stdin_window.set_gone();
             let _ = stdin_cmd_tx.send(protocol::Command::Stop).await;
         });
     }
+
+    // Answer second launches. Started after the event sink is set up, so an
+    // activation reaches Electron.
+    instance::spawn_control_server(&config.node.state_dir, window);
 
     supervisor::run(
         config,

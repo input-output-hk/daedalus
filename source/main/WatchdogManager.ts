@@ -373,6 +373,10 @@ class WatchdogManager {
         // Terminal — nothing to update; process will exit shortly
         break;
 
+      case 'activate_window':
+        // No state; index.ts brings the main window forward.
+        break;
+
       default:
         logger.debug('WatchdogManager: unhandled event type', { eventType });
         break;

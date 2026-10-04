@@ -14,6 +14,7 @@ import {
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { createMainWindow } from './windows/main';
+import { activateWindow } from './windows/activateWindow';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
@@ -262,6 +263,13 @@ const onAppReady = async () => {
       });
     }
   });
+  // A second launch of Daedalus for this cluster asks the watchdog to bring
+  // this window forward instead of starting another backend.
+  backendLifecycle.onEvent((event) => {
+    if ((event.event as string) === 'activate_window') {
+      activateWindow(mainWindow);
+    }
+  });
   backendLifecycle.start();
 
   mainWindow.on('close', handleWindowClose);
@@ -298,10 +306,7 @@ if (!isSingleInstance) {
   app.quit();
 } else {
   app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-    }
+    activateWindow(mainWindow);
   });
   app.on('ready', onAppReady);
 }

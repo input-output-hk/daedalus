@@ -193,6 +193,9 @@ pub enum Event {
     /// The Electron process should call app.quit(); on the next Daedalus start
     /// the flags will be applied automatically.
     ElectronRestarting,
+    /// A second launch of Daedalus for this cluster found this instance
+    /// running. Electron should restore, show and focus its main window.
+    ActivateWindow,
 }
 
 /// Payload sent through the Electron restart channel when SetElectronFlags fires.
@@ -681,5 +684,11 @@ mod tests {
         assert_eq!(j["event"], "electron_exited");
         assert!(j["code"].is_null());
         assert_eq!(j["signal"], "SIGKILL");
+    }
+
+    #[test]
+    fn activate_window_event() {
+        let j = to_json(&Event::ActivateWindow);
+        assert_eq!(j["event"], "activate_window");
     }
 }
