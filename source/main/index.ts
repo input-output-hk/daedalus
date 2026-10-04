@@ -288,11 +288,29 @@ const onAppReady = async () => {
       return { action: 'deny' };
     });
   });
-  // Wait for controlled cardano-node shutdown before quitting the app
+  // The watchdog stopped on its own (not because Daedalus asked it to quit):
+  // there is no backend left to show, so close the app as well.
+  backendLifecycle.onEvent((event) => {
+    if (
+      (event.event as string) === 'stopped' &&
+      !backendLifecycle.isStopping()
+    ) {
+      logger.info('Watchdog stopped without a quit request; quitting Daedalus');
+      app.quit();
+    }
+  });
+  // Wait for controlled cardano-node shutdown before quitting the app. The
+  // window stays open, showing the shutdown status, until the watchdog reports
+  // that the backend has stopped. A second quit request (closing the window
+  // again, the menu, an update) joins the stop already in progress.
   app.on('before-quit', async (event) => {
+    event.preventDefault(); // prevent Daedalus from quitting immediately
+    if (backendLifecycle.isStopping()) {
+      logger.info('app received <before-quit> event while already stopping');
+      return;
+    }
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
-    event.preventDefault(); // prevent Daedalus from quitting immediately
     await backendLifecycle.stop();
 
     await safeExit();

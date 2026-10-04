@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::time::Duration;
 
 #[derive(Debug, Deserialize)]
 pub struct WatchdogConfig {
@@ -36,6 +37,11 @@ pub struct NodeConfig {
     /// Maximum number of unexpected node exits before giving up.
     #[serde(default = "default_node_max_crash_attempts")]
     pub max_crash_attempts: u32,
+    /// Seconds to wait for cardano-node to exit after it is asked to stop.
+    /// A node still running after this is killed, which leaves the chain
+    /// database unclean and makes the next start revalidate it.
+    #[serde(default = "default_node_stop_timeout_secs")]
+    pub stop_timeout_secs: u64,
 }
 
 fn default_node_crash_restart_delay_ms() -> u64 {
@@ -44,6 +50,31 @@ fn default_node_crash_restart_delay_ms() -> u64 {
 
 fn default_node_max_crash_attempts() -> u32 {
     10
+}
+
+/// Upper bound on a cardano-node stop, in seconds. Every path that stops the
+/// node (quit, Electron exit, restart, Mithril) waits at most this long. A
+/// clean stop takes under a second, so this leaves wide headroom for a slow
+/// disk while keeping a stop that will not finish from holding the window.
+pub const DEFAULT_NODE_STOP_TIMEOUT_SECS: u64 = 60;
+
+/// Time a stopping watchdog may need beyond its two stop bounds: killing a
+/// process that reached its bound, and exiting.
+pub const BACKEND_STOP_MARGIN: Duration = Duration::from_secs(30);
+
+impl WatchdogConfig {
+    /// The longest a backend stop takes: the wallet's bound, then the node's,
+    /// plus a margin. A later launch waits this long for a stopping instance
+    /// to exit, so it cannot give up while that stop is still within bounds.
+    pub fn backend_stop_limit(&self) -> Duration {
+        Duration::from_secs(self.wallet.stop_timeout_secs)
+            + Duration::from_secs(self.node.stop_timeout_secs)
+            + BACKEND_STOP_MARGIN
+    }
+}
+
+fn default_node_stop_timeout_secs() -> u64 {
+    DEFAULT_NODE_STOP_TIMEOUT_SECS
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -56,10 +87,18 @@ pub struct WalletConfig {
     pub restart_delay_ms: u64,
     #[serde(default = "default_max_restart_attempts")]
     pub max_restart_attempts: u32,
+    /// Seconds to wait for cardano-wallet to exit after it is asked to stop,
+    /// before killing it.
+    #[serde(default = "default_wallet_stop_timeout_secs")]
+    pub stop_timeout_secs: u64,
 }
 
 fn default_restart_delay_ms() -> u64 {
     1000
+}
+
+fn default_wallet_stop_timeout_secs() -> u64 {
+    10
 }
 
 fn default_max_restart_attempts() -> u32 {
@@ -192,6 +231,50 @@ mod tests {
         let c: WatchdogConfig = serde_json::from_str(json).unwrap();
         assert_eq!(c.node.crash_restart_delay_ms, 100);
         assert_eq!(c.node.max_crash_attempts, 3);
+    }
+
+    #[test]
+    fn node_stop_timeout_defaults_to_named_constant() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert_eq!(c.node.stop_timeout_secs, DEFAULT_NODE_STOP_TIMEOUT_SECS);
+    }
+
+    #[test]
+    fn backend_stop_limit_covers_both_stop_bounds() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s",
+                     "stop_timeout_secs":120},
+            "wallet": {"exe":"w","args":[],"state_dir":"/","stop_timeout_secs":10}
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            c.backend_stop_limit(),
+            Duration::from_secs(130) + BACKEND_STOP_MARGIN
+        );
+    }
+
+    #[test]
+    fn explicit_node_stop_timeout_overrides_default() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s",
+                     "stop_timeout_secs":42},
+            "wallet": {"exe":"w","args":[],"state_dir":"/"}
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        assert_eq!(c.node.stop_timeout_secs, 42);
+    }
+
+    #[test]
+    fn wallet_stop_timeout_defaults_to_10s() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert_eq!(c.wallet.stop_timeout_secs, 10);
+    }
+
+    #[test]
+    fn explicit_wallet_stop_timeout_overrides_default() {
+        let c: WatchdogConfig =
+            serde_json::from_str(&minimal_json(r#","stop_timeout_secs":3"#)).unwrap();
+        assert_eq!(c.wallet.stop_timeout_secs, 3);
     }
 
     #[test]

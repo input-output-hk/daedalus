@@ -44,11 +44,6 @@ const CONTROL_STEP_TIMEOUT: Duration = Duration::from_secs(3);
 /// Pause between attempts to reach the control channel or take the lock.
 const RETRY_INTERVAL: Duration = Duration::from_millis(250);
 
-/// How long a later launch waits for a running instance without a window to
-/// exit. Such an instance is stopping its backend, which takes as long as the
-/// node takes to close its database.
-const LOCK_WAIT_LIMIT: Duration = Duration::from_secs(300);
-
 /// Longest control-channel line accepted. Real messages are under 100 bytes.
 const MAX_CONTROL_LINE: u64 = 4096;
 
@@ -398,12 +393,14 @@ async fn request_activation(state_dir: &Path) -> std::io::Result<Answer> {
 // ── Claim ────────────────────────────────────────────────────────────────────
 
 /// Take the instance lock for `state_dir`, or hand over to the instance that
-/// holds it.
+/// holds it. A running instance without a window is stopping its backend;
+/// `stop_limit` is how long to wait for it to exit, the longest such a stop
+/// takes (`WatchdogConfig::backend_stop_limit`).
 ///
 /// `Ok(Some(lock))`: this process is the instance for the cluster; keep the
 /// lock alive until exit. `Ok(None)`: the running instance brought its window
 /// to the front; exit. `Err`: no instance can be started now; exit.
-pub async fn claim(state_dir: &str) -> Result<Option<InstanceLock>> {
+pub async fn claim(state_dir: &str, stop_limit: Duration) -> Result<Option<InstanceLock>> {
     let dir = Path::new(state_dir);
     if let Some(lock) = lock::try_acquire(dir)? {
         info!("instance lock acquired: {}", lock::describe(dir));
@@ -433,10 +430,10 @@ pub async fn claim(state_dir: &str) -> Result<Option<InstanceLock>> {
             Ok(Answer::NoWindow { watchdog_pid }) => {
                 info!(
                     "running instance (watchdog PID {watchdog_pid}) has no window and is stopping; waiting up to {} s for it to exit",
-                    LOCK_WAIT_LIMIT.as_secs()
+                    stop_limit.as_secs()
                 );
                 let started = Instant::now();
-                return match lock::acquire_within(dir, LOCK_WAIT_LIMIT).await? {
+                return match lock::acquire_within(dir, stop_limit).await? {
                     Some(lock) => {
                         info!(
                             "previous instance exited after {} s; instance lock acquired: {}",
@@ -447,7 +444,7 @@ pub async fn claim(state_dir: &str) -> Result<Option<InstanceLock>> {
                     }
                     None => Err(anyhow::anyhow!(
                         "previous instance (watchdog PID {watchdog_pid}) still running after {} s; exiting without starting a second backend",
-                        LOCK_WAIT_LIMIT.as_secs()
+                        stop_limit.as_secs()
                     )),
                 };
             }

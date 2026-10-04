@@ -521,6 +521,16 @@ export const WATCHDOG_STOPPED_CHANNEL = 'WATCHDOG_STOPPED_CHANNEL';
 export type WatchdogStoppedMainRequest = void;
 export type WatchdogStoppedRendererResponse = void;
 
+// Push: main → renderer when Daedalus starts stopping the backend, to quit or
+// for a restart the user asked for, and as that stop progresses
+export const BACKEND_STOP_STATUS_CHANNEL = 'BACKEND_STOP_STATUS_CHANNEL';
+export type BackendStopStatusMainRequest = {
+  quitting: boolean;
+  restart: import('../types/watchdog.types').RequestedRestart | null;
+  progress: import('../types/watchdog.types').BackendStopProgress | null;
+};
+export type BackendStopStatusRendererResponse = void;
+
 // Chain storage: renderer asks main to validate a candidate path
 export const VALIDATE_CHAIN_STORAGE_CHANNEL = 'VALIDATE_CHAIN_STORAGE_CHANNEL';
 export type ValidateChainStorageRendererRequest = { path: string };

@@ -201,6 +201,16 @@ pub enum Event {
     /// event it keeps them, so a migration that did not complete is retried on
     /// the next launch.
     MigrateStateSaved,
+    /// Progress of a backend stop. Emitted when the watchdog starts stopping
+    /// cardano-wallet or cardano-node and then once a second until that process
+    /// has exited. `stage` is "stopping_wallet" or "stopping_node";
+    /// `elapsed_ms` counts from the start of the stage; `timeout_ms` is how
+    /// long the watchdog waits in this stage before killing the process.
+    BackendStopProgress {
+        stage: String,
+        elapsed_ms: u64,
+        timeout_ms: u64,
+    },
 }
 
 /// Payload sent through the Electron restart channel when SetElectronFlags fires.
@@ -660,6 +670,19 @@ mod tests {
     fn electron_restarting_event() {
         let j = to_json(&Event::ElectronRestarting);
         assert_eq!(j["event"], "electron_restarting");
+    }
+
+    #[test]
+    fn backend_stop_progress() {
+        let j = to_json(&Event::BackendStopProgress {
+            stage: "stopping_node".to_string(),
+            elapsed_ms: 2000,
+            timeout_ms: 300_000,
+        });
+        assert_eq!(j["event"], "backend_stop_progress");
+        assert_eq!(j["stage"], "stopping_node");
+        assert_eq!(j["elapsed_ms"], 2000);
+        assert_eq!(j["timeout_ms"], 300_000);
     }
 
     #[test]

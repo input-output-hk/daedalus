@@ -17,8 +17,9 @@ const WATCHDOG: &str = env!("CARGO_BIN_EXE_cardano-watchdog");
 const MOCK_NODE: &str = env!("CARGO_BIN_EXE_mock-node");
 const MOCK_WALLET: &str = env!("CARGO_BIN_EXE_mock-wallet");
 
-/// Mock Electron: records every event in $EVENTS_FILE and answers
-/// migrate_state_request with $REPLY after $REPLY_DELAY seconds.
+/// Mock Electron: records every event in $EVENTS_FILE, answers
+/// migrate_state_request with $REPLY after $REPLY_DELAY seconds, and exits on
+/// stopped.
 const ANSWERING_ELECTRON: &str = r#"
 while IFS= read -r line; do
   printf '%s\n' "$line" >> "$EVENTS_FILE"
@@ -27,6 +28,7 @@ while IFS= read -r line; do
       sleep "$REPLY_DELAY"
       printf '%s\n' "$REPLY"
       ;;
+    *'"event":"stopped"'*) exit 0 ;;
   esac
 done
 "#;

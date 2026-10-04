@@ -339,7 +339,8 @@ fn activation_reaches_electron_in_parent_mode() {
         "exe": "/bin/sh",
         // A read loop rather than a lone `cat`: bash execs a single -c
         // command, which would close the stdout pipe Electron holds open.
-        "args": ["-c", r#"while IFS= read -r line; do printf '%s\n' "$line" >> "$EVENTS_FILE"; done"#],
+        // It exits on stopped, as Electron does.
+        "args": ["-c", r#"while IFS= read -r line; do printf '%s\n' "$line" >> "$EVENTS_FILE"; case "$line" in *'"event":"stopped"'*) exit 0 ;; esac; done"#],
         "env": { "EVENTS_FILE": events.to_str().unwrap() },
     });
     let (mut first, _stdin, _rx) = spawn(&dir, &cfg);

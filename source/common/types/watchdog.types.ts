@@ -33,7 +33,29 @@ export interface WatchdogState {
   customChainPath: string | null;
   // Runtime overrides (from watchdog-state.json)
   nodeExtraArgs: string[];
+  // True once Daedalus has asked the watchdog to stop the backend and quit
+  shutdownRequested: boolean;
+  // Latest progress of a backend stop; null while nothing is being stopped
+  backendStopProgress: BackendStopProgress | null;
+  // A restart the user asked for, until it has stopped the process
+  requestedRestart: RequestedRestart | null;
 }
+
+// BackendStopProgress — from backend_stop_progress events, emitted while the
+// watchdog stops cardano-wallet or cardano-node. elapsedMs counts from the
+// start of the stage; timeoutMs is when the watchdog kills the process.
+export type BackendStopStage = 'stopping_wallet' | 'stopping_node';
+
+export type BackendStopProgress = {
+  stage: BackendStopStage;
+  elapsedMs: number;
+  timeoutMs: number;
+};
+
+// RequestedRestart — a restart the user asked for (Help > RTS flags,
+// Diagnostics, a chain storage change). 'node' lasts until the new node
+// starts; 'wallet' until the restarted wallet is ready.
+export type RequestedRestart = 'node' | 'wallet';
 
 // MithrilProgress — from mithril_progress events
 export interface MithrilProgress {
@@ -55,7 +77,8 @@ export type LoadingPhase =
   | 'mithril-syncing'
   | 'node-starting'
   | 'ready'
-  | 'error';
+  | 'error'
+  | 'stopping';
 
 // MithrilCommand — renderer→main commands forwarded to watchdog
 export type MithrilCommand =
@@ -97,8 +120,8 @@ export type CardanoNodeState = string;
 export const CardanoNodeStates = {
   STARTING: 'node-starting',
   RUNNING: 'node-starting',
-  EXITING: 'node-starting',
-  STOPPING: 'node-starting',
+  EXITING: 'stopping',
+  STOPPING: 'stopping',
   STOPPED: 'error',
   UPDATING: 'node-starting',
   UPDATED: 'node-starting',

@@ -11,7 +11,7 @@ use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::net::TcpStream;
 use tokio::process::{Child, Command};
 use tokio::sync::{mpsc, oneshot, watch};
-use tokio::time::{Duration, sleep, timeout};
+use tokio::time::{Duration, Instant, interval_at, sleep, timeout};
 use tracing::{info, warn};
 
 #[cfg(unix)]
@@ -192,36 +192,120 @@ fn graceful_stop(child: &Child) {
     }
 }
 
-// Graceful stop with a bounded wait; force-kills if the process doesn't exit in time.
-async fn stop_child(child: &mut Child, secs: u64) {
-    graceful_stop(child);
-    if timeout(Duration::from_secs(secs), child.wait())
-        .await
-        .is_err()
-    {
-        let _ = child.start_kill();
-        let _ = child.wait().await;
-    }
+/// `BackendStopProgress` stage while cardano-wallet is being stopped.
+const STAGE_STOPPING_WALLET: &str = "stopping_wallet";
+/// `BackendStopProgress` stage while cardano-node is being stopped.
+const STAGE_STOPPING_NODE: &str = "stopping_node";
+/// Interval between `BackendStopProgress` events within one stage.
+const STOP_PROGRESS_INTERVAL: Duration = Duration::from_secs(1);
+
+fn emit_stop_progress(stage: &str, started: Instant, bound: Duration) {
+    emit(&Event::BackendStopProgress {
+        stage: stage.to_string(),
+        elapsed_ms: started.elapsed().as_millis() as u64,
+        timeout_ms: bound.as_millis() as u64,
+    });
 }
 
-// Wait for the node-watcher channel to signal exit.
-// Returns false; node always exits gracefully after the shutdown pipe closes.
+// Ticks once per STOP_PROGRESS_INTERVAL, the first tick one interval from now:
+// each stage reports its start itself.
+fn stop_progress_ticks() -> tokio::time::Interval {
+    interval_at(
+        Instant::now() + STOP_PROGRESS_INTERVAL,
+        STOP_PROGRESS_INTERVAL,
+    )
+}
+
+// Asks cardano-wallet to stop and waits at most `bound` for it to exit, then
+// kills it. Emits stop progress once a second while waiting.
+async fn stop_wallet(wallet: &mut Child, bound: Duration) {
+    let started = Instant::now();
+    emit_stop_progress(STAGE_STOPPING_WALLET, started, bound);
+    graceful_stop(wallet);
+    let deadline = sleep(bound);
+    tokio::pin!(deadline);
+    let mut tick = stop_progress_ticks();
+    let force_killed = loop {
+        tokio::select! {
+            _ = wallet.wait() => break false,
+            _ = tick.tick() => emit_stop_progress(STAGE_STOPPING_WALLET, started, bound),
+            _ = &mut deadline => {
+                warn!("cardano-wallet did not exit within {}s; killing it", bound.as_secs());
+                let _ = wallet.start_kill();
+                let _ = wallet.wait().await;
+                break true;
+            }
+        }
+    };
+    info!(
+        "wallet stopped in {}ms (force_killed={force_killed})",
+        started.elapsed().as_millis()
+    );
+}
+
+// Waits for the node-watcher channel to report that cardano-node has exited,
+// for at most `bound`. A node still running then is killed through `kill_tx`.
+// Returns true when the node had to be killed. Emits stop progress once a
+// second while waiting.
 async fn wait_for_node_exit(
     node_rx: &watch::Receiver<Option<ExitInfo>>,
-    _kill_tx: &mut Option<oneshot::Sender<()>>,
+    kill_tx: &mut Option<oneshot::Sender<()>>,
+    bound: Duration,
 ) -> bool {
-    // Wait indefinitely for the node to exit gracefully. Force-killing leaves
-    // the chain DB dirty and forces a full immutable-chunk validation on next
-    // start (which can take many minutes). The shutdown-pipe EOF is sufficient
-    // signal; the node will always exit eventually.
+    let started = Instant::now();
+    emit_stop_progress(STAGE_STOPPING_NODE, started, bound);
     let mut rx = node_rx.clone();
+    let deadline = sleep(bound);
+    tokio::pin!(deadline);
+    let mut tick = stop_progress_ticks();
     loop {
-        if rx.borrow().is_some() {
+        if rx.borrow_and_update().is_some() {
+            return false;
+        }
+        tokio::select! {
+            changed = rx.changed() => {
+                if changed.is_err() {
+                    return false;
+                }
+            }
+            _ = tick.tick() => emit_stop_progress(STAGE_STOPPING_NODE, started, bound),
+            _ = &mut deadline => break,
+        }
+    }
+    warn!(
+        "cardano-node did not exit within {}s of the stop request; killing it",
+        bound.as_secs()
+    );
+    if let Some(tx) = kill_tx.take() {
+        let _ = tx.send(());
+    }
+    while rx.borrow_and_update().is_none() {
+        if rx.changed().await.is_err() {
             break;
         }
-        let _ = rx.changed().await;
     }
-    false
+    true
+}
+
+// Asks cardano-node to stop, waits for it to exit within the configured
+// bound (killing it after that), and reports how long it took.
+async fn stop_node(
+    reason: &str,
+    shutdown_pipe: &mut ShutdownPipe,
+    node_rx: &watch::Receiver<Option<ExitInfo>>,
+    kill_tx: &mut Option<oneshot::Sender<()>>,
+    bound: Duration,
+) {
+    info!("stopping node ({reason})");
+    let shutdown_start = unix_ms();
+    shutdown_pipe.close_write();
+    let force_killed = wait_for_node_exit(node_rx, kill_tx, bound).await;
+    let shutdown_ms = unix_ms() - shutdown_start;
+    info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
+    emit(&Event::NodeShutdownMs {
+        ms: shutdown_ms,
+        force_killed,
+    });
 }
 
 type RotatingLog = Arc<Mutex<FileRotate<AppendCount>>>;
@@ -951,6 +1035,8 @@ async fn run_node_wallet(
         .as_deref()
         .unwrap_or(&config.node.state_dir);
     let node_log = open_log(&format!("{logs_dir}/node.log"));
+    let node_stop_bound = Duration::from_secs(config.node.stop_timeout_secs);
+    let wallet_stop_bound = Duration::from_secs(config.wallet.stop_timeout_secs);
 
     let mut shutdown_pipe = match ShutdownPipe::new() {
         Ok(p) => p,
@@ -1125,23 +1211,25 @@ async fn run_node_wallet(
             Some(cmd) = cmd_rx.recv() => {
                 match cmd {
                     Cmd::Stop => {
-                        info!("stopping node (shutdown requested)");
-                        let shutdown_start = unix_ms();
-                        shutdown_pipe.close_write();
-                        let force_killed = wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
-                        let shutdown_ms = unix_ms() - shutdown_start;
-                        info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
-                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        stop_node(
+                            "shutdown requested",
+                            &mut shutdown_pipe,
+                            &node_rx_socket,
+                            &mut node_kill_tx,
+                            node_stop_bound,
+                        )
+                        .await;
                         return Ok(RunResult::Stopped);
                     }
                     Cmd::StartMithril { force, wipe_chain } => {
-                        info!("stopping node (mithril requested)");
-                        let shutdown_start = unix_ms();
-                        shutdown_pipe.close_write();
-                        let force_killed = wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
-                        let shutdown_ms = unix_ms() - shutdown_start;
-                        info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
-                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        stop_node(
+                            "mithril requested",
+                            &mut shutdown_pipe,
+                            &node_rx_socket,
+                            &mut node_kill_tx,
+                            node_stop_bound,
+                        )
+                        .await;
                         return Ok(RunResult::StartMithril { force, wipe_chain });
                     }
                     Cmd::ProbeMithril => {
@@ -1180,13 +1268,14 @@ async fn run_node_wallet(
                         );
                     }
                     Cmd::RestartNode => {
-                        let shutdown_start = unix_ms();
-                        shutdown_pipe.close_write();
-                        let force_killed =
-                            wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
-                        let shutdown_ms = unix_ms() - shutdown_start;
-                        info!("user-initiated node restart, shut down in {shutdown_ms}ms (force_killed={force_killed})");
-                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        stop_node(
+                            "node restart requested",
+                            &mut shutdown_pipe,
+                            &node_rx_socket,
+                            &mut node_kill_tx,
+                            node_stop_bound,
+                        )
+                        .await;
                         return Ok(RunResult::RestartRequested);
                     }
                     Cmd::SetChainPath { path } => {
@@ -1196,12 +1285,14 @@ async fn run_node_wallet(
                             warn!("Failed to save watchdog state: {e}");
                         }
                         state::apply_to_config(config, base_node_args, wstate);
-                        let shutdown_start = unix_ms();
-                        shutdown_pipe.close_write();
-                        let force_killed =
-                            wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
-                        let shutdown_ms = unix_ms() - shutdown_start;
-                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        stop_node(
+                            "chain path changed",
+                            &mut shutdown_pipe,
+                            &node_rx_socket,
+                            &mut node_kill_tx,
+                            node_stop_bound,
+                        )
+                        .await;
                         return Ok(RunResult::RestartRequested);
                     }
                     Cmd::SetNodeExtraArgs { args } => {
@@ -1211,12 +1302,14 @@ async fn run_node_wallet(
                             warn!("Failed to save watchdog state: {e}");
                         }
                         state::apply_to_config(config, base_node_args, wstate);
-                        let shutdown_start = unix_ms();
-                        shutdown_pipe.close_write();
-                        let force_killed =
-                            wait_for_node_exit(&node_rx_socket, &mut node_kill_tx).await;
-                        let shutdown_ms = unix_ms() - shutdown_start;
-                        emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                        stop_node(
+                            "node arguments changed",
+                            &mut shutdown_pipe,
+                            &node_rx_socket,
+                            &mut node_kill_tx,
+                            node_stop_bound,
+                        )
+                        .await;
                         return Ok(RunResult::RestartRequested);
                     }
                     Cmd::SetElectronFlags { flags } => {
@@ -1350,28 +1443,27 @@ async fn run_node_wallet(
                     warn!("cardano-node exited during wallet startup (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
-                    stop_child(&mut wallet, 10).await;
+                    stop_wallet(&mut wallet, wallet_stop_bound).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
                         Cmd::Stop => {
                             info!("stopping wallet (shutdown requested)");
-                            stop_child(&mut wallet, 10).await;
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
                             break 'supervisor;
                         }
                         Cmd::StartMithril { force, wipe_chain } => {
                             info!("stopping wallet (mithril requested)");
-                            stop_child(&mut wallet, 10).await;
-                            info!("stopping node (mithril requested)");
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "mithril requested",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::StartMithril { force, wipe_chain });
                         }
                         Cmd::ProbeMithril => {
@@ -1402,21 +1494,20 @@ async fn run_node_wallet(
                         }
                         Cmd::RestartNode => {
                             info!("stopping wallet (node restart requested)");
-                            stop_child(&mut wallet, 10).await;
-                            info!("stopping node (node restart requested)");
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "node restart requested",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::RestartRequested);
                         }
                         Cmd::RestartWallet => {
                             info!("user-initiated wallet restart");
-                            stop_child(&mut wallet, 10).await;
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
                             attempt += 1;
                             emit(&Event::WalletRestarting {
                                 attempt,
@@ -1432,14 +1523,15 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_child(&mut wallet, 10).await;
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "chain path changed",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::RestartRequested);
                         }
                         Cmd::SetNodeExtraArgs { args } => {
@@ -1449,14 +1541,15 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_child(&mut wallet, 10).await;
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "node arguments changed",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::RestartRequested);
                         }
                         Cmd::SetElectronFlags { flags } => {
@@ -1517,28 +1610,27 @@ async fn run_node_wallet(
                     warn!("cardano-node exited (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
-                    stop_child(&mut wallet, 10).await;
+                    stop_wallet(&mut wallet, wallet_stop_bound).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
                         Cmd::Stop => {
                             info!("stopping wallet (shutdown requested)");
-                            stop_child(&mut wallet, 10).await;
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
                             break 'supervisor;
                         }
                         Cmd::StartMithril { force, wipe_chain } => {
                             info!("stopping wallet (mithril requested)");
-                            stop_child(&mut wallet, 10).await;
-                            info!("stopping node (mithril requested)");
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "mithril requested",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::StartMithril { force, wipe_chain });
                         }
                         Cmd::ProbeMithril => {
@@ -1569,21 +1661,20 @@ async fn run_node_wallet(
                         }
                         Cmd::RestartNode => {
                             info!("stopping wallet (node restart requested)");
-                            stop_child(&mut wallet, 10).await;
-                            info!("stopping node (node restart requested)");
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "node restart requested",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::RestartRequested);
                         }
                         Cmd::RestartWallet => {
                             info!("user-initiated wallet restart");
-                            stop_child(&mut wallet, 10).await;
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
                             attempt += 1;
                             emit(&Event::WalletRestarting {
                                 attempt,
@@ -1599,14 +1690,15 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_child(&mut wallet, 10).await;
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "chain path changed",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::RestartRequested);
                         }
                         Cmd::SetNodeExtraArgs { args } => {
@@ -1616,14 +1708,15 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_child(&mut wallet, 10).await;
-                            let shutdown_start = unix_ms();
-                            shutdown_pipe.close_write();
-                            let node_rx_shutdown = node_rx.clone();
-                            let force_killed =
-                                wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-                            let shutdown_ms = unix_ms() - shutdown_start;
-                            emit(&Event::NodeShutdownMs { ms: shutdown_ms, force_killed });
+                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_node(
+                                "node arguments changed",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                node_stop_bound,
+                            )
+                            .await;
                             return Ok(RunResult::RestartRequested);
                         }
                         Cmd::SetElectronFlags { flags } => {
@@ -1649,22 +1742,14 @@ async fn run_node_wallet(
         }
     }
 
-    // Signal cardano-node to shut down by closing the write end of the pipe (sends EOF)
-    info!("stopping node (shutdown requested)");
-
-    let shutdown_start = unix_ms();
-    shutdown_pipe.close_write();
-
-    // Wait up to 30s for node to exit; force-kill via kill channel if it doesn't.
-    let node_rx_shutdown = node_rx.clone();
-    let force_killed = wait_for_node_exit(&node_rx_shutdown, &mut node_kill_tx).await;
-
-    let shutdown_ms = unix_ms() - shutdown_start;
-    info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
-    emit(&Event::NodeShutdownMs {
-        ms: shutdown_ms,
-        force_killed,
-    });
+    stop_node(
+        "shutdown requested",
+        &mut shutdown_pipe,
+        &node_rx,
+        &mut node_kill_tx,
+        node_stop_bound,
+    )
+    .await;
 
     Ok(RunResult::Stopped)
 }

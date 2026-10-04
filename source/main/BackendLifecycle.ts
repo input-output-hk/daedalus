@@ -16,6 +16,7 @@ import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
   watchdogStoppedChannel,
+  backendStopStatusChannel,
 } from './ipc/nodePushChannel';
 import {
   buildMigrateStateCommand,
@@ -25,12 +26,25 @@ import { environment } from './environment';
 
 type EventHandler = (event: Record<string, unknown>) => void;
 
+// Watchdog events that can change the stop status pushed to the renderer.
+const STOP_STATUS_EVENTS = new Set([
+  'backend_stop_progress',
+  'node_shutdown_ms',
+  'node_started',
+  'wallet_started',
+  'wallet_ready',
+  'wallet_unrecoverable',
+  'node_unrecoverable',
+  'mithril_status',
+]);
+
 class BackendLifecycle {
   private manager: WatchdogManager | null = null;
   private getWindow: () => BrowserWindow | null = () => null;
   private eventHandlers: EventHandler[] = [];
   private _defaultChainPath: string | null = null;
   private _customChainPath: string | null = null;
+  private _stopPromise: Promise<void> | null = null;
 
   // ---------------------------------------------------------------------------
   // Setup
@@ -91,6 +105,9 @@ class BackendLifecycle {
       const win = this.getWindow();
       if (!win) return;
       const eventType = event.event as string | undefined;
+      if (eventType && STOP_STATUS_EVENTS.has(eventType)) {
+        this._sendStopStatus();
+      }
       if (eventType === 'wallet_ready') {
         sendWalletPort(event.port as number);
       } else if (eventType === 'mithril_progress') {
@@ -150,6 +167,7 @@ class BackendLifecycle {
     this._customChainPath = customPath;
     if (this.manager) {
       this.manager.sendCommand({ cmd: 'set_chain_path', path: customPath });
+      this._sendStopStatus();
       logger.info('BackendLifecycle: setCustomChainPath — sent to watchdog', {
         customPath,
       });
@@ -183,11 +201,38 @@ class BackendLifecycle {
   // Stop
   // ---------------------------------------------------------------------------
 
-  async stop(): Promise<void> {
-    if (!this.manager) return;
-    const manager = this.manager;
-    this.manager = null;
-    await manager.stop();
+  // Stops the backend for quit. The manager stays in place until the process
+  // exits, so the renderer keeps receiving state and progress while the window
+  // shows the shutdown status. Repeated calls share one stop.
+  stop(): Promise<void> {
+    const { manager } = this;
+    if (!manager) return Promise.resolve();
+    if (this._stopPromise === null) {
+      this._stopPromise = manager.stop();
+      this._sendStopStatus();
+    }
+    return this._stopPromise;
+  }
+
+  isStopping(): boolean {
+    return this._stopPromise !== null;
+  }
+
+  // Tells the renderer at once that the backend is stopping, for quit or for a
+  // requested restart, so it never reads the wallet going away as a lost
+  // connection.
+  private _sendStopStatus(): void {
+    const win = this.getWindow();
+    if (!win || win.isDestroyed()) return;
+    const state = this.manager?.getState();
+    backendStopStatusChannel.send(
+      {
+        quitting: this._stopPromise !== null,
+        restart: state?.requestedRestart ?? null,
+        progress: state?.backendStopProgress ?? null,
+      },
+      win.webContents
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -210,6 +255,7 @@ class BackendLifecycle {
       return;
     }
     this.manager.sendCommand(cmd);
+    this._sendStopStatus();
   }
 
   onEvent(handler: EventHandler): void {

@@ -209,7 +209,7 @@ async fn main() -> Result<()> {
     // state (TLS certs, watchdog-state.json, the node socket, the chain
     // database) or spawns a child. A second launch hands over to the running
     // instance here and exits.
-    match instance::claim(&config.node.state_dir).await {
+    match instance::claim(&config.node.state_dir, config.backend_stop_limit()).await {
         // Never released by hand: the OS releases it when the process exits,
         // after the runtime has torn down the children, so a waiting launch
         // cannot start while this instance's Electron is still alive.
@@ -297,6 +297,8 @@ async fn main() -> Result<()> {
     // the receiver is dropped, so sends silently fail (which is correct).
     let (el_restart_tx, mut el_restart_rx) =
         mpsc::unbounded_channel::<protocol::ElectronRestartPayload>();
+    // Parent mode: the task that runs Electron. It ends when Electron exits.
+    let mut electron_task: Option<tokio::task::JoinHandle<()>> = None;
 
     // How long to wait for Electron's reply to migrate_state_request. In
     // parent mode Electron is spawned alongside and the request waits in its
@@ -372,7 +374,7 @@ async fn main() -> Result<()> {
             },
         }
 
-        tokio::spawn(async move {
+        electron_task = Some(tokio::spawn(async move {
             let mut current_electron_flags = initial_electron_flags;
             let mut per_rx = initial_per_rx;
 
@@ -636,7 +638,7 @@ async fn main() -> Result<()> {
             // Electron is gone for good: a second launch now waits for this
             // instance to exit instead of asking for a window.
             window_mgr.set_gone();
-        });
+        }));
     } else {
         // ── Standalone mode ──────────────────────────────────────────────────
         // No Electron section in config: emit() writes directly to stdout (the
@@ -665,7 +667,11 @@ async fn main() -> Result<()> {
     // activation reaches Electron.
     instance::spawn_control_server(&config.node.state_dir, window);
 
-    supervisor::run(
+    // The supervisor holds the other sender and drops it when it returns. A
+    // closed restart channel ends the Electron manager loop, which kills
+    // Electron, so this one is held until Electron has exited or been closed.
+    let el_restart_hold = el_restart_tx.clone();
+    let result = supervisor::run(
         config,
         cmd_rx,
         base_node_args,
@@ -673,8 +679,33 @@ async fn main() -> Result<()> {
         Some(el_restart_tx),
         migration_wait,
     )
-    .await
+    .await;
+
+    // The backend is stopped and Electron has been sent `stopped`. Give it
+    // time to act on that and exit by itself: returning from main drops the
+    // runtime, which kills an Electron that is still running.
+    if let Some(mut task) = electron_task {
+        match tokio::time::timeout(ELECTRON_EXIT_GRACE, &mut task).await {
+            Ok(_) => tracing::info!("Electron exited after the backend stopped"),
+            Err(_) => {
+                tracing::warn!(
+                    "Electron still running {}s after the backend stopped; closing it",
+                    ELECTRON_EXIT_GRACE.as_secs()
+                );
+                // Ending the manager task drops Electron's process handle,
+                // which kills it.
+                task.abort();
+                let _ = task.await;
+            }
+        }
+    }
+    drop(el_restart_hold);
+    result
 }
+
+/// How long the watchdog waits for Electron to exit after the backend has
+/// stopped, before closing it.
+const ELECTRON_EXIT_GRACE: std::time::Duration = std::time::Duration::from_secs(15);
 
 #[cfg(test)]
 mod tests {

@@ -146,6 +146,8 @@ struct Cfg<'a> {
     restart_delay_ms: u64,
     node_max_crash_attempts: u32,
     node_crash_restart_delay_ms: u64,
+    node_stop_timeout_secs: Option<u64>,
+    wallet_stop_timeout_secs: Option<u64>,
     with_mithril: bool,
     mithril_bin: Option<&'a str>,
     converter_bin: Option<&'a str>,
@@ -167,6 +169,8 @@ impl<'a> Cfg<'a> {
             restart_delay_ms: 50,
             node_max_crash_attempts: 10,
             node_crash_restart_delay_ms: 0,
+            node_stop_timeout_secs: None,
+            wallet_stop_timeout_secs: None,
             with_mithril: false,
             mithril_bin: None,
             converter_bin: None,
@@ -185,6 +189,16 @@ impl<'a> Cfg<'a> {
 
     fn node_max_crash_attempts(mut self, n: u32) -> Self {
         self.node_max_crash_attempts = n;
+        self
+    }
+
+    fn node_stop_timeout_secs(mut self, secs: u64) -> Self {
+        self.node_stop_timeout_secs = Some(secs);
+        self
+    }
+
+    fn wallet_stop_timeout_secs(mut self, secs: u64) -> Self {
+        self.wallet_stop_timeout_secs = Some(secs);
         self
     }
 
@@ -229,6 +243,12 @@ impl<'a> Cfg<'a> {
             },
             "pub_logs_dir": logs.to_str().unwrap()
         });
+        if let Some(secs) = self.node_stop_timeout_secs {
+            cfg["node"]["stop_timeout_secs"] = json!(secs);
+        }
+        if let Some(secs) = self.wallet_stop_timeout_secs {
+            cfg["wallet"]["stop_timeout_secs"] = json!(secs);
+        }
 
         if self.with_mithril {
             let mithril_bin = self.mithril_bin.unwrap_or(MOCK_MITHRIL);
@@ -1564,6 +1584,94 @@ fn node_crash_exceeds_limit_emits_error_and_stops() {
             .contains("unrecoverable"),
         "error message should mention unrecoverable, got: {err}"
     );
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: bounded stop ───────────────────────────────────────────────────────
+
+/// A node that ignores the stop request is killed once the stop bound passes,
+/// and the watchdog still reports the backend stopped.
+#[test]
+fn node_ignoring_stop_is_killed_at_the_bound() {
+    let dir = TempDir::new("stop-bound");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .node_stop_timeout_secs(1)
+        .build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_IGNORE_SHUTDOWN", "1")]);
+
+    expect(&rx, "wallet_ready");
+    let started = std::time::Instant::now();
+    stop(&mut stdin);
+
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert_eq!(shutdown["force_killed"], true, "{shutdown}");
+    assert!(shutdown["ms"].as_u64().unwrap() >= 1000, "{shutdown}");
+    expect(&rx, "stopped");
+    assert!(
+        started.elapsed() < Duration::from_secs(10),
+        "stop took {:?}",
+        started.elapsed()
+    );
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// The same bound applies to a node restart: the old node is killed and a new
+/// one starts.
+#[test]
+fn restart_kills_a_node_ignoring_stop_at_the_bound() {
+    let dir = TempDir::new("restart-bound");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .node_stop_timeout_secs(1)
+        .build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_IGNORE_SHUTDOWN", "1")]);
+
+    let first = expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "restart_node"}));
+
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert_eq!(shutdown["force_killed"], true, "{shutdown}");
+    let second = expect(&rx, "node_started");
+    assert_ne!(first["pid"], second["pid"]);
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A stop reports each stage with its bound, wallet first, then node, so
+/// Electron can show progress and size its own safety timer.
+#[test]
+fn stop_reports_progress_for_each_stage() {
+    let dir = TempDir::new("stop-progress");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .node_stop_timeout_secs(7)
+        .wallet_stop_timeout_secs(3)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    stop(&mut stdin);
+
+    let wallet = expect(&rx, "backend_stop_progress");
+    assert_eq!(wallet["stage"], "stopping_wallet", "{wallet}");
+    assert_eq!(wallet["timeout_ms"], 3000, "{wallet}");
+    let node = expect_with(&rx, "backend_stop_progress", |v| {
+        v["stage"] == "stopping_node"
+    });
+    assert_eq!(node["timeout_ms"], 7000, "{node}");
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert_eq!(shutdown["force_killed"], false, "{shutdown}");
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();

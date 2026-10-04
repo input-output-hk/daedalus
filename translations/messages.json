@@ -4115,6 +4115,21 @@
         "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError"
+      },
+      {
+        "defaultMessage": "!!!Restarting Cardano wallet",
+        "description": "Message on the loading screen while cardano-wallet restarts at the user's request.",
+        "id": "loading.screen.restartingCardanoWalletMessage"
+      },
+      {
+        "defaultMessage": "!!!Stopping Cardano wallet ({elapsed})",
+        "description": "Shutdown progress on the loading screen while cardano-wallet stops. {elapsed} is the time spent in this step, as minutes:seconds.",
+        "id": "loading.screen.stoppingCardanoWalletProgress"
+      },
+      {
+        "defaultMessage": "!!!Waiting for Cardano node to close its database ({elapsed})",
+        "description": "Shutdown progress on the loading screen while cardano-node stops. {elapsed} is the time spent in this step, as minutes:seconds.",
+        "id": "loading.screen.stoppingCardanoNodeProgress"
       }
     ],
     "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.tsx"

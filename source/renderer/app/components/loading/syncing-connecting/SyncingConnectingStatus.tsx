@@ -5,7 +5,10 @@ import {
   BlockSyncType,
   NodeStartupPhase,
 } from '../../../../../common/types/cardano-node.types';
-import type { CardanoNodeState } from '../../../../../common/types/watchdog.types';
+import type {
+  BackendStopProgress,
+  CardanoNodeState,
+} from '../../../../../common/types/watchdog.types';
 import { CardanoNodeStates } from '../../../../../common/types/watchdog.types';
 import styles from './SyncingConnectingStatus.scss';
 import SyncingProgress from './SyncingProgress';
@@ -93,7 +96,34 @@ const messages = defineMessages({
     defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
     description: 'The TLS cert is not valid and Daedalus should be restarted',
   },
+  restartingWallet: {
+    id: 'loading.screen.restartingCardanoWalletMessage',
+    defaultMessage: '!!!Restarting Cardano wallet',
+    description:
+      "Message on the loading screen while cardano-wallet restarts at the user's request.",
+  },
+  stoppingWalletProgress: {
+    id: 'loading.screen.stoppingCardanoWalletProgress',
+    defaultMessage: '!!!Stopping Cardano wallet ({elapsed})',
+    description:
+      'Shutdown progress on the loading screen while cardano-wallet stops. {elapsed} is the time spent in this step, as minutes:seconds.',
+  },
+  stoppingNodeProgress: {
+    id: 'loading.screen.stoppingCardanoNodeProgress',
+    defaultMessage:
+      '!!!Waiting for Cardano node to close its database ({elapsed})',
+    description:
+      'Shutdown progress on the loading screen while cardano-node stops. {elapsed} is the time spent in this step, as minutes:seconds.',
+  },
 });
+
+// Formats a duration as minutes:seconds, for example 83000 ms as "1:23".
+export const formatStopElapsed = (ms: number): string => {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
 
 interface Props {
   cardanoNodeState: CardanoNodeState | null | undefined;
@@ -106,6 +136,8 @@ interface Props {
   isNodeStopped: boolean;
   isVerifyingBlockchain: boolean;
   nodeStartupPhase?: string | null;
+  backendStopProgress?: BackendStopProgress | null;
+  isRestartingWallet?: boolean;
 }
 
 export default class SyncingConnectingStatus extends Component<Props> {
@@ -122,8 +154,23 @@ export default class SyncingConnectingStatus extends Component<Props> {
       hasBeenConnected,
       isTlsCertInvalid,
       isConnected,
+      isNodeStopping,
+      isRestartingWallet,
     } = this.props;
     let connectingMessage;
+
+    // Daedalus is quitting or restarting the backend on request: the wallet
+    // may still answer for a moment, and its disconnection is part of the
+    // stop, not a lost connection.
+    if (isNodeStopping && isRestartingWallet) {
+      return { connectingMessage: messages.restartingWallet };
+    }
+    if (isNodeStopping) {
+      return {
+        connectingMessage: messages.stopping,
+        connectingDescription: messages.stoppingDescription,
+      };
+    }
 
     if (isConnected) {
       connectingMessage = messages.loadingWalletData;
@@ -201,6 +248,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       blockSyncProgress,
       cardanoNodeState,
       nodeStartupPhase,
+      backendStopProgress,
     } = this.props;
     if (!hasLoadedCurrentLocale) return null;
 
@@ -236,6 +284,17 @@ export default class SyncingConnectingStatus extends Component<Props> {
           nodeStartupPhase)
         : null;
 
+    const stopProgressMessage =
+      backendStopProgress?.stage === 'stopping_wallet'
+        ? messages.stoppingWalletProgress
+        : messages.stoppingNodeProgress;
+    const stopProgressLabel =
+      isNodeStopping && backendStopProgress
+        ? intl.formatMessage(stopProgressMessage, {
+            elapsed: formatStopElapsed(backendStopProgress.elapsedMs),
+          })
+        : null;
+
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
@@ -251,6 +310,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
             )
           )}
         </div>
+        {stopProgressLabel && (
+          <div className={styles.description}>{stopProgressLabel}</div>
+        )}
       </div>
     );
   }

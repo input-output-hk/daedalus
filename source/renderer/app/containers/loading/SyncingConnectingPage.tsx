@@ -39,10 +39,14 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       mithrilPromptDismissed,
       startMithrilForce,
       dismissMithrilPrompt,
+      backendStopProgress,
     } = backend;
     // Map loadingPhase to the cardanoNodeState shape the component expects
     const cardanoNodeState = loadingPhase;
-    const isNodeStopping = backend.isStopping;
+    // Quitting, or a restart the user asked for
+    const isNodeStopping = loadingPhase === 'stopping';
+    const isRestartingWallet =
+      !backend.isStopping && backend.requestedRestart === 'wallet';
     const isNodeStopped = false;
     // Node is verifying blockchain when it has started but wallet isn't ready yet
     const isVerifyingBlockchain =
@@ -58,6 +62,7 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       (blockSyncProgress.validatingChunk > 0 &&
         blockSyncProgress.validatingChunk < 99);
     const showMithrilPrompt =
+      !isNodeStopping &&
       !mithrilPromptDismissed &&
       (mithrilSignificantlyBehind !== null ||
         (loadingPhase === 'node-starting' && isInLongReplay));
@@ -113,6 +118,8 @@ class LoadingSyncingConnectingPage extends Component<Props> {
           isVerifyingBlockchain={isVerifyingBlockchain}
           nodeStartupPhase={nodeStartupPhase}
           blockSyncProgress={blockSyncProgress}
+          backendStopProgress={backendStopProgress}
+          isRestartingWallet={isRestartingWallet}
         />
       </>
     );

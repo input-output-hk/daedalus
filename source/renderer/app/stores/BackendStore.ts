@@ -11,6 +11,7 @@ import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
   watchdogStoppedChannel,
+  backendStopStatusChannel,
 } from '../ipc/nodePushChannel';
 import {
   validateChainStorageChannel,
@@ -20,6 +21,8 @@ import type {
   LoadingPhase,
   MithrilProgress,
   ChainStorageValidation,
+  BackendStopProgress,
+  RequestedRestart,
 } from '../../../common/types/watchdog.types';
 
 // DEFINE CONSTANTS
@@ -61,7 +64,12 @@ export default class BackendStore extends Store {
   } | null = null;
   @observable _mithrilPromptDismissed = false;
   @observable _probeHasFired = false;
+  // Daedalus is quitting
   @observable isStopping = false;
+  // Latest progress of a backend stop, for quit or a requested restart
+  @observable backendStopProgress: BackendStopProgress | null = null;
+  // A restart the user asked for, until it has stopped the process
+  @observable requestedRestart: RequestedRestart | null = null;
   // Chain storage paths (from BackendLifecycle, included in state poll)
   @observable defaultChainPath: string | null = null;
   @observable customChainPath: string | null = null;
@@ -85,6 +93,7 @@ export default class BackendStore extends Store {
     nodeStartupStatusChannel.onReceive(this._onNodeStartupStatus);
     nodeBlockSyncProgressChannel.onReceive(this._onNodeBlockSyncProgress);
     watchdogStoppedChannel.onReceive(this._onWatchdogStopped);
+    backendStopStatusChannel.onReceive(this._onBackendStopStatus);
 
     // ========== ACTION LISTENERS =========== //
     this.actions.networkStatus.restartNode.listen(this._restartNode);
@@ -146,6 +155,11 @@ export default class BackendStore extends Store {
         this.defaultChainPath = state.defaultChainPath;
         this.customChainPath = state.customChainPath;
         this.nodeExtraArgs = state.nodeExtraArgs ?? [];
+        if (state.shutdownRequested) {
+          this.isStopping = true;
+        }
+        this.backendStopProgress = state.backendStopProgress;
+        this.requestedRestart = state.requestedRestart ?? null;
       });
     } catch (error) {} // eslint-disable-line
   };
@@ -220,6 +234,21 @@ export default class BackendStore extends Store {
     });
   };
 
+  @action
+  _onBackendStopStatus = async (event: {
+    quitting: boolean;
+    restart: RequestedRestart | null;
+    progress: BackendStopProgress | null;
+  }): Promise<void> => {
+    runInAction('update backend stop status from push', () => {
+      if (event.quitting) {
+        this.isStopping = true;
+      }
+      this.requestedRestart = event.restart;
+      this.backendStopProgress = event.progress;
+    });
+  };
+
   // =============== COMPUTED ===============
   @computed
   get mithrilPromptDismissed(): boolean {
@@ -228,9 +257,20 @@ export default class BackendStore extends Store {
 
   @computed
   get loadingPhase(): LoadingPhase {
+    // Daedalus is quitting: the backend is being stopped, whatever state it
+    // was in before
+    if (this.isStopping) {
+      return 'stopping';
+    }
     // Unrecoverable error takes top priority
     if (this.walletUnrecoverable) {
       return 'error';
+    }
+    // A restart the user asked for: the process is stopping, or for a wallet
+    // restart, starting again. A node restart continues with the startup
+    // phases below once the new node has started.
+    if (this.requestedRestart !== null) {
+      return 'stopping';
     }
     // No chain_status received yet
     if (this.hasChain === null) {

@@ -90,6 +90,9 @@ export default (window: BrowserWindow) => {
         defaultChainPath: null,
         customChainPath: null,
         nodeExtraArgs: [],
+        shutdownRequested: false,
+        backendStopProgress: null,
+        requestedRestart: null,
       }
     )
   );

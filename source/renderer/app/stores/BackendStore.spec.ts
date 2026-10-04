@@ -86,4 +86,68 @@ describe('BackendStore.loadingPhase', () => {
     (store as any).mithrilPhase = 'completed';
     expect(store.loadingPhase).toBe('node-starting');
   });
+
+  it('returns stopping while Daedalus quits, over any other phase', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).walletPort = 8090;
+    (store as any).walletUnrecoverable = true;
+    (store as any).mithrilPhase = 'downloading';
+    (store as any).isStopping = true;
+    expect(store.loadingPhase).toBe('stopping');
+  });
+});
+
+describe('BackendStore._onBackendStopStatus', () => {
+  it('sets isStopping and records the stop progress', async () => {
+    const store = makeStore();
+    const progress = {
+      stage: 'stopping_node',
+      elapsedMs: 5000,
+      timeoutMs: 300_000,
+    };
+    await (store as any)._onBackendStopStatus({
+      quitting: true,
+      restart: null,
+      progress,
+    });
+    expect(store.isStopping).toBe(true);
+    expect(store.backendStopProgress).toEqual(progress);
+    expect(store.loadingPhase).toBe('stopping');
+  });
+
+  it('sets isStopping before the watchdog reports any progress', async () => {
+    const store = makeStore();
+    await (store as any)._onBackendStopStatus({
+      quitting: true,
+      restart: null,
+      progress: null,
+    });
+    expect(store.isStopping).toBe(true);
+    expect(store.backendStopProgress).toBeNull();
+  });
+
+  it('returns stopping for a requested restart without marking a quit', async () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).walletPort = 8090;
+    await (store as any)._onBackendStopStatus({
+      quitting: false,
+      restart: 'node',
+      progress: null,
+    });
+    expect(store.isStopping).toBe(false);
+    expect(store.loadingPhase).toBe('stopping');
+  });
+
+  it('returns to the startup phases once the requested restart has stopped the node', async () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    await (store as any)._onBackendStopStatus({
+      quitting: false,
+      restart: null,
+      progress: null,
+    });
+    expect(store.loadingPhase).toBe('node-starting');
+  });
 });
