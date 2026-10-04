@@ -1677,6 +1677,66 @@ fn stop_reports_progress_for_each_stage() {
     let _ = child.wait();
 }
 
+/// The wallet is stopped by closing its stdin (`--shutdown-handler`), and it
+/// exits well inside its stop bound instead of being killed at the bound.
+#[test]
+fn wallet_stops_cleanly_when_its_stdin_closes() {
+    let dir = TempDir::new("wallet-clean-stop");
+    dir.populate_chain();
+    let exit_file = dir.path().join("wallet-exit");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_stop_timeout_secs(30)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_WALLET_EXIT_FILE", exit_file.to_str().unwrap())],
+    );
+
+    expect(&rx, "wallet_ready");
+    let started = std::time::Instant::now();
+    stop(&mut stdin);
+    expect_with(&rx, "backend_stop_progress", |v| {
+        v["stage"] == "stopping_node"
+    });
+    assert!(
+        started.elapsed() < Duration::from_secs(5),
+        "wallet stop took {:?}",
+        started.elapsed()
+    );
+    expect(&rx, "stopped");
+    assert_eq!(std::fs::read_to_string(&exit_file).unwrap(), "stdin-eof");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A user-initiated wallet restart stops the running wallet the same way.
+#[test]
+fn wallet_restart_stops_the_wallet_cleanly() {
+    let dir = TempDir::new("wallet-clean-restart");
+    dir.populate_chain();
+    let exit_file = dir.path().join("wallet-exit");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_stop_timeout_secs(30)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_WALLET_EXIT_FILE", exit_file.to_str().unwrap())],
+    );
+
+    let first = expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "restart_wallet"}));
+    let second = expect(&rx, "wallet_started");
+    assert_ne!(first["pid"], second["pid"]);
+    assert_eq!(std::fs::read_to_string(&exit_file).unwrap(), "stdin-eof");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// Bug 5 regression: stopped event is emitted when clean stop is sent during
 /// socket wait (not a restart).
 #[test]

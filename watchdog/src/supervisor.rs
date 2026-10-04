@@ -9,16 +9,13 @@ use file_rotate::{ContentLimit, FileRotate};
 use anyhow::Result;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::net::TcpStream;
-use tokio::process::{Child, Command};
+use tokio::process::{Child, ChildStdin, Command};
 use tokio::sync::{mpsc, oneshot, watch};
 use tokio::time::{Duration, Instant, interval_at, sleep, timeout};
 use tracing::{info, warn};
 
 #[cfg(unix)]
-use nix::{
-    sys::signal::{self, Signal},
-    unistd::Pid,
-};
+use nix::sys::signal::Signal;
 
 use crate::chain_validation;
 use crate::config::WatchdogConfig;
@@ -177,20 +174,12 @@ pub(crate) fn init_job_object() {
     }
 }
 
-// Sends a graceful-stop signal to a running child.
-// Unix: SIGTERM. Windows: CTRL_BREAK_EVENT (requires CREATE_NEW_PROCESS_GROUP at spawn time).
-fn graceful_stop(child: &Child) {
-    let Some(pid) = child.id() else { return };
-    #[cfg(unix)]
-    {
-        let _ = signal::kill(Pid::from_raw(pid as i32), Signal::SIGTERM);
-    }
-    #[cfg(windows)]
-    unsafe {
-        use windows_sys::Win32::System::Console::{CTRL_BREAK_EVENT, GenerateConsoleCtrlEvent};
-        GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
-    }
-}
+/// cardano-wallet `serve` flag that makes the wallet shut down cleanly when its
+/// stdin reaches end-of-file. The watchdog holds the write end of that pipe and
+/// closes it to stop the wallet. This works on every platform; a console
+/// control event cannot, because the watchdog runs without a console on
+/// Windows.
+const WALLET_SHUTDOWN_HANDLER_FLAG: &str = "--shutdown-handler";
 
 /// `BackendStopProgress` stage while cardano-wallet is being stopped.
 const STAGE_STOPPING_WALLET: &str = "stopping_wallet";
@@ -216,12 +205,12 @@ fn stop_progress_ticks() -> tokio::time::Interval {
     )
 }
 
-// Asks cardano-wallet to stop and waits at most `bound` for it to exit, then
-// kills it. Emits stop progress once a second while waiting.
-async fn stop_wallet(wallet: &mut Child, bound: Duration) {
+// Asks cardano-wallet to stop by closing its stdin, waits at most `bound` for
+// it to exit, then kills it. Emits stop progress once a second while waiting.
+async fn stop_wallet(wallet: &mut Child, wallet_stdin: &mut Option<ChildStdin>, bound: Duration) {
     let started = Instant::now();
     emit_stop_progress(STAGE_STOPPING_WALLET, started, bound);
-    graceful_stop(wallet);
+    drop(wallet_stdin.take());
     let deadline = sleep(bound);
     tokio::pin!(deadline);
     let mut tick = stop_progress_ticks();
@@ -1369,14 +1358,22 @@ async fn run_node_wallet(
         if inject_port_flag {
             wallet_cmd.arg("--port").arg(wallet_port.to_string());
         }
+        if !wallet_cfg
+            .args
+            .iter()
+            .any(|a| a == WALLET_SHUTDOWN_HANDLER_FLAG)
+        {
+            wallet_cmd.arg(WALLET_SHUTDOWN_HANDLER_FLAG);
+        }
         wallet_cmd
             .current_dir(&wallet_cfg.state_dir)
+            .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
             .kill_on_drop(true);
 
-        // Windows: own process group for CTRL_BREAK targeting; CREATE_NO_WINDOW prevents
-        // a blank console window from appearing (watchdog is a GUI app with no console).
+        // Windows: own process group; CREATE_NO_WINDOW prevents a blank console
+        // window from appearing (watchdog is a GUI app with no console).
         #[cfg(windows)]
         {
             const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
@@ -1394,6 +1391,9 @@ async fn run_node_wallet(
                 return Err(e.into());
             }
         };
+        // Held apart from `wallet`: Child::wait() closes a stdin it still owns,
+        // and that end-of-file would stop the wallet.
+        let mut wallet_stdin = wallet.stdin.take();
         let wallet_pid = wallet.id().unwrap_or(0);
         emit(&Event::WalletStarted {
             pid: wallet_pid,
@@ -1443,19 +1443,19 @@ async fn run_node_wallet(
                     warn!("cardano-node exited during wallet startup (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
-                    stop_wallet(&mut wallet, wallet_stop_bound).await;
+                    stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
                         Cmd::Stop => {
                             info!("stopping wallet (shutdown requested)");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             break 'supervisor;
                         }
                         Cmd::StartMithril { force, wipe_chain } => {
                             info!("stopping wallet (mithril requested)");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "mithril requested",
                                 &mut shutdown_pipe,
@@ -1494,7 +1494,7 @@ async fn run_node_wallet(
                         }
                         Cmd::RestartNode => {
                             info!("stopping wallet (node restart requested)");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "node restart requested",
                                 &mut shutdown_pipe,
@@ -1507,7 +1507,7 @@ async fn run_node_wallet(
                         }
                         Cmd::RestartWallet => {
                             info!("user-initiated wallet restart");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             attempt += 1;
                             emit(&Event::WalletRestarting {
                                 attempt,
@@ -1523,7 +1523,7 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "chain path changed",
                                 &mut shutdown_pipe,
@@ -1541,7 +1541,7 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "node arguments changed",
                                 &mut shutdown_pipe,
@@ -1610,19 +1610,19 @@ async fn run_node_wallet(
                     warn!("cardano-node exited (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
-                    stop_wallet(&mut wallet, wallet_stop_bound).await;
+                    stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
                         Cmd::Stop => {
                             info!("stopping wallet (shutdown requested)");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             break 'supervisor;
                         }
                         Cmd::StartMithril { force, wipe_chain } => {
                             info!("stopping wallet (mithril requested)");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "mithril requested",
                                 &mut shutdown_pipe,
@@ -1661,7 +1661,7 @@ async fn run_node_wallet(
                         }
                         Cmd::RestartNode => {
                             info!("stopping wallet (node restart requested)");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "node restart requested",
                                 &mut shutdown_pipe,
@@ -1674,7 +1674,7 @@ async fn run_node_wallet(
                         }
                         Cmd::RestartWallet => {
                             info!("user-initiated wallet restart");
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             attempt += 1;
                             emit(&Event::WalletRestarting {
                                 attempt,
@@ -1690,7 +1690,7 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "chain path changed",
                                 &mut shutdown_pipe,
@@ -1708,7 +1708,7 @@ async fn run_node_wallet(
                                 warn!("Failed to save watchdog state: {e}");
                             }
                             state::apply_to_config(config, base_node_args, wstate);
-                            stop_wallet(&mut wallet, wallet_stop_bound).await;
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             stop_node(
                                 "node arguments changed",
                                 &mut shutdown_pipe,
