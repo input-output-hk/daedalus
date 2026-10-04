@@ -17,15 +17,10 @@ import {
   nodeBlockSyncProgressChannel,
   watchdogStoppedChannel,
 } from './ipc/nodePushChannel';
-import { requestElectronStore } from './ipc/electronStoreConversation';
 import {
-  STORAGE_KEYS as keys,
-  STORAGE_TYPES as types,
-} from '../common/config/electron-store.config';
-import {
-  getRtsFlagsSettings,
-  deleteRtsFlagsSettings,
-} from './utils/rtsFlagsSettings';
+  buildMigrateStateCommand,
+  forgetMigratedSettings,
+} from './utils/watchdogStateMigration';
 import { environment } from './environment';
 
 type EventHandler = (event: Record<string, unknown>) => void;
@@ -129,6 +124,9 @@ class BackendLifecycle {
         watchdogStoppedChannel.send(undefined, win.webContents);
       } else if (eventType === 'migrate_state_request') {
         this._handleMigrateStateRequest(manager);
+      } else if (eventType === 'migrate_state_saved') {
+        // watchdog-state.json now holds the migrated settings.
+        forgetMigratedSettings(environment.network);
       }
     });
 
@@ -168,34 +166,17 @@ class BackendLifecycle {
   // ---------------------------------------------------------------------------
 
   private _handleMigrateStateRequest(manager: WatchdogManager): void {
-    const { network } = environment;
-
-    const chainPath =
-      (requestElectronStore({
-        type: types.GET,
-        key: keys.CUSTOM_CHAIN_PATH,
-      }) as string | undefined) ?? null;
-
-    // Raw RTS flags stored as e.g. ['-c']; wrap in +RTS/-RTS delimiters for cardano-node.
-    const rawRtsFlags = getRtsFlagsSettings(network) ?? [];
-    const nodeExtraArgs =
-      rawRtsFlags.length > 0 ? ['+RTS', ...rawRtsFlags, '-RTS'] : [];
+    const command = buildMigrateStateCommand(environment.network);
 
     logger.info('BackendLifecycle: responding to migrate_state_request', {
-      chainPath,
-      nodeExtraArgs,
+      chainPath: command.chain_path,
+      nodeExtraArgs: command.node_extra_args,
     });
 
-    manager.sendCommand({
-      cmd: 'migrate_state',
-      chain_path: chainPath,
-      electron_flags: [],
-      node_extra_args: nodeExtraArgs,
-    });
-
-    // Remove migrated keys so watchdog-state.json is the single source of truth.
-    requestElectronStore({ type: types.DELETE, key: keys.CUSTOM_CHAIN_PATH });
-    deleteRtsFlagsSettings(network);
+    // The migrated keys stay in electron-store until the watchdog reports
+    // migrate_state_saved, so a reply it never applied is sent again on the
+    // next launch.
+    manager.sendCommand(command);
   }
 
   // ---------------------------------------------------------------------------

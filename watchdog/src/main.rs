@@ -52,6 +52,9 @@ struct Args {
 // Normal lines are << 1 MB (one config line + small JSON commands).
 const MAX_LINE_BYTES: u64 = 4 * 1024 * 1024; // 4 MB
 
+/// How long Electron has to connect to the IPC pipe after it is spawned.
+const ELECTRON_CONNECT_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(60);
+
 /// Read one newline-terminated line with a bounded buffer. Returns Ok(None)
 /// on EOF. A line longer than MAX_LINE_BYTES is discarded (drained up to the
 /// next newline) and reading continues with the following line, mirroring how
@@ -295,6 +298,17 @@ async fn main() -> Result<()> {
     let (el_restart_tx, mut el_restart_rx) =
         mpsc::unbounded_channel::<protocol::ElectronRestartPayload>();
 
+    // How long to wait for Electron's reply to migrate_state_request. In
+    // parent mode Electron is spawned alongside and the request waits in its
+    // queue until Electron connects, so allow the whole connect timeout plus
+    // time to answer. In standalone mode the client spawned the watchdog and
+    // is already listening.
+    let migration_wait = if config.electron.is_some() {
+        ELECTRON_CONNECT_TIMEOUT + supervisor::MIGRATION_REPLY_TIMEOUT
+    } else {
+        supervisor::MIGRATION_REPLY_TIMEOUT
+    };
+
     if let Some(electron_cfg) = config.electron.take() {
         // ── Event channel (parent mode only) ─────────────────────────────────
         // In standalone mode we leave EVENT_TX unset so emit() falls back to its
@@ -385,7 +399,7 @@ async fn main() -> Result<()> {
                 #[cfg(windows)]
                 {
                     use tokio::net::windows::named_pipe::ServerOptions;
-                    use tokio::time::{Duration, timeout};
+                    use tokio::time::timeout;
                     el_instance += 1;
                     let ipc_pipe_name =
                         format!(r"\\.\pipe\daedalus-ipc-{}-{}", watchdog_pid, el_instance);
@@ -420,7 +434,7 @@ async fn main() -> Result<()> {
                     protocol::emit(&protocol::Event::ElectronStarted { pid: electron_pid });
 
                     tracing::info!("Waiting for Electron to connect to IPC pipe: {ipc_pipe_name}");
-                    match timeout(Duration::from_secs(60), ipc_server.connect()).await {
+                    match timeout(ELECTRON_CONNECT_TIMEOUT, ipc_server.connect()).await {
                         Ok(Ok(_)) => {
                             tracing::info!("Electron connected to IPC named pipe")
                         }
@@ -430,7 +444,10 @@ async fn main() -> Result<()> {
                             break 'manager;
                         }
                         Err(_) => {
-                            tracing::error!("Electron did not connect to IPC pipe within 60 s");
+                            tracing::error!(
+                                "Electron did not connect to IPC pipe within {} s",
+                                ELECTRON_CONNECT_TIMEOUT.as_secs()
+                            );
                             let _ = exit_cmd_tx.send(protocol::Command::Stop).await;
                             break 'manager;
                         }
@@ -654,6 +671,7 @@ async fn main() -> Result<()> {
         base_node_args,
         watchdog_state,
         Some(el_restart_tx),
+        migration_wait,
     )
     .await
 }

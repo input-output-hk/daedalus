@@ -196,6 +196,11 @@ pub enum Event {
     /// A second launch of Daedalus for this cluster found this instance
     /// running. Electron should restore, show and focus its main window.
     ActivateWindow,
+    /// watchdog-state.json has been written from a `migrate_state` reply.
+    /// Electron may now delete the electron-store keys it migrated. Until this
+    /// event it keeps them, so a migration that did not complete is retried on
+    /// the next launch.
+    MigrateStateSaved,
 }
 
 /// Payload sent through the Electron restart channel when SetElectronFlags fires.
@@ -690,5 +695,11 @@ mod tests {
     fn activate_window_event() {
         let j = to_json(&Event::ActivateWindow);
         assert_eq!(j["event"], "activate_window");
+    }
+
+    #[test]
+    fn migrate_state_saved_event() {
+        let j = to_json(&Event::MigrateStateSaved);
+        assert_eq!(j["event"], "migrate_state_saved");
     }
 }

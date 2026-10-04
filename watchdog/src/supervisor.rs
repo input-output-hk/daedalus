@@ -538,6 +538,48 @@ impl Drop for ShutdownPipe {
     }
 }
 
+/// Time the client has to answer `migrate_state_request` once it is listening.
+/// In parent mode `main` adds Electron's connect timeout on top.
+pub(crate) const MIGRATION_REPLY_TIMEOUT: Duration = Duration::from_secs(10);
+
+/// Outcome of waiting for Electron's reply to `migrate_state_request`.
+enum Migration {
+    Received {
+        chain_path: Option<String>,
+        electron_flags: Vec<String>,
+        node_extra_args: Vec<String>,
+    },
+    Stopped,
+    TimedOut,
+}
+
+/// Wait up to `limit` for the `migrate_state` reply. Other commands cannot be
+/// acted on before the state is known and are dropped; Electron sends none
+/// before it has answered.
+async fn await_migration(cmd_rx: &mut mpsc::Receiver<Cmd>, limit: Duration) -> Migration {
+    let reply = timeout(limit, async {
+        loop {
+            match cmd_rx.recv().await {
+                Some(Cmd::MigrateState {
+                    chain_path,
+                    electron_flags,
+                    node_extra_args,
+                }) => {
+                    return Migration::Received {
+                        chain_path,
+                        electron_flags,
+                        node_extra_args,
+                    };
+                }
+                Some(Cmd::Stop) | None => return Migration::Stopped,
+                _ => {}
+            }
+        }
+    })
+    .await;
+    reply.unwrap_or(Migration::TimedOut)
+}
+
 /// Returns true if the effective chain directory exists and contains at least one entry.
 /// Uses `chain_path_override` if set; otherwise falls back to `{state_dir}/chain`.
 async fn chain_has_data(state_dir: &str, chain_path_override: Option<&str>) -> bool {
@@ -557,6 +599,7 @@ pub async fn run(
     base_node_args: Vec<String>,
     mut wstate: state::WatchdogState,
     el_restart_tx: Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
+    migration_wait: Duration,
 ) -> Result<()> {
     let watchdog_pid = std::process::id();
     info!("watchdog started (PID {watchdog_pid})");
@@ -598,35 +641,33 @@ pub async fn run(
     // On the first launch after an upgrade from a pre-watchdog-state.json build,
     // ask Electron to return whatever overrides it has in its electron-store so we
     // can seed watchdog-state.json before making decisions that depend on chain_path.
+    // The wait covers Electron's whole start-up, so a slow Electron does not
+    // make this session start without the user's settings.
     if !state::exists(&config.node.state_dir).await {
-        info!("watchdog-state.json absent; requesting migration data from Electron");
+        info!(
+            "watchdog-state.json absent; requesting migration data from Electron (waiting up to {} s)",
+            migration_wait.as_secs()
+        );
         emit(&Event::MigrateStateRequest);
-        let migrated = timeout(Duration::from_secs(10), async {
-            loop {
-                match cmd_rx.recv().await {
-                    Some(Cmd::MigrateState {
-                        chain_path,
-                        electron_flags,
-                        node_extra_args,
-                    }) => return Some((chain_path, electron_flags, node_extra_args)),
-                    Some(Cmd::Stop) | None => return None,
-                    _ => {} // ignore anything else until we get the migration response
-                }
-            }
-        })
-        .await;
-
-        match migrated {
-            Ok(Some((chain_path, electron_flags, node_extra_args))) => {
+        match await_migration(&mut cmd_rx, migration_wait).await {
+            Migration::Received {
+                chain_path,
+                electron_flags,
+                node_extra_args,
+            } => {
                 info!(
                     "migrate_state received: chain_path={chain_path:?} \
                      electron_flags={electron_flags:?} node_extra_args={node_extra_args:?}"
                 );
-                wstate.chain_path = chain_path;
+                wstate.chain_path =
+                    state::migrated_chain_path(&config.node.state_dir, chain_path).await;
                 wstate.electron_flags = electron_flags;
                 wstate.node_extra_args = node_extra_args;
-                if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
-                    warn!("Failed to save migrated watchdog state: {e}");
+                match state::save(&config.node.state_dir, &wstate).await {
+                    // Electron deletes the keys it migrated only on this
+                    // event, so a failed save is retried on the next launch.
+                    Ok(()) => emit(&Event::MigrateStateSaved),
+                    Err(e) => warn!("Failed to save migrated watchdog state: {e}"),
                 }
                 state::apply_to_config(&mut config, &base_node_args, &wstate);
                 // Restart Electron if flags differ from the empty default so it
@@ -642,15 +683,18 @@ pub async fn run(
                     }
                 }
             }
-            Ok(None) => {
+            Migration::Stopped => {
                 emit(&Event::Stopped);
                 return Ok(());
             }
-            Err(_) => {
-                // Electron didn't respond in time (old version or crash).
-                // Proceed with defaults; watchdog-state.json stays absent so
-                // migration is attempted again on the next launch.
-                warn!("migrate_state timed out after 10s; proceeding with defaults");
+            Migration::TimedOut => {
+                // Electron is running but did not answer. Electron keeps the
+                // settings until watchdog-state.json is saved, so leaving the
+                // file absent makes the next launch ask again.
+                warn!(
+                    "no migrate_state reply within {} s; starting with defaults, watchdog-state.json stays absent",
+                    migration_wait.as_secs()
+                );
             }
         }
     }
@@ -1840,5 +1884,70 @@ mod tests {
     fn block_sync_hundred_percent() {
         let (_, pct) = try_parse_block_sync("Replayed block, Progress: 100.00%").unwrap();
         assert!((pct - 100.0).abs() < f64::EPSILON);
+    }
+
+    // ── await_migration ───────────────────────────────────────────────────────
+
+    fn migrate_state(node_extra_args: &[&str]) -> Cmd {
+        Cmd::MigrateState {
+            chain_path: None,
+            electron_flags: vec![],
+            node_extra_args: node_extra_args.iter().map(|s| s.to_string()).collect(),
+        }
+    }
+
+    #[tokio::test]
+    async fn migration_reply_that_arrives_late_is_still_used() {
+        let (tx, mut rx) = mpsc::channel(8);
+        tokio::spawn(async move {
+            sleep(Duration::from_millis(300)).await;
+            let _ = tx.send(migrate_state(&["+RTS", "-c", "-RTS"])).await;
+        });
+        match await_migration(&mut rx, Duration::from_secs(5)).await {
+            Migration::Received {
+                node_extra_args, ..
+            } => assert_eq!(node_extra_args, vec!["+RTS", "-c", "-RTS"]),
+            _ => panic!("expected the reply"),
+        }
+    }
+
+    #[tokio::test]
+    async fn migration_wait_ignores_other_commands() {
+        let (tx, mut rx) = mpsc::channel(8);
+        tx.send(Cmd::ProbeMithril).await.unwrap();
+        tx.send(migrate_state(&[])).await.unwrap();
+        assert!(matches!(
+            await_migration(&mut rx, Duration::from_secs(5)).await,
+            Migration::Received { .. }
+        ));
+    }
+
+    #[tokio::test]
+    async fn migration_wait_ends_on_stop() {
+        let (tx, mut rx) = mpsc::channel(8);
+        tx.send(Cmd::Stop).await.unwrap();
+        assert!(matches!(
+            await_migration(&mut rx, Duration::from_secs(5)).await,
+            Migration::Stopped
+        ));
+    }
+
+    #[tokio::test]
+    async fn migration_wait_ends_when_the_client_is_gone() {
+        let (tx, mut rx) = mpsc::channel::<Cmd>(8);
+        drop(tx);
+        assert!(matches!(
+            await_migration(&mut rx, Duration::from_secs(5)).await,
+            Migration::Stopped
+        ));
+    }
+
+    #[tokio::test]
+    async fn migration_wait_times_out_without_a_reply() {
+        let (_tx, mut rx) = mpsc::channel::<Cmd>(8);
+        assert!(matches!(
+            await_migration(&mut rx, Duration::from_millis(100)).await,
+            Migration::TimedOut
+        ));
     }
 }

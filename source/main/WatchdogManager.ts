@@ -377,6 +377,10 @@ class WatchdogManager {
         // No state; index.ts brings the main window forward.
         break;
 
+      case 'migrate_state_saved':
+        // No state; BackendLifecycle deletes the migrated settings.
+        break;
+
       default:
         logger.debug('WatchdogManager: unhandled event type', { eventType });
         break;
