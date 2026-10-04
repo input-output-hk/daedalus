@@ -13,6 +13,7 @@ import SVGInline from 'react-svg-inline';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -464,6 +465,12 @@ type Props = {
   onClose: (...args: Array<any>) => any;
   onCopyStateDirectoryPath: (...args: Array<any>) => any;
   onForceCheckNetworkClock: (...args: Array<any>) => any;
+  isMithrilPartialSyncWorking: boolean;
+  isMithrilSignificantlyBehind: boolean;
+  isMithrilProbeFailed: boolean;
+  isMithrilAtOrPastSnapshot: boolean;
+  mithrilBehindByEpochs?: number;
+  onStartMithrilPartialSync: () => Promise<void>;
 };
 type State = {
   isNodeRestarting: boolean;
@@ -599,6 +606,12 @@ class DaedalusDiagnostics extends Component<Props, State> {
       onOpenExternalLink,
       isCheckingSystemTime,
       isForceCheckingSystemTime,
+      isMithrilPartialSyncWorking,
+      isMithrilSignificantlyBehind,
+      isMithrilProbeFailed,
+      isMithrilAtOrPastSnapshot,
+      mithrilBehindByEpochs,
+      onStartMithrilPartialSync,
     } = this.props;
     const {
       platform,
@@ -938,6 +951,16 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('cardanoNodeTimeCorrect', isNodeTimeCorrect)}
               {getRow('cardanoNodeSyncing', isNodeSyncing)}
               {getRow('cardanoNodeInSync', isNodeInSync)}
+              <MithrilPartialSyncSection
+                isActionBlocked={isMithrilPartialSyncWorking}
+                isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
+                isSignificantlyBehind={isMithrilSignificantlyBehind}
+                isProbeFailed={isMithrilProbeFailed}
+                isAtOrPastSnapshot={isMithrilAtOrPastSnapshot}
+                behindByEpochs={mithrilBehindByEpochs}
+                onRestoreFocus={this.restoreDialogCloseOnEscKey}
+                onStartMithrilPartialSync={onStartMithrilPartialSync}
+              />
             </div>
           </div>
         </div>
