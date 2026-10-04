@@ -1,5 +1,5 @@
-import * as cbor from 'cbor';
-import * as blake2b from 'blake2b';
+import cbor from 'cbor';
+import blake2b from 'blake2b';
 import * as crypto from 'crypto';
 
 export type EncryptedSecretKeys = Array<EncryptedSecretKey>;
