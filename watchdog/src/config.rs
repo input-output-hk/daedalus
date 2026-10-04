@@ -78,6 +78,11 @@ pub struct MithrilConfig {
     pub chain_path: String,
     #[serde(default = "default_behind_threshold")]
     pub behind_threshold: u64,
+    /// `chain_path` as configured. A storage folder picked by the user
+    /// replaces `chain_path`, and clearing the folder restores this value.
+    /// Recorded by `state::apply_to_config` the first time it runs.
+    #[serde(skip)]
+    pub configured_chain_path: Option<String>,
 }
 
 fn default_behind_threshold() -> u64 {

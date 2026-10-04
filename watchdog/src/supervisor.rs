@@ -1,5 +1,4 @@
 use std::io::Write;
-use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -580,13 +579,9 @@ async fn await_migration(cmd_rx: &mut mpsc::Receiver<Cmd>, limit: Duration) -> M
     reply.unwrap_or(Migration::TimedOut)
 }
 
-/// Returns true if the effective chain directory exists and contains at least one entry.
-/// Uses `chain_path_override` if set; otherwise falls back to `{state_dir}/chain`.
-async fn chain_has_data(state_dir: &str, chain_path_override: Option<&str>) -> bool {
-    let chain = match chain_path_override {
-        Some(p) => std::path::PathBuf::from(p),
-        None => Path::new(state_dir).join("chain"),
-    };
+/// Returns true if the database directory exists and contains at least one entry.
+async fn chain_has_data(state_dir: &str, storage_folder: Option<&str>) -> bool {
+    let chain = state::database_dir(state_dir, storage_folder);
     let Ok(mut entries) = tokio::fs::read_dir(&chain).await else {
         return false;
     };

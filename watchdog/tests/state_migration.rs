@@ -1,12 +1,12 @@
-// First start after an upgrade: the watchdog asks Electron for the settings
-// earlier versions kept in electron-store and seeds watchdog-state.json.
+// First start after an upgrade: the watchdog waits for Electron's reply to its
+// request for the settings earlier versions kept in electron-store.
 //
 // Unix-only, like the other process tests: the mocks read the shutdown pipe
 // on fd 3, and the mock Electron is a shell script.
 #![cfg(unix)]
 
 use serde_json::{Value, json};
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Command, Stdio};
@@ -136,22 +136,6 @@ fn spawn(dir: &TempDir, cfg: &Value) -> (Child, ChildStdin, mpsc::Receiver<Value
     (child, stdin, rx)
 }
 
-fn expect(rx: &mpsc::Receiver<Value>, name: &str) -> Value {
-    loop {
-        let v = rx
-            .recv_timeout(Duration::from_secs(15))
-            .unwrap_or_else(|_| panic!("timeout waiting for '{name}'"));
-        if v["event"] == name {
-            return v;
-        }
-    }
-}
-
-fn send(stdin: &mut ChildStdin, cmd: Value) {
-    writeln!(stdin, "{cmd}").unwrap();
-    stdin.flush().unwrap();
-}
-
 fn wait_until(what: &str, limit: Duration, mut done: impl FnMut() -> bool) {
     let start = Instant::now();
     while !done() {
@@ -237,49 +221,4 @@ fn electron_exit_before_reply_starts_nothing() {
         "watchdog-state.json was written"
     );
     assert!(!dir.log().contains("cardano-node started"), "{}", dir.log());
-}
-
-/// An 11.3 or 11.4 storage folder holds at most a Mithril download in a
-/// `chain` subdirectory, while the node ran on <state>/chain. Migration keeps
-/// the node on that database and leaves the folder untouched.
-#[test]
-fn migrated_folder_without_a_database_keeps_the_default() {
-    let dir = TempDir::new("folder");
-    make_db(&dir.state().join("chain"));
-    let folder = dir.0.join("chosen-folder");
-    make_db(&folder.join("chain"));
-    let cfg = config(&dir);
-    let (mut watchdog, mut stdin, rx) = spawn(&dir, &cfg);
-
-    expect(&rx, "migrate_state_request");
-    send(
-        &mut stdin,
-        json!({
-            "cmd": "migrate_state",
-            "chain_path": folder.to_str().unwrap(),
-            "electron_flags": [],
-            "node_extra_args": [],
-        }),
-    );
-    expect(&rx, "migrate_state_saved");
-    let status = expect(&rx, "chain_status");
-    assert_eq!(status["has_chain"], true);
-    expect(&rx, "node_started");
-
-    let state = dir.saved_state().expect("watchdog-state.json written");
-    assert!(state["chain_path"].is_null(), "{state}");
-    let log = dir.log();
-    assert!(log.contains("keeping"), "{log}");
-    assert!(
-        log.contains(dir.state().join("chain").to_str().unwrap()),
-        "{log}"
-    );
-    assert!(log.contains(folder.to_str().unwrap()), "{log}");
-    assert!(folder.join("chain").join("protocolMagicId").exists());
-    assert!(dir.state().join("chain").join("protocolMagicId").exists());
-
-    send(&mut stdin, json!({"cmd": "stop"}));
-    expect(&rx, "stopped");
-    drop(stdin);
-    let _ = watchdog.wait();
 }

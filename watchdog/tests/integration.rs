@@ -67,11 +67,12 @@ impl TempDir {
         &self.0
     }
 
-    /// Create `<state_dir>/chain/` with a sentinel file so chain_has_data() → true.
+    /// Create `<state_dir>/chain/` holding a database marker, so
+    /// chain_has_data() → true and a Mithril install may replace it.
     fn populate_chain(&self) {
         let chain = self.0.join("chain");
         std::fs::create_dir_all(&chain).unwrap();
-        std::fs::write(chain.join(".sentinel"), b"exists").unwrap();
+        std::fs::write(chain.join("protocolMagicId"), b"1").unwrap();
     }
 }
 

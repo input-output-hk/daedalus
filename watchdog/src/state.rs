@@ -1,13 +1,14 @@
 use serde::{Deserialize, Serialize};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use tracing::{info, warn};
 
 use crate::config::WatchdogConfig;
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct WatchdogState {
-    /// Override for --database-path passed to cardano-node (and mithril chain_path).
-    /// None means use the value from daedalus-config.json.
+    /// Storage folder chosen in the chain-storage picker. The database lives
+    /// in `<chain_path>/chain` (see `database_dir`), for cardano-node and for
+    /// Mithril alike. None means the location from daedalus-config.json.
     #[serde(default)]
     pub chain_path: Option<String>,
     /// Extra args appended to cardano-node args (e.g. ["+RTS","-c","-RTS"]).
@@ -53,64 +54,105 @@ async fn holds_node_db(dir: &Path) -> bool {
             .is_ok_and(|m| m.is_dir())
 }
 
-/// True when `dir` does not exist or has no entries.
-async fn is_empty_or_missing(dir: &Path) -> bool {
-    match tokio::fs::read_dir(dir).await {
-        Ok(mut entries) => matches!(entries.next_entry().await, Ok(None)),
-        Err(e) => e.kind() == std::io::ErrorKind::NotFound,
-    }
+/// Name of the cardano-node database directory, inside the state directory by
+/// default and inside the storage folder when the user picked one. The picker
+/// shows the user `<folder>/chain`, and 11.3 and 11.4 downloaded Mithril
+/// snapshots there.
+const DATABASE_DIR: &str = "chain";
+
+/// The cardano-node database directory for a storage folder, or for the
+/// default location when there is none.
+///
+/// This is the only place a picked folder becomes a database path. The node's
+/// `--database-path`, Mithril's install target, the has-chain check and the
+/// settings migration all go through it, so they cannot disagree. Using the
+/// folder itself would put the database among the user's own files, and a
+/// Mithril bootstrap replaces the directory it installs into.
+pub fn database_dir(state_dir: &str, storage_folder: Option<&str>) -> PathBuf {
+    Path::new(storage_folder.unwrap_or(state_dir)).join(DATABASE_DIR)
 }
 
-/// Decide which chain path to keep from a `migrate_state` reply.
+/// Decide which storage folder to keep from a `migrate_state` reply.
 ///
 /// The value is the folder chosen in the storage picker of 11.3 or 11.4. Those
-/// versions stored it in electron-store but ran cardano-node on
-/// `<state_dir>/chain` all the same; only Mithril downloaded into
-/// `<folder>/chain`. 11.0 to 11.2 stored no such value: they kept a custom
-/// location as a link at `<state_dir>/chain`, which the default path still
-/// follows. Either way the previous version's database is at the default path.
+/// versions ran cardano-node on `<state_dir>/chain` whatever the folder, and
+/// installed Mithril snapshots into `<folder>/chain`, so a user who picked a
+/// folder can have a database in both places. 11.0 to 11.2 stored no such
+/// value: they kept a custom location as a link at `<state_dir>/chain`, which
+/// the default path follows.
 ///
 /// The node keeps the database it ran on: the default is kept whenever it
-/// holds a cardano-node database. Only when it holds none is the folder
-/// adopted, and then only when the folder holds a node database or is empty
-/// (or missing). cardano-node refuses a non-empty directory without a database
-/// marker, and a Mithril bootstrap replaces the whole directory it installs
-/// into. The decision is logged with both paths, and neither is changed.
+/// holds a cardano-node database. The folder is adopted only when the default
+/// holds none and `<folder>/chain` holds one. The decision is logged with both
+/// paths, and neither directory is changed.
 pub async fn migrated_chain_path(state_dir: &str, migrated: Option<String>) -> Option<String> {
     let folder = migrated?;
-    let default = Path::new(state_dir).join("chain");
-    let candidate = Path::new(&folder);
-    if holds_node_db(&default).await {
-        info!(
-            "settings migration: keeping {}, which holds the cardano-node database the node ran on before the upgrade; {folder} is left as it is and is not used",
-            default.display()
-        );
-        return None;
+    let default = database_dir(state_dir, None);
+    let candidate = database_dir(state_dir, Some(&folder));
+    match (
+        holds_node_db(&default).await,
+        holds_node_db(&candidate).await,
+    ) {
+        (true, true) => {
+            warn!(
+                "settings migration: {} and {} both hold a cardano-node database; keeping {}, \
+                 the database the node ran on before the upgrade. {} is left as it is and is not used",
+                default.display(),
+                candidate.display(),
+                default.display(),
+                candidate.display()
+            );
+            None
+        }
+        (true, false) => {
+            info!(
+                "settings migration: keeping {}, which holds a cardano-node database; \
+                 {} holds none, so storage folder {folder} is not used",
+                default.display(),
+                candidate.display()
+            );
+            None
+        }
+        (false, true) => {
+            info!(
+                "settings migration: {} holds no cardano-node database; \
+                 adopting storage folder {folder}, whose {} holds one",
+                default.display(),
+                candidate.display()
+            );
+            Some(folder)
+        }
+        (false, false) => {
+            warn!(
+                "settings migration: neither {} nor {} holds a cardano-node database; keeping {}",
+                default.display(),
+                candidate.display(),
+                default.display()
+            );
+            None
+        }
     }
-    if holds_node_db(candidate).await || is_empty_or_missing(candidate).await {
-        info!(
-            "settings migration: {} holds no cardano-node database; using {folder}",
-            default.display()
-        );
-        return Some(folder);
-    }
-    warn!(
-        "settings migration: neither {} nor {folder} holds a cardano-node database, and {folder} is not empty; keeping {}",
-        default.display(),
-        default.display()
-    );
-    None
 }
 
-/// Rebuild `config.node.args` from `base_args`, applying chain_path override
-/// and node_extra_args from the watchdog state.
+/// Rebuild `config.node.args` from `base_args`, applying the storage folder
+/// and node_extra_args from the watchdog state, and point Mithril at the same
+/// database. Without a folder both use their configured location, so clearing
+/// the folder moves them back together.
 pub fn apply_to_config(config: &mut WatchdogConfig, base_args: &[String], state: &WatchdogState) {
     let mut args = base_args.to_vec();
-    if let Some(ref chain_path) = state.chain_path {
-        patch_database_path(&mut args, chain_path);
-        if let Some(ref mut mithril) = config.mithril {
-            mithril.chain_path = chain_path.clone();
-        }
+    let db = state.chain_path.as_deref().map(|folder| {
+        database_dir(&config.node.state_dir, Some(folder))
+            .to_string_lossy()
+            .into_owned()
+    });
+    if let Some(ref db) = db {
+        patch_database_path(&mut args, db);
+    }
+    if let Some(ref mut mithril) = config.mithril {
+        let configured = mithril
+            .configured_chain_path
+            .get_or_insert_with(|| mithril.chain_path.clone());
+        mithril.chain_path = db.unwrap_or_else(|| configured.clone());
     }
     args.extend_from_slice(&state.node_extra_args);
     config.node.args = args;
@@ -194,6 +236,82 @@ mod tests {
         assert!(s.electron_flags.is_empty());
     }
 
+    // ── database_dir and apply_to_config ────────────────────────────────────
+
+    #[test]
+    fn database_dir_is_the_chain_subdirectory_of_a_picked_folder() {
+        assert_eq!(
+            database_dir("/state", Some("/mnt/cardano")),
+            Path::new("/mnt/cardano").join("chain")
+        );
+    }
+
+    #[test]
+    fn database_dir_defaults_to_the_state_directory() {
+        assert_eq!(
+            database_dir("/state", None),
+            Path::new("/state").join("chain")
+        );
+    }
+
+    fn config_with_mithril() -> WatchdogConfig {
+        serde_json::from_str(
+            r#"{
+                "node": {"exe":"n","args":["run","--database-path","/state/chain"],
+                         "state_dir":"/state","socket_path":"/state/s"},
+                "wallet": {"exe":"w","args":[],"state_dir":"/state"},
+                "mithril": {"mithril_bin":"m","snapshot_converter_bin":"c",
+                            "converter_config":"cfg","aggregator_url":"u",
+                            "genesis_vkey":"g","state_dir":"/state",
+                            "chain_path":"/state/chain"}
+            }"#,
+        )
+        .unwrap()
+    }
+
+    #[test]
+    fn picked_folder_gives_node_and_mithril_the_same_database() {
+        let mut config = config_with_mithril();
+        let base = config.node.args.clone();
+        let state = WatchdogState {
+            chain_path: Some("/mnt/cardano".to_string()),
+            ..WatchdogState::default()
+        };
+        apply_to_config(&mut config, &base, &state);
+        let db = Path::new("/mnt/cardano")
+            .join("chain")
+            .to_string_lossy()
+            .into_owned();
+        assert_eq!(
+            config.node.args,
+            vec!["run", "--database-path", db.as_str()]
+        );
+        assert_eq!(config.mithril.unwrap().chain_path, db);
+    }
+
+    #[test]
+    fn no_picked_folder_keeps_the_configured_database() {
+        let mut config = config_with_mithril();
+        let base = config.node.args.clone();
+        apply_to_config(&mut config, &base, &WatchdogState::default());
+        assert_eq!(config.node.args, base);
+        assert_eq!(config.mithril.unwrap().chain_path, "/state/chain");
+    }
+
+    #[test]
+    fn reset_after_a_picked_folder_restores_the_configured_database() {
+        let mut config = config_with_mithril();
+        let base = config.node.args.clone();
+        let picked = WatchdogState {
+            chain_path: Some("/mnt/cardano".to_string()),
+            ..WatchdogState::default()
+        };
+        apply_to_config(&mut config, &base, &picked);
+        apply_to_config(&mut config, &base, &WatchdogState::default());
+        assert_eq!(config.node.args, base);
+        assert_eq!(config.mithril.unwrap().chain_path, "/state/chain");
+    }
+
     // ── migrated_chain_path ─────────────────────────────────────────────────
 
     struct Dirs {
@@ -239,15 +357,16 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn no_migrated_path_keeps_the_default() {
+    async fn no_migrated_folder_keeps_the_default() {
         let d = Dirs::new("none");
         assert_eq!(migrated_chain_path(&d.state(), None).await, None);
     }
 
     #[tokio::test]
-    async fn folder_with_a_database_is_adopted() {
-        let d = Dirs::new("db");
-        make_db(&d.folder());
+    async fn folder_with_a_database_in_its_chain_subdirectory_is_adopted() {
+        // Where 11.3 and 11.4 installed Mithril snapshots.
+        let d = Dirs::new("chain-db");
+        make_db(&d.folder().join("chain"));
         assert_eq!(
             migrated_chain_path(&d.state(), d.folder_str()).await,
             d.folder_str()
@@ -255,66 +374,60 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn default_database_is_kept_over_a_folder_database() {
+    async fn default_database_is_kept_over_a_database_in_the_folder() {
+        // 11.3 and 11.4 ran the node on the default whatever the folder.
         let d = Dirs::new("both");
-        make_db(&d.folder());
+        make_db(&d.folder().join("chain"));
         make_db(&d.default_chain());
         assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
-        assert!(d.folder().join("protocolMagicId").exists());
+        assert!(d.folder().join("chain").join("protocolMagicId").exists());
         assert!(d.default_chain().join("protocolMagicId").exists());
     }
 
     #[tokio::test]
-    async fn folder_with_only_a_marker_counts_as_a_database() {
-        let d = Dirs::new("marker");
-        std::fs::create_dir_all(d.folder()).unwrap();
-        std::fs::write(d.folder().join("protocolMagicId"), b"1").unwrap();
-        assert_eq!(
-            migrated_chain_path(&d.state(), d.folder_str()).await,
-            d.folder_str()
-        );
-    }
-
-    #[tokio::test]
-    async fn empty_folder_is_adopted_when_there_is_no_database_yet() {
-        let d = Dirs::new("fresh");
-        std::fs::create_dir_all(d.folder()).unwrap();
-        assert_eq!(
-            migrated_chain_path(&d.state(), d.folder_str()).await,
-            d.folder_str()
-        );
-    }
-
-    #[tokio::test]
-    async fn missing_folder_is_adopted_when_there_is_no_database_yet() {
-        let d = Dirs::new("missing");
-        assert_eq!(
-            migrated_chain_path(&d.state(), d.folder_str()).await,
-            d.folder_str()
-        );
-    }
-
-    #[tokio::test]
-    async fn empty_folder_does_not_strand_the_existing_database() {
-        let d = Dirs::new("strand");
+    async fn default_database_is_kept_when_the_folder_holds_none() {
+        let d = Dirs::new("default-only");
         std::fs::create_dir_all(d.folder()).unwrap();
         make_db(&d.default_chain());
         assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
     }
 
     #[tokio::test]
-    async fn folder_holding_a_mithril_download_in_a_subdirectory_is_not_adopted() {
-        // 11.3 and 11.4 installed Mithril snapshots into <folder>/chain.
-        let d = Dirs::new("subdir");
-        make_db(&d.folder().join("chain"));
+    async fn chain_subdirectory_with_only_a_marker_counts_as_a_database() {
+        let d = Dirs::new("marker");
+        std::fs::create_dir_all(d.folder().join("chain")).unwrap();
+        std::fs::write(d.folder().join("chain").join("protocolMagicId"), b"1").unwrap();
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str()).await,
+            d.folder_str()
+        );
+    }
+
+    #[tokio::test]
+    async fn database_in_the_folder_itself_is_not_adopted() {
+        let d = Dirs::new("flat");
+        make_db(&d.folder());
+        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+    }
+
+    #[tokio::test]
+    async fn empty_folder_is_not_adopted() {
+        let d = Dirs::new("empty");
+        std::fs::create_dir_all(d.folder()).unwrap();
+        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+    }
+
+    #[tokio::test]
+    async fn missing_folder_is_not_adopted() {
+        let d = Dirs::new("missing");
         assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
     }
 
     #[tokio::test]
     async fn folder_with_unrelated_files_is_not_adopted() {
         let d = Dirs::new("unrelated");
-        std::fs::create_dir_all(d.folder()).unwrap();
-        std::fs::write(d.folder().join("notes.txt"), b"user data").unwrap();
+        std::fs::create_dir_all(d.folder().join("chain")).unwrap();
+        std::fs::write(d.folder().join("chain").join("notes.txt"), b"user data").unwrap();
         assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
     }
 }
