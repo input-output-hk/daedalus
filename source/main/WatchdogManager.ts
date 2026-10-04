@@ -88,6 +88,13 @@ export const STOP_ACK_TIMEOUT_MS = 30_000;
 // this only expires when the watchdog itself has stopped responding.
 export const STOP_MARGIN_MS = 30_000;
 
+// How long stop() waits, after the watchdog has reported the backend stopped,
+// for its report on starting a requested update installer.
+export const INSTALLER_RESULT_TIMEOUT_MS = 30_000;
+
+// What came of an install_update request. message says why it failed.
+export type InstallerResult = { launched: boolean; message: string | null };
+
 class WatchdogManager {
   private rl: ReadlineInterface | null = null;
   private socket: net.Socket | null = null;
@@ -110,6 +117,10 @@ class WatchdogManager {
 
   // True from node_started until the node exits or is stopped
   private _nodeRunning = false;
+
+  // install_update plumbing: requested, then the watchdog's answer
+  private _installRequested = false;
+  private _installResult: InstallerResult | null = null;
 
   private static makeInitialState(): WatchdogState {
     return {
@@ -292,6 +303,26 @@ class WatchdogManager {
       this.sendCommand({ cmd: 'stop' });
     });
     return this._stopPromise;
+  }
+
+  // Asks the watchdog to start the update installer at `path` once it has
+  // stopped cardano-wallet and cardano-node, which the installer replaces. The
+  // watchdog treats it as a stop; stop() then also waits for its answer.
+  requestInstall(path: string, args: Array<string> = []): void {
+    this._installRequested = true;
+    this.sendCommand({ cmd: 'install_update', path, args });
+  }
+
+  // null when no installer was requested. Otherwise the watchdog's answer, or
+  // a failure when none came before stop() resolved.
+  getInstallResult(): InstallerResult | null {
+    if (!this._installRequested) return null;
+    return (
+      this._installResult ?? {
+        launched: false,
+        message: 'The watchdog did not report starting the installer.',
+      }
+    );
   }
 
   private _extendStopDeadline(ms: number): void {
@@ -485,6 +516,26 @@ class WatchdogManager {
         this._watchdogStopped = true;
         this._nodeRunning = false;
         s.requestedRestart = null;
+        if (this._installRequested && this._installResult === null) {
+          // The installer starts next; wait for the watchdog's report on it.
+          if (this._finishStop) {
+            this._extendStopDeadline(INSTALLER_RESULT_TIMEOUT_MS);
+          }
+        } else {
+          this._finishStop?.();
+        }
+        break;
+
+      case 'update_installer_launched':
+        this._installResult = { launched: true, message: null };
+        this._finishStop?.();
+        break;
+
+      case 'update_installer_failed':
+        this._installResult = {
+          launched: false,
+          message: event.message as string,
+        };
         this._finishStop?.();
         break;
 

@@ -21,6 +21,7 @@ import mainErrorHandler from './utils/mainErrorHandler';
 import { pubLogsFolderPath, RTS_FLAGS, stateDirectoryPath } from './config';
 import { backendLifecycle } from './BackendLifecycle';
 import { safeExitWithCode } from './utils/safeExitWithCode';
+import { showInstallerLaunchFailure } from './utils/showInstallerLaunchFailure';
 import { buildAppMenus } from './utils/buildAppMenus';
 import { getLocale } from './utils/getLocale';
 import { detectSystemLocale } from './utils/detectSystemLocale';
@@ -312,6 +313,22 @@ const onAppReady = async () => {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     await backendLifecycle.stop();
+
+    // An update installer was requested and the watchdog could not start it.
+    // Say so before closing rather than disappearing.
+    const install = backendLifecycle.getInstallOutcome();
+    if (install && !install.result.launched) {
+      logger.error('Update installer was not started', {
+        path: install.path,
+        reason: install.result.message,
+      });
+      showInstallerLaunchFailure(
+        mainWindow,
+        String(getLocale(network)),
+        install.path,
+        install.result.message ?? ''
+      );
+    }
 
     await safeExit();
   });

@@ -2,7 +2,10 @@ import { readFileSync } from 'fs';
 import { BrowserWindow } from 'electron';
 import { logger } from './utils/logging';
 import WatchdogManager from './WatchdogManager';
-import type { WatchdogState as InternalWatchdogState } from './WatchdogManager';
+import type {
+  InstallerResult,
+  WatchdogState as InternalWatchdogState,
+} from './WatchdogManager';
 import type {
   MithrilProgress,
   WatchdogState,
@@ -45,6 +48,7 @@ class BackendLifecycle {
   private _defaultChainPath: string | null = null;
   private _customChainPath: string | null = null;
   private _stopPromise: Promise<void> | null = null;
+  private _installerPath: string | null = null;
 
   // ---------------------------------------------------------------------------
   // Setup
@@ -216,6 +220,25 @@ class BackendLifecycle {
 
   isStopping(): boolean {
     return this._stopPromise !== null;
+  }
+
+  // Has the watchdog start the update installer at `path` once it has stopped
+  // cardano-wallet and cardano-node, as Daedalus quits. Returns false when no
+  // watchdog connection exists to ask.
+  installUpdate(path: string): boolean {
+    if (!this.manager) return false;
+    this._installerPath = path;
+    this.manager.requestInstall(path);
+    return true;
+  }
+
+  // What came of installUpdate(), once stop() has resolved; null if it was
+  // not called.
+  getInstallOutcome(): { path: string; result: InstallerResult } | null {
+    const path = this._installerPath;
+    const result = this.manager?.getInstallResult() ?? null;
+    if (path === null || result === null) return null;
+    return { path, result };
   }
 
   // Tells the renderer at once that the backend is stopping, for quit or for a

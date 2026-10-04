@@ -3,6 +3,7 @@
  */
 import { EventEmitter } from 'events';
 import WatchdogManager, {
+  INSTALLER_RESULT_TIMEOUT_MS,
   STOP_ACK_TIMEOUT_MS,
   STOP_MARGIN_MS,
 } from './WatchdogManager';
@@ -221,5 +222,69 @@ describe('WatchdogManager.stop', () => {
     emit(progress('stopping_wallet', 0, 1000));
     jest.advanceTimersByTime(STOP_ACK_TIMEOUT_MS + STOP_MARGIN_MS);
     expect(await isSettled(stopping)).toBe(false);
+  });
+});
+
+describe('WatchdogManager update installer', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('sends install_update with the installer path', () => {
+    const { manager, sent } = makeManager();
+    manager.requestInstall('C:\\Downloads\\installer.exe');
+    expect(sent).toEqual([
+      {
+        cmd: 'install_update',
+        path: 'C:\\Downloads\\installer.exe',
+        args: [],
+      },
+    ]);
+  });
+
+  it('waits past stopped for the installer report, then resolves', async () => {
+    const { manager, emit } = makeManager();
+    manager.requestInstall('/tmp/installer.pkg');
+    const stopping = manager.stop();
+    emit({ event: 'stopped' });
+    expect(await isSettled(stopping)).toBe(false);
+    emit({ event: 'update_installer_launched', pid: 77 });
+    expect(await isSettled(stopping)).toBe(true);
+    expect(manager.getInstallResult()).toEqual({
+      launched: true,
+      message: null,
+    });
+  });
+
+  it('records a failed installer start with its reason', async () => {
+    const { manager, emit } = makeManager();
+    manager.requestInstall('/tmp/installer.pkg');
+    const stopping = manager.stop();
+    emit({ event: 'stopped' });
+    emit({ event: 'update_installer_failed', message: 'not found' });
+    expect(await isSettled(stopping)).toBe(true);
+    expect(manager.getInstallResult()).toEqual({
+      launched: false,
+      message: 'not found',
+    });
+  });
+
+  it('reports a failure when the watchdog never answers about the installer', async () => {
+    const { manager, emit } = makeManager();
+    manager.requestInstall('/tmp/installer.pkg');
+    const stopping = manager.stop();
+    emit({ event: 'stopped' });
+    jest.advanceTimersByTime(INSTALLER_RESULT_TIMEOUT_MS);
+    expect(await isSettled(stopping)).toBe(true);
+    expect(manager.getInstallResult()?.launched).toBe(false);
+  });
+
+  it('reports nothing when no installer was requested', () => {
+    const { manager } = makeManager();
+    expect(manager.getInstallResult()).toBeNull();
   });
 });

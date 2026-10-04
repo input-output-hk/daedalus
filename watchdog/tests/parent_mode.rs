@@ -62,6 +62,22 @@ while IFS= read -r line; do
 done
 "#;
 
+/// Mock Electron that asks for an update installer that does not exist once
+/// the wallet is ready. On the watchdog's report that the installer could not
+/// be started it takes a second, as a user reading the error dialog does,
+/// before it records the report and exits.
+const INSTALLING_ELECTRON: &str = r#"
+while IFS= read -r line; do
+  printf '%s\n' "$line" >> "$EVENTS_FILE"
+  case "$line" in
+    *'"wallet_ready"'*)
+      printf '{"cmd":"install_update","path":"%s"}\n' "$EVENTS_FILE.no-such-installer"
+      ;;
+    *'"update_installer_failed"'*) sleep 1; echo saw-installer-failure > "$MARKER"; exit 0 ;;
+  esac
+done
+"#;
+
 struct TempDir(PathBuf);
 
 impl TempDir {
@@ -290,6 +306,31 @@ fn electron_restarts_with_new_flags_while_the_backend_runs() {
     );
     assert_eq!(dir.marker_text().as_deref(), Some("exited-after-stopped"));
     assert_eq!(dir.saved_state()["electron_flags"], json!(["--test-flag"]));
+    let log = dir.log();
+    assert!(
+        log.contains("Electron exited after the backend stopped"),
+        "{log}"
+    );
+}
+
+/// An installer that cannot be started is reported to Electron after the
+/// backend has stopped, and Electron has time to tell the user before it exits.
+#[test]
+fn installer_failure_reaches_electron() {
+    let dir = TempDir::new("installer");
+    let mut watchdog = spawn(&dir, INSTALLING_ELECTRON);
+
+    wait_for_exit(&mut watchdog, EXIT_GRACE);
+
+    let events = dir.events();
+    let stopped = events
+        .find("\"event\":\"stopped\"")
+        .expect("stopped reaches Electron");
+    let failed = events
+        .find("\"event\":\"update_installer_failed\"")
+        .expect("update_installer_failed reaches Electron");
+    assert!(stopped < failed, "{events}");
+    assert_eq!(dir.marker_text().as_deref(), Some("saw-installer-failure"));
     let log = dir.log();
     assert!(
         log.contains("Electron exited after the backend stopped"),

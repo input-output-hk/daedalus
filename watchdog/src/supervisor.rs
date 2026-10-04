@@ -146,9 +146,9 @@ pub(crate) fn tether_to_watchdog(cmd: &mut Command) {
 #[cfg(windows)]
 pub(crate) fn init_job_object() {
     use windows_sys::Win32::System::JobObjects::{
-        AssignProcessToJobObject, CreateJobObjectW, JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE,
-        JOBOBJECT_EXTENDED_LIMIT_INFORMATION, JobObjectExtendedLimitInformation,
-        SetInformationJobObject,
+        AssignProcessToJobObject, CreateJobObjectW, JOB_OBJECT_LIMIT_BREAKAWAY_OK,
+        JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE, JOBOBJECT_EXTENDED_LIMIT_INFORMATION,
+        JobObjectExtendedLimitInformation, SetInformationJobObject,
     };
     use windows_sys::Win32::System::Threading::GetCurrentProcess;
     unsafe {
@@ -158,7 +158,11 @@ pub(crate) fn init_job_object() {
             return;
         }
         let mut info: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = std::mem::zeroed();
-        info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+        // BREAKAWAY_OK lets a process that asks for it (CREATE_BREAKAWAY_FROM_JOB)
+        // leave the job: only the update installer does, so it outlives the
+        // watchdog. Node, wallet and Electron do not ask and stay tethered.
+        info.BasicLimitInformation.LimitFlags =
+            JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE | JOB_OBJECT_LIMIT_BREAKAWAY_OK;
         if SetInformationJobObject(
             job,
             JobObjectExtendedLimitInformation,

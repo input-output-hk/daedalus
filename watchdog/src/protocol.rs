@@ -71,6 +71,15 @@ pub enum Command {
         #[serde(default)]
         node_extra_args: Vec<String>,
     },
+    /// Stop cardano-wallet and cardano-node, start the update installer at
+    /// `path` with `args` once both have exited, then exit. Electron sends it
+    /// after verifying the installer. Reported with `update_installer_launched`
+    /// or `update_installer_failed`, after `stopped`.
+    InstallUpdate {
+        path: String,
+        #[serde(default)]
+        args: Vec<String>,
+    },
 }
 
 #[derive(Debug, Serialize)]
@@ -220,6 +229,14 @@ pub enum Event {
     /// `start_node`) to try again, or `stop`.
     NodeUnrecoverable {
         crashes: u32,
+    },
+    /// The update installer requested with `install_update` was started.
+    UpdateInstallerLaunched {
+        pid: u32,
+    },
+    /// The update installer requested with `install_update` was not started.
+    UpdateInstallerFailed {
+        message: String,
     },
 }
 
@@ -700,6 +717,32 @@ mod tests {
         let j = to_json(&Event::NodeUnrecoverable { crashes: 5 });
         assert_eq!(j["event"], "node_unrecoverable");
         assert_eq!(j["crashes"], 5);
+    }
+
+    #[test]
+    fn install_update_command() {
+        let cmd: Command =
+            serde_json::from_str(r#"{"cmd":"install_update","path":"C:\\x\\installer.exe"}"#)
+                .unwrap();
+        match cmd {
+            Command::InstallUpdate { path, args } => {
+                assert_eq!(path, "C:\\x\\installer.exe");
+                assert!(args.is_empty());
+            }
+            _ => panic!("wrong variant"),
+        }
+    }
+
+    #[test]
+    fn update_installer_events() {
+        let j = to_json(&Event::UpdateInstallerLaunched { pid: 4321 });
+        assert_eq!(j["event"], "update_installer_launched");
+        assert_eq!(j["pid"], 4321);
+        let j = to_json(&Event::UpdateInstallerFailed {
+            message: "not found".to_string(),
+        });
+        assert_eq!(j["event"], "update_installer_failed");
+        assert_eq!(j["message"], "not found");
     }
 
     #[test]

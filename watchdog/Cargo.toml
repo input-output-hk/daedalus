@@ -29,6 +29,10 @@ name = "mock-wallet-crash"
 path = "src/bin/mock_wallet_crash.rs"
 
 [[bin]]
+name = "mock-installer"
+path = "src/bin/mock_installer.rs"
+
+[[bin]]
 name = "mock-mithril-client"
 path = "src/bin/mock_mithril_client.rs"
 
@@ -92,6 +96,8 @@ windows-sys = { version = "0.61", features = [
   "Win32_System_Console",
   "Win32_System_JobObjects",
   "Win32_System_Pipes",
+  "Win32_System_Registry",
   "Win32_System_Threading",
+  "Win32_UI_Shell",
   "Win32_UI_WindowsAndMessaging",
 ] }

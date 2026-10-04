@@ -8,6 +8,7 @@
 mod chain_validation;
 mod config;
 mod crash_window;
+mod installer;
 mod instance;
 mod mithril;
 mod protocol;
@@ -226,6 +227,8 @@ async fn main() -> Result<()> {
     let window = instance::WindowState::starting();
 
     let (cmd_tx, cmd_rx) = mpsc::channel::<protocol::Command>(8);
+    // Set by an install_update command; read after the supervisor returns.
+    let installer_request = installer::InstallerRequest::default();
 
     // SIGTERM/SIGINT handler: treat as an orderly stop so children are not orphaned.
     // SIGINT fires on Ctrl-C when watchdog is the foreground process (nix run / direct launch).
@@ -375,6 +378,7 @@ async fn main() -> Result<()> {
             },
         }
 
+        let installer_mgr = Arc::clone(&installer_request);
         electron_task = Some(tokio::spawn(async move {
             let mut current_electron_flags = initial_electron_flags;
             let mut per_rx = initial_per_rx;
@@ -474,10 +478,14 @@ async fn main() -> Result<()> {
                     let mut reader = BufReader::new(ipc_read);
                     let is_restarting_pipe = Arc::clone(&is_restarting_mgr);
                     let ipc_cmd_tx = reader_cmd_tx_base.clone();
+                    let ipc_installer = Arc::clone(&installer_mgr);
                     let reader_handle = tokio::spawn(async move {
                         while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
                             if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
-                                if ipc_cmd_tx.send(cmd).await.is_err() {
+                                if forward_command(cmd, &ipc_cmd_tx, &ipc_installer)
+                                    .await
+                                    .is_err()
+                                {
                                     break;
                                 }
                             }
@@ -575,10 +583,14 @@ async fn main() -> Result<()> {
                     let mut reader = BufReader::new(stdout);
                     let is_restarting_reader = Arc::clone(&is_restarting_mgr);
                     let reader_cmd_tx = reader_cmd_tx_base.clone();
+                    let reader_installer = Arc::clone(&installer_mgr);
                     let reader_handle = tokio::spawn(async move {
                         while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
                             if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
-                                if reader_cmd_tx.send(cmd).await.is_err() {
+                                if forward_command(cmd, &reader_cmd_tx, &reader_installer)
+                                    .await
+                                    .is_err()
+                                {
                                     break;
                                 }
                             }
@@ -650,10 +662,14 @@ async fn main() -> Result<()> {
         let stdin_window = std::sync::Arc::clone(&window);
         let mut reader = BufReader::new(tokio::io::stdin());
         let stdin_cmd_tx = cmd_tx.clone();
+        let stdin_installer = std::sync::Arc::clone(&installer_request);
         tokio::spawn(async move {
             while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
                 if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
-                    if stdin_cmd_tx.send(cmd).await.is_err() {
+                    if forward_command(cmd, &stdin_cmd_tx, &stdin_installer)
+                        .await
+                        .is_err()
+                    {
                         break;
                     }
                 }
@@ -682,16 +698,27 @@ async fn main() -> Result<()> {
     )
     .await;
 
+    // cardano-wallet and cardano-node have exited: start the update installer
+    // if Electron asked for one.
+    let installer_failed =
+        installer::start_requested(&installer_request, result.is_ok()).await == Some(false);
+
     // The backend is stopped and Electron has been sent `stopped`. Give it
     // time to act on that and exit by itself: returning from main drops the
-    // runtime, which kills an Electron that is still running.
+    // runtime, which kills an Electron that is still running. After a failed
+    // installer start Electron tells the user and waits for them.
     if let Some(mut task) = electron_task {
-        match tokio::time::timeout(ELECTRON_EXIT_GRACE, &mut task).await {
+        let grace = if installer_failed {
+            ELECTRON_EXIT_GRACE_AFTER_INSTALLER_FAILURE
+        } else {
+            ELECTRON_EXIT_GRACE
+        };
+        match tokio::time::timeout(grace, &mut task).await {
             Ok(_) => tracing::info!("Electron exited after the backend stopped"),
             Err(_) => {
                 tracing::warn!(
                     "Electron still running {}s after the backend stopped; closing it",
-                    ELECTRON_EXIT_GRACE.as_secs()
+                    grace.as_secs()
                 );
                 // Ending the manager task drops Electron's process handle,
                 // which kills it.
@@ -707,6 +734,28 @@ async fn main() -> Result<()> {
 /// How long the watchdog waits for Electron to exit after the backend has
 /// stopped, before closing it.
 const ELECTRON_EXIT_GRACE: std::time::Duration = std::time::Duration::from_secs(15);
+
+/// The same wait when the update installer could not be started: Electron is
+/// showing the user a dialog about it.
+const ELECTRON_EXIT_GRACE_AFTER_INSTALLER_FAILURE: std::time::Duration =
+    std::time::Duration::from_secs(600);
+
+/// Passes a command from the client on to the supervisor. `install_update` is
+/// recorded here and passed on as `stop`: the installer starts only once the
+/// supervisor has stopped cardano-wallet and cardano-node and returned.
+async fn forward_command(
+    cmd: protocol::Command,
+    tx: &mpsc::Sender<protocol::Command>,
+    installer_request: &installer::InstallerRequest,
+) -> Result<(), mpsc::error::SendError<protocol::Command>> {
+    match cmd {
+        protocol::Command::InstallUpdate { path, args } => {
+            installer::request(installer_request, installer::UpdateInstaller { path, args });
+            tx.send(protocol::Command::Stop).await
+        }
+        cmd => tx.send(cmd).await,
+    }
+}
 
 #[cfg(test)]
 mod tests {

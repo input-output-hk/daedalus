@@ -29,6 +29,7 @@ const MOCK_NODE_STARTUP_LOG: &str = env!("CARGO_BIN_EXE_mock-node-startup-log");
 const MOCK_NODE_NON_UTF8: &str = env!("CARGO_BIN_EXE_mock-node-non-utf8-output");
 const MOCK_WALLET: &str = env!("CARGO_BIN_EXE_mock-wallet");
 const MOCK_WALLET_CRASH: &str = env!("CARGO_BIN_EXE_mock-wallet-crash");
+const MOCK_INSTALLER: &str = env!("CARGO_BIN_EXE_mock-installer");
 const MOCK_MITHRIL: &str = env!("CARGO_BIN_EXE_mock-mithril-client");
 const MOCK_MITHRIL_FAIL: &str = env!("CARGO_BIN_EXE_mock-mithril-client-fail");
 const MOCK_CONVERTER: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter");
@@ -2058,6 +2059,94 @@ fn stop_during_the_crash_restart_delay_does_not_start_a_node() {
     );
     drop(stdin);
     let _ = child.wait();
+}
+
+// ── Tests: update installer ──────────────────────────────────────────────────
+
+/// install_update stops the wallet and the node, and starts the installer
+/// only once both have exited, then the watchdog exits.
+///
+/// On macOS the watchdog hands the installer to `open`, which passes `--args`
+/// to the application that opens the file rather than to the file itself, so
+/// the mock installer cannot run there. `installer_that_cannot_start_is_reported`
+/// checks on every platform that the installer step follows the stop.
+#[test]
+#[cfg_attr(
+    target_os = "macos",
+    ignore = "macOS starts the installer through `open`, which cannot run the mock installer"
+)]
+fn installer_starts_only_after_node_and_wallet_have_exited() {
+    let dir = TempDir::new("installer");
+    dir.populate_chain();
+    let report = dir.path().join("installer-report");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    // The node takes 1.5 s to exit after the stop request.
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_EXIT_DELAY_MS", "1500")]);
+
+    let node_pid = expect(&rx, "node_started")["pid"].as_u64().unwrap();
+    let wallet_pid = expect(&rx, "wallet_started")["pid"].as_u64().unwrap();
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({
+            "cmd": "install_update",
+            "path": MOCK_INSTALLER,
+            "args": [
+                report.to_str().unwrap(),
+                node_pid.to_string(),
+                wallet_pid.to_string()
+            ]
+        }),
+    );
+
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert!(shutdown["ms"].as_u64().unwrap() >= 1500, "{shutdown}");
+    expect(&rx, "stopped");
+    let launched = expect(&rx, "update_installer_launched");
+    assert!(launched["pid"].as_u64().unwrap() > 0, "{launched}");
+    drop(stdin);
+    wait_for_exit(&mut child, Duration::from_secs(15));
+
+    let start = std::time::Instant::now();
+    while !report.exists() {
+        assert!(
+            start.elapsed() < Duration::from_secs(5),
+            "installer did not run"
+        );
+        std::thread::sleep(Duration::from_millis(50));
+    }
+    std::thread::sleep(Duration::from_millis(100));
+    assert_eq!(
+        std::fs::read_to_string(&report).unwrap(),
+        format!("{node_pid} exited\n{wallet_pid} exited\n")
+    );
+}
+
+/// An installer that cannot be started is reported, after the backend has
+/// stopped, rather than failing silently.
+#[test]
+fn installer_that_cannot_start_is_reported() {
+    let dir = TempDir::new("installer-missing");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    let missing = dir.path().join("no-such-installer");
+    send(
+        &mut stdin,
+        json!({"cmd": "install_update", "path": missing.to_str().unwrap()}),
+    );
+    expect(&rx, "node_shutdown_ms");
+    expect(&rx, "stopped");
+    let failed = expect(&rx, "update_installer_failed");
+    assert!(
+        !failed["message"].as_str().unwrap_or_default().is_empty(),
+        "{failed}"
+    );
+    drop(stdin);
+    wait_for_exit(&mut child, Duration::from_secs(15));
 }
 
 /// Bug 5 regression: stopped event is emitted when clean stop is sent during
