@@ -334,10 +334,10 @@ fn code_sign_windows(
     let cluster = parse_windows_installer_cluster(filename)?;
 
     // The makeSignedInstaller for Windows is exposed under x86_64-linux packages
-    // (with the -x86_64-windows suffix) because it is a Linux shell script that
-    // cross-compiles and signs for Windows.
+    // (as makeSignedInstaller-x86_64-windows-<env>) because it is a Linux shell
+    // script that cross-compiles and signs for Windows.
     let flake_ref = format!(
-        "github:input-output-hk/daedalus/{gitrev}#packages.x86_64-linux.makeSignedInstaller-{cluster}-x86_64-windows"
+        "github:input-output-hk/daedalus/{gitrev}#packages.x86_64-linux.makeSignedInstaller-x86_64-windows-{cluster}"
     );
 
     println!("    nix run  → {flake_ref}");
