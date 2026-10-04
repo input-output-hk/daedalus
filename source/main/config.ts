@@ -2,6 +2,11 @@ import path from 'path';
 import { app, dialog } from 'electron';
 import { environment } from './environment';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
+import {
+  resolveWatchdogLaunch,
+  shouldRelaunchViaWatchdog,
+  spawnWatchdog,
+} from './utils/directLaunch';
 
 const {
   isTest,
@@ -17,14 +22,47 @@ const {
 const isStartedByLauncher = !!process.env.DAEDALUS_CLUSTER;
 const isWindows = process.platform === 'win32';
 
-if (!isStartedByLauncher) {
+// A packaged build started directly (for example from a Windows install
+// directory after the shortcut was deleted) hands over to the watchdog instead
+// of showing an error. An already running instance takes precedence: it is
+// focused through the single-instance lock and nothing is spawned.
+const relaunchViaWatchdog = (): boolean => {
+  try {
+    if (!app.requestSingleInstanceLock()) {
+      app.quit();
+      return true;
+    }
+    const launch = resolveWatchdogLaunch({
+      platform: process.platform,
+      startPaths: [process.execPath, app.getAppPath()],
+    });
+    if (!launch) {
+      app.releaseSingleInstanceLock();
+      return false;
+    }
+    // Free the lock so that the Electron started by the watchdog can take it
+    app.releaseSingleInstanceLock();
+    if (!spawnWatchdog(launch)) return false;
+    app.exit(0);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const isHandedOver =
+  !isStartedByLauncher &&
+  shouldRelaunchViaWatchdog({ isProduction, env: process.env }) &&
+  relaunchViaWatchdog();
+
+if (!isStartedByLauncher && !isHandedOver) {
   const dialogTitle = 'Daedalus improperly started!';
   let dialogMessage;
 
   if (isProduction) {
     dialogMessage = isWindows
-      ? 'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.'
-      : 'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer.';
+      ? 'Daedalus could not be started this way. Please start Daedalus using the icon in the Windows start menu or the Daedalus icon on your desktop. If the shortcuts are missing, reinstall Daedalus to recreate them.'
+      : 'Daedalus was launched without needed configuration. Please start Daedalus using the shortcut provided by the installer, or reinstall Daedalus to recreate it.';
   } else {
     dialogMessage =
       'Daedalus should be started using nix-shell. Find more details here: https://github.com/input-output-hk/daedalus/blob/develop/README.md';
