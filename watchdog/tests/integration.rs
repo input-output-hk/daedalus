@@ -192,6 +192,11 @@ impl<'a> Cfg<'a> {
         self
     }
 
+    fn node_crash_restart_delay_ms(mut self, ms: u64) -> Self {
+        self.node_crash_restart_delay_ms = ms;
+        self
+    }
+
     fn node_stop_timeout_secs(mut self, secs: u64) -> Self {
         self.node_stop_timeout_secs = Some(secs);
         self
@@ -1733,6 +1738,161 @@ fn wallet_restart_stops_the_wallet_cleanly() {
 
     stop(&mut stdin);
     expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: restart and stop ordering ─────────────────────────────────────────
+
+/// Collect events up to and including `stopped`; panic after 15 s of silence.
+fn events_until_stopped(rx: &mpsc::Receiver<Value>) -> Vec<String> {
+    let mut seen = Vec::new();
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .unwrap_or_else(|_| panic!("timeout waiting for 'stopped'; saw {seen:?}"));
+        let name = v["event"].as_str().unwrap_or_default().to_string();
+        let done = name == "stopped";
+        seen.push(name);
+        if done {
+            return seen;
+        }
+    }
+}
+
+/// A stop requested while a restart waits for the old node to exit ends the
+/// restart there: no new node is started only to be stopped.
+#[test]
+fn stop_during_a_node_restart_does_not_start_a_new_node() {
+    let dir = TempDir::new("stop-during-restart");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_EXIT_DELAY_MS", "1500")]);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "set_node_extra_args", "args": ["+RTS", "-c", "-RTS"]}),
+    );
+    expect_with(&rx, "backend_stop_progress", |v| {
+        v["stage"] == "stopping_node"
+    });
+    stop(&mut stdin);
+
+    let events = events_until_stopped(&rx);
+    assert!(
+        !events.iter().any(|e| e == "node_started"),
+        "a node was started after the stop request: {events:?}"
+    );
+    assert_eq!(
+        events.iter().filter(|e| *e == "node_shutdown_ms").count(),
+        1,
+        "{events:?}"
+    );
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A restart starts the new node only once the old one has exited.
+#[test]
+fn restart_starts_the_new_node_after_the_old_one_has_exited() {
+    let dir = TempDir::new("restart-order");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_EXIT_DELAY_MS", "1000")]);
+
+    let first = expect(&rx, "node_started");
+    let old_pid = first["pid"].as_i64().unwrap() as i32;
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "restart_node"}));
+
+    expect(&rx, "node_started");
+    // Signal 0 only probes: ESRCH means the old node has exited and been reaped.
+    assert!(
+        nix::sys::signal::kill(nix::unistd::Pid::from_raw(old_pid), None).is_err(),
+        "old node {old_pid} was still running when the new one started"
+    );
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A setting changed while a restart waits for the old node is saved and
+/// applied to that restart, rather than restarting the new node again.
+#[test]
+fn settings_sent_during_a_node_restart_apply_to_that_restart() {
+    let dir = TempDir::new("settings-during-restart");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_EXIT_DELAY_MS", "1500")]);
+
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "restart_node"}));
+    expect_with(&rx, "backend_stop_progress", |v| {
+        v["stage"] == "stopping_node"
+    });
+    let args = json!(["+RTS", "-N2", "-RTS"]);
+    send(
+        &mut stdin,
+        json!({"cmd": "set_node_extra_args", "args": args}),
+    );
+
+    let mut node_starts = 0;
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .expect("timeout waiting for wallet_ready");
+        match v["event"].as_str() {
+            Some("node_started") => node_starts += 1,
+            Some("wallet_ready") => break,
+            _ => {}
+        }
+    }
+    assert_eq!(node_starts, 1, "the restarted node was restarted again");
+    let state: Value = serde_json::from_str(
+        &std::fs::read_to_string(dir.path().join("watchdog-state.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(state["node_extra_args"], args);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A stop requested during the delay before a crashed node is restarted ends
+/// the watchdog at once, without starting another node.
+#[test]
+fn stop_during_the_crash_restart_delay_does_not_start_a_node() {
+    let dir = TempDir::new("stop-during-crash-delay");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH, MOCK_WALLET)
+        .node_crash_restart_delay_ms(3000)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "node_started");
+    expect(&rx, "node_exited");
+    let started = std::time::Instant::now();
+    stop(&mut stdin);
+
+    let events = events_until_stopped(&rx);
+    assert!(
+        !events.iter().any(|e| e == "node_started"),
+        "a node was started after the stop request: {events:?}"
+    );
+    assert!(
+        started.elapsed() < Duration::from_millis(2500),
+        "stop waited out the restart delay: {:?}",
+        started.elapsed()
+    );
     drop(stdin);
     let _ = child.wait();
 }
