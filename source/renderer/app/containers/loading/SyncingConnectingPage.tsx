@@ -40,6 +40,9 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       startMithrilForce,
       dismissMithrilPrompt,
       backendStopProgress,
+      walletUnrecoverable,
+      nodeUnrecoverable,
+      retryBackend,
     } = backend;
     // Map loadingPhase to the cardanoNodeState shape the component expects
     const cardanoNodeState = loadingPhase;
@@ -119,7 +122,9 @@ class LoadingSyncingConnectingPage extends Component<Props> {
           nodeStartupPhase={nodeStartupPhase}
           blockSyncProgress={blockSyncProgress}
           backendStopProgress={backendStopProgress}
+          isWalletUnrecoverable={walletUnrecoverable && !nodeUnrecoverable}
           isRestartingWallet={isRestartingWallet}
+          onRetry={retryBackend}
         />
       </>
     );

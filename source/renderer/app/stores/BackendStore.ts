@@ -53,6 +53,7 @@ export default class BackendStore extends Store {
   @observable mithrilProgress: MithrilProgress | null = null;
   @observable lastError: string | null = null;
   @observable walletUnrecoverable = false;
+  @observable nodeUnrecoverable = false;
   @observable nodeSocketWaitMs: number | null = null;
   @observable walletReadyWaitMs: number | null = null;
   @observable nodeForceKilled = false;
@@ -144,6 +145,7 @@ export default class BackendStore extends Store {
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
         this.walletUnrecoverable = state.walletUnrecoverable;
+        this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;
         this.walletReadyWaitMs = state.walletReadyWaitMs;
         this.nodeForceKilled = state.nodeForceKilled;
@@ -263,7 +265,7 @@ export default class BackendStore extends Store {
       return 'stopping';
     }
     // Unrecoverable error takes top priority
-    if (this.walletUnrecoverable) {
+    if (this.walletUnrecoverable || this.nodeUnrecoverable) {
       return 'error';
     }
     // A restart the user asked for: the process is stopping, or for a wallet
@@ -333,6 +335,17 @@ export default class BackendStore extends Store {
 
   _restartWallet = () => {
     mithrilCommandChannel.send({ cmd: 'restart_wallet' });
+  };
+
+  // Retries after the watchdog has given up on a process that kept crashing:
+  // the wallet alone when only the wallet failed, otherwise node and wallet.
+  retryBackend = () => {
+    mithrilCommandChannel.send({
+      cmd:
+        this.walletUnrecoverable && !this.nodeUnrecoverable
+          ? 'restart_wallet'
+          : 'restart_node',
+    });
   };
 
   // =============== CHAIN STORAGE ACTIONS ===============

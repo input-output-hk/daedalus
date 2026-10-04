@@ -42,6 +42,14 @@ pub struct NodeConfig {
     /// database unclean and makes the next start revalidate it.
     #[serde(default = "default_node_stop_timeout_secs")]
     pub stop_timeout_secs: u64,
+    /// Unexpected node exits within `crash_window_secs` that make the node
+    /// unrecoverable, whether or not it became ready in between. 0 disables
+    /// this limit.
+    #[serde(default = "default_max_crashes_in_window")]
+    pub max_crashes_in_window: u32,
+    /// Length of the window `max_crashes_in_window` is counted over.
+    #[serde(default = "default_crash_window_secs")]
+    pub crash_window_secs: u64,
 }
 
 fn default_node_crash_restart_delay_ms() -> u64 {
@@ -77,6 +85,14 @@ fn default_node_stop_timeout_secs() -> u64 {
     DEFAULT_NODE_STOP_TIMEOUT_SECS
 }
 
+fn default_max_crashes_in_window() -> u32 {
+    5
+}
+
+fn default_crash_window_secs() -> u64 {
+    600
+}
+
 #[derive(Debug, Deserialize, Clone)]
 pub struct WalletConfig {
     pub exe: String,
@@ -91,6 +107,14 @@ pub struct WalletConfig {
     /// before killing it.
     #[serde(default = "default_wallet_stop_timeout_secs")]
     pub stop_timeout_secs: u64,
+    /// Unexpected wallet exits within `crash_window_secs` that make the
+    /// wallet unrecoverable, whether or not it became ready in between. 0
+    /// disables this limit.
+    #[serde(default = "default_max_crashes_in_window")]
+    pub max_crashes_in_window: u32,
+    /// Length of the window `max_crashes_in_window` is counted over.
+    #[serde(default = "default_crash_window_secs")]
+    pub crash_window_secs: u64,
 }
 
 fn default_restart_delay_ms() -> u64 {
@@ -275,6 +299,30 @@ mod tests {
         let c: WatchdogConfig =
             serde_json::from_str(&minimal_json(r#","stop_timeout_secs":3"#)).unwrap();
         assert_eq!(c.wallet.stop_timeout_secs, 3);
+    }
+
+    #[test]
+    fn crash_windows_default_to_5_crashes_in_10_minutes() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert_eq!(c.node.max_crashes_in_window, 5);
+        assert_eq!(c.node.crash_window_secs, 600);
+        assert_eq!(c.wallet.max_crashes_in_window, 5);
+        assert_eq!(c.wallet.crash_window_secs, 600);
+    }
+
+    #[test]
+    fn explicit_crash_windows_override_defaults() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s",
+                     "max_crashes_in_window":2,"crash_window_secs":30},
+            "wallet": {"exe":"w","args":[],"state_dir":"/",
+                       "max_crashes_in_window":0,"crash_window_secs":60}
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        assert_eq!(c.node.max_crashes_in_window, 2);
+        assert_eq!(c.node.crash_window_secs, 30);
+        assert_eq!(c.wallet.max_crashes_in_window, 0);
+        assert_eq!(c.wallet.crash_window_secs, 60);
     }
 
     #[test]

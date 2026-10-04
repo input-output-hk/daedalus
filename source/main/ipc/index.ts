@@ -92,6 +92,7 @@ export default (window: BrowserWindow) => {
         nodeExtraArgs: [],
         shutdownRequested: false,
         backendStopProgress: null,
+        nodeUnrecoverable: false,
         requestedRestart: null,
       }
     )

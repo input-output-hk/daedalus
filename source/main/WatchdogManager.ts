@@ -68,6 +68,8 @@ export interface WatchdogState {
   shutdownRequested: boolean;
   backendStopProgress: BackendStopProgress | null;
 
+  // cardano-node crashed too often; the watchdog waits for a retry
+  nodeUnrecoverable: boolean;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
 }
@@ -138,6 +140,7 @@ class WatchdogManager {
       nodeExtraArgs: [],
       shutdownRequested: false,
       backendStopProgress: null,
+      nodeUnrecoverable: false,
       requestedRestart: null,
     };
   }
@@ -357,7 +360,11 @@ class WatchdogManager {
         s.walletStartedAt = null;
         s.nodeStartupPhase = null;
         s.backendStopProgress = null;
-        // A requested restart has stopped the old node.
+        // A node start is a retry or restart: whatever was unrecoverable
+        // before is being tried again, and a requested restart has stopped
+        // the old node.
+        s.nodeUnrecoverable = false;
+        s.walletUnrecoverable = false;
         s.requestedRestart = null;
         this._nodeRunning = true;
         s.blockSyncProgress = {
@@ -396,6 +403,7 @@ class WatchdogManager {
         s.walletPid = event.pid as number;
         s.walletStartedAt = event.started_at_unix_ms as number;
         s.backendStopProgress = null;
+        s.walletUnrecoverable = false;
         break;
 
       case 'wallet_ready':
@@ -424,6 +432,12 @@ class WatchdogManager {
         s.walletUnrecoverable = true;
         s.requestedRestart = null;
         this._pendingRejection = 'wallet_unrecoverable';
+        break;
+
+      case 'node_unrecoverable':
+        s.nodeUnrecoverable = true;
+        s.requestedRestart = null;
+        this._nodeRunning = false;
         break;
 
       case 'node_exited':

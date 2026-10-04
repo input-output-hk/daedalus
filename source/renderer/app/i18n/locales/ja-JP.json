@@ -555,6 +555,7 @@
   "loading.screen.stoppingCardanoNodeProgress": "Cardanoノードがデータベースを閉じるのを待っています（{elapsed}）",
   "loading.screen.stoppingCardanoWalletProgress": "Cardanoウォレットを停止しています（{elapsed}）",
   "loading.screen.unrecoverableCardanoMessage": "Cardanoノードを起動できません。サポートリクエストを送信してください。",
+  "loading.screen.unrecoverableCardanoWalletMessage": "Cardanoウォレットを起動できません。サポートリクエストを送信してください。",
   "loading.screen.updatedCardanoMessage": "Cardanoノードが更新されました",
   "loading.screen.updatingCardanoMessage": "Cardanoノードを更新しています",
   "loading.screen.validatingChunk": "ディスクのブロックチェーンステータスの検証",

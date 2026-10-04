@@ -6,6 +6,8 @@
 // arguments it exits with code 0 once its stdin reaches end-of-file. When
 // MOCK_WALLET_EXIT_FILE is set, it writes "stdin-eof" to that file before
 // exiting that way, so a test can tell a clean stop from a kill.
+// With MOCK_WALLET_CRASH_AFTER_MS=<n> it exits with code 1 n milliseconds
+// after binding its port, like a wallet that crashes once running.
 fn main() {
     let port: u16 = std::env::args()
         .nth(1)
@@ -13,6 +15,16 @@ fn main() {
         .parse()
         .expect("valid port number");
     let listener = std::net::TcpListener::bind(("127.0.0.1", port)).expect("bind port");
+
+    if let Some(ms) = std::env::var("MOCK_WALLET_CRASH_AFTER_MS")
+        .ok()
+        .and_then(|v| v.parse::<u64>().ok())
+    {
+        std::thread::spawn(move || {
+            std::thread::sleep(std::time::Duration::from_millis(ms));
+            std::process::exit(1);
+        });
+    }
 
     if std::env::args().any(|a| a == "--shutdown-handler") {
         std::thread::spawn(|| {

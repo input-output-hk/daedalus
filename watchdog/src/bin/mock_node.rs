@@ -6,6 +6,8 @@
 // that EOF, like a node that does not act on the stop request, until killed.
 // With MOCK_NODE_EXIT_DELAY_MS=<n> it exits n milliseconds after the EOF, like
 // a node that takes a while to close its database.
+// With MOCK_NODE_CRASH_AFTER_READY_MS=<n> it exits with code 1 n milliseconds
+// after reporting chainDbReady, like a node that crashes once running.
 fn main() {
     let socket_path = std::env::args().nth(1).expect("socket path required");
     if let Some(parent) = std::path::Path::new(&socket_path).parent() {
@@ -28,6 +30,14 @@ fn main() {
     println!("OpenedDB");
     std::io::stdout().flush().unwrap();
     std::fs::File::create(&socket_path).expect("create socket file");
+
+    if let Some(ms) = std::env::var("MOCK_NODE_CRASH_AFTER_READY_MS")
+        .ok()
+        .and_then(|v| v.parse::<u64>().ok())
+    {
+        std::thread::sleep(std::time::Duration::from_millis(ms));
+        std::process::exit(1);
+    }
 
     #[cfg(unix)]
     {

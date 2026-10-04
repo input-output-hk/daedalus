@@ -98,6 +98,30 @@ describe('WatchdogManager requested restart', () => {
   });
 });
 
+describe('WatchdogManager unrecoverable state', () => {
+  it('records node_unrecoverable', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'node_unrecoverable', crashes: 5 });
+    expect(manager.getState().nodeUnrecoverable).toBe(true);
+  });
+
+  it('clears both unrecoverable flags when a node starts again', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'wallet_unrecoverable', attempt: 1 });
+    emit({ event: 'node_unrecoverable', crashes: 5 });
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().nodeUnrecoverable).toBe(false);
+    expect(manager.getState().walletUnrecoverable).toBe(false);
+  });
+
+  it('clears the wallet flag when a wallet starts again', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'wallet_unrecoverable', attempt: 1 });
+    emit({ event: 'wallet_started', pid: 3, started_at_unix_ms: 0 });
+    expect(manager.getState().walletUnrecoverable).toBe(false);
+  });
+});
+
 describe('WatchdogManager.stop', () => {
   beforeEach(() => {
     jest.useFakeTimers();

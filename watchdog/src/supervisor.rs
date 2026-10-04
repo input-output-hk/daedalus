@@ -19,6 +19,7 @@ use nix::sys::signal::Signal;
 
 use crate::chain_validation;
 use crate::config::WatchdogConfig;
+use crate::crash_window::CrashWindow;
 use crate::mithril;
 use crate::protocol::{Command as Cmd, ElectronRestartPayload, Event, emit};
 use crate::state;
@@ -306,13 +307,11 @@ impl HeldRequests {
     async fn take(&mut self, cmd: Cmd, settings: &mut Settings<'_>) {
         match cmd {
             Cmd::Stop => {
-                info!("stop requested while the node is stopping; it will not be restarted");
+                info!("stop requested; the node will not be started again");
                 self.stop = true;
             }
             Cmd::StartMithril { force, wipe_chain } => {
-                info!(
-                    "Mithril sync requested while the node is stopping; it runs once the node has exited"
-                );
+                info!("Mithril sync requested; it runs before the node starts again");
                 self.mithril = Some((force, wipe_chain));
             }
             Cmd::SetChainPath { path } => {
@@ -348,7 +347,9 @@ impl HeldRequests {
                     required_space_bytes,
                 );
             }
-            other => info!("ignoring {other:?} while the node is stopping"),
+            // Sent periodically by the UI; there is no running node to probe for.
+            Cmd::ProbeMithril => {}
+            other => info!("ignoring {other:?} while the node is stopped or stopping"),
         }
     }
 
@@ -406,6 +407,82 @@ async fn stop_node(
         force_killed,
     });
     held
+}
+
+// Crash history kept across node and wallet restarts.
+struct CrashCounters {
+    // Consecutive node exits before the node reached chainDbReady.
+    node_consecutive: u32,
+    node_window: CrashWindow,
+    wallet_window: CrashWindow,
+}
+
+impl CrashCounters {
+    fn new(config: &WatchdogConfig) -> Self {
+        Self {
+            node_consecutive: 0,
+            node_window: CrashWindow::new(
+                config.node.max_crashes_in_window,
+                Duration::from_secs(config.node.crash_window_secs),
+            ),
+            wallet_window: CrashWindow::new(
+                config.wallet.max_crashes_in_window,
+                Duration::from_secs(config.wallet.crash_window_secs),
+            ),
+        }
+    }
+
+    // Forgets all crashes, when the user restarts or retries.
+    fn clear(&mut self) {
+        self.node_consecutive = 0;
+        self.node_window.clear();
+        self.wallet_window.clear();
+    }
+}
+
+// Records an unexpected wallet exit. Returns true when the wallet has failed
+// too often to be restarted again without the user asking: `attempt`
+// consecutive failed starts, or the crash window exhausted.
+fn wallet_exhausted(
+    attempt: u32,
+    crashes: &mut CrashCounters,
+    wallet_cfg: &crate::config::WalletConfig,
+) -> bool {
+    let window_exhausted = crashes.wallet_window.record(std::time::Instant::now());
+    if attempt >= wallet_cfg.max_restart_attempts || window_exhausted {
+        warn!(
+            "wallet unrecoverable: {attempt} consecutive failed starts, {} crashes within {}s",
+            crashes.wallet_window.count(),
+            wallet_cfg.crash_window_secs
+        );
+        return true;
+    }
+    false
+}
+
+// Waits, once cardano-node is unrecoverable, for the user to retry
+// (restart_node, start_node or restart_wallet), start a Mithril sync, or
+// stop. Settings changes are saved and apply when the node next starts.
+async fn wait_for_retry(
+    cmd_rx: &mut mpsc::Receiver<Cmd>,
+    settings: &mut Settings<'_>,
+) -> HeldRequests {
+    let mut held = HeldRequests::default();
+    loop {
+        match cmd_rx.recv().await {
+            Some(Cmd::RestartNode | Cmd::StartNode | Cmd::RestartWallet) => return held,
+            Some(cmd) => {
+                held.take(cmd, settings).await;
+                if held.instead().is_some() {
+                    return held;
+                }
+            }
+            None => {
+                held.stop = true;
+                return held;
+            }
+        }
+    }
 }
 
 // Waits `delay` before a crashed node is restarted, holding the commands that
@@ -991,7 +1068,7 @@ pub async fn run(
         }
     }
 
-    let mut node_crash_count = 0u32;
+    let mut crashes = CrashCounters::new(&config);
     // Set when a request held during a wait replaces starting the node again.
     let mut next: Option<RunResult> = None;
     loop {
@@ -1002,7 +1079,7 @@ pub async fn run(
                     &mut config,
                     &mut cmd_rx,
                     after_mithril,
-                    &mut node_crash_count,
+                    &mut crashes,
                     &base_node_args,
                     &mut wstate,
                     &el_restart_tx,
@@ -1016,14 +1093,32 @@ pub async fn run(
         match result {
             RunResult::Stopped => break,
             RunResult::NodeCrashed => {
-                node_crash_count += 1;
-                if node_crash_count >= config.node.max_crash_attempts {
-                    emit_error(&format!(
-                        "cardano-node unrecoverable after {node_crash_count} crashes"
-                    ));
-                    break;
+                crashes.node_consecutive += 1;
+                let window_exhausted = crashes.node_window.record(std::time::Instant::now());
+                if crashes.node_consecutive >= config.node.max_crash_attempts || window_exhausted {
+                    let count = crashes.node_consecutive.max(crashes.node_window.count());
+                    emit_error(&format!("cardano-node unrecoverable after {count} crashes"));
+                    emit(&Event::NodeUnrecoverable { crashes: count });
+                    let held = wait_for_retry(
+                        &mut cmd_rx,
+                        &mut Settings {
+                            config: &mut config,
+                            base_node_args: &base_node_args,
+                            wstate: &mut wstate,
+                        },
+                    )
+                    .await;
+                    next = held.instead();
+                    if next.is_none() {
+                        info!("retrying cardano-node after it was unrecoverable");
+                    }
+                    crashes.clear();
+                    continue;
                 }
-                info!("cardano-node crashed, restarting (attempt {node_crash_count})");
+                info!(
+                    "cardano-node crashed, restarting (attempt {})",
+                    crashes.node_consecutive
+                );
                 let delay = Duration::from_millis(config.node.crash_restart_delay_ms);
                 let held = hold_requests_for(
                     delay,
@@ -1040,7 +1135,7 @@ pub async fn run(
             }
             RunResult::RestartRequested => {
                 info!("user-initiated node restart");
-                node_crash_count = 0;
+                crashes.clear();
                 // continue loop immediately — no delay, no crash-count increment
             }
             RunResult::StartMithril { force, wipe_chain } => {
@@ -1163,7 +1258,7 @@ async fn run_node_wallet(
     config: &mut WatchdogConfig,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     after_mithril: bool,
-    node_crash_count: &mut u32,
+    crashes: &mut CrashCounters,
     base_node_args: &[String],
     wstate: &mut state::WatchdogState,
     el_restart_tx: &Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
@@ -1497,7 +1592,7 @@ async fn run_node_wallet(
     }
     info!("node socket ready");
     // Node recovered — cap consecutive failures, not lifetime crashes.
-    *node_crash_count = 0;
+    crashes.node_consecutive = 0;
 
     // Wallet supervisor loop
     let wallet_cfg = config.wallet.clone();
@@ -1519,9 +1614,80 @@ async fn run_node_wallet(
         None => (pick_free_port()?, true),
     };
 
+    // Set once the wallet is unrecoverable: it stays stopped, the node keeps
+    // running, and the watchdog waits for the user.
+    let mut wallet_failed = false;
+
     'supervisor: loop {
-        if node_rx.borrow().is_some() {
-            break;
+        if let Some(exit) = node_rx.borrow().clone() {
+            warn!(
+                "cardano-node exited (code={:?}, signal={:?})",
+                exit.0, exit.1
+            );
+            emit(&Event::NodeExited {
+                code: exit.0,
+                signal: exit.1,
+            });
+            return Ok(RunResult::NodeCrashed);
+        }
+
+        while wallet_failed {
+            tokio::select! {
+                _ = node_rx.changed() => continue 'supervisor,
+                cmd = cmd_rx.recv() => match cmd {
+                    Some(Cmd::RestartWallet) => {
+                        info!("retrying cardano-wallet after it was unrecoverable");
+                        attempt = 0;
+                        crashes.wallet_window.clear();
+                        wallet_failed = false;
+                    }
+                    Some(Cmd::RestartNode | Cmd::StartNode) => {
+                        let held = stop_node(
+                            "node restart requested",
+                            &mut shutdown_pipe,
+                            &node_rx,
+                            &mut node_kill_tx,
+                            cmd_rx,
+                            &mut Settings {
+                                config: &mut *config,
+                                base_node_args,
+                                wstate: &mut *wstate,
+                            },
+                        )
+                        .await;
+                        return Ok(held.after(RunResult::RestartRequested));
+                    }
+                    Some(Cmd::Stop) | None => break 'supervisor,
+                    Some(cmd) => {
+                        let mut held = HeldRequests::default();
+                        held.take(
+                            cmd,
+                            &mut Settings {
+                                config: &mut *config,
+                                base_node_args,
+                                wstate: &mut *wstate,
+                            },
+                        )
+                        .await;
+                        if let Some((force, wipe_chain)) = held.mithril {
+                            let held = stop_node(
+                                "mithril requested",
+                                &mut shutdown_pipe,
+                                &node_rx,
+                                &mut node_kill_tx,
+                                cmd_rx,
+                                &mut Settings {
+                                    config: &mut *config,
+                                    base_node_args,
+                                    wstate: &mut *wstate,
+                                },
+                            )
+                            .await;
+                            return Ok(held.after(RunResult::StartMithril { force, wipe_chain }));
+                        }
+                    }
+                },
+            }
         }
 
         let wallet_log = open_log(&wallet_log_path);
@@ -1601,10 +1767,10 @@ async fn run_node_wallet(
                     warn!("wallet exited before ready (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::WalletExited { code: exit.0, signal: exit.1.clone(), phase: "pre_ready".to_string() });
                     attempt += 1;
-                    if attempt >= wallet_cfg.max_restart_attempts {
-                        warn!("wallet unrecoverable after {attempt} restart attempts");
+                    if wallet_exhausted(attempt, crashes, &wallet_cfg) {
                         emit(&Event::WalletUnrecoverable { attempt });
-                        break 'supervisor;
+                        wallet_failed = true;
+                        continue 'supervisor;
                     }
                     info!("wallet restarting (attempt {attempt})");
                     emit(&Event::WalletRestarting { attempt, last_exit_code: exit.0, last_exit_signal: exit.1 });
@@ -1691,7 +1857,9 @@ async fn run_node_wallet(
                         Cmd::RestartWallet => {
                             info!("user-initiated wallet restart");
                             stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
-                            attempt += 1;
+                            // A user restart is not a failure.
+                            attempt = 0;
+                            crashes.wallet_window.clear();
                             emit(&Event::WalletRestarting {
                                 attempt,
                                 last_exit_code: None,
@@ -1788,10 +1956,10 @@ async fn run_node_wallet(
                     warn!("wallet exited (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::WalletExited { code: exit.0, signal: exit.1.clone(), phase: "post_ready".to_string() });
                     attempt += 1;
-                    if attempt >= wallet_cfg.max_restart_attempts {
-                        warn!("wallet unrecoverable after {attempt} restart attempts");
+                    if wallet_exhausted(attempt, crashes, &wallet_cfg) {
                         emit(&Event::WalletUnrecoverable { attempt });
-                        break 'supervisor;
+                        wallet_failed = true;
+                        continue 'supervisor;
                     }
                     info!("wallet restarting (attempt {attempt})");
                     emit(&Event::WalletRestarting { attempt, last_exit_code: exit.0, last_exit_signal: exit.1 });
@@ -1878,7 +2046,9 @@ async fn run_node_wallet(
                         Cmd::RestartWallet => {
                             info!("user-initiated wallet restart");
                             stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
-                            attempt += 1;
+                            // A user restart is not a failure.
+                            attempt = 0;
+                            crashes.wallet_window.clear();
                             emit(&Event::WalletRestarting {
                                 attempt,
                                 last_exit_code: None,

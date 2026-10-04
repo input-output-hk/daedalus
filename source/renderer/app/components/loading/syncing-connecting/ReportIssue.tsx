@@ -10,6 +10,7 @@ import styles from './ReportIssue.scss';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../../../assets/images/link-ic... Remove this comment to see the full error message
 import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getSupportUrl } from '../../../../../common/utils/reporting';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   reportConnectingIssueText: {
@@ -38,6 +39,8 @@ type Props = {
   onOpenExternalLink: (...args: Array<any>) => any;
   onDownloadLogs: (...args: Array<any>) => any;
   disableDownloadLogs: boolean;
+  // Shown as a Retry button when given, for a backend the watchdog gave up on
+  onRetry?: () => void;
 };
 export default class ReportIssue extends Component<Props> {
   static contextTypes = {
@@ -51,7 +54,13 @@ export default class ReportIssue extends Component<Props> {
       onOpenExternalLink,
       onDownloadLogs,
       disableDownloadLogs,
+      onRetry,
     } = this.props;
+    const retryButtonClasses = classNames([
+      'primary',
+      'retryButton',
+      styles.actionButton,
+    ]);
     const reportIssueButtonClasses = classNames([
       'primary',
       'reportIssueButton',
@@ -71,6 +80,14 @@ export default class ReportIssue extends Component<Props> {
         <h1 className={styles.reportIssueText}>
           {intl.formatMessage(messages.reportConnectingIssueText)}
         </h1>
+        {onRetry && (
+          <Button
+            className={retryButtonClasses}
+            label={intl.formatMessage(globalMessages.retry)}
+            onClick={onRetry}
+            skin={ButtonSkin}
+          />
+        )}
         <Button
           className={readArticleButtonClasses}
           label={

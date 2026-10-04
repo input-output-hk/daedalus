@@ -47,7 +47,9 @@ export type Props = {
   isVerifyingBlockchain: boolean;
   nodeStartupPhase?: string | null;
   backendStopProgress?: BackendStopProgress | null;
+  isWalletUnrecoverable?: boolean;
   isRestartingWallet?: boolean;
+  onRetry?: () => void;
   onIssueClick: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onDownloadLogs: (...args: Array<any>) => any;
@@ -176,7 +178,9 @@ class SyncingConnecting extends Component<Props, State> {
       nodeStartupPhase,
       blockSyncProgress,
       backendStopProgress,
+      isWalletUnrecoverable,
       isRestartingWallet,
+      onRetry,
     } = this.props;
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
@@ -196,6 +200,11 @@ class SyncingConnecting extends Component<Props, State> {
               onOpenExternalLink={onOpenExternalLink}
               onDownloadLogs={onDownloadLogs}
               disableDownloadLogs={disableDownloadLogs}
+              onRetry={
+                cardanoNodeState === CardanoNodeStates.UNRECOVERABLE
+                  ? onRetry
+                  : undefined
+              }
             />
           )}
           {showNewsFeedIcon && (
@@ -220,6 +229,7 @@ class SyncingConnecting extends Component<Props, State> {
           nodeStartupPhase={nodeStartupPhase}
           blockSyncProgress={blockSyncProgress}
           backendStopProgress={backendStopProgress}
+          isWalletUnrecoverable={isWalletUnrecoverable}
           isRestartingWallet={isRestartingWallet}
         />
         <StatusIcons

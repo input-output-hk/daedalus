@@ -34,11 +34,15 @@ pub enum Command {
         default_chain_path: String,
         required_space_bytes: u64,
     },
-    /// Gracefully stop the node (and wallet) then restart both. Does not
-    /// increment the crash counter.
+    /// Gracefully stop the node (and wallet) then restart both. A user
+    /// restart is not a crash: it clears the node's and the wallet's crash
+    /// counts. After `node_unrecoverable` or `wallet_unrecoverable` it is the
+    /// retry.
     RestartNode,
-    /// Kill and restart cardano-wallet without touching cardano-node. Resets
-    /// the wallet restart-attempt counter so the limit is not consumed.
+    /// Stop and restart cardano-wallet without touching cardano-node. A user
+    /// restart is not a crash: it resets the wallet's consecutive-failure
+    /// count and clears its crash window, so the limits are not consumed.
+    /// After `wallet_unrecoverable` it is the retry.
     RestartWallet,
     /// Override the chain-storage directory used by cardano-node and Mithril.
     /// None resets to the built-in default from daedalus-config.json.
@@ -210,6 +214,12 @@ pub enum Event {
         stage: String,
         elapsed_ms: u64,
         timeout_ms: u64,
+    },
+    /// cardano-node exited unexpectedly too often and is not restarted on its
+    /// own. The watchdog keeps running and waits for `restart_node` (or
+    /// `start_node`) to try again, or `stop`.
+    NodeUnrecoverable {
+        crashes: u32,
     },
 }
 
@@ -683,6 +693,13 @@ mod tests {
         assert_eq!(j["stage"], "stopping_node");
         assert_eq!(j["elapsed_ms"], 2000);
         assert_eq!(j["timeout_ms"], 300_000);
+    }
+
+    #[test]
+    fn node_unrecoverable() {
+        let j = to_json(&Event::NodeUnrecoverable { crashes: 5 });
+        assert_eq!(j["event"], "node_unrecoverable");
+        assert_eq!(j["crashes"], 5);
     }
 
     #[test]

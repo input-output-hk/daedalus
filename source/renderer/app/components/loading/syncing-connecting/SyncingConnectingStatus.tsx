@@ -68,6 +68,13 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano node crashed',
     description: 'Message "Cardano node crashed" on the loading screen.',
   },
+  unrecoverableWallet: {
+    id: 'loading.screen.unrecoverableCardanoWalletMessage',
+    defaultMessage:
+      '!!!Unable to start Cardano wallet. Please submit a support request.',
+    description:
+      'Message on the loading screen when cardano-wallet kept crashing and is no longer restarted automatically.',
+  },
   unrecoverable: {
     id: 'loading.screen.unrecoverableCardanoMessage',
     defaultMessage:
@@ -137,6 +144,7 @@ interface Props {
   isVerifyingBlockchain: boolean;
   nodeStartupPhase?: string | null;
   backendStopProgress?: BackendStopProgress | null;
+  isWalletUnrecoverable?: boolean;
   isRestartingWallet?: boolean;
 }
 
@@ -155,6 +163,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isTlsCertInvalid,
       isConnected,
       isNodeStopping,
+      isWalletUnrecoverable,
       isRestartingWallet,
     } = this.props;
     let connectingMessage;
@@ -169,6 +178,16 @@ export default class SyncingConnectingStatus extends Component<Props> {
       return {
         connectingMessage: messages.stopping,
         connectingDescription: messages.stoppingDescription,
+      };
+    }
+
+    // The watchdog gave up restarting a process that kept crashing. STOPPED,
+    // CRASHED and ERRORED share this state, so it is checked before them.
+    if (cardanoNodeState === CardanoNodeStates.UNRECOVERABLE) {
+      return {
+        connectingMessage: isWalletUnrecoverable
+          ? messages.unrecoverableWallet
+          : messages.unrecoverable,
       };
     }
 

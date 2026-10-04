@@ -4092,6 +4092,11 @@
         "id": "loading.screen.crashedCardanoMessage"
       },
       {
+        "defaultMessage": "!!!Unable to start Cardano wallet. Please submit a support request.",
+        "description": "Message on the loading screen when cardano-wallet kept crashing and is no longer restarted automatically.",
+        "id": "loading.screen.unrecoverableCardanoWalletMessage"
+      },
+      {
         "defaultMessage": "!!!Unable to start Cardano node. Please submit a support request.",
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "id": "loading.screen.unrecoverableCardanoMessage"

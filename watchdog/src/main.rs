@@ -7,6 +7,7 @@
 
 mod chain_validation;
 mod config;
+mod crash_window;
 mod instance;
 mod mithril;
 mod protocol;

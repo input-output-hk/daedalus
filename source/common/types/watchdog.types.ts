@@ -37,6 +37,8 @@ export interface WatchdogState {
   shutdownRequested: boolean;
   // Latest progress of a backend stop; null while nothing is being stopped
   backendStopProgress: BackendStopProgress | null;
+  // cardano-node crashed too often; the watchdog waits for a retry
+  nodeUnrecoverable: boolean;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
 }

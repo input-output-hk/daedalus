@@ -2,6 +2,11 @@ import type { Api } from '../api/index';
 import type { ActionsMap } from '../actions/index';
 import BackendStore from './BackendStore';
 import { noopAnalyticsTracker } from '../analytics';
+import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
+
+jest.mock('../ipc/mithrilCommandChannel', () => ({
+  mithrilCommandChannel: { send: jest.fn() },
+}));
 
 // ── BackendStore unit tests ───────────────────────────────────────────────────
 //
@@ -95,6 +100,38 @@ describe('BackendStore.loadingPhase', () => {
     (store as any).mithrilPhase = 'downloading';
     (store as any).isStopping = true;
     expect(store.loadingPhase).toBe('stopping');
+  });
+});
+
+describe('BackendStore unrecoverable backend', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  it('returns error from loadingPhase when the node is unrecoverable', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).nodeUnrecoverable = true;
+    expect(store.loadingPhase).toBe('error');
+  });
+
+  it('retries the wallet alone when only the wallet is unrecoverable', () => {
+    const store = makeStore();
+    (store as any).walletUnrecoverable = true;
+    store.retryBackend();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'restart_wallet',
+    });
+  });
+
+  it('retries the node when the node is unrecoverable', () => {
+    const store = makeStore();
+    (store as any).walletUnrecoverable = true;
+    (store as any).nodeUnrecoverable = true;
+    store.retryBackend();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'restart_node',
+    });
   });
 });
 

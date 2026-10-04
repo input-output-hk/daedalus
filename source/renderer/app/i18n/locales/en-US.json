@@ -555,6 +555,7 @@
   "loading.screen.stoppingCardanoNodeProgress": "Waiting for Cardano node to close its database ({elapsed})",
   "loading.screen.stoppingCardanoWalletProgress": "Stopping Cardano wallet ({elapsed})",
   "loading.screen.unrecoverableCardanoMessage": "Unable to start Cardano node. Please submit a support request.",
+  "loading.screen.unrecoverableCardanoWalletMessage": "Unable to start Cardano wallet. Please submit a support request.",
   "loading.screen.updatedCardanoMessage": "Cardano node updated",
   "loading.screen.updatingCardanoMessage": "Updating Cardano node",
   "loading.screen.validatingChunk": "Verifying on-disk blockchain state",

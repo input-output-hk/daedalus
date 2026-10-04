@@ -105,6 +105,28 @@ describe('SyncingConnectingStatus', () => {
   });
 });
 
+describe('SyncingConnectingStatus unrecoverable backend', () => {
+  afterEach(cleanup);
+
+  it('names the node when the node is unrecoverable', () => {
+    renderComponent({ cardanoNodeState: 'error' });
+    expect(
+      screen.getByText(
+        'Unable to start Cardano node. Please submit a support request.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('names the wallet when only the wallet is unrecoverable', () => {
+    renderComponent({ cardanoNodeState: 'error', isWalletUnrecoverable: true });
+    expect(
+      screen.getByText(
+        'Unable to start Cardano wallet. Please submit a support request.'
+      )
+    ).toBeInTheDocument();
+  });
+});
+
 describe('formatStopElapsed', () => {
   it('formats milliseconds as minutes and zero-padded seconds', () => {
     expect(formatStopElapsed(0)).toBe('0:00');

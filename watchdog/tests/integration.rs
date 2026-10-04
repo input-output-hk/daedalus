@@ -120,6 +120,37 @@ fn expect_with(rx: &mpsc::Receiver<Value>, name: &str, pred: impl Fn(&Value) -> 
     }
 }
 
+/// Like `expect`, but with one deadline for the whole wait: a process stuck in
+/// a restart loop keeps events flowing, which `expect` would wait on forever.
+fn expect_within(rx: &mpsc::Receiver<Value>, name: &str, total: Duration) -> Value {
+    let deadline = std::time::Instant::now() + total;
+    loop {
+        let left = deadline
+            .checked_duration_since(std::time::Instant::now())
+            .unwrap_or_else(|| panic!("'{name}' did not arrive within {total:?}"));
+        let v = rx
+            .recv_timeout(left)
+            .unwrap_or_else(|_| panic!("'{name}' did not arrive within {total:?}"));
+        if v["event"] == name {
+            return v;
+        }
+    }
+}
+
+/// Assert that no event named in `names` arrives within `ms` milliseconds.
+fn expect_none_of(rx: &mpsc::Receiver<Value>, names: &[&str], ms: u64) {
+    let deadline = std::time::Instant::now() + Duration::from_millis(ms);
+    while let Some(left) = deadline.checked_duration_since(std::time::Instant::now()) {
+        match rx.recv_timeout(left) {
+            Ok(v) => assert!(
+                !names.iter().any(|n| v["event"] == *n),
+                "unexpected event: {v}"
+            ),
+            Err(_) => return,
+        }
+    }
+}
+
 /// Send a JSON command line to the watchdog's stdin.
 fn send(stdin: &mut ChildStdin, cmd: Value) {
     writeln!(stdin, "{}", serde_json::to_string(&cmd).unwrap()).unwrap();
@@ -148,6 +179,8 @@ struct Cfg<'a> {
     node_crash_restart_delay_ms: u64,
     node_stop_timeout_secs: Option<u64>,
     wallet_stop_timeout_secs: Option<u64>,
+    node_crash_window: Option<(u32, u64)>,
+    wallet_crash_window: Option<(u32, u64)>,
     with_mithril: bool,
     mithril_bin: Option<&'a str>,
     converter_bin: Option<&'a str>,
@@ -171,6 +204,8 @@ impl<'a> Cfg<'a> {
             node_crash_restart_delay_ms: 0,
             node_stop_timeout_secs: None,
             wallet_stop_timeout_secs: None,
+            node_crash_window: None,
+            wallet_crash_window: None,
             with_mithril: false,
             mithril_bin: None,
             converter_bin: None,
@@ -204,6 +239,16 @@ impl<'a> Cfg<'a> {
 
     fn wallet_stop_timeout_secs(mut self, secs: u64) -> Self {
         self.wallet_stop_timeout_secs = Some(secs);
+        self
+    }
+
+    fn node_crash_window(mut self, max: u32, secs: u64) -> Self {
+        self.node_crash_window = Some((max, secs));
+        self
+    }
+
+    fn wallet_crash_window(mut self, max: u32, secs: u64) -> Self {
+        self.wallet_crash_window = Some((max, secs));
         self
     }
 
@@ -253,6 +298,14 @@ impl<'a> Cfg<'a> {
         }
         if let Some(secs) = self.wallet_stop_timeout_secs {
             cfg["wallet"]["stop_timeout_secs"] = json!(secs);
+        }
+        if let Some((max, secs)) = self.node_crash_window {
+            cfg["node"]["max_crashes_in_window"] = json!(max);
+            cfg["node"]["crash_window_secs"] = json!(secs);
+        }
+        if let Some((max, secs)) = self.wallet_crash_window {
+            cfg["wallet"]["max_crashes_in_window"] = json!(max);
+            cfg["wallet"]["crash_window_secs"] = json!(secs);
         }
 
         if self.with_mithril {
@@ -551,6 +604,7 @@ fn partial_sync_replaces_incomplete_highest_local_chunk() {
 // ── Tests: wallet supervision ────────────────────────────────────────────────
 
 /// Wallet crashes on every attempt → circuit breaker fires after max_restarts.
+/// The watchdog then keeps the node running and waits: restart_wallet retries.
 #[test]
 fn wallet_circuit_breaker() {
     let dir = TempDir::new("circuit");
@@ -559,7 +613,7 @@ fn wallet_circuit_breaker() {
         .max_restarts(3)
         .restart_delay(0)
         .build();
-    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
 
     expect(&rx, "node_socket_ready");
 
@@ -573,6 +627,67 @@ fn wallet_circuit_breaker() {
     let unrec = expect(&rx, "wallet_unrecoverable");
     assert_eq!(unrec["attempt"], 3);
 
+    // No further wallet start, and the node is not stopped.
+    expect_none_of(&rx, &["wallet_started", "node_shutdown_ms", "stopped"], 500);
+
+    // Retry starts the count again: three more failed starts, not one.
+    send(&mut stdin, json!({"cmd": "restart_wallet"}));
+    for i in 0..3u32 {
+        expect(&rx, "wallet_started");
+        let exited = expect(&rx, "wallet_exited");
+        assert_eq!(exited["phase"], "pre_ready", "retry cycle {i}");
+    }
+    let unrec = expect(&rx, "wallet_unrecoverable");
+    assert_eq!(unrec["attempt"], 3);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A wallet that crashes each time after becoming ready restarts until the
+/// crash window is exhausted, then stays stopped while the node keeps running.
+#[test]
+fn wallet_crashing_after_ready_exhausts_the_crash_window() {
+    let dir = TempDir::new("wallet-crash-window");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .restart_delay(0)
+        .wallet_crash_window(3, 600)
+        .build();
+    // Longer than the watchdog's 500 ms port poll, so each crash follows ready.
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_WALLET_CRASH_AFTER_MS", "1500")]);
+
+    let node = expect(&rx, "node_started");
+    for i in 0..3 {
+        expect(&rx, "wallet_ready");
+        let exited = expect(&rx, "wallet_exited");
+        assert_eq!(exited["phase"], "post_ready", "crash {i}");
+    }
+    let unrec = expect_within(&rx, "wallet_unrecoverable", Duration::from_secs(10));
+    // Each crash followed a successful start, so the consecutive count is 1.
+    assert_eq!(unrec["attempt"], 1);
+
+    expect_none_of(&rx, &["wallet_started", "node_shutdown_ms", "stopped"], 700);
+    let node_pid = node["pid"].as_i64().unwrap() as i32;
+    assert!(
+        nix::sys::signal::kill(nix::unistd::Pid::from_raw(node_pid), None).is_ok(),
+        "the node must keep running"
+    );
+
+    // Retry clears the crash window: three more crashes before the next stop.
+    send(&mut stdin, json!({"cmd": "restart_wallet"}));
+    for i in 0..3 {
+        expect(&rx, "wallet_ready");
+        let exited = expect(&rx, "wallet_exited");
+        assert_eq!(exited["phase"], "post_ready", "retry crash {i}");
+    }
+    expect_within(&rx, "wallet_unrecoverable", Duration::from_secs(10));
+
+    stop(&mut stdin);
+    expect(&rx, "node_shutdown_ms");
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
@@ -580,7 +695,8 @@ fn wallet_circuit_breaker() {
 
 // ── Tests: node failures ──────────────────────────────────────────────────────
 
-/// Node crashes before socket repeatedly → watchdog restarts until max_crash_attempts, then stops.
+/// Node crashes before socket repeatedly → watchdog restarts until
+/// max_crash_attempts, then reports it unrecoverable and waits.
 #[test]
 fn node_crash_before_socket() {
     let dir = TempDir::new("node-crash");
@@ -589,7 +705,7 @@ fn node_crash_before_socket() {
     let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH, MOCK_WALLET)
         .node_max_crash_attempts(2)
         .build();
-    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
 
     expect(&rx, "watchdog_started");
     expect(&rx, "chain_status");
@@ -601,8 +717,13 @@ fn node_crash_before_socket() {
         assert_eq!(exited["code"], 1);
     }
 
-    // After max_crash_attempts the watchdog emits an error and stops.
+    // After max_crash_attempts the watchdog emits an error and waits.
     expect(&rx, "error");
+    let unrec = expect(&rx, "node_unrecoverable");
+    assert_eq!(unrec["crashes"], 2);
+    expect_none_of(&rx, &["node_started", "stopped"], 500);
+
+    stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
@@ -1348,6 +1469,8 @@ fn max_restart_attempts_zero() {
     let unrec = expect(&rx, "wallet_unrecoverable");
     assert_eq!(unrec["attempt"], 1);
 
+    let mut stdin = stdin;
+    stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
@@ -1561,16 +1684,16 @@ fn intentional_stop_does_not_restart() {
 }
 
 /// Bug 5 regression: node crash limit — after max_crash_attempts the watchdog
-/// gives up and emits an error + stopped.
+/// emits an error and node_unrecoverable, then waits; restart_node retries.
 #[test]
-fn node_crash_exceeds_limit_emits_error_and_stops() {
+fn node_crash_exceeds_limit_emits_error_and_waits_for_retry() {
     let dir = TempDir::new("bug5-crash-limit");
     dir.populate_chain();
     // MOCK_NODE_CRASH always exits 1; set limit to 3 to keep test fast.
     let (cfg, _port) = Cfg::new(&dir, MOCK_NODE_CRASH, MOCK_WALLET)
         .node_max_crash_attempts(3)
         .build();
-    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
 
     expect(&rx, "watchdog_started");
     expect(&rx, "chain_status");
@@ -1589,6 +1712,44 @@ fn node_crash_exceeds_limit_emits_error_and_stops() {
             .contains("unrecoverable"),
         "error message should mention unrecoverable, got: {err}"
     );
+    expect(&rx, "node_unrecoverable");
+    expect_none_of(&rx, &["node_started", "stopped"], 500);
+
+    // Retry starts the node again, with the crash count cleared.
+    send(&mut stdin, json!({"cmd": "restart_node"}));
+    for _ in 0..3 {
+        expect(&rx, "node_started");
+        expect(&rx, "node_exited");
+    }
+    expect(&rx, "node_unrecoverable");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A node that crashes each time after reaching chainDbReady restarts until
+/// the crash window is exhausted, then the watchdog waits for a retry.
+#[test]
+fn node_crashing_after_ready_exhausts_the_crash_window() {
+    let dir = TempDir::new("node-crash-window");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .node_crash_window(3, 600)
+        .build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_CRASH_AFTER_READY_MS", "300")]);
+
+    for _ in 0..3 {
+        expect(&rx, "node_socket_ready");
+        expect(&rx, "node_exited");
+    }
+    let unrec = expect_within(&rx, "node_unrecoverable", Duration::from_secs(5));
+    assert_eq!(unrec["crashes"], 3);
+    expect_none_of(&rx, &["node_started", "stopped"], 700);
+
+    stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
@@ -1731,6 +1892,8 @@ fn wallet_restart_stops_the_wallet_cleanly() {
     let first = expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
     send(&mut stdin, json!({"cmd": "restart_wallet"}));
+    let restarting = expect(&rx, "wallet_restarting");
+    assert_eq!(restarting["attempt"], 0, "a user restart is not a failure");
     let second = expect(&rx, "wallet_started");
     assert_ne!(first["pid"], second["pid"]);
     assert_eq!(std::fs::read_to_string(&exit_file).unwrap(), "stdin-eof");
