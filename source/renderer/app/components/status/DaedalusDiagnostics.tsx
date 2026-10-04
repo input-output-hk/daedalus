@@ -221,18 +221,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Open',
     description: 'Open',
   },
-  copyDiagnostics: {
-    id: 'daedalus.diagnostics.dialog.copyDiagnostics',
-    defaultMessage: '!!!Copy',
-    description:
-      'Label of the button that copies all diagnostic information to the clipboard',
-  },
-  copiedDiagnostics: {
-    id: 'daedalus.diagnostics.dialog.copiedDiagnostics',
-    defaultMessage: '!!!Copied',
-    description:
-      'Label of the copy button after the diagnostic information has been copied to the clipboard',
-  },
   connectionError: {
     id: 'daedalus.diagnostics.dialog.connectionError',
     defaultMessage: '!!!CONNECTION ERROR',
@@ -678,8 +666,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
                     <button className={styles.cardanoNodeStatusBtn}>
                       {intl.formatMessage(
                         isDiagnosticsCopied
-                          ? messages.copiedDiagnostics
-                          : messages.copyDiagnostics
+                          ? globalMessages.copied
+                          : globalMessages.copy
                       )}
                     </button>
                   </CopyToClipboard>

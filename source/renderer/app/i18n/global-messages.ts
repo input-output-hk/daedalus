@@ -388,6 +388,12 @@ export default defineMessages({
     defaultMessage: '!!!Copy',
     description: 'Copy label.',
   },
+  copied: {
+    id: 'global.labels.copied',
+    defaultMessage: '!!!Copied',
+    description:
+      'Label shown briefly after content has been copied to the clipboard.',
+  },
   featureUnavailableWhileSyncing: {
     id: 'global.info.featureUnavailableWhileSyncing',
     defaultMessage:

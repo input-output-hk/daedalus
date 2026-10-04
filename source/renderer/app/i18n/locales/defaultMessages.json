@@ -467,6 +467,11 @@
         "id": "global.labels.copy"
       },
       {
+        "defaultMessage": "!!!Copied",
+        "description": "Label shown briefly after content has been copied to the clipboard.",
+        "id": "global.labels.copied"
+      },
+      {
         "defaultMessage": "!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently <b>{syncPercentage}%</b> complete. This feature will become available once Daedalus is fully synchronized.",
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "id": "global.info.featureUnavailableWhileSyncing"
@@ -1720,16 +1725,6 @@
         "defaultMessage": "!!!Open",
         "description": "Open",
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn"
-      },
-      {
-        "defaultMessage": "!!!Copy",
-        "description": "Label of the button that copies all diagnostic information to the clipboard",
-        "id": "daedalus.diagnostics.dialog.copyDiagnostics"
-      },
-      {
-        "defaultMessage": "!!!Copied",
-        "description": "Label of the copy button after the diagnostic information has been copied to the clipboard",
-        "id": "daedalus.diagnostics.dialog.copiedDiagnostics"
       },
       {
         "defaultMessage": "!!!CONNECTION ERROR",
