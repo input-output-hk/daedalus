@@ -739,12 +739,12 @@ impl ShutdownPipe {
 
         let mut read_handle: HANDLE = INVALID_HANDLE_VALUE;
         let mut write_handle: HANDLE = INVALID_HANDLE_VALUE;
-        let mut sa = SECURITY_ATTRIBUTES {
+        let sa = SECURITY_ATTRIBUTES {
             nLength: std::mem::size_of::<SECURITY_ATTRIBUTES>() as u32,
             lpSecurityDescriptor: std::ptr::null_mut(),
             bInheritHandle: 1, // read end inheritable by child
         };
-        let ok = unsafe { CreatePipe(&mut read_handle, &mut write_handle, &mut sa, 0) };
+        let ok = unsafe { CreatePipe(&mut read_handle, &mut write_handle, &sa, 0) };
         if ok == 0 {
             return Err(anyhow::anyhow!("CreatePipe failed"));
         }
