@@ -863,13 +863,12 @@ async fn await_migration(cmd_rx: &mut mpsc::Receiver<Cmd>, limit: Duration) -> M
     reply.unwrap_or(Migration::TimedOut)
 }
 
-/// Returns true if the database directory exists and contains at least one entry.
+/// Returns true if the database directory holds a cardano-node database.
+/// Anything else, including a directory of the user's own files, counts as no
+/// chain, so the user is asked again instead of being left with a node that
+/// refuses to open it.
 async fn chain_has_data(state_dir: &str, storage_folder: Option<&str>) -> bool {
-    let chain = state::database_dir(state_dir, storage_folder);
-    let Ok(mut entries) = tokio::fs::read_dir(&chain).await else {
-        return false;
-    };
-    entries.next_entry().await.ok().flatten().is_some()
+    state::holds_node_db(&state::database_dir(state_dir, storage_folder)).await
 }
 
 pub async fn run(

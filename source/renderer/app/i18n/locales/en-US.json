@@ -104,6 +104,7 @@
   "chainStorage.locationPicker.subdirectoryWarningExists": "Daedalus will use the existing chain subdirectory inside the selected parent folder.",
   "chainStorage.locationPicker.title": "Select blockchain data location",
   "chainStorage.locationPicker.updating": "Updating blockchain data location...",
+  "chainStorage.locationPicker.validation.chainSubdirectoryNotDatabase": "The chain subdirectory in the selected folder contains files that are not blockchain data. Choose another folder, or move those files out of the chain subdirectory.",
   "chainStorage.locationPicker.validation.insideStateDir": "Choose a directory outside the Daedalus state directory.",
   "chainStorage.locationPicker.validation.insufficientSpace": "The selected directory does not have enough free space for blockchain data.",
   "chainStorage.locationPicker.validation.isManagedChild": "Select the parent folder, not the existing chain subdirectory managed by Daedalus.",

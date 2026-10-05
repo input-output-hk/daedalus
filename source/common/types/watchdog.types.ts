@@ -141,6 +141,8 @@ export type ChainStorageValidationReason =
   | 'is-managed-child'
   | 'insufficient-space'
   | 'path-is-file'
+  | 'chain-entry-not-directory'
+  | 'chain-subdirectory-not-database'
   | 'unknown';
 
 export interface ChainStorageValidation {

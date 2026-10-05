@@ -1047,6 +1047,11 @@
         "id": "chainStorage.locationPicker.validation.insufficientSpace"
       },
       {
+        "defaultMessage": "!!!The chain subdirectory in the selected folder contains files that are not blockchain data. Choose another folder, or move those files out of the chain subdirectory.",
+        "description": "Validation message when the chain subdirectory of the selected folder holds files other than a Cardano node database.",
+        "id": "chainStorage.locationPicker.validation.chainSubdirectoryNotDatabase"
+      },
+      {
         "defaultMessage": "!!!Daedalus could not validate the selected directory.",
         "description": "Fallback validation message when chain storage validation fails for an unknown reason.",
         "id": "chainStorage.locationPicker.validation.unknown"

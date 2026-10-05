@@ -45,7 +45,7 @@ pub async fn save(state_dir: &str, state: &WatchdogState) -> anyhow::Result<()> 
 /// True when `dir` holds a cardano-node database: the node writes
 /// `protocolMagicId` into the database root on first open, and every database,
 /// including one installed by Mithril, has an `immutable` directory.
-async fn holds_node_db(dir: &Path) -> bool {
+pub async fn holds_node_db(dir: &Path) -> bool {
     tokio::fs::metadata(dir.join("protocolMagicId"))
         .await
         .is_ok_and(|m| m.is_file())

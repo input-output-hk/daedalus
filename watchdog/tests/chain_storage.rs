@@ -420,3 +420,29 @@ fn reset_to_default_after_picking_a_folder_moves_node_and_mithril_back() {
 
     stop(child, stdin, &rx);
 }
+
+/// A picked folder whose `chain` subdirectory holds only files of the user's
+/// own is not taken for a chain: the user is asked again on every start rather
+/// than left with a node that refuses to open it, and the files stay.
+#[test]
+fn chain_subdirectory_holding_other_files_is_not_a_chain() {
+    let dir = TempDir::new("not-a-chain");
+    let folder = dir.picked_folder();
+    std::fs::create_dir_all(folder.join("chain")).unwrap();
+    std::fs::write(folder.join("chain").join("photo.jpg"), b"user data").unwrap();
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let (child, stdin, rx) = spawn(&dir, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(!dir.node_args_file().exists(), "a node was started");
+    assert_eq!(
+        std::fs::read(folder.join("chain").join("photo.jpg")).unwrap(),
+        b"user data"
+    );
+
+    stop(child, stdin, &rx);
+}

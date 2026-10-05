@@ -45,7 +45,7 @@ impl TempDir {
                 .subsec_nanos()
         ));
         std::fs::create_dir_all(path.join("chain")).unwrap();
-        std::fs::write(path.join("chain").join(".sentinel"), b"exists").unwrap();
+        std::fs::write(path.join("chain").join("protocolMagicId"), b"1").unwrap();
         // An existing state file skips the migration request, which no test
         // client here answers.
         std::fs::write(path.join("watchdog-state.json"), b"{}").unwrap();
