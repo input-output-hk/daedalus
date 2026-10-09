@@ -10,6 +10,7 @@ use tracing::{info, warn};
 
 use crate::config::MithrilConfig;
 use crate::protocol::{Command as Cmd, Event, emit};
+use crate::state;
 use crate::supervisor::tether_to_watchdog;
 
 const PROGRESS_THROTTLE_MS: u128 = 500;
@@ -346,43 +347,129 @@ async fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Top-level entries of a cardano-node database directory. The ChainDB mounts
+/// `immutable`, `volatile`, `ledger` and `gsm`; the node adds `lock`, `clean`
+/// and `protocolMagicId`; the LSM ledger backend keeps `lsm`.
+const DATABASE_ENTRIES: &[&str] = &[
+    "immutable",
+    "volatile",
+    "ledger",
+    "gsm",
+    "lsm",
+    "lock",
+    "clean",
+    "protocolMagicId",
+];
+
+/// Files a desktop file browser leaves in any directory it has displayed.
+const OS_METADATA_ENTRIES: &[&str] = &[".DS_Store", "Thumbs.db", "desktop.ini"];
+
+/// The directory a full install replaces: `chain_path` itself, or the target
+/// of `chain_path` when it is a symlink or junction, so the link is kept.
+async fn full_install_target(chain_path: &Path) -> Result<PathBuf> {
+    let is_link = tokio::fs::symlink_metadata(chain_path)
+        .await
+        .is_ok_and(|m| m.file_type().is_symlink());
+    if !is_link {
+        return Ok(chain_path.to_path_buf());
+    }
+    let raw_target = tokio::fs::read_link(chain_path)
+        .await
+        .map_err(|e| anyhow::anyhow!("read chain_path symlink target: {e}"))?;
+    Ok(if raw_target.is_absolute() {
+        raw_target
+    } else {
+        chain_path
+            .parent()
+            .unwrap_or(Path::new("."))
+            .join(raw_target)
+    })
+}
+
+/// A full install deletes the directory it installs into, and that directory
+/// can sit inside a folder the user picked. Allow it only when the directory
+/// is missing, empty, or holds nothing but cardano-node database entries.
+async fn check_replaceable(dir: &Path) -> Result<()> {
+    match tokio::fs::metadata(dir).await {
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+        Err(e) => anyhow::bail!("Cannot read {}: {e}", dir.display()),
+        Ok(m) if !m.is_dir() => anyhow::bail!(
+            "{} is a file, not a folder. Daedalus did not change it.",
+            dir.display()
+        ),
+        Ok(_) => {}
+    }
+    let mut entries = tokio::fs::read_dir(dir).await?;
+    while let Some(entry) = entries.next_entry().await? {
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if !DATABASE_ENTRIES.contains(&name.as_str())
+            && !OS_METADATA_ENTRIES.contains(&name.as_str())
+        {
+            anyhow::bail!(
+                "{} contains {name}, which is not part of a Cardano node database. Daedalus did not change the folder. Move its contents elsewhere or choose an empty folder.",
+                dir.display()
+            );
+        }
+    }
+    Ok(())
+}
+
+/// Whether a full install may replace the chain directory. Emits a
+/// `CHAIN_DIR_NOT_REPLACEABLE` error when it may not.
+async fn full_install_allowed(chain_path: &Path) -> bool {
+    let checked = match full_install_target(chain_path).await {
+        Ok(target) => check_replaceable(&target).await,
+        Err(e) => Err(e),
+    };
+    match checked {
+        Ok(()) => true,
+        Err(e) => {
+            warn!("mithril: refusing to replace the chain directory: {e}");
+            emit(&Event::MithrilError {
+                code: "CHAIN_DIR_NOT_REPLACEABLE".to_string(),
+                message: e.to_string(),
+            });
+            false
+        }
+    }
+}
+
+/// Whether Mithril may change the chain directory at all. Never when it holds
+/// another network's database: a partial sync would rewrite its chunks and
+/// ledger, and a full install or a wipe would delete it, although it holds
+/// nothing but database entries. Emits a `CHAIN_DIR_OTHER_NETWORK` error when
+/// it may not.
+async fn network_allowed(chain_path: &Path, network_magic: Option<u32>) -> bool {
+    let (Some(expected), Some(found)) = (
+        network_magic,
+        state::other_network_magic(chain_path, network_magic).await,
+    ) else {
+        return true;
+    };
+    let message = state::other_network_message(chain_path, found, expected);
+    warn!("mithril: refusing to change the chain directory: {message}");
+    emit(&Event::MithrilError {
+        code: "CHAIN_DIR_OTHER_NETWORK".to_string(),
+        message,
+    });
+    false
+}
+
 // For bootstrap (local_highest = None): replace the entire chain directory.
 // For partial sync (local_highest = Some): merge new immutables in and replace ledger/lsm.
 async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) -> Result<()> {
     if !is_partial {
-        // Detect symlinks/junctions (Windows): if chain_path is a link, install
-        // inside the real target so the link entry point is preserved.
-        let is_link = tokio::fs::symlink_metadata(chain_path)
+        // If chain_path is a symlink or junction, install inside the real
+        // target so the link entry point is preserved.
+        let target = full_install_target(chain_path).await?;
+        check_replaceable(&target).await?;
+        let _ = tokio::fs::remove_dir_all(&target).await;
+        // move_dir, not rename: staging and chain can live on different
+        // filesystems (EXDEV), and the old chain is already gone at this
+        // point — a bare rename failure would leave no chain at all.
+        move_dir(staging_db, &target)
             .await
-            .ok()
-            .map(|m| m.file_type().is_symlink())
-            .unwrap_or(false);
-
-        if is_link {
-            let raw_target = tokio::fs::read_link(chain_path)
-                .await
-                .map_err(|e| anyhow::anyhow!("read chain_path symlink target: {e}"))?;
-            let target = if raw_target.is_absolute() {
-                raw_target
-            } else {
-                chain_path
-                    .parent()
-                    .unwrap_or(Path::new("."))
-                    .join(raw_target)
-            };
-            let _ = tokio::fs::remove_dir_all(&target).await;
-            move_dir(staging_db, &target)
-                .await
-                .map_err(|e| anyhow::anyhow!("install staged db to symlink target: {e}"))?;
-        } else {
-            let _ = tokio::fs::remove_dir_all(chain_path).await;
-            // move_dir, not rename: staging and chain can live on different
-            // filesystems (EXDEV), and the old chain is already gone at this
-            // point — a bare rename failure would leave no chain at all.
-            move_dir(staging_db, chain_path)
-                .await
-                .map_err(|e| anyhow::anyhow!("install staged db to chain path: {e}"))?;
-        }
+            .map_err(|e| anyhow::anyhow!("install staged db to {}: {e}", target.display()))?;
         return Ok(());
     }
 
@@ -624,10 +711,16 @@ pub async fn run_pipeline(
         return PipelineResult::Cancelled;
     }
 
+    // Nothing is wiped from, downloaded for or installed over another
+    // network's database.
+    let chain_path = PathBuf::from(&cfg.chain_path);
+    if !network_allowed(&chain_path, cfg.network_magic).await {
+        return PipelineResult::Cancelled;
+    }
+
     // If wipe_chain is requested, delete the existing chain directory so the
     // download is treated as a full bootstrap rather than an incremental sync.
     if wipe_chain {
-        let chain_path = PathBuf::from(&cfg.chain_path);
         let state_path = PathBuf::from(&cfg.state_dir);
         // Safety: chain_path must be absolute and must live inside state_dir to
         // prevent a misconfigured path (e.g. "/") from deleting the user's filesystem.
@@ -705,6 +798,13 @@ pub async fn run_pipeline(
         info!(
             "Mithril needed: local={local_num}, certified={certified}, behind={behind}; starting download"
         );
+    }
+
+    // A full install replaces the chain directory. Refuse before downloading
+    // anything if that would delete files that are not a node database.
+    let is_partial = local_highest.is_some();
+    if !is_partial && !full_install_allowed(&chain_path).await {
+        return PipelineResult::Cancelled;
     }
 
     // 2. Prepare staging
@@ -826,6 +926,14 @@ pub async fn run_pipeline(
         phase: "installing".to_string(),
     });
 
+    // The download takes minutes; check again before anything is changed.
+    if !network_allowed(&chain_path, cfg.network_magic).await
+        || (!is_partial && !full_install_allowed(&chain_path).await)
+    {
+        let _ = tokio::fs::remove_dir_all(&staging_root).await;
+        return PipelineResult::Cancelled;
+    }
+
     // Write cutover-in-progress marker before rename
     if let Err(e) = write_marker(&cfg.state_dir, "cutover-in-progress").await {
         let _ = tokio::fs::remove_dir_all(&staging_root).await;
@@ -837,8 +945,6 @@ pub async fn run_pipeline(
         return PipelineResult::Cancelled;
     }
 
-    let chain_path = PathBuf::from(&cfg.chain_path);
-    let is_partial = local_highest.is_some();
     if let Err(e) = install_staged(&staging_db, &chain_path, is_partial).await {
         // The cutover-in-progress marker is already written and chain may be
         // partially modified. Retain staging material for potential recovery;
@@ -1012,6 +1118,149 @@ mod tests {
     //
     // Junctions are created with `mklink /J` (no elevation required) rather
     // than std::os::windows::fs::symlink_dir (requires Developer Mode or UAC).
+    mod full_install {
+        use super::super::{check_replaceable, install_staged};
+        use std::fs;
+        use std::path::{Path, PathBuf};
+
+        struct TempDir(PathBuf);
+
+        impl TempDir {
+            fn new(label: &str) -> Self {
+                let p = std::env::temp_dir().join(format!(
+                    "wdg-full-{label}-{}-{}",
+                    std::process::id(),
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap()
+                        .subsec_nanos()
+                ));
+                fs::create_dir_all(&p).unwrap();
+                TempDir(p)
+            }
+        }
+
+        impl Drop for TempDir {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+
+        fn make_staging(root: &Path) -> PathBuf {
+            let staging = root.join("staging");
+            fs::create_dir_all(staging.join("immutable")).unwrap();
+            fs::write(staging.join("protocolMagicId"), b"1").unwrap();
+            staging
+        }
+
+        #[tokio::test]
+        async fn refuses_a_directory_with_unrelated_files_and_leaves_it_alone() {
+            let t = TempDir::new("unrelated");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            fs::write(chain.join("notes.txt"), b"user data").unwrap();
+            let staging = make_staging(&t.0);
+
+            let err = install_staged(&staging, &chain, false).await.unwrap_err();
+
+            assert!(err.to_string().contains("notes.txt"), "{err}");
+            assert_eq!(fs::read(chain.join("notes.txt")).unwrap(), b"user data");
+            assert!(chain.join("immutable").is_dir());
+            assert!(
+                staging.join("protocolMagicId").exists(),
+                "staging was consumed"
+            );
+        }
+
+        #[tokio::test]
+        async fn replaces_a_directory_that_holds_only_a_node_database() {
+            let t = TempDir::new("db");
+            let chain = t.0.join("chain");
+            for dir in ["immutable", "volatile", "ledger", "gsm", "lsm"] {
+                fs::create_dir_all(chain.join(dir)).unwrap();
+            }
+            for file in ["lock", "clean", "protocolMagicId", ".DS_Store"] {
+                fs::write(chain.join(file), b"old").unwrap();
+            }
+            let staging = make_staging(&t.0);
+
+            install_staged(&staging, &chain, false).await.unwrap();
+
+            assert!(chain.join("immutable").is_dir());
+            assert_eq!(fs::read(chain.join("protocolMagicId")).unwrap(), b"1");
+            assert!(!chain.join("lock").exists());
+        }
+
+        #[tokio::test]
+        async fn installs_into_a_missing_directory() {
+            let t = TempDir::new("missing");
+            let chain = t.0.join("chain");
+            let staging = make_staging(&t.0);
+            install_staged(&staging, &chain, false).await.unwrap();
+            assert!(chain.join("protocolMagicId").exists());
+        }
+
+        #[tokio::test]
+        async fn accepts_an_empty_directory() {
+            let t = TempDir::new("empty");
+            assert!(check_replaceable(&t.0).await.is_ok());
+        }
+
+        #[tokio::test]
+        async fn refuses_a_file_in_place_of_the_directory() {
+            let t = TempDir::new("file");
+            let chain = t.0.join("chain");
+            fs::write(&chain, b"not a folder").unwrap();
+            assert!(check_replaceable(&chain).await.is_err());
+            assert_eq!(fs::read(&chain).unwrap(), b"not a folder");
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn refuses_a_link_whose_target_holds_unrelated_files() {
+            let t = TempDir::new("link-unrelated");
+            let target = t.0.join("elsewhere");
+            fs::create_dir_all(&target).unwrap();
+            fs::write(target.join("photo.jpg"), b"user data").unwrap();
+            let chain = t.0.join("chain");
+            std::os::unix::fs::symlink(&target, &chain).unwrap();
+            let staging = make_staging(&t.0);
+
+            assert!(install_staged(&staging, &chain, false).await.is_err());
+
+            assert_eq!(fs::read(target.join("photo.jpg")).unwrap(), b"user data");
+            assert!(
+                fs::symlink_metadata(&chain)
+                    .unwrap()
+                    .file_type()
+                    .is_symlink()
+            );
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn replaces_a_link_target_that_holds_a_node_database() {
+            let t = TempDir::new("link-db");
+            let target = t.0.join("elsewhere");
+            fs::create_dir_all(target.join("immutable")).unwrap();
+            fs::write(target.join("clean"), b"old").unwrap();
+            let chain = t.0.join("chain");
+            std::os::unix::fs::symlink(&target, &chain).unwrap();
+            let staging = make_staging(&t.0);
+
+            install_staged(&staging, &chain, false).await.unwrap();
+
+            assert!(
+                fs::symlink_metadata(&chain)
+                    .unwrap()
+                    .file_type()
+                    .is_symlink()
+            );
+            assert!(target.join("protocolMagicId").exists());
+            assert!(!target.join("clean").exists());
+        }
+    }
+
     #[cfg(windows)]
     mod junction_install {
         use super::super::install_staged;
@@ -1092,7 +1341,7 @@ mod tests {
             let root = temp_dir("plain");
             let chain_path = root.join("chain");
             fs::create_dir_all(&chain_path).unwrap();
-            fs::write(chain_path.join("old.txt"), b"old").unwrap();
+            fs::write(chain_path.join("clean"), b"old").unwrap();
 
             let staging = make_staging(&root);
             install_staged(&staging, &chain_path, false).await.unwrap();
@@ -1106,7 +1355,7 @@ mod tests {
                 fs::read_to_string(chain_path.join("probe.txt")).unwrap(),
                 "staged"
             );
-            assert!(!chain_path.join("old.txt").exists());
+            assert!(!chain_path.join("clean").exists());
         }
 
         // A dangling junction (target deleted after the junction was created)

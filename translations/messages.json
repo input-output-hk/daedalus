@@ -467,6 +467,11 @@
         "id": "global.labels.copy"
       },
       {
+        "defaultMessage": "!!!Copied",
+        "description": "Label shown briefly after content has been copied to the clipboard.",
+        "id": "global.labels.copied"
+      },
+      {
         "defaultMessage": "!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently <b>{syncPercentage}%</b> complete. This feature will become available once Daedalus is fully synchronized.",
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "id": "global.info.featureUnavailableWhileSyncing"
@@ -1040,6 +1045,16 @@
         "defaultMessage": "!!!The selected directory does not have enough free space for blockchain data.",
         "description": "Validation message when the selected chain storage path does not have enough free space.",
         "id": "chainStorage.locationPicker.validation.insufficientSpace"
+      },
+      {
+        "defaultMessage": "!!!The chain subdirectory in the selected folder contains files that are not blockchain data. Choose another folder, or move those files out of the chain subdirectory.",
+        "description": "Validation message when the chain subdirectory of the selected folder holds files other than a Cardano node database.",
+        "id": "chainStorage.locationPicker.validation.chainSubdirectoryNotDatabase"
+      },
+      {
+        "defaultMessage": "!!!The chain subdirectory in the selected folder contains blockchain data for another Cardano network. Each network needs a folder of its own. Choose another folder.",
+        "description": "Validation message when the chain subdirectory of the selected folder holds a Cardano node database of a network other than the one this Daedalus runs.",
+        "id": "chainStorage.locationPicker.validation.chainSubdirectoryOtherNetwork"
       },
       {
         "defaultMessage": "!!!Daedalus could not validate the selected directory.",
@@ -1720,16 +1735,6 @@
         "defaultMessage": "!!!Open",
         "description": "Open",
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn"
-      },
-      {
-        "defaultMessage": "!!!Copy",
-        "description": "Label of the button that copies all diagnostic information to the clipboard",
-        "id": "daedalus.diagnostics.dialog.copyDiagnostics"
-      },
-      {
-        "defaultMessage": "!!!Copied",
-        "description": "Label of the copy button after the diagnostic information has been copied to the clipboard",
-        "id": "daedalus.diagnostics.dialog.copiedDiagnostics"
       },
       {
         "defaultMessage": "!!!CONNECTION ERROR",
@@ -4097,6 +4102,11 @@
         "id": "loading.screen.crashedCardanoMessage"
       },
       {
+        "defaultMessage": "!!!Unable to start Cardano wallet. Please submit a support request.",
+        "description": "Message on the loading screen when cardano-wallet kept crashing and is no longer restarted automatically.",
+        "id": "loading.screen.unrecoverableCardanoWalletMessage"
+      },
+      {
         "defaultMessage": "!!!Unable to start Cardano node. Please submit a support request.",
         "description": "Message \"Unable to start Cardano node. Please submit a support request.\" on the loading screen.",
         "id": "loading.screen.unrecoverableCardanoMessage"
@@ -4120,6 +4130,21 @@
         "defaultMessage": "!!!TLS certificate is not valid, please restart Daedalus.",
         "description": "The TLS cert is not valid and Daedalus should be restarted",
         "id": "loading.screen.errors.tlsCertificateNotValidPleaseRestartError"
+      },
+      {
+        "defaultMessage": "!!!Restarting Cardano wallet",
+        "description": "Message on the loading screen while cardano-wallet restarts at the user's request.",
+        "id": "loading.screen.restartingCardanoWalletMessage"
+      },
+      {
+        "defaultMessage": "!!!Stopping Cardano wallet ({elapsed})",
+        "description": "Shutdown progress on the loading screen while cardano-wallet stops. {elapsed} is the time spent in this step, as minutes:seconds.",
+        "id": "loading.screen.stoppingCardanoWalletProgress"
+      },
+      {
+        "defaultMessage": "!!!Waiting for Cardano node to close its database ({elapsed})",
+        "description": "Shutdown progress on the loading screen while cardano-node stops. {elapsed} is the time spent in this step, as minutes:seconds.",
+        "id": "loading.screen.stoppingCardanoNodeProgress"
       }
     ],
     "path": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.tsx"

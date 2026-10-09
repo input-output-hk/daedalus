@@ -2,6 +2,10 @@ import { createInterface } from 'readline';
 import type { Interface as ReadlineInterface } from 'readline';
 import net from 'net';
 import { logger } from './utils/logging';
+import type {
+  BackendStopProgress,
+  RequestedRestart,
+} from '../common/types/watchdog.types';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -59,6 +63,15 @@ export interface WatchdogState {
   lastWalletExitSignal: string | null;
   // Runtime overrides (from watchdog-state.json)
   nodeExtraArgs: string[];
+
+  // Shutdown
+  shutdownRequested: boolean;
+  backendStopProgress: BackendStopProgress | null;
+
+  // cardano-node crashed too often; the watchdog waits for a retry
+  nodeUnrecoverable: boolean;
+  // A restart the user asked for, until it has stopped the process
+  requestedRestart: RequestedRestart | null;
 }
 
 type EventHandler = (event: Record<string, unknown>) => void;
@@ -67,7 +80,20 @@ type EventHandler = (event: Record<string, unknown>) => void;
 // WatchdogManager
 // ---------------------------------------------------------------------------
 
-const STOP_TIMEOUT_MS = 45_000;
+// How long stop() waits for the watchdog's first answer to the stop command.
+export const STOP_ACK_TIMEOUT_MS = 30_000;
+
+// How long stop() keeps waiting past the bound the watchdog reports for the
+// stage it is in. The watchdog kills a process that reaches that bound, so
+// this only expires when the watchdog itself has stopped responding.
+export const STOP_MARGIN_MS = 30_000;
+
+// How long stop() waits, after the watchdog has reported the backend stopped,
+// for its report on starting a requested update installer.
+export const INSTALLER_RESULT_TIMEOUT_MS = 30_000;
+
+// What came of an install_update request. message says why it failed.
+export type InstallerResult = { launched: boolean; message: string | null };
 
 class WatchdogManager {
   private rl: ReadlineInterface | null = null;
@@ -80,6 +106,21 @@ class WatchdogManager {
   private _walletReadyReject: ((reason: string) => void) | null = null;
   walletReadyPromise: Promise<number> = new Promise(() => {});
   private _pendingRejection: string | null = null;
+
+  // stop() plumbing
+  private _channelClosed = false;
+  private _watchdogStopped = false;
+  private _stopPromise: Promise<void> | null = null;
+  private _finishStop: (() => void) | null = null;
+  private _stopTimer: ReturnType<typeof setTimeout> | null = null;
+  private _stopDeadline = 0;
+
+  // True from node_started until the node exits or is stopped
+  private _nodeRunning = false;
+
+  // install_update plumbing: requested, then the watchdog's answer
+  private _installRequested = false;
+  private _installResult: InstallerResult | null = null;
 
   private static makeInitialState(): WatchdogState {
     return {
@@ -108,6 +149,10 @@ class WatchdogManager {
       lastWalletExitCode: null,
       lastWalletExitSignal: null,
       nodeExtraArgs: [],
+      shutdownRequested: false,
+      backendStopProgress: null,
+      nodeUnrecoverable: false,
+      requestedRestart: null,
     };
   }
 
@@ -149,6 +194,11 @@ class WatchdogManager {
       rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
     }
 
+    this._attachChannel(rl);
+  }
+
+  // Reads watchdog events from `rl`, one JSON object per line.
+  private _attachChannel(rl: ReadlineInterface): void {
     this.rl = rl;
 
     rl.on('line', (line) => {
@@ -167,6 +217,8 @@ class WatchdogManager {
     rl.on('close', () => {
       logger.info('WatchdogManager: IPC channel closed (watchdog exited)');
       this.socket = null;
+      this._channelClosed = true;
+      this._finishStop?.();
       if (this._pendingRejection != null) {
         this._walletReadyReject?.(this._pendingRejection);
       } else {
@@ -192,6 +244,7 @@ class WatchdogManager {
         return;
       }
       this.socket.write(line);
+      this._noteRequestedRestart(cmd);
       return;
     }
     if (!process.stdout.writable) {
@@ -202,28 +255,88 @@ class WatchdogManager {
       return;
     }
     process.stdout.write(line);
+    this._noteRequestedRestart(cmd);
   }
 
+  // Commands that make the watchdog stop and start a running process again.
+  // Sent while the node is not running they restart nothing.
+  private _noteRequestedRestart(cmd: object): void {
+    if (!this._nodeRunning) return;
+    const name = (cmd as { cmd?: string }).cmd;
+    if (
+      name === 'restart_node' ||
+      name === 'set_node_extra_args' ||
+      name === 'set_chain_path'
+    ) {
+      this.state.requestedRestart = 'node';
+    } else if (
+      name === 'restart_wallet' &&
+      this.state.requestedRestart !== 'node'
+    ) {
+      this.state.requestedRestart = 'wallet';
+    }
+  }
+
+  // Asks the watchdog to stop the backend and resolves once it reports that it
+  // has stopped, or its IPC channel closes. Every call returns the same promise,
+  // so a second quit request neither sends a second stop nor resolves early.
+  //
+  // The watchdog bounds every stage of a stop and reports each stage with its
+  // bound in backend_stop_progress events. The safety timer below is extended
+  // past each reported bound, so it only fires when the watchdog has stopped
+  // answering.
   stop(): Promise<void> {
-    return new Promise<void>((resolve) => {
-      const rl = this.rl;
-      if (!rl) {
+    if (this._stopPromise) return this._stopPromise;
+    this.state.shutdownRequested = true;
+    this._stopPromise = new Promise<void>((resolve) => {
+      if (!this.rl || this._channelClosed || this._watchdogStopped) {
         resolve();
         return;
       }
-
-      const timer = setTimeout(() => {
-        logger.warn('WatchdogManager: stop timeout after 45s; proceeding');
+      this._finishStop = () => {
+        if (this._stopTimer) clearTimeout(this._stopTimer);
+        this._stopTimer = null;
+        this._finishStop = null;
         resolve();
-      }, STOP_TIMEOUT_MS);
-
-      rl.once('close', () => {
-        clearTimeout(timer);
-        resolve();
-      });
-
+      };
+      this._extendStopDeadline(STOP_ACK_TIMEOUT_MS);
       this.sendCommand({ cmd: 'stop' });
     });
+    return this._stopPromise;
+  }
+
+  // Asks the watchdog to start the update installer at `path` once it has
+  // stopped cardano-wallet and cardano-node, which the installer replaces. The
+  // watchdog treats it as a stop; stop() then also waits for its answer.
+  requestInstall(path: string, args: Array<string> = []): void {
+    this._installRequested = true;
+    this.sendCommand({ cmd: 'install_update', path, args });
+  }
+
+  // null when no installer was requested. Otherwise the watchdog's answer, or
+  // a failure when none came before stop() resolved.
+  getInstallResult(): InstallerResult | null {
+    if (!this._installRequested) return null;
+    return (
+      this._installResult ?? {
+        launched: false,
+        message: 'The watchdog did not report starting the installer.',
+      }
+    );
+  }
+
+  private _extendStopDeadline(ms: number): void {
+    const deadline = Date.now() + ms;
+    if (this._stopTimer && deadline <= this._stopDeadline) return;
+    if (this._stopTimer) clearTimeout(this._stopTimer);
+    this._stopDeadline = deadline;
+    this._stopTimer = setTimeout(() => {
+      logger.warn(
+        'WatchdogManager: watchdog gave no stop progress in time; proceeding',
+        { waitedMs: ms, backendStopProgress: this.state.backendStopProgress }
+      );
+      this._finishStop?.();
+    }, ms);
   }
 
   // ---------------------------------------------------------------------------
@@ -244,9 +357,13 @@ class WatchdogManager {
 
   private handleEvent(event: Record<string, unknown>): void {
     const eventType = event.event as string | undefined;
+    const isRepeatedStopProgress =
+      eventType === 'backend_stop_progress' &&
+      this.state.backendStopProgress?.stage === event.stage;
     if (
       eventType !== 'node_block_sync_progress' &&
-      eventType !== 'mithril_progress'
+      eventType !== 'mithril_progress' &&
+      !isRepeatedStopProgress
     ) {
       logger.info('WatchdogManager event:', { ...event });
     }
@@ -273,6 +390,14 @@ class WatchdogManager {
         s.walletPid = 0;
         s.walletStartedAt = null;
         s.nodeStartupPhase = null;
+        s.backendStopProgress = null;
+        // A node start is a retry or restart: whatever was unrecoverable
+        // before is being tried again, and a requested restart has stopped
+        // the old node.
+        s.nodeUnrecoverable = false;
+        s.walletUnrecoverable = false;
+        s.requestedRestart = null;
+        this._nodeRunning = true;
         s.blockSyncProgress = {
           replayedBlock: 0,
           validatingChunk: 0,
@@ -308,6 +433,8 @@ class WatchdogManager {
       case 'wallet_started':
         s.walletPid = event.pid as number;
         s.walletStartedAt = event.started_at_unix_ms as number;
+        s.backendStopProgress = null;
+        s.walletUnrecoverable = false;
         break;
 
       case 'wallet_ready':
@@ -317,6 +444,7 @@ class WatchdogManager {
         // can progress past 'starting' when Electron restarts mid-session and
         // the watchdog skips re-emitting chain_status.
         s.hasChain = true;
+        s.requestedRestart = null;
         this._walletReadyResolve?.(event.port as number);
         this._walletReadyResolve = null;
         this._walletReadyReject = null;
@@ -333,7 +461,19 @@ class WatchdogManager {
 
       case 'wallet_unrecoverable':
         s.walletUnrecoverable = true;
+        s.requestedRestart = null;
         this._pendingRejection = 'wallet_unrecoverable';
+        break;
+
+      case 'node_unrecoverable':
+        s.nodeUnrecoverable = true;
+        s.requestedRestart = null;
+        this._nodeRunning = false;
+        break;
+
+      case 'node_exited':
+      case 'node_shutdown_ms':
+        this._nodeRunning = false;
         break;
 
       case 'mithril_significantly_behind':
@@ -345,6 +485,8 @@ class WatchdogManager {
 
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;
+        // A Mithril sync replaced the requested node restart.
+        if (s.requestedRestart === 'node') s.requestedRestart = null;
         break;
 
       case 'mithril_progress':
@@ -370,8 +512,57 @@ class WatchdogManager {
         break;
 
       case 'stopped':
-        // Terminal — nothing to update; process will exit shortly
+        // Terminal: the backend is stopped and the watchdog exits next.
+        this._watchdogStopped = true;
+        this._nodeRunning = false;
+        s.requestedRestart = null;
+        if (this._installRequested && this._installResult === null) {
+          // The installer starts next; wait for the watchdog's report on it.
+          if (this._finishStop) {
+            this._extendStopDeadline(INSTALLER_RESULT_TIMEOUT_MS);
+          }
+        } else {
+          this._finishStop?.();
+        }
         break;
+
+      case 'update_installer_launched':
+        this._installResult = { launched: true, message: null };
+        this._finishStop?.();
+        break;
+
+      case 'update_installer_failed':
+        this._installResult = {
+          launched: false,
+          message: event.message as string,
+        };
+        this._finishStop?.();
+        break;
+
+      case 'activate_window':
+        // No state; index.ts brings the main window forward.
+        break;
+
+      case 'migrate_state_saved':
+        // No state; BackendLifecycle deletes the migrated settings.
+        break;
+
+      case 'backend_stop_progress': {
+        const progress: BackendStopProgress = {
+          stage: event.stage as BackendStopProgress['stage'],
+          elapsedMs: event.elapsed_ms as number,
+          timeoutMs: event.timeout_ms as number,
+        };
+        s.backendStopProgress = progress;
+        if (this._finishStop) {
+          const remainingMs = Math.max(
+            0,
+            progress.timeoutMs - progress.elapsedMs
+          );
+          this._extendStopDeadline(remainingMs + STOP_MARGIN_MS);
+        }
+        break;
+      }
 
       default:
         logger.debug('WatchdogManager: unhandled event type', { eventType });

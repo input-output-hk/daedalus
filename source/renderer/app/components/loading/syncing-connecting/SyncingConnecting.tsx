@@ -9,7 +9,10 @@ import SyncingConnectingStatus from './SyncingConnectingStatus';
 import { CardanoNodeStates } from '../../../../../common/types/watchdog.types';
 import styles from './SyncingConnecting.scss';
 import type { BlockSyncType } from '../../../../../common/types/cardano-node.types';
-import type { CardanoNodeState } from '../../../../../common/types/watchdog.types';
+import type {
+  BackendStopProgress,
+  CardanoNodeState,
+} from '../../../../../common/types/watchdog.types';
 import { REPORT_ISSUE_TIME_TRIGGER } from '../../../config/timingConfig';
 import NewsFeedIcon from '../../widgets/NewsFeedIcon';
 
@@ -43,6 +46,10 @@ export type Props = {
   showNewsFeedIcon: boolean;
   isVerifyingBlockchain: boolean;
   nodeStartupPhase?: string | null;
+  backendStopProgress?: BackendStopProgress | null;
+  isWalletUnrecoverable?: boolean;
+  isRestartingWallet?: boolean;
+  onRetry?: () => void;
   onIssueClick: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
   onDownloadLogs: (...args: Array<any>) => any;
@@ -127,10 +134,12 @@ class SyncingConnecting extends Component<Props, State> {
       cardanoNodeState,
       forceConnectivityIssue,
       isVerifyingBlockchain,
+      isNodeStopping,
     } = this.props;
     const { connectingTime } = this.state;
     const canReportConnectingIssue =
       !isVerifyingBlockchain &&
+      !isNodeStopping &&
       (isSyncProgressStalling ||
         forceConnectivityIssue ||
         (!isConnected &&
@@ -168,6 +177,10 @@ class SyncingConnecting extends Component<Props, State> {
       isVerifyingBlockchain,
       nodeStartupPhase,
       blockSyncProgress,
+      backendStopProgress,
+      isWalletUnrecoverable,
+      isRestartingWallet,
+      onRetry,
     } = this.props;
     const newsFeedIconStyles = classNames([
       isConnecting ? 'connectingScreen' : null,
@@ -187,6 +200,11 @@ class SyncingConnecting extends Component<Props, State> {
               onOpenExternalLink={onOpenExternalLink}
               onDownloadLogs={onDownloadLogs}
               disableDownloadLogs={disableDownloadLogs}
+              onRetry={
+                cardanoNodeState === CardanoNodeStates.UNRECOVERABLE
+                  ? onRetry
+                  : undefined
+              }
             />
           )}
           {showNewsFeedIcon && (
@@ -210,6 +228,9 @@ class SyncingConnecting extends Component<Props, State> {
           isVerifyingBlockchain={isVerifyingBlockchain}
           nodeStartupPhase={nodeStartupPhase}
           blockSyncProgress={blockSyncProgress}
+          backendStopProgress={backendStopProgress}
+          isWalletUnrecoverable={isWalletUnrecoverable}
+          isRestartingWallet={isRestartingWallet}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

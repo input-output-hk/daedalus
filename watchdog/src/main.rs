@@ -7,6 +7,9 @@
 
 mod chain_validation;
 mod config;
+mod crash_window;
+mod installer;
+mod instance;
 mod mithril;
 mod protocol;
 mod state;
@@ -50,6 +53,9 @@ struct Args {
 // EOF and shut the whole stack down mid-session.
 // Normal lines are << 1 MB (one config line + small JSON commands).
 const MAX_LINE_BYTES: u64 = 4 * 1024 * 1024; // 4 MB
+
+/// How long Electron has to connect to the IPC pipe after it is spawned.
+const ELECTRON_CONNECT_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(60);
 
 /// Read one newline-terminated line with a bounded buffer. Returns Ok(None)
 /// on EOF. A line longer than MAX_LINE_BYTES is discarded (drained up to the
@@ -201,7 +207,28 @@ async fn main() -> Result<()> {
         .with(file_layer)
         .init();
 
+    // One watchdog per cluster. Claimed before anything that touches shared
+    // state (TLS certs, watchdog-state.json, the node socket, the chain
+    // database) or spawns a child. A second launch hands over to the running
+    // instance here and exits.
+    match instance::claim(&config.node.state_dir, config.backend_stop_limit()).await {
+        // Never released by hand: the OS releases it when the process exits,
+        // after the runtime has torn down the children, so a waiting launch
+        // cannot start while this instance's Electron is still alive.
+        Ok(Some(lock)) => {
+            Box::leak(Box::new(lock));
+        }
+        Ok(None) => return Ok(()),
+        Err(e) => {
+            tracing::error!("{e:#}");
+            return Err(e);
+        }
+    }
+    let window = instance::WindowState::starting();
+
     let (cmd_tx, cmd_rx) = mpsc::channel::<protocol::Command>(8);
+    // Set by an install_update command; read after the supervisor returns.
+    let installer_request = installer::InstallerRequest::default();
 
     // SIGTERM/SIGINT handler: treat as an orderly stop so children are not orphaned.
     // SIGINT fires on Ctrl-C when watchdog is the foreground process (nix run / direct launch).
@@ -225,6 +252,19 @@ async fn main() -> Result<()> {
                 let _ = sigint_tx.send(protocol::Command::Stop).await;
             }
         });
+    }
+
+    // The network magic that a database's protocolMagicId is checked against
+    // before the node or Mithril uses it, and that Electron's storage picker
+    // checks a chosen folder against.
+    match config::read_network_magic(&config.node.args).await {
+        Ok(magic) => {
+            tracing::info!("network magic: {magic}");
+            config.set_network_magic(magic);
+        }
+        Err(e) => tracing::warn!(
+            "network magic unknown, so a database of another network cannot be recognised: {e:#}"
+        ),
     }
 
     // Generate TLS certs when tls_dir is configured; inject paths into wallet args
@@ -274,6 +314,19 @@ async fn main() -> Result<()> {
     // the receiver is dropped, so sends silently fail (which is correct).
     let (el_restart_tx, mut el_restart_rx) =
         mpsc::unbounded_channel::<protocol::ElectronRestartPayload>();
+    // Parent mode: the task that runs Electron. It ends when Electron exits.
+    let mut electron_task: Option<tokio::task::JoinHandle<()>> = None;
+
+    // How long to wait for Electron's reply to migrate_state_request. In
+    // parent mode Electron is spawned alongside and the request waits in its
+    // queue until Electron connects, so allow the whole connect timeout plus
+    // time to answer. In standalone mode the client spawned the watchdog and
+    // is already listening.
+    let migration_wait = if config.electron.is_some() {
+        ELECTRON_CONNECT_TIMEOUT + supervisor::MIGRATION_REPLY_TIMEOUT
+    } else {
+        supervisor::MIGRATION_REPLY_TIMEOUT
+    };
 
     if let Some(electron_cfg) = config.electron.take() {
         // ── Event channel (parent mode only) ─────────────────────────────────
@@ -325,6 +378,7 @@ async fn main() -> Result<()> {
         let reader_cmd_tx_base = cmd_tx.clone();
         let electron_exe = electron_cfg.exe.clone();
         let electron_env = electron_cfg.env.clone();
+        let window_mgr = Arc::clone(&window);
 
         // Windows: restart counter for unique named-pipe names per Electron instance.
         #[cfg(windows)]
@@ -337,7 +391,8 @@ async fn main() -> Result<()> {
             },
         }
 
-        tokio::spawn(async move {
+        let installer_mgr = Arc::clone(&installer_request);
+        electron_task = Some(tokio::spawn(async move {
             let mut current_electron_flags = initial_electron_flags;
             let mut per_rx = initial_per_rx;
 
@@ -364,7 +419,7 @@ async fn main() -> Result<()> {
                 #[cfg(windows)]
                 {
                     use tokio::net::windows::named_pipe::ServerOptions;
-                    use tokio::time::{Duration, timeout};
+                    use tokio::time::timeout;
                     el_instance += 1;
                     let ipc_pipe_name =
                         format!(r"\\.\pipe\daedalus-ipc-{}-{}", watchdog_pid, el_instance);
@@ -394,11 +449,12 @@ async fn main() -> Result<()> {
                         }
                     };
                     let electron_pid = electron.id().unwrap_or(0);
+                    window_mgr.set_present(electron_pid);
                     tracing::info!("Electron started (PID {electron_pid})");
                     protocol::emit(&protocol::Event::ElectronStarted { pid: electron_pid });
 
                     tracing::info!("Waiting for Electron to connect to IPC pipe: {ipc_pipe_name}");
-                    match timeout(Duration::from_secs(60), ipc_server.connect()).await {
+                    match timeout(ELECTRON_CONNECT_TIMEOUT, ipc_server.connect()).await {
                         Ok(Ok(_)) => {
                             tracing::info!("Electron connected to IPC named pipe")
                         }
@@ -408,7 +464,10 @@ async fn main() -> Result<()> {
                             break 'manager;
                         }
                         Err(_) => {
-                            tracing::error!("Electron did not connect to IPC pipe within 60 s");
+                            tracing::error!(
+                                "Electron did not connect to IPC pipe within {} s",
+                                ELECTRON_CONNECT_TIMEOUT.as_secs()
+                            );
                             let _ = exit_cmd_tx.send(protocol::Command::Stop).await;
                             break 'manager;
                         }
@@ -432,10 +491,14 @@ async fn main() -> Result<()> {
                     let mut reader = BufReader::new(ipc_read);
                     let is_restarting_pipe = Arc::clone(&is_restarting_mgr);
                     let ipc_cmd_tx = reader_cmd_tx_base.clone();
+                    let ipc_installer = Arc::clone(&installer_mgr);
                     let reader_handle = tokio::spawn(async move {
                         while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
                             if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
-                                if ipc_cmd_tx.send(cmd).await.is_err() {
+                                if forward_command(cmd, &ipc_cmd_tx, &ipc_installer)
+                                    .await
+                                    .is_err()
+                                {
                                     break;
                                 }
                             }
@@ -511,6 +574,7 @@ async fn main() -> Result<()> {
                         }
                     };
                     let electron_pid = electron.id().unwrap_or(0);
+                    window_mgr.set_present(electron_pid);
                     tracing::info!("Electron started (PID {electron_pid})");
                     protocol::emit(&protocol::Event::ElectronStarted { pid: electron_pid });
 
@@ -532,10 +596,14 @@ async fn main() -> Result<()> {
                     let mut reader = BufReader::new(stdout);
                     let is_restarting_reader = Arc::clone(&is_restarting_mgr);
                     let reader_cmd_tx = reader_cmd_tx_base.clone();
+                    let reader_installer = Arc::clone(&installer_mgr);
                     let reader_handle = tokio::spawn(async move {
                         while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
                             if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
-                                if reader_cmd_tx.send(cmd).await.is_err() {
+                                if forward_command(cmd, &reader_cmd_tx, &reader_installer)
+                                    .await
+                                    .is_err()
+                                {
                                     break;
                                 }
                             }
@@ -593,35 +661,113 @@ async fn main() -> Result<()> {
                     }
                 }
             }
-        });
+            // Electron is gone for good: a second launch now waits for this
+            // instance to exit instead of asking for a window.
+            window_mgr.set_gone();
+        }));
     } else {
         // ── Standalone mode ──────────────────────────────────────────────────
         // No Electron section in config: emit() writes directly to stdout (the
         // original behaviour — no channel, no race on shutdown). Read commands
         // from stdin; EOF on stdin triggers Stop.
+        // The stdin/stdout client is the window: present until it hangs up.
+        window.set_present(0);
+        let stdin_window = std::sync::Arc::clone(&window);
         let mut reader = BufReader::new(tokio::io::stdin());
         let stdin_cmd_tx = cmd_tx.clone();
+        let stdin_installer = std::sync::Arc::clone(&installer_request);
         tokio::spawn(async move {
             while let Ok(Some(line)) = read_bounded_line(&mut reader).await {
                 if let Ok(cmd) = serde_json::from_str::<protocol::Command>(&line) {
-                    if stdin_cmd_tx.send(cmd).await.is_err() {
+                    if forward_command(cmd, &stdin_cmd_tx, &stdin_installer)
+                        .await
+                        .is_err()
+                    {
                         break;
                     }
                 }
             }
             // stdin EOF — treat as stop
+            stdin_window.set_gone();
             let _ = stdin_cmd_tx.send(protocol::Command::Stop).await;
         });
     }
 
-    supervisor::run(
+    // Answer second launches. Started after the event sink is set up, so an
+    // activation reaches Electron.
+    instance::spawn_control_server(&config.node.state_dir, window);
+
+    // The supervisor holds the other sender and drops it when it returns. A
+    // closed restart channel ends the Electron manager loop, which kills
+    // Electron, so this one is held until Electron has exited or been closed.
+    let el_restart_hold = el_restart_tx.clone();
+    let result = supervisor::run(
         config,
         cmd_rx,
         base_node_args,
         watchdog_state,
         Some(el_restart_tx),
+        migration_wait,
     )
-    .await
+    .await;
+
+    // cardano-wallet and cardano-node have exited: start the update installer
+    // if Electron asked for one.
+    let installer_failed =
+        installer::start_requested(&installer_request, result.is_ok()).await == Some(false);
+
+    // The backend is stopped and Electron has been sent `stopped`. Give it
+    // time to act on that and exit by itself: returning from main drops the
+    // runtime, which kills an Electron that is still running. After a failed
+    // installer start Electron tells the user and waits for them.
+    if let Some(mut task) = electron_task {
+        let grace = if installer_failed {
+            ELECTRON_EXIT_GRACE_AFTER_INSTALLER_FAILURE
+        } else {
+            ELECTRON_EXIT_GRACE
+        };
+        match tokio::time::timeout(grace, &mut task).await {
+            Ok(_) => tracing::info!("Electron exited after the backend stopped"),
+            Err(_) => {
+                tracing::warn!(
+                    "Electron still running {}s after the backend stopped; closing it",
+                    grace.as_secs()
+                );
+                // Ending the manager task drops Electron's process handle,
+                // which kills it.
+                task.abort();
+                let _ = task.await;
+            }
+        }
+    }
+    drop(el_restart_hold);
+    result
+}
+
+/// How long the watchdog waits for Electron to exit after the backend has
+/// stopped, before closing it.
+const ELECTRON_EXIT_GRACE: std::time::Duration = std::time::Duration::from_secs(15);
+
+/// The same wait when the update installer could not be started: Electron is
+/// showing the user a dialog about it.
+const ELECTRON_EXIT_GRACE_AFTER_INSTALLER_FAILURE: std::time::Duration =
+    std::time::Duration::from_secs(600);
+
+/// Passes a command from the client on to the supervisor. `install_update` is
+/// recorded here and passed on as `stop`: the installer starts only once the
+/// supervisor has stopped cardano-wallet and cardano-node and returned.
+async fn forward_command(
+    cmd: protocol::Command,
+    tx: &mpsc::Sender<protocol::Command>,
+    installer_request: &installer::InstallerRequest,
+) -> Result<(), mpsc::error::SendError<protocol::Command>> {
+    match cmd {
+        protocol::Command::InstallUpdate { path, args } => {
+            installer::request(installer_request, installer::UpdateInstaller { path, args });
+            tx.send(protocol::Command::Stop).await
+        }
+        cmd => tx.send(cmd).await,
+    }
 }
 
 #[cfg(test)]

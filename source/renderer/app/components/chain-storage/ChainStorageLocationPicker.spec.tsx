@@ -354,6 +354,32 @@ describe('ChainStorageLocationPicker', () => {
     expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
   });
 
+  it("names another network's data in the configured folder and offers only another folder or the default", async () => {
+    const onConfirmStorageLocation = jest.fn();
+    const onResetChainStorageDirectory = jest.fn().mockResolvedValue(null);
+    renderComponent({
+      chainStorageValidation: {
+        isValid: false,
+        path: '/mnt/current-chain',
+        reason: 'chain-subdirectory-other-network',
+      },
+      onConfirmStorageLocation,
+      onResetChainStorageDirectory,
+    });
+
+    expect(
+      screen.getByText(/contains blockchain data for another cardano network/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: /reset to default/i }));
+    expect(screen.getByRole('button', { name: /continue/i })).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+
+    await waitFor(() => expect(onConfirmStorageLocation).toHaveBeenCalled());
+    expect(onResetChainStorageDirectory).toHaveBeenCalled();
+  });
+
   it('announces apply feedback in a polite status region while updating', async () => {
     let resolveStorageChange:
       | React.Dispatch<ChainStorageValidation>

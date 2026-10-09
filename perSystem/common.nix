@@ -733,6 +733,23 @@
             if envCfg ? topologyFile
             then envCfg.topologyFile
             else throw "no topologyFile in envCfg";
+          # Windows only: ledger peers off. On Windows a DNS lookup for a
+          # ledger relay can block indefinitely, and while it does,
+          # cardano-node does not shut down when asked to: it runs until it is
+          # killed and leaves the ChainDB unclean, so the next start validates
+          # the whole database. With ledger peers off, the only names the node
+          # resolves are the bootstrap relays'. The peer snapshot serves only
+          # ledger peers, so the topology stops referring to it; the file still
+          # ships.
+          #
+          # Bootstrap peers are requested only while the ledger state is too
+          # old. Once the node is caught up, and from the start when it was
+          # caught up when it last stopped, root peers come from the ledger
+          # and the public roots instead. The bootstrap relays are therefore
+          # added as public roots too, so a caught-up node still has peers.
+          #
+          # Setting this to false restores the upstream topology.
+          disableLedgerPeers = os == "windows";
           nodeConfigFiles =
             pkgs.runCommand "node-cfg-files" {
               inherit nodeConfig topologyFile;
@@ -741,7 +758,20 @@
               mkdir $out
               cp ${genesisFile} $out/genesis.json
               cp $nodeConfigPath $out/config.yaml
-              cp $topologyFile $out/topology.yaml
+              ${
+                if disableLedgerPeers
+                then ''
+                  ${lib.getExe pkgs.jq} '
+                    .useLedgerAfterSlot = -1
+                    | del(.peerSnapshotFile)
+                    | .publicRoots = (.publicRoots // [])
+                        + [{accessPoints: .bootstrapPeers, advertise: false}]
+                  ' < $topologyFile > $out/topology.yaml
+                ''
+                else ''
+                  cp $topologyFile $out/topology.yaml
+                ''
+              }
               ${lib.optionalString (envCfg ? peerSnapshotFile) ''
                 cp ${envCfg.peerSnapshotFile} $out/peer-snapshot.json
               ''}

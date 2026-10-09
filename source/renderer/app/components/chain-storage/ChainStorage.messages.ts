@@ -138,6 +138,20 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Validation message when the selected chain storage path does not have enough free space.',
   },
+  validationChainSubdirectoryNotDatabase: {
+    id: 'chainStorage.locationPicker.validation.chainSubdirectoryNotDatabase',
+    defaultMessage:
+      '!!!The chain subdirectory in the selected folder contains files that are not blockchain data. Choose another folder, or move those files out of the chain subdirectory.',
+    description:
+      'Validation message when the chain subdirectory of the selected folder holds files other than a Cardano node database.',
+  },
+  validationChainSubdirectoryOtherNetwork: {
+    id: 'chainStorage.locationPicker.validation.chainSubdirectoryOtherNetwork',
+    defaultMessage:
+      '!!!The chain subdirectory in the selected folder contains blockchain data for another Cardano network. Each network needs a folder of its own. Choose another folder.',
+    description:
+      'Validation message when the chain subdirectory of the selected folder holds a Cardano node database of a network other than the one this Daedalus runs.',
+  },
   validationUnknown: {
     id: 'chainStorage.locationPicker.validation.unknown',
     defaultMessage: '!!!Daedalus could not validate the selected directory.',
