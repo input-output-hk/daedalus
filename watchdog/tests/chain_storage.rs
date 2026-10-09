@@ -8,6 +8,7 @@
 #![cfg(unix)]
 
 use serde_json::{Value, json};
+use std::collections::BTreeMap;
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
@@ -129,6 +130,74 @@ fn config(dir: &TempDir) -> Value {
             "chain_path": state.join("chain").to_str().unwrap(),
         },
     })
+}
+
+/// The network these tests run on: the one whose marker mock-mithril-client
+/// writes into the databases it stages.
+const NETWORK_MAGIC: &str = "764824073";
+
+/// Another network's marker.
+const OTHER_NETWORK_MAGIC: &str = "1";
+
+/// `config` with a node configuration whose Byron genesis has `magic`, passed
+/// to the node with `--config` as in the shipped configuration.
+fn config_on_network(dir: &TempDir, magic: &str) -> Value {
+    let genesis = dir.0.join("genesis-byron.json");
+    std::fs::write(
+        &genesis,
+        format!(r#"{{"protocolConsts":{{"k":2160,"protocolMagic":{magic}}}}}"#),
+    )
+    .unwrap();
+    let node_config = dir.0.join("config.yaml");
+    std::fs::write(&node_config, r#"{"ByronGenesisFile":"genesis-byron.json"}"#).unwrap();
+    let mut cfg = config(dir);
+    let args = cfg["node"]["args"].as_array_mut().unwrap();
+    args.push(json!("--config"));
+    args.push(json!(node_config.to_str().unwrap()));
+    cfg
+}
+
+/// A database of another network in `dir`, with chunks 0 to 9, a ledger
+/// snapshot, an LSM directory and a clean marker: everything a Mithril
+/// install would rewrite.
+fn make_other_network_db(dir: &Path) {
+    let immutable = dir.join("immutable");
+    std::fs::create_dir_all(&immutable).unwrap();
+    for n in 0..10 {
+        for ext in ["chunk", "primary", "secondary"] {
+            std::fs::write(
+                immutable.join(format!("{n:05}.{ext}")),
+                format!("local {n}"),
+            )
+            .unwrap();
+        }
+    }
+    std::fs::create_dir_all(dir.join("ledger").join("999")).unwrap();
+    std::fs::write(dir.join("ledger").join("999").join("state"), b"ledger").unwrap();
+    std::fs::create_dir_all(dir.join("lsm")).unwrap();
+    std::fs::write(dir.join("lsm").join("table"), b"lsm").unwrap();
+    std::fs::write(dir.join("clean"), b"").unwrap();
+    std::fs::write(dir.join("protocolMagicId"), OTHER_NETWORK_MAGIC).unwrap();
+}
+
+/// Every entry under `dir` with the contents of each file, to show that a
+/// directory was left exactly as it was.
+fn tree(dir: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
+    let mut entries = BTreeMap::new();
+    let mut stack = vec![dir.to_path_buf()];
+    while let Some(d) = stack.pop() {
+        for entry in std::fs::read_dir(&d).unwrap() {
+            let path = entry.unwrap().path();
+            let rel = path.strip_prefix(dir).unwrap().to_path_buf();
+            if path.is_dir() {
+                entries.insert(rel, None);
+                stack.push(path);
+            } else {
+                entries.insert(rel, Some(std::fs::read(&path).unwrap()));
+            }
+        }
+    }
+    entries
 }
 
 fn spawn(dir: &TempDir, envs: &[(&str, &Path)]) -> (Child, ChildStdin, mpsc::Receiver<Value>) {
@@ -443,6 +512,189 @@ fn chain_subdirectory_holding_other_files_is_not_a_chain() {
         std::fs::read(folder.join("chain").join("photo.jpg")).unwrap(),
         b"user data"
     );
+
+    stop(child, stdin, &rx);
+}
+
+/// The case where two clusters share one storage folder: on this cluster's
+/// first run the folder's chain subdirectory holds the other network's live
+/// database. Choosing Mithril would make a partial sync of it; it is refused
+/// before anything is downloaded, and not one file changes.
+#[test]
+fn partial_sync_refuses_another_networks_database_and_changes_nothing() {
+    let dir = TempDir::new("other-partial");
+    first_run(&dir);
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    make_other_network_db(&db);
+    let before = tree(&folder);
+    let mithril_args = dir.0.join("mithril-args.json");
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, mut stdin, rx) = spawn_with(
+        &dir,
+        &cfg,
+        &[
+            ("MOCK_MITHRIL_ARGS_FILE", &mithril_args),
+            ("MOCK_CERTIFIED_IMMUTABLE", Path::new("4")),
+        ],
+    );
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "CHAIN_DIR_OTHER_NETWORK");
+    let message = err["message"].as_str().unwrap();
+    assert!(message.contains(db.to_str().unwrap()), "{err}");
+    assert!(message.contains("another Cardano network"), "{err}");
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(!mithril_args.exists(), "a download was started");
+    assert!(!dir.node_args_file().exists(), "a node was started");
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// A database of another network that holds only database entries and no
+/// chunks would be replaced whole by a full install, which takes any such
+/// directory for its own. It is refused, and not one file changes.
+#[test]
+fn full_install_refuses_another_networks_database_and_changes_nothing() {
+    let dir = TempDir::new("other-full");
+    first_run(&dir);
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    std::fs::create_dir_all(db.join("volatile")).unwrap();
+    std::fs::write(db.join("volatile").join("blocks-0.dat"), b"blocks").unwrap();
+    std::fs::write(db.join("lock"), b"").unwrap();
+    std::fs::write(db.join("protocolMagicId"), OTHER_NETWORK_MAGIC).unwrap();
+    let before = tree(&folder);
+    let mithril_args = dir.0.join("mithril-args.json");
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, mut stdin, rx) =
+        spawn_with(&dir, &cfg, &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    assert_eq!(
+        expect(&rx, "mithril_error")["code"],
+        "CHAIN_DIR_OTHER_NETWORK"
+    );
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(!mithril_args.exists(), "a download was started");
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// A storage folder that already holds another network's database, picked
+/// before such folders were refused or written to later by the other cluster,
+/// is not taken for a chain: the user is asked again, and choosing to sync
+/// from genesis does not start a node on it.
+#[test]
+fn configured_folder_with_another_networks_database_starts_no_node() {
+    let dir = TempDir::new("other-configured");
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    make_other_network_db(&db);
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let before = tree(&folder);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, mut stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(dir.log().contains("network magic 1"), "{}", dir.log());
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    let err = expect(&rx, "error");
+    assert!(
+        err["message"]
+            .as_str()
+            .unwrap()
+            .contains("another Cardano network"),
+        "{err}"
+    );
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(!dir.node_args_file().exists(), "a node was started");
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// Every start of the node is checked, not only the first: moving a running
+/// node to a folder that holds another network's database stops it and does
+/// not start it again there.
+#[test]
+fn node_is_not_restarted_on_another_networks_database() {
+    let dir = TempDir::new("other-restart");
+    let default = dir.state().join("chain");
+    std::fs::create_dir_all(default.join("immutable")).unwrap();
+    std::fs::write(default.join("protocolMagicId"), NETWORK_MAGIC).unwrap();
+    std::fs::write(dir.state().join("watchdog-state.json"), b"{}").unwrap();
+    let folder = dir.picked_folder();
+    make_other_network_db(&folder.join("chain"));
+    let before = tree(&folder);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, mut stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "node_socket_ready");
+    std::fs::remove_file(dir.node_args_file()).unwrap();
+
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    expect(&rx, "node_shutdown_ms");
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(!dir.node_args_file().exists(), "the node was started again");
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// This network's database in a picked folder is used as before: it counts
+/// as a chain, and a Mithril partial sync brings it up to the certified tip.
+#[test]
+fn this_networks_database_in_a_picked_folder_is_synced_as_before() {
+    let dir = TempDir::new("same-network");
+    first_run(&dir);
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    make_other_network_db(&db);
+    std::fs::write(db.join("protocolMagicId"), NETWORK_MAGIC).unwrap();
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, mut stdin, rx) =
+        spawn_with(&dir, &cfg, &[("MOCK_CERTIFIED_IMMUTABLE", Path::new("4"))]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect(&rx, "node_started");
+    expect(&rx, "node_socket_ready");
+
+    assert_eq!(
+        std::fs::read_to_string(db.join("immutable").join("00004.chunk")).unwrap(),
+        "certified 4"
+    );
+    assert!(!db.join("immutable").join("00009.chunk").exists());
+    assert_eq!(dir.node_database_path().as_deref(), db.to_str());
 
     stop(child, stdin, &rx);
 }

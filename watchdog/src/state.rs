@@ -54,6 +54,36 @@ pub async fn holds_node_db(dir: &Path) -> bool {
             .is_ok_and(|m| m.is_dir())
 }
 
+/// The network magic in the `protocolMagicId` file that cardano-node keeps
+/// in the root of every database, or None when there is no such file or it
+/// does not hold a number.
+pub async fn database_network_magic(dir: &Path) -> Option<u32> {
+    let text = tokio::fs::read_to_string(dir.join("protocolMagicId"))
+        .await
+        .ok()?;
+    text.trim().parse().ok()
+}
+
+/// The network magic of the database in `dir` when it names a network other
+/// than `network_magic`, the cluster's. cardano-node refuses to open such a
+/// database, and it belongs to the Daedalus that runs that network, so it is
+/// neither used nor changed. None when `dir` holds this network's database or
+/// no marked database, or when the cluster's network magic is unknown.
+pub async fn other_network_magic(dir: &Path, network_magic: Option<u32>) -> Option<u32> {
+    let expected = network_magic?;
+    database_network_magic(dir)
+        .await
+        .filter(|found| *found != expected)
+}
+
+/// What the user is told when `dir` holds another network's database.
+pub fn other_network_message(dir: &Path, found: u32, expected: u32) -> String {
+    format!(
+        "{} holds blockchain data for another Cardano network (network magic {found}; this network's is {expected}). Daedalus did not change it. Choose another folder for this network's blockchain data.",
+        dir.display()
+    )
+}
+
 /// Name of the cardano-node database directory, inside the state directory by
 /// default and inside the storage folder when the user picked one. The picker
 /// shows the user `<folder>/chain`, and 11.3 and 11.4 downloaded Mithril
@@ -83,16 +113,29 @@ pub fn database_dir(state_dir: &str, storage_folder: Option<&str>) -> PathBuf {
 ///
 /// The node keeps the database it ran on: the default is kept whenever it
 /// holds a cardano-node database. The folder is adopted only when the default
-/// holds none and `<folder>/chain` holds one. The decision is logged with both
-/// paths, and neither directory is changed.
-pub async fn migrated_chain_path(state_dir: &str, migrated: Option<String>) -> Option<String> {
+/// holds none and `<folder>/chain` holds one of this network, `network_magic`;
+/// another network's database there counts as none. The decision is logged
+/// with both paths, and neither directory is changed.
+pub async fn migrated_chain_path(
+    state_dir: &str,
+    migrated: Option<String>,
+    network_magic: Option<u32>,
+) -> Option<String> {
     let folder = migrated?;
     let default = database_dir(state_dir, None);
     let candidate = database_dir(state_dir, Some(&folder));
-    match (
-        holds_node_db(&default).await,
-        holds_node_db(&candidate).await,
-    ) {
+    let candidate_db = match other_network_magic(&candidate, network_magic).await {
+        Some(found) => {
+            warn!(
+                "settings migration: {} holds a cardano-node database for network magic {found}, \
+                 not this network's; it is left as it is and is not used",
+                candidate.display()
+            );
+            false
+        }
+        None => holds_node_db(&candidate).await,
+    };
+    match (holds_node_db(&default).await, candidate_db) {
         (true, true) => {
             warn!(
                 "settings migration: {} and {} both hold a cardano-node database; keeping {}, \
@@ -343,6 +386,10 @@ mod tests {
         fn default_chain(&self) -> std::path::PathBuf {
             self.root.join("state").join("chain")
         }
+        fn default_chain_marker(&self) -> std::path::PathBuf {
+            std::fs::create_dir_all(self.default_chain()).unwrap();
+            self.default_chain().join("protocolMagicId")
+        }
     }
 
     impl Drop for Dirs {
@@ -350,6 +397,10 @@ mod tests {
             let _ = std::fs::remove_dir_all(&self.root);
         }
     }
+
+    /// The cluster's network magic in these tests, and the one `make_db`
+    /// marks a database with.
+    const MAGIC: Option<u32> = Some(1);
 
     fn make_db(dir: &Path) {
         std::fs::create_dir_all(dir.join("immutable")).unwrap();
@@ -359,7 +410,7 @@ mod tests {
     #[tokio::test]
     async fn no_migrated_folder_keeps_the_default() {
         let d = Dirs::new("none");
-        assert_eq!(migrated_chain_path(&d.state(), None).await, None);
+        assert_eq!(migrated_chain_path(&d.state(), None, MAGIC).await, None);
     }
 
     #[tokio::test]
@@ -368,7 +419,7 @@ mod tests {
         let d = Dirs::new("chain-db");
         make_db(&d.folder().join("chain"));
         assert_eq!(
-            migrated_chain_path(&d.state(), d.folder_str()).await,
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
             d.folder_str()
         );
     }
@@ -379,7 +430,10 @@ mod tests {
         let d = Dirs::new("both");
         make_db(&d.folder().join("chain"));
         make_db(&d.default_chain());
-        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
+            None
+        );
         assert!(d.folder().join("chain").join("protocolMagicId").exists());
         assert!(d.default_chain().join("protocolMagicId").exists());
     }
@@ -389,7 +443,10 @@ mod tests {
         let d = Dirs::new("default-only");
         std::fs::create_dir_all(d.folder()).unwrap();
         make_db(&d.default_chain());
-        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
+            None
+        );
     }
 
     #[tokio::test]
@@ -398,7 +455,7 @@ mod tests {
         std::fs::create_dir_all(d.folder().join("chain")).unwrap();
         std::fs::write(d.folder().join("chain").join("protocolMagicId"), b"1").unwrap();
         assert_eq!(
-            migrated_chain_path(&d.state(), d.folder_str()).await,
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
             d.folder_str()
         );
     }
@@ -407,20 +464,80 @@ mod tests {
     async fn database_in_the_folder_itself_is_not_adopted() {
         let d = Dirs::new("flat");
         make_db(&d.folder());
-        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
+            None
+        );
     }
 
     #[tokio::test]
     async fn empty_folder_is_not_adopted() {
         let d = Dirs::new("empty");
         std::fs::create_dir_all(d.folder()).unwrap();
-        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
+            None
+        );
     }
 
     #[tokio::test]
     async fn missing_folder_is_not_adopted() {
         let d = Dirs::new("missing");
-        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
+            None
+        );
+    }
+
+    #[tokio::test]
+    async fn folder_with_another_networks_database_is_not_adopted() {
+        let d = Dirs::new("other-network");
+        make_db(&d.folder().join("chain"));
+        std::fs::write(
+            d.folder().join("chain").join("protocolMagicId"),
+            b"764824073",
+        )
+        .unwrap();
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
+            None
+        );
+        assert_eq!(
+            std::fs::read(d.folder().join("chain").join("protocolMagicId")).unwrap(),
+            b"764824073"
+        );
+    }
+
+    // ── database_network_magic and other_network_magic ──────────────────────
+
+    #[tokio::test]
+    async fn database_network_magic_reads_the_marker_as_cardano_node_writes_it() {
+        let d = Dirs::new("marker-read");
+        std::fs::write(d.default_chain_marker(), b"764824073").unwrap();
+        assert_eq!(
+            database_network_magic(&d.default_chain()).await,
+            Some(764824073)
+        );
+        std::fs::write(d.default_chain_marker(), b"2\n").unwrap();
+        assert_eq!(database_network_magic(&d.default_chain()).await, Some(2));
+        std::fs::write(d.default_chain_marker(), b"mainnet").unwrap();
+        assert_eq!(database_network_magic(&d.default_chain()).await, None);
+    }
+
+    #[tokio::test]
+    async fn other_network_magic_names_only_a_different_network() {
+        let d = Dirs::new("other");
+        let db = d.default_chain();
+        assert_eq!(other_network_magic(&db, MAGIC).await, None, "no database");
+        make_db(&db);
+        assert_eq!(other_network_magic(&db, MAGIC).await, None, "same network");
+        std::fs::write(d.default_chain_marker(), b"2").unwrap();
+        assert_eq!(other_network_magic(&db, MAGIC).await, Some(2));
+        assert_eq!(
+            other_network_magic(&db, None).await,
+            None,
+            "the cluster's network magic is unknown"
+        );
     }
 
     #[tokio::test]
@@ -428,6 +545,9 @@ mod tests {
         let d = Dirs::new("unrelated");
         std::fs::create_dir_all(d.folder().join("chain")).unwrap();
         std::fs::write(d.folder().join("chain").join("notes.txt"), b"user data").unwrap();
-        assert_eq!(migrated_chain_path(&d.state(), d.folder_str()).await, None);
+        assert_eq!(
+            migrated_chain_path(&d.state(), d.folder_str(), MAGIC).await,
+            None
+        );
     }
 }

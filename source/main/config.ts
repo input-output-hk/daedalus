@@ -7,6 +7,7 @@ import {
   shouldRelaunchViaWatchdog,
   spawnWatchdog,
 } from './utils/directLaunch';
+import { parseNetworkMagic } from './utils/chainStorageValidate';
 
 const {
   isTest,
@@ -108,6 +109,10 @@ export const windowOptions: WindowOptionsType = {
 };
 export const cluster = process.env.DAEDALUS_CLUSTER ?? '';
 export const stateDir = process.env.DAEDALUS_STATE_DIR ?? '';
+// The cluster's network magic, read by the watchdog from the node's genesis
+export const networkMagic = parseNetworkMagic(
+  process.env.DAEDALUS_NETWORK_MAGIC
+);
 export const logsPrefix = process.env.DAEDALUS_LOGS_DIR ?? '';
 export const legacyStateDir = process.env.DAEDALUS_LEGACY_STATE_DIR ?? '';
 export const isFlight = process.env.DAEDALUS_IS_FLIGHT === 'true';

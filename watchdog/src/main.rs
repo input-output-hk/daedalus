@@ -254,6 +254,19 @@ async fn main() -> Result<()> {
         });
     }
 
+    // The network magic that a database's protocolMagicId is checked against
+    // before the node or Mithril uses it, and that Electron's storage picker
+    // checks a chosen folder against.
+    match config::read_network_magic(&config.node.args).await {
+        Ok(magic) => {
+            tracing::info!("network magic: {magic}");
+            config.set_network_magic(magic);
+        }
+        Err(e) => tracing::warn!(
+            "network magic unknown, so a database of another network cannot be recognised: {e:#}"
+        ),
+    }
+
     // Generate TLS certs when tls_dir is configured; inject paths into wallet args
     // and (if in parent mode) into Electron's environment.
     if let Some(ref tls_dir_str) = config.tls_dir.clone() {

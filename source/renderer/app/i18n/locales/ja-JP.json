@@ -105,6 +105,7 @@
   "chainStorage.locationPicker.title": "ブロックチェーンデータの保存場所を選択",
   "chainStorage.locationPicker.updating": "ブロックチェーンデータの保存場所を更新しています...",
   "chainStorage.locationPicker.validation.chainSubdirectoryNotDatabase": "選択したフォルダー内のchainサブディレクトリには、ブロックチェーンデータではないファイルが含まれています。別のフォルダーを選択するか、それらのファイルをchainサブディレクトリの外に移動してください。",
+  "chainStorage.locationPicker.validation.chainSubdirectoryOtherNetwork": "選択したフォルダー内のchainサブディレクトリには、別のCardanoネットワークのブロックチェーンデータが含まれています。ネットワークごとに別のフォルダーが必要です。別のフォルダーを選択してください。",
   "chainStorage.locationPicker.validation.insideStateDir": "Daedalusのステートディレクトリの外にあるディレクトリを選択してください。",
   "chainStorage.locationPicker.validation.insufficientSpace": "選択したディレクトリにはブロックチェーンデータに必要な空き容量がありません。",
   "chainStorage.locationPicker.validation.isManagedChild": "Daedalusが管理している既存のchainサブディレクトリではなく、その親フォルダーを選択してください。",

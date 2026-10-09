@@ -143,6 +143,7 @@ export type ChainStorageValidationReason =
   | 'path-is-file'
   | 'chain-entry-not-directory'
   | 'chain-subdirectory-not-database'
+  | 'chain-subdirectory-other-network'
   | 'unknown';
 
 export interface ChainStorageValidation {

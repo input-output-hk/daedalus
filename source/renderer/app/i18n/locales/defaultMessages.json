@@ -1052,6 +1052,11 @@
         "id": "chainStorage.locationPicker.validation.chainSubdirectoryNotDatabase"
       },
       {
+        "defaultMessage": "!!!The chain subdirectory in the selected folder contains blockchain data for another Cardano network. Each network needs a folder of its own. Choose another folder.",
+        "description": "Validation message when the chain subdirectory of the selected folder holds a Cardano node database of a network other than the one this Daedalus runs.",
+        "id": "chainStorage.locationPicker.validation.chainSubdirectoryOtherNetwork"
+      },
+      {
         "defaultMessage": "!!!Daedalus could not validate the selected directory.",
         "description": "Fallback validation message when chain storage validation fails for an unknown reason.",
         "id": "chainStorage.locationPicker.validation.unknown"

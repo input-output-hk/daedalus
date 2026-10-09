@@ -3,9 +3,15 @@ import type { ActionsMap } from '../actions/index';
 import BackendStore from './BackendStore';
 import { noopAnalyticsTracker } from '../analytics';
 import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
+import { validateChainStorageChannel } from '../ipc/chainStorageChannel';
 
 jest.mock('../ipc/mithrilCommandChannel', () => ({
   mithrilCommandChannel: { send: jest.fn() },
+}));
+
+jest.mock('../ipc/chainStorageChannel', () => ({
+  validateChainStorageChannel: { request: jest.fn() },
+  confirmChainStorageChannel: { request: jest.fn() },
 }));
 
 // ── BackendStore unit tests ───────────────────────────────────────────────────
@@ -186,5 +192,52 @@ describe('BackendStore._onBackendStopStatus', () => {
       progress: null,
     });
     expect(store.loadingPhase).toBe('node-starting');
+  });
+});
+
+describe('BackendStore.checkCustomChainPath', () => {
+  const request = validateChainStorageChannel.request as jest.Mock;
+
+  beforeEach(() => {
+    request.mockReset();
+  });
+
+  it("records the configured folder when it holds another network's database", async () => {
+    const store = makeStore();
+    const validation = {
+      isValid: false,
+      path: '/mnt/cardano',
+      reason: 'chain-subdirectory-other-network',
+    };
+    (store as any).customChainPath = '/mnt/cardano';
+    request.mockResolvedValue(validation);
+
+    await store.checkCustomChainPath();
+
+    expect(request).toHaveBeenCalledWith({ path: '/mnt/cardano' });
+    expect(store.customChainPathValidation).toEqual(validation);
+  });
+
+  it('leaves the configured folder as it was for any other result', async () => {
+    const store = makeStore();
+    (store as any).customChainPath = '/mnt/cardano';
+    request.mockResolvedValue({
+      isValid: false,
+      path: '/mnt/cardano',
+      reason: 'insufficient-space',
+    });
+
+    await store.checkCustomChainPath();
+
+    expect(store.customChainPathValidation).toBeNull();
+  });
+
+  it('checks nothing when no folder is configured', async () => {
+    const store = makeStore();
+
+    await store.checkCustomChainPath();
+
+    expect(request).not.toHaveBeenCalled();
+    expect(store.customChainPathValidation).toBeNull();
   });
 });

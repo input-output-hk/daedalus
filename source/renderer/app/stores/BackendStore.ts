@@ -74,6 +74,10 @@ export default class BackendStore extends Store {
   // Chain storage paths (from BackendLifecycle, included in state poll)
   @observable defaultChainPath: string | null = null;
   @observable customChainPath: string | null = null;
+  // The configured storage folder's validation when its chain subdirectory
+  // holds another network's database, which the watchdog will neither start
+  // the node on nor change; null otherwise
+  @observable customChainPathValidation: ChainStorageValidation | null = null;
   // Runtime overrides (from watchdog-state.json via watchdog_started event)
   @observable nodeExtraArgs: string[] = [];
   // True once user has confirmed their chain storage location this session;
@@ -354,6 +358,31 @@ export default class BackendStore extends Store {
     path: string
   ): Promise<ChainStorageValidation> => {
     return validateChainStorageChannel.request({ path });
+  };
+
+  // Checks the configured storage folder when the picker is shown. A folder
+  // was accepted when it was picked, but another network's Daedalus can write
+  // its database there later, and a folder picked before such folders were
+  // refused can hold one. Only that case is recorded: the watchdog refuses
+  // such a database, so the picker must not offer to continue with it.
+  checkCustomChainPath = async (): Promise<void> => {
+    const path = this.customChainPath;
+    let validation: ChainStorageValidation | null = null;
+    try {
+      validation =
+        path == null
+          ? null
+          : await validateChainStorageChannel.request({ path });
+    } catch {
+      validation = null;
+    }
+    runInAction('set customChainPathValidation', () => {
+      this.customChainPathValidation =
+        validation != null &&
+        validation.reason === 'chain-subdirectory-other-network'
+          ? validation
+          : null;
+    });
   };
 
   @action

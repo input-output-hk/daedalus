@@ -53,6 +53,10 @@ export const getValidationMessage = (
       return intl.formatMessage(
         messages.validationChainSubdirectoryNotDatabase
       );
+    case 'chain-subdirectory-other-network':
+      return intl.formatMessage(
+        messages.validationChainSubdirectoryOtherNetwork
+      );
     case 'unknown':
     default:
       return intl.formatMessage(messages.validationUnknown);

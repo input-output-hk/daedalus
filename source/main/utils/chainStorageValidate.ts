@@ -36,16 +36,55 @@ const isDirectory = (target: string): boolean => {
   }
 };
 
+// A network magic as cardano-node writes it to a database's protocolMagicId
+// file, and as the watchdog passes it in DAEDALUS_NETWORK_MAGIC: a decimal
+// 32-bit number. Null for anything else, including a missing value.
+export const parseNetworkMagic = (
+  value: string | null | undefined
+): number | null => {
+  const text = value == null ? '' : value.trim();
+  if (!/^\d{1,10}$/.test(text)) {
+    return null;
+  }
+  const magic = Number(text);
+  return magic <= 0xffffffff ? magic : null;
+};
+
+// The network magic of the node database in `chainSubdir`, or null when it
+// has no readable marker.
+const readDatabaseNetworkMagic = (chainSubdir: string): number | null => {
+  const marker = path.join(chainSubdir, 'protocolMagicId');
+  if (!isFile(marker)) {
+    return null;
+  }
+  try {
+    return parseNetworkMagic(fs.readFileSync(marker, 'utf8'));
+  } catch {
+    return null;
+  }
+};
+
 // Why an existing chain subdirectory cannot hold the database, or null when it
-// can. It can when cardano-node can open it (it holds a node database) or when
-// a Mithril snapshot may replace it (it holds only database entries). Anything
+// can. It can when cardano-node can open it (it holds a node database of this
+// network) or when a Mithril snapshot may replace it (it holds only database
+// entries). Another network's database belongs to the Daedalus that runs that
+// network: the node refuses it and the watchdog does not change it. Anything
 // else would leave the node refusing to start and Mithril refusing to install.
 function getChainSubdirectoryConflict(
-  chainSubdir: string
+  chainSubdir: string,
+  networkMagic: number | null
 ): ChainStorageValidationReason | null {
   try {
     if (!fs.statSync(chainSubdir).isDirectory()) {
       return 'chain-entry-not-directory';
+    }
+    const databaseMagic = readDatabaseNetworkMagic(chainSubdir);
+    if (
+      networkMagic != null &&
+      databaseMagic != null &&
+      databaseMagic !== networkMagic
+    ) {
+      return 'chain-subdirectory-other-network';
     }
     const holdsNodeDatabase =
       isFile(path.join(chainSubdir, 'protocolMagicId')) ||
@@ -74,9 +113,12 @@ export function getAvailableSpaceBytes(targetPath: string): number | undefined {
   }
 }
 
+// `networkMagic` is the running cluster's, or null when it is unknown; a
+// folder's database is then accepted whatever network it belongs to.
 export function validatePath(
   candidatePath: string,
-  stateDir: string
+  stateDir: string,
+  networkMagic: number | null
 ): ChainStorageValidation {
   const resolved = path.resolve(candidatePath);
 
@@ -131,7 +173,7 @@ export function validatePath(
   const chainSubdirectoryStatus: ChainStorageValidation['chainSubdirectoryStatus'] =
     fs.existsSync(chainSubdir) ? 'existing-directory' : 'will-create';
   if (chainSubdirectoryStatus === 'existing-directory') {
-    const conflict = getChainSubdirectoryConflict(chainSubdir);
+    const conflict = getChainSubdirectoryConflict(chainSubdir, networkMagic);
     if (conflict != null) {
       return { isValid: false, path: candidatePath, reason: conflict };
     }

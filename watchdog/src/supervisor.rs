@@ -863,12 +863,132 @@ async fn await_migration(cmd_rx: &mut mpsc::Receiver<Cmd>, limit: Duration) -> M
     reply.unwrap_or(Migration::TimedOut)
 }
 
-/// Returns true if the database directory holds a cardano-node database.
-/// Anything else, including a directory of the user's own files, counts as no
-/// chain, so the user is asked again instead of being left with a node that
-/// refuses to open it.
-async fn chain_has_data(state_dir: &str, storage_folder: Option<&str>) -> bool {
-    state::holds_node_db(&state::database_dir(state_dir, storage_folder)).await
+/// Returns true if the database directory holds a cardano-node database of
+/// this network. Anything else, including a directory of the user's own files
+/// or another network's database, counts as no chain, so the user is asked
+/// again instead of being left with a node that refuses to open it.
+async fn chain_has_data(config: &WatchdogConfig, storage_folder: Option<&str>) -> bool {
+    let db = state::database_dir(&config.node.state_dir, storage_folder);
+    if let Some(found) = state::other_network_magic(&db, config.node.network_magic).await {
+        warn!(
+            "{} holds a cardano-node database for network magic {found}, not this network's; \
+             it is not used, and the user is asked for another location",
+            db.display()
+        );
+        return false;
+    }
+    state::holds_node_db(&db).await
+}
+
+/// True when the database directory holds another network's database, which
+/// the node must never be started on: cardano-node would refuse it, and it
+/// belongs to the Daedalus that runs that network. Emits an error naming the
+/// directory when it does.
+async fn holds_other_network_db(config: &WatchdogConfig, wstate: &state::WatchdogState) -> bool {
+    let db = state::database_dir(&config.node.state_dir, wstate.chain_path.as_deref());
+    let (Some(expected), Some(found)) = (
+        config.node.network_magic,
+        state::other_network_magic(&db, config.node.network_magic).await,
+    ) else {
+        return false;
+    };
+    emit_error(&state::other_network_message(&db, found, expected));
+    true
+}
+
+/// Waits, while there is no chain to start the node on, for the user to choose
+/// between syncing from genesis (`start_node`) and a Mithril bootstrap
+/// (`start_mithril`). Settings changes meanwhile are saved and applied.
+/// Returns whether Mithril installed a database, or None, after emitting
+/// `stopped`, when the watchdog is to stop.
+async fn await_chain_choice(
+    config: &mut WatchdogConfig,
+    cmd_rx: &mut mpsc::Receiver<Cmd>,
+    base_node_args: &[String],
+    wstate: &mut state::WatchdogState,
+    el_restart_tx: &Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
+) -> Option<bool> {
+    loop {
+        match cmd_rx.recv().await {
+            Some(Cmd::StartNode) => return Some(false),
+            Some(Cmd::StartMithril { wipe_chain, .. }) => {
+                if let Some(ref mc) = config.mithril {
+                    use mithril::PipelineResult;
+                    match mithril::run_pipeline(mc, cmd_rx, true, wipe_chain).await {
+                        PipelineResult::Installed => return Some(true),
+                        PipelineResult::Stopped => {
+                            emit(&Event::Stopped);
+                            return None;
+                        }
+                        PipelineResult::NotNeeded
+                        | PipelineResult::Cancelled
+                        | PipelineResult::UserCancelled
+                        | PipelineResult::Failed => {
+                            // Still no chain data (or install failed) — re-prompt.
+                            emit(&Event::ChainStatus { has_chain: false });
+                            continue;
+                        }
+                    }
+                }
+                // Mithril not configured; ignore and keep waiting.
+            }
+            Some(Cmd::Stop) | None => {
+                emit(&Event::Stopped);
+                return None;
+            }
+            Some(Cmd::ValidateChainDir {
+                path,
+                default_chain_path,
+                required_space_bytes,
+            }) => {
+                spawn_validate_chain_dir(
+                    config.node.state_dir.clone(),
+                    path,
+                    default_chain_path,
+                    required_space_bytes,
+                );
+            }
+            Some(Cmd::SetChainPath { path }) => {
+                wstate.chain_path = path;
+                info!("chain_path updated: {:?}", wstate.chain_path);
+                if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                    warn!("Failed to save watchdog state: {e}");
+                }
+                state::apply_to_config(config, base_node_args, wstate);
+            }
+            Some(Cmd::SetNodeExtraArgs { args }) => {
+                wstate.node_extra_args = args;
+                info!(
+                    "node_extra_args updated (RTS flags): {:?}",
+                    wstate.node_extra_args
+                );
+                if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                    warn!("Failed to save watchdog state: {e}");
+                }
+                state::apply_to_config(config, base_node_args, wstate);
+            }
+            Some(Cmd::SetElectronFlags { flags }) => {
+                wstate.electron_flags = flags.clone();
+                info!(
+                    "electron_flags updated (blank screen fix): {:?}",
+                    wstate.electron_flags
+                );
+                if let Err(e) = state::save(&config.node.state_dir, wstate).await {
+                    warn!("Failed to save watchdog state: {e}");
+                }
+                if let Some(tx) = el_restart_tx {
+                    let _ = tx.send(ElectronRestartPayload {
+                        flags,
+                        wallet_port: None,
+                        node_extra_args: wstate.node_extra_args.clone(),
+                        startup_phase: None,
+                    });
+                }
+                emit(&Event::ElectronRestarting);
+            }
+            _ => {}
+        }
+    }
 }
 
 pub async fn run(
@@ -937,8 +1057,12 @@ pub async fn run(
                     "migrate_state received: chain_path={chain_path:?} \
                      electron_flags={electron_flags:?} node_extra_args={node_extra_args:?}"
                 );
-                wstate.chain_path =
-                    state::migrated_chain_path(&config.node.state_dir, chain_path).await;
+                wstate.chain_path = state::migrated_chain_path(
+                    &config.node.state_dir,
+                    chain_path,
+                    config.node.network_magic,
+                )
+                .await;
                 wstate.electron_flags = electron_flags;
                 wstate.node_extra_args = node_extra_args;
                 match state::save(&config.node.state_dir, &wstate).await {
@@ -978,106 +1102,41 @@ pub async fn run(
     }
 
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.
-    let has_chain =
-        chain_has_data(&config.node.state_dir, wstate.chain_path.as_deref()).await || after_mithril;
+    let has_chain = chain_has_data(&config, wstate.chain_path.as_deref()).await || after_mithril;
     info!("chain status: has_chain={has_chain}");
     emit(&Event::ChainStatus { has_chain });
-
-    if !has_chain {
-        // Hold here until the UI sends start_node or start_mithril.
-        'wait: loop {
-            match cmd_rx.recv().await {
-                Some(Cmd::StartNode) => break 'wait,
-                Some(Cmd::StartMithril { wipe_chain, .. }) => {
-                    if let Some(ref mc) = config.mithril {
-                        use mithril::PipelineResult;
-                        match mithril::run_pipeline(mc, &mut cmd_rx, true, wipe_chain).await {
-                            PipelineResult::Installed => {
-                                after_mithril = true;
-                                break 'wait;
-                            }
-                            PipelineResult::Stopped => {
-                                emit(&Event::Stopped);
-                                return Ok(());
-                            }
-                            PipelineResult::NotNeeded
-                            | PipelineResult::Cancelled
-                            | PipelineResult::UserCancelled
-                            | PipelineResult::Failed => {
-                                // Still no chain data (or install failed) — re-prompt.
-                                emit(&Event::ChainStatus { has_chain: false });
-                                continue 'wait;
-                            }
-                        }
-                    }
-                    // Mithril not configured; ignore and keep waiting.
-                }
-                Some(Cmd::Stop) | None => {
-                    emit(&Event::Stopped);
-                    return Ok(());
-                }
-                Some(Cmd::ValidateChainDir {
-                    path,
-                    default_chain_path,
-                    required_space_bytes,
-                }) => {
-                    spawn_validate_chain_dir(
-                        config.node.state_dir.clone(),
-                        path,
-                        default_chain_path,
-                        required_space_bytes,
-                    );
-                }
-                Some(Cmd::SetChainPath { path }) => {
-                    wstate.chain_path = path;
-                    info!("chain_path updated: {:?}", wstate.chain_path);
-                    if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
-                        warn!("Failed to save watchdog state: {e}");
-                    }
-                    state::apply_to_config(&mut config, &base_node_args, &wstate);
-                }
-                Some(Cmd::SetNodeExtraArgs { args }) => {
-                    wstate.node_extra_args = args;
-                    info!(
-                        "node_extra_args updated (RTS flags): {:?}",
-                        wstate.node_extra_args
-                    );
-                    if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
-                        warn!("Failed to save watchdog state: {e}");
-                    }
-                    state::apply_to_config(&mut config, &base_node_args, &wstate);
-                }
-                Some(Cmd::SetElectronFlags { flags }) => {
-                    wstate.electron_flags = flags.clone();
-                    info!(
-                        "electron_flags updated (blank screen fix): {:?}",
-                        wstate.electron_flags
-                    );
-                    if let Err(e) = state::save(&config.node.state_dir, &wstate).await {
-                        warn!("Failed to save watchdog state: {e}");
-                    }
-                    if let Some(ref tx) = el_restart_tx {
-                        let _ = tx.send(ElectronRestartPayload {
-                            flags,
-                            wallet_port: None,
-                            node_extra_args: wstate.node_extra_args.clone(),
-                            startup_phase: None,
-                        });
-                    }
-                    emit(&Event::ElectronRestarting);
-                }
-                _ => {}
-            }
-        }
-    }
+    let mut choose_chain = !has_chain;
 
     let mut crashes = CrashCounters::new(&config);
     // Set when a request held during a wait replaces starting the node again.
     let mut next: Option<RunResult> = None;
     loop {
+        if choose_chain {
+            // Hold here until the UI sends start_node or start_mithril.
+            match await_chain_choice(
+                &mut config,
+                &mut cmd_rx,
+                &base_node_args,
+                &mut wstate,
+                &el_restart_tx,
+            )
+            .await
+            {
+                Some(installed) => after_mithril = installed,
+                None => return Ok(()),
+            }
+            choose_chain = false;
+        }
         let result = match next.take() {
             Some(result) => result,
             None => {
+                // Every start of the node passes here. Another network's
+                // database is reported as no chain, so the user chooses again.
+                if holds_other_network_db(&config, &wstate).await {
+                    emit(&Event::ChainStatus { has_chain: false });
+                    choose_chain = true;
+                    continue;
+                }
                 let result = run_node_wallet(
                     &mut config,
                     &mut cmd_rx,

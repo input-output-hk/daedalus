@@ -10,6 +10,7 @@ use tracing::{info, warn};
 
 use crate::config::MithrilConfig;
 use crate::protocol::{Command as Cmd, Event, emit};
+use crate::state;
 use crate::supervisor::tether_to_watchdog;
 
 const PROGRESS_THROTTLE_MS: u128 = 500;
@@ -433,6 +434,27 @@ async fn full_install_allowed(chain_path: &Path) -> bool {
     }
 }
 
+/// Whether Mithril may change the chain directory at all. Never when it holds
+/// another network's database: a partial sync would rewrite its chunks and
+/// ledger, and a full install or a wipe would delete it, although it holds
+/// nothing but database entries. Emits a `CHAIN_DIR_OTHER_NETWORK` error when
+/// it may not.
+async fn network_allowed(chain_path: &Path, network_magic: Option<u32>) -> bool {
+    let (Some(expected), Some(found)) = (
+        network_magic,
+        state::other_network_magic(chain_path, network_magic).await,
+    ) else {
+        return true;
+    };
+    let message = state::other_network_message(chain_path, found, expected);
+    warn!("mithril: refusing to change the chain directory: {message}");
+    emit(&Event::MithrilError {
+        code: "CHAIN_DIR_OTHER_NETWORK".to_string(),
+        message,
+    });
+    false
+}
+
 // For bootstrap (local_highest = None): replace the entire chain directory.
 // For partial sync (local_highest = Some): merge new immutables in and replace ledger/lsm.
 async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) -> Result<()> {
@@ -689,10 +711,16 @@ pub async fn run_pipeline(
         return PipelineResult::Cancelled;
     }
 
+    // Nothing is wiped from, downloaded for or installed over another
+    // network's database.
+    let chain_path = PathBuf::from(&cfg.chain_path);
+    if !network_allowed(&chain_path, cfg.network_magic).await {
+        return PipelineResult::Cancelled;
+    }
+
     // If wipe_chain is requested, delete the existing chain directory so the
     // download is treated as a full bootstrap rather than an incremental sync.
     if wipe_chain {
-        let chain_path = PathBuf::from(&cfg.chain_path);
         let state_path = PathBuf::from(&cfg.state_dir);
         // Safety: chain_path must be absolute and must live inside state_dir to
         // prevent a misconfigured path (e.g. "/") from deleting the user's filesystem.
@@ -774,7 +802,6 @@ pub async fn run_pipeline(
 
     // A full install replaces the chain directory. Refuse before downloading
     // anything if that would delete files that are not a node database.
-    let chain_path = PathBuf::from(&cfg.chain_path);
     let is_partial = local_highest.is_some();
     if !is_partial && !full_install_allowed(&chain_path).await {
         return PipelineResult::Cancelled;
@@ -900,7 +927,9 @@ pub async fn run_pipeline(
     });
 
     // The download takes minutes; check again before anything is changed.
-    if !is_partial && !full_install_allowed(&chain_path).await {
+    if !network_allowed(&chain_path, cfg.network_magic).await
+        || (!is_partial && !full_install_allowed(&chain_path).await)
+    {
         let _ = tokio::fs::remove_dir_all(&staging_root).await;
         return PipelineResult::Cancelled;
     }
