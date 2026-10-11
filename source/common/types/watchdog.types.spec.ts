@@ -30,17 +30,20 @@ describe('CardanoNodeStates', () => {
     expect(CardanoNodeStates.UNRECOVERABLE).toBe('error');
   });
 
-  it('all non-error, non-ready states map to node-starting', () => {
+  it('maps the starting and updating states to node-starting', () => {
     const nodeStartingStates = [
       CardanoNodeStates.STARTING,
       CardanoNodeStates.RUNNING,
-      CardanoNodeStates.EXITING,
-      CardanoNodeStates.STOPPING,
       CardanoNodeStates.UPDATING,
       CardanoNodeStates.UPDATED,
     ];
     for (const state of nodeStartingStates) {
       expect(state).toBe('node-starting');
     }
+  });
+
+  it('maps STOPPING and EXITING to the stopping loadingPhase', () => {
+    expect(CardanoNodeStates.STOPPING).toBe('stopping');
+    expect(CardanoNodeStates.EXITING).toBe('stopping');
   });
 });

@@ -34,11 +34,15 @@ pub enum Command {
         default_chain_path: String,
         required_space_bytes: u64,
     },
-    /// Gracefully stop the node (and wallet) then restart both. Does not
-    /// increment the crash counter.
+    /// Gracefully stop the node (and wallet) then restart both. A user
+    /// restart is not a crash: it clears the node's and the wallet's crash
+    /// counts. After `node_unrecoverable` or `wallet_unrecoverable` it is the
+    /// retry.
     RestartNode,
-    /// Kill and restart cardano-wallet without touching cardano-node. Resets
-    /// the wallet restart-attempt counter so the limit is not consumed.
+    /// Stop and restart cardano-wallet without touching cardano-node. A user
+    /// restart is not a crash: it resets the wallet's consecutive-failure
+    /// count and clears its crash window, so the limits are not consumed.
+    /// After `wallet_unrecoverable` it is the retry.
     RestartWallet,
     /// Override the chain-storage directory used by cardano-node and Mithril.
     /// None resets to the built-in default from daedalus-config.json.
@@ -66,6 +70,15 @@ pub enum Command {
         electron_flags: Vec<String>,
         #[serde(default)]
         node_extra_args: Vec<String>,
+    },
+    /// Stop cardano-wallet and cardano-node, start the update installer at
+    /// `path` with `args` once both have exited, then exit. Electron sends it
+    /// after verifying the installer. Reported with `update_installer_launched`
+    /// or `update_installer_failed`, after `stopped`.
+    InstallUpdate {
+        path: String,
+        #[serde(default)]
+        args: Vec<String>,
     },
 }
 
@@ -193,6 +206,38 @@ pub enum Event {
     /// The Electron process should call app.quit(); on the next Daedalus start
     /// the flags will be applied automatically.
     ElectronRestarting,
+    /// A second launch of Daedalus for this cluster found this instance
+    /// running. Electron should restore, show and focus its main window.
+    ActivateWindow,
+    /// watchdog-state.json has been written from a `migrate_state` reply.
+    /// Electron may now delete the electron-store keys it migrated. Until this
+    /// event it keeps them, so a migration that did not complete is retried on
+    /// the next launch.
+    MigrateStateSaved,
+    /// Progress of a backend stop. Emitted when the watchdog starts stopping
+    /// cardano-wallet or cardano-node and then once a second until that process
+    /// has exited. `stage` is "stopping_wallet" or "stopping_node";
+    /// `elapsed_ms` counts from the start of the stage; `timeout_ms` is how
+    /// long the watchdog waits in this stage before killing the process.
+    BackendStopProgress {
+        stage: String,
+        elapsed_ms: u64,
+        timeout_ms: u64,
+    },
+    /// cardano-node exited unexpectedly too often and is not restarted on its
+    /// own. The watchdog keeps running and waits for `restart_node` (or
+    /// `start_node`) to try again, or `stop`.
+    NodeUnrecoverable {
+        crashes: u32,
+    },
+    /// The update installer requested with `install_update` was started.
+    UpdateInstallerLaunched {
+        pid: u32,
+    },
+    /// The update installer requested with `install_update` was not started.
+    UpdateInstallerFailed {
+        message: String,
+    },
 }
 
 /// Payload sent through the Electron restart channel when SetElectronFlags fires.
@@ -655,6 +700,52 @@ mod tests {
     }
 
     #[test]
+    fn backend_stop_progress() {
+        let j = to_json(&Event::BackendStopProgress {
+            stage: "stopping_node".to_string(),
+            elapsed_ms: 2000,
+            timeout_ms: 300_000,
+        });
+        assert_eq!(j["event"], "backend_stop_progress");
+        assert_eq!(j["stage"], "stopping_node");
+        assert_eq!(j["elapsed_ms"], 2000);
+        assert_eq!(j["timeout_ms"], 300_000);
+    }
+
+    #[test]
+    fn node_unrecoverable() {
+        let j = to_json(&Event::NodeUnrecoverable { crashes: 5 });
+        assert_eq!(j["event"], "node_unrecoverable");
+        assert_eq!(j["crashes"], 5);
+    }
+
+    #[test]
+    fn install_update_command() {
+        let cmd: Command =
+            serde_json::from_str(r#"{"cmd":"install_update","path":"C:\\x\\installer.exe"}"#)
+                .unwrap();
+        match cmd {
+            Command::InstallUpdate { path, args } => {
+                assert_eq!(path, "C:\\x\\installer.exe");
+                assert!(args.is_empty());
+            }
+            _ => panic!("wrong variant"),
+        }
+    }
+
+    #[test]
+    fn update_installer_events() {
+        let j = to_json(&Event::UpdateInstallerLaunched { pid: 4321 });
+        assert_eq!(j["event"], "update_installer_launched");
+        assert_eq!(j["pid"], 4321);
+        let j = to_json(&Event::UpdateInstallerFailed {
+            message: "not found".to_string(),
+        });
+        assert_eq!(j["event"], "update_installer_failed");
+        assert_eq!(j["message"], "not found");
+    }
+
+    #[test]
     fn electron_started() {
         let j = to_json(&Event::ElectronStarted { pid: 7777 });
         assert_eq!(j["event"], "electron_started");
@@ -681,5 +772,17 @@ mod tests {
         assert_eq!(j["event"], "electron_exited");
         assert!(j["code"].is_null());
         assert_eq!(j["signal"], "SIGKILL");
+    }
+
+    #[test]
+    fn activate_window_event() {
+        let j = to_json(&Event::ActivateWindow);
+        assert_eq!(j["event"], "activate_window");
+    }
+
+    #[test]
+    fn migrate_state_saved_event() {
+        let j = to_json(&Event::MigrateStateSaved);
+        assert_eq!(j["event"], "migrate_state_saved");
     }
 }

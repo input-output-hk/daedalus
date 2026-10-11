@@ -3,6 +3,7 @@ import {
   NODE_STARTUP_STATUS_CHANNEL,
   NODE_BLOCK_SYNC_PROGRESS_CHANNEL,
   WATCHDOG_STOPPED_CHANNEL,
+  BACKEND_STOP_STATUS_CHANNEL,
 } from '../../common/ipc/api';
 import type {
   NodeStartupStatusMainRequest,
@@ -11,6 +12,8 @@ import type {
   NodeBlockSyncProgressRendererResponse,
   WatchdogStoppedMainRequest,
   WatchdogStoppedRendererResponse,
+  BackendStopStatusMainRequest,
+  BackendStopStatusRendererResponse,
 } from '../../common/ipc/api';
 
 export const nodeStartupStatusChannel: MainIpcChannel<
@@ -27,3 +30,8 @@ export const watchdogStoppedChannel: MainIpcChannel<
   WatchdogStoppedRendererResponse,
   WatchdogStoppedMainRequest
 > = new MainIpcChannel(WATCHDOG_STOPPED_CHANNEL);
+
+export const backendStopStatusChannel: MainIpcChannel<
+  BackendStopStatusRendererResponse,
+  BackendStopStatusMainRequest
+> = new MainIpcChannel(BACKEND_STOP_STATUS_CHANNEL);

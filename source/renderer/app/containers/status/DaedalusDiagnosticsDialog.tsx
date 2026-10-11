@@ -6,6 +6,7 @@ import styles from './DaedalusDiagnosticsDialog.scss';
 import type { InjectedDialogContainerProps } from '../../types/injectedPropsType';
 import { buildSystemInfo } from '../../utils/buildSystemInfo';
 import { formatUptime } from '../../utils/formatUptime';
+import { getMithrilDiagnosticsState } from '../../utils/mithrilDiagnosticsState';
 
 type Props = InjectedDialogContainerProps;
 
@@ -20,6 +21,9 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
   };
   handleForceCheckNetworkClock = () =>
     this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
+  handleStartMithrilPartialSync = async () => {
+    this.props.stores.backend.startMithrilForce();
+  };
   render() {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
@@ -58,6 +62,15 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       nodeSocketWaitMs,
       walletReadyWaitMs,
     } = backend;
+    const {
+      isMithrilPartialSyncWorking,
+      isSignificantlyBehind,
+      behindByEpochs,
+    } = getMithrilDiagnosticsState({
+      mithrilPhase: backend.mithrilPhase,
+      mithrilSignificantlyBehind: backend.mithrilSignificantlyBehind,
+      isStopping: backend.isStopping,
+    });
     const systemInfo = buildSystemInfo(environment, networkStatus);
     const {
       network,
@@ -137,6 +150,12 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           onForceCheckNetworkClock={this.handleForceCheckNetworkClock}
           onRestartNode={actions.networkStatus.restartNode}
           onRestartWallet={actions.networkStatus.restartWallet}
+          isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
+          isMithrilSignificantlyBehind={isSignificantlyBehind}
+          isMithrilProbeFailed={false}
+          isMithrilAtOrPastSnapshot={false}
+          mithrilBehindByEpochs={behindByEpochs}
+          onStartMithrilPartialSync={this.handleStartMithrilPartialSync}
         />
       </ReactModal>
     );

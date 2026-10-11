@@ -2,6 +2,17 @@ import type { Api } from '../api/index';
 import type { ActionsMap } from '../actions/index';
 import BackendStore from './BackendStore';
 import { noopAnalyticsTracker } from '../analytics';
+import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
+import { validateChainStorageChannel } from '../ipc/chainStorageChannel';
+
+jest.mock('../ipc/mithrilCommandChannel', () => ({
+  mithrilCommandChannel: { send: jest.fn() },
+}));
+
+jest.mock('../ipc/chainStorageChannel', () => ({
+  validateChainStorageChannel: { request: jest.fn() },
+  confirmChainStorageChannel: { request: jest.fn() },
+}));
 
 // ── BackendStore unit tests ───────────────────────────────────────────────────
 //
@@ -85,5 +96,148 @@ describe('BackendStore.loadingPhase', () => {
     (store as any).hasChain = true;
     (store as any).mithrilPhase = 'completed';
     expect(store.loadingPhase).toBe('node-starting');
+  });
+
+  it('returns stopping while Daedalus quits, over any other phase', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).walletPort = 8090;
+    (store as any).walletUnrecoverable = true;
+    (store as any).mithrilPhase = 'downloading';
+    (store as any).isStopping = true;
+    expect(store.loadingPhase).toBe('stopping');
+  });
+});
+
+describe('BackendStore unrecoverable backend', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  it('returns error from loadingPhase when the node is unrecoverable', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).nodeUnrecoverable = true;
+    expect(store.loadingPhase).toBe('error');
+  });
+
+  it('retries the wallet alone when only the wallet is unrecoverable', () => {
+    const store = makeStore();
+    (store as any).walletUnrecoverable = true;
+    store.retryBackend();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'restart_wallet',
+    });
+  });
+
+  it('retries the node when the node is unrecoverable', () => {
+    const store = makeStore();
+    (store as any).walletUnrecoverable = true;
+    (store as any).nodeUnrecoverable = true;
+    store.retryBackend();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'restart_node',
+    });
+  });
+});
+
+describe('BackendStore._onBackendStopStatus', () => {
+  it('sets isStopping and records the stop progress', async () => {
+    const store = makeStore();
+    const progress = {
+      stage: 'stopping_node',
+      elapsedMs: 5000,
+      timeoutMs: 300_000,
+    };
+    await (store as any)._onBackendStopStatus({
+      quitting: true,
+      restart: null,
+      progress,
+    });
+    expect(store.isStopping).toBe(true);
+    expect(store.backendStopProgress).toEqual(progress);
+    expect(store.loadingPhase).toBe('stopping');
+  });
+
+  it('sets isStopping before the watchdog reports any progress', async () => {
+    const store = makeStore();
+    await (store as any)._onBackendStopStatus({
+      quitting: true,
+      restart: null,
+      progress: null,
+    });
+    expect(store.isStopping).toBe(true);
+    expect(store.backendStopProgress).toBeNull();
+  });
+
+  it('returns stopping for a requested restart without marking a quit', async () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).walletPort = 8090;
+    await (store as any)._onBackendStopStatus({
+      quitting: false,
+      restart: 'node',
+      progress: null,
+    });
+    expect(store.isStopping).toBe(false);
+    expect(store.loadingPhase).toBe('stopping');
+  });
+
+  it('returns to the startup phases once the requested restart has stopped the node', async () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    await (store as any)._onBackendStopStatus({
+      quitting: false,
+      restart: null,
+      progress: null,
+    });
+    expect(store.loadingPhase).toBe('node-starting');
+  });
+});
+
+describe('BackendStore.checkCustomChainPath', () => {
+  const request = validateChainStorageChannel.request as jest.Mock;
+
+  beforeEach(() => {
+    request.mockReset();
+  });
+
+  it("records the configured folder when it holds another network's database", async () => {
+    const store = makeStore();
+    const validation = {
+      isValid: false,
+      path: '/mnt/cardano',
+      reason: 'chain-subdirectory-other-network',
+    };
+    (store as any).customChainPath = '/mnt/cardano';
+    request.mockResolvedValue(validation);
+
+    await store.checkCustomChainPath();
+
+    expect(request).toHaveBeenCalledWith({ path: '/mnt/cardano' });
+    expect(store.customChainPathValidation).toEqual(validation);
+  });
+
+  it('leaves the configured folder as it was for any other result', async () => {
+    const store = makeStore();
+    (store as any).customChainPath = '/mnt/cardano';
+    request.mockResolvedValue({
+      isValid: false,
+      path: '/mnt/cardano',
+      reason: 'insufficient-space',
+    });
+
+    await store.checkCustomChainPath();
+
+    expect(store.customChainPathValidation).toBeNull();
+  });
+
+  it('checks nothing when no folder is configured', async () => {
+    const store = makeStore();
+
+    await store.checkCustomChainPath();
+
+    expect(request).not.toHaveBeenCalled();
+    expect(store.customChainPathValidation).toBeNull();
   });
 });

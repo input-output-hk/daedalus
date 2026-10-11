@@ -2,7 +2,7 @@ import { MainIpcChannel } from './lib/MainIpcChannel';
 import { backendLifecycle } from '../BackendLifecycle';
 import { requestElectronStore } from './electronStoreConversation';
 import { logger } from '../utils/logging';
-import { stateDirectoryPath } from '../config';
+import { networkMagic, stateDirectoryPath } from '../config';
 import {
   STORAGE_KEYS as keys,
   STORAGE_TYPES as types,
@@ -32,7 +32,7 @@ const confirmChannel = new MainIpcChannel<
 export function handleChainStorageRequests(): void {
   validateChannel.onRequest(async ({ path: candidatePath }) => {
     logger.info('chainStorage: validating path', { path: candidatePath });
-    return validatePath(candidatePath, stateDirectoryPath);
+    return validatePath(candidatePath, stateDirectoryPath, networkMagic);
   });
 
   confirmChannel.onRequest(async ({ customPath }) => {

@@ -74,6 +74,14 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onClose: action('onClose'),
   onCopyStateDirectoryPath: action('onCopyStateDirectoryPath'),
   onForceCheckNetworkClock: action('onForceCheckNetworkClock'),
+  isMithrilPartialSyncWorking: false,
+  isMithrilSignificantlyBehind: true,
+  isMithrilProbeFailed: false,
+  isMithrilAtOrPastSnapshot: false,
+  mithrilBehindByEpochs: 3,
+  onStartMithrilPartialSync: async () => {
+    action('onStartMithrilPartialSync')();
+  },
 };
 
 type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;
@@ -129,9 +137,16 @@ function AutoOpenedPartialSyncConfirmation() {
 storiesOf('Nodes / Diagnostic', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Partial Sync CTA Ready', () => <DaedalusDiagnostics {...baseProps} />)
-  .add('Partial Sync CTA Blocked', () => <DaedalusDiagnostics {...baseProps} />)
+  .add('Partial Sync CTA Blocked', () => (
+    <DaedalusDiagnostics {...baseProps} isMithrilPartialSyncWorking />
+  ))
   .add('Partial Sync At Or Past Snapshot', () => (
-    <DaedalusDiagnostics {...baseProps} />
+    <DaedalusDiagnostics
+      {...baseProps}
+      isMithrilSignificantlyBehind={false}
+      isMithrilAtOrPastSnapshot
+      mithrilBehindByEpochs={undefined}
+    />
   ))
   .add('Partial Sync Confirmation', () => (
     <AutoOpenedPartialSyncConfirmation />

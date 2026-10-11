@@ -5,6 +5,7 @@
     pkgs,
     config,
     common,
+    mkCommon,
     linuxBuild ? null,
     darwinBuild ? null,
     ...
@@ -433,6 +434,44 @@
           } ''
             ${lib.concatMapStringsSep "\n" (cluster: ''
                 test "$(jq -r '.TraceOptionNodeName' ${common.daedalusConfigs.${cluster}.configFiles}/config.yaml)" = daedalus
+              '')
+              common.sourceLib.installerClusters}
+            touch $out
+          '';
+        # Ledger peers are off in the Windows topology only, with the bootstrap
+        # relays added as public roots (see `disableLedgerPeers` in common.nix).
+        # This asserts, for every installer cluster, that the Windows topology
+        # differs from upstream in exactly those keys, and that Linux and both
+        # macOS targets ship upstream unchanged.
+        node-topology-ledger-peers = let
+          topology = target: cluster: "${(mkCommon target).daedalusConfigs.${cluster}.configFiles}/topology.yaml";
+          upstream = cluster: let
+            env =
+              if cluster == "mainnet-flight"
+              then "mainnet"
+              else cluster;
+          in "${inputs.cardano-playground}/docs/environments-pre/${env}/topology.json";
+          normalised = "jq -S 'del(.useLedgerAfterSlot, .peerSnapshotFile, .publicRoots)'";
+        in
+          pkgs.runCommand "node-topology-ledger-peers" {
+            nativeBuildInputs = [pkgs.jq pkgs.diffutils];
+          } ''
+            set -euo pipefail
+            ${lib.concatMapStringsSep "\n" (cluster: ''
+                echo "${cluster}"
+                jq -e '.useLedgerAfterSlot > 0 and (.bootstrapPeers | length > 0)' \
+                  ${upstream cluster} >/dev/null
+                jq -e '.useLedgerAfterSlot == -1 and (has("peerSnapshotFile") | not)' \
+                  ${topology "x86_64-windows" cluster} >/dev/null
+                jq -e --slurpfile up ${upstream cluster} '
+                  .publicRoots == ($up[0].publicRoots
+                    + [{accessPoints: $up[0].bootstrapPeers, advertise: false}])
+                ' ${topology "x86_64-windows" cluster} >/dev/null
+                cmp <(${normalised} ${upstream cluster}) \
+                  <(${normalised} ${topology "x86_64-windows" cluster})
+                ${lib.concatMapStringsSep "\n" (target: ''
+                  cmp ${upstream cluster} ${topology target cluster}
+                '') ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"]}
               '')
               common.sourceLib.installerClusters}
             touch $out

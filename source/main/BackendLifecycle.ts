@@ -2,7 +2,10 @@ import { readFileSync } from 'fs';
 import { BrowserWindow } from 'electron';
 import { logger } from './utils/logging';
 import WatchdogManager from './WatchdogManager';
-import type { WatchdogState as InternalWatchdogState } from './WatchdogManager';
+import type {
+  InstallerResult,
+  WatchdogState as InternalWatchdogState,
+} from './WatchdogManager';
 import type {
   MithrilProgress,
   WatchdogState,
@@ -16,19 +19,27 @@ import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
   watchdogStoppedChannel,
+  backendStopStatusChannel,
 } from './ipc/nodePushChannel';
-import { requestElectronStore } from './ipc/electronStoreConversation';
 import {
-  STORAGE_KEYS as keys,
-  STORAGE_TYPES as types,
-} from '../common/config/electron-store.config';
-import {
-  getRtsFlagsSettings,
-  deleteRtsFlagsSettings,
-} from './utils/rtsFlagsSettings';
+  buildMigrateStateCommand,
+  forgetMigratedSettings,
+} from './utils/watchdogStateMigration';
 import { environment } from './environment';
 
 type EventHandler = (event: Record<string, unknown>) => void;
+
+// Watchdog events that can change the stop status pushed to the renderer.
+const STOP_STATUS_EVENTS = new Set([
+  'backend_stop_progress',
+  'node_shutdown_ms',
+  'node_started',
+  'wallet_started',
+  'wallet_ready',
+  'wallet_unrecoverable',
+  'node_unrecoverable',
+  'mithril_status',
+]);
 
 class BackendLifecycle {
   private manager: WatchdogManager | null = null;
@@ -36,6 +47,8 @@ class BackendLifecycle {
   private eventHandlers: EventHandler[] = [];
   private _defaultChainPath: string | null = null;
   private _customChainPath: string | null = null;
+  private _stopPromise: Promise<void> | null = null;
+  private _installerPath: string | null = null;
 
   // ---------------------------------------------------------------------------
   // Setup
@@ -96,6 +109,9 @@ class BackendLifecycle {
       const win = this.getWindow();
       if (!win) return;
       const eventType = event.event as string | undefined;
+      if (eventType && STOP_STATUS_EVENTS.has(eventType)) {
+        this._sendStopStatus();
+      }
       if (eventType === 'wallet_ready') {
         sendWalletPort(event.port as number);
       } else if (eventType === 'mithril_progress') {
@@ -129,6 +145,9 @@ class BackendLifecycle {
         watchdogStoppedChannel.send(undefined, win.webContents);
       } else if (eventType === 'migrate_state_request') {
         this._handleMigrateStateRequest(manager);
+      } else if (eventType === 'migrate_state_saved') {
+        // watchdog-state.json now holds the migrated settings.
+        forgetMigratedSettings(environment.network);
       }
     });
 
@@ -152,6 +171,7 @@ class BackendLifecycle {
     this._customChainPath = customPath;
     if (this.manager) {
       this.manager.sendCommand({ cmd: 'set_chain_path', path: customPath });
+      this._sendStopStatus();
       logger.info('BackendLifecycle: setCustomChainPath — sent to watchdog', {
         customPath,
       });
@@ -168,45 +188,74 @@ class BackendLifecycle {
   // ---------------------------------------------------------------------------
 
   private _handleMigrateStateRequest(manager: WatchdogManager): void {
-    const { network } = environment;
-
-    const chainPath =
-      (requestElectronStore({
-        type: types.GET,
-        key: keys.CUSTOM_CHAIN_PATH,
-      }) as string | undefined) ?? null;
-
-    // Raw RTS flags stored as e.g. ['-c']; wrap in +RTS/-RTS delimiters for cardano-node.
-    const rawRtsFlags = getRtsFlagsSettings(network) ?? [];
-    const nodeExtraArgs =
-      rawRtsFlags.length > 0 ? ['+RTS', ...rawRtsFlags, '-RTS'] : [];
+    const command = buildMigrateStateCommand(environment.network);
 
     logger.info('BackendLifecycle: responding to migrate_state_request', {
-      chainPath,
-      nodeExtraArgs,
+      chainPath: command.chain_path,
+      nodeExtraArgs: command.node_extra_args,
     });
 
-    manager.sendCommand({
-      cmd: 'migrate_state',
-      chain_path: chainPath,
-      electron_flags: [],
-      node_extra_args: nodeExtraArgs,
-    });
-
-    // Remove migrated keys so watchdog-state.json is the single source of truth.
-    requestElectronStore({ type: types.DELETE, key: keys.CUSTOM_CHAIN_PATH });
-    deleteRtsFlagsSettings(network);
+    // The migrated keys stay in electron-store until the watchdog reports
+    // migrate_state_saved, so a reply it never applied is sent again on the
+    // next launch.
+    manager.sendCommand(command);
   }
 
   // ---------------------------------------------------------------------------
   // Stop
   // ---------------------------------------------------------------------------
 
-  async stop(): Promise<void> {
-    if (!this.manager) return;
-    const manager = this.manager;
-    this.manager = null;
-    await manager.stop();
+  // Stops the backend for quit. The manager stays in place until the process
+  // exits, so the renderer keeps receiving state and progress while the window
+  // shows the shutdown status. Repeated calls share one stop.
+  stop(): Promise<void> {
+    const { manager } = this;
+    if (!manager) return Promise.resolve();
+    if (this._stopPromise === null) {
+      this._stopPromise = manager.stop();
+      this._sendStopStatus();
+    }
+    return this._stopPromise;
+  }
+
+  isStopping(): boolean {
+    return this._stopPromise !== null;
+  }
+
+  // Has the watchdog start the update installer at `path` once it has stopped
+  // cardano-wallet and cardano-node, as Daedalus quits. Returns false when no
+  // watchdog connection exists to ask.
+  installUpdate(path: string): boolean {
+    if (!this.manager) return false;
+    this._installerPath = path;
+    this.manager.requestInstall(path);
+    return true;
+  }
+
+  // What came of installUpdate(), once stop() has resolved; null if it was
+  // not called.
+  getInstallOutcome(): { path: string; result: InstallerResult } | null {
+    const path = this._installerPath;
+    const result = this.manager?.getInstallResult() ?? null;
+    if (path === null || result === null) return null;
+    return { path, result };
+  }
+
+  // Tells the renderer at once that the backend is stopping, for quit or for a
+  // requested restart, so it never reads the wallet going away as a lost
+  // connection.
+  private _sendStopStatus(): void {
+    const win = this.getWindow();
+    if (!win || win.isDestroyed()) return;
+    const state = this.manager?.getState();
+    backendStopStatusChannel.send(
+      {
+        quitting: this._stopPromise !== null,
+        restart: state?.requestedRestart ?? null,
+        progress: state?.backendStopProgress ?? null,
+      },
+      win.webContents
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -229,6 +278,7 @@ class BackendLifecycle {
       return;
     }
     this.manager.sendCommand(cmd);
+    this._sendStopStatus();
   }
 
   onEvent(handler: EventHandler): void {

@@ -11,6 +11,7 @@ import {
   nodeStartupStatusChannel,
   nodeBlockSyncProgressChannel,
   watchdogStoppedChannel,
+  backendStopStatusChannel,
 } from '../ipc/nodePushChannel';
 import {
   validateChainStorageChannel,
@@ -20,6 +21,8 @@ import type {
   LoadingPhase,
   MithrilProgress,
   ChainStorageValidation,
+  BackendStopProgress,
+  RequestedRestart,
 } from '../../../common/types/watchdog.types';
 
 // DEFINE CONSTANTS
@@ -50,6 +53,7 @@ export default class BackendStore extends Store {
   @observable mithrilProgress: MithrilProgress | null = null;
   @observable lastError: string | null = null;
   @observable walletUnrecoverable = false;
+  @observable nodeUnrecoverable = false;
   @observable nodeSocketWaitMs: number | null = null;
   @observable walletReadyWaitMs: number | null = null;
   @observable nodeForceKilled = false;
@@ -61,10 +65,19 @@ export default class BackendStore extends Store {
   } | null = null;
   @observable _mithrilPromptDismissed = false;
   @observable _probeHasFired = false;
+  // Daedalus is quitting
   @observable isStopping = false;
+  // Latest progress of a backend stop, for quit or a requested restart
+  @observable backendStopProgress: BackendStopProgress | null = null;
+  // A restart the user asked for, until it has stopped the process
+  @observable requestedRestart: RequestedRestart | null = null;
   // Chain storage paths (from BackendLifecycle, included in state poll)
   @observable defaultChainPath: string | null = null;
   @observable customChainPath: string | null = null;
+  // The configured storage folder's validation when its chain subdirectory
+  // holds another network's database, which the watchdog will neither start
+  // the node on nor change; null otherwise
+  @observable customChainPathValidation: ChainStorageValidation | null = null;
   // Runtime overrides (from watchdog-state.json via watchdog_started event)
   @observable nodeExtraArgs: string[] = [];
   // True once user has confirmed their chain storage location this session;
@@ -85,6 +98,7 @@ export default class BackendStore extends Store {
     nodeStartupStatusChannel.onReceive(this._onNodeStartupStatus);
     nodeBlockSyncProgressChannel.onReceive(this._onNodeBlockSyncProgress);
     watchdogStoppedChannel.onReceive(this._onWatchdogStopped);
+    backendStopStatusChannel.onReceive(this._onBackendStopStatus);
 
     // ========== ACTION LISTENERS =========== //
     this.actions.networkStatus.restartNode.listen(this._restartNode);
@@ -135,6 +149,7 @@ export default class BackendStore extends Store {
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
         this.walletUnrecoverable = state.walletUnrecoverable;
+        this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;
         this.walletReadyWaitMs = state.walletReadyWaitMs;
         this.nodeForceKilled = state.nodeForceKilled;
@@ -146,6 +161,11 @@ export default class BackendStore extends Store {
         this.defaultChainPath = state.defaultChainPath;
         this.customChainPath = state.customChainPath;
         this.nodeExtraArgs = state.nodeExtraArgs ?? [];
+        if (state.shutdownRequested) {
+          this.isStopping = true;
+        }
+        this.backendStopProgress = state.backendStopProgress;
+        this.requestedRestart = state.requestedRestart ?? null;
       });
     } catch (error) {} // eslint-disable-line
   };
@@ -220,6 +240,21 @@ export default class BackendStore extends Store {
     });
   };
 
+  @action
+  _onBackendStopStatus = async (event: {
+    quitting: boolean;
+    restart: RequestedRestart | null;
+    progress: BackendStopProgress | null;
+  }): Promise<void> => {
+    runInAction('update backend stop status from push', () => {
+      if (event.quitting) {
+        this.isStopping = true;
+      }
+      this.requestedRestart = event.restart;
+      this.backendStopProgress = event.progress;
+    });
+  };
+
   // =============== COMPUTED ===============
   @computed
   get mithrilPromptDismissed(): boolean {
@@ -228,9 +263,20 @@ export default class BackendStore extends Store {
 
   @computed
   get loadingPhase(): LoadingPhase {
+    // Daedalus is quitting: the backend is being stopped, whatever state it
+    // was in before
+    if (this.isStopping) {
+      return 'stopping';
+    }
     // Unrecoverable error takes top priority
-    if (this.walletUnrecoverable) {
+    if (this.walletUnrecoverable || this.nodeUnrecoverable) {
       return 'error';
+    }
+    // A restart the user asked for: the process is stopping, or for a wallet
+    // restart, starting again. A node restart continues with the startup
+    // phases below once the new node has started.
+    if (this.requestedRestart !== null) {
+      return 'stopping';
     }
     // No chain_status received yet
     if (this.hasChain === null) {
@@ -295,12 +341,48 @@ export default class BackendStore extends Store {
     mithrilCommandChannel.send({ cmd: 'restart_wallet' });
   };
 
+  // Retries after the watchdog has given up on a process that kept crashing:
+  // the wallet alone when only the wallet failed, otherwise node and wallet.
+  retryBackend = () => {
+    mithrilCommandChannel.send({
+      cmd:
+        this.walletUnrecoverable && !this.nodeUnrecoverable
+          ? 'restart_wallet'
+          : 'restart_node',
+    });
+  };
+
   // =============== CHAIN STORAGE ACTIONS ===============
 
   validateChainStorageDirectory = async (
     path: string
   ): Promise<ChainStorageValidation> => {
     return validateChainStorageChannel.request({ path });
+  };
+
+  // Checks the configured storage folder when the picker is shown. A folder
+  // was accepted when it was picked, but another network's Daedalus can write
+  // its database there later, and a folder picked before such folders were
+  // refused can hold one. Only that case is recorded: the watchdog refuses
+  // such a database, so the picker must not offer to continue with it.
+  checkCustomChainPath = async (): Promise<void> => {
+    const path = this.customChainPath;
+    let validation: ChainStorageValidation | null = null;
+    try {
+      validation =
+        path == null
+          ? null
+          : await validateChainStorageChannel.request({ path });
+    } catch {
+      validation = null;
+    }
+    runInAction('set customChainPathValidation', () => {
+      this.customChainPathValidation =
+        validation != null &&
+        validation.reason === 'chain-subdirectory-other-network'
+          ? validation
+          : null;
+    });
   };
 
   @action

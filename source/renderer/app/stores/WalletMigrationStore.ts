@@ -50,6 +50,9 @@ export const WalletMigrationStatuses: {
   SKIPPED: 'skipped',
   ERRORED: 'errored',
 };
+// Upper bound on the main process answering an export request.
+const EXPORT_WALLETS_TIMEOUT_MS = 30000;
+
 export default class WalletMigrationStore extends Store {
   @observable
   walletMigrationStep: ImportWalletStep | null | undefined = null;
@@ -233,11 +236,28 @@ export default class WalletMigrationStore extends Store {
     // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     logger.debug('WalletMigrationStore: Starting wallet export...');
     this.isExportRunning = true;
-    // @ts-ignore — pre-existing: channel type params are swapped; cast works around it
-    const { wallets, errors } = (await exportWalletsChannel.request({
-      exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
-      locale: this.stores.profile.currentLocale,
-    } as unknown as ExportWalletsMainResponse)) as unknown as ExportWalletsMainResponse;
+    let wallets: ExportWalletsMainResponse['wallets'] = [];
+    let errors = '';
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      // The channel's type parameters are declared swapped; the cast matches them.
+      const request = exportWalletsChannel.request({
+        exportSourcePath: this.exportSourcePath || this.defaultExportSourcePath,
+        locale: this.stores.profile.currentLocale,
+      } as unknown as ExportWalletsMainResponse) as unknown as Promise<ExportWalletsMainResponse>;
+      const timeout = new Promise<never>((_, reject) => {
+        timer = setTimeout(
+          () => reject(new Error('Wallet export timed out')),
+          EXPORT_WALLETS_TIMEOUT_MS
+        );
+      });
+      ({ wallets, errors } = await Promise.race([request, timeout]));
+    } catch (error) {
+      logger.error('WalletMigrationStore: Wallet export failed', { error });
+      errors = String(error);
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
     runInAction('update exportedWallets and exportErrors', () => {
       this.exportedWallets = orderBy(
         wallets.map((wallet) => {

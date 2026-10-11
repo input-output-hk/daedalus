@@ -13,6 +13,7 @@ import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/ap
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
 import { updateMode, updateRunnerBin } from '../config';
+import { backendLifecycle } from '../BackendLifecycle';
 // IpcChannel<Incoming, Outgoing>
 const manageAppUpdateChannel: MainIpcChannel<Request, Response> =
   new MainIpcChannel(MANAGE_APP_UPDATE);
@@ -198,10 +199,15 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     if (!installerHash) return response(false, functionPrefix);
     // For linux we execute the installer file
     if (environment.isLinux) return installUpdate(filePath);
-    // For other OS we launch the installer file after the app was closed
-    app.on('quit', () => {
+    // On Windows and macOS the installer replaces cardano-node and
+    // cardano-wallet, so the watchdog starts it once it has stopped both,
+    // while Daedalus quits.
+    if (!backendLifecycle.installUpdate(filePath)) {
+      logger.warn('No watchdog to start the installer; opening it directly', {
+        filePath,
+      });
       shell.openPath(filePath);
-    });
+    }
     app.quit();
     return response(true, functionPrefix);
   });

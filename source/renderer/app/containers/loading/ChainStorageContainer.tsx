@@ -11,11 +11,16 @@ class ChainStorageContainer extends Component<InjectedProps> {
     actions: null,
   };
 
+  componentDidMount() {
+    this.props.stores.backend.checkCustomChainPath();
+  }
+
   render() {
     const { backend } = this.props.stores;
     const {
       defaultChainPath,
       customChainPath,
+      customChainPathValidation,
       validateChainStorageDirectory,
       setChainStorageDirectory,
       resetChainStorageDirectory,
@@ -26,6 +31,7 @@ class ChainStorageContainer extends Component<InjectedProps> {
       <ChainStorageLocationPicker
         defaultChainPath={defaultChainPath}
         customChainPath={customChainPath}
+        chainStorageValidation={customChainPathValidation}
         onValidateChainStorageDirectory={validateChainStorageDirectory}
         onSetChainStorageDirectory={setChainStorageDirectory}
         onResetChainStorageDirectory={resetChainStorageDirectory}

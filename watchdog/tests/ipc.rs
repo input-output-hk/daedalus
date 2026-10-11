@@ -76,7 +76,7 @@ fn config_json(socket_path: &str, state_dir: &str, wallet_port: u16, pub_logs_di
 fn populate_chain(state_dir: &std::path::Path) {
     let chain = state_dir.join("chain");
     std::fs::create_dir_all(&chain).unwrap();
-    std::fs::write(chain.join(".sentinel"), b"exists").unwrap();
+    std::fs::write(chain.join("protocolMagicId"), b"1").unwrap();
 }
 
 // Wraps a running watchdog process with a background thread that forwards

@@ -39,8 +39,6 @@ class Root extends Component<Props> {
     const { hasLoadedWallets } = wallets;
     const {
       isConnected,
-      isNodeStopping,
-      isNodeStopped,
       isNotEnoughDiskSpace,
       isSplashShown,
       isSystemTimeCorrect,
@@ -55,7 +53,7 @@ class Root extends Component<Props> {
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
     // for all the screens except of the "Network status" screen.
-    const isNodeInStoppingSequence = isNodeStopping || isNodeStopped;
+    const isNodeInStoppingSequence = backend.loadingPhase === 'stopping';
 
     if (
       isCurrentLocaleSet &&

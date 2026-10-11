@@ -28,6 +28,7 @@ import { openLocalDirectoryChannel } from './open-local-directory';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
+import { handleExportWalletsRequests } from './exportWalletsChannel';
 
 export default (window: BrowserWindow) => {
   compressLogsApi();
@@ -47,6 +48,7 @@ export default (window: BrowserWindow) => {
   handleAddressIntrospectionRequests();
   handleManageAppUpdateRequests(window);
   handleGovernanceAnchorRequests();
+  handleExportWalletsRequests();
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions
@@ -88,6 +90,10 @@ export default (window: BrowserWindow) => {
         defaultChainPath: null,
         customChainPath: null,
         nodeExtraArgs: [],
+        shutdownRequested: false,
+        backendStopProgress: null,
+        nodeUnrecoverable: false,
+        requestedRestart: null,
       }
     )
   );

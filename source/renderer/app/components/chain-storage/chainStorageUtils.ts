@@ -47,7 +47,16 @@ export const getValidationMessage = (
     case 'insufficient-space':
       return intl.formatMessage(messages.validationInsufficientSpace);
     case 'path-is-file':
+    case 'chain-entry-not-directory':
       return intl.formatMessage(messages.subdirectoryErrorConflict);
+    case 'chain-subdirectory-not-database':
+      return intl.formatMessage(
+        messages.validationChainSubdirectoryNotDatabase
+      );
+    case 'chain-subdirectory-other-network':
+      return intl.formatMessage(
+        messages.validationChainSubdirectoryOtherNetwork
+      );
     case 'unknown':
     default:
       return intl.formatMessage(messages.validationUnknown);
