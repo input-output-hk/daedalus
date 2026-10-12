@@ -72,6 +72,10 @@ path = "src/bin/mock_snapshot_converter_slow.rs"
 name = "mock-snapshot-converter-sentinel"
 path = "src/bin/mock_snapshot_converter_sentinel.rs"
 
+[[bin]]
+name = "mock-snapshot-converter-chatty"
+path = "src/bin/mock_snapshot_converter_chatty.rs"
+
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }

@@ -18,6 +18,9 @@ const PROGRESS_THROTTLE_MS: u128 = 500;
 // converter exits successfully.  Wide enough for inter-process pipe delivery
 // on a loaded CI machine; negligible relative to the overall pipeline time.
 const CUTOVER_GATE_MS: u64 = 100;
+// How much of a converter's stdout and stderr is kept for the log. Its error
+// messages are a few lines; anything longer is repeated progress output.
+const SUBPROCESS_OUTPUT_TAIL: usize = 16 * 1024;
 
 pub enum PipelineResult {
     Installed,
@@ -547,13 +550,43 @@ async fn find_highest_slot(ledger_dir: &Path) -> Result<u64> {
         .ok_or_else(|| anyhow::anyhow!("No slot directories found in ledger dir"))
 }
 
+/// Reads `reader` to end of stream and returns its last `cap` bytes.
+async fn read_tail(mut reader: impl tokio::io::AsyncRead + Unpin, cap: usize) -> Vec<u8> {
+    use tokio::io::AsyncReadExt;
+    let mut tail = Vec::new();
+    let mut chunk = [0u8; 8192];
+    loop {
+        match reader.read(&mut chunk).await {
+            Ok(0) | Err(_) => break,
+            Ok(n) => {
+                tail.extend_from_slice(&chunk[..n]);
+                if tail.len() > cap {
+                    tail.drain(..tail.len() - cap);
+                }
+            }
+        }
+    }
+    tail
+}
+
 /// Wait for `proc` to exit, honouring cancel/stop commands from `cmd_rx`.
-/// Drains and logs stderr after the process exits.
+/// Reads its piped stdout and stderr while it runs and logs the last
+/// SUBPROCESS_OUTPUT_TAIL bytes of each after it exits. A pipe that nobody
+/// reads fills up (64 KiB on Windows) and blocks the child's next write, so
+/// the child would never exit.
 async fn run_subprocess(
     label: &str,
     proc: &mut tokio::process::Child,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
 ) -> ProcResult {
+    let stdout = proc
+        .stdout
+        .take()
+        .map(|s| tokio::spawn(read_tail(s, SUBPROCESS_OUTPUT_TAIL)));
+    let stderr = proc
+        .stderr
+        .take()
+        .map(|s| tokio::spawn(read_tail(s, SUBPROCESS_OUTPUT_TAIL)));
     let result = loop {
         tokio::select! {
             result = proc.wait() => {
@@ -580,15 +613,13 @@ async fn run_subprocess(
             }
         }
     };
-    if let Some(stderr) = proc.stderr.take() {
-        use tokio::io::AsyncReadExt;
-        let mut buf = String::new();
-        let _ = tokio::io::BufReader::new(stderr)
-            .read_to_string(&mut buf)
-            .await;
-        let trimmed = buf.trim();
+    for (stream, reader) in [("stdout", stdout), ("stderr", stderr)] {
+        let Some(reader) = reader else { continue };
+        let Ok(tail) = reader.await else { continue };
+        let text = String::from_utf8_lossy(&tail);
+        let trimmed = text.trim();
         if !trimmed.is_empty() {
-            info!("mithril: {label} stderr:\n{trimmed}");
+            info!("mithril: {label} {stream}:\n{trimmed}");
         }
     }
     result
@@ -640,6 +671,7 @@ async fn run_converter(
         .arg(&lsm_export_dir)
         .arg("--config")
         .arg(&cfg.converter_config)
+        .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
     tether_to_watchdog(&mut convert_cmd);
@@ -678,6 +710,7 @@ async fn run_converter(
         .arg(&lsm_export_dir)
         .arg("--snapshot")
         .arg(&slot_str)
+        .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
     tether_to_watchdog(&mut import_cmd);
