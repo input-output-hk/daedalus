@@ -36,6 +36,7 @@ const MOCK_CONVERTER: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter");
 const MOCK_CONVERTER_FAIL: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter-fail");
 const MOCK_CONVERTER_SLOW: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter-slow");
 const MOCK_CONVERTER_SENTINEL: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter-sentinel");
+const MOCK_CONVERTER_CHATTY: &str = env!("CARGO_BIN_EXE_mock-snapshot-converter-chatty");
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
 
@@ -1379,6 +1380,48 @@ fn mithril_conversion_failure() {
     expect(&rx, "stopped");
     drop(stdin);
     let _ = child.wait();
+}
+
+/// Converter writes 1 MiB to stdout and stderr per step → both steps finish and
+/// the install completes; only the tail of that output reaches the log.
+#[test]
+fn mithril_converter_large_output() {
+    let dir = TempDir::new("mithril-conv-chatty");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .converter_bin(MOCK_CONVERTER_CHATTY)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "converting");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    let log =
+        std::fs::read_to_string(dir.path().join("logs").join("watchdog.log")).unwrap_or_default();
+    assert!(
+        log.contains("snapshot-converter convert stderr")
+            && log.contains("mock-snapshot-converter-chatty: done"),
+        "converter stderr tail must be logged"
+    );
+    assert!(
+        log.len() < 256 * 1024,
+        "converter output must be cut to its tail, log is {} bytes",
+        log.len()
+    );
 }
 
 // ── T10: Marker recovery on startup ──────────────────────────────────────────
