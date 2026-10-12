@@ -42,7 +42,11 @@ const DIRTY_REV: &str = "dirty";
 /// The build counter is decimal and therefore also valid hex, so matching on
 /// "looks like a hex string" would be ambiguous. Position is not.
 pub fn rev_from_filename(filename: &str) -> Option<&str> {
-    let stem = filename.rsplit_once('.').map_or(filename, |(stem, _)| stem);
+    // Arch packages have a compound extension; removing only `.zst` leaves
+    // `.pkg.tar` after the system and prevents the suffix match below.
+    let stem = filename
+        .strip_suffix(".pkg.tar.zst")
+        .unwrap_or_else(|| filename.rsplit_once('.').map_or(filename, |(stem, _)| stem));
 
     let without_system = KNOWN_SYSTEMS.iter().find_map(|system| {
         stem.strip_suffix(system)
@@ -260,6 +264,32 @@ mod tests {
         assert_eq!(
             rev_from_filename("daedalus-11.2.0-86185-mainnet-8f9737937-x86_64-linux.bin"),
             Some("8f9737937")
+        );
+    }
+
+    #[test]
+    fn rev_from_linux_package_names() {
+        for ext in ["deb", "rpm", "pkg.tar.zst"] {
+            let name = format!("daedalus-11.5.0-87782-mainnet-8783726cb-x86_64-linux.{ext}");
+            assert_eq!(rev_from_filename(&name), Some("8783726cb"), "for {name}");
+        }
+    }
+
+    #[test]
+    fn arch_package_revision_preserves_prerelease_and_dirty_handling() {
+        assert_eq!(
+            rev_from_filename(
+                "daedalus-11.5.0-rc1-87782-preprod-8783726cb-x86_64-linux.pkg.tar.zst"
+            ),
+            Some("8783726cb")
+        );
+        assert_eq!(
+            rev_from_filename("daedalus-11.5.0-87782-mainnet-dirty-x86_64-linux.pkg.tar.zst"),
+            Some(DIRTY_REV)
+        );
+        assert_eq!(
+            rev_from_filename("daedalus-11.5.0-87782-mainnet-8783726cb-riscv64-linux.pkg.tar.zst"),
+            None
         );
     }
 
