@@ -4,7 +4,7 @@
 //! * `code_sign_remote`   — macOS / Windows code signing via an SSH host
 
 use anyhow::{Context, Result, bail};
-use std::io::Read;
+use std::io::{Read, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
 
@@ -14,6 +14,72 @@ pub struct NotaryCreds {
     pub apple_id: String,
     pub password: String,
     pub team_id: String,
+}
+
+/// GPG-sign `data` bytes, returning the armored detached signature.
+///
+/// Writes `data` to a temp file under `std::env::temp_dir()`, calls
+/// `sign_file`, reads back the `.asc`, then removes the temp dir.
+pub fn sign_data(data: &[u8], gpg_user: Option<&str>) -> Result<Vec<u8>> {
+    use std::time::SystemTime;
+    let nanos = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap_or_default()
+        .subsec_nanos();
+    let tmp = std::env::temp_dir().join(format!("drt-sign-{nanos}"));
+    std::fs::create_dir_all(&tmp)?;
+    let data_path = tmp.join("data");
+    std::fs::write(&data_path, data)?;
+    sign_file(&data_path, gpg_user)?;
+    let sig_path = tmp.join("data.asc");
+    let sig = std::fs::read(&sig_path).context("reading detached signature")?;
+    let _ = std::fs::remove_dir_all(&tmp);
+    Ok(sig)
+}
+
+/// GPG clearsign `data` bytes, returning the signed message (armored).
+///
+/// Used to produce APT `InRelease` files, which are clearsigned `Release` files.
+pub fn clearsign_data(data: &[u8], gpg_user: Option<&str>) -> Result<Vec<u8>> {
+    let mut cmd = Command::new("gpg2");
+    cmd.args(["--clearsign", "--armor"]);
+    if let Some(user) = gpg_user {
+        cmd.arg("--local-user").arg(user);
+    }
+    let mut child = cmd
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .map_err(|e| anyhow::anyhow!("failed to spawn gpg2 --clearsign: {e}"))?;
+    child.stdin.as_mut().unwrap().write_all(data)?;
+    drop(child.stdin.take());
+    let output = child.wait_with_output().context("gpg2 --clearsign wait")?;
+    if !output.status.success() {
+        anyhow::bail!("gpg2 --clearsign exited with {}", output.status);
+    }
+    Ok(output.stdout)
+}
+
+/// Export the armored GPG public key for `gpg_user` (or the default key if None).
+pub fn export_public_key(gpg_user: Option<&str>) -> Result<Vec<u8>> {
+    let mut cmd = Command::new("gpg2");
+    cmd.args(["--armor", "--export"]);
+    if let Some(user) = gpg_user {
+        cmd.arg(user);
+    }
+    let output = cmd
+        .output()
+        .map_err(|e| anyhow::anyhow!("failed to spawn gpg2 --export: {e}"))?;
+    if !output.status.success() {
+        anyhow::bail!("gpg2 --export exited with {}", output.status);
+    }
+    if output.stdout.is_empty() {
+        anyhow::bail!(
+            "gpg2 --export produced no output — is the key in the keyring?\n\
+             Hint: gpg2 --list-secret-keys"
+        );
+    }
+    Ok(output.stdout)
 }
 
 /// GPG-sign `path`, producing `<path>.asc`.
@@ -268,10 +334,10 @@ fn code_sign_windows(
     let cluster = parse_windows_installer_cluster(filename)?;
 
     // The makeSignedInstaller for Windows is exposed under x86_64-linux packages
-    // (with the -x86_64-windows suffix) because it is a Linux shell script that
-    // cross-compiles and signs for Windows.
+    // (as makeSignedInstaller-x86_64-windows-<env>) because it is a Linux shell
+    // script that cross-compiles and signs for Windows.
     let flake_ref = format!(
-        "github:input-output-hk/daedalus/{gitrev}#packages.x86_64-linux.makeSignedInstaller-{cluster}-x86_64-windows"
+        "github:input-output-hk/daedalus/{gitrev}#packages.x86_64-linux.makeSignedInstaller-x86_64-windows-{cluster}"
     );
 
     println!("    nix run  → {flake_ref}");

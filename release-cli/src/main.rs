@@ -2,6 +2,7 @@ mod cli;
 mod fetch;
 mod hash;
 mod installers;
+mod linux_repo_cmd;
 mod newsfeed_cmd;
 mod provenance;
 mod s3;
@@ -130,6 +131,33 @@ async fn main() -> Result<()> {
             }
         },
 
+        Commands::PublishLinuxRepos {
+            installers_dir,
+            bucket,
+            bucket_url,
+            gpg_user,
+            endpoint_url,
+            no_acl,
+            dry_run,
+            skip_apt,
+            skip_yum,
+            skip_arch,
+        } => {
+            linux_repo_cmd::cmd_publish_linux_repos(linux_repo_cmd::PublishLinuxReposOpts {
+                installers_dir: &installers_dir,
+                bucket: &bucket,
+                bucket_url: &bucket_url,
+                endpoint_url,
+                gpg_user: gpg_user.as_deref(),
+                no_acl,
+                dry_run,
+                skip_apt,
+                skip_yum,
+                skip_arch,
+            })
+            .await
+        }
+
         Commands::FetchInstallers { url, env, out_dir } => {
             fetch::fetch_installers(&url, &env, &out_dir).await
         }
@@ -233,7 +261,7 @@ async fn cmd_sign(
                 }
             }
             match inst.platform {
-                installers::Platform::DarwinArm => {
+                installers::Platform::MacOsArm => {
                     if skip_darwin {
                         println!("  {} [skip — --skip-darwin]", inst.filename);
                     } else {
@@ -265,7 +293,7 @@ async fn cmd_sign(
                         }
                     }
                 }
-                installers::Platform::DarwinX86 => {
+                installers::Platform::MacOsX86 => {
                     if skip_darwin_legacy {
                         println!("  {} [skip — --skip-darwin-legacy]", inst.filename);
                     } else {
@@ -328,7 +356,10 @@ async fn cmd_sign(
                         }
                     }
                 }
-                installers::Platform::Linux => {
+                installers::Platform::LinuxBin
+                | installers::Platform::LinuxDeb
+                | installers::Platform::LinuxRpm
+                | installers::Platform::LinuxArch => {
                     println!("  {} [no code signing for Linux]", inst.filename);
                 }
             }
@@ -355,6 +386,13 @@ async fn cmd_sign(
         for inst in &installer_dir.installers {
             println!("  {}", inst.filename);
             sign::sign_file(&inst.path, effective_gpg_user)?;
+        }
+
+        // Also GPG-sign any Linux packages (.deb, .rpm, .pkg.tar.zst) in the same dir.
+        let linux_pkgs = linux_repo_cmd::scan_linux_packages(installers_dir).unwrap_or_default();
+        for pkg in &linux_pkgs {
+            println!("  {}", pkg.filename);
+            sign::sign_file(&pkg.path, effective_gpg_user)?;
         }
     }
 
@@ -488,7 +526,8 @@ async fn cmd_release(opts: ReleaseOptions<'_>) -> Result<()> {
     }
 
     // ── 4b. Upload ────────────────────────────────────────────────────────────
-    let s3 = s3::S3Client::new(bucket.to_string(), bucket_url.to_string()).await?;
+    let s3 =
+        s3::S3Client::new(bucket.to_string(), bucket_url.to_string(), None, true, None).await?;
     if s3.key_prefix.is_empty() {
         println!("\n=== Uploading to s3://{} ===", s3.bucket);
     } else {

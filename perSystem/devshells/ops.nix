@@ -43,12 +43,21 @@
       printf "  ''${green}3. serve''${reset}    drt serve --installers installers/<cluster>/\n"
       printf "  ''${dim}            test locally before releasing''${reset}\n"
       printf "  ''${green}4. release''${reset}  drt release installers/<cluster>/ --bucket <bucket> --bucket-url <url>\n"
+      printf "  ''${green}5. linux''${reset}    drt publish-linux-repos installers/<cluster>/ --bucket <bucket> --bucket-url <url> --no-acl\n"
+      printf "  ''${dim}            AWS_ACCESS_KEY_ID  AWS_SECRET_ACCESS_KEY  AWS_ENDPOINT_URL (R2)''${reset}\n"
       printf "\n"
     '';
   in
     lib.optionalAttrs cargoLockExists {
       devShells.ops = pkgs.mkShell {
-        packages = [config.packages.drt pkgs.gnupg];
+        packages = [
+          config.packages.drt
+          pkgs.gnupg
+          # publish-linux-repos metadata extraction tools
+          pkgs.dpkg
+          pkgs.rpm
+          pkgs.libarchive
+        ];
         inherit shellHook;
       };
     };
