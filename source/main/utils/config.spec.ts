@@ -6,6 +6,7 @@ jest.mock('fs', () => ({ readFileSync: jest.fn() }));
 
 const hash = 'a'.repeat(64);
 const config = {
+  cardanoWalletSourceRevision: 'd408e4f29e46dc34454b160b3994ee9974b5cde2',
   dappBrowserPolicy: {
     revision: 1,
     globalEnabled: true,
@@ -90,4 +91,38 @@ it('accepts a missing policy so launch policy parsing can fail closed', () => {
   expect(
     readDappRuntimeConfig('/config/daedalus-config.json').dappBrowserPolicy
   ).toBeUndefined();
+});
+
+it.each([
+  undefined,
+  null,
+  123,
+  {},
+  '',
+  'a'.repeat(39),
+  'a'.repeat(41),
+  'A'.repeat(40),
+  'g'.repeat(40),
+])('rejects malformed wallet revision %p', (cardanoWalletSourceRevision) => {
+  (readFileSync as jest.Mock).mockReturnValue(
+    JSON.stringify({ ...config, cardanoWalletSourceRevision })
+  );
+
+  expect(() => readDappRuntimeConfig('/config/daedalus-config.json')).toThrow(
+    'Invalid Daedalus configuration'
+  );
+});
+
+it.each([
+  'f293d922f1930714aca7ede3cbb5ebf3fb710af6',
+  'd408e4f29e46dc34454b160b3994ee9974b5cde2',
+])('accepts full wallet revision %s', (cardanoWalletSourceRevision) => {
+  (readFileSync as jest.Mock).mockReturnValue(
+    JSON.stringify({ ...config, cardanoWalletSourceRevision })
+  );
+
+  expect(
+    readDappRuntimeConfig('/config/daedalus-config.json')
+      .cardanoWalletSourceRevision
+  ).toBe(cardanoWalletSourceRevision);
 });

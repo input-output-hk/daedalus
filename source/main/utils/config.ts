@@ -11,6 +11,7 @@ type DappPackageCluster = (typeof PACKAGE_CLUSTERS)[number];
 type DappNetworkCluster = Exclude<DappPackageCluster, 'mainnet-flight'>;
 
 export type DappRuntimeConfig = Readonly<{
+  cardanoWalletSourceRevision: string;
   dappBrowserPolicy: unknown;
   dappSandboxPackageCluster: DappPackageCluster;
   dappNetwork: Readonly<{
@@ -21,6 +22,7 @@ export type DappRuntimeConfig = Readonly<{
 }>;
 
 type RawDappRuntimeConfig = Partial<{
+  cardanoWalletSourceRevision: unknown;
   dappBrowserPolicy: unknown;
   dappSandboxPackageCluster: unknown;
   dappNetwork: unknown;
@@ -39,7 +41,10 @@ export const readDappRuntimeConfig = (
     const config = parsed as RawDappRuntimeConfig;
     const packageCluster = config.dappSandboxPackageCluster;
     const network = config.dappNetwork;
+    const sourceRevision = config.cardanoWalletSourceRevision;
     if (
+      typeof sourceRevision !== 'string' ||
+      !/^[0-9a-f]{40}$/u.test(sourceRevision) ||
       typeof packageCluster !== 'string' ||
       !PACKAGE_CLUSTERS.includes(
         packageCluster as (typeof PACKAGE_CLUSTERS)[number]
@@ -69,6 +74,7 @@ export const readDappRuntimeConfig = (
       throw new Error('invalid network');
 
     return Object.freeze({
+      cardanoWalletSourceRevision: sourceRevision,
       dappBrowserPolicy: config.dappBrowserPolicy,
       dappSandboxPackageCluster: trustedPackageCluster,
       dappNetwork: Object.freeze({

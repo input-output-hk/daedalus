@@ -54,17 +54,34 @@
     "cardano-wallet": {
       "flake": false,
       "locked": {
-        "lastModified": 1790823655,
-        "narHash": "sha256-x10fAvzHPtKNmnrE6osto94p6x5LRBHIg7WBxDK+1Fw=",
+        "lastModified": 1791386329,
+        "narHash": "sha256-kffdWQAyvUwfsiZi2CG8XjXsasolDNk2YZOcukgARcM=",
+        "owner": "cardano-foundation",
+        "repo": "cardano-wallet",
+        "rev": "f293d922f1930714aca7ede3cbb5ebf3fb710af6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cardano-foundation",
+        "ref": "v2026-10-07",
+        "repo": "cardano-wallet",
+        "type": "github"
+      }
+    },
+    "cardano-wallet-cip30": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790871518,
+        "narHash": "sha256-2qvM3bQm5djgQ7o8ddqkbE8BnclIGOwxyE0jSLdpN8o=",
         "owner": "se7en-labs-inc",
         "repo": "cardano-wallet",
-        "rev": "08549192054547e170ca4e484014d4609f996558",
+        "rev": "d408e4f29e46dc34454b160b3994ee9974b5cde2",
         "type": "github"
       },
       "original": {
         "owner": "se7en-labs-inc",
+        "ref": "cip30-alpha1",
         "repo": "cardano-wallet",
-        "rev": "08549192054547e170ca4e484014d4609f996558",
         "type": "github"
       }
     },
@@ -251,6 +268,7 @@
         "cardano-playground": "cardano-playground",
         "cardano-shell": "cardano-shell",
         "cardano-wallet": "cardano-wallet",
+        "cardano-wallet-cip30": "cardano-wallet-cip30",
         "crane": "crane",
         "fenix": "fenix",
         "flake-compat": "flake-compat",

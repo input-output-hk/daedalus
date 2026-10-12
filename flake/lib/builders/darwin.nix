@@ -269,11 +269,11 @@
       bundle-mithril-client = mkBundle "mithril-client" (common.mithril-client + "/bin/mithril-client");
       bundle-snapshot-converter = mkBundle "snapshot-converter" (lib.getExe common.snapshot-converter);
       # Unfortunately they bundle it upstream, but not in a subdir:
-      bundle-cardano-wallet = pkgs.runCommand "bundle-cardano-wallet" {} ''
-        cp -r ${common.cardano-wallet}/bin $out
+      bundle-cardano-wallet = genClusters (cluster: pkgs.runCommand "bundle-cardano-wallet" {} ''
+        cp -r ${(common.walletBackendForCluster cluster).packages.cardano-wallet}/bin $out
         chmod -R +w $out
         ${moveDylibsToSubdir "cardano-wallet"}
-      '';
+      '');
 
       # HID.node and others depend on `/nix/store`, we have to bundle them, too:
       bundleNodeJsNativeModule = pkgs.writeShellScript "bundleNodeJsNativeModule" ''
@@ -324,7 +324,7 @@
           BUILD_REV = sourceLib.buildRev;
           BUILD_REV_SHORT = sourceLib.buildRevShort;
           BUILD_COUNTER = sourceLib.buildCounter;
-          CARDANO_WALLET_VERSION = cardanoWalletVersion;
+          CARDANO_WALLET_VERSION = cardanoWalletVersion cluster;
           CARDANO_NODE_VERSION = cardanoNodeVersion;
           configurePhase =
             common.setupCacheAndGypDirs
@@ -394,7 +394,7 @@
             cp -r ${bundle-cardano-watchdog}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-cardano-cli}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-cardano-address}/. "$dir"/ && chmod -R +w "$dir/"
-            cp -r ${bundle-cardano-wallet}/. "$dir"/ && chmod -R +w "$dir/"
+            cp -r ${bundle-cardano-wallet.${cluster}}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-mithril-client}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-snapshot-converter}/. "$dir"/ && chmod -R +w "$dir/"
 

@@ -450,6 +450,7 @@
             and (.dappBrowserPolicy.cip142Revision == 0)
             and (.dappBrowserPolicy.hardwareConnectorEnabled == true)
             and (.dappSandboxPackageCluster | type == "string")
+            and (.cardanoWalletSourceRevision | test("^[0-9a-f]{40}$"))
             and (.dappNetwork.cluster | type == "string")
             and (.dappNetwork.genesisFile == "genesis.json")
             and (.dappNetwork.genesisHash | test("^[0-9a-f]{64}$"))

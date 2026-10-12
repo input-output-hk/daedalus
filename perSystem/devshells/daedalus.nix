@@ -74,7 +74,7 @@
           );
         buildCommand = "export >$out";
         CARDANO_NODE_VERSION = common.cardanoNodeVersion;
-        CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
+        CARDANO_WALLET_VERSION = common.cardanoWalletVersion cluster;
         DAEDALUS_CLUSTER = daedalusConfigs.daedalusConfig.cluster;
         DAEDALUS_NETWORK_NAME = daedalusConfigs.daedalusConfig.networkName;
         DAEDALUS_IS_FLIGHT =

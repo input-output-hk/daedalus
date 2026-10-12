@@ -102,9 +102,6 @@ import {
 } from './extensions/cip103';
 import { setCip30SessionRevoker } from './runtime';
 
-export const CARDANO_WALLET_SOURCE_REVISION =
-  '245c877a80d76138bee87f393fd2d36a75fdad47';
-
 const IMPLEMENTED_METHODS = new Set<DappCip30Method>([
   'api.getExtensions',
   'api.getNetworkId',
@@ -1540,7 +1537,7 @@ export const handleCip30BrokerRequests = (): void => {
     ),
     executeCip30WalletRequest,
     network,
-    CARDANO_WALLET_SOURCE_REVISION
+    dappRuntimeConfig.cardanoWalletSourceRevision
   );
   const grants = new GrantRepository(
     path.join(stateDirectoryPath, 'dapp-grants.json'),
@@ -1571,7 +1568,7 @@ export const handleCip30BrokerRequests = (): void => {
     dispatcher,
     network,
     networkName: dappRuntimeConfig.dappNetwork.cluster,
-    sourceRevision: CARDANO_WALLET_SOURCE_REVISION,
+    sourceRevision: dappRuntimeConfig.cardanoWalletSourceRevision,
     collateral: collateralService,
   });
   setDappBrokerLifecycleRevoker((guestWebContentsId) =>

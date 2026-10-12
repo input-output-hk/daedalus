@@ -74,7 +74,13 @@
 
 ### Chores
 
-- Pin `cardano-node` to 11.1.0 and the CIP-30-compatible `cardano-wallet` fork (`245c877a80d76138bee87f393fd2d36a75fdad47`).
+- Pin `cardano-node` to 11.1.3 (`938cba990357ae7c4b7f95c8f75dd9d31174bbeb`) for mainnet, Flight, preprod, and preview on Linux, Windows, and both macOS architectures; keep `cardano-cli` and `snapshot-converter` from the same node package set. Select the wallet by build cluster for installers, development shells, and displayed backend versions: stable `mainnet` uses `cardano-foundation/cardano-wallet` `v2026-10-07` (`f293d922f1930714aca7ede3cbb5ebf3fb710af6`); `mainnet-flight`, `preprod`, and `preview` use `se7en-labs-inc/cardano-wallet` `cip30-alpha1` (`d408e4f29e46dc34454b160b3994ee9974b5cde2`). These are locked snapshots, not startup or build-time release lookups.
+
+- Require the selected full lowercase wallet commit in installed `daedalus-config.json` as `cardanoWalletSourceRevision`; use it for CIP-30 capability validation and collateral requests. Mainnet dApp launch remains disabled. Any mainnet database previously used with the fork requires a backed-up disposable compatibility exercise before rollout.
+
+- Release verification: all four Linux payloads contain node 11.1.3 and their selected wallet commits. Fresh-state mainnet, Flight, preprod, and preview smoke runs returned network information with advancing node tips; the prior preprod `ShelleyGenesis` startup decoding failure was not observed with node 11.1.3. This does not establish fully synced or later-era compatibility. Native macOS payload verification still requires Darwin builders.
+
+- Windows: correct the Electron 41.10.6 x64 ZIP and `node.lib` hashes against the publisher's checksums. All four staged payloads build; their generated configs parse successfully, and actual node/wallet executables run under Wine with matching revisions (node 11.1.3, upstream wallet on mainnet, CIP-30 fork on Flight/preprod/preview). This verifies staged payload provenance, not native Windows integration, signing, or installed-host certification.
 
 - Windows: updated bundled mcfgthread DLL names from v1 to v2 (`libmcfgthread-2.dll`, `libmcfgthread-minimal-2.dll`) following a toolchain upgrade in the upstream node build.
 

@@ -24,11 +24,7 @@ import { parseConwayTransactionEnvelope } from '../../common/cardano/transaction
 import * as transactionContext from '../../common/cardano/transactionContext';
 
 import { CapabilityService } from './CapabilityService';
-import {
-  CARDANO_WALLET_SOURCE_REVISION,
-  Cip30Broker,
-  parseConfiguredNetwork,
-} from './Cip30Broker';
+import { Cip30Broker, parseConfiguredNetwork } from './Cip30Broker';
 import type { Cip30BrokerOptions } from './Cip30Broker';
 import { Dispatcher } from './Dispatcher';
 import { ExtensionRegistry } from './ExtensionRegistry';
@@ -57,6 +53,7 @@ jest.mock('../config', () => {
       hardwareConnectorEnabled: true,
     }),
     dappRuntimeConfig: {
+      cardanoWalletSourceRevision: 'd408e4f29e46dc34454b160b3994ee9974b5cde2',
       dappSandboxPackageCluster: 'preprod',
       dappNetwork: {
         cluster: 'testnet',
@@ -1820,12 +1817,6 @@ describe('Cip30Broker', () => {
       networkMagic: magic,
       genesisHash: network.genesisHash,
     });
-  });
-  it('targets the cardano-wallet revision packaged by Nix', () => {
-    const lock = JSON.parse(fs.readFileSync('flake.lock', 'utf8'));
-    expect(CARDANO_WALLET_SOURCE_REVISION).toBe(
-      lock.nodes['cardano-wallet'].locked.rev
-    );
   });
 
   it('accepts Shelley genesis and rejects missing configured magic', () => {

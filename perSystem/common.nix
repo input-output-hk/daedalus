@@ -80,25 +80,34 @@
 
       flake-compat = import inputs.flake-compat;
 
-      walletFlake =
-        (flake-compat {
-          src = inputs.cardano-wallet;
-        }).defaultNix;
+      walletBackends = let
+        mkBackend = input: rec {
+          flake = (flake-compat {src = input;}).defaultNix;
+          packages = {
+            x86_64-windows = flake.packages.x86_64-linux.windowsPackages;
+            x86_64-linux = flake.packages.x86_64-linux.staticPackages;
+            x86_64-darwin = flake.packages.x86_64-darwin;
+            aarch64-darwin = flake.packages.aarch64-darwin;
+          }.${targetSystem};
+          sourceRevision = input.rev;
+          version = packages.cardano-wallet.version + "-" + builtins.substring 0 9 sourceRevision;
+        };
+      in {
+        upstream = mkBackend inputs.cardano-wallet;
+        cip30 = mkBackend inputs.cardano-wallet-cip30;
+      };
+
+      walletBackendForCluster = cluster:
+        if !(builtins.elem cluster sourceLib.installerClusters)
+        then throw "Unsupported Daedalus wallet cluster: ${cluster}"
+        else if cluster == "mainnet"
+        then walletBackends.upstream
+        else walletBackends.cip30;
 
       nodeFlake =
         (flake-compat {
           src = inputs.cardano-node;
         }).defaultNix;
-
-      walletPackages =
-        {
-          x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
-          x86_64-linux = walletFlake.packages.x86_64-linux.staticPackages;
-          x86_64-darwin = walletFlake.packages.x86_64-darwin;
-          aarch64-darwin = walletFlake.packages.aarch64-darwin;
-        }.${
-          targetSystem
-        };
 
       nodePackages =
         {
@@ -193,9 +202,9 @@
             cargoExtraArgs = "--bin cardano-watchdog";
           };
 
-      inherit (walletFlake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
+      inherit (walletBackends.cip30.flake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
 
-      inherit (walletPackages) cardano-wallet cardano-address;
+      inherit (walletBackends.cip30.packages) cardano-address;
       inherit (nodePackages) cardano-node cardano-cli snapshot-converter;
       mithril-client = mithrilPackages.${targetSystem};
 
@@ -209,11 +218,15 @@
       # ---------------------------------------------------------------------------
       # Inlined cardano-bridge.nix as a function
       # ---------------------------------------------------------------------------
-      mkDaedalusBridge = {target ? targetSystem, ...}:
+      mkDaedalusBridge = {cluster, target ? targetSystem, ...}: let
+        backend = walletBackendForCluster cluster;
+        cardano-wallet = backend.packages.cardano-wallet;
+      in
         pkgs.runCommandCC "daedalus-cardano-bridge" {
           passthru = {
             node-version = cardano-node.passthru.identifier.version;
             wallet-version = cardano-wallet.version;
+            wallet-source-revision = backend.sourceRevision;
           };
         } ''
           mkdir -pv $out/bin
@@ -255,11 +268,11 @@
         '';
 
       daedalus-bridge =
-        pkgs.lib.genAttrs sourceLib.installerClusters (_cluster:
-          mkDaedalusBridge {});
+        pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
+          mkDaedalusBridge {inherit cluster;});
 
       cardanoNodeVersion = cardano-node.identifier.version + "-" + builtins.substring 0 9 nodeFlake.rev;
-      cardanoWalletVersion = daedalus-bridge.mainnet.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
+      cardanoWalletVersion = cluster: (walletBackendForCluster cluster).version;
 
       # ---------------------------------------------------------------------------
       # Inlined daedalus-config.nix as a function
@@ -574,6 +587,7 @@
           daedalusConfigJson =
             {
               inherit (dappRuntimeConfig)
+                cardanoWalletSourceRevision
                 dappBrowserPolicy
                 dappSandboxPackageCluster
                 dappNetwork
@@ -849,6 +863,7 @@
               mithrilConverterConfig = mkConfigPath nodeConfigFiles "config.yaml";
             });
           dappRuntimeConfig = {
+            cardanoWalletSourceRevision = (walletBackendForCluster cluster).sourceRevision;
             dappBrowserPolicy = {
               revision = 1;
               globalEnabled = network != "mainnet";
@@ -893,6 +908,7 @@
         in {
           inherit nodeConfigFiles daedalusConfig installerConfig;
           inherit (dappRuntimeConfig)
+            cardanoWalletSourceRevision
             dappBrowserPolicy
             dappSandboxPackageCluster
             dappNetwork
@@ -1103,14 +1119,13 @@
         sourceLib
         flakeLock
         flake-compat
-        walletFlake
+        walletBackends
+        walletBackendForCluster
         nodeFlake
-        walletPackages
         nodePackages
         mithrilPackages
         cardano-watchdog
         cardanoLib
-        cardano-wallet
         cardano-address
         cardano-node
         cardano-cli

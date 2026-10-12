@@ -80,7 +80,7 @@
             ++ (with pkgs; [pkg-config jq python3])
             ++ [pkgs.jq];
           buildInputs = with pkgs; [libusb1];
-          CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
+          CARDANO_WALLET_VERSION = common.cardanoWalletVersion cluster;
           CARDANO_NODE_VERSION = common.cardanoNodeVersion;
           CI = "nix";
           NETWORK = common.daedalusConfigs.${cluster}.daedalusConfig.networkName;
