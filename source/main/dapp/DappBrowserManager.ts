@@ -1,4 +1,6 @@
 import path from 'path';
+import { setImmediate } from 'timers';
+import { promisify } from 'util';
 import { BrowserWindow, screen } from 'electron';
 import type {
   IpcMainInvokeEvent,
@@ -27,6 +29,8 @@ import type { DappCatalogEntry, ResolvedCatalogLaunch } from './dappCatalog';
 import { parseDappUrl, parseDiagnosticsDappUrl } from './urlPolicy';
 import type { DappUrlPolicy, ParsedDappUrl } from './urlPolicy';
 import type { DappGrantLaunch } from '../../common/types/dapp.types';
+
+const nextEventLoopTurn = promisify(setImmediate);
 
 const DAPP_CONSOLE_MESSAGE_LIMIT = 100;
 const DAPP_CONSOLE_MESSAGE_RATE_LIMIT = 10;
@@ -142,10 +146,13 @@ export const installDappGuestLifecyclePolicy = (
     isMainFrame?: boolean;
     preventDefault: () => void;
   }) => {
+    if (event.isMainFrame === false) {
+      event.preventDefault();
+      return;
+    }
     try {
       const parsed = event.url && parseLaunchUrl(event.url, diagnosticsPolicy);
       if (
-        event.isMainFrame !== false &&
         parsed &&
         ((isInitialLoad() && parsed.href === entryUrl) ||
           (!isInitialLoad() && parsed.origin === launchOrigin))
@@ -165,6 +172,9 @@ export const installDappGuestLifecyclePolicy = (
   webContents.on(
     'did-start-navigation',
     (_event, url, isInPlace, isMainFrame) => {
+      // Child attempts remain denied by frame navigation and session CSP;
+      // they cannot change the canonical main document or its authority.
+      if (!isMainFrame) return;
       let isAllowedNavigation = false;
       try {
         const parsed = parseLaunchUrl(url, diagnosticsPolicy);
@@ -249,14 +259,15 @@ export class DappBrowserManager {
     )
       return null;
     const documentGeneration = guest.documentGeneration;
+    const guestWebContentsId = event.sender.id;
     return Object.freeze({
-      guestWebContentsId: guest.window.webContents.id,
+      guestWebContentsId,
       documentGeneration,
       origin: guest.launch.canonicalOrigin,
       launch: guest.grantLaunch,
       isCurrent: () =>
         guest.documentGeneration === documentGeneration &&
-        this.isCurrentFrame(guest, frame, guest.window.webContents.id),
+        this.isCurrentFrame(guest, frame, guestWebContentsId),
     });
   }
 
@@ -460,24 +471,33 @@ export class DappBrowserManager {
   ): Promise<void> {
     if (guest.teardown) return guest.teardown;
 
-    guest.teardown = (async () => {
-      this.activeGuests.delete(guest);
+    // Latch before revocation can reenter, and leave native event dispatch
+    // before stopping/destroying its WebContents and frame tree.
+    guest.teardown = nextEventLoopTurn().then(async () => {
       try {
-        this.onRevoke(
-          reason,
-          guest.window.webContents.id,
-          this.activeGuests.size > 0
-        );
-      } catch {
-        // Revocation state is already inactive; cleanup must still complete.
+        if (!guest.window.isDestroyed()) {
+          if (!guest.window.webContents.isDestroyed())
+            guest.window.webContents.stop();
+          guest.window.destroy();
+        }
+      } finally {
+        try {
+          await guest.egressPolicy.close();
+        } finally {
+          await clearDappSession(guest.session);
+        }
       }
-      if (!guest.window.isDestroyed()) {
-        guest.window.webContents.stop();
-        guest.window.destroy();
-      }
-      await guest.egressPolicy.close();
-      await clearDappSession(guest.session);
-    })();
+    });
+    this.activeGuests.delete(guest);
+    try {
+      this.onRevoke(
+        reason,
+        guest.window.webContents.id,
+        this.activeGuests.size > 0
+      );
+    } catch {
+      // Revocation state is already inactive; cleanup must still complete.
+    }
     return guest.teardown;
   }
 }

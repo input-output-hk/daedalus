@@ -2,6 +2,8 @@ import assert from 'assert';
 import http from 'http';
 import path from 'path';
 import { once } from 'events';
+import { setImmediate } from 'timers';
+import { promisify } from 'util';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import type { Session, WebFrameMain } from 'electron';
 import { IpcChannel } from '../../common/ipc/lib/IpcChannel';
@@ -15,6 +17,7 @@ import {
   validateDappRendererSandbox,
 } from '../sandbox/dappSandboxAvailability';
 import {
+  DappBrowserManager,
   createDappGuestWebPreferences,
   installDappGuestLifecyclePolicy,
 } from './DappBrowserManager';
@@ -26,6 +29,8 @@ import {
   installDappTransportRestrictions,
 } from './DappSessionPolicy';
 import { readDappRuntimeConfig, type DappRuntimeConfig } from '../utils/config';
+
+const nextEventLoopTurn = promisify(setImmediate);
 
 installDappTransportRestrictions(app.commandLine);
 app.on('window-all-closed', () => undefined);
@@ -535,6 +540,167 @@ const testLifecyclePolicy = async (
   await cleanupSession(guestSession);
 };
 
+const testNativeLifecycleTeardown = async (
+  attack: 'initial-child' | 'visible-child' | 'visible-top-level'
+): Promise<void> => {
+  let targetRequests = 0;
+  const targetServer = http.createServer((_request, response) => {
+    targetRequests += 1;
+    response.writeHead(200, {
+      'content-type': 'text/html',
+      connection: 'close',
+    });
+    response.end('<!doctype html><body>forbidden destination</body>');
+  });
+  targetServer.listen(0, '127.0.0.2');
+  await once(targetServer, 'listening');
+  const targetAddress = targetServer.address();
+  assert(targetAddress && typeof targetAddress !== 'string');
+  const targetUrl = `http://127.0.0.2:${targetAddress.port}/child`;
+  const server = http.createServer((_request, response) => {
+    response.writeHead(200, {
+      'content-type': 'text/html',
+      connection: 'close',
+      'set-cookie': 'native-lifecycle=fixture; SameSite=Lax',
+    });
+    response.end(
+      `<!doctype html><title>native lifecycle fixture</title><script>
+        window.childFrameBlocked = false;
+        document.addEventListener('securitypolicyviolation', event => {
+          if (event.effectiveDirective === 'frame-src')
+            window.childFrameBlocked = true;
+        });
+      </script><body>fixture${
+        attack === 'initial-child' ? `<iframe src="${targetUrl}"></iframe>` : ''
+      }</body>`
+    );
+  });
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const address = server.address();
+  assert(address && typeof address !== 'string');
+  const origin = `http://127.0.0.1:${address.port}`;
+  let guest: BrowserWindow | undefined;
+  let guestSession: Session | undefined;
+  let nativeClosed: Promise<unknown[]> | undefined;
+  let closedEvents = 0;
+  let revocations = 0;
+  let revokedWhileAlive = false;
+  let inactiveOnRevocation = false;
+  let dispatchUnwoundSafely = false;
+  const manager = new DappBrowserManager((reason, _id, isOpen) => {
+    revocations += 1;
+    revokedWhileAlive =
+      reason === 'navigation' && !!guest && !guest.isDestroyed();
+    inactiveOnRevocation = !isOpen && !manager.isOpen;
+  });
+  const captureWindow = (_event: unknown, window: BrowserWindow) => {
+    guest = window;
+    guestSession = window.webContents.session;
+    windows.add(window);
+    sessions.add(window.webContents.session);
+    nativeClosed = once(window, 'closed');
+    window.on('closed', () => {
+      closedEvents += 1;
+      windows.delete(window);
+    });
+  };
+  app.once('browser-window-created', captureWindow);
+  try {
+    await manager.launchDiagnostics(
+      `${origin}/`,
+      origin,
+      'native lifecycle fixture',
+      { allowHttpLoopback: true },
+      false
+    );
+    assert(guest && guestSession && nativeClosed);
+    assert(guest.isVisible());
+    assert(validateDappRendererSandbox(guest.webContents));
+    const authority = manager.authenticate({
+      sender: guest.webContents,
+      senderFrame: guest.webContents.mainFrame,
+    } as unknown as Parameters<DappBrowserManager['authenticate']>[0]);
+    assert(authority && authority.isCurrent());
+    if (attack !== 'initial-child') {
+      guest.webContents.on('did-start-navigation', () => {
+        if (!manager.isOpen)
+          dispatchUnwoundSafely =
+            !!guest && !guest.isDestroyed() && !authority.isCurrent();
+      });
+      guest.webContents.on('will-frame-navigate', () => {
+        if (!manager.isOpen)
+          dispatchUnwoundSafely =
+            !!guest && !guest.isDestroyed() && !authority.isCurrent();
+      });
+      guest.webContents.on('will-navigate', () => {
+        if (!manager.isOpen)
+          dispatchUnwoundSafely =
+            !!guest && !guest.isDestroyed() && !authority.isCurrent();
+      });
+      await guest.webContents.executeJavaScript(
+        `setTimeout(() => {
+          ${
+            attack === 'visible-child'
+              ? `const frame = document.createElement('iframe');
+                 frame.src = ${JSON.stringify(targetUrl)};
+                 document.body.appendChild(frame);`
+              : `location.href = ${JSON.stringify(targetUrl)};`
+          }
+        }, 25); undefined;`
+      );
+    }
+    if (attack === 'visible-top-level') {
+      await nativeClosed;
+      await nextEventLoopTurn();
+      assert.strictEqual(revocations, 1);
+      assert(revokedWhileAlive && inactiveOnRevocation);
+      assert(dispatchUnwoundSafely);
+      assert.strictEqual(manager.isOpen, false);
+    } else {
+      // Observe actual CSP enforcement, not a delay or synthetic frame event.
+      await guest.webContents.executeJavaScript(`{
+        const { promise, resolve } = Promise.withResolvers();
+        if (window.childFrameBlocked) resolve();
+        else document.addEventListener('securitypolicyviolation', event => {
+          if (event.effectiveDirective === 'frame-src') resolve();
+        });
+        promise;
+      }`);
+      await nextEventLoopTurn();
+      assert.strictEqual(revocations, 0);
+      assert.strictEqual(closedEvents, 0);
+      assert(manager.isOpen && authority.isCurrent());
+      const childFrames = guest.webContents.mainFrame.frames;
+      assert.strictEqual(childFrames.length, 1);
+      for (const child of childFrames)
+        assert.strictEqual(
+          manager.authenticate({
+            sender: guest.webContents,
+            senderFrame: child,
+          } as unknown as Parameters<DappBrowserManager['authenticate']>[0]),
+          null
+        );
+      await manager.close();
+      assert.strictEqual(revocations, 1);
+      assert.strictEqual(authority.isCurrent(), false);
+    }
+    await nativeClosed;
+    // Resume after native dispatch: "closed" alone did not prove survival.
+    await nextEventLoopTurn();
+    assert.strictEqual(closedEvents, 1);
+    assert.strictEqual(targetRequests, 0);
+    assert.deepStrictEqual(await guestSession.cookies.get({}), []);
+  } finally {
+    app.removeListener('browser-window-created', captureWindow);
+    await manager.close();
+    if (guestSession) sessions.delete(guestSession);
+    for (const fixtureServer of [server, targetServer]) {
+      await promisify(fixtureServer.close).call(fixtureServer);
+    }
+  }
+};
+
 const cleanup = async (): Promise<void> => {
   windows.forEach(destroyWindow);
   await Promise.all([...sessions].map(cleanupSession));
@@ -568,6 +734,10 @@ app.whenReady().then(async () => {
     process.stderr.write('reload refresh passed\n');
     await testLifecyclePolicy('redirect');
     process.stderr.write('redirect revocation passed\n');
+    await testNativeLifecycleTeardown('initial-child');
+    await testNativeLifecycleTeardown('visible-child');
+    await testNativeLifecycleTeardown('visible-top-level');
+    process.stderr.write('native frame lifecycle teardown passed\n');
     await testGuestDenialsAndStorage();
     process.stderr.write('guest denials passed\n');
     assert.deepStrictEqual(unhandledRejections, []);
@@ -588,6 +758,7 @@ app.whenReady().then(async () => {
         subframeRejected: true,
         navigationRevoked: true,
         reloadAuthorityRotated: true,
+        nativeFrameLifecycleTeardown: true,
         destinationBindingDenied: true,
         popupDownloadPermissionDeviceDenied: true,
         storageCleared: true,

@@ -1,4 +1,6 @@
 import { EventEmitter } from 'events';
+import { setImmediate } from 'timers';
+import { promisify } from 'util';
 import { BrowserWindow, screen } from 'electron';
 import type { IpcMainInvokeEvent } from 'electron';
 import { requireDappSandboxAvailable } from '../sandbox/dappSandboxAvailability';
@@ -89,10 +91,7 @@ const makeWindow = (load = Promise.resolve()) => {
   return { window, webContents, frame };
 };
 
-const flush = () =>
-  new Promise<void>((resolve) => {
-    setTimeout(resolve, 0);
-  });
+const flush = promisify(setImmediate);
 
 describe('DappBrowserManager', () => {
   beforeEach(() => {
@@ -106,7 +105,7 @@ describe('DappBrowserManager', () => {
   test('uses the exact hidden secure window and only shows after origin verification', async () => {
     const load = deferred();
     const { window } = makeWindow(load.promise);
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const manager = new DappBrowserManager();
 
     const launched = manager.launch(entry, 'genesis', 'Example', false);
@@ -146,7 +145,7 @@ describe('DappBrowserManager', () => {
     expect(
       (installDappSessionPolicy as jest.Mock).mock.invocationCallOrder[0]
     ).toBeLessThan(
-      ((BrowserWindow as unknown) as jest.Mock).mock.invocationCallOrder[0]
+      (BrowserWindow as unknown as jest.Mock).mock.invocationCallOrder[0]
     );
     expect(installGuestDenialHandlers).toHaveBeenCalledWith(window.webContents);
     expect(window.loadURL).toHaveBeenCalledWith('https://example.com/app');
@@ -160,7 +159,7 @@ describe('DappBrowserManager', () => {
 
   test('uses the same isolated lifecycle and diagnostics grant identity', async () => {
     const { window, webContents, frame } = makeWindow();
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const manager = new DappBrowserManager();
     const policy = { allowHttpLoopback: false };
 
@@ -178,10 +177,10 @@ describe('DappBrowserManager', () => {
       policy
     );
     expect(
-      manager.authenticate(({
+      manager.authenticate({
         sender: webContents,
         senderFrame: frame,
-      } as unknown) as IpcMainInvokeEvent)
+      } as unknown as IpcMainInvokeEvent)
     ).toMatchObject({
       origin: 'https://example.com',
       launch: { kind: 'diagnostics' },
@@ -189,7 +188,7 @@ describe('DappBrowserManager', () => {
   });
   test('captures raw dApp warnings and errors only when enabled', async () => {
     const { window, webContents } = makeWindow();
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const manager = new DappBrowserManager();
     await manager.launch(entry, 'genesis', 'Example', true);
 
@@ -212,13 +211,13 @@ describe('DappBrowserManager', () => {
 
   test('authenticates only the live exact guest top frame and origin', async () => {
     const { window, webContents, frame } = makeWindow();
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const manager = new DappBrowserManager();
     await manager.launch(entry, 'genesis', 'Example', false);
-    const event = ({
+    const event = {
       sender: webContents,
       senderFrame: frame,
-    } as unknown) as IpcMainInvokeEvent;
+    } as unknown as IpcMainInvokeEvent;
 
     const authority = manager.authenticate(event);
     expect(authority).toMatchObject({
@@ -232,16 +231,16 @@ describe('DappBrowserManager', () => {
     });
     expect(authority?.isCurrent()).toBe(true);
     expect(
-      manager.authenticate(({
+      manager.authenticate({
         sender: webContents,
         senderFrame: { ...frame },
-      } as unknown) as IpcMainInvokeEvent)
+      } as unknown as IpcMainInvokeEvent)
     ).toBeNull();
     expect(
-      manager.authenticate(({
+      manager.authenticate({
         sender: { id: 18 },
         senderFrame: frame,
-      } as unknown) as IpcMainInvokeEvent)
+      } as unknown as IpcMainInvokeEvent)
     ).toBeNull();
 
     frame.origin = 'https://evil.test';
@@ -251,7 +250,7 @@ describe('DappBrowserManager', () => {
   test('keeps an origin mismatch hidden and clears the guest', async () => {
     const { window, webContents } = makeWindow();
     webContents.getURL.mockReturnValue('https://evil.test/');
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const onRevoke = jest.fn();
     const manager = new DappBrowserManager(onRevoke);
 
@@ -268,7 +267,7 @@ describe('DappBrowserManager', () => {
   test('keeps exact initial and same-document canonical-origin navigation open', async () => {
     const load = deferred();
     const { window, webContents } = makeWindow(load.promise);
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const onRevoke = jest.fn();
     const manager = new DappBrowserManager(onRevoke);
     const launched = manager.launch(entry, 'genesis', 'Example', false);
@@ -311,16 +310,57 @@ describe('DappBrowserManager', () => {
     expect(onRevoke).toHaveBeenCalledWith('navigation', 17, false);
     expect(manager.isOpen).toBe(false);
   });
+  test.each([
+    'about:blank',
+    'https://example.com/child',
+    'https://other.test/child',
+  ])(
+    'denies child navigation to %s without retiring the canonical main document',
+    async (url) => {
+      const { window, webContents, frame } = makeWindow();
+      (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
+      const onRevoke = jest.fn();
+      const manager = new DappBrowserManager(onRevoke);
+      await manager.launch(entry, 'genesis', 'Example', false);
+      const event = {
+        sender: webContents,
+        senderFrame: frame,
+      } as unknown as IpcMainInvokeEvent;
+      const authority = manager.authenticate(event);
+      const preventDefault = jest.fn();
+
+      webContents.emit('will-frame-navigate', {
+        url,
+        isMainFrame: false,
+        preventDefault,
+      });
+      webContents.emit('did-start-navigation', {}, url, false, false);
+      await flush();
+
+      expect(preventDefault).toHaveBeenCalledTimes(1);
+      expect(onRevoke).not.toHaveBeenCalled();
+      expect(manager.isOpen).toBe(true);
+      expect(authority?.isCurrent()).toBe(true);
+      expect(
+        manager.authenticate({
+          ...event,
+          senderFrame: { ...frame },
+        } as unknown as IpcMainInvokeEvent)
+      ).toBeNull();
+      expect(window.destroy).not.toHaveBeenCalled();
+      await manager.close();
+    }
+  );
   test('keeps same-origin full navigation open and rotates document authority', async () => {
     const { window, webContents, frame } = makeWindow();
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const onRevoke = jest.fn();
     const manager = new DappBrowserManager(onRevoke);
     await manager.launch(entry, 'genesis', 'Example', false);
-    const event = ({
+    const event = {
       sender: webContents,
       senderFrame: frame,
-    } as unknown) as IpcMainInvokeEvent;
+    } as unknown as IpcMainInvokeEvent;
     const previous = manager.authenticate(event);
     const url = 'https://example.com/swaps/complete';
     const preventDefault = jest.fn();
@@ -346,7 +386,7 @@ describe('DappBrowserManager', () => {
 
   test('revokes route authority without closing the guest window', async () => {
     const { window } = makeWindow();
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const onRevoke = jest.fn();
     const manager = new DappBrowserManager(onRevoke);
     await manager.launch(entry, 'genesis', 'Example', false);
@@ -364,6 +404,7 @@ describe('DappBrowserManager', () => {
       'closed',
       (window) => window.emit('close', { preventDefault: jest.fn() }),
     ],
+    ['already closed', 'closed', (window) => window.emit('closed')],
     [
       'navigation',
       'navigation',
@@ -376,6 +417,17 @@ describe('DappBrowserManager', () => {
       (window) => window.webContents.emit('render-process-gone', {}, {}),
     ],
     [
+      'unresponsive',
+      'unresponsive',
+      (window) => window.webContents.emit('unresponsive'),
+    ],
+    [
+      'main-frame load failure',
+      'load-failed',
+      (window) =>
+        window.webContents.emit('did-fail-load', {}, -2, 'failed', '', true),
+    ],
+    [
       'preload failure',
       'preload-failed',
       (window) =>
@@ -385,7 +437,7 @@ describe('DappBrowserManager', () => {
     'revokes before destroy and cleanup on %s',
     async (_name, reason, trigger) => {
       const { window } = makeWindow();
-      ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+      (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
       const onRevoke = jest.fn();
       const manager = new DappBrowserManager(onRevoke);
       await manager.launch(entry, 'genesis', 'Example', false);
@@ -407,11 +459,133 @@ describe('DappBrowserManager', () => {
     }
   );
 
+  test('denies navigation and invalidates authority before dispatch unwinds, with one reentrant cleanup', async () => {
+    const { window, webContents, frame } = makeWindow();
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
+    const event = {
+      sender: webContents,
+      senderFrame: frame,
+    } as unknown as IpcMainInvokeEvent;
+    let dispatching = false;
+    const onRevoke = jest.fn(() => {
+      expect(manager.isOpen).toBe(false);
+      expect(manager.authenticate(event)).toBeNull();
+      expect(authority?.isCurrent()).toBe(false);
+      expect(window.destroy).not.toHaveBeenCalled();
+      // A consumer/native callback can synchronously reenter teardown.
+      window.emit('closed');
+    });
+    const manager = new DappBrowserManager(onRevoke);
+    await manager.launch(entry, 'genesis', 'Example', false);
+    const authority = manager.authenticate(event);
+    expect(authority?.isCurrent()).toBe(true);
+    webContents.stop.mockImplementation(() => {
+      if (dispatching)
+        throw new Error('native frame tree used during dispatch');
+      webContents.emit('did-fail-load', {}, -3, 'aborted', '', true);
+    });
+    const destroy = window.destroy.getMockImplementation()!;
+    window.destroy.mockImplementation(() => {
+      if (dispatching)
+        throw new Error('native window destroyed during dispatch');
+      destroy();
+      window.emit('closed');
+    });
+    const preventDefault = jest.fn();
+
+    dispatching = true;
+    webContents.emit('will-frame-navigate', {
+      url: 'https://other.test/',
+      isMainFrame: true,
+      preventDefault,
+    });
+    expect(preventDefault).toHaveBeenCalledTimes(1);
+    expect(manager.isOpen).toBe(false);
+    expect(authority?.isCurrent()).toBe(false);
+    expect(webContents.stop).not.toHaveBeenCalled();
+    expect(window.destroy).not.toHaveBeenCalled();
+    dispatching = false;
+    await flush();
+
+    expect(onRevoke).toHaveBeenCalledTimes(1);
+    expect(onRevoke).toHaveBeenCalledWith('navigation', 17, false);
+    expect(webContents.stop).toHaveBeenCalledTimes(1);
+    expect(window.destroy).toHaveBeenCalledTimes(1);
+    expect(window.isDestroyed()).toBe(true);
+    expect(egressPolicy.close).toHaveBeenCalledTimes(1);
+    expect(clearDappSession).toHaveBeenCalledTimes(1);
+    Object.defineProperty(webContents, 'id', {
+      get: () => {
+        throw new Error('Object has been destroyed');
+      },
+    });
+    expect(authority?.isCurrent()).toBe(false);
+  });
+
+  test('rejects a revoked initial launch only after its deferred native and session cleanup', async () => {
+    const load = deferred();
+    const cleanup = deferred();
+    const { window, webContents } = makeWindow(load.promise);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
+    (clearDappSession as jest.Mock).mockImplementationOnce(
+      () => cleanup.promise
+    );
+    const manager = new DappBrowserManager();
+    let settled = false;
+    const launched = manager.launch(entry, 'genesis', 'Example', false);
+    const rejection = launched.catch((error) => error);
+    launched.then(
+      () => {
+        settled = true;
+      },
+      () => {
+        settled = true;
+      }
+    );
+    await flush();
+
+    const preventDefault = jest.fn();
+    webContents.emit('will-frame-navigate', {
+      url: 'https://other.test/',
+      isMainFrame: true,
+      preventDefault,
+    });
+    expect(preventDefault).toHaveBeenCalledTimes(1);
+    expect(manager.isOpen).toBe(false);
+    expect(window.destroy).not.toHaveBeenCalled();
+    load.resolve();
+    await flush();
+    expect(window.destroy).toHaveBeenCalledTimes(1);
+    expect(clearDappSession).toHaveBeenCalledTimes(1);
+    expect(window.show).not.toHaveBeenCalled();
+    expect(settled).toBe(false);
+
+    cleanup.resolve();
+    expect(await rejection).toBeInstanceOf(Error);
+    expect(settled).toBe(true);
+    expect(egressPolicy.close).toHaveBeenCalledTimes(1);
+  });
+
+  test('still clears the session if native teardown throws', async () => {
+    const { window, webContents } = makeWindow();
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
+    const manager = new DappBrowserManager();
+    await manager.launch(entry, 'genesis', 'Example', false);
+    webContents.stop.mockImplementation(() => {
+      throw new Error('native stop failed');
+    });
+
+    await expect(manager.close()).rejects.toThrow('native stop failed');
+    expect(manager.isOpen).toBe(false);
+    expect(egressPolicy.close).toHaveBeenCalledTimes(1);
+    expect(clearDappSession).toHaveBeenCalledTimes(1);
+  });
+
   test('keeps sibling guests open when one closes', async () => {
     const first = makeWindow();
     const second = makeWindow();
     second.webContents.id = 18;
-    ((BrowserWindow as unknown) as jest.Mock)
+    (BrowserWindow as unknown as jest.Mock)
       .mockReturnValueOnce(first.window)
       .mockReturnValueOnce(second.window);
     const onRevoke = jest.fn();
@@ -432,7 +606,7 @@ describe('DappBrowserManager', () => {
     const { window } = makeWindow();
     const bounds = { x: 10, y: 20, width: 900, height: 700 };
     (restoreSavedWindowBounds as jest.Mock).mockReturnValue(bounds);
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const manager = new DappBrowserManager();
 
     await manager.launch(entry, 'genesis', 'Example', false);
@@ -472,7 +646,7 @@ describe('DappBrowserManager', () => {
     expect(manager.isOpen).toBe(false);
   });
   test('clears egress state when guest construction fails', async () => {
-    ((BrowserWindow as unknown) as jest.Mock).mockImplementation(() => {
+    (BrowserWindow as unknown as jest.Mock).mockImplementation(() => {
       throw new Error('window unavailable');
     });
     const manager = new DappBrowserManager();
@@ -490,7 +664,7 @@ describe('DappBrowserManager', () => {
 
   test('keeps the validated origin visible when the page attempts to spoof the title', async () => {
     const { window, webContents } = makeWindow();
-    ((BrowserWindow as unknown) as jest.Mock).mockReturnValue(window);
+    (BrowserWindow as unknown as jest.Mock).mockReturnValue(window);
     const manager = new DappBrowserManager();
     await manager.launch(entry, 'genesis', 'Example', false);
     const event = { preventDefault: jest.fn() };

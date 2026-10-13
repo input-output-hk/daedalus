@@ -976,11 +976,12 @@ Session requirements:
 - Public/private network classification covers IP literals and every resolved IPv4/IPv6 address. Hostname allow decisions must be bound to the actual connection destination, preferring Chromium Private Network Access enforcement where it provides equivalent connection-level guarantees, with a guest-specific resolver/proxy added only for demonstrated gaps; a pre-request DNS check with a time-of-check/time-of-use gap is insufficient.
 - The initial top-level connection, redirects, subresources, DNS answer changes, DNS rebinding, IPv4-mapped IPv6, and WSS receive the same destination policy. If Electron cannot provide connection-level proof for the initial Diagnostics URL, Diagnostics launch remains disabled; failure for an optional cross-origin destination disables that destination rather than weakening the boundary.
 - Production top-level navigation remains on the exact canonical origin.
-- Cross-origin redirects are denied and destroy the guest.
+- Main-frame cross-origin redirects are denied and destroy the guest.
 - Popups are denied and are not automatically opened externally.
+- Child-frame navigation remains denied by the navigation handler and session CSP. A blocked child attempt does not retire the canonical main document; child frames never acquire guest gateway authority.
 - Main-frame navigation increments document generation and revokes live capabilities.
 - Guest closes on crash, unresponsive state, preload error, or irrecoverable load failure.
-- Teardown revokes first, destroys the guest, closes connections, clears data/auth/DNS state, and rejects pending calls.
+- Teardown latches once and revokes authority synchronously, then stops/destroys the native guest on the next event-loop turn after navigation dispatch unwinds, closes connections, clears data/auth/DNS state, and rejects pending calls. Retired authority checks return false without reading destroyed native objects.
 - Production guest DevTools remain disabled.
 - Development DevTools require a non-production build policy and cannot be page-requested.
 
