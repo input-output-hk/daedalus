@@ -13,6 +13,7 @@ interface Rectangle {
 }
 interface Window {
   getBounds(): Rectangle;
+  isDestroyed(): boolean;
   on(event: string, handler: (...args: Array<any>) => any): void;
 }
 interface Display {
@@ -102,15 +103,15 @@ export function saveWindowBoundsOnSizeAndPositionChange(
   sendStoreRequest: SendStoreRequest,
   debounceWait = 1000
 ) {
-  const saveWindowBoundsSoon = debounce(
-    () =>
-      sendStoreRequest({
-        type: STORAGE_TYPES.SET,
-        key: STORAGE_KEYS.WINDOW_BOUNDS,
-        data: window.getBounds(),
-      }),
-    debounceWait
-  );
+  const saveWindowBoundsSoon = debounce(() => {
+    if (window.isDestroyed()) return;
+    sendStoreRequest({
+      type: STORAGE_TYPES.SET,
+      key: STORAGE_KEYS.WINDOW_BOUNDS,
+      data: window.getBounds(),
+    });
+  }, debounceWait);
   window.on('resize', saveWindowBoundsSoon);
   window.on('move', saveWindowBoundsSoon);
+  window.on('closed', () => saveWindowBoundsSoon.cancel());
 }

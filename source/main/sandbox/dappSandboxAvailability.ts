@@ -35,7 +35,22 @@ const STATUS_FIELDS: Record<string, true> = {
   Seccomp: true,
   Seccomp_filters: true,
   CapEff: true,
+  CapPrm: true,
+  CapInh: true,
 };
+const STATUS_FIELD_KEYS = Object.keys(STATUS_FIELDS);
+const NAMESPACE_KEYS = ['pid', 'user', 'mnt', 'net'] as const;
+const SHARED_NAMESPACE_KEYS = ['pid', 'user', 'net'] as const;
+const FILESYSTEM_FIELD_KEYS = [
+  'device',
+  'inode',
+  'filesystemType',
+  'isDirectory',
+  'empty',
+  'deadProcRoot',
+  'chromiumFdinfoRoot',
+  'cwdMatchesRoot',
+] as const;
 
 export type DappSandboxUnavailableReason =
   | 'sandbox-bypass'
@@ -58,12 +73,26 @@ export type DappSandboxAvailabilityOptions = {
   readonly installRoot?: string;
 };
 
+type FilesystemEvidence = Readonly<{
+  device: string;
+  inode: string;
+  filesystemType: string;
+  isDirectory: boolean;
+  empty: boolean;
+  deadProcRoot: boolean;
+  chromiumFdinfoRoot: boolean;
+  cwdMatchesRoot: boolean;
+}>;
+
 type ProcEvidence = {
   pid: number;
   argv: string[];
   status: Record<string, string>;
   startTime: string;
-  namespaces: Record<'pid' | 'user' | 'mnt', string>;
+  namespaces: Record<'pid' | 'user' | 'mnt' | 'net', string>;
+  uidMap: string;
+  gidMap: string;
+  filesystem?: FilesystemEvidence;
 };
 
 type HostIdentity = {
@@ -246,26 +275,247 @@ const parseProcessStartTime = (statText: string): string => {
   return startTime;
 };
 
+const readFilesystemEvidence = (
+  pid: number
+): FilesystemEvidence | undefined => {
+  // O_PATH is Linux UAPI: metadata access must survive Chromium's dead helper.
+  const directoryFlags = 0x200000 | fs.constants.O_DIRECTORY;
+  const statfs = (
+    fs as typeof fs & {
+      statfsSync?: (
+        filePath: string,
+        options: { bigint: true }
+      ) => { type: bigint };
+    }
+  ).statfsSync;
+  if (!statfs) return undefined;
+  let rootFd: number | undefined;
+  let cwdFd: number | undefined;
+  let evidence: FilesystemEvidence | undefined;
+  try {
+    const rootPath = `/proc/${pid}/root`;
+    const rootLink = fs.readlinkSync(rootPath);
+    rootFd = fs.openSync(rootPath, directoryFlags);
+    const root = fs.fstatSync(rootFd, { bigint: true });
+    const heldRoot = `/proc/self/fd/${rootFd}`;
+    const filesystemType = statfs(heldRoot, { bigint: true }).type.toString();
+    const chromiumFdinfoRoot =
+      /^\/proc\/[1-9][0-9]*(\/task\/[1-9][0-9]*)?\/fdinfo( \(deleted\))?$/.test(
+        rootLink
+      );
+    let empty = false;
+    let deadProcRoot = false;
+    try {
+      empty = fs.readdirSync(heldRoot).length === 0;
+    } catch (error) {
+      if (
+        (error as NodeJS.ErrnoException).code !== 'ESRCH' ||
+        filesystemType !== '40864' ||
+        !root.isDirectory() ||
+        !chromiumFdinfoRoot
+      )
+        throw error;
+      deadProcRoot = true;
+    }
+    cwdFd = fs.openSync(`/proc/${pid}/cwd`, directoryFlags);
+    const cwd = fs.fstatSync(cwdFd, { bigint: true });
+    if (fs.readlinkSync(rootPath) !== rootLink)
+      throw new Error('process root changed');
+    evidence = {
+      device: root.dev.toString(),
+      inode: root.ino.toString(),
+      filesystemType,
+      isDirectory: root.isDirectory(),
+      empty,
+      deadProcRoot,
+      chromiumFdinfoRoot,
+      cwdMatchesRoot:
+        cwd.isDirectory() && cwd.dev === root.dev && cwd.ino === root.ino,
+    };
+  } catch {
+    evidence = undefined;
+  } finally {
+    for (const descriptor of [cwdFd, rootFd]) {
+      if (descriptor !== undefined) {
+        try {
+          fs.closeSync(descriptor);
+        } catch {
+          evidence = undefined;
+        }
+      }
+    }
+  }
+  return evidence;
+};
+
+const sameStatus = (
+  first: Record<string, string>,
+  second: Record<string, string>
+): boolean =>
+  STATUS_FIELD_KEYS.every((field) => first[field] === second[field]);
+
 const readProcEvidence = (pid: number): ProcEvidence => {
   const procRoot = `/proc/${pid}`;
-  return {
+  const status = parseStatus(fs.readFileSync(`${procRoot}/status`, 'utf8'));
+  const startTime = parseProcessStartTime(
+    fs.readFileSync(`${procRoot}/stat`, 'utf8')
+  );
+  const evidence: ProcEvidence = {
     pid,
     argv: fs
       .readFileSync(`${procRoot}/cmdline`)
       .toString('utf8')
       .split('\0')
       .filter(Boolean),
-    status: parseStatus(fs.readFileSync(`${procRoot}/status`, 'utf8')),
-    startTime: parseProcessStartTime(
-      fs.readFileSync(`${procRoot}/stat`, 'utf8')
-    ),
+    status,
+    startTime,
     namespaces: {
       pid: fs.readlinkSync(`${procRoot}/ns/pid`),
       user: fs.readlinkSync(`${procRoot}/ns/user`),
       mnt: fs.readlinkSync(`${procRoot}/ns/mnt`),
+      net: fs.readlinkSync(`${procRoot}/ns/net`),
     },
+    uidMap: fs.readFileSync(`${procRoot}/uid_map`, 'utf8'),
+    gidMap: fs.readFileSync(`${procRoot}/gid_map`, 'utf8'),
+    filesystem: readFilesystemEvidence(pid),
   };
+  const finalStatus = parseStatus(
+    fs.readFileSync(`${procRoot}/status`, 'utf8')
+  );
+  const finalStartTime = parseProcessStartTime(
+    fs.readFileSync(`${procRoot}/stat`, 'utf8')
+  );
+  if (
+    status.Pid !== String(pid) ||
+    !sameStatus(status, finalStatus) ||
+    startTime !== finalStartTime
+  )
+    throw new Error('process sample changed');
+  return evidence;
 };
+
+const parseIdMap = (text: string): number[][] | undefined => {
+  if (typeof text !== 'string' || !text.trim()) return undefined;
+  const ranges: number[][] = [];
+  for (const line of text.trim().split('\n')) {
+    const fields = line.trim().split(/\s+/);
+    if (fields.length !== 3 || fields.some((field) => !/^\d+$/.test(field)))
+      return undefined;
+    const range = fields.map(Number);
+    const [inside, outside, count] = range;
+    if (
+      range.some(
+        (value) => !Number.isSafeInteger(value) || value > 0xffffffff
+      ) ||
+      count === 0 ||
+      inside + count > 0x100000000 ||
+      outside + count > 0x100000000
+    )
+      return undefined;
+    ranges.push(range);
+  }
+  return ranges;
+};
+
+const sameIdMap = (
+  first: number[][] | undefined,
+  second: number[][] | undefined
+): boolean => {
+  if (!first || !second) return first === second;
+  return (
+    first.length === second.length &&
+    first.every(
+      (range, index) =>
+        range[0] === second[index][0] &&
+        range[1] === second[index][1] &&
+        range[2] === second[index][2]
+    )
+  );
+};
+
+const sameIdMapText = (first: string, second: string): boolean => {
+  const firstMap = parseIdMap(first);
+  const secondMap = parseIdMap(second);
+  if (!firstMap || !secondMap) return first === second;
+  return sameIdMap(firstMap, secondMap);
+};
+
+const sameFilesystemEvidence = (
+  first: FilesystemEvidence | undefined,
+  second: FilesystemEvidence | undefined
+): boolean => {
+  if (!first || !second) return first === second;
+  return FILESYSTEM_FIELD_KEYS.every((field) => first[field] === second[field]);
+};
+
+const validRootIdentity = (evidence?: FilesystemEvidence): boolean =>
+  Boolean(
+    evidence &&
+      evidence.isDirectory === true &&
+      /^\d+$/.test(evidence.device) &&
+      /^[1-9]\d*$/.test(evidence.inode)
+  );
+
+const hasRestrictedSharedRoot = (
+  mainEvidence: ProcEvidence,
+  rendererEvidence: ProcEvidence
+): boolean => {
+  const mainRoot = mainEvidence.filesystem;
+  const root = rendererEvidence.filesystem;
+  const mainUid = parseIdMap(mainEvidence.uidMap);
+  const mainGid = parseIdMap(mainEvidence.gidMap);
+  const uid = parseIdMap(rendererEvidence.uidMap);
+  const gid = parseIdMap(rendererEvidence.gidMap);
+  return Boolean(
+    SHARED_NAMESPACE_KEYS.every(
+      (namespace) =>
+        Boolean(mainEvidence.namespaces[namespace]) &&
+        Boolean(rendererEvidence.namespaces[namespace])
+    ) &&
+      rendererEvidence.namespaces.user !== mainEvidence.namespaces.user &&
+      rendererEvidence.namespaces.net !== mainEvidence.namespaces.net &&
+      /^0+$/.test(rendererEvidence.status.CapPrm || '') &&
+      /^0+$/.test(rendererEvidence.status.CapInh || '') &&
+      mainUid &&
+      mainGid &&
+      uid &&
+      gid &&
+      uid.length === 1 &&
+      gid.length === 1 &&
+      uid[0][2] === 1 &&
+      gid[0][2] === 1 &&
+      !sameIdMap(uid, mainUid) &&
+      !sameIdMap(gid, mainGid) &&
+      validRootIdentity(mainRoot) &&
+      validRootIdentity(root) &&
+      mainRoot &&
+      root &&
+      (root.device !== mainRoot.device || root.inode !== mainRoot.inode) &&
+      root.filesystemType === '40864' &&
+      root.isDirectory &&
+      root.chromiumFdinfoRoot &&
+      root.cwdMatchesRoot &&
+      (root.empty || root.deadProcRoot)
+  );
+};
+
+const sameProcEvidence = (
+  first: ProcEvidence,
+  final: ProcEvidence,
+  requireFilesystem: boolean
+): boolean =>
+  first.pid === final.pid &&
+  first.startTime === final.startTime &&
+  sameStatus(first.status, final.status) &&
+  first.argv.length === final.argv.length &&
+  first.argv.every((argument, index) => argument === final.argv[index]) &&
+  NAMESPACE_KEYS.every(
+    (namespace) => first.namespaces[namespace] === final.namespaces[namespace]
+  ) &&
+  sameIdMapText(first.uidMap, final.uidMap) &&
+  sameIdMapText(first.gidMap, final.gidMap) &&
+  (!requireFilesystem ||
+    sameFilesystemEvidence(first.filesystem, final.filesystem));
 
 export const validateRendererEvidence = (
   mainEvidence: ProcEvidence,
@@ -286,7 +536,8 @@ export const validateRendererEvidence = (
     (filterCount === undefined || Number(filterCount) > 0) &&
     /^0+$/.test(rendererEvidence.status.CapEff || '') &&
     rendererEvidence.namespaces.pid !== mainEvidence.namespaces.pid &&
-    rendererEvidence.namespaces.mnt !== mainEvidence.namespaces.mnt &&
+    (rendererEvidence.namespaces.mnt !== mainEvidence.namespaces.mnt ||
+      hasRestrictedSharedRoot(mainEvidence, rendererEvidence)) &&
     (!requireUserNamespace ||
       rendererEvidence.namespaces.user !== mainEvidence.namespaces.user)
   );
@@ -294,8 +545,8 @@ export const validateRendererEvidence = (
 export const validateDappRendererSandbox = (
   webContents: WebContents
 ): boolean => {
-  const rendererPid = webContents.getOSProcessId();
   try {
+    const rendererPid = webContents.getOSProcessId();
     if (process.platform === 'darwin' || process.platform === 'win32')
       return validateMetricRendererEvidence(
         app.getAppMetrics(),
@@ -303,14 +554,25 @@ export const validateDappRendererSandbox = (
         process.platform
       );
     if (process.platform !== 'linux') return false;
+    if (
+      !Number.isSafeInteger(rendererPid) ||
+      rendererPid <= 1 ||
+      webContents.isDestroyed()
+    )
+      return false;
+    const mainEvidence = readProcEvidence(process.pid);
     const rendererEvidence = readProcEvidence(rendererPid);
+    if (!validateRendererEvidence(mainEvidence, rendererEvidence)) return false;
+    const sharedMount =
+      mainEvidence.namespaces.mnt === rendererEvidence.namespaces.mnt;
+    const finalMain = readProcEvidence(process.pid);
+    const finalRenderer = readProcEvidence(rendererPid);
     return (
-      validateRendererEvidence(
-        readProcEvidence(process.pid),
-        rendererEvidence
-      ) &&
-      readProcEvidence(rendererEvidence.pid).startTime ===
-        rendererEvidence.startTime
+      validateRendererEvidence(finalMain, finalRenderer) &&
+      sameProcEvidence(mainEvidence, finalMain, sharedMount) &&
+      sameProcEvidence(rendererEvidence, finalRenderer, sharedMount) &&
+      !webContents.isDestroyed() &&
+      webContents.getOSProcessId() === rendererPid
     );
   } catch {
     return false;
@@ -901,6 +1163,8 @@ const runCanary = async (
     if (!Number.isSafeInteger(rendererPid) || rendererPid <= 1)
       throw new Error('invalid renderer pid');
     let rendererStartIdentity: number | string;
+    let initialMain: ProcEvidence | undefined;
+    let initialRenderer: ProcEvidence | undefined;
     if (process.platform === 'darwin' || process.platform === 'win32') {
       const metric = findSandboxedRendererMetric(
         app.getAppMetrics(),
@@ -922,6 +1186,8 @@ const runCanary = async (
       )
         throw new Error('invalid Linux sandbox evidence');
       rendererStartIdentity = rendererEvidence.startTime;
+      initialMain = mainEvidence;
+      initialRenderer = rendererEvidence;
     }
 
     await new Promise<void>((resolve) => {
@@ -942,8 +1208,30 @@ const runCanary = async (
       if (!finalMetric || finalMetric.creationTime !== rendererStartIdentity)
         throw new Error('renderer instance changed');
     } else {
-      const finalEvidence = readProcEvidence(rendererPid);
-      if (finalEvidence.startTime !== rendererStartIdentity)
+      const finalMain = readProcEvidence(process.pid);
+      const finalRenderer = readProcEvidence(rendererPid);
+      if (
+        !initialMain ||
+        !initialRenderer ||
+        !validateRendererEvidence(
+          finalMain,
+          finalRenderer,
+          requireUserNamespace
+        ) ||
+        !sameProcEvidence(
+          initialMain,
+          finalMain,
+          initialMain.namespaces.mnt === initialRenderer.namespaces.mnt
+        ) ||
+        !sameProcEvidence(
+          initialRenderer,
+          finalRenderer,
+          initialMain.namespaces.mnt === initialRenderer.namespaces.mnt
+        ) ||
+        canaryWindow.isDestroyed() ||
+        canaryWindow.webContents.isDestroyed() ||
+        canaryWindow.webContents.getOSProcessId() !== rendererPid
+      )
         throw new Error('renderer instance changed');
     }
   } catch {

@@ -56,11 +56,17 @@
 
 - Rebases the CIP-30 dApp browser onto the watchdog-parent release packaging. Packaged dApp policy, sandbox identity, and network genesis now come from the installed `daedalus-config.json`; mainnet remains launch-disabled, while Flight, preprod, and preview have launch enabled by generated policy, subject to installed sandbox validation.
 
-- Refuse a Linux guest when its renderer shares the host mount namespace, matching the installed Chromium sandbox probe's isolation requirement.
+- Linux dApp containment accepts either a separate mount namespace or kernel-observed Chromium procfs-fdinfo confinement with separate PID/user/network namespaces, zero capabilities and single-ID mappings. Missing or changing confinement evidence still refuses launch.
 
 ### Fixes
 
-- dApp catalog: display a localized, privacy-safe launch failure instead of leaving a rejected catalog click unhandled; retry and lifecycle teardown clear the failure. Diagnostics retains its existing error handling. Linux sandbox refusal remains unchanged.
+- dApp catalog: display a localized, privacy-safe launch failure instead of leaving a rejected catalog click unhandled; retry and lifecycle teardown clear the failure. Diagnostics retains its existing error handling.
+
+- Restore dApp launching on Chromium's shared-mount namespace sandbox: inspect the restricted root and cwd through metadata-only `O_PATH` descriptors, distinguishing a dead helper's non-traversable procfs root from ordinary read errors. Startup and live validation recheck complete, stable evidence; the independent probe applies the same requirements.
+
+- Window lifecycle: cancel delayed bounds saves on closure and never read bounds from a destroyed window, preventing a main-process exception when closing dApp windows.
+
+- Linux DEB: replace the inherited Electron wrapper symlink before writing the regular installed wrapper, matching RPM/Arch packaging and the independent sandbox probe's file-integrity contract.
 
 - Linux: match each `.deb`, `.rpm`, Arch, and NixOS Daedalus window to its cluster's desktop launcher and icon; include the launcher and icon in the NixOS package.
 

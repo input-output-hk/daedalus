@@ -52,6 +52,7 @@
           test -x "$root/bin/daedalus"
           test -x "$root/libexec/daedalus-frontend"
           test -x "$root/libexec/electron"
+          test -f "$root/libexec/electron" -a ! -L "$root/libexec/electron"
           test -f "$root/libexec/daedalus-js/main/dapp.js"
           test ! -e "$root/libexec/update-runner"
           test ! -e "$root/libexec/.patchelf-static"

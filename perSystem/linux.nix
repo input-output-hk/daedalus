@@ -140,6 +140,7 @@
           export DAEDALUS_WINDOW_ICON='/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png'
           exec '${installRoot}/libexec/electron' '${installRoot}/libexec/daedalus-js' "$@"
           EOF
+          rm -f "$root/libexec/electron"
           cat >"$root/libexec/electron" <<'EOF'
           #!/bin/sh
           set -eu

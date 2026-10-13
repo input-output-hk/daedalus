@@ -22,7 +22,7 @@ const ROOT_TOKENS = [
   ['profileRoot', '<PROFILE_ROOT>'],
   ['home', '<HOME>'],
 ];
-const NAMESPACE_NAMES = ['user', 'pid', 'mnt'];
+const NAMESPACE_NAMES = ['user', 'pid', 'mnt', 'net'];
 const SANDBOX_CLASSES = new Set([
   'userns-only',
   'suid-only',
@@ -507,6 +507,8 @@ function parseStatus(statusText) {
     'Seccomp',
     'Seccomp_filters',
     'CapEff',
+    'CapPrm',
+    'CapInh',
   ]);
   const result = {};
   for (const line of statusText.split('\n')) {
@@ -518,18 +520,6 @@ function parseStatus(statusText) {
   return result;
 }
 
-function readSecurityLabel(procRoot) {
-  try {
-    return fs
-      .readFileSync(`${procRoot}/attr/current`, 'utf8')
-      .replace(/\0+$/, '')
-      .trim();
-  } catch (error) {
-    if (error && (error.code === 'ENOENT' || error.code === 'EINVAL')) return null;
-    throw error;
-  }
-}
-
 function parseProcessStartTime(statText) {
   const commandEnd = statText.lastIndexOf(')');
   assert(commandEnd !== -1, 'proc-stat-command');
@@ -539,34 +529,117 @@ function parseProcessStartTime(statText) {
   return startTime;
 }
 
-function readProcEvidence(pid, privacy) {
-  const procRoot = `/proc/${pid}`;
-  const rawArgv = fs
-    .readFileSync(`${procRoot}/cmdline`)
-    .toString('utf8')
-    .split('\0')
-    .filter(Boolean);
-  const namespaces = Object.fromEntries(
-    NAMESPACE_NAMES.map((name) => [
-      name,
-      fs.readlinkSync(`${procRoot}/ns/${name}`),
-    ])
-  );
-  const uidMap = fs.readFileSync(`${procRoot}/uid_map`, 'utf8').trim();
-  const gidMap = fs.readFileSync(`${procRoot}/gid_map`, 'utf8').trim();
-  if (!/^[\d\s]+$/.test(uidMap) || !/^[\d\s]+$/.test(gidMap)) {
-    throw new Error('unexpected-namespace-map');
+function readFilesystemEvidence(pid, io = fs) {
+  let rootFd;
+  let cwdFd;
+  let result;
+  try {
+    if (typeof io.statfsSync !== 'function') return undefined;
+    const rootPath = `/proc/${pid}/root`;
+    const before = io.readlinkSync(rootPath);
+    const flags = 0x200000 | fs.constants.O_DIRECTORY; // Linux O_PATH.
+    rootFd = io.openSync(rootPath, flags);
+    cwdFd = io.openSync(`/proc/${pid}/cwd`, flags);
+    const root = io.fstatSync(rootFd, { bigint: true });
+    const cwd = io.fstatSync(cwdFd, { bigint: true });
+    const heldRoot = `/proc/self/fd/${rootFd}`;
+    const filesystemType = io.statfsSync(heldRoot, { bigint: true }).type.toString();
+    const chromiumFdinfoRoot =
+      /^\/proc\/[1-9][0-9]*(\/task\/[1-9][0-9]*)?\/fdinfo( \(deleted\))?$/.test(before);
+    let empty = false;
+    let deadProcRoot = false;
+    try {
+      empty = io.readdirSync(heldRoot).length === 0;
+    } catch (error) {
+      if (
+        error && error.code === 'ESRCH' && chromiumFdinfoRoot &&
+        filesystemType === '40864' && root.isDirectory()
+      ) deadProcRoot = true;
+      else throw error;
+    }
+    if (io.readlinkSync(rootPath) !== before) return undefined;
+    result = {
+      device: root.dev.toString(),
+      inode: root.ino.toString(),
+      filesystemType,
+      isDirectory: root.isDirectory(),
+      empty,
+      deadProcRoot,
+      chromiumFdinfoRoot,
+      cwdMatchesRoot: cwd.isDirectory() && cwd.dev === root.dev && cwd.ino === root.ino,
+    };
+  } catch (_) {
+    result = undefined;
+  } finally {
+    for (const fd of [cwdFd, rootFd]) {
+      if (fd !== undefined) {
+        try { io.closeSync(fd); } catch (_) { result = undefined; }
+      }
+    }
   }
-  return {
-    pid,
-    argv: normalizeArgv(rawArgv, privacy),
-    status: parseStatus(fs.readFileSync(`${procRoot}/status`, 'utf8')),
-    namespaces,
-    uidMap,
-    gidMap,
-    securityLabel: readSecurityLabel(procRoot),
-    startTime: parseProcessStartTime(fs.readFileSync(`${procRoot}/stat`, 'utf8')),
-  };
+  return result;
+}
+
+function parseNamespaceMap(value) {
+  if (typeof value !== 'string' || !value.trim()) return undefined;
+  const ranges = [];
+  for (const line of value.trim().split('\n')) {
+    const fields = line.trim().split(/\s+/);
+    if (fields.length !== 3 || fields.some((field) => !/^\d+$/.test(field))) return undefined;
+    const [inside, outside, count] = fields.map(Number);
+    if (
+      [inside, outside, count].some((field) => !Number.isSafeInteger(field) || field > 0xffffffff) ||
+      count === 0 || inside + count > 0x100000000 || outside + count > 0x100000000
+    ) return undefined;
+    ranges.push([inside, outside, count]);
+  }
+  return ranges;
+}
+
+function namespaceMapsEqual(left, right) {
+  const leftRanges = parseNamespaceMap(left);
+  const rightRanges = parseNamespaceMap(right);
+  if (!leftRanges || !rightRanges) return left === right;
+  return leftRanges.length === rightRanges.length && leftRanges.every((range, index) =>
+    range.every((field, column) => field === rightRanges[index][column])
+  );
+}
+
+function validRootIdentity(filesystem) {
+  return Boolean(filesystem && filesystem.isDirectory === true &&
+    /^\d+$/.test(filesystem.device) && /^\d+$/.test(filesystem.inode));
+}
+
+function sameRoot(left, right) {
+  return left.device === right.device && left.inode === right.inode;
+}
+
+function readProcEvidence(pid, privacy, io = fs) {
+  const procRoot = `/proc/${pid}`;
+  const initialStatus = parseStatus(io.readFileSync(`${procRoot}/status`, 'utf8'));
+  const initialStart = parseProcessStartTime(io.readFileSync(`${procRoot}/stat`, 'utf8'));
+  assert.strictEqual(Number(initialStatus.Pid), pid, 'proc-pid-mismatch');
+  const rawArgv = io.readFileSync(`${procRoot}/cmdline`).toString('utf8').split('\0').filter(Boolean);
+  const namespaces = Object.fromEntries(
+    NAMESPACE_NAMES.map((name) => [name, io.readlinkSync(`${procRoot}/ns/${name}`)])
+  );
+  const uidMap = io.readFileSync(`${procRoot}/uid_map`, 'utf8').trim();
+  const gidMap = io.readFileSync(`${procRoot}/gid_map`, 'utf8').trim();
+  assert(/^[\d\s]+$/.test(uidMap) && /^[\d\s]+$/.test(gidMap), 'unexpected-namespace-map');
+  let securityLabel;
+  try {
+    securityLabel = io.readFileSync(`${procRoot}/attr/current`, 'utf8').replace(/\0+$/, '').trim();
+  } catch (error) {
+    if (error && (error.code === 'ENOENT' || error.code === 'EINVAL')) securityLabel = null;
+    else throw error;
+  }
+  const filesystem = readFilesystemEvidence(pid, io);
+  const status = parseStatus(io.readFileSync(`${procRoot}/status`, 'utf8'));
+  const startTime = parseProcessStartTime(io.readFileSync(`${procRoot}/stat`, 'utf8'));
+  assert.deepStrictEqual(status, initialStatus, 'proc-status-changed');
+  assert.strictEqual(startTime, initialStart, 'proc-instance-replaced');
+  return { pid, argv: normalizeArgv(rawArgv, privacy), status, namespaces, uidMap, gidMap,
+    securityLabel, startTime, filesystem };
 }
 
 function assertRendererInstance(initialEvidence, finalEvidence) {
@@ -578,34 +651,43 @@ function assertRendererInstance(initialEvidence, finalEvidence) {
   );
 }
 
+function assertStableEvidence(initial, final, requireFilesystem) {
+  assertRendererInstance(initial, final);
+  assert.deepStrictEqual(final.status, initial.status, 'process-status-changed');
+  assert.deepStrictEqual(final.argv, initial.argv, 'process-argv-changed');
+  assert.deepStrictEqual(final.namespaces, initial.namespaces, 'process-namespaces-changed');
+  assert(namespaceMapsEqual(final.uidMap, initial.uidMap), 'process-uid-map-changed');
+  assert(namespaceMapsEqual(final.gidMap, initial.gidMap), 'process-gid-map-changed');
+  if (requireFilesystem) {
+    assert.deepStrictEqual(final.filesystem, initial.filesystem, 'process-filesystem-changed');
+  }
+  assert.strictEqual(final.securityLabel, initial.securityLabel, 'process-label-changed');
+}
+
 async function assertRendererAfterLifecycleYield(
-  initialEvidence,
-  rendererPid,
-  webContents,
-  isRendererGone,
-  dependencies = {}
+  initialMain, initialRenderer, rendererPid, webContents, isRendererGone,
+  validate, privacy, dependencies = {}
 ) {
   const yieldToEvents =
     dependencies.yieldToEvents || (() => new Promise((resolve) => setImmediate(resolve)));
-  const readEvidence =
-    dependencies.readEvidence ||
-    (() => ({
-      status: parseStatus(fs.readFileSync(`/proc/${rendererPid}/status`, 'utf8')),
-      startTime: parseProcessStartTime(
-        fs.readFileSync(`/proc/${rendererPid}/stat`, 'utf8')
-      ),
-    }));
+  const readEvidence = dependencies.readEvidence || ((pid) => readProcEvidence(pid, privacy));
   await yieldToEvents();
-  assert(!isRendererGone(), 'renderer-exited-during-collection');
-  assert(!webContents.isDestroyed(), 'renderer-destroyed-after-collection');
-  assert.strictEqual(
-    webContents.getOSProcessId(),
-    rendererPid,
-    'renderer-pid-changed-after-collection'
-  );
-  const finalEvidence = readEvidence();
-  assert.strictEqual(Number(finalEvidence.status.Pid), rendererPid, 'renderer-proc-pid-changed');
-  assertRendererInstance(initialEvidence, finalEvidence);
+  const assertLive = () => {
+    assert(!isRendererGone(), 'renderer-exited-during-collection');
+    assert(!webContents.isDestroyed(), 'renderer-destroyed-after-collection');
+    assert.strictEqual(webContents.getOSProcessId(), rendererPid, 'renderer-pid-changed-after-collection');
+  };
+  assertLive();
+  const main = readEvidence(initialMain.pid);
+  const renderer = readEvidence(rendererPid);
+  assert.strictEqual(Number(main.status.Pid), initialMain.pid, 'main-proc-pid-changed');
+  assert.strictEqual(Number(renderer.status.Pid), rendererPid, 'renderer-proc-pid-changed');
+  validate(main, renderer);
+  const requireFilesystem = initialRenderer.namespaces.mnt === initialMain.namespaces.mnt;
+  assertStableEvidence(initialMain, main, requireFilesystem);
+  assertStableEvidence(initialRenderer, renderer, requireFilesystem);
+  assertLive();
+  return { main, renderer };
 }
 
 function hasForbiddenSwitch(argv) {
@@ -651,6 +733,8 @@ function normalizeProcessEvidence(
       Seccomp: evidence.status.Seccomp,
       Seccomp_filters: evidence.status.Seccomp_filters,
       CapEff: evidence.status.CapEff,
+      CapPrm: evidence.status.CapPrm,
+      CapInh: evidence.status.CapInh,
     },
     namespaces: Object.fromEntries(
       NAMESPACE_NAMES.map((name) => [
@@ -660,14 +744,27 @@ function normalizeProcessEvidence(
     ),
     maps: {
       uid: {
-        sameAsMain: evidence.uidMap === mainEvidence.uidMap,
+        sameAsMain: namespaceMapsEqual(evidence.uidMap, mainEvidence.uidMap),
         classification: mapClassification(evidence.uidMap),
       },
       gid: {
-        sameAsMain: evidence.gidMap === mainEvidence.gidMap,
+        sameAsMain: namespaceMapsEqual(evidence.gidMap, mainEvidence.gidMap),
         classification: mapClassification(evidence.gidMap),
       },
     },
+    filesystem: validRootIdentity(evidence.filesystem) &&
+      validRootIdentity(mainEvidence.filesystem) && evidence.filesystem.chromiumFdinfoRoot &&
+      evidence.filesystem.filesystemType === '40864' && evidence.filesystem.isDirectory &&
+      evidence.filesystem.cwdMatchesRoot && (evidence.filesystem.empty || evidence.filesystem.deadProcRoot)
+      ? {
+        route: 'chromium-proc-fdinfo',
+        sameRootAsMain: sameRoot(evidence.filesystem, mainEvidence.filesystem),
+        procfs: evidence.filesystem.filesystemType === '40864',
+        directory: evidence.filesystem.isDirectory,
+        empty: evidence.filesystem.empty,
+        deadProcRoot: evidence.filesystem.deadProcRoot,
+        cwdMatchesRoot: evidence.filesystem.cwdMatchesRoot,
+      } : null,
     securityLabel,
   };
 }
@@ -715,19 +812,39 @@ function assertRendererEvidence(mainEvidence, rendererEvidence, sandboxClass) {
     mainEvidence.namespaces.pid,
     'shared-pid-namespace'
   );
-  assert.notStrictEqual(
-    rendererEvidence.namespaces.mnt,
-    mainEvidence.namespaces.mnt,
-    'shared-mount-namespace'
-  );
+  if (rendererEvidence.namespaces.mnt === mainEvidence.namespaces.mnt) {
+    for (const name of ['pid', 'user', 'net']) {
+      assert(mainEvidence.namespaces[name] && rendererEvidence.namespaces[name], `missing-${name}-namespace`);
+    }
+    for (const name of ['user', 'net']) {
+      assert.notStrictEqual(rendererEvidence.namespaces[name], mainEvidence.namespaces[name], `shared-${name}-namespace`);
+    }
+    for (const field of ['CapPrm', 'CapInh']) {
+      assert(/^0+$/.test(rendererEvidence.status[field] || ''), `${field}-capabilities`);
+    }
+    for (const field of ['uidMap', 'gidMap']) {
+      const ranges = parseNamespaceMap(rendererEvidence[field]);
+      assert(ranges && ranges.length === 1 && ranges[0][2] === 1, 'renderer-single-id-map');
+      assert(parseNamespaceMap(mainEvidence[field]), 'main-namespace-map');
+      assert(!namespaceMapsEqual(rendererEvidence[field], mainEvidence[field]), `shared-${field}`);
+    }
+    const root = rendererEvidence.filesystem;
+    assert(validRootIdentity(mainEvidence.filesystem) && validRootIdentity(root), 'missing-root-identity');
+    assert(
+      root.filesystemType === '40864' && root.isDirectory && root.chromiumFdinfoRoot &&
+      root.cwdMatchesRoot && (root.empty || root.deadProcRoot) &&
+      !sameRoot(root, mainEvidence.filesystem),
+      'unverified-shared-mount-root'
+    );
+  }
   if (sandboxClass !== 'suid-only') {
     assert.notStrictEqual(
       rendererEvidence.namespaces.user,
       mainEvidence.namespaces.user,
       'shared-user-namespace'
     );
-    assert.notStrictEqual(rendererEvidence.uidMap, mainEvidence.uidMap, 'shared-uid-map');
-    assert.notStrictEqual(rendererEvidence.gidMap, mainEvidence.gidMap, 'shared-gid-map');
+    assert(!namespaceMapsEqual(rendererEvidence.uidMap, mainEvidence.uidMap), 'shared-uid-map');
+    assert(!namespaceMapsEqual(rendererEvidence.gidMap, mainEvidence.gidMap), 'shared-gid-map');
   }
 }
 
@@ -1362,8 +1479,8 @@ async function runElectronProbe({ transitionOnly = false, exitOnly = false } = {
 
     const rendererPid = window.webContents.getOSProcessId();
     assert(Number.isSafeInteger(rendererPid) && rendererPid > 1, 'invalid-renderer-pid');
-    const mainEvidence = readProcEvidence(process.pid, privacy);
-    const rendererEvidence = readProcEvidence(rendererPid, privacy);
+    let mainEvidence = readProcEvidence(process.pid, privacy);
+    let rendererEvidence = readProcEvidence(rendererPid, privacy);
     assert.strictEqual(Number(mainEvidence.status.Pid), process.pid, 'main-proc-pid');
     assert.strictEqual(Number(rendererEvidence.status.Pid), rendererPid, 'renderer-proc-pid');
     if (process.env.DAEDALUS_PROBE_DEBUG === '1' && !exitOnly) {
@@ -1410,12 +1527,15 @@ async function runElectronProbe({ transitionOnly = false, exitOnly = false } = {
         rendererPid,
         'renderer-pid-changed'
       );
-      await assertRendererAfterLifecycleYield(
-        rendererEvidence,
-        rendererPid,
-        window.webContents,
-        () => rendererGone
-      );
+      ({ main: mainEvidence, renderer: rendererEvidence } = await assertRendererAfterLifecycleYield(
+        mainEvidence, rendererEvidence, rendererPid, window.webContents, () => rendererGone,
+        (main, renderer) => {
+          assert(!hasForbiddenSwitch(main.argv), 'forbidden-main-switch');
+          assert(!hasForbiddenSwitch(renderer.argv), 'forbidden-renderer-switch');
+          assertSelinuxProcessContext(identityManifest.policy, sourceLabel, main.securityLabel, 'main');
+          assertSelinuxProcessContext(identityManifest.policy, sourceLabel, renderer.securityLabel, 'renderer');
+        }, privacy
+      ));
       const packageIdentity = verifyPackageFiles(
         packagePaths,
         identityManifest,
@@ -1512,7 +1632,7 @@ async function runElectronProbe({ transitionOnly = false, exitOnly = false } = {
       },
       contract.sandboxClass
     );
-    const policy = collectPolicyEvidence(
+    let policy = collectPolicyEvidence(
       contract,
       packagePaths,
       identityManifest,
@@ -1526,12 +1646,15 @@ async function runElectronProbe({ transitionOnly = false, exitOnly = false } = {
       rendererPid,
       'renderer-pid-changed'
     );
-    await assertRendererAfterLifecycleYield(
-      rendererEvidence,
-      rendererPid,
-      window.webContents,
-      () => rendererGone
-    );
+    ({ main: mainEvidence, renderer: rendererEvidence } = await assertRendererAfterLifecycleYield(
+      mainEvidence, rendererEvidence, rendererPid, window.webContents, () => rendererGone,
+      (main, renderer) => {
+        assertRendererEvidence(main, renderer, contract.sandboxClass);
+        policy = collectPolicyEvidence(
+          contract, packagePaths, identityManifest, renderer, { mainEvidence: main }
+        );
+      }, privacy
+    ));
     const normalizedMain = normalizeProcessEvidence(
       mainEvidence,
       mainEvidence,
@@ -1778,26 +1901,252 @@ async function runSelfTest() {
 
   const mainEvidence = {
     argv: ['<INSTALL_ROOT>/libexec/electron'],
-    status: {},
-    namespaces: { user: 'user:[1]', pid: 'pid:[1]', mnt: 'mnt:[1]' },
+    pid: 41,
+    startTime: '12344',
+    status: { Pid: '41' },
+    namespaces: { user: 'user:[1]', pid: 'pid:[1]', mnt: 'mnt:[1]', net: 'net:[1]' },
     uidMap: '0 0 4294967295',
     gidMap: '0 0 4294967295',
     securityLabel: 'unconfined',
   };
   const rendererEvidence = {
     argv: ['--type=renderer'],
+    pid: 42,
+    startTime: '12345',
     status: {
+      Pid: '42',
       NoNewPrivs: '1',
       Seccomp: '2',
       Seccomp_filters: '1',
       CapEff: '0000000000000000',
+      CapPrm: '0000000000000000',
+      CapInh: '0000000000000000',
     },
-    namespaces: { user: 'user:[2]', pid: 'pid:[2]', mnt: 'mnt:[2]' },
+    namespaces: { user: 'user:[2]', pid: 'pid:[2]', mnt: 'mnt:[2]', net: 'net:[2]' },
     uidMap: '0 1000 1',
     gidMap: '0 1000 1',
     securityLabel:
       '/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/electron (unconfined)',
   };
+  const mainRoot = {
+    device: '1', inode: '2', filesystemType: '61267', isDirectory: true,
+    empty: false, deadProcRoot: false, chromiumFdinfoRoot: false, cwdMatchesRoot: false,
+  };
+  const confinedRoot = {
+    device: '3', inode: '4', filesystemType: '40864', isDirectory: true,
+    empty: true, deadProcRoot: false, chromiumFdinfoRoot: true, cwdMatchesRoot: true,
+  };
+  const sharedMain = { ...mainEvidence, filesystem: mainRoot };
+  const sharedRenderer = {
+    ...rendererEvidence,
+    namespaces: { ...rendererEvidence.namespaces, mnt: mainEvidence.namespaces.mnt },
+    filesystem: confinedRoot,
+  };
+  for (const sandboxClass of SANDBOX_CLASSES) {
+    assertRendererEvidence(sharedMain, sharedRenderer, sandboxClass);
+    assertRendererEvidence(sharedMain, {
+      ...sharedRenderer, filesystem: { ...confinedRoot, empty: false, deadProcRoot: true },
+    }, sandboxClass);
+  }
+  assertRendererEvidence(sharedMain, {
+    ...sharedRenderer, uidMap: '  00\t01000  01 \n', gidMap: '\t0 1000 1\n',
+  }, 'combined-unattributed');
+  for (const filesystem of [
+    undefined,
+    { ...confinedRoot, device: 'not-numeric' },
+    { ...confinedRoot, inode: '' },
+    { ...confinedRoot, empty: false },
+    { ...confinedRoot, filesystemType: '61267' },
+    { ...confinedRoot, isDirectory: false },
+    { ...confinedRoot, chromiumFdinfoRoot: false },
+    { ...confinedRoot, cwdMatchesRoot: false },
+    { ...confinedRoot, device: mainRoot.device, inode: mainRoot.inode },
+  ]) {
+    assert.throws(() => assertRendererEvidence(sharedMain, {
+      ...sharedRenderer, filesystem,
+    }, 'combined-unattributed'));
+  }
+  for (const main of [
+    mainEvidence,
+    { ...sharedMain, filesystem: { ...mainRoot, inode: 'bad' } },
+    { ...sharedMain, filesystem: { ...mainRoot, isDirectory: false } },
+  ]) {
+    assert.throws(() => assertRendererEvidence(main, sharedRenderer, 'combined-unattributed'));
+  }
+  assert.throws(() => assertRendererEvidence(mainEvidence, {
+    ...sharedRenderer, filesystem: undefined,
+  }, 'combined-unattributed'));
+  for (const field of ['device', 'inode']) {
+    assertRendererEvidence(sharedMain, {
+      ...sharedRenderer,
+      filesystem: { ...confinedRoot, device: mainRoot.device, inode: mainRoot.inode, [field]: '99' },
+    }, 'combined-unattributed');
+  }
+  for (const name of ['pid', 'user', 'net']) {
+    assert.throws(() => assertRendererEvidence(sharedMain, {
+      ...sharedRenderer, namespaces: { ...sharedRenderer.namespaces, [name]: sharedMain.namespaces[name] },
+    }, 'combined-unattributed'));
+  }
+  for (const name of ['pid', 'user', 'net']) {
+    assert.throws(() => assertRendererEvidence({
+      ...sharedMain, namespaces: { ...sharedMain.namespaces, [name]: undefined },
+    }, sharedRenderer, 'combined-unattributed'));
+  }
+  for (const field of ['CapEff', 'CapPrm', 'CapInh']) {
+    for (const value of [undefined, '1', 'invalid']) {
+      assert.throws(() => assertRendererEvidence(sharedMain, {
+        ...sharedRenderer, status: { ...sharedRenderer.status, [field]: value },
+      }, 'combined-unattributed'));
+    }
+  }
+  for (const value of [
+    '', '0 1000', '0 1000 0', '-1 1000 1', '0 4294967296 1',
+    '4294967295 1000 2', '0 4294967295 2', '0 1000 1 extra',
+    '0 1000 2', '0 1000 1\n1 1001 1', 'NaN 1000 1',
+  ]) {
+    for (const field of ['uidMap', 'gidMap']) {
+      assert.throws(() => assertRendererEvidence(sharedMain, {
+        ...sharedRenderer, [field]: value,
+      }, 'combined-unattributed'));
+    }
+  }
+  assert.deepStrictEqual(parseNamespaceMap('4294967295 4294967295 1'), [[4294967295, 4294967295, 1]]);
+  assert.deepStrictEqual(parseNamespaceMap('0 0 1\n1 1 4294967295'), [[0, 0, 1], [1, 1, 4294967295]]);
+  assert.throws(() => assertRendererEvidence(
+    { ...sharedMain, uidMap: '00\t1000 01' }, sharedRenderer, 'combined-unattributed'
+  ));
+  assert.throws(() => assertRendererEvidence(
+    { ...sharedMain, gidMap: '' }, sharedRenderer, 'combined-unattributed'
+  ));
+  // Optional filesystem failures do not disable the established separate-mount route.
+  assertRendererEvidence({ ...mainEvidence, filesystem: undefined }, rendererEvidence, 'combined-unattributed');
+
+  const errno = (code) => Object.assign(new Error(code), { code });
+  const filesystemFixture = (options = {}) => {
+    const closed = [];
+    const opened = [];
+    const stat = (dev = 3n, ino = 4n) => ({
+      dev, ino, isDirectory: () => options.directory !== false,
+    });
+    let links = 0;
+    const io = {
+      readlinkSync: () => {
+        if (options.readlinkError) throw errno(options.readlinkError);
+        links += 1;
+        return options.changedLink && links > 1 ? '/proc/99/fdinfo' :
+          (options.rootLink || '/proc/12/task/13/fdinfo (deleted)');
+      },
+      openSync: (path, flags) => {
+        assert.strictEqual(flags, 0x200000 | fs.constants.O_DIRECTORY);
+        if (options.openError && path.endsWith(options.openError)) throw errno('EACCES');
+        const fd = opened.length + 20;
+        opened.push(fd);
+        return fd;
+      },
+      fstatSync: (fd, flags) => {
+        assert.deepStrictEqual(flags, { bigint: true });
+        if (options.statError || (options.cwdStatError && fd === 21)) throw errno('EIO');
+        return fd === 21 && options.cwdDifferent ? stat(3n, 5n) : stat();
+      },
+      statfsSync: (path, flags) => {
+        assert.strictEqual(path, '/proc/self/fd/20');
+        assert.deepStrictEqual(flags, { bigint: true });
+        if (options.statfsError) throw errno('EIO');
+        return { type: options.nonProcfs ? 61267n : 40864n };
+      },
+      readdirSync: (path) => {
+        assert.strictEqual(path, '/proc/self/fd/20');
+        if (options.readdirError) throw errno(options.readdirError);
+        return options.nonempty ? ['not-exported'] : [];
+      },
+      closeSync: (fd) => {
+        closed.push(fd);
+        if (options.closeError === fd) throw errno('EIO');
+      },
+    };
+    if (options.noStatfs) delete io.statfsSync;
+    return { io, closed, opened };
+  };
+  const liveRootFixture = filesystemFixture();
+  assert.deepStrictEqual(readFilesystemEvidence(42, liveRootFixture.io), confinedRoot);
+  assert.deepStrictEqual(liveRootFixture.closed, [21, 20]);
+  const deadRootFixture = filesystemFixture({ readdirError: 'ESRCH' });
+  assert.deepStrictEqual(readFilesystemEvidence(42, deadRootFixture.io), {
+    ...confinedRoot, empty: false, deadProcRoot: true,
+  });
+  assert.deepStrictEqual(deadRootFixture.closed, [21, 20]);
+  for (const options of [
+    { noStatfs: true }, { readlinkError: 'EACCES' }, { openError: '/root' },
+    { openError: '/cwd' }, { statError: true }, { cwdStatError: true }, { statfsError: true },
+    { readdirError: 'EACCES' }, { readdirError: 'ENOENT' }, { readdirError: 'EIO' },
+    { readdirError: 'ESRCH', nonProcfs: true },
+    { readdirError: 'ESRCH', directory: false },
+    { readdirError: 'ESRCH', rootLink: '/tmp/empty' },
+    { readdirError: 'ESRCH', rootLink: '/proc/0/fdinfo' },
+    { readdirError: 'ESRCH', rootLink: '/proc/12/task/0/fdinfo' },
+    { changedLink: true }, { closeError: 20 }, { closeError: 21 },
+  ]) {
+    const fixture = filesystemFixture(options);
+    assert.strictEqual(readFilesystemEvidence(42, fixture.io), undefined);
+    assert.deepStrictEqual(fixture.closed, [...fixture.opened].reverse());
+  }
+  for (const options of [{ nonempty: true }, { cwdDifferent: true }, { nonProcfs: true }, { directory: false }]) {
+    const fixture = filesystemFixture(options);
+    const filesystem = readFilesystemEvidence(42, fixture.io);
+    assert(filesystem);
+    assert.throws(() => assertRendererEvidence(sharedMain, {
+      ...sharedRenderer, filesystem,
+    }, 'combined-unattributed'));
+    assert.deepStrictEqual(fixture.closed, [21, 20]);
+  }
+  const procFixture = (options = {}) => {
+    const filesystem = filesystemFixture();
+    const status = [
+      'Pid:\t42', 'NoNewPrivs:\t1', 'Seccomp:\t2', 'Seccomp_filters:\t1',
+      'CapEff:\t0000', 'CapPrm:\t0000', 'CapInh:\t0000',
+    ].join('\n');
+    const processStat = (start) =>
+      `42 (electron renderer) S 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 ${start} 20`;
+    let statusReads = 0;
+    let statReads = 0;
+    const io = {
+      ...filesystem.io,
+      readFileSync: (path) => {
+        if (options.readError && path.endsWith(options.readError)) throw errno('EACCES');
+        if (path.endsWith('/status')) {
+          statusReads += 1;
+          return options.statusChanged && statusReads > 1 ? status.replace('Seccomp:\t2', 'Seccomp:\t0') : status;
+        }
+        if (path.endsWith('/stat')) {
+          statReads += 1;
+          return processStat(options.startChanged && statReads > 1 ? '12346' : '12345');
+        }
+        if (path.endsWith('/cmdline')) return Buffer.from('--type=renderer\0');
+        if (path.endsWith('/uid_map') || path.endsWith('/gid_map')) return '0 1000 1';
+        if (path.endsWith('/attr/current')) return 'unconfined';
+        throw new Error('unexpected-fixture-read');
+      },
+      readlinkSync: (path) => {
+        if (options.namespaceError && path.includes('/ns/')) throw errno('EACCES');
+        if (path.includes('/ns/')) return `${path.split('/').pop()}:[2]`;
+        return filesystem.io.readlinkSync(path);
+      },
+    };
+    return { ...filesystem, io };
+  };
+  const completeProc = readProcEvidence(42, privacy, procFixture().io);
+  assert.strictEqual(completeProc.status.CapPrm, '0000');
+  assert.strictEqual(completeProc.namespaces.net, 'net:[2]');
+  assert.deepStrictEqual(completeProc.filesystem, confinedRoot);
+  for (const options of [
+    { readError: '/status' }, { readError: '/stat' }, { readError: '/cmdline' },
+    { readError: '/uid_map' }, { readError: '/gid_map' }, { readError: '/attr/current' },
+    { namespaceError: true }, { statusChanged: true }, { startChanged: true },
+  ]) {
+    const fixture = procFixture(options);
+    assert.throws(() => readProcEvidence(42, privacy, fixture.io));
+    assert.deepStrictEqual(fixture.closed, [...fixture.opened].reverse());
+  }
   assertRendererEvidence(mainEvidence, rendererEvidence, 'userns-only');
   assertRendererEvidence(mainEvidence, rendererEvidence, 'combined-unattributed');
   assert.strictEqual(
@@ -1822,29 +2171,160 @@ async function runSelfTest() {
     isDestroyed: () => false,
     getOSProcessId: () => 42,
   };
-  await assertRendererAfterLifecycleYield(
-    { status: { Pid: '42' }, startTime: '12345' },
-    42,
-    fixtureWebContents,
-    () => false,
+  const validateFixture = (main, renderer) => assertRendererEvidence(main, renderer, 'combined-unattributed');
+  const finalRenderer = { ...rendererEvidence };
+  const readPids = [];
+  const finalSamples = await assertRendererAfterLifecycleYield(
+    mainEvidence, rendererEvidence, 42, fixtureWebContents, () => false,
+    validateFixture, privacy,
     {
       yieldToEvents: async () => undefined,
-      readEvidence: () => ({ status: { Pid: '42' }, startTime: '12345' }),
+      readEvidence: (pid) => {
+        readPids.push(pid);
+        return pid === 41 ? mainEvidence : finalRenderer;
+      },
+    }
+  );
+  assert.deepStrictEqual(readPids, [41, 42]);
+  assert.strictEqual(finalSamples.renderer, finalRenderer);
+  assert.strictEqual(finalSamples.main, mainEvidence);
+  const separatedWithRoot = { ...rendererEvidence, filesystem: confinedRoot };
+  const separatedFinal = await assertRendererAfterLifecycleYield(
+    sharedMain, separatedWithRoot, 42, fixtureWebContents, () => false, validateFixture, privacy,
+    {
+      yieldToEvents: async () => undefined,
+      readEvidence: (pid) => pid === 41 ? mainEvidence : rendererEvidence,
+    }
+  );
+  assert.strictEqual(separatedFinal.renderer.filesystem, undefined);
+  assert.strictEqual(separatedFinal.main.filesystem, undefined);
+  const separatedMalformedMap = { ...rendererEvidence, uidMap: '0 4294967296 1' };
+  await assertRendererAfterLifecycleYield(
+    mainEvidence, separatedMalformedMap, 42, fixtureWebContents, () => false, validateFixture, privacy,
+    {
+      yieldToEvents: async () => undefined,
+      readEvidence: (pid) => pid === 41 ? mainEvidence : separatedMalformedMap,
     }
   );
   await assert.rejects(
     assertRendererAfterLifecycleYield(
-      { status: { Pid: '42' }, startTime: '12345' },
-      42,
-      fixtureWebContents,
-      () => false,
+      mainEvidence, rendererEvidence, 42, fixtureWebContents, () => false,
+      validateFixture, privacy,
       {
         yieldToEvents: async () => undefined,
-        readEvidence: () => ({ status: { Pid: '42' }, startTime: '12346' }),
+        readEvidence: (pid) => pid === 41 ? mainEvidence : { ...rendererEvidence, startTime: '12346' },
       }
-    ),
-    /renderer-instance-replaced/
+    ), /renderer-instance-replaced/
   );
+  for (const replacement of [
+    { ...sharedRenderer, status: { ...sharedRenderer.status, NoNewPrivs: '0' } },
+    { ...sharedRenderer, status: { ...sharedRenderer.status, Seccomp: '0' } },
+    { ...sharedRenderer, status: { ...sharedRenderer.status, Seccomp_filters: '0' } },
+    { ...sharedRenderer, status: { ...sharedRenderer.status, CapPrm: '1' } },
+    { ...sharedRenderer, status: { ...sharedRenderer.status, CapInh: '1' } },
+    { ...sharedRenderer, status: { ...sharedRenderer.status, Pid: '43' } },
+    { ...sharedRenderer, uidMap: '0 1001 1' },
+    { ...sharedRenderer, gidMap: '0 1000 2' },
+    { ...sharedRenderer, filesystem: undefined },
+    { ...sharedRenderer, filesystem: { ...confinedRoot, empty: false } },
+    { ...sharedRenderer, filesystem: { ...confinedRoot, inode: '99' } },
+    { ...sharedRenderer, filesystem: { ...confinedRoot, cwdMatchesRoot: false } },
+    { ...sharedRenderer, namespaces: { ...sharedRenderer.namespaces, net: 'net:[99]' } },
+    { ...sharedRenderer, namespaces: { ...sharedRenderer.namespaces, pid: 'pid:[99]' } },
+    { ...sharedRenderer, argv: ['--type=renderer', '--no-sandbox'] },
+    { ...sharedRenderer, securityLabel: 'changed' },
+  ]) {
+    await assert.rejects(assertRendererAfterLifecycleYield(
+      sharedMain, sharedRenderer, 42, fixtureWebContents, () => false, validateFixture, privacy,
+      {
+        yieldToEvents: async () => undefined,
+        readEvidence: (pid) => pid === 41 ? sharedMain : replacement,
+      }
+    ));
+  }
+  for (const replacement of [
+    { ...sharedMain, startTime: 'changed' },
+    { ...sharedMain, status: { Pid: '40' } },
+    { ...sharedMain, status: { ...sharedMain.status, Seccomp: '0' } },
+    { ...sharedMain, filesystem: undefined },
+    { ...sharedMain, filesystem: { ...mainRoot, device: '99' } },
+    { ...sharedMain, uidMap: '0 1 4294967295' },
+    { ...sharedMain, gidMap: '0 1 4294967295' },
+    { ...sharedMain, namespaces: { ...sharedMain.namespaces, mnt: 'mnt:[99]' } },
+    { ...sharedMain, argv: ['--no-sandbox'] },
+  ]) {
+    await assert.rejects(assertRendererAfterLifecycleYield(
+      sharedMain, sharedRenderer, 42, fixtureWebContents, () => false, validateFixture, privacy,
+      {
+        yieldToEvents: async () => undefined,
+        readEvidence: (pid) => pid === 41 ? replacement : sharedRenderer,
+      }
+    ));
+  }
+  let finalReadCount = 0;
+  await assert.rejects(assertRendererAfterLifecycleYield(
+    sharedMain, sharedRenderer, 42,
+    { isDestroyed: () => finalReadCount === 2, getOSProcessId: () => 42 },
+    () => false, validateFixture, privacy,
+    {
+      yieldToEvents: async () => undefined,
+      readEvidence: (pid) => {
+        finalReadCount += 1;
+        return pid === 41 ? sharedMain : sharedRenderer;
+      },
+    }
+  ), /renderer-destroyed-after-collection/);
+  finalReadCount = 0;
+  await assert.rejects(assertRendererAfterLifecycleYield(
+    sharedMain, sharedRenderer, 42,
+    { isDestroyed: () => false, getOSProcessId: () => finalReadCount === 2 ? 43 : 42 },
+    () => false, validateFixture, privacy,
+    {
+      yieldToEvents: async () => undefined,
+      readEvidence: (pid) => {
+        finalReadCount += 1;
+        return pid === 41 ? sharedMain : sharedRenderer;
+      },
+    }
+  ), /renderer-pid-changed-after-collection/);
+  const finalSharedRenderer = { ...sharedRenderer, uidMap: '00\t1000 01' };
+  const finalSharedSamples = await assertRendererAfterLifecycleYield(
+    sharedMain, sharedRenderer, 42, fixtureWebContents, () => false, validateFixture, privacy,
+    {
+      yieldToEvents: async () => undefined,
+      readEvidence: (pid) => pid === 41 ? sharedMain : finalSharedRenderer,
+    }
+  );
+  assert.strictEqual(finalSharedSamples.renderer, finalSharedRenderer);
+  const normalizedFinalShared = normalizeProcessEvidence(
+    finalSharedSamples.renderer, finalSharedSamples.main, '<RENDERER_PID>', privacy
+  );
+  assert.deepStrictEqual(normalizedFinalShared.filesystem, {
+    route: 'chromium-proc-fdinfo', sameRootAsMain: false, procfs: true, directory: true,
+    empty: true, deadProcRoot: false, cwdMatchesRoot: true,
+  });
+  assert.strictEqual(normalizedFinalShared.namespaces.net.sameAsMain, false);
+  assert.strictEqual(normalizedFinalShared.status.CapPrm, rendererEvidence.status.CapPrm);
+  assert.strictEqual(normalizedFinalShared.status.CapInh, rendererEvidence.status.CapInh);
+  assert(!Object.hasOwn(normalizedFinalShared.filesystem, 'device'));
+  assert(!Object.hasOwn(normalizedFinalShared.filesystem, 'inode'));
+  assertNoSensitiveContent(JSON.stringify(normalizedFinalShared), privacy);
+  const normalizedDeadRoot = normalizeProcessEvidence(
+    { ...sharedRenderer, filesystem: { ...confinedRoot, empty: false, deadProcRoot: true } },
+    sharedMain, '<RENDERER_PID>', privacy
+  );
+  assert.strictEqual(normalizedDeadRoot.filesystem.deadProcRoot, true);
+  assert.strictEqual(normalizedDeadRoot.filesystem.empty, false);
+  assert.strictEqual(normalizeProcessEvidence(
+    sharedMain, sharedMain, '<MAIN_PID>', privacy
+  ).filesystem, null);
+  assert.strictEqual(normalizeProcessEvidence(
+    sharedRenderer, mainEvidence, '<RENDERER_PID>', privacy
+  ).filesystem, null);
+  assert.strictEqual(normalizeProcessEvidence(
+    { ...sharedRenderer, filesystem: { ...confinedRoot, chromiumFdinfoRoot: false } },
+    sharedMain, '<RENDERER_PID>', privacy
+  ).filesystem, null);
   assertRendererEvidence(
     mainEvidence,
     {
