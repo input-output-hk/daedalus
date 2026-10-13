@@ -28,6 +28,7 @@ export type DappCatalogProps = {
   ready: boolean;
   isOpen: boolean;
   launchingId: string | null;
+  launchFailed: boolean;
   onLaunch: (id: string) => void;
   onClose: () => void;
 };
@@ -42,6 +43,7 @@ export function DappCatalog({
   ready,
   isOpen,
   launchingId,
+  launchFailed,
   onLaunch,
   onClose,
 }: Props) {
@@ -65,6 +67,12 @@ export function DappCatalog({
           {!ready && !isOpen && (
             <p className={styles.status} role="status">
               {intl.formatMessage(messages.notReady)}
+            </p>
+          )}
+
+          {launchFailed && (
+            <p className={styles.status} role="alert">
+              {intl.formatMessage(messages.launchFailed)}
             </p>
           )}
 

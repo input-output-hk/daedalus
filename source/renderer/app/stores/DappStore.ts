@@ -16,6 +16,7 @@ import Store from './lib/Store';
 
 export default class DappStore extends Store {
   @observable catalogAvailable = false;
+  @observable catalogLaunchFailed = false;
   @observable diagnosticsAvailable = false;
   @observable consoleCaptureAvailable = false;
   @observable consoleCaptureEnabled = false;
@@ -80,6 +81,7 @@ export default class DappStore extends Store {
     this.unbind = undefined;
     this.isLaunching = false;
     this.launchingCatalogId = null;
+    this.catalogLaunchFailed = false;
     this.consoleCaptureEnabled = false;
     this.isManagingConnections = false;
     this.prunedWalletIds = undefined;
@@ -90,6 +92,7 @@ export default class DappStore extends Store {
   async launch(catalogId: string, localName: string): Promise<void> {
     if (!this.ready || this.isLaunching) return;
     const generation = this.generation;
+    this.catalogLaunchFailed = false;
     this.isLaunching = true;
     this.launchingCatalogId = catalogId;
     try {
@@ -98,6 +101,11 @@ export default class DappStore extends Store {
         localName,
         captureConsole: this.consoleCaptureEnabled,
       });
+    } catch {
+      if (generation === this.generation)
+        runInAction('DappStore::failCatalogLaunch', () => {
+          this.catalogLaunchFailed = true;
+        });
     } finally {
       if (generation === this.generation)
         runInAction('DappStore::finishLaunch', () => {

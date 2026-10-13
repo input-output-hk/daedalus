@@ -106,6 +106,114 @@ describe('DappStore', () => {
     expect(store.launchingCatalogId).toBeNull();
   });
 
+  it('consumes catalog rejection and clears pending state without opening a guest', async () => {
+    openRequest.mockRejectedValue(new Error('Private IPC failure'));
+    const { actions, store } = createStore();
+    store.catalogAvailable = true;
+    expect(store.catalogLaunchFailed).toBe(false);
+
+    const launch = store.launch('catalog-id', 'Localized name');
+    expect(store.isLaunching).toBe(true);
+    expect(store.launchingCatalogId).toBe('catalog-id');
+    await expect(launch).resolves.toBeUndefined();
+
+    expect(store.catalogLaunchFailed).toBe(true);
+    expect(store.isLaunching).toBe(false);
+    expect(store.launchingCatalogId).toBeNull();
+    expect(store.guestOpen).toBe(false);
+    expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
+  });
+
+  it('keeps catalog failure until a valid retry and clears it before IPC', async () => {
+    openRequest.mockRejectedValueOnce(new Error('Launch failed'));
+    const { store } = createStore();
+    store.catalogAvailable = true;
+    await store.launch('catalog-id', 'Localized name');
+
+    store.catalogAvailable = false;
+    await store.launch('catalog-id', 'Localized name');
+    expect(store.catalogLaunchFailed).toBe(true);
+    expect(openRequest).toHaveBeenCalledTimes(1);
+
+    let resolveLaunch!: () => void;
+    openRequest.mockImplementationOnce(() => {
+      expect(store.catalogLaunchFailed).toBe(false);
+      return new Promise<void>((resolve) => {
+        resolveLaunch = resolve;
+      });
+    });
+    store.catalogAvailable = true;
+    const retry = store.launch('catalog-id', 'Localized name');
+    expect(store.catalogLaunchFailed).toBe(false);
+    expect(store.isLaunching).toBe(true);
+    await store.launch('another-id', 'Another name');
+    expect(openRequest).toHaveBeenCalledTimes(2);
+    resolveLaunch();
+    await retry;
+
+    expect(store.catalogLaunchFailed).toBe(false);
+    expect(store.isLaunching).toBe(false);
+    expect(store.launchingCatalogId).toBeNull();
+  });
+
+  it('clears catalog failure on teardown', async () => {
+    openRequest.mockRejectedValueOnce(new Error('Launch failed'));
+    const { store } = createStore();
+    store.catalogAvailable = true;
+    await store.launch('catalog-id', 'Localized name');
+    expect(store.catalogLaunchFailed).toBe(true);
+
+    store.teardown();
+
+    expect(store.catalogLaunchFailed).toBe(false);
+    expect(store.isLaunching).toBe(false);
+    expect(store.launchingCatalogId).toBeNull();
+  });
+
+  it('ignores catalog rejection from a retired lifecycle without clearing a new launch', async () => {
+    statusRequest.mockResolvedValue({
+      catalogAvailable: true,
+      diagnosticsAvailable: false,
+      isOpen: false,
+      consoleCaptureAvailable: false,
+    });
+    let rejectOldLaunch!: (error: Error) => void;
+    let resolveNewLaunch!: () => void;
+    openRequest
+      .mockImplementationOnce(
+        () =>
+          new Promise<void>((_, reject) => {
+            rejectOldLaunch = reject;
+          })
+      )
+      .mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveNewLaunch = resolve;
+          })
+      );
+    const { store } = createStore();
+    store.setup();
+    await Promise.resolve();
+    const oldLaunch = store.launch('old-id', 'Old name');
+    store.teardown();
+    store.setup();
+    await Promise.resolve();
+    const newLaunch = store.launch('new-id', 'New name');
+
+    rejectOldLaunch(new Error('Retired launch failed'));
+    await expect(oldLaunch).resolves.toBeUndefined();
+
+    expect(store.catalogLaunchFailed).toBe(false);
+    expect(store.isLaunching).toBe(true);
+    expect(store.launchingCatalogId).toBe('new-id');
+    expect(store.guestOpen).toBe(false);
+    resolveNewLaunch();
+    await newLaunch;
+    expect(store.isLaunching).toBe(false);
+    expect(store.launchingCatalogId).toBeNull();
+  });
+
   it('short-circuits launch while preferred catalog is unavailable', async () => {
     const { store } = createStore();
     await store.launch('catalog-id', 'Localized name');
@@ -139,6 +247,28 @@ describe('DappStore', () => {
     expect(actions.router.goToRoute.trigger).toHaveBeenCalledWith({
       route: '/apps/wallet-a',
     });
+  });
+
+  it.each([false, true])('preserves diagnostics rejection ownership with catalog failure %s', async (catalogLaunchFailed) => {
+    const failure = new Error('Diagnostics launch failed');
+    openRequest.mockRejectedValueOnce(failure);
+    const { actions, store } = createStore();
+    store.diagnosticsAvailable = true;
+    store.catalogLaunchFailed = catalogLaunchFailed;
+
+    const launch = store.launchDiagnostics(
+      'https://example.com/private?value=1',
+      'wallet-a',
+      'Untrusted dApp'
+    );
+    expect(store.isLaunching).toBe(true);
+    await expect(launch).rejects.toBe(failure);
+
+    expect(store.isLaunching).toBe(false);
+    expect(store.launchingCatalogId).toBeNull();
+    expect(store.guestOpen).toBe(false);
+    expect(store.catalogLaunchFailed).toBe(catalogLaunchFailed);
+    expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
   });
 
   it('captures console output only after an available diagnostics opt-in', async () => {

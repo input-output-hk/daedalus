@@ -40,6 +40,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Launching…',
     description: 'Button label while a trusted dApp is launching.',
   },
+  launchFailed: {
+    id: 'dapp.catalog.launchFailed',
+    defaultMessage: '!!!The dApp could not be opened.',
+    description: 'Privacy-safe catalog dApp launch failure.',
+  },
   close: {
     id: 'dapp.catalog.close',
     defaultMessage: '!!!Close dApp',

@@ -14,6 +14,25 @@ The separate installed Chromium sandbox probe **failed** with `evidence-invalid:
 
 The legacy Spectron E2E bootstrap in `tests/setup-e2e.ts` still launches Electron directly and was not run; the new watchdog-parent development launcher was exercised separately with a real watchdog and child config-path precedence. Spectron's direct launch is not evidence for the production parent topology.
 
+### Flight launch investigation, 2026-10-13 (release blocked)
+
+The installed Flight manifest identifies `32f1f5126638f4260c191be7ae41bad0576db028`, package `11.4.0+build87821.git32f1f5126-1`, Ubuntu 26.04. The startup log reports only the relevant sandbox outcome: `unavailable`, `canary-failed`. `git log -S 'rendererEvidence.namespaces.mnt !== mainEvidence.namespaces.mnt'` and the introducing patch identify `37e262d2bf3a3010b4110b444e032f1c52153a8a` as adding unconditional mount-namespace inequality. This predates the backend update; the installed wallet-release commit also changed node/build/config provenance, not sandbox implementation or catalog UI.
+
+APT records recover the immediately preceding installer at `/nix/store/337xb0rj6025x1lx28n7bdzr959pf5ay-daedalus-mainnet-flight-11.4.0+build87815.git74e5469ea-1-deb/daedalus-11.4.0-87815-mainnet-flight-74e5469ea-x86_64-linux.deb`. Its extracted Electron executable and helper are byte-identical to the current installation (SHA-256 `2531faa7c39f1fe4dcd638f2f9522b6260ce215ae67ffa77eb4aa9ab793d6818` and `f165cc9b5c792514027c01dae55bd7e3b2fea809dfcdd808b607a22fb61acd43`). Its extracted payload has no sandbox identity manifest; installation-time identity is not recoverable from that payload alone. The immediately preceding package is not established as the user's last working package. No old backend was run and no user database was accessed.
+
+The recovered prior package's `main/index.js.map` also embeds `dappSandboxAvailability.ts` with the same unconditional mount inequality; this is evidence from the actual packaged source, not just the revision title.
+
+The exact installed runtime reports Electron `41.10.6`, Chromium `146.0.7680.216`, Node `24.18.0`, and available `fs.statfsSync`. Electron's tagged [DEPS](https://raw.githubusercontent.com/electron/electron/v41.10.6/DEPS) pins that Chromium tag, resolved to `ff9214069a282850ff7ebbef6615bb009cf45c57`. Its [namespace sandbox](https://raw.githubusercontent.com/chromium/chromium/146.0.7680.216/sandbox/linux/services/namespace_sandbox.cc) defaults to user/PID/network namespaces, not a separate mount namespace. Its [credentials implementation](https://raw.githubusercontent.com/chromium/chromium/146.0.7680.216/sandbox/linux/services/credentials.cc) chroots to a helper's procfs `fdinfo`, resets cwd, and waits for the helper to die.
+
+A disposable data-URL canary using the installed Electron, normal helper, isolated profile, no preload and no backend captured different renderer PID/user/network namespaces, shared mounts, NoNewPrivs=1, seccomp=2, zero effective/permitted/inheritable capabilities, and single-entry UID/GID maps. The renderer PID/start identity was unchanged across the lifecycle yield. Both root and cwd symlinks matched the proposed procfs-fdinfo pattern, but each read-only `O_DIRECTORY` open returned `ESRCH` before and after the yield. The mandatory root device/inode, procfs enumeration and cwd comparison therefore cannot be collected. A matching symlink is not containment proof.
+
+The approved fail-closed contingency applies: startup/live validation and the independent probe retain their existing refusal; no shared-mount acceptance branch is introduced. Catalog rejection now has generic English/Japanese feedback, guarded against retired lifecycles, without changing Diagnostics rejection ownership. Launch restoration remains blocked on an approved collectable containment proof. No Ubuntu 26.04 disposable VM was available in either local libvirt connection; installed hostile matrices, installed independent certification and remote catalog launches are unverified for this change. Storybook rendering is UI evidence only, not installed sandbox certification.
+
+Feedback verification: the seven scoped launch/store/catalog suites passed 129 tests; the independent probe selftest and generated `dapp-launch-policy-contract` check passed. Actual Storybook component rendering showed one English failure alert and one Japanese failure alert, with no alert on the ready story. This does not prove installed guest launch.
+
+The feedback-only Flight DEB built successfully at `/nix/store/gx4pvkkqlk3vh99p6nb205lvgdffsb9d-daedalus-mainnet-flight-11.4.0+build0.git32f1f51-dirty-1-deb/daedalus-11.4.0-0-mainnet-flight-32f1f51-dirty-x86_64-linux.deb`, SHA-256 `082fb96f2e56963c4c62f7a040dd0f107e690f28af19e6dacbb51b2fd8cf3821`. This mutable-source build was not installed over the user's package and is not a restored-launch or certified release artifact. Node 11.1.3 and both wallet selections were left unchanged.
+
+
 Completed: 2026-09-02
 
 ## Disposition

@@ -1117,6 +1117,11 @@
         "id": "dapp.catalog.launching"
       },
       {
+        "defaultMessage": "!!!The dApp could not be opened.",
+        "description": "Privacy-safe catalog dApp launch failure.",
+        "id": "dapp.catalog.launchFailed"
+      },
+      {
         "defaultMessage": "!!!Close dApp",
         "description": "Button label for closing the open dApp session.",
         "id": "dapp.catalog.close"

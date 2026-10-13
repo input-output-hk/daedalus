@@ -230,6 +230,7 @@
   "dapp.catalog.fluidtokens.description": "Use FluidTokens on Cardano.",
   "dapp.catalog.fluidtokens.name": "FluidTokens",
   "dapp.catalog.launch": "Launch",
+  "dapp.catalog.launchFailed": "The dApp could not be opened.",
   "dapp.catalog.launching": "Launching…",
   "dapp.catalog.liqwid.description": "Borrow, lend, and earn yield on Cardano.",
   "dapp.catalog.liqwid.name": "Liqwid Finance",

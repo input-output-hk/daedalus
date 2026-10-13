@@ -230,6 +230,7 @@
   "dapp.catalog.fluidtokens.description": "CardanoでFluidTokensを利用できます。",
   "dapp.catalog.fluidtokens.name": "FluidTokens",
   "dapp.catalog.launch": "起動",
+  "dapp.catalog.launchFailed": "dAppを開けませんでした。",
   "dapp.catalog.launching": "起動中…",
   "dapp.catalog.liqwid.description": "Cardanoで暗号資産を借り入れ、貸し出し、利回りを得られます。",
   "dapp.catalog.liqwid.name": "Liqwid Finance",

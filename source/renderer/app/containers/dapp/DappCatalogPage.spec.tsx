@@ -13,11 +13,13 @@ jest.mock(
     function DappCatalog(props: {
       entries: readonly { id: string; name: string; description: string }[];
       beforeEntries: React.ReactNode;
+      launchFailed: boolean;
       onLaunch: (id: string) => void;
     }) {
       return (
         <>
           {props.beforeEntries}
+          {props.launchFailed && <p role="alert">Catalog launch failed</p>}
           {props.entries.map((entry) => (
             <button
               key={entry.id}
@@ -41,7 +43,7 @@ describe('DappCatalogPage', () => {
     global.isFlight = originalIsFlight;
   });
 
-  const renderPage = (network: Network) => {
+  const renderPage = (network: Network, catalogLaunchFailed = false) => {
     global.environment.network = network;
     global.isFlight = false;
     const launch = jest.fn();
@@ -54,6 +56,7 @@ describe('DappCatalogPage', () => {
               ready: true,
               guestOpen: false,
               launchingCatalogId: null,
+              catalogLaunchFailed,
               launch,
               close: jest.fn(),
             },
@@ -89,5 +92,11 @@ describe('DappCatalogPage', () => {
     renderPage('preprod');
     expect(screen.queryByText(/Liqwid Finance/)).not.toBeInTheDocument();
     expect(screen.getByText(/unfrack\.it/)).toBeInTheDocument();
+  });
+
+  it('passes the catalog launch failure state to the catalog', () => {
+    renderPage('mainnet', true);
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Catalog launch failed');
   });
 });

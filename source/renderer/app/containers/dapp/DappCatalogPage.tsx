@@ -121,6 +121,7 @@ export default class DappCatalogPage extends Component<Props> {
         ready={dapp.ready}
         isOpen={dapp.guestOpen}
         launchingId={dapp.launchingCatalogId}
+        launchFailed={dapp.catalogLaunchFailed}
         beforeEntries={
           <CollateralPanel
             preference={this.props.stores!.collateral.snapshot?.preference}

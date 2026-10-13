@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import StoryDecorator from '../../../../../storybook/stories/_support/StoryDecorator';
 import translations from '../../i18n/locales/en-US.json';
+import japaneseTranslations from '../../i18n/locales/ja-JP.json';
 import DappCatalog from './DappCatalog';
 import type { DappCatalogProps } from './DappCatalog';
 
@@ -14,13 +15,22 @@ const entry = {
   iconAsset: 'cardano',
 };
 
-const renderCatalog = (overrides: Partial<DappCatalogProps> = {}) => {
+const locales = {
+  'en-US': translations,
+  'ja-JP': japaneseTranslations,
+};
+
+const renderCatalog = (
+  overrides: Partial<DappCatalogProps> = {},
+  locale: keyof typeof locales = 'en-US'
+) => {
   const props: DappCatalogProps = {
     entries: [entry],
     available: true,
     ready: true,
     isOpen: false,
     launchingId: null,
+    launchFailed: false,
     onLaunch: jest.fn(),
     onClose: jest.fn(),
     ...overrides,
@@ -28,7 +38,7 @@ const renderCatalog = (overrides: Partial<DappCatalogProps> = {}) => {
 
   const result = render(
     <StoryDecorator>
-      <IntlProvider locale="en-US" messages={translations}>
+      <IntlProvider locale={locale} messages={locales[locale]}>
         <DappCatalog {...props} />
       </IntlProvider>
     </StoryDecorator>
@@ -48,6 +58,49 @@ describe('DappCatalog', () => {
     expect(screen.queryByText('Example dApp')).not.toBeInTheDocument();
     expect(screen.queryByRole('note')).not.toBeInTheDocument();
   });
+
+  it.each([
+    ['en-US', 'The dApp could not be opened.'],
+    ['ja-JP', 'dAppを開けませんでした。'],
+  ] as const)('shows one accessible launch failure in %s', (locale, message) => {
+    const { rerender, props } = renderCatalog({ launchFailed: true }, locale);
+
+    expect(screen.getAllByRole('alert')).toHaveLength(1);
+    expect(screen.getByRole('alert')).toBeVisible();
+    expect(screen.getByRole('alert').textContent).toBe(message);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
+    rerender(
+      <StoryDecorator>
+        <IntlProvider locale={locale} messages={locales[locale]}>
+          <DappCatalog {...props} launchFailed={false} isOpen />
+        </IntlProvider>
+      </StoryDecorator>
+    );
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeVisible();
+  });
+
+  it.each(['en-US', 'ja-JP'] as const)(
+    'does not show a failure before launch in %s',
+    (locale) => {
+      renderCatalog({}, locale);
+
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    }
+  );
+
+  it.each(['en-US', 'ja-JP'] as const)(
+    'hides a prior failure when the catalog is unavailable in %s',
+    (locale) => {
+      renderCatalog({ available: false, launchFailed: true }, locale);
+
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.getByRole('status')).toBeVisible();
+      expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    }
+  );
 
   it('shows the prominent compatibility disclaimer whenever available', () => {
     renderCatalog();
@@ -78,6 +131,7 @@ describe('DappCatalog', () => {
             ready
             isOpen={false}
             launchingId={null}
+            launchFailed={false}
             onLaunch={onLaunch}
             onClose={jest.fn()}
           />

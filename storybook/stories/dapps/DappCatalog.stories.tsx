@@ -54,6 +54,7 @@ storiesOf('dApps / Preferred catalog', module)
       ready
       isOpen={false}
       launchingId={null}
+      launchFailed={false}
       onLaunch={onLaunch}
       onClose={onClose}
     />
@@ -65,6 +66,7 @@ storiesOf('dApps / Preferred catalog', module)
       ready
       isOpen={false}
       launchingId={null}
+      launchFailed={false}
       onLaunch={onLaunch}
       onClose={onClose}
     />
@@ -76,6 +78,7 @@ storiesOf('dApps / Preferred catalog', module)
       ready={false}
       isOpen={false}
       launchingId={null}
+      launchFailed={false}
       onLaunch={onLaunch}
       onClose={onClose}
     />
@@ -87,6 +90,7 @@ storiesOf('dApps / Preferred catalog', module)
       ready
       isOpen
       launchingId={null}
+      launchFailed={false}
       onLaunch={onLaunch}
       onClose={onClose}
     />
@@ -98,6 +102,19 @@ storiesOf('dApps / Preferred catalog', module)
       ready
       isOpen
       launchingId="steelswap-mainnet"
+      launchFailed={false}
+      onLaunch={onLaunch}
+      onClose={onClose}
+    />
+  ))
+  .add('launch failed', () => (
+    <CatalogStory
+      network="mainnet"
+      available
+      ready
+      isOpen={false}
+      launchingId={null}
+      launchFailed
       onLaunch={onLaunch}
       onClose={onClose}
     />
@@ -109,6 +126,7 @@ storiesOf('dApps / Preferred catalog', module)
       ready={false}
       isOpen={false}
       launchingId={null}
+      launchFailed={false}
       onLaunch={onLaunch}
       onClose={onClose}
     />

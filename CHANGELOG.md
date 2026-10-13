@@ -60,6 +60,8 @@
 
 ### Fixes
 
+- dApp catalog: display a localized, privacy-safe launch failure instead of leaving a rejected catalog click unhandled; retry and lifecycle teardown clear the failure. Diagnostics retains its existing error handling. Linux sandbox refusal remains unchanged.
+
 - Linux: match each `.deb`, `.rpm`, Arch, and NixOS Daedalus window to its cluster's desktop launcher and icon; include the launcher and icon in the NixOS package.
 
 - Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
