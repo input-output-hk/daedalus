@@ -57,18 +57,13 @@ describe('CIP-30 runtime schemas', () => {
       parseDappCip30GatewayRequest(request('provider.enable', [undefined]))
     ).toEqual(request('provider.enable', [undefined]));
 
-    [
-      NaN,
-      Infinity,
-      () => undefined,
-      Symbol('value'),
-      BigInt(1),
-    ].forEach((value) =>
-      expectInvalid(() =>
-        parseDappCip30GatewayRequest(
-          request('provider.enable', [{ extensions: [{ cip: value }] }])
+    [NaN, Infinity, () => undefined, Symbol('value'), BigInt(1)].forEach(
+      (value) =>
+        expectInvalid(() =>
+          parseDappCip30GatewayRequest(
+            request('provider.enable', [{ extensions: [{ cip: value }] }])
+          )
         )
-      )
     );
   });
 

@@ -38,38 +38,30 @@ class WalletSendPage extends Component<Props> {
     isHardwareWallet: boolean;
     selectedAssets?: ApiTokens;
   }) => {
-    const {
-      walletId,
-      address,
-      amount,
-      isHardwareWallet,
-      selectedAssets,
-    } = params;
+    const { walletId, address, amount, isHardwareWallet, selectedAssets } =
+      params;
 
     if (isHardwareWallet) {
-      const coinSelection: CoinSelectionsResponse = await this.props.stores.hardwareWallets.selectCoins(
-        {
+      const coinSelection: CoinSelectionsResponse =
+        await this.props.stores.hardwareWallets.selectCoins({
           walletId,
           address,
           amount,
           assets: selectedAssets,
-        }
-      );
+        });
       return {
         fee: coinSelection.fee,
         coinSelection,
       };
     }
 
-    const {
-      fee,
-      minimumAda,
-    } = await this.props.stores.transactions.calculateTransactionFee({
-      walletId,
-      address,
-      amount,
-      assets: selectedAssets,
-    });
+    const { fee, minimumAda } =
+      await this.props.stores.transactions.calculateTransactionFee({
+        walletId,
+        address,
+        amount,
+        assets: selectedAssets,
+      });
 
     return {
       fee,
@@ -181,7 +173,7 @@ class WalletSendPage extends Component<Props> {
     const isCollateralPreparation = collateral.preparationFormActive;
     const preparationAddress = singleAddressMode
       ? addresses.active?.id
-      : addresses.active?.id ?? addresses.all[0]?.id;
+      : (addresses.active?.id ?? addresses.all[0]?.id);
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}

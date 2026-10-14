@@ -90,9 +90,7 @@ describe('CIP-103 batch submission', () => {
     const result = await submitCip103Batch(request(submitTransaction));
 
     expect(submitTransaction.mock.calls.map(([, index]) => index)).toEqual([
-      0,
-      1,
-      2,
+      0, 1, 2,
     ]);
     expect(
       submitTransaction.mock.calls.map(([transaction]) => transaction)
@@ -122,9 +120,7 @@ describe('CIP-103 batch submission', () => {
       ).catch((error) => error);
 
       expect(submitTransaction.mock.calls.map(([, index]) => index)).toEqual([
-        0,
-        1,
-        2,
+        0, 1, 2,
       ]);
       expect(rejection).not.toBeInstanceOf(Error);
       expect(rejection).toEqual(
@@ -189,12 +185,7 @@ describe('CIP-103 batch submission', () => {
 
     expect(retry).toEqual(first);
     expect(submitTransaction.mock.calls.map(([, index]) => index)).toEqual([
-      0,
-      1,
-      2,
-      0,
-      1,
-      2,
+      0, 1, 2, 0, 1, 2,
     ]);
   });
 

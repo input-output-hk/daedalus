@@ -81,10 +81,12 @@ const transactionRequest = (
     items = [
       item(
         0,
-        (request as Extract<
-          WalletApprovalPresentation,
-          { kind: 'transaction-sign' | 'transaction-submit' }
-        >).review
+        (
+          request as Extract<
+            WalletApprovalPresentation,
+            { kind: 'transaction-sign' | 'transaction-submit' }
+          >
+        ).review
       ),
     ];
     collection = 'single';

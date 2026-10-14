@@ -22,25 +22,26 @@ Given(
   }
 );
 
-When(/^the trusted UI opens the dApp route for wallet "([^"]*)"$/, function (
-  walletId
-) {
-  const current = this.context.routeService.observeTrustedRoute(
-    `file:///app/index.html#/apps/${encodeURIComponent(walletId)}`
-  );
-  if (!this.context.firstRoute) this.context.firstRoute = current;
-});
+When(
+  /^the trusted UI opens the dApp route for wallet "([^"]*)"$/,
+  function (walletId) {
+    const current = this.context.routeService.observeTrustedRoute(
+      `file:///app/index.html#/apps/${encodeURIComponent(walletId)}`
+    );
+    if (!this.context.firstRoute) this.context.firstRoute = current;
+  }
+);
 
-Then(/^the active dApp route is bound to wallet "([^"]*)"$/, function (
-  walletId
-) {
-  expect(this.context.routeService.current?.walletId).to.equal(walletId);
-});
+Then(
+  /^the active dApp route is bound to wallet "([^"]*)"$/,
+  function (walletId) {
+    expect(this.context.routeService.current?.walletId).to.equal(walletId);
+  }
+);
 
 Then(/^the previous dApp route authority is stale$/, function () {
-  expect(
-    this.context.routeService.isCurrent(this.context.firstRoute)
-  ).to.be.false;
+  expect(this.context.routeService.isCurrent(this.context.firstRoute)).to.be
+    .false;
 });
 
 Given(

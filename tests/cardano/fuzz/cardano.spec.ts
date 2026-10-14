@@ -321,10 +321,12 @@ describe('deterministic signature fuzzing', () => {
     );
     expect(verifyCip8BackendResponse(expected, cip8Response())).toBeDefined();
 
-    const fields: ReadonlyArray<Readonly<{
-      key: 'cose_sign1' | 'cose_key';
-      hex: string;
-    }>> = [
+    const fields: ReadonlyArray<
+      Readonly<{
+        key: 'cose_sign1' | 'cose_key';
+        hex: string;
+      }>
+    > = [
       { key: 'cose_sign1', hex: cip8Fixture.coseSign1 },
       { key: 'cose_key', hex: cip8Fixture.coseKey },
     ];

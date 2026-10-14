@@ -179,9 +179,7 @@ describe('CIP-103 hardware batch signing', () => {
     const result = await signCip103HardwareBatch(fixture.value);
 
     expect(fixture.prepare.mock.calls.map(([index]) => index)).toEqual([
-      0,
-      1,
-      2,
+      0, 1, 2,
     ]);
     expect(
       fixture.signTransaction.mock.calls.map(([, index]) => index)

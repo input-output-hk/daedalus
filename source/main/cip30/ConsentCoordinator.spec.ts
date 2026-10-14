@@ -103,7 +103,7 @@ const nativeDeclined = {
   type: 'native-transaction-error' as const,
   value: { code: 'user_declined', info: 'Transaction was rejected' },
 };
-const transactionPresentation = ({
+const transactionPresentation = {
   kind: 'transaction-sign' as const,
   canSubmit: true,
   origin: identity.origin,
@@ -113,7 +113,7 @@ const transactionPresentation = ({
   extensions: [],
   authorization: { kind: 'software' as const },
   review: { transactionId: '44'.repeat(32) },
-} as unknown) as ConsentRequest<string>['presentation'];
+} as unknown as ConsentRequest<string>['presentation'];
 
 describe('ConsentCoordinator', () => {
   afterEach(() => jest.useRealTimers());

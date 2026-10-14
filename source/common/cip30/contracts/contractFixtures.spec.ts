@@ -452,8 +452,7 @@ describe('frozen CIP-30 contracts', () => {
     );
     expect(negotiate([{ cip: 9999 }], [95, 103])).toEqual([]);
     expect(negotiate([{ cip: 104 }, { cip: 142 }], [104, 142])).toEqual([
-      104,
-      142,
+      104, 142,
     ]);
 
     const syntheticDescriptors = [
@@ -930,9 +929,11 @@ describe('frozen CIP-30 contracts', () => {
     );
     expect(signTx && invocationIsValid(signTx, [() => undefined])).toBe(false);
     expect(signTx && invocationIsValid(signTx, [Symbol('tx')])).toBe(false);
-    const bigintValue = ((global as unknown) as {
-      BigInt: CallableFunction;
-    }).BigInt(1);
+    const bigintValue = (
+      global as unknown as {
+        BigInt: CallableFunction;
+      }
+    ).BigInt(1);
     expect(signTx && invocationIsValid(signTx, [bigintValue])).toBe(false);
 
     const inherited = Object.create({ extensions: [] });

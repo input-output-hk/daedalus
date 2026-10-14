@@ -55,7 +55,7 @@ describe('submission persistence validation', () => {
     await expect(
       storage.setSubmissionTransactions(
         'wallet-a',
-        (invalid as unknown) as { version: 1; records: typeof record[] }
+        invalid as unknown as { version: 1; records: (typeof record)[] }
       )
     ).rejects.toThrow('Invalid submission transactions data');
     expect(set).not.toHaveBeenCalled();

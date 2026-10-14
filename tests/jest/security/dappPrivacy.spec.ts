@@ -84,14 +84,14 @@ describe('dApp observability and local privacy', () => {
   });
 
   it('redacts forbidden values before analytics are emitted', async () => {
-    const environment = ({
+    const environment = {
       analyticsFeatureEnabled: false,
-    } as unknown) as Environment;
-    const localStorage = ({
+    } as unknown as Environment;
+    const localStorage = {
       getAnalyticsAcceptance: () =>
         Promise.resolve(AnalyticsAcceptanceStatus.REJECTED),
-    } as unknown) as LocalStorageApi;
-    const api = ({} as unknown) as AdaApi;
+    } as unknown as LocalStorageApi;
+    const api = {} as unknown as AdaApi;
     const tracker = new MatomoAnalyticsTracker(environment, localStorage, api);
 
     await tracker.sendPageNavigationEvent(diagnosticsUrl);

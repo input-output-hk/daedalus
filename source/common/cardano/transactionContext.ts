@@ -358,10 +358,9 @@ const parseOwnership = (value: unknown): ContextOwnership => {
     ['unowned', 'owned_key', 'script'] as const,
     'ownership kind'
   );
-  const derivationPath = array(
-    row.derivation_path,
-    'derivation path'
-  ).map((item) => uint32(item, 'derivation path'));
+  const derivationPath = array(row.derivation_path, 'derivation path').map(
+    (item) => uint32(item, 'derivation path')
+  );
   if (ownership !== 'owned_key' && derivationPath.length)
     fail('untrusted derivation path');
   if (ownership === 'owned_key') {
@@ -518,11 +517,9 @@ const parseResponse = (value: unknown): ContextResponse => {
   const volatile = object(response.volatile_delta, 'volatile delta');
   exactKeys(volatile, ['point', 'node_transaction_inputs'], 'volatile delta');
   parsePoint(volatile.point, 'volatile point');
-  array(
-    volatile.node_transaction_inputs,
-    'node transaction inputs'
-  ).forEach((item) =>
-    parseCbor(hex(item, 'node transaction input'), 'node transaction input')
+  array(volatile.node_transaction_inputs, 'node transaction inputs').forEach(
+    (item) =>
+      parseCbor(hex(item, 'node transaction input'), 'node transaction input')
   );
   const pending = object(response.pending_overlay, 'pending overlay');
   exactKeys(
@@ -533,60 +530,54 @@ const parseResponse = (value: unknown): ContextResponse => {
   const pendingTransactions = array(
     pending.transactions,
     'pending transactions'
-  ).map(
-    (item): ContextPendingTransaction => {
-      const transaction = object(item, 'pending transaction');
-      exactKeys(
-        transaction,
-        [
-          'transaction_id',
-          'state',
-          'transaction_cbor',
-          'normal_inputs',
-          'collateral_inputs',
-          'expiry_slot',
-        ],
-        'pending transaction'
-      );
-      const transactionId = hex(
-        transaction.transaction_id,
-        'pending transaction id',
-        32
-      );
-      if (transaction.state !== 'outcome_unknown')
-        fail('invalid pending state');
-      const transactionCbor = hex(
-        transaction.transaction_cbor,
-        'pending transaction CBOR'
-      );
-      parseCbor(transactionCbor, 'pending transaction CBOR');
-      const normalInputs = array(
-        transaction.normal_inputs,
-        'pending normal inputs'
-      ).map((candidate) => parseOutpoint(candidate, 'pending normal input'));
-      const collateralInputs = array(
-        transaction.collateral_inputs,
-        'pending collateral inputs'
-      ).map((candidate) =>
-        parseOutpoint(candidate, 'pending collateral input')
-      );
-      const expirySlot =
-        transaction.expiry_slot === null
-          ? null
-          : word64(transaction.expiry_slot, 'pending expiry slot');
-      return Object.freeze({
-        transactionId,
-        transactionCbor,
-        normalInputs: Object.freeze(normalInputs),
-        collateralInputs: Object.freeze(collateralInputs),
-        expirySlot,
-      });
-    }
+  ).map((item): ContextPendingTransaction => {
+    const transaction = object(item, 'pending transaction');
+    exactKeys(
+      transaction,
+      [
+        'transaction_id',
+        'state',
+        'transaction_cbor',
+        'normal_inputs',
+        'collateral_inputs',
+        'expiry_slot',
+      ],
+      'pending transaction'
+    );
+    const transactionId = hex(
+      transaction.transaction_id,
+      'pending transaction id',
+      32
+    );
+    if (transaction.state !== 'outcome_unknown') fail('invalid pending state');
+    const transactionCbor = hex(
+      transaction.transaction_cbor,
+      'pending transaction CBOR'
+    );
+    parseCbor(transactionCbor, 'pending transaction CBOR');
+    const normalInputs = array(
+      transaction.normal_inputs,
+      'pending normal inputs'
+    ).map((candidate) => parseOutpoint(candidate, 'pending normal input'));
+    const collateralInputs = array(
+      transaction.collateral_inputs,
+      'pending collateral inputs'
+    ).map((candidate) => parseOutpoint(candidate, 'pending collateral input'));
+    const expirySlot =
+      transaction.expiry_slot === null
+        ? null
+        : word64(transaction.expiry_slot, 'pending expiry slot');
+    return Object.freeze({
+      transactionId,
+      transactionCbor,
+      normalInputs: Object.freeze(normalInputs),
+      collateralInputs: Object.freeze(collateralInputs),
+      expirySlot,
+    });
+  });
+  array(pending.spent_wallet_inputs, 'spent wallet inputs').forEach(
+    (candidate) => parseOutpoint(candidate, 'spent wallet input')
   );
-  array(
-    pending.spent_wallet_inputs,
-    'spent wallet inputs'
-  ).forEach((candidate) => parseOutpoint(candidate, 'spent wallet input'));
   if (array(pending.produced_wallet_outputs, 'produced wallet outputs').length)
     fail('unexpected pending produced output');
   const ownership = array(response.ownership, 'ownership').map(parseOwnership);
@@ -597,40 +588,38 @@ const parseResponse = (value: unknown): ContextResponse => {
   const requiredProofs = array(
     response.required_wallet_proofs,
     'required wallet proofs'
-  ).map(
-    (item): ContextRequiredProof => {
-      const proof = object(item, 'required wallet proof');
-      exactKeys(
-        proof,
-        [
-          'transaction_index',
-          'proof_kind',
-          'credential_kind',
-          'credential',
-          'required',
-        ],
-        'required wallet proof'
-      );
-      return Object.freeze({
-        transactionIndex: uint32(
-          proof.transaction_index,
-          'proof transaction index'
-        ),
-        proofKind: enumValue(
-          proof.proof_kind,
-          parseProofKinds([proof.proof_kind]),
-          'proof kind'
-        ),
-        credentialKind: enumValue(
-          proof.credential_kind,
-          ['payment', 'stake', 'drep', 'policy'] as const,
-          'proof credential kind'
-        ),
-        credential: hex(proof.credential, 'proof credential', 28),
-        required: boolean(proof.required, 'proof required'),
-      });
-    }
-  );
+  ).map((item): ContextRequiredProof => {
+    const proof = object(item, 'required wallet proof');
+    exactKeys(
+      proof,
+      [
+        'transaction_index',
+        'proof_kind',
+        'credential_kind',
+        'credential',
+        'required',
+      ],
+      'required wallet proof'
+    );
+    return Object.freeze({
+      transactionIndex: uint32(
+        proof.transaction_index,
+        'proof transaction index'
+      ),
+      proofKind: enumValue(
+        proof.proof_kind,
+        parseProofKinds([proof.proof_kind]),
+        'proof kind'
+      ),
+      credentialKind: enumValue(
+        proof.credential_kind,
+        ['payment', 'stake', 'drep', 'policy'] as const,
+        'proof credential kind'
+      ),
+      credential: hex(proof.credential, 'proof credential', 28),
+      required: boolean(proof.required, 'proof required'),
+    });
+  });
   const batch = object(response.batch_overlay, 'batch overlay');
   exactKeys(batch, ['dependencies', 'conflicts'], 'batch overlay');
   array(batch.dependencies, 'dependencies').forEach((item) =>
@@ -1084,12 +1073,14 @@ export const reconcileTransactionContext = (
     const roleBits = output.roles.reduce(
       (bits, item) =>
         bits |
-        ({
-          normal: 1,
-          collateral: 2,
-          reference: 4,
-          wallet_snapshot: 8,
-        } as const)[item],
+        (
+          {
+            normal: 1,
+            collateral: 2,
+            reference: 4,
+            wallet_snapshot: 8,
+          } as const
+        )[item],
       0
     );
     return encodedRecord(
@@ -1228,31 +1219,31 @@ export const reconcileTransactionContext = (
       ...transaction.inputs.normal,
       ...transaction.inputs.collateral,
       ...transaction.inputs.reference,
-    ].map((outpoint): NonNullable<
-      CommitmentContext['resolvedInputs']
-    >[number] => {
-      const output = outputById.get(
-        `${outpoint.transactionId}:${outpoint.index}`
-      );
-      if (!output) fail('missing exact resolved input context');
-      const bytes = Buffer.from(output.sourceCbor, 'hex');
-      const decoded = decodeConwayOutput(bytes);
-      let datum: ResolvedDatum | undefined;
-      if (decoded.datum?.kind === 'inline') {
-        if (!decoded.datum.cbor) fail('missing inline datum bytes');
-        datum = { kind: 'inline', cbor: decoded.datum.cbor };
-      } else if (decoded.datum) {
-        datum = { kind: 'hash', hash: decoded.datum.hash };
+    ].map(
+      (outpoint): NonNullable<CommitmentContext['resolvedInputs']>[number] => {
+        const output = outputById.get(
+          `${outpoint.transactionId}:${outpoint.index}`
+        );
+        if (!output) fail('missing exact resolved input context');
+        const bytes = Buffer.from(output.sourceCbor, 'hex');
+        const decoded = decodeConwayOutput(bytes);
+        let datum: ResolvedDatum | undefined;
+        if (decoded.datum?.kind === 'inline') {
+          if (!decoded.datum.cbor) fail('missing inline datum bytes');
+          datum = { kind: 'inline', cbor: decoded.datum.cbor };
+        } else if (decoded.datum) {
+          datum = { kind: 'hash', hash: decoded.datum.hash };
+        }
+        return {
+          outpoint,
+          value: decoded.value,
+          datum,
+          scriptHash: scriptCredential(decoded.address),
+          referenceScript: decoded.referenceScript,
+          walletMember: output.walletMember,
+        };
       }
-      return {
-        outpoint,
-        value: decoded.value,
-        datum,
-        scriptHash: scriptCredential(decoded.address),
-        referenceScript: decoded.referenceScript,
-        walletMember: output.walletMember,
-      };
-    });
+    );
     const referenceScripts = resolvedInputs
       .map((item) => item.referenceScript)
       .filter((item): item is Script => item !== undefined);

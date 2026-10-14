@@ -340,8 +340,9 @@ const fixtureById = (id: string): Fixture => {
 
 const mutate = (fixture: Fixture, mutation: string): Buffer => {
   const bytes = Buffer.from(fixture.cborHex, 'hex');
-  const expected = manifest.fixtures.find(({ id }) => id === fixture.id)
-    ?.expected;
+  const expected = manifest.fixtures.find(
+    ({ id }) => id === fixture.id
+  )?.expected;
   if (!expected) throw new Error(`missing expected spans for ${fixture.id}`);
   if (mutation === 'none') return bytes;
   if (mutation === 'append-zero')
@@ -634,20 +635,7 @@ const validatePolicyCase = (cborHex: string, validator: string) => {
   }
   if (validator === 'known-tag') {
     const knownTags = new Set([
-      2,
-      3,
-      24,
-      30,
-      102,
-      121,
-      122,
-      123,
-      124,
-      125,
-      126,
-      127,
-      258,
-      259,
+      2, 3, 24, 30, 102, 121, 122, 123, 124, 125, 126, 127, 258, 259,
     ]);
     if (root.major !== 6 || !knownTags.has(Number(root.tag))) {
       throw new Error('unknown tag');
@@ -800,8 +788,9 @@ describe('exact CBOR validation evidence', () => {
       )
     );
     for (const annotation of annotations.fixtures) {
-      const expected = manifest.fixtures.find(({ id }) => id === annotation.id)
-        ?.expected;
+      const expected = manifest.fixtures.find(
+        ({ id }) => id === annotation.id
+      )?.expected;
       if (!expected)
         throw new Error(`missing fixture annotation ${annotation.id}`);
       expect(annotation.ranges).toEqual({

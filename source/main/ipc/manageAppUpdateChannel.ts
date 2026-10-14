@@ -90,10 +90,7 @@ export const handleManageAppUpdateRequests = (
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '({ filePath, hash: expectedHash ... Remove this comment to see the full error message
   manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {
     const functionPrefix = 'onRequest';
-    if (
-      environment.isLinux ||
-      updateMode === 'system-package-disabled'
-    ) {
+    if (environment.isLinux || updateMode === 'system-package-disabled') {
       return response(
         false,
         functionPrefix,

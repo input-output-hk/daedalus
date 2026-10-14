@@ -21,7 +21,7 @@ require('./dapp');
 
 const exposureCallCount = exposeInMainWorld.mock.calls.length;
 const exposureWorld = exposeInMainWorld.mock.calls[0][0];
-const exposedCardano = (exposeInMainWorld.mock.calls[0][1] as unknown) as {
+const exposedCardano = exposeInMainWorld.mock.calls[0][1] as unknown as {
   daedalus: DaedalusProvider;
 };
 const provider = exposedCardano.daedalus;

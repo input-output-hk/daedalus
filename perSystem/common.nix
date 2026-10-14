@@ -83,12 +83,15 @@
       walletBackends = let
         mkBackend = input: rec {
           flake = (flake-compat {src = input;}).defaultNix;
-          packages = {
-            x86_64-windows = flake.packages.x86_64-linux.windowsPackages;
-            x86_64-linux = flake.packages.x86_64-linux.staticPackages;
-            x86_64-darwin = flake.packages.x86_64-darwin;
-            aarch64-darwin = flake.packages.aarch64-darwin;
-          }.${targetSystem};
+          packages =
+            {
+              x86_64-windows = flake.packages.x86_64-linux.windowsPackages;
+              x86_64-linux = flake.packages.x86_64-linux.staticPackages;
+              x86_64-darwin = flake.packages.x86_64-darwin;
+              aarch64-darwin = flake.packages.aarch64-darwin;
+            }.${
+              targetSystem
+            };
           sourceRevision = input.rev;
           version = packages.cardano-wallet.version + "-" + builtins.substring 0 9 sourceRevision;
         };
@@ -218,7 +221,11 @@
       # ---------------------------------------------------------------------------
       # Inlined cardano-bridge.nix as a function
       # ---------------------------------------------------------------------------
-      mkDaedalusBridge = {cluster, target ? targetSystem, ...}: let
+      mkDaedalusBridge = {
+        cluster,
+        target ? targetSystem,
+        ...
+      }: let
         backend = walletBackendForCluster cluster;
         cardano-wallet = backend.packages.cardano-wallet;
       in
@@ -583,10 +590,10 @@
             then ["\${DAEDALUS_DEV_ROOT}"]
             else [];
 
-
           daedalusConfigJson =
             {
-              inherit (dappRuntimeConfig)
+              inherit
+                (dappRuntimeConfig)
                 cardanoWalletSourceRevision
                 dappBrowserPolicy
                 dappSandboxPackageCluster
@@ -887,7 +894,6 @@
             };
           };
 
-
           installerConfig = {
             installDirectory =
               if os == "linux"
@@ -907,7 +913,8 @@
           };
         in {
           inherit nodeConfigFiles daedalusConfig installerConfig;
-          inherit (dappRuntimeConfig)
+          inherit
+            (dappRuntimeConfig)
             cardanoWalletSourceRevision
             dappBrowserPolicy
             dappSandboxPackageCluster

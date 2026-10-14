@@ -80,7 +80,8 @@ const isResponseEnvelope = (value: any): value is ResponseEnvelope<any> =>
   Object.prototype.hasOwnProperty.call(value, 'response');
 
 export class IpcChannel<Incoming, Outgoing>
-  implements Channel<Incoming, Outgoing> {
+  implements Channel<Incoming, Outgoing>
+{
   static _instances = {};
 
   _broadcastChannel: string;

@@ -11,8 +11,7 @@ import styles from './OversaturationText.scss';
 
 const messages: Record<string, ReactIntlMessage> = defineMessages({
   oversaturationWarning: {
-    id:
-      'staking.delegationSetup.confirmation.step.dialog.oversaturationWarning',
+    id: 'staking.delegationSetup.confirmation.step.dialog.oversaturationWarning',
     defaultMessage:
       '!!!The selected stake pool will become oversaturated by {oversaturationPercentage}%, which will reduce future rewards for all delegators to that pool.',
     description:

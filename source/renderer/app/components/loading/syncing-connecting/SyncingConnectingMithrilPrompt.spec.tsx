@@ -198,9 +198,7 @@ describe('SyncingConnectingMithrilPrompt', () => {
     clickButton('Start now');
 
     await waitFor(() => {
-      expect(
-        logger.warn
-      ).toHaveBeenCalledWith(
+      expect(logger.warn).toHaveBeenCalledWith(
         'SyncingConnectingMithrilPrompt: Mithril sync start rejected after confirmation',
         { error: expect.any(Error) }
       );

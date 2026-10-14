@@ -58,7 +58,8 @@
   color: var(--theme-data-migration-layer-button-label-color) !important;
   line-height: 1.36 !important;
   margin-bottom: 30px;
-  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1),
+  transition:
+    box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1),
     background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 

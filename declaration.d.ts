@@ -39,19 +39,19 @@ interface Https {
 
 export type $ElementType<
   T extends { [P in K & any]: any },
-  K extends keyof T | number
+  K extends keyof T | number,
 > = T[K];
 
 export type EnumMap<
   K extends string,
   V,
-  O extends Record<string, any> = any
+  O extends Record<string, any> = any,
 > = O & Record<K, V & $ElementType<O, K>>;
 
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      WALLET_COUNT: number;
+      WALLET_COUNT?: string;
     }
   }
   interface Window {

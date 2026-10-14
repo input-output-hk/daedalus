@@ -82,12 +82,8 @@ class Staking extends Component<Props> {
       stores: { app, staking, networkStatus, uiDialogs },
       children,
     } = this.props;
-    const {
-      isSynced,
-      syncPercentage,
-      isAlonzoPending,
-      isAlonzoActivated,
-    } = networkStatus;
+    const { isSynced, syncPercentage, isAlonzoPending, isAlonzoActivated } =
+      networkStatus;
     const { isStakingDelegationCountdown } = staking;
     const shouldShowInfoTab = isAlonzoPending || isAlonzoActivated;
     const isDelegationWizardOpen = uiDialogs.isOpen(

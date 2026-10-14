@@ -7,7 +7,7 @@ const wallet = (id: string) =>
     isLegacy: false,
     isRestoring: false,
     isNotResponding: false,
-  } as Wallet);
+  }) as Wallet;
 
 const createStore = (wallets: Wallet[], currentRoute: string) => {
   const apiMethod = jest.fn();

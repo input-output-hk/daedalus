@@ -178,13 +178,8 @@ export const parseCip103BatchReview = (value: unknown): Cip103BatchReview => {
       if (
         !own(
           dependency,
-          [
-            'source',
-            'inputRole',
-            'outpoint',
-            'sourceTransactionIndex',
-          ].filter((key) =>
-            Object.prototype.hasOwnProperty.call(dependency, key)
+          ['source', 'inputRole', 'outpoint', 'sourceTransactionIndex'].filter(
+            (key) => Object.prototype.hasOwnProperty.call(dependency, key)
           )
         ) ||
         !inputRole(dependency.inputRole) ||

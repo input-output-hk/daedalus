@@ -398,10 +398,15 @@ describe('hardware capability matrix', () => {
       os.tmpdir(),
       `daedalus-trezor-runtime-${process.pid}.json`
     );
-    const yarnCacheDirectory = execSync('yarn cache dir --silent', {
-      cwd: root,
-      encoding: 'utf8',
-    }).trim();
+    const yarnCacheDirectory = JSON.parse(
+      execSync('yarn cache dir --json', {
+        cwd: root,
+        encoding: 'utf8',
+        env: { ...process.env, FORCE_COLOR: '1' },
+      }).trim()
+    ).data;
+    expect(path.isAbsolute(yarnCacheDirectory)).toBe(true);
+    expect(yarnCacheDirectory).not.toContain('\u001b');
     execFileSync(
       process.execPath,
       [
@@ -418,6 +423,7 @@ describe('hardware capability matrix', () => {
         env: {
           ...process.env,
           YARN_CACHE_FOLDER: path.dirname(yarnCacheDirectory),
+          FORCE_COLOR: '1',
         },
       }
     );
@@ -478,6 +484,95 @@ describe('hardware capability matrix', () => {
       },
       distinctInstallations: identity.transportResolution.distinctInstallations,
     });
+  });
+
+  it('verifies explicit offline tarballs in a fresh HOME and rejects corrupt evidence', () => {
+    const directory = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'daedalus-hermetic-provenance-')
+    );
+    const home = path.join(directory, 'home');
+    const mirror = path.join(directory, 'mirror');
+    fs.mkdirSync(home);
+    fs.mkdirSync(mirror);
+    const name = '@trezor/connect';
+    const lock = currentLock[`${name}@9.7.2`];
+    const filename = '_trezor_connect___connect_9.7.2.tgz';
+    const cacheDirectory = process.env.DAEDALUS_YARN_OFFLINE_CACHE
+      ? null
+      : JSON.parse(
+          execSync('yarn cache dir --json', {
+            cwd: root,
+            encoding: 'utf8',
+            env: { ...process.env, FORCE_COLOR: '1' },
+          }).trim()
+        ).data;
+    const tarball = process.env.DAEDALUS_YARN_OFFLINE_CACHE
+      ? path.join(process.env.DAEDALUS_YARN_OFFLINE_CACHE, filename)
+      : path.join(
+          cacheDirectory,
+          `npm-${name.replace(/\//g, '-')}-9.7.2-${lock.resolved.split('#')[1]}-integrity`,
+          'node_modules',
+          name,
+          '.yarn-tarball.tgz'
+        );
+    fs.copyFileSync(tarball, path.join(mirror, filename));
+    // copyFileSync preserves the Nix store's read-only mode on this test copy.
+    fs.chmodSync(path.join(mirror, filename), 0o600);
+    const output = path.join(directory, 'probe.json');
+    const argumentsForProbe = [
+      path.join(root, 'scripts/hardware-wallet-capability-probe.cjs'),
+      '--vendor=trezor',
+      `--root=${path.join(root, 'node_modules', name)}`,
+      '--label=hermetic-trezor-connect-9.7.2',
+      `--lock=${path.join(root, 'yarn.lock')}`,
+      `--output=${output}`,
+    ];
+    const options = {
+      env: {
+        ...process.env,
+        HOME: home,
+        YARN_CACHE_FOLDER: path.join(home, 'empty-cache'),
+        DAEDALUS_YARN_OFFLINE_CACHE: mirror,
+        FORCE_COLOR: '1',
+      },
+    };
+    try {
+      execFileSync(process.execPath, argumentsForProbe, options);
+      expect(readJson(output).identity.lockVerification).toEqual({
+        version: 'match',
+        integrity: 'verified-offline-tarball-before-load',
+      });
+      fs.unlinkSync(output);
+      const lockDirectory = path.join(directory, 'altered-lock');
+      fs.mkdirSync(lockDirectory);
+      const alteredLock = path.join(lockDirectory, 'yarn.lock');
+      fs.writeFileSync(
+        alteredLock,
+        fs
+          .readFileSync(path.join(root, 'yarn.lock'), 'utf8')
+          .replace(
+            lock.integrity,
+            `sha512-${Buffer.alloc(64).toString('base64')}`
+          )
+      );
+      expect(() =>
+        execFileSync(
+          process.execPath,
+          argumentsForProbe.map((argument) =>
+            argument.startsWith('--lock=') ? `--lock=${alteredLock}` : argument
+          ),
+          options
+        )
+      ).toThrow(/Offline tarball does not match lock SRI/);
+      expect(fs.existsSync(output)).toBe(false);
+      fs.writeFileSync(path.join(mirror, filename), 'corrupt tarball');
+      expect(() =>
+        execFileSync(process.execPath, argumentsForProbe, options)
+      ).toThrow(/Offline tarball does not match lock SHA-1/);
+      expect(fs.existsSync(output)).toBe(false);
+    } finally {
+      fs.rmSync(directory, { recursive: true, force: true });
+    }
   });
 
   it('fails Trezor graph generation when a resolved dependency loses lock identity', () => {

@@ -1,11 +1,15 @@
 @unit @conformance
 Feature: CIP extension conformance
 
-  Scenario: Frozen contracts match current authoritative revisions
+  Scenario: Historical client evidence remains intact alongside current normative contracts
     Given the recorded CIP client observations
-    Then every public provider method matches the frozen contract
-    And current standard revisions match the frozen provenance
+    Then recorded adapter fixtures retain their historical byte hashes
+    And recorded standard revisions retain their historical provenance
     And unavailable live wallets are not reported as passing
+
+  Scenario: Current public methods preserve normative wire contracts
+    Then current public methods and wire behavior satisfy the normative contract
+    And current enable and collateral semantics are enforced
 
   Scenario: Cardano JS SDK compatible CIP-95 invocation and encoding
     Given the source-verified Cardano JS SDK CIP-95 adapter
@@ -19,6 +23,6 @@ Feature: CIP extension conformance
     Then it catches the aligned mixed array directly
 
   Scenario: Proposed extensions retain their release gates
-    Given the frozen extension registry
+    Given the current extension registry
     Then CIP-104 remains proposed and policy-gated
     And CIP-142 remains proposed and policy-gated

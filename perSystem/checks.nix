@@ -30,6 +30,9 @@
           mkdir -p $HOME
           # Prevent yarn from hitting the network in the sandbox:
           echo '"--offline" true' >>$HOME/.yarnrc
+          # node_modules exports no registry metadata. Declare the pinned
+          # tarballs separately for live provenance against the original lock.
+          export DAEDALUS_YARN_OFFLINE_CACHE=${common.offlineCache}
           cp -r ${node_modules}/. ./
           chmod -R +w .
           patchShebangs .
@@ -424,11 +427,11 @@
               assert cfg.dappBrowserPolicy.preferredCatalogEnabled == enabled;
               assert cfg.dappBrowserPolicy.diagnosticsEnabled == enabled;
               assert cfg.dappBrowserPolicy.cip104Revision
-                == (
-                  if enabled
-                  then 1
-                  else 0
-                );
+              == (
+                if enabled
+                then 1
+                else 0
+              );
               assert cfg.dappBrowserPolicy.cip142Revision == 0;
               assert cfg.dappBrowserPolicy.hardwareConnectorEnabled;
               assert cfg.dappNetwork.cluster == logicalCluster;

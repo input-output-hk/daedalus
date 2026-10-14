@@ -199,7 +199,8 @@ When(
   /^the user separately approves exact transaction submission$/,
   function () {
     this.context.approvals.push('transaction-submit');
-    this.context.submittedTransactionId = this.context.transaction.transactionId;
+    this.context.submittedTransactionId =
+      this.context.transaction.transactionId;
   }
 );
 

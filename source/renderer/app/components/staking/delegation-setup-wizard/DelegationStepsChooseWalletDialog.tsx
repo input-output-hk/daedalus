@@ -33,15 +33,13 @@ const messages = defineMessages({
       'Description on the delegation setup "choose wallet" step dialog.',
   },
   selectWalletInputLabel: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel',
     defaultMessage: '!!!Wallet',
     description:
       'Label "Wallet" for select input on the delegation setup "choose wallet" step dialog.',
   },
   selectWalletInputPlaceholder: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder',
     defaultMessage: '!!!Select Wallet',
     description:
       'Placeholder "Select Wallet" for select input on the delegation setup "choose wallet" step dialog.',
@@ -53,16 +51,14 @@ const messages = defineMessages({
       'Step indicator label on the delegation setup "choose wallet" step dialog.',
   },
   errorMinDelegationFunds: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds',
     defaultMessage:
       '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
     description:
       'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
   },
   errorMinDelegationFundsRewardsOnly: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
     defaultMessage:
       '!!!This wallet contains only rewards balances so it cannot be delegated.',
     description:

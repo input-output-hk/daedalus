@@ -172,7 +172,7 @@ function typedRequest<Response>(
 
           if (isSuccessResponse) {
             if (isOctetStreamResponse) {
-              resolve((Buffer.concat(stream) as unknown) as Response);
+              resolve(Buffer.concat(stream) as unknown as Response);
             } else {
               const data =
                 statusCode === 404

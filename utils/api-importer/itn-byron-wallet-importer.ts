@@ -8,7 +8,7 @@ import { itnByronMnemonics } from "./mnemonics";
 const names = ['Nash', 'Nate', 'Nathan', 'Nelson', 'Neo', 'Newton', 'Nick', 'Nigel', 'Nino', 'Noah'];
 const API_PORT = process.env.API_PORT || 8088;
 const IS_HTTPS = process.env.IS_HTTPS || false;
-const WALLET_COUNT = process.env.WALLET_COUNT || 3;
+const WALLET_COUNT = Number(process.env.WALLET_COUNT || 3);
 
 (async () => {
   function generateImportPayload(mnemonic, name) {

@@ -62,25 +62,28 @@ describe('DappCatalog', () => {
   it.each([
     ['en-US', 'The dApp could not be opened.'],
     ['ja-JP', 'dAppを開けませんでした。'],
-  ] as const)('shows one accessible launch failure in %s', (locale, message) => {
-    const { rerender, props } = renderCatalog({ launchFailed: true }, locale);
+  ] as const)(
+    'shows one accessible launch failure in %s',
+    (locale, message) => {
+      const { rerender, props } = renderCatalog({ launchFailed: true }, locale);
 
-    expect(screen.getAllByRole('alert')).toHaveLength(1);
-    expect(screen.getByRole('alert')).toBeVisible();
-    expect(screen.getByRole('alert').textContent).toBe(message);
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      expect(screen.getAllByRole('alert')).toHaveLength(1);
+      expect(screen.getByRole('alert')).toBeVisible();
+      expect(screen.getByRole('alert').textContent).toBe(message);
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
-    rerender(
-      <StoryDecorator>
-        <IntlProvider locale={locale} messages={locales[locale]}>
-          <DappCatalog {...props} launchFailed={false} isOpen />
-        </IntlProvider>
-      </StoryDecorator>
-    );
+      rerender(
+        <StoryDecorator>
+          <IntlProvider locale={locale} messages={locales[locale]}>
+            <DappCatalog {...props} launchFailed={false} isOpen />
+          </IntlProvider>
+        </StoryDecorator>
+      );
 
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    expect(screen.getByRole('status')).toBeVisible();
-  });
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.getByRole('status')).toBeVisible();
+    }
+  );
 
   it.each(['en-US', 'ja-JP'] as const)(
     'does not show a failure before launch in %s',

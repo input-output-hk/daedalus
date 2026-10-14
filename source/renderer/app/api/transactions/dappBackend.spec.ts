@@ -101,7 +101,10 @@ describe('dApp backend client contracts', () => {
 
   it('refuses non-Conway capability and context evidence', () => {
     for (const invalid of [
-      { ...capabilities, network: { ...capabilities.network, current_era: 'babbage' } },
+      {
+        ...capabilities,
+        network: { ...capabilities.network, current_era: 'babbage' },
+      },
       {
         ...capabilities,
         capabilities: capabilities.capabilities.map((item, index) =>
@@ -111,7 +114,9 @@ describe('dApp backend client contracts', () => {
       {
         ...capabilities,
         capabilities: capabilities.capabilities.map((item, index) =>
-          index === 0 ? { ...item, available_eras: ['conway', 'babbage'] } : item
+          index === 0
+            ? { ...item, available_eras: ['conway', 'babbage'] }
+            : item
         ),
       },
       {
@@ -223,8 +228,8 @@ describe('dApp backend client contracts', () => {
     expect(() =>
       validateDappError({ ...unsupported, message: 'Node is babbage' })
     ).toThrow('Invalid dApp backend response');
-    expect(() => validateDappError(unsupported, ['dapp_invalid_request'])).toThrow(
-      'Invalid dApp backend response'
-    );
+    expect(() =>
+      validateDappError(unsupported, ['dapp_invalid_request'])
+    ).toThrow('Invalid dApp backend response');
   });
 });

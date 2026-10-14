@@ -26,9 +26,8 @@ const inspect = (
 ): Cip103PreflightItem => {
   try {
     const bytes = Buffer.from(cbor, 'hex');
-    const envelope: ExactTransactionEnvelope = parseConwayTransactionEnvelope(
-      bytes
-    );
+    const envelope: ExactTransactionEnvelope =
+      parseConwayTransactionEnvelope(bytes);
     const transaction: SemanticTransaction = decodeConwayTransaction(envelope);
     if (
       transaction.networkId !== undefined &&

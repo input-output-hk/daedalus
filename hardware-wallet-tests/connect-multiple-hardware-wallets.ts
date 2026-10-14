@@ -14,7 +14,8 @@ export const run = () => {
 
   createAndRegisterHardwareWalletChannels();
 
-  const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
+  const hardwareWalletConnectionChannel =
+    createHardwareWalletConnectionChannel();
 
   createTestInstructions([
     'Start test runner',

@@ -21,7 +21,7 @@ const castVote = (vote: string): CoinSelectionCertificate =>
     certificateType: 'cast_vote',
     rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
     vote,
-  } as CoinSelectionCertificate);
+  }) as CoinSelectionCertificate;
 
 // The on-device identity is the credential the device derives from the vote
 // string; it must be byte-equal to the credential decoded from chosenOption.

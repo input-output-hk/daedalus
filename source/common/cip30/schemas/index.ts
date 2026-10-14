@@ -255,12 +255,8 @@ export const parseDappApprovalDecision = (
     ])
   )
     throw invalidRequest();
-  const {
-    requestId,
-    approved,
-    passphrase,
-    submit,
-  } = value as DappApprovalDecision;
+  const { requestId, approved, passphrase, submit } =
+    value as DappApprovalDecision;
   if (
     typeof requestId !== 'string' ||
     requestId.length === 0 ||

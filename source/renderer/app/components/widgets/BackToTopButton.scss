@@ -16,7 +16,9 @@
   text-align: center;
   top: 144px;
   transform: translateX(-50%);
-  transition: opacity 0.25s ease-out, top 0.25s ease-out;
+  transition:
+    opacity 0.25s ease-out,
+    top 0.25s ease-out;
   z-index: $back-to-top-z-index;
 
   &.isActive {

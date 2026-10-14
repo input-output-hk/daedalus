@@ -188,32 +188,35 @@ describe('manageAppUpdateChannel', () => {
     ['missing installer', false, 'verified-sha256'],
     ['mismatched hash', true, 'wrong-sha256'],
     ['missing hash', true, undefined],
-  ])('rejects a %s without launching or quitting', async (_reason, exists, hash) => {
-    const handleManageAppUpdateRequests = loadHandler();
-    const fs = jest.requireMock('fs').default;
-    const shasum = jest.requireMock('shasum').default;
-    const { backendLifecycle } = jest.requireMock('../BackendLifecycle');
-    const { app, shell } = jest.requireMock('electron');
-    const window = { close: jest.fn() };
+  ])(
+    'rejects a %s without launching or quitting',
+    async (_reason, exists, hash) => {
+      const handleManageAppUpdateRequests = loadHandler();
+      const fs = jest.requireMock('fs').default;
+      const shasum = jest.requireMock('shasum').default;
+      const { backendLifecycle } = jest.requireMock('../BackendLifecycle');
+      const { app, shell } = jest.requireMock('electron');
+      const window = { close: jest.fn() };
 
-    jest.requireMock('../environment').environment.isLinux = false;
-    fs.existsSync.mockReturnValue(exists);
-    fs.readFileSync.mockReturnValue(Buffer.from('installer'));
-    shasum.mockReturnValue('verified-sha256');
+      jest.requireMock('../environment').environment.isLinux = false;
+      fs.existsSync.mockReturnValue(exists);
+      fs.readFileSync.mockReturnValue(Buffer.from('installer'));
+      shasum.mockReturnValue('verified-sha256');
 
-    handleManageAppUpdateRequests(window);
-    const request = channel.onRequest.mock.calls[0][0];
-    const result = await request({
-      filePath: '/downloads/daedalus-installer',
-      hash,
-    });
+      handleManageAppUpdateRequests(window);
+      const request = channel.onRequest.mock.calls[0][0];
+      const result = await request({
+        filePath: '/downloads/daedalus-installer',
+        hash,
+      });
 
-    expect(result).toEqual(expect.objectContaining({ status: 'error' }));
-    expect(backendLifecycle.installUpdate).not.toHaveBeenCalled();
-    expect(shell.openPath).not.toHaveBeenCalled();
-    expect(app.quit).not.toHaveBeenCalled();
-    expect(window.close).not.toHaveBeenCalled();
-  });
+      expect(result).toEqual(expect.objectContaining({ status: 'error' }));
+      expect(backendLifecycle.installUpdate).not.toHaveBeenCalled();
+      expect(shell.openPath).not.toHaveBeenCalled();
+      expect(app.quit).not.toHaveBeenCalled();
+      expect(window.close).not.toHaveBeenCalled();
+    }
+  );
 
   it('opens a verified installer directly only when no watchdog is available', async () => {
     const handleManageAppUpdateRequests = loadHandler();

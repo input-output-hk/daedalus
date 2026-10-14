@@ -73,22 +73,17 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     onConfirmStorageLocation,
   } = props;
   const [isSelectingDirectory, setIsSelectingDirectory] = React.useState(false);
-  const [isApplyingStorageChange, setIsApplyingStorageChange] = React.useState(
-    false
-  );
+  const [isApplyingStorageChange, setIsApplyingStorageChange] =
+    React.useState(false);
   const [candidate, setCandidate] = React.useState<StorageCandidate | null>(
     null
   );
-  const [
-    selectionValidation,
-    setSelectionValidation,
-  ] = React.useState<ChainStorageValidation | null>(null);
+  const [selectionValidation, setSelectionValidation] =
+    React.useState<ChainStorageValidation | null>(null);
   const isMountedRef = React.useRef(true);
   const recoveryNoticeRef = React.useRef<HTMLDivElement | null>(null);
-  const [
-    isRecoveryNoticeDismissed,
-    setIsRecoveryNoticeDismissed,
-  ] = React.useState(false);
+  const [isRecoveryNoticeDismissed, setIsRecoveryNoticeDismissed] =
+    React.useState(false);
 
   React.useEffect(
     () => () => {

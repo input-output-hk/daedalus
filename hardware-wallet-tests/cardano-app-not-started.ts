@@ -24,7 +24,8 @@ export const run = () => {
   createAndRegisterHardwareWalletChannels();
 
   const publicKeyChannel = createGetPublicKeyChannel();
-  const hardwareWalletConnectionChannel = createHardwareWalletConnectionChannel();
+  const hardwareWalletConnectionChannel =
+    createHardwareWalletConnectionChannel();
 
   return new Promise<void>((resolve) => {
     hardwareWalletConnectionChannel.onReceive(
@@ -39,9 +40,8 @@ export const run = () => {
           product: expect.any(String),
         });
 
-        const cardanoAppChannelResponse = await requestLaunchingCardanoAppOnLedger(
-          params.path
-        );
+        const cardanoAppChannelResponse =
+          await requestLaunchingCardanoAppOnLedger(params.path);
 
         expect(cardanoAppChannelResponse).toEqual({
           minor: expect.any(Number),

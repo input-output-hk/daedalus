@@ -46,13 +46,8 @@ test('reproduces backend context records, digest, and token', () => {
   expect(fixture.source.candidateCommit).toBe(
     'e60b8a66cad9121e54656c76e03a3785099b9215'
   );
-  const {
-    fullOutput,
-    ownership,
-    protocol,
-    requiredProof,
-    pending,
-  } = fixture.records;
+  const { fullOutput, ownership, protocol, requiredProof, pending } =
+    fixture.records;
   const fullOutputRecord = record(
     1,
     Buffer.concat([
@@ -121,7 +116,7 @@ test('reproduces backend context records, digest, and token', () => {
       Map<number, unknown>,
       unknown,
       boolean,
-      unknown
+      unknown,
     ];
     expect(cbor.encodeCanonical(decoded)).toEqual(exact);
     expect(decoded[2]).toBe(true);
@@ -130,9 +125,9 @@ test('reproduces backend context records, digest, and token', () => {
   expect(transactions).toHaveLength(3);
   expect(fixture.validityBoundary.accepted).toBe(digestInput.transactions[0]);
   expect(
-    (cbor.decodeFirstSync(
-      hex(fixture.validityBoundary.rejected)
-    ) as unknown[])[2]
+    (
+      cbor.decodeFirstSync(hex(fixture.validityBoundary.rejected)) as unknown[]
+    )[2]
   ).toBe(false);
 
   const dependencies = [];

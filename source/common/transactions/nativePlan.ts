@@ -28,7 +28,8 @@ export const NATIVE_TRANSACTION_ACTIONS = [
   'itn-redemption',
 ] as const;
 
-export type NativeTransactionAction = typeof NATIVE_TRANSACTION_ACTIONS[number];
+export type NativeTransactionAction =
+  (typeof NATIVE_TRANSACTION_ACTIONS)[number];
 export type NativeTransactionAuthorization = 'software' | 'ledger' | 'trezor';
 export type NativeApprovalResult =
   | Readonly<{ status: 'submitted'; transactionIds: readonly string[] }>
@@ -648,7 +649,8 @@ export const parseNativePreparedApproval = (
     walletId,
     network,
     action,
-    authorization: preparedValue.authorization as NativeTransactionAuthorization,
+    authorization:
+      preparedValue.authorization as NativeTransactionAuthorization,
     items: Object.freeze(items),
     context: Object.freeze({
       walletName: contextValue.walletName as string,

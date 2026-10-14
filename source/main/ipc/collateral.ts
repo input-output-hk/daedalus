@@ -64,8 +64,10 @@ export const handleDappCollateralRequests = (): void => {
       Object.keys(request).length !== 1
     )
       throw new Error('Invalid wallet input selection request');
-    const walletId = Object.getOwnPropertyDescriptor(request, 'walletId')
-      ?.value;
+    const walletId = Object.getOwnPropertyDescriptor(
+      request,
+      'walletId'
+    )?.value;
     if (typeof walletId !== 'string' || !/^[0-9a-f]{40}$/u.test(walletId))
       throw new Error('Invalid wallet input selection request');
     return {

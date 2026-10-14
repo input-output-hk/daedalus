@@ -56,9 +56,9 @@ describe('CollateralService', () => {
       network,
       '01'.repeat(20)
     );
-    (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
-      context()
-    );
+    (
+      transactionContext.reconcileTransactionContext as jest.Mock
+    ).mockReturnValue(context());
     (serialization.controlledCip30Utxos as jest.Mock).mockReturnValue([]);
     (selection.selectCip30Collateral as jest.Mock).mockReturnValue(null);
   });
@@ -95,8 +95,8 @@ describe('CollateralService', () => {
         context: { ...utxo.context, pendingState: 'outcome_unknown' },
       },
     ]);
-    (selection.selectCip30Collateral as jest.Mock).mockImplementation((utxos) =>
-      utxos.length ? ['utxo'] : null
+    (selection.selectCip30Collateral as jest.Mock).mockImplementation(
+      (utxos) => (utxos.length ? ['utxo'] : null)
     );
 
     await expect(
@@ -209,7 +209,9 @@ describe('CollateralService', () => {
       preferredInputs: [input],
       generation: 1,
     });
-    (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
+    (
+      transactionContext.reconcileTransactionContext as jest.Mock
+    ).mockReturnValue(
       context([{ normalInputs: [], collateralInputs: [], [field]: [input] }])
     );
 

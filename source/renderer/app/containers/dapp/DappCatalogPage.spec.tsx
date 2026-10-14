@@ -97,6 +97,8 @@ describe('DappCatalogPage', () => {
   it('passes the catalog launch failure state to the catalog', () => {
     renderPage('mainnet', true);
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Catalog launch failed');
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Catalog launch failed'
+    );
   });
 });

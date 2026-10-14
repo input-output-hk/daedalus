@@ -345,9 +345,8 @@ export default class WalletMigrationStore extends Store {
     this._updateWalletImportStatus(index, WalletImportStatuses.RUNNING);
 
     try {
-      const restoredWallet = await this.restoreExportedWalletRequest.execute(
-        exportedWallet
-      ).promise;
+      const restoredWallet =
+        await this.restoreExportedWalletRequest.execute(exportedWallet).promise;
       if (!restoredWallet)
         throw new Error('Restored wallet was not received correctly');
       runInAction('update restoredWallets', () => {
@@ -393,8 +392,8 @@ export default class WalletMigrationStore extends Store {
   };
   @action
   _generateMigrationReport = async () => {
-    const finalMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-      .promise;
+    const finalMigrationStatus =
+      await this.getWalletMigrationStatusRequest.execute().promise;
     const walletMigrationReportData: WalletMigrationReportData = {
       exportedWalletsData: this.exportedWalletsData,
       exportedWalletsCount: this.exportedWalletsCount,
@@ -435,8 +434,8 @@ export default class WalletMigrationStore extends Store {
       // Reset migration data
       this._resetMigration();
 
-      const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-        .promise;
+      const walletMigrationStatus =
+        await this.getWalletMigrationStatusRequest.execute().promise;
 
       if (walletMigrationStatus === WalletMigrationStatuses.UNSTARTED) {
         // Wait for wallets to load as we need to match existing and exported wallets
@@ -527,8 +526,8 @@ export default class WalletMigrationStore extends Store {
       this.actions.dialogs.closeActiveDialog.trigger();
     }
 
-    const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
-      .promise;
+    const walletMigrationStatus =
+      await this.getWalletMigrationStatusRequest.execute().promise;
 
     if (walletMigrationStatus === WalletMigrationStatuses.RUNNING) {
       // Update migration status

@@ -65,10 +65,12 @@ describe('CollateralStore', () => {
 
   it('detects an exact preferred input in an ordinary selection', async () => {
     const projected = snapshot('ready');
-    (projected.preference.preferredInputs as Array<{
-      transactionId: string;
-      index: number;
-    }>).push({ transactionId: '12'.repeat(32), index: 1 });
+    (
+      projected.preference.preferredInputs as Array<{
+        transactionId: string;
+        index: number;
+      }>
+    ).push({ transactionId: '12'.repeat(32), index: 1 });
     request.mockResolvedValue(projected);
     const { store } = createStore();
     await store.refresh();

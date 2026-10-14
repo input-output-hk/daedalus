@@ -8,6 +8,187 @@ import cip8Fixture from '../../../../../source/common/cip30/contracts/fixtures/c
 import cip103Fixtures from '../../../../../source/common/cip30/contracts/fixtures/cip103-fixtures.json';
 import observations from '../../fixtures/client-adapters.json';
 import { captureCip103Submission, invokeCip95Adapter } from '../../adapters';
+import { reconstructPublicRejection } from '../../../../../source/common/cip30/errors';
+import type { DappCip30Rejection } from '../../../../../source/common/cip30/errors';
+import {
+  parseDappCip30GatewayRequest,
+  parseDappCip30ResultEnvelope,
+} from '../../../../../source/common/cip30/schemas';
+import { DAPP_CIP30_METHODS } from '../../../../../source/common/cip30/wire';
+import type { DappCip30Method } from '../../../../../source/common/cip30/wire';
+
+// Independent normative examples, not generated from the manifest under test.
+const hash = 'ab'.repeat(32);
+const signature = { signature: 'a0', key: 'a0' };
+const wireCases: Array<{
+  method: DappCip30Method;
+  args: unknown[];
+  result: unknown;
+  minimum: number;
+  errors: DappCip30Rejection['type'][];
+}> = [
+  {
+    method: 'provider.isEnabled',
+    args: [],
+    result: false,
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'provider.enable',
+    args: [{ extensions: [{ cip: 95 }] }],
+    result: { extensions: [{ cip: 95 }] },
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.getExtensions',
+    args: [],
+    result: [{ cip: 95 }],
+    minimum: 0,
+    errors: [],
+  },
+  { method: 'api.getNetworkId', args: [], result: 0, minimum: 0, errors: [] },
+  {
+    method: 'api.getUtxos',
+    args: ['a0', { page: 0, limit: 100 }],
+    result: null,
+    minimum: 0,
+    errors: ['paginate-error'],
+  },
+  {
+    method: 'api.getCollateral',
+    args: [{ amount: 'a0' }],
+    result: null,
+    minimum: 0,
+    errors: [],
+  },
+  { method: 'api.getBalance', args: [], result: 'a0', minimum: 0, errors: [] },
+  {
+    method: 'api.getUsedAddresses',
+    args: [{ page: 0, limit: 100 }],
+    result: ['00'],
+    minimum: 0,
+    errors: ['paginate-error'],
+  },
+  {
+    method: 'api.getUnusedAddresses',
+    args: [],
+    result: ['00'],
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.getChangeAddress',
+    args: [],
+    result: '00',
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.getRewardAddresses',
+    args: [],
+    result: ['00'],
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.signTx',
+    args: ['a0', true],
+    result: 'a0',
+    minimum: 1,
+    errors: ['tx-sign-error'],
+  },
+  {
+    method: 'api.signData',
+    args: ['00', ''],
+    result: signature,
+    minimum: 2,
+    errors: ['data-sign-error'],
+  },
+  {
+    method: 'api.submitTx',
+    args: ['a0'],
+    result: hash,
+    minimum: 1,
+    errors: ['tx-send-error'],
+  },
+  {
+    method: 'api.cip95.getPubDRepKey',
+    args: [],
+    result: hash,
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.cip95.getRegisteredPubStakeKeys',
+    args: [],
+    result: [hash],
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.cip95.getUnregisteredPubStakeKeys',
+    args: [],
+    result: [hash],
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.cip95.signData',
+    args: ['00', ''],
+    result: signature,
+    minimum: 2,
+    errors: ['data-sign-error'],
+  },
+  {
+    method: 'api.cip103.signTxs',
+    args: [[{ cbor: 'a0', partialSign: true }]],
+    result: ['a0'],
+    minimum: 1,
+    errors: ['tx-sign-error'],
+  },
+  {
+    method: 'api.cip103.submitTxs',
+    args: [['a0']],
+    result: [hash],
+    minimum: 1,
+    errors: ['tx-send-error', 'cip103-submit-error'],
+  },
+  {
+    method: 'api.cip104.getAccountPub',
+    args: [],
+    result: `5840${'ab'.repeat(64)}`,
+    minimum: 0,
+    errors: [],
+  },
+  {
+    method: 'api.cip142.getNetworkMagic',
+    args: [],
+    result: 4294967295,
+    minimum: 0,
+    errors: [],
+  },
+];
+
+const rejectionCases: DappCip30Rejection[] = [
+  { type: 'api-error', value: { code: -3, info: 'Refused' } },
+  { type: 'paginate-error', value: { maxSize: 3 } },
+  { type: 'tx-sign-error', value: { code: 2, info: 'Declined' } },
+  { type: 'data-sign-error', value: { code: 3, info: 'Declined' } },
+  { type: 'tx-send-error', value: { code: 1, info: 'Refused' } },
+  { type: 'cip103-submit-error', value: [hash, { code: 2, info: 'Failed' }] },
+];
+
+const expectInvalidRequest = (request: unknown): void => {
+  try {
+    parseDappCip30GatewayRequest(request);
+  } catch (rejection) {
+    expect(rejection).to.deep.equal({ code: -1, info: 'Invalid request' });
+    return;
+  }
+  expect.fail('Expected APIError.InvalidRequest');
+};
 
 const CIP95_METHODS = [
   'api.cip95.getPubDRepKey',
@@ -17,8 +198,8 @@ const CIP95_METHODS = [
 ];
 
 const fixturePaths = {
-  'contract-manifest.json':
-    'source/common/cip30/contracts/contract-manifest.json',
+  // The manifest hash in observations identifies the historical contract only.
+  // These unchanged byte fixtures are still the evidence used by the adapters.
   'cip8-cip95-fixture.json':
     'source/common/cip30/contracts/fixtures/cip8-cip95-fixture.json',
   'cip103-fixtures.json':
@@ -35,25 +216,91 @@ Given('the recorded CIP client observations', async function () {
 });
 
 Then(
-  'every public provider method matches the frozen contract',
+  'current public methods and wire behavior satisfy the normative contract',
   async function () {
-    const paths = manifest.methods.map(({ path }) => path);
-    expect(new Set(paths).size).to.equal(paths.length);
-    expect(paths).to.include.members([
-      ...CIP95_METHODS,
-      'api.cip103.signTxs',
-      'api.cip103.submitTxs',
-    ]);
+    const paths = wireCases.map(({ method }) => method);
+    expect(new Set(manifest.methods.map(({ path }) => path))).to.deep.equal(
+      new Set(paths)
+    );
+    expect(new Set(DAPP_CIP30_METHODS)).to.deep.equal(new Set(paths));
     expect(manifest.providerPath).to.equal('window.cardano.daedalus');
 
-    for (const [name, expected] of Object.entries(observations.fixtureHashes)) {
-      expect(digest(fixturePaths[name])).to.equal(expected);
+    for (const { method, args, result, minimum, errors } of wireCases) {
+      for (let length = minimum; length <= args.length; length += 1) {
+        const request = { method, args: args.slice(0, length) };
+        expect(parseDappCip30GatewayRequest(request)).to.deep.equal(request);
+      }
+      if (minimum > 0) {
+        expectInvalidRequest({ method, args: args.slice(0, minimum - 1) });
+      }
+      expectInvalidRequest({ method, args: [...args, undefined] });
+
+      const fulfilled = { status: 'fulfilled', value: result };
+      expect(parseDappCip30ResultEnvelope(method, fulfilled)).to.deep.equal(
+        fulfilled
+      );
+      expect(() =>
+        parseDappCip30ResultEnvelope(method, { status: 'fulfilled', value: {} })
+      ).to.throw('Invalid CIP-30 result value');
+
+      for (const rejection of rejectionCases) {
+        const envelope = { status: 'rejected', rejection };
+        if (rejection.type === 'api-error' || errors.includes(rejection.type)) {
+          expect(parseDappCip30ResultEnvelope(method, envelope)).to.deep.equal(
+            envelope
+          );
+          expect(reconstructPublicRejection(rejection)).to.deep.equal(
+            rejection.value
+          );
+          expect(reconstructPublicRejection(rejection)).not.to.be.instanceOf(
+            Error
+          );
+        } else {
+          expect(() => parseDappCip30ResultEnvelope(method, envelope)).to.throw(
+            'Invalid CIP-30 rejection for method'
+          );
+        }
+      }
+    }
+  }
+);
+
+Then('current enable and collateral semantics are enforced', async function () {
+  for (const args of [[], [undefined]]) {
+    expect(
+      parseDappCip30GatewayRequest({ method: 'api.getCollateral', args })
+    ).to.deep.equal({ method: 'api.getCollateral', args });
+  }
+  for (const value of [{}, { extensions: [{ cip: 95 }], extra: true }]) {
+    expect(() =>
+      parseDappCip30ResultEnvelope('provider.enable', {
+        status: 'fulfilled',
+        value,
+      })
+    ).to.throw('Invalid CIP-30 result value');
+  }
+  for (const request of [
+    { method: 'api.getCollateral', args: [{}] },
+    { method: 'api.getUtxos', args: [undefined, { page: 0, limit: 101 }] },
+    { method: 'api.cip103.signTxs', args: [[]] },
+    { method: 'api.cip103.submitTxs', args: [Array(51).fill('a0')] },
+    { method: 'api.signData', args: ['00', '0x00'] },
+  ]) {
+    expectInvalidRequest(request);
+  }
+});
+
+Then(
+  'recorded adapter fixtures retain their historical byte hashes',
+  async function () {
+    for (const [name, path] of Object.entries(fixturePaths)) {
+      expect(digest(path)).to.equal(observations.fixtureHashes[name]);
     }
   }
 );
 
 Then(
-  'current standard revisions match the frozen provenance',
+  'recorded standard revisions retain their historical provenance',
   async function () {
     expect(observations.observedAt).to.equal('2026-08-31');
     expect(
@@ -104,15 +351,13 @@ When('the adapter invokes the CIP-95 namespace', async function () {
     },
   };
 
-  [
-    this.context.rawDRepResult,
-    this.context.type6Result,
-  ] = await invokeCip95Adapter(
-    api,
-    cip8Fixture.drepId,
-    cip8Fixture.matchingEnterpriseAddress,
-    cip8Fixture.payload
-  );
+  [this.context.rawDRepResult, this.context.type6Result] =
+    await invokeCip95Adapter(
+      api,
+      cip8Fixture.drepId,
+      cip8Fixture.matchingEnterpriseAddress,
+      cip8Fixture.payload
+    );
 });
 
 Then('it uses the frozen CIP-95 public method names', async function () {
@@ -161,7 +406,7 @@ Then('it catches the aligned mixed array directly', async function () {
   expect(this.context.rejection).not.to.be.instanceOf(Error);
 });
 
-Given('the frozen extension registry', async function () {
+Given('the current extension registry', async function () {
   this.context.extensions = manifest.extensions.descriptors;
 });
 
@@ -169,14 +414,11 @@ Then('CIP-104 remains proposed and policy-gated', async function () {
   const cip104 = this.context.extensions.find(({ cip }) => cip === 104);
   const method = manifest.methods.find(
     ({ path }) => path === 'api.cip104.getAccountPub'
-  ) as {
-    availability: string;
-    positiveFixture: { raw: string; cbor: string };
-  };
+  );
   expect(cip104.status).to.equal('proposed-policy-gated');
-  expect(method.availability).to.equal('policy-gated');
-  expect(method.positiveFixture.cbor).to.equal(
-    `5840${method.positiveFixture.raw}`
+  expect(method?.availability).to.equal('policy-gated');
+  expect(method?.positiveFixture?.cbor).to.equal(
+    `5840${method?.positiveFixture?.raw}`
   );
 });
 

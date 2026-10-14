@@ -1,7 +1,7 @@
 import { resolvePartialSyncErrorCopy } from './partialSyncErrorCopy';
 
 const err = (code?: string, stage?: any) =>
-  ({ message: 'raw backend string', code, stage } as any);
+  ({ message: 'raw backend string', code, stage }) as any;
 
 describe('resolvePartialSyncErrorCopy', () => {
   it.each([

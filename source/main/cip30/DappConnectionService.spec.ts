@@ -60,9 +60,9 @@ describe('DappConnectionService', () => {
     grants = new GrantRepository(path.join(root, 'grants.json'));
     sessions = new SessionStore();
     cancel = jest.fn();
-    service = new DappConnectionService(grants, sessions, ({
+    service = new DappConnectionService(grants, sessions, {
       cancel,
-    } as unknown) as ConsentCoordinator);
+    } as unknown as ConsentCoordinator);
   });
 
   afterEach(() => fs.rmSync(root, { recursive: true, force: true }));
@@ -126,9 +126,9 @@ describe('DappConnectionService', () => {
     fs.writeFileSync(path.join(root, 'grants.json'), '{bad json');
     grants = new GrantRepository(path.join(root, 'grants.json'));
     sessions.create(capability());
-    service = new DappConnectionService(grants, sessions, ({
+    service = new DappConnectionService(grants, sessions, {
       cancel,
-    } as unknown) as ConsentCoordinator);
+    } as unknown as ConsentCoordinator);
 
     expect(service.snapshot().corrupt).toBe(true);
     expect(service.repair()).toEqual({ corrupt: false, grants: [] });

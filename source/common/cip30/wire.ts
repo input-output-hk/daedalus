@@ -30,7 +30,7 @@ export const DAPP_CIP30_METHODS = [
   'api.cip142.getNetworkMagic',
 ] as const;
 
-export type DappCip30Method = typeof DAPP_CIP30_METHODS[number];
+export type DappCip30Method = (typeof DAPP_CIP30_METHODS)[number];
 export type Extension = { cip: number };
 export type EnableOptions = { extensions?: Extension[] };
 export type Paginate = { page: number; limit: number };
@@ -80,7 +80,7 @@ export interface DappCip30MethodMap {
 }
 
 export type DappCip30GatewayRequest<
-  M extends DappCip30Method = DappCip30Method
+  M extends DappCip30Method = DappCip30Method,
 > = M extends DappCip30Method
   ? { method: M; args: DappCip30MethodMap[M]['args'] }
   : never;

@@ -42,12 +42,12 @@ const network = {
   networkMagic: 764824073,
   genesisHash: '11'.repeat(32),
 };
-const snapshot = ({
+const snapshot = {
   walletId: 'wallet',
   network,
   outputs: [contextOutput],
   maxCollateralInputs: 3,
-} as unknown) as TransactionContextSnapshot;
+} as unknown as TransactionContextSnapshot;
 const authority: Cip30DispatchAuthority = {
   guestWebContentsId: 9,
   documentGeneration: 2,
@@ -229,9 +229,9 @@ describe('CIP-30 Dispatcher', () => {
 
   it('keeps deprecated collateral reads nullable and side-effect free', async () => {
     const { dispatcher, execute } = create();
-    (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
-      { ...snapshot, outputs: [] }
-    );
+    (
+      transactionContext.reconcileTransactionContext as jest.Mock
+    ).mockReturnValue({ ...snapshot, outputs: [] });
 
     await expect(
       dispatcher.dispatch(
@@ -247,9 +247,9 @@ describe('CIP-30 Dispatcher', () => {
     expect(execute).toHaveBeenCalledTimes(1);
     expect(execute).toHaveBeenCalledWith('context');
 
-    (transactionContext.reconcileTransactionContext as jest.Mock).mockReturnValue(
-      { ...snapshot, maxCollateralInputs: undefined }
-    );
+    (
+      transactionContext.reconcileTransactionContext as jest.Mock
+    ).mockReturnValue({ ...snapshot, maxCollateralInputs: undefined });
     const error = await dispatcher
       .dispatch(
         parseDappCip30GatewayRequest({

@@ -15,7 +15,7 @@ import StakingStore from '../../stores/StakingStore';
 const makeApp = ({ activeDialog = false } = {}): AppStore =>
   ({
     activeDialog: activeDialog ? 'SOME_DIALOG' : null,
-  } as any);
+  }) as any;
 
 const makeProfile = ({
   currentLocale = 'en',
@@ -24,31 +24,31 @@ const makeProfile = ({
   ({
     currentLocale,
     areTermsOfUseAccepted,
-  } as any);
+  }) as any;
 
 const makeRouter = ({ pathname = ROUTES.WALLETS.ROOT } = {}): RouterStore =>
   ({
     location: {
       pathname,
     },
-  } as any);
+  }) as any;
 
 const makeStaking = ({ redeemOpen = false } = {}): StakingStore =>
   ({
     redeemStep: redeemOpen ? REDEEM_ITN_REWARDS_STEPS.CONFIGURATION : null,
-  } as any);
+  }) as any;
 
 const makeUiDialogs = ({ activeDialog = false } = {}): UiDialogsStore =>
   ({
     activeDialog: activeDialog ? () => {} : null,
-  } as any);
+  }) as any;
 
 const makeRebuildApplicationMenu = ({
   send = () => {},
 } = {}): RebuildApplicationMenu =>
   ({
     send,
-  } as any);
+  }) as any;
 
 function Component(props) {
   useMenuUpdater(props);

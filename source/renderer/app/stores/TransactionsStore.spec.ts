@@ -72,7 +72,7 @@ describe('TransactionsStore wallet send coordinator', () => {
 describe('TransactionsStore durable submissions', () => {
   const transactionId = 'ab'.repeat(32);
   const walletId = 'wallet-a';
-  const display = ({
+  const display = {
     entries: [
       {
         role: 'input',
@@ -92,7 +92,7 @@ describe('TransactionsStore durable submissions', () => {
     mint: [],
     withdrawals: [],
     certificates: [],
-  } as unknown) as TransactionReviewDisplay;
+  } as unknown as TransactionReviewDisplay;
 
   const harness = (
     saved: Record<string, SubmissionTransactionsData>,
@@ -216,7 +216,7 @@ describe('TransactionsStore durable submissions', () => {
       localSubmission: true,
     });
     first.transactions.dismissReceipt(walletId, [transactionId]);
-    const firstInternals = (first.transactions as unknown) as {
+    const firstInternals = first.transactions as unknown as {
       _persistSubmissions: (id: string) => Promise<void>;
     };
     await firstInternals._persistSubmissions(walletId);
@@ -226,7 +226,7 @@ describe('TransactionsStore durable submissions', () => {
       saved,
       jest.fn().mockRejectedValue(transportFailure)
     );
-    const reloadedInternals = (reloaded.transactions as unknown) as {
+    const reloadedInternals = reloaded.transactions as unknown as {
       _ensureSubmissionsLoaded: (id: string) => Promise<void>;
       _reconcileSubmissions: (
         id: string,
@@ -415,7 +415,7 @@ describe('TransactionsStore durable submissions', () => {
     const backend = backendTransaction();
     recentRequest.result = { transactions: [backend], total: 1 };
     transactions.dismissReceipt(walletId, [transactionId]);
-    const internals = (transactions as unknown) as {
+    const internals = transactions as unknown as {
       _reconcileSubmissions: (
         id: string,
         history: WalletTransaction[]

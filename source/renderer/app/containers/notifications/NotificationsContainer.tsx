@@ -113,8 +113,8 @@ class NotificationsContainer extends Component<InjectedProps> {
   notificationsConfig: Array<NotificationConfig> = [
     {
       id: 'transactionConfirmed',
-      actionToListenAndOpen: this.props.actions.transactions
-        .transactionConfirmed,
+      actionToListenAndOpen:
+        this.props.actions.transactions.transactionConfirmed,
       duration: 8000,
     },
     {
@@ -134,8 +134,8 @@ class NotificationsContainer extends Component<InjectedProps> {
     },
     {
       id: 'downloadTransactionsCSVSuccess',
-      actionToListenAndOpen: this.props.actions.transactions
-        .requestCSVFileSuccess,
+      actionToListenAndOpen:
+        this.props.actions.transactions.requestCSVFileSuccess,
       actionToListenAndClose: this.props.actions.transactions.requestCSVFile,
     },
     {
@@ -152,8 +152,8 @@ class NotificationsContainer extends Component<InjectedProps> {
     },
     {
       id: 'downloadAddressPDFSuccess',
-      actionToListenAndOpen: this.props.actions.wallets
-        .generateAddressPDFSuccess,
+      actionToListenAndOpen:
+        this.props.actions.wallets.generateAddressPDFSuccess,
       actionToListenAndClose: this.props.actions.wallets.generateAddressPDF,
     },
     {
@@ -168,8 +168,8 @@ class NotificationsContainer extends Component<InjectedProps> {
     },
     {
       id: 'copyAssetParam',
-      actionToListenAndOpen: this.props.actions.assets
-        .copyAssetParamNotification,
+      actionToListenAndOpen:
+        this.props.actions.assets.copyAssetParamNotification,
     },
   ];
   notificationsData: Partial<Record<NotificationId, NotificationDataProps>> = {

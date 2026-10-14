@@ -68,11 +68,8 @@ class StakingInfoCountdown extends Component<Props> {
   }
 
   checkIfShouldSetStakingInfoWasOpen = () => {
-    const {
-      onSetStakingInfoWasOpen,
-      isAlonzoActivated,
-      stakingInfoWasOpen,
-    } = this.props;
+    const { onSetStakingInfoWasOpen, isAlonzoActivated, stakingInfoWasOpen } =
+      this.props;
 
     if (isAlonzoActivated && !stakingInfoWasOpen) {
       onSetStakingInfoWasOpen();

@@ -55,10 +55,10 @@ describe('trustedRendererIpcAuthority', () => {
     const { window, webContents, frame } = createWindow();
     bindTrustedRenderer(window, new URL('http://127.0.0.1:8080/'));
     activate(webContents);
-    const event = ({
+    const event = {
       sender: webContents,
       senderFrame: frame,
-    } as unknown) as IpcMainEvent;
+    } as unknown as IpcMainEvent;
     const cancelledBeforeReady = jest.fn();
 
     onTrustedRendererInvalidated(cancelledBeforeReady);

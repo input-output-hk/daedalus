@@ -351,7 +351,6 @@ describe('Governance sanitization — call boundaries', () => {
     jest.restoreAllMocks();
   });
 
-
   it('redacts the vote target from the AdaApi wallet-list poll log', async () => {
     const FIXTURE_DREP =
       'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
@@ -579,7 +578,7 @@ describe('Governance sanitization — analytics URL masking', () => {
       );
       await client.sendEvent('Governance', 'Test event');
 
-      const tracker = ((MatomoTracker as unknown) as jest.Mock).mock.results[0]
+      const tracker = (MatomoTracker as unknown as jest.Mock).mock.results[0]
         .value;
       expect(tracker.track).toHaveBeenCalledTimes(1);
       const { url } = tracker.track.mock.calls[0][0];

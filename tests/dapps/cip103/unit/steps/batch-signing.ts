@@ -49,36 +49,37 @@ const review = (batch: Cip103PreflightBatch) => ({
   ),
 });
 
-Given(/^a two-item CIP-103 batch for a "([^"]*)" wallet$/, async function (
-  wallet: string
-) {
-  let walletKind: Cip103WalletSigningRequest['walletKind'];
-  if (wallet === 'software') walletKind = 'shelley-software';
-  else if (wallet === 'Ledger') walletKind = 'ledger';
-  else walletKind = 'trezor';
-  const batch = preflightCip103Sign(
-    [
-      { cbor: transaction(1), partialSign: false },
-      { cbor: transaction(2), partialSign: true },
-    ],
-    network.networkId
-  );
-  const signed = batch.items.map(({ bodyHash }) => {
-    const keys = generateKeyPairSync('ed25519');
-    const publicKey = keys.publicKey
-      .export({ format: 'der', type: 'spki' })
-      .subarray(-32);
-    const witnessSet = encodeVKeyWitnessSet([
-      {
-        publicKey,
-        signature: sign(null, Buffer.from(bodyHash, 'hex'), keys.privateKey),
-      },
-    ]).toString('hex');
-    const [witness] = extractVKeyWitnesses(Buffer.from(witnessSet, 'hex'));
-    return { witnessSet, keyHash: witness.keyHash.toString('hex') };
-  });
-  this.context.cip103 = { batch, signed, walletKind };
-});
+Given(
+  /^a two-item CIP-103 batch for a "([^"]*)" wallet$/,
+  async function (wallet: string) {
+    let walletKind: Cip103WalletSigningRequest['walletKind'];
+    if (wallet === 'software') walletKind = 'shelley-software';
+    else if (wallet === 'Ledger') walletKind = 'ledger';
+    else walletKind = 'trezor';
+    const batch = preflightCip103Sign(
+      [
+        { cbor: transaction(1), partialSign: false },
+        { cbor: transaction(2), partialSign: true },
+      ],
+      network.networkId
+    );
+    const signed = batch.items.map(({ bodyHash }) => {
+      const keys = generateKeyPairSync('ed25519');
+      const publicKey = keys.publicKey
+        .export({ format: 'der', type: 'spki' })
+        .subarray(-32);
+      const witnessSet = encodeVKeyWitnessSet([
+        {
+          publicKey,
+          signature: sign(null, Buffer.from(bodyHash, 'hex'), keys.privateKey),
+        },
+      ]).toString('hex');
+      const [witness] = extractVKeyWitnesses(Buffer.from(witnessSet, 'hex'));
+      return { witnessSet, keyHash: witness.keyHash.toString('hex') };
+    });
+    this.context.cip103 = { batch, signed, walletKind };
+  }
+);
 
 When(/^the user approves the CIP-103 batch$/, async function () {
   const { batch, signed, walletKind } = this.context.cip103;

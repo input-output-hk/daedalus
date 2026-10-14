@@ -249,27 +249,30 @@ describe('DappStore', () => {
     });
   });
 
-  it.each([false, true])('preserves diagnostics rejection ownership with catalog failure %s', async (catalogLaunchFailed) => {
-    const failure = new Error('Diagnostics launch failed');
-    openRequest.mockRejectedValueOnce(failure);
-    const { actions, store } = createStore();
-    store.diagnosticsAvailable = true;
-    store.catalogLaunchFailed = catalogLaunchFailed;
+  it.each([false, true])(
+    'preserves diagnostics rejection ownership with catalog failure %s',
+    async (catalogLaunchFailed) => {
+      const failure = new Error('Diagnostics launch failed');
+      openRequest.mockRejectedValueOnce(failure);
+      const { actions, store } = createStore();
+      store.diagnosticsAvailable = true;
+      store.catalogLaunchFailed = catalogLaunchFailed;
 
-    const launch = store.launchDiagnostics(
-      'https://example.com/private?value=1',
-      'wallet-a',
-      'Untrusted dApp'
-    );
-    expect(store.isLaunching).toBe(true);
-    await expect(launch).rejects.toBe(failure);
+      const launch = store.launchDiagnostics(
+        'https://example.com/private?value=1',
+        'wallet-a',
+        'Untrusted dApp'
+      );
+      expect(store.isLaunching).toBe(true);
+      await expect(launch).rejects.toBe(failure);
 
-    expect(store.isLaunching).toBe(false);
-    expect(store.launchingCatalogId).toBeNull();
-    expect(store.guestOpen).toBe(false);
-    expect(store.catalogLaunchFailed).toBe(catalogLaunchFailed);
-    expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
-  });
+      expect(store.isLaunching).toBe(false);
+      expect(store.launchingCatalogId).toBeNull();
+      expect(store.guestOpen).toBe(false);
+      expect(store.catalogLaunchFailed).toBe(catalogLaunchFailed);
+      expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
+    }
+  );
 
   it('captures console output only after an available diagnostics opt-in', async () => {
     statusRequest.mockResolvedValue({

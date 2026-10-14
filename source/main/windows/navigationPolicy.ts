@@ -66,11 +66,14 @@ export const loadTrustedRenderer = (
   return window.loadURL(trustedRendererUrl.href);
 };
 
-export const bindWindowRecovery = <T>(
-  createWindow: (locale: string, getBounds: () => T) => unknown,
-  locale: string,
-  getBounds: () => T
-): (() => unknown) => () => createWindow(locale, getBounds);
+export const bindWindowRecovery =
+  <T>(
+    createWindow: (locale: string, getBounds: () => T) => unknown,
+    locale: string,
+    getBounds: () => T
+  ): (() => unknown) =>
+  () =>
+    createWindow(locale, getBounds);
 
 export const shouldRecoverFailedLoad = (
   errorCode: number,

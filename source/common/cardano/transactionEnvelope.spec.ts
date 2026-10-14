@@ -168,9 +168,9 @@ describe('Conway transaction envelope', () => {
     const trueEnvelope = Buffer.from(falseEnvelope);
     trueEnvelope[trueEnvelope.length - 2] = 0xf5;
     expect(parse(trueEnvelope).isValid).toBe(true);
-    expect(
-      parse(minimal(Buffer.from('a0', 'hex'))).auxiliaryData.span
-    ).toEqual({ start: falseEnvelope.length - 1, end: falseEnvelope.length });
+    expect(parse(minimal(Buffer.from('a0', 'hex'))).auxiliaryData.span).toEqual(
+      { start: falseEnvelope.length - 1, end: falseEnvelope.length }
+    );
     expect(
       parse(minimal(Buffer.from('d90103a0', 'hex'))).auxiliaryData.span.end
     ).toBe(minimal(Buffer.from('d90103a0', 'hex')).length);

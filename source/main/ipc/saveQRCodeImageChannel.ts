@@ -8,10 +8,8 @@ import type {
 } from '../../common/ipc/api';
 
 export const saveQRCodeImageChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<
-  GenerateQRCodeRendererRequest,
-  GenerateQRCodeMainResponse
-> = new MainIpcChannel(GENERATE_QRCODE_CHANNEL);
+MainIpcChannel<GenerateQRCodeRendererRequest, GenerateQRCodeMainResponse> =
+  new MainIpcChannel(GENERATE_QRCODE_CHANNEL);
 export const saveQRCodeImageRequests = () => {
   saveQRCodeImageChannel.onReceive(
     (request: GenerateQRCodeRendererRequest) =>

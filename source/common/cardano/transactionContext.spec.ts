@@ -212,7 +212,11 @@ test('reconciles all input roles into one immutable trusted snapshot', () => {
 });
 
 test('refuses non-Conway context before binding it to an approval', () => {
-  const fixture = makeResponse(makeTransaction(), undefined, protocolParameters);
+  const fixture = makeResponse(
+    makeTransaction(),
+    undefined,
+    protocolParameters
+  );
   expect(() =>
     reconcileTransactionContext(
       { ...fixture.response, era: 'babbage' },
@@ -311,8 +315,8 @@ test('verifies script-data commitments against authenticated Plutus V1/V2/V3 cos
     reconcileTransactionContext(
       {
         ...fixture.response,
-        protocol_parameters_cbor: fixtureFor(missingLanguage).response
-          .protocol_parameters_cbor,
+        protocol_parameters_cbor:
+          fixtureFor(missingLanguage).response.protocol_parameters_cbor,
       },
       fixture.expectation
     )

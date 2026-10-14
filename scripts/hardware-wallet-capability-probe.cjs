@@ -36,12 +36,17 @@ if (!args.vendor || !args.root || !args.output || !args.label || !args.lock) {
 const projectRoot = path.resolve(__dirname, '..');
 const packageRoot = path.resolve(args.root);
 const lockPath = path.resolve(args.lock);
+// Nix declares its pinned Yarn offline mirror explicitly; unlike node_modules,
+// the installer's registry cache is not exported. Always verify against the
+// original lock, not the installer's offline-mirror rewritten lock.
+const yarnOfflineCache = process.env.DAEDALUS_YARN_OFFLINE_CACHE;
 // Yarn owns the platform-specific cache layout, including its v6 subdirectory.
-const yarnCacheDirectory = path.basename(lockPath) === 'yarn.lock'
-  ? execSync('yarn cache dir --silent', {
+// Its human-readable output contains ANSI escapes when FORCE_COLOR is set.
+const yarnCacheDirectory = path.basename(lockPath) === 'yarn.lock' && !yarnOfflineCache
+  ? JSON.parse(execSync('yarn cache dir --json', {
       cwd: projectRoot,
       encoding: 'utf8',
-    }).trim()
+    }).trim()).data
   : null;
 const read = (relativePath) =>
   fs.readFileSync(path.join(packageRoot, relativePath), 'utf8');
@@ -187,7 +192,26 @@ const readYarnCacheMetadata = (name, version, lockIdentity) => {
   return metadata;
 };
 const verifyYarnCacheMetadata = (name, version, lockIdentity) => {
-  readYarnCacheMetadata(name, version, lockIdentity);
+  if (!yarnOfflineCache) {
+    readYarnCacheMetadata(name, version, lockIdentity);
+    return;
+  }
+  // Match the pinned yarn2nix-moretea urlToName locator, not Yarn's own mirror.
+  // A filename is only a locator: both committed hashes must match the bytes.
+  const filename = lockIdentity.resolved.split('#')[0]
+    .replace(/https:\/\/.*\.com\//g, '')
+    .replace(/[@/%:-]/g, '_');
+  const content = fs.readFileSync(path.join(yarnOfflineCache, filename));
+  if (!lockIdentity.sha1 || createHash('sha1').update(content).digest('hex') !== lockIdentity.sha1) {
+    throw new Error(`Offline tarball does not match lock SHA-1 for ${name}@${version}`);
+  }
+  if (!/^sha(1|256|384|512)-[A-Za-z0-9+/]+={0,2}$/.test(lockIdentity.integrity)) {
+    throw new Error(`Lock integrity is not valid SRI for ${name}@${version}`);
+  }
+  const [algorithm, expected] = lockIdentity.integrity.split('-');
+  if (createHash(algorithm).update(content).digest('base64') !== expected) {
+    throw new Error(`Offline tarball does not match lock SRI for ${name}@${version}`);
+  }
 };
 const parseNpmIdentity = (lock, name, version) => {
   if (lock.lockfileVersion !== 3) throw new Error('Candidate lockfileVersion must be 3');
@@ -239,7 +263,9 @@ const verifyLock = (packageJson) => {
       integrity:
         lockType === 'npm-v3'
           ? 'verified-cached-tarball-before-load'
-          : 'yarn-cache-metadata-and-installed-tree-bound-before-load',
+          : yarnOfflineCache
+            ? 'verified-offline-tarball-before-load'
+            : 'yarn-cache-metadata-and-installed-tree-bound-before-load',
     },
   };
 };

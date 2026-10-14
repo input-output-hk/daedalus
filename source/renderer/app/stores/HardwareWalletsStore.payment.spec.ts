@@ -60,7 +60,7 @@ describe('HardwareWalletsStore payment construction', () => {
   it('waits for address display and keeps late device outcomes out of the next operation', async () => {
     const request = jest.fn();
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {},
         localStorage: {
           getHardwareWalletsLocalData: request,
@@ -68,7 +68,7 @@ describe('HardwareWalletsStore payment construction', () => {
           getHardwareWalletDevices: request,
           setHardwareWalletDevice: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       { sendEvent: jest.fn() } as any
     );
@@ -132,10 +132,10 @@ describe('HardwareWalletsStore payment construction', () => {
   it('does not report an unknown backend submission as a successful payment', async () => {
     const submit = jest.fn();
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: { submitDappTransaction: submit },
         localStorage: {},
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
@@ -182,7 +182,7 @@ describe('HardwareWalletsStore payment construction', () => {
     const acquireWalletSendLock = jest.fn();
     const request = jest.fn();
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {
           selectCoins: request,
           createExternalTransaction: request,
@@ -202,7 +202,7 @@ describe('HardwareWalletsStore payment construction', () => {
           unsetHardwareWalletDevicesAll: request,
           unsetHardwareWalletLocalDataAll: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
@@ -234,7 +234,7 @@ describe('HardwareWalletsStore payment construction', () => {
   it('prepares native Ledger payments without dApp certification', async () => {
     const request = jest.fn().mockResolvedValue({});
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: { getDappTransactionContext: request },
         localStorage: {
           getHardwareWalletsLocalData: request,
@@ -246,7 +246,7 @@ describe('HardwareWalletsStore payment construction', () => {
           unsetHardwareWalletDevice: request,
           unsetHardwareWalletDevicesAll: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
@@ -305,7 +305,7 @@ describe('HardwareWalletsStore payment construction', () => {
   it('refreshes a Ledger path before every transaction', async () => {
     const request = jest.fn();
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {
           selectCoins: request,
           createExternalTransaction: request,
@@ -325,7 +325,7 @@ describe('HardwareWalletsStore payment construction', () => {
           unsetHardwareWalletDevicesAll: request,
           unsetHardwareWalletLocalDataAll: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
@@ -381,7 +381,7 @@ describe('HardwareWalletsStore payment construction', () => {
     );
     const request = jest.fn().mockResolvedValue(null);
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {
           selectCoins: request,
           createExternalTransaction: request,
@@ -401,19 +401,19 @@ describe('HardwareWalletsStore payment construction', () => {
           unsetHardwareWalletDevicesAll: request,
           unsetHardwareWalletLocalDataAll: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
     (store as any).stores = {
       wallets: { refreshWalletsData: jest.fn() },
     };
-    store.transportDevice = ({
+    store.transportDevice = {
       deviceType: 'ledger',
       deviceName: 'Ledger Flex',
       deviceModel: 'europa',
       path: 'current-ledger-path',
-    } as unknown) as any;
+    } as unknown as any;
     store.isTransactionInitiated = true;
     jest
       .spyOn(store, '_deletePendingDeviceWithGivenPath')
@@ -422,17 +422,18 @@ describe('HardwareWalletsStore payment construction', () => {
       .spyOn(store, '_proceedWithTransactionAfterConnectingDevice')
       .mockImplementation(jest.fn());
 
-    const handling = store._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
-      {
-        associatedWallet: { id: 'wallet-id' } as any,
-        expectedWalletId: 'wallet-id',
-        extendedPublicKey: {
-          publicKeyHex: '00'.repeat(32),
-          chainCodeHex: '00'.repeat(32),
-        } as any,
-        path: 'current-ledger-path',
-      }
-    );
+    const handling =
+      store._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
+        {
+          associatedWallet: { id: 'wallet-id' } as any,
+          expectedWalletId: 'wallet-id',
+          extendedPublicKey: {
+            publicKeyHex: '00'.repeat(32),
+            chainCodeHex: '00'.repeat(32),
+          } as any,
+          path: 'current-ledger-path',
+        }
+      );
     await refreshStarted;
 
     expect(proceed).not.toHaveBeenCalled();
@@ -471,7 +472,7 @@ describe('HardwareWalletsStore payment construction', () => {
   it('signs exact Ledger payments without exporting the account key', async () => {
     const request = jest.fn().mockResolvedValue(null);
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {},
         localStorage: {
           getHardwareWalletsLocalData: request,
@@ -479,7 +480,7 @@ describe('HardwareWalletsStore payment construction', () => {
           getHardwareWalletDevices: request,
           setHardwareWalletDevice: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
@@ -552,7 +553,7 @@ describe('HardwareWalletsStore payment construction', () => {
   it('discovers a Ledger after restart while accepting newer compatible app versions', async () => {
     const request = jest.fn().mockResolvedValue(null);
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {},
         localStorage: {
           getHardwareWalletsLocalData: request,
@@ -560,7 +561,7 @@ describe('HardwareWalletsStore payment construction', () => {
           getHardwareWalletDevices: request,
           setHardwareWalletDevice: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
@@ -642,7 +643,7 @@ describe('HardwareWalletsStore payment construction', () => {
   it('refreshes the paired Ledger connection before native signing and refuses a locked app', async () => {
     const request = jest.fn().mockResolvedValue(null);
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {},
         localStorage: {
           getHardwareWalletsLocalData: request,
@@ -650,7 +651,7 @@ describe('HardwareWalletsStore payment construction', () => {
           getHardwareWalletDevices: request,
           setHardwareWalletDevice: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       {} as AnalyticsTracker
     );
@@ -748,7 +749,7 @@ describe('HardwareWalletsStore payment construction', () => {
     } as any;
     const request = jest.fn().mockResolvedValue({});
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {},
         localStorage: {
           getHardwareWalletsLocalData: request,
@@ -756,7 +757,7 @@ describe('HardwareWalletsStore payment construction', () => {
           getHardwareWalletDevices: request,
           setHardwareWalletDevice: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       { sendEvent: jest.fn() } as any
     );
@@ -869,7 +870,7 @@ describe('HardwareWalletsStore payment construction', () => {
   it('settles the payment action and clears pending state after an unknown outcome', async () => {
     const request = jest.fn();
     const store = new HardwareWalletsStore(
-      ({
+      {
         ada: {},
         localStorage: {
           getHardwareWalletsLocalData: request,
@@ -877,7 +878,7 @@ describe('HardwareWalletsStore payment construction', () => {
           getHardwareWalletDevices: request,
           setHardwareWalletDevice: request,
         },
-      } as unknown) as Api,
+      } as unknown as Api,
       {} as ActionsMap,
       { sendEvent: jest.fn() } as any
     );

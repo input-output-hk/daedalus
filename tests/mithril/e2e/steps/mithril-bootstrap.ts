@@ -679,11 +679,12 @@ When(/^I cancel Mithril bootstrap$/, async function () {
   await this.waitAndClick(SELECTORS.PROGRESS_CANCEL_BUTTON);
 });
 
-When(/^Mithril bootstrap advances to the "([^"]*)" stage$/, async function (
-  status: 'downloading' | 'finalizing'
-) {
-  await advanceMithrilStatus.call(this, status);
-});
+When(
+  /^Mithril bootstrap advances to the "([^"]*)" stage$/,
+  async function (status: 'downloading' | 'finalizing') {
+    await advanceMithrilStatus.call(this, status);
+  }
+);
 
 When(/^I choose a new Mithril chain storage location$/, async function () {
   await this.waitAndClick(SELECTORS.CHAIN_STORAGE_SELECT_BUTTON);
@@ -736,20 +737,22 @@ Then(/^the Mithril bootstrap overlay should be hidden$/, async function () {
   await this.client.waitForVisible(SELECTORS.OVERLAY, null, true);
 });
 
-Then(/^the "([^"]*)" Mithril step should be active$/, async function (
-  step: 'preparing' | 'downloading' | 'finalizing'
-) {
-  await waitForStepToBeActive.call(this, step);
-});
+Then(
+  /^the "([^"]*)" Mithril step should be active$/,
+  async function (step: 'preparing' | 'downloading' | 'finalizing') {
+    await waitForStepToBeActive.call(this, step);
+  }
+);
 
-Then(/^I should see the "([^"]*)" Mithril error heading$/, async function (
-  stage: MithrilBootstrapErrorStage
-) {
-  const expectedHeading = await this.intl(ERROR_TITLE_IDS[stage]);
-  await this.client.waitForVisible(SELECTORS.ERROR_ROOT);
-  const actualHeading = await this.waitAndGetText(SELECTORS.HEADING_ERROR);
-  expect(actualHeading).to.equal(expectedHeading);
-});
+Then(
+  /^I should see the "([^"]*)" Mithril error heading$/,
+  async function (stage: MithrilBootstrapErrorStage) {
+    const expectedHeading = await this.intl(ERROR_TITLE_IDS[stage]);
+    await this.client.waitForVisible(SELECTORS.ERROR_ROOT);
+    const actualHeading = await this.waitAndGetText(SELECTORS.HEADING_ERROR);
+    expect(actualHeading).to.equal(expectedHeading);
+  }
+);
 
 Then(
   /^the Mithril decision view should show the selected chain storage path$/,

@@ -18,11 +18,8 @@ class StakePoolsSettingsPage extends Component<InjectedProps> {
 
   render() {
     const { stores, actions } = this.props;
-    const {
-      smashServerUrl,
-      smashServerUrlError,
-      smashServerLoading,
-    } = stores.staking;
+    const { smashServerUrl, smashServerUrlError, smashServerLoading } =
+      stores.staking;
     const { isSynced, syncPercentage } = stores.networkStatus;
     const { openExternalLink } = stores.app;
     const { resetSmashServerError } = actions.staking;

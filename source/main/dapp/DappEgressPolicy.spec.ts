@@ -6,7 +6,7 @@ import type { Session } from 'electron';
 import { DappEgressPolicy, isPublicGuestIp } from './DappEgressPolicy';
 
 const install = async (origins = new Set(['https://example.com'])) => {
-  const guestSession = ({ setProxy: jest.fn() } as unknown) as Session;
+  const guestSession = { setProxy: jest.fn() } as unknown as Session;
   const policy = await DappEgressPolicy.install(guestSession, origins);
   return { guestSession, policy };
 };
@@ -16,14 +16,14 @@ const connect = (
   host: string,
   port = 443
 ): Promise<net.Socket> =>
-  ((policy as unknown) as Record<'connect', jest.Mock>).connect({ host, port });
+  (policy as unknown as Record<'connect', jest.Mock>).connect({ host, port });
 
 const connectedSocket = (): net.Socket => {
   const socket = Object.assign(new EventEmitter(), {
     destroy: jest.fn(),
   });
   process.nextTick(() => socket.emit('connect'));
-  return (socket as unknown) as net.Socket;
+  return socket as unknown as net.Socket;
 };
 
 describe('DappEgressPolicy', () => {
@@ -163,14 +163,14 @@ describe('DappEgressPolicy', () => {
     const targetAddress = target.address();
     if (!targetAddress || typeof targetAddress === 'string')
       throw new Error('Expected target address');
-    const guestSession = ({ setProxy: jest.fn() } as unknown) as Session;
+    const guestSession = { setProxy: jest.fn() } as unknown as Session;
     const policy = await DappEgressPolicy.install(
       guestSession,
       undefined,
       true
     );
     // Test-only inspection of the private listener used by the configured proxy.
-    const inspectedPolicy = (policy as unknown) as { server: http.Server };
+    const inspectedPolicy = policy as unknown as { server: http.Server };
     const proxyAddress = inspectedPolicy.server.address();
     if (!proxyAddress || typeof proxyAddress === 'string')
       throw new Error('Expected proxy address');

@@ -898,13 +898,13 @@ export function TransactionApprovalDialog(props: Props) {
     setAcknowledgements(new Set());
     const timeout = setTimeout(() => {
       if (props.result && scrollRef.current) scrollRef.current.scrollTop = 0;
-      const heading = (props.result
-        ? scrollRef.current?.querySelector(
-            '[role="status"] h2, [role="alert"] h2'
-          )
-        : scrollRef.current?.parentElement?.querySelector(
-            'h1'
-          )) as HTMLElement | null;
+      const heading = (
+        props.result
+          ? scrollRef.current?.querySelector(
+              '[role="status"] h2, [role="alert"] h2'
+            )
+          : scrollRef.current?.parentElement?.querySelector('h1')
+      ) as HTMLElement | null;
       if (heading) {
         heading.tabIndex = -1;
         heading.focus();

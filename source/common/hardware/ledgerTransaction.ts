@@ -336,10 +336,10 @@ const exactCertificates = (
       certificateType: T,
       params: Extract<LedgerCertificate, { type: T }>['params']
     ): Extract<LedgerCertificate, { type: T }> =>
-      ({ type: certificateType, params } as Extract<
+      ({ type: certificateType, params }) as Extract<
         LedgerCertificate,
         { type: T }
-      >);
+      >;
     switch (type) {
       case 0:
         return make(CertificateType.STAKE_REGISTRATION, {
@@ -1239,25 +1239,7 @@ const assertExactLedgerBody = (
   if (!reconstructLedgerBody(exact, request).equals(body))
     exactFail('body reconstruction');
   const knownKeys = [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    7,
-    8,
-    9,
-    11,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    21,
-    22,
+    0, 1, 2, 3, 4, 5, 7, 8, 9, 11, 13, 14, 15, 16, 17, 18, 19, 21, 22,
   ];
   for (const key of fields.keys())
     if (!knownKeys.includes(key)) exactFail(`body key ${key}`);
@@ -1393,7 +1375,8 @@ export const toExactLedgerSignTransactionRequest = (
         : {}),
       ...(exact.transaction.validityInterval.invalidBefore !== undefined
         ? {
-            validityIntervalStart: exact.transaction.validityInterval.invalidBefore.toString(),
+            validityIntervalStart:
+              exact.transaction.validityInterval.invalidBefore.toString(),
           }
         : {}),
       ...(exact.transaction.mint.length

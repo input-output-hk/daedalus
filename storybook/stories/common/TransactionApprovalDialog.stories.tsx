@@ -342,15 +342,12 @@ const liqwidAssetDetails: Readonly<Record<string, Asset>> = {
   },
 };
 const unknownAssetDetails: Readonly<Record<string, Asset>> = {
-  [`${usdmPolicy}${usdm.assetName}`]: liqwidAssetDetails[
-    `${usdmPolicy}${usdm.assetName}`
-  ],
-  [`${markerPolicy}${marker.assetName}`]: liqwidAssetDetails[
-    `${markerPolicy}${marker.assetName}`
-  ],
-  [`${longNamePolicy}${longName.assetName}`]: liqwidAssetDetails[
-    `${longNamePolicy}${longName.assetName}`
-  ],
+  [`${usdmPolicy}${usdm.assetName}`]:
+    liqwidAssetDetails[`${usdmPolicy}${usdm.assetName}`],
+  [`${markerPolicy}${marker.assetName}`]:
+    liqwidAssetDetails[`${markerPolicy}${marker.assetName}`],
+  [`${longNamePolicy}${longName.assetName}`]:
+    liqwidAssetDetails[`${longNamePolicy}${longName.assetName}`],
 };
 const unavailableRequest: TransactionApprovalRequest = {
   ...liqwidRequest,

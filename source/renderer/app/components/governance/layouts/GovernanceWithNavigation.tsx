@@ -39,13 +39,8 @@ class GovernanceWithNavigation extends Component<Props> {
   };
 
   render() {
-    const {
-      items,
-      activeItem,
-      isActiveNavItem,
-      onNavItemClick,
-      children,
-    } = this.props;
+    const { items, activeItem, isActiveNavItem, onNavItemClick, children } =
+      this.props;
 
     return (
       <GovernancePageScrollContext.Provider

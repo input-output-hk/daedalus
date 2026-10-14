@@ -15,10 +15,8 @@ class SystemTimeErrorPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const {
-      localTimeDifference,
-      ignoreSystemTimeChecks,
-    } = stores.networkStatus;
+    const { localTimeDifference, ignoreSystemTimeChecks } =
+      stores.networkStatus;
     const { forceCheckNetworkClock } = actions.networkStatus;
     const { app, networkStatus, profile } = stores;
     const { openExternalLink } = app;

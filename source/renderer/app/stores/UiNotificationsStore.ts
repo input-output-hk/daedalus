@@ -30,11 +30,8 @@ export default class UiNotificationsStore extends Store {
   isOpen = (id: NotificationId): boolean => !!this.activeNotifications[id];
   @action
   _registerNotification = (notificationConfig: NotificationConfig) => {
-    const {
-      id,
-      actionToListenAndOpen,
-      actionToListenAndClose,
-    } = notificationConfig;
+    const { id, actionToListenAndOpen, actionToListenAndClose } =
+      notificationConfig;
     actionToListenAndOpen.listen((labelValues?: Record<string, any>) =>
       this._openNotification(notificationConfig, labelValues)
     );

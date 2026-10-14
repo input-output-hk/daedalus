@@ -102,11 +102,11 @@ const hardwareCapability: HardwareTransactionCapability = {
   productEnabled: true,
   familyDispositions: {},
 };
-const hardwarePreparation = ({
+const hardwarePreparation = {
   status: 'ready' as const,
   deviceInteraction: true,
   exact: { bodyHash: '66'.repeat(32) },
-} as unknown) as HardwareTransactionPreparation;
+} as unknown as HardwareTransactionPreparation;
 const hardwareSnapshot = {} as TransactionContextSnapshot;
 const connectorEvidence: HardwareConnectorCapabilityEvidence = {
   matrixRevision: 'task-006-matrix-2026-08-14',
@@ -121,7 +121,7 @@ const connectorActivation: HardwareConnectorActivation = {
   ...connectorEvidence,
   packagedEnabled: true,
 };
-const hardwareMessage = ({
+const hardwareMessage = {
   address: { kind: 'address', value: signDataRequest.address, addressType: 6 },
   credentialKind: 'payment',
   credential: '11'.repeat(28),
@@ -129,7 +129,7 @@ const hardwareMessage = ({
   payload: signDataRequest.payload,
   path: [1852, 1815, 0, 0, 0],
   network,
-} as unknown) as HardwareMessageRequest;
+} as unknown as HardwareMessageRequest;
 const submitTransactionRequest = {
   operation: 'submit-transaction' as const,
   walletId: 'wallet',
@@ -212,7 +212,7 @@ const create = () => {
     async (_walletId: string, work: () => Promise<unknown>) => work()
   );
   const stakeAddresses = { wallet: 'stake-address' };
-  const api = ({
+  const api = {
     ada: {
       getDappCapabilities,
       getDappTransactionContext,
@@ -224,8 +224,8 @@ const create = () => {
       submitDappTransaction,
       getDappCollateralHistory,
     },
-  } as unknown) as Api;
-  const stores = ({
+  } as unknown as Api;
+  const stores = {
     wallets: {
       get activeDappWallet() {
         return wallet;
@@ -252,7 +252,7 @@ const create = () => {
       _getStakeAddress: jest.fn(async () => undefined),
     },
     transactions: { withWalletSendLock },
-  } as unknown) as StoresMap;
+  } as unknown as StoresMap;
   return {
     service: new Cip30WalletService(api, stores),
     getDappCapabilities,

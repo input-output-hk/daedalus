@@ -178,7 +178,8 @@ const HEX = /^(?:[0-9a-f]{2})+$/;
 const HEX_28 = /^[0-9a-f]{56}$/;
 const HEX_32 = /^[0-9a-f]{64}$/;
 const HEX_40 = /^[0-9a-f]{40}$/;
-const WORD64 = /^(?:0|[1-9][0-9]{0,18}|1[0-7][0-9]{18}|18[0-3][0-9]{17}|184[0-3][0-9]{16}|1844[0-5][0-9]{15}|18446[0-6][0-9]{14}|184467[0-3][0-9]{13}|1844674[0-3][0-9]{12}|184467440[0-6][0-9]{10}|1844674407[0-2][0-9]{9}|18446744073[0-6][0-9]{8}|1844674407370[0-8][0-9]{6}|18446744073709[0-4][0-9]{5}|184467440737095[0-4][0-9]{4}|18446744073709550[0-9]{3}|18446744073709551[0-5][0-9]{2}|1844674407370955160[0-9]|1844674407370955161[0-5])$/;
+const WORD64 =
+  /^(?:0|[1-9][0-9]{0,18}|1[0-7][0-9]{18}|18[0-3][0-9]{17}|184[0-3][0-9]{16}|1844[0-5][0-9]{15}|18446[0-6][0-9]{14}|184467[0-3][0-9]{13}|1844674[0-3][0-9]{12}|184467440[0-6][0-9]{10}|1844674407[0-2][0-9]{9}|18446744073[0-6][0-9]{8}|1844674407370[0-8][0-9]{6}|18446744073709[0-4][0-9]{5}|184467440737095[0-4][0-9]{4}|18446744073709550[0-9]{3}|18446744073709551[0-5][0-9]{2}|1844674407370955160[0-9]|1844674407370955161[0-5])$/;
 const REQUIRED_CAPABILITIES = [
   'transaction-context',
   'reviewed-context-signing',
@@ -267,36 +268,48 @@ const object = (
   );
   return record;
 };
-const array = (item: Validator, minimum = 0, maximum = Infinity): Validator => (
-  value,
-  path
-) => {
-  if (!Array.isArray(value) || value.length < minimum || value.length > maximum)
-    fail(path);
-  (value as unknown[]).forEach((entry, index) =>
-    item(entry, `${path}[${index}]`)
-  );
-};
-const string = (pattern?: RegExp): Validator => (value, path) => {
-  if (typeof value !== 'string' || (pattern && !pattern.test(value)))
-    fail(path);
-};
-const number = (maximum = Number.MAX_SAFE_INTEGER): Validator => (
-  value,
-  path
-) => {
-  if (!Number.isSafeInteger(value) || (value as number) < 0 || value > maximum)
-    fail(path);
-};
+const array =
+  (item: Validator, minimum = 0, maximum = Infinity): Validator =>
+  (value, path) => {
+    if (
+      !Array.isArray(value) ||
+      value.length < minimum ||
+      value.length > maximum
+    )
+      fail(path);
+    (value as unknown[]).forEach((entry, index) =>
+      item(entry, `${path}[${index}]`)
+    );
+  };
+const string =
+  (pattern?: RegExp): Validator =>
+  (value, path) => {
+    if (typeof value !== 'string' || (pattern && !pattern.test(value)))
+      fail(path);
+  };
+const number =
+  (maximum = Number.MAX_SAFE_INTEGER): Validator =>
+  (value, path) => {
+    if (
+      !Number.isSafeInteger(value) ||
+      (value as number) < 0 ||
+      value > maximum
+    )
+      fail(path);
+  };
 const boolean: Validator = (value, path) => {
   if (typeof value !== 'boolean') fail(path);
 };
-const literal = (...values: unknown[]): Validator => (value, path) => {
-  if (!values.includes(value)) fail(path);
-};
-const nullable = (validate: Validator): Validator => (value, path) => {
-  if (value !== null) validate(value, path);
-};
+const literal =
+  (...values: unknown[]): Validator =>
+  (value, path) => {
+    if (!values.includes(value)) fail(path);
+  };
+const nullable =
+  (validate: Validator): Validator =>
+  (value, path) => {
+    if (value !== null) validate(value, path);
+  };
 
 const network: Validator = (value, path) => {
   object(value, path, {

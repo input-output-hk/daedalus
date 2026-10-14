@@ -766,22 +766,7 @@ export const assertExactTrezorBody = (
     );
   }
   const known = new Set([
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    7,
-    8,
-    9,
-    11,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
+    0, 1, 2, 3, 4, 5, 7, 8, 9, 11, 13, 14, 15, 16, 17, 18,
   ]);
   for (const key of bodyFields.keys())
     if (!known.has(key)) exactFail(`body key ${key}`);
@@ -897,7 +882,8 @@ export const toExactTrezorSignTransactionRequest = (
       : {}),
     ...(exact.transaction.validityInterval.invalidBefore !== undefined
       ? {
-          validityIntervalStart: exact.transaction.validityInterval.invalidBefore.toString(),
+          validityIntervalStart:
+            exact.transaction.validityInterval.invalidBefore.toString(),
         }
       : {}),
     ...(exact.transaction.mint.length

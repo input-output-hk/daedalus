@@ -7,7 +7,7 @@ export interface WithAnalyticsTrackerProps {
 }
 
 export function withAnalytics<
-  T extends WithAnalyticsTrackerProps = WithAnalyticsTrackerProps
+  T extends WithAnalyticsTrackerProps = WithAnalyticsTrackerProps,
 >(WrappedComponent: React.ComponentType<T>) {
   const displayName =
     WrappedComponent.displayName || WrappedComponent.name || 'Component';

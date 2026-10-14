@@ -33,7 +33,10 @@ const outpointMatches = (
 export class Cip30WalletService {
   private unbind?: () => void;
 
-  constructor(private readonly api: Api, private readonly stores: StoresMap) {}
+  constructor(
+    private readonly api: Api,
+    private readonly stores: StoresMap
+  ) {}
 
   setup(): void {
     this.unbind = bindCip30WalletRenderer(this.receive);
@@ -257,10 +260,11 @@ export class Cip30WalletService {
           });
         let accountPublicKey: string | null = null;
         if (wallet.isHardwareWallet && request.hardware)
-          accountPublicKey = this.stores.hardwareWallets.getDappAccountPublicKey(
-            wallet.id,
-            request.hardware
-          );
+          accountPublicKey =
+            this.stores.hardwareWallets.getDappAccountPublicKey(
+              wallet.id,
+              request.hardware
+            );
         if (!wallet.isHardwareWallet && request.passphrase)
           accountPublicKey = await this.api.ada.getAccountPublicKey({
             walletId: request.walletId,
@@ -388,10 +392,11 @@ export class Cip30WalletService {
             );
             let witnessSetCbor: string;
             try {
-              witnessSetCbor = await this.stores.hardwareWallets.signDappTransaction(
-                wallet.id,
-                preparation
-              );
+              witnessSetCbor =
+                await this.stores.hardwareWallets.signDappTransaction(
+                  wallet.id,
+                  preparation
+                );
             } catch {
               return Object.freeze({
                 status: 'rejected',

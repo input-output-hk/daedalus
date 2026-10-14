@@ -51,8 +51,8 @@ export const BASE_DESCRIPTOR: BaseDescriptor = Object.freeze({
   ],
 });
 
-export const EXTENSION_DESCRIPTORS: readonly ExtensionDescriptor[] = Object.freeze(
-  [
+export const EXTENSION_DESCRIPTORS: readonly ExtensionDescriptor[] =
+  Object.freeze([
     {
       cip: 95,
       status: 'active',
@@ -126,5 +126,4 @@ export const EXTENSION_DESCRIPTORS: readonly ExtensionDescriptor[] = Object.free
       requiresDevice: false,
       policyRevision: 1,
     },
-  ]
-);
+  ]);

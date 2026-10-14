@@ -19,7 +19,7 @@ jest.mock('./DappEgressPolicy', () => ({
 const makeSession = () => {
   const events = new EventEmitter();
   const handlers: Record<string, jest.Mock> = {};
-  const guestSession = (Object.assign(events, {
+  const guestSession = Object.assign(events, {
     isPersistent: jest.fn(() => false),
     getStoragePath: jest.fn(() => null),
     setPermissionCheckHandler: jest.fn((handler) => {
@@ -42,7 +42,7 @@ const makeSession = () => {
         handlers.headersReceived = handler;
       }),
     },
-  }) as unknown) as Session;
+  }) as unknown as Session;
   return { guestSession, handlers };
 };
 
@@ -51,10 +51,10 @@ const preventedEvent = () => ({ preventDefault: jest.fn() });
 describe('DappSessionPolicy', () => {
   test('composes transport restrictions without dropping existing features', () => {
     const appendSwitch = jest.fn();
-    installDappTransportRestrictions(({
+    installDappTransportRestrictions({
       getSwitchValue: jest.fn(() => 'ExistingFeature'),
       appendSwitch,
-    } as unknown) as CommandLine);
+    } as unknown as CommandLine);
     expect(appendSwitch).toHaveBeenNthCalledWith(
       1,
       'disable-features',
@@ -72,13 +72,10 @@ describe('DappSessionPolicy', () => {
 
     expect(createDappSession()).toBe(first);
     expect(createDappSession()).toBe(second);
-    const [
-      firstPartition,
-      firstOptions,
-    ] = (session.fromPartition as jest.Mock).mock.calls[0];
-    const [
-      secondPartition,
-    ] = (session.fromPartition as jest.Mock).mock.calls[1];
+    const [firstPartition, firstOptions] = (session.fromPartition as jest.Mock)
+      .mock.calls[0];
+    const [secondPartition] = (session.fromPartition as jest.Mock).mock
+      .calls[1];
     expect(firstPartition).toMatch(/^daedalus-dapp-[0-9a-f]{32}$/u);
     expect(secondPartition).not.toBe(firstPartition);
     expect(firstOptions).toEqual({ cache: false });
@@ -161,10 +158,10 @@ describe('DappSessionPolicy', () => {
     const events = new EventEmitter();
     const setWindowOpenHandler = jest.fn();
     const setWebRTCIPHandlingPolicy = jest.fn();
-    const contents = (Object.assign(events, {
+    const contents = Object.assign(events, {
       setWindowOpenHandler,
       setWebRTCIPHandlingPolicy,
-    }) as unknown) as WebContents;
+    }) as unknown as WebContents;
     installGuestDenialHandlers(contents);
 
     expect(setWindowOpenHandler.mock.calls[0][0]()).toEqual({ action: 'deny' });

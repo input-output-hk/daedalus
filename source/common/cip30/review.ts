@@ -39,7 +39,7 @@ export const CIP30_REVIEW_EFFECTS = [
   'preferred-collateral-spend',
 ] as const;
 
-export type Cip30ReviewEffectKind = typeof CIP30_REVIEW_EFFECTS[number];
+export type Cip30ReviewEffectKind = (typeof CIP30_REVIEW_EFFECTS)[number];
 export type Cip30TransactionReview = Readonly<{
   mode: 'sign' | 'submit';
   transactionId: string;

@@ -134,7 +134,7 @@ class BackendLifecycle {
       } else if (eventType === 'mithril_status') {
         consumeIpcResponse(
           mithrilStatusChannel.send(
-            (event as unknown) as MithrilStatusMainRequest,
+            event as unknown as MithrilStatusMainRequest,
             currentWindowSender.sender
           ),
           'MITHRIL_STATUS_CHANNEL'

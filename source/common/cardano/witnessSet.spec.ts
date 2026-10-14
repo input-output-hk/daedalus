@@ -1,8 +1,8 @@
+import { generateKeyPairSync, KeyObject, sign } from 'crypto';
+import cbor from 'cbor';
 import alonzoFixture from './fixtures/exact-cbor/alonzo-compatible.json';
 import babbageFixture from './fixtures/exact-cbor/babbage-compatible.json';
 import conwayFixture from './fixtures/exact-cbor/conway-regression.json';
-import { generateKeyPairSync, KeyObject, sign } from 'crypto';
-import cbor from 'cbor';
 
 import { bytesForSpan, parseCborItem } from './cborSlices';
 import { parseConwayTransactionEnvelope } from './transactionEnvelope';
@@ -221,28 +221,35 @@ test.each([
   ['Alonzo', alonzoFixture],
   ['Babbage', babbageFixture],
   ['Conway', conwayFixture],
-])('merges %s-family witnesses without rewriting body, auxiliary or non-vkeys', (_era, fixture) => {
-  const original = parseConwayTransactionEnvelope(Buffer.from(fixture.cborHex, 'hex'));
-  const keys = keyPair();
-  const signed = witness(keys.privateKey, keys.publicKey, original.transactionId);
-  const mergedBytes = mergeVKeyWitnesses(original, [signed]);
-  const merged = parseConwayTransactionEnvelope(mergedBytes);
-  expect(merged.transactionId).toBe(original.transactionId);
-  for (const field of ['body', 'auxiliaryData'] as const)
-    expect(bytesForSpan(mergedBytes, merged.spans[field])).toEqual(
-      bytesForSpan(original.cbor, original.spans[field])
+])(
+  'merges %s-family witnesses without rewriting body, auxiliary or non-vkeys',
+  (_era, fixture) => {
+    const original = parseConwayTransactionEnvelope(
+      Buffer.from(fixture.cborHex, 'hex')
     );
-  const before = rawFields(original.cbor);
-  const after = rawFields(mergedBytes);
-  for (const [field, bytes] of before)
-    if (field !== 0) expect(after.get(field)).toBe(bytes);
-  expect([...after.keys()].filter((field) => field !== 0)).toEqual(
-    [...before.keys()].filter((field) => field !== 0)
-  );
-  verifyVKeyWitnesses(bytesForSpan(mergedBytes, merged.spans.body), [
-    signed,
-  ]);
-});
+    const keys = keyPair();
+    const signed = witness(
+      keys.privateKey,
+      keys.publicKey,
+      original.transactionId
+    );
+    const mergedBytes = mergeVKeyWitnesses(original, [signed]);
+    const merged = parseConwayTransactionEnvelope(mergedBytes);
+    expect(merged.transactionId).toBe(original.transactionId);
+    for (const field of ['body', 'auxiliaryData'] as const)
+      expect(bytesForSpan(mergedBytes, merged.spans[field])).toEqual(
+        bytesForSpan(original.cbor, original.spans[field])
+      );
+    const before = rawFields(original.cbor);
+    const after = rawFields(mergedBytes);
+    for (const [field, bytes] of [...before].filter(([field]) => field !== 0))
+      expect(after.get(field)).toBe(bytes);
+    expect([...after.keys()].filter((field) => field !== 0)).toEqual(
+      [...before.keys()].filter((field) => field !== 0)
+    );
+    verifyVKeyWitnesses(bytesForSpan(mergedBytes, merged.spans.body), [signed]);
+  }
+);
 
 test('merges an empty witness delta without adding a VKey field', () => {
   const original = envelopeWith();

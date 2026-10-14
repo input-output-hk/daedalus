@@ -40,7 +40,7 @@ const createStore = () => {
   const store = new WalletApprovalStore(
     api,
     actions,
-    (undefined as unknown) as AnalyticsTracker
+    undefined as unknown as AnalyticsTracker
   );
   store.stores = {
     router,

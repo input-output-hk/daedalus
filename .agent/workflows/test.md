@@ -344,9 +344,33 @@ lockfile rather than historical installation layout or whole-lock snapshots.
 Archived evidence hashes remain unchanged. `.gitattributes` pins hash-sensitive
 lockfiles and fixture JSON to LF so Windows checkout conversion cannot alter
 the evidence bytes.
-The probe discovers Yarn's cache with `yarn cache dir --silent`, respecting
-Windows locations, `.yarnrc`, and `YARN_CACHE_FOLDER` (including Yarn's `v6`
-subdirectory). Cache metadata must still match the package's lock identity.
+The probe discovers Yarn's cache with `yarn cache dir --json`, respecting
+Windows locations, `.yarnrc`, and `YARN_CACHE_FOLDER` without interpreting
+terminal control sequences as path bytes.
+
+### Hermetic Hydra checks
+
+Nix checks reuse prebuilt `node_modules`, not the installer's home-directory
+cache. `perSystem/checks.nix` declares the pinned offline mirror through
+`DAEDALUS_YARN_OFFLINE_CACHE`; the probe verifies the tarball against both the
+original lock's SHA-1 and SRI before loading vendor code. No network access or
+registry-cache metadata is required in this mode.
+
+Reviewed JSON evidence is excluded consistently from `.prettierignore` and
+`perSystem/formatter.nix`. Do not reformat or re-pin historical observations to
+make current-contract checks pass. Conformance scenarios execute the current
+request/result validators against independent normative examples; unchanged
+adapter byte fixtures remain bound to their historical hashes.
+
+Use the actual Linux derivations to verify changes to this environment:
+
+```bash
+nix build --no-link -L \
+  .#checks.x86_64-linux.compile .#checks.x86_64-linux.jest \
+  .#checks.x86_64-linux.cucumber-unit .#checks.x86_64-linux.crypto-vectors \
+  .#checks.x86_64-linux.lint .#checks.x86_64-linux.stylelint \
+  .#checks.x86_64-linux.treefmt
+```
 
 ### Before pushing
 

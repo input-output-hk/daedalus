@@ -33,17 +33,15 @@ const KEY_CREDENTIAL_HEX =
 const POOL_ID = 'pool1qvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsxqcrqvpsx6m90l2';
 
 const loadFixture = (name: string): AdaWallet =>
-  (require(path.join(
-    __dirname,
-    '../../mocks/wallets',
-    name
-  )) as unknown) as AdaWallet;
+  require(
+    path.join(__dirname, '../../mocks/wallets', name)
+  ) as unknown as AdaWallet;
 
 const withDelegation = (delegation: unknown): AdaWallet =>
-  (({
+  ({
     ...(loadFixture('wallet-voting-drep.json') as Record<string, unknown>),
     delegation,
-  } as unknown) as AdaWallet);
+  }) as unknown as AdaWallet;
 
 describe('_createWalletFromServerData voting mapping', () => {
   beforeEach(() => {
@@ -63,10 +61,10 @@ describe('_createWalletFromServerData voting mapping', () => {
     expect(wallet.singleAddressMode).toBe(false);
 
     try {
-      _createWalletFromServerData(({
+      _createWalletFromServerData({
         ...enabled,
         single_address_mode: undefined,
-      } as unknown) as AdaWallet);
+      } as unknown as AdaWallet);
       throw new Error('expected mapping failure');
     } catch (error) {
       expect(error).toMatchObject({

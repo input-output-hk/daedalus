@@ -39,7 +39,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Disable',
     description: 'Disable RTS flags button label',
   },
-
 });
 type Props = {
   onClose: () => void;

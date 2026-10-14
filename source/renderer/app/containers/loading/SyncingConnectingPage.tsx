@@ -17,14 +17,8 @@ class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   render() {
-    const {
-      newsFeed,
-      appUpdate,
-      networkStatus,
-      profile,
-      app,
-      backend,
-    } = this.props.stores;
+    const { newsFeed, appUpdate, networkStatus, profile, app, backend } =
+      this.props.stores;
     const {
       isNodeResponding,
       isNodeSyncing,

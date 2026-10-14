@@ -21,11 +21,8 @@ class NewsFeedContainer extends Component<InjectedProps> {
     const { app, profile, appUpdate, newsFeed } = stores;
     const { newsFeedData, isLoadingNews, proceedNewsAction } = newsFeed;
     const { openAppUpdateOverlay } = actions.appUpdate;
-    const {
-      downloadProgress,
-      displayAppUpdateNewsItem,
-      isUpdatePostponed,
-    } = appUpdate;
+    const { downloadProgress, displayAppUpdateNewsItem, isUpdatePostponed } =
+      appUpdate;
     const { toggleNewsFeed } = actions.app;
     const { openExternalLink, newsFeedIsOpen } = app;
     const { currentDateFormat } = profile;

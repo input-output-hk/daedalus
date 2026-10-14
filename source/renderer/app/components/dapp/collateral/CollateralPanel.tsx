@@ -24,16 +24,18 @@ export type CollateralPanelProps = Readonly<{
 type Props = CollateralPanelProps & { intl: Intl };
 
 const stateMessage = (state: CollateralState) =>
-  (({
-    checking: messages.checking,
-    ready: messages.ready,
-    'not-ready': messages.notReady,
-    preparing: messages.preparing,
-    'in-use': messages.inUse,
-    'will-be-spent': messages.willBeSpent,
-    charged: messages.charged,
-    stale: messages.stale,
-  } as const)[state]);
+  (
+    ({
+      checking: messages.checking,
+      ready: messages.ready,
+      'not-ready': messages.notReady,
+      preparing: messages.preparing,
+      'in-use': messages.inUse,
+      'will-be-spent': messages.willBeSpent,
+      charged: messages.charged,
+      stale: messages.stale,
+    }) as const
+  )[state];
 
 export function CollateralPanel({
   intl,

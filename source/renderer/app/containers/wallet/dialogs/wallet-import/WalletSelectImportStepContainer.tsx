@@ -33,11 +33,8 @@ class WalletSelectImportStepContainer extends Component<Props, State> {
   render() {
     const { onClose, onContinue, stores } = this.props;
     const { walletMigration, app } = stores;
-    const {
-      exportedWallets,
-      pendingImportWalletsCount,
-      isRestorationRunning,
-    } = walletMigration;
+    const { exportedWallets, pendingImportWalletsCount, isRestorationRunning } =
+      walletMigration;
     const { openExternalLink } = app;
     let walletsCount =
       this.state.existingWalletsCount + pendingImportWalletsCount;

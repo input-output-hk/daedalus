@@ -46,12 +46,17 @@ describe('CIP-30 transaction review', () => {
   });
 
   it.each([
-    ['Alonzo', alonzoFixture, true],
-    ['Babbage', babbageFixture, true],
-    ['Conway', semanticFixture, false],
+    ['Alonzo', alonzoFixture, true, { value: { coin: '100000' } }],
+    [
+      'Babbage',
+      babbageFixture,
+      true,
+      { value: { coin: '100' }, hasDatum: true, hasReferenceScript: true },
+    ],
+    ['Conway', semanticFixture, false, { value: { coin: '0' } }],
   ] as const)(
     'displays exact %s-family effects and approves only authenticated semantics',
-    (family, fixture, mint) => {
+    (_family, fixture, mint, expectedOutput) => {
       const envelope = parseConwayTransactionEnvelope(
         Buffer.from(fixture.cborHex, 'hex')
       );
@@ -66,24 +71,28 @@ describe('CIP-30 transaction review', () => {
       expect(review.approvable).toBe(true);
       expect(review.fullCbor).toBe(fixture.cborHex);
       expect(review.bodyCbor).toBe(
-        envelope.cbor.subarray(envelope.spans.body.start, envelope.spans.body.end).toString('hex')
+        envelope.cbor
+          .subarray(envelope.spans.body.start, envelope.spans.body.end)
+          .toString('hex')
       );
       expect(review.effects.map(({ kind }) => kind)).toEqual(
-        expect.arrayContaining(mint
-          ? ['output', 'fee', 'mint', 'native-script', 'auxiliary-data']
-          : ['output', 'fee'])
+        expect.arrayContaining(
+          mint
+            ? ['output', 'fee', 'mint', 'native-script', 'auxiliary-data']
+            : ['output', 'fee']
+        )
       );
       expect(review.effects.some(({ kind }) => kind === 'mint')).toBe(mint);
       expect(review.display.fee).toBe(mint ? '3' : '0');
-      expect(review.display.entries.find(({ role }) => role === 'output')?.value?.coin)
-        .toBe(family === 'Alonzo' ? '100000' : family === 'Babbage' ? '100' : '0');
-      expect(review.display.mint.map(({ assetName, quantity }) => [assetName, quantity]))
-        .toEqual(mint ? [['6173736574', '1']] : []);
-      if (family === 'Babbage')
-        expect(review.display.entries.find(({ role }) => role === 'output')).toMatchObject({
-          hasDatum: true,
-          hasReferenceScript: true,
-        });
+      expect(
+        review.display.entries.find(({ role }) => role === 'output')
+      ).toMatchObject(expectedOutput);
+      expect(
+        review.display.mint.map(({ assetName, quantity }) => [
+          assetName,
+          quantity,
+        ])
+      ).toEqual(mint ? [['6173736574', '1']] : []);
       expect(parseCip30TransactionReview(review)).toEqual(review);
     }
   );

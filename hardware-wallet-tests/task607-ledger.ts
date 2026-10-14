@@ -487,8 +487,8 @@ const signMessage = async (
     kind === 'drepType6'
       ? 'drep-type6'
       : kind === 'drep'
-      ? 'drep-direct'
-      : `${kind}-address`;
+        ? 'drep-direct'
+        : `${kind}-address`;
   const isAddress = kind === 'payment' || kind === 'stake';
   const recipe = messageRecipe(
     selected,
@@ -518,49 +518,51 @@ const signMessage = async (
           }
         )
       : kind === 'stake'
-      ? prepareCip8Request(`e1${keyHash(stake!)}`, payload, { networkId: 1 })
-      : kind === 'drep'
-      ? prepareCip8Request(keyHash(drep!), payload, {
-          networkId: 1,
-          drepCredential: keyHash(drep!),
-        })
-      : prepareCip8Request(`61${keyHash(drep!)}`, payload, {
-          networkId: 1,
-          drepCredential: keyHash(drep!),
-        });
-  const messageRequest = (kind === 'payment'
-    ? {
-        messageHex: payload,
-        signingPath: PAYMENT_PATH,
-        hashPayload: false,
-        preferHexDisplay: false,
-        addressFieldType: MessageAddressFieldType.ADDRESS,
-        address: {
-          type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-          params: { spendingPath: PAYMENT_PATH, stakingPath: STAKE_PATH },
-        },
-        network: { networkId: 1, protocolMagic: 764824073 },
-      }
-    : kind === 'stake'
-    ? {
-        messageHex: payload,
-        signingPath: STAKE_PATH,
-        hashPayload: false,
-        preferHexDisplay: false,
-        addressFieldType: MessageAddressFieldType.ADDRESS,
-        address: {
-          type: AddressType.REWARD_KEY,
-          params: { stakingPath: STAKE_PATH },
-        },
-        network: { networkId: 1, protocolMagic: 764824073 },
-      }
-    : {
-        messageHex: payload,
-        signingPath: DREP_PATH,
-        hashPayload: false,
-        preferHexDisplay: false,
-        addressFieldType: MessageAddressFieldType.KEY_HASH,
-      }) as MessageData;
+        ? prepareCip8Request(`e1${keyHash(stake!)}`, payload, { networkId: 1 })
+        : kind === 'drep'
+          ? prepareCip8Request(keyHash(drep!), payload, {
+              networkId: 1,
+              drepCredential: keyHash(drep!),
+            })
+          : prepareCip8Request(`61${keyHash(drep!)}`, payload, {
+              networkId: 1,
+              drepCredential: keyHash(drep!),
+            });
+  const messageRequest = (
+    kind === 'payment'
+      ? {
+          messageHex: payload,
+          signingPath: PAYMENT_PATH,
+          hashPayload: false,
+          preferHexDisplay: false,
+          addressFieldType: MessageAddressFieldType.ADDRESS,
+          address: {
+            type: AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            params: { spendingPath: PAYMENT_PATH, stakingPath: STAKE_PATH },
+          },
+          network: { networkId: 1, protocolMagic: 764824073 },
+        }
+      : kind === 'stake'
+        ? {
+            messageHex: payload,
+            signingPath: STAKE_PATH,
+            hashPayload: false,
+            preferHexDisplay: false,
+            addressFieldType: MessageAddressFieldType.ADDRESS,
+            address: {
+              type: AddressType.REWARD_KEY,
+              params: { stakingPath: STAKE_PATH },
+            },
+            network: { networkId: 1, protocolMagic: 764824073 },
+          }
+        : {
+            messageHex: payload,
+            signingPath: DREP_PATH,
+            hashPayload: false,
+            preferHexDisplay: false,
+            addressFieldType: MessageAddressFieldType.KEY_HASH,
+          }
+  ) as MessageData;
   const signed = await approval(() => ledger.app.signMessage(messageRequest));
   assert(/^[0-9a-f]{64}$/u.test(signed.signingPublicKeyHex));
   assert(/^[0-9a-f]{128}$/u.test(signed.signatureHex));
@@ -890,9 +892,10 @@ const run = async (): Promise<void> => {
   const operatorDigest = digest(args.operator);
   const document = casesDocument();
   assert(document.matrixRevision === 'task-006-matrix-2026-08-14');
-  const ledgerPackage = require('@cardano-foundation/ledgerjs-hw-app-cardano/package.json') as {
-    version?: unknown;
-  };
+  const ledgerPackage =
+    require('@cardano-foundation/ledgerjs-hw-app-cardano/package.json') as {
+      version?: unknown;
+    };
   assert(ledgerPackage.version === RUNTIME_VERSION);
   if (args.mode === 'batch-cancel') {
     await runCancellation(args.operator, args.target);

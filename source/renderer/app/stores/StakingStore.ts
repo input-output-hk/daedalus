@@ -168,12 +168,11 @@ export default class StakingStore extends Store {
     this.api.ada.getStakePools
   );
   @observable
-  calculateDelegationFeeRequest: Request<
-    DelegationCalculateFeeResponse
-  > = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-    this.api.ada.calculateDelegationFee
-  );
+  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> =
+    new Request(
+      // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
+      this.api.ada.calculateDelegationFee
+    );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
   @observable
   getRedeemItnRewardsFeeRequest: Request<any> = new Request(
@@ -301,7 +300,8 @@ export default class StakingStore extends Store {
   @action
   _getStakingInfoWasOpen = async () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-    const stakingInfoWasOpen = await this.api.localStorage.getStakingInfoWasOpen();
+    const stakingInfoWasOpen =
+      await this.api.localStorage.getStakingInfoWasOpen();
     runInAction(() => {
       this.stakingInfoWasOpen = stakingInfoWasOpen;
     });
@@ -314,7 +314,8 @@ export default class StakingStore extends Store {
   };
   @action
   _getStakePoolsListViewTooltip = async () => {
-    const tooltipShown = await this.api.localStorage.getStakePoolsListViewTooltip();
+    const tooltipShown =
+      await this.api.localStorage.getStakePoolsListViewTooltip();
     runInAction(() => {
       this.stakePoolsListViewTooltipVisible = tooltipShown;
     });
@@ -369,8 +370,8 @@ export default class StakingStore extends Store {
       let joinTransaction;
 
       if (isHardwareWallet) {
-        joinTransaction = await this.stores.hardwareWallets.submitConstructedNativeTransaction(
-          {
+        joinTransaction =
+          await this.stores.hardwareWallets.submitConstructedNativeTransaction({
             walletId,
             action: this.stores.wallets.getWalletById(walletId).isDelegating
               ? 'redelegate'
@@ -381,12 +382,11 @@ export default class StakingStore extends Store {
                 { join: { pool: stakePoolId, stake_key_index: '0H' } },
               ],
             },
-          }
-        );
+          });
       } else {
         const wallet = this.stores.wallets.getWalletById(walletId);
-        joinTransaction = await this.stores.wallets.submitConstructedNativeTransaction(
-          {
+        joinTransaction =
+          await this.stores.wallets.submitConstructedNativeTransaction({
             walletId,
             action: wallet.isDelegating ? 'redelegate' : 'delegate',
             data: {
@@ -395,8 +395,7 @@ export default class StakingStore extends Store {
                 { join: { pool: stakePoolId, stake_key_index: '0H' } },
               ],
             },
-          }
-        );
+          });
       }
 
       // Start interval to check transaction state every second
@@ -434,8 +433,8 @@ export default class StakingStore extends Store {
       let quitTransaction;
 
       if (isHardwareWallet) {
-        quitTransaction = await this.stores.hardwareWallets.submitConstructedNativeTransaction(
-          {
+        quitTransaction =
+          await this.stores.hardwareWallets.submitConstructedNativeTransaction({
             walletId,
             action: 'undelegate',
             data: {
@@ -443,11 +442,10 @@ export default class StakingStore extends Store {
               delegations: [{ quit: { stake_key_index: '0H' } }],
               withdrawal: 'self',
             },
-          }
-        );
+          });
       } else {
-        quitTransaction = await this.stores.wallets.submitConstructedNativeTransaction(
-          {
+        quitTransaction =
+          await this.stores.wallets.submitConstructedNativeTransaction({
             walletId,
             action: 'undelegate',
             data: {
@@ -455,8 +453,7 @@ export default class StakingStore extends Store {
               delegations: [{ quit: { stake_key_index: '0H' } }],
               withdrawal: 'self',
             },
-          }
-        );
+          });
       }
 
       // Start interval to check transaction state every second
@@ -486,9 +483,8 @@ export default class StakingStore extends Store {
     const { transactionId, walletId } = request;
 
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
-      walletId
-    ).result;
+    const recentTransactionsResponse =
+      this.stores.transactions._getTransactionsRecentRequest(walletId).result;
 
     const recentTransactions = recentTransactionsResponse
       ? recentTransactionsResponse.transactions
@@ -580,11 +576,10 @@ export default class StakingStore extends Store {
     }
 
     try {
-      const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
-        {
+      const delegationFee: DelegationCalculateFeeResponse =
+        await this.calculateDelegationFeeRequest.execute({
           ...delegationFeeRequest,
-        }
-      ).promise;
+        }).promise;
 
       if (this._delegationFeeCalculationWalletId !== walletId) {
         return null;
@@ -891,9 +886,8 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const address = await this.stores.addresses.getAutomaticReceivingAddress(
-        walletId
-      );
+      const address =
+        await this.stores.addresses.getAutomaticReceivingAddress(walletId);
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: this.redeemWallet,
@@ -944,9 +938,8 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const address = await this.stores.addresses.getAutomaticReceivingAddress(
-        walletId
-      );
+      const address =
+        await this.stores.addresses.getAutomaticReceivingAddress(walletId);
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
         {

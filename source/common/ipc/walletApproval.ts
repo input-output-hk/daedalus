@@ -122,7 +122,8 @@ const parsePresentation = (value: unknown): WalletApprovalPresentation => {
       networkName: value.networkName,
       action: value.action as NativeTransactionPresentation['action'],
       authorization,
-      collection: value.collection as NativeTransactionPresentation['collection'],
+      collection:
+        value.collection as NativeTransactionPresentation['collection'],
       acknowledgements: Object.freeze([...value.acknowledgements]),
       ...(value.destinationWalletName === undefined
         ? {}

@@ -123,23 +123,19 @@ export default class TransactionsStore extends Store {
     this.api.ada.deleteTransaction
   );
   @observable
-  createExternalTransactionRequest: Request<
-    CreateExternalTransactionRequest
-  > = new Request(this.api.ada.createExternalTransaction);
+  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> =
+    new Request(this.api.ada.createExternalTransaction);
   @observable
   _filterOptionsForWallets = {};
   @observable
-  calculateTransactionFeeRequest: Request<
-    GetTransactionFeeRequest
-  > = new Request(this.api.ada.calculateTransactionFee);
+  calculateTransactionFeeRequest: Request<GetTransactionFeeRequest> =
+    new Request(this.api.ada.calculateTransactionFee);
   private readonly walletSendTails = new Map<string, Promise<void>>();
   @observable
   selectedTransaction: SelectedTransaction | undefined;
   @observable
-  private submissionsByWallet: Record<
-    string,
-    SubmissionTransactionRecord[]
-  > = {};
+  private submissionsByWallet: Record<string, SubmissionTransactionRecord[]> =
+    {};
   private readonly submissionLoads = new Map<string, Promise<void>>();
   private readonly submissionWrites = new Map<string, Promise<void>>();
   private readonly currentSessionSubmissions = new Set<string>();
@@ -782,9 +778,8 @@ export default class TransactionsStore extends Store {
     walletId: string,
     backendTransactions: WalletTransaction[]
   ): WalletTransaction[] => {
-    const walletAddresses = this.stores.addresses._getAddressesAllRequest(
-      walletId
-    ).result;
+    const walletAddresses =
+      this.stores.addresses._getAddressesAllRequest(walletId).result;
     const ownedAddresses = new Set(
       walletAddresses ? walletAddresses.map(({ id }) => id) : []
     );
