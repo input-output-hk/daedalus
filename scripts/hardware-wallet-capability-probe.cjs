@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { createHash } = require('crypto');
+const { execSync } = require('child_process');
 const prettier = require('prettier');
 
 async function main() {
@@ -35,6 +36,13 @@ if (!args.vendor || !args.root || !args.output || !args.label || !args.lock) {
 const projectRoot = path.resolve(__dirname, '..');
 const packageRoot = path.resolve(args.root);
 const lockPath = path.resolve(args.lock);
+// Yarn owns the platform-specific cache layout, including its v6 subdirectory.
+const yarnCacheDirectory = path.basename(lockPath) === 'yarn.lock'
+  ? execSync('yarn cache dir --silent', {
+      cwd: projectRoot,
+      encoding: 'utf8',
+    }).trim()
+  : null;
 const read = (relativePath) =>
   fs.readFileSync(path.join(packageRoot, relativePath), 'utf8');
 const exists = (relativePath) => fs.existsSync(path.join(packageRoot, relativePath));
@@ -159,7 +167,7 @@ const readYarnCacheMetadata = (name, version, lockIdentity) => {
     throw new Error(`Cannot bind Yarn cache without SHA-1 for ${name}@${version}`);
   }
   const metadataPath = path.join(
-    process.env.YARN_CACHE_FOLDER || path.join(require('os').homedir(), '.cache/yarn/v6'),
+    yarnCacheDirectory,
     `npm-${name.replace(/\//g, '-')}-${version}-${lockIdentity.sha1}-integrity`,
     'node_modules',
     name,

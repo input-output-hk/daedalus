@@ -1,5 +1,5 @@
 import { createHash, createPublicKey, verify } from 'crypto';
-import { execFileSync } from 'child_process';
+import { execFileSync, execSync } from 'child_process';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -398,15 +398,29 @@ describe('hardware capability matrix', () => {
       os.tmpdir(),
       `daedalus-trezor-runtime-${process.pid}.json`
     );
-    execFileSync(process.execPath, [
-      path.join(root, 'scripts/hardware-wallet-capability-probe.cjs'),
-      '--vendor=trezor',
-      `--root=${path.join(root, 'node_modules/@trezor/connect')}`,
-      '--label=installed-trezor-connect-9.7.2',
-      `--lock=${path.join(root, 'yarn.lock')}`,
-      `--output=${regeneratedProbe}`,
-      `--runtime-output=${regeneratedRuntime}`,
-    ]);
+    const yarnCacheDirectory = execSync('yarn cache dir --silent', {
+      cwd: root,
+      encoding: 'utf8',
+    }).trim();
+    execFileSync(
+      process.execPath,
+      [
+        path.join(root, 'scripts/hardware-wallet-capability-probe.cjs'),
+        '--vendor=trezor',
+        `--root=${path.join(root, 'node_modules/@trezor/connect')}`,
+        '--label=installed-trezor-connect-9.7.2',
+        `--lock=${path.join(root, 'yarn.lock')}`,
+        `--output=${regeneratedProbe}`,
+        `--runtime-output=${regeneratedRuntime}`,
+      ],
+      {
+        // Yarn appends v6 to this configured root; the probe must discover it.
+        env: {
+          ...process.env,
+          YARN_CACHE_FOLDER: path.dirname(yarnCacheDirectory),
+        },
+      }
+    );
     const regenerated = readJson(regeneratedRuntime);
     for (const node of regenerated.nodes) {
       expect(

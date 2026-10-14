@@ -344,6 +344,9 @@ lockfile rather than historical installation layout or whole-lock snapshots.
 Archived evidence hashes remain unchanged. `.gitattributes` pins hash-sensitive
 lockfiles and fixture JSON to LF so Windows checkout conversion cannot alter
 the evidence bytes.
+The probe discovers Yarn's cache with `yarn cache dir --silent`, respecting
+Windows locations, `.yarnrc`, and `YARN_CACHE_FOLDER` (including Yarn's `v6`
+subdirectory). Cache metadata must still match the package's lock identity.
 
 ### Before pushing
 
