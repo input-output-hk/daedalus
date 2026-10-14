@@ -1,0 +1,99 @@
+import React from 'react';
+import { IntlProvider } from 'react-intl';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import StoryDecorator from '../../../../../../storybook/stories/_support/StoryDecorator';
+import translations from '../../../i18n/locales/en-US.json';
+import type {
+  CollateralPreference,
+  CollateralState,
+} from '../../../../../common/types/collateral.types';
+import CollateralPanel, { CollateralPanelProps } from './CollateralPanel';
+
+const preference = (state: CollateralState): CollateralPreference => ({
+  schemaVersion: 1,
+  walletId: 'ab'.repeat(20),
+  networkGenesis: 'cd'.repeat(32),
+  targetLovelace: '5000000',
+  preferredInputs:
+    state === 'checking' || state === 'not-ready' || state === 'preparing'
+      ? []
+      : [{ transactionId: 'ef'.repeat(32), index: 0 }],
+  generation: 1,
+  state,
+});
+
+const renderPanel = (overrides: Partial<CollateralPanelProps> = {}) => {
+  const props: CollateralPanelProps = {
+    preference: preference('ready'),
+    corrupt: false,
+    busy: false,
+    failed: false,
+    onPrepare: jest.fn(),
+    onCancelPreparation: jest.fn(),
+    onClear: jest.fn(),
+    onRepair: jest.fn(),
+    ...overrides,
+  };
+  render(
+    <StoryDecorator>
+      <IntlProvider locale="en-US" messages={translations}>
+        <CollateralPanel {...props} />
+      </IntlProvider>
+    </StoryDecorator>
+  );
+  return props;
+};
+
+describe('CollateralPanel', () => {
+  afterEach(cleanup);
+
+  it.each([
+    ['not-ready', 'No suitable preferred collateral'],
+    ['preparing', 'normal confirmed self-transfer'],
+    ['charged', 'was charged'],
+    ['stale', 'no longer available'],
+  ] as const)('represents the actionable %s state', (state, copy) => {
+    renderPanel({ preference: preference(state) });
+    expect(screen.getByRole('status')).toHaveTextContent(copy);
+  });
+
+  it.each(['checking', 'ready', 'in-use', 'will-be-spent'] as const)(
+    'hides the non-actionable %s state',
+    (state) => {
+      renderPanel({ preference: preference(state) });
+      expect(
+        screen.queryByRole('heading', { name: 'Preferred collateral' })
+      ).not.toBeInTheDocument();
+    }
+  );
+  it('replaces an unresolved checking state with the failure', () => {
+    renderPanel({ preference: undefined, failed: true });
+    expect(
+      screen.queryByText('Checking preferred collateral…')
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Preferred collateral could not be updated'
+    );
+  });
+
+  it('explains the preferred 5 ADA convention without implying reservation', () => {
+    renderPanel({ preference: preference('not-ready') });
+    expect(screen.getByText(/5 ADA/)).toHaveTextContent(
+      'compatibility convention, not a protocol maximum'
+    );
+    expect(screen.getByText(/5 ADA/)).toHaveTextContent(
+      'does not reserve the output'
+    );
+  });
+
+  it('starts preparation only through an explicit action', () => {
+    const onPrepare = jest.fn();
+    renderPanel({
+      preference: preference('not-ready'),
+      onPrepare,
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Prepare collateral' }));
+    expect(onPrepare).toHaveBeenCalledTimes(1);
+  });
+});

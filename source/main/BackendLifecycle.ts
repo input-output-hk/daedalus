@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import { BrowserWindow } from 'electron';
 import { logger } from './utils/logging';
 import WatchdogManager from './WatchdogManager';
 import type {
@@ -10,6 +9,7 @@ import type {
   MithrilProgress,
   WatchdogState,
 } from '../common/types/watchdog.types';
+import type { MithrilStatusMainRequest } from '../common/ipc/api';
 import {
   mithrilProgressChannel,
   mithrilStatusChannel,
@@ -26,6 +26,11 @@ import {
   forgetMigratedSettings,
 } from './utils/watchdogStateMigration';
 import { environment } from './environment';
+import {
+  consumeIpcResponse,
+  currentWindowSender,
+} from './ipc/lib/currentWindowSender';
+import { revokeCip30Sessions } from './cip30/runtime';
 
 type EventHandler = (event: Record<string, unknown>) => void;
 
@@ -43,7 +48,6 @@ const STOP_STATUS_EVENTS = new Set([
 
 class BackendLifecycle {
   private manager: WatchdogManager | null = null;
-  private getWindow: () => BrowserWindow | null = () => null;
   private eventHandlers: EventHandler[] = [];
   private _defaultChainPath: string | null = null;
   private _customChainPath: string | null = null;
@@ -53,10 +57,6 @@ class BackendLifecycle {
   // ---------------------------------------------------------------------------
   // Setup
   // ---------------------------------------------------------------------------
-
-  setWindowProvider(getWindow: () => BrowserWindow | null): void {
-    this.getWindow = getWindow;
-  }
 
   setChainPaths(
     defaultChainPath: string | null,
@@ -82,8 +82,6 @@ class BackendLifecycle {
     }
 
     const sendWalletPort = (port: number) => {
-      const win = this.getWindow();
-      if (!win) return;
       let ca: number[] = [];
       let cert: number[] = [];
       let key: number[] = [];
@@ -101,13 +99,17 @@ class BackendLifecycle {
           error: e,
         });
       }
-      walletPortChannel.send({ port, ca, cert, key }, win.webContents);
+      consumeIpcResponse(
+        walletPortChannel.send(
+          { port, ca, cert, key },
+          currentWindowSender.sender
+        ),
+        'WALLET_PORT_CHANNEL'
+      );
     };
 
-    // Push events to the renderer window
+    // Push backend events to the trusted renderer window.
     manager.onEvent((event) => {
-      const win = this.getWindow();
-      if (!win) return;
       const eventType = event.event as string | undefined;
       if (eventType && STOP_STATUS_EVENTS.has(eventType)) {
         this._sendStopStatus();
@@ -125,24 +127,43 @@ class BackendLifecycle {
           totalSteps: event.total_steps as number,
           phase: event.phase as MithrilProgress['phase'],
         };
-        mithrilProgressChannel.send(progress, win.webContents);
+        consumeIpcResponse(
+          mithrilProgressChannel.send(progress, currentWindowSender.sender),
+          'MITHRIL_PROGRESS_CHANNEL'
+        );
       } else if (eventType === 'mithril_status') {
-        mithrilStatusChannel.send(event as any, win.webContents);
+        consumeIpcResponse(
+          mithrilStatusChannel.send(
+            event as unknown as MithrilStatusMainRequest,
+            currentWindowSender.sender
+          ),
+          'MITHRIL_STATUS_CHANNEL'
+        );
       } else if (eventType === 'node_startup_status') {
-        nodeStartupStatusChannel.send(
-          { phase: event.phase as string },
-          win.webContents
+        consumeIpcResponse(
+          nodeStartupStatusChannel.send(
+            { phase: event.phase as string },
+            currentWindowSender.sender
+          ),
+          'NODE_STARTUP_STATUS_CHANNEL'
         );
       } else if (eventType === 'node_block_sync_progress') {
-        nodeBlockSyncProgressChannel.send(
-          {
-            kind: event.kind as string,
-            progress: event.progress as number,
-          },
-          win.webContents
+        consumeIpcResponse(
+          nodeBlockSyncProgressChannel.send(
+            {
+              kind: event.kind as string,
+              progress: event.progress as number,
+            },
+            currentWindowSender.sender
+          ),
+          'NODE_BLOCK_SYNC_PROGRESS_CHANNEL'
         );
       } else if (eventType === 'stopped') {
-        watchdogStoppedChannel.send(undefined, win.webContents);
+        revokeCip30Sessions();
+        consumeIpcResponse(
+          watchdogStoppedChannel.send(undefined, currentWindowSender.sender),
+          'WATCHDOG_STOPPED_CHANNEL'
+        );
       } else if (eventType === 'migrate_state_request') {
         this._handleMigrateStateRequest(manager);
       } else if (eventType === 'migrate_state_saved') {
@@ -157,6 +178,7 @@ class BackendLifecycle {
     // above covers subsequent wallet restarts. Keep the promise for callers
     // (e.g. BackendLifecycle.getWalletPort()) but the port push is now event-driven.
     manager.walletReadyPromise.catch((reason) => {
+      revokeCip30Sessions();
       // When watchdog exits it also kills Electron (via tether_to_watchdog),
       // so there is nothing useful to do here except log the reason.
       logger.error('BackendLifecycle: watchdog stopped', { reason });
@@ -209,6 +231,7 @@ class BackendLifecycle {
   // exits, so the renderer keeps receiving state and progress while the window
   // shows the shutdown status. Repeated calls share one stop.
   stop(): Promise<void> {
+    revokeCip30Sessions();
     const { manager } = this;
     if (!manager) return Promise.resolve();
     if (this._stopPromise === null) {
@@ -245,16 +268,17 @@ class BackendLifecycle {
   // requested restart, so it never reads the wallet going away as a lost
   // connection.
   private _sendStopStatus(): void {
-    const win = this.getWindow();
-    if (!win || win.isDestroyed()) return;
     const state = this.manager?.getState();
-    backendStopStatusChannel.send(
-      {
-        quitting: this._stopPromise !== null,
-        restart: state?.requestedRestart ?? null,
-        progress: state?.backendStopProgress ?? null,
-      },
-      win.webContents
+    consumeIpcResponse(
+      backendStopStatusChannel.send(
+        {
+          quitting: this._stopPromise !== null,
+          restart: state?.requestedRestart ?? null,
+          progress: state?.backendStopProgress ?? null,
+        },
+        currentWindowSender.sender
+      ),
+      'BACKEND_STOP_STATUS_CHANNEL'
     );
   }
 

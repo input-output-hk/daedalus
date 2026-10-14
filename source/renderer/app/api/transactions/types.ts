@@ -52,7 +52,10 @@ export type Transaction = {
   inputs: Array<TransactionInputs>;
   outputs: Array<TransactionOutputs>;
   withdrawals: Array<TransactionWithdrawals>;
-  status: TransactionState;
+  collateral?: Array<TransactionInputs>;
+  collateral_outputs?: Array<TransactionOutputs>;
+  script_validity?: 'valid' | 'invalid' | null;
+  status: 'pending' | 'in_ledger' | 'expired';
   metadata?: TransactionMetadata;
   certificates?: Array<{
     pool?: string;
@@ -62,7 +65,7 @@ export type Transaction = {
 };
 export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
-  address: string;
+  address: string | null;
   amount?: TransactionAmount;
   assets?: ApiTokens;
   id: string;
@@ -78,7 +81,12 @@ export type TransactionWithdrawals = {
   amount: TransactionAmount;
 };
 export type TransactionWithdrawalType = 'self' | Array<string>;
-export type TransactionState = 'pending' | 'in_ledger' | 'expired';
+export type TransactionState =
+  | 'pending'
+  | 'in_ledger'
+  | 'expired'
+  | 'failed'
+  | 'submission-unknown';
 export type TransactionAddresses = {
   from: Array<string | null | undefined>;
   to: Array<string>;
@@ -151,7 +159,7 @@ export type TransactionParams = {
   };
 };
 export type TransactionFeeAmount = {
-  quantity: number;
+  quantity: number | BigNumber;
   unit: WalletUnits.LOVELACE;
 };
 export type GetTransactionFeeParams = {
@@ -172,7 +180,7 @@ export type TransactionFee = {
   minimum_coins: Array<TransactionFeeAmount>;
 };
 export type CoinSelectionAmount = {
-  quantity: number;
+  quantity: number | BigNumber;
   unit: WalletUnits.LOVELACE;
 };
 export type CoinSelectionInput = {
@@ -235,6 +243,7 @@ export type CoinSelectionsResponse = {
   withdrawals: Array<CoinSelectionWithdrawal>;
   fee: BigNumber;
   metadata: string | null | undefined;
+  unsignedTransaction?: string;
 };
 export type CreateExternalTransactionRequest = {
   signedTransactionBlob: Buffer;
@@ -302,8 +311,19 @@ export type VotingDataType = {
 export type ConstructTransactionData = {
   walletId: string;
   data: {
-    // 'abstain' | 'no_confidence' | dRepId
+    encoding: 'base16';
+    payments?: Array<TransactionPaymentData>;
+    withdrawal?: 'self';
+    metadata?: VotingMetadataType | null;
+    delegations?: Array<
+      | { join: { pool: string; stake_key_index: '0H' } }
+      | { quit: { stake_key_index: '0H' } }
+    >;
     vote?: string;
+    validity_interval?: {
+      invalid_before: { quantity: number | BigNumber; unit: 'slot' } | null;
+      invalid_hereafter: { quantity: number | BigNumber; unit: 'slot' } | null;
+    };
   };
 };
 

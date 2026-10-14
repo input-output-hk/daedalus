@@ -1,0 +1,16 @@
+{
+  "id": "babbage-ledger-compatible",
+  "description": "Derived from the pinned Babbage ledger golden: its input, four-field map output with inline datum/reference script, fee and auxiliary data, plus a bound native-script mint. Conway-compatible vector, not the original signed ledger transaction.",
+  "cborHex": "84a70081825820ee155ace9c40292074cb6aff8c9ccdd273c81648ff1149ef36bcea6ebb8a3e25000181a400583900cb9358529df4729c3246a2a033cb9821abbfd16de4888005904abc410d6a577e9441ad8ed9663931906e4d43ece8f82c712b1d0235affb0601821864a1581ce0a714319812c3f773ba04ec5d6b3ffcd5aad85006805b047b082541a14a636f75747473436f696e1903e8028201d8184bd8799f9f00ffa1014131ff03d8184b820148470100002222001102030304075820055be80e2c818386aa36d8ad7524c119d36c0107c58521357cd2c6974b567b9c080209a1581c5334c8c55ec6518f2e262da617d3170bf0722f43813d64dbaf0ff0b9a145617373657401a101818200581c11111111111111111111111111111111111111111111111111111111f5d90103a400a50166737472696e670245627974657303010482010205a10341620181830302838201828204008205098202828200581c0d94e174732ef9aae73f395ab44507bfa983d65023c11a951f0c32e48200581ce0a714319812c3f773ba04ec5d6b3ffcd5aad85006805b047b0825418200581cc7b31a062855f437a05caf5060582ea40e840ebe4b431ffdf84780db0281464501000022610381484701000022220011",
+  "provenance": {
+    "repository": "https://github.com/IntersectMBO/cardano-ledger",
+    "tag": "cardano-ledger-conway-1.23.0.0",
+    "commit": "f649f9751074d2ab3de033fc3912f29c9862c1f5",
+    "sourcePath": "eras/babbage/impl/golden/tx.cbor",
+    "sourceBlob": "64675b9a3a434e32afdb38b7edc694e55bf8db06",
+    "sourceSha256": "ce4912244d239f4518b8df8d89088cd9a3e7b9cc69c2105372aaf6e2370c4106",
+    "extraction": "From the pinned Babbage golden retain body keys 0,2,3,8, four-field map output index 6 with inline datum and reference script, and auxiliary; canonical-encode auxiliary, recompute body key 7, add native-script mint with its computed policy hash and witness key 1; encode the four-item envelope. Retired fields and original signatures are removed.",
+    "fixtureSha256": "ba61b56d2d9cc61bbe85041899c8c62265417cb5ed15e0306c2fbc8ab4010d8d",
+    "ledgerTxId": "d284c1c512bbb781a5a66fdd4f8c5b4f2a48be733b0d7b4a760a35c319963fe1"
+  }
+}

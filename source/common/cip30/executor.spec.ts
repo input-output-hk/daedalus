@@ -1,0 +1,451 @@
+import { parseCip30WalletRequest, parseCip30WalletResponse } from './executor';
+
+const network = {
+  networkId: 0 as const,
+  networkMagic: 42,
+  genesisHash: '11'.repeat(32),
+};
+const request = {
+  operation: 'capabilities' as const,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
+};
+
+describe('CIP-30 wallet executor contract', () => {
+  it('accepts only exact plain requests without invoking accessors', () => {
+    expect(parseCip30WalletRequest(request)).toEqual(request);
+    const getter = jest.fn(() => 'wallet');
+    const malicious = { ...request } as Record<string, unknown>;
+    Object.defineProperty(malicious, 'walletId', {
+      enumerable: true,
+      get: getter,
+    });
+    expect(() => parseCip30WalletRequest(malicious)).toThrow(
+      'Invalid CIP-30 wallet request'
+    );
+    expect(getter).not.toHaveBeenCalled();
+  });
+
+  it('binds fulfilled responses to the requested wallet and network', () => {
+    expect(
+      parseCip30WalletResponse(request, {
+        status: 'fulfilled',
+        operation: 'capabilities',
+        value: {
+          walletId: 'wallet',
+          walletName: 'Wallet',
+          walletKind: 'shelley-software',
+          network,
+          backendApiVersion: 1,
+          backendExtensions: [95, 103],
+        },
+      })
+    ).toMatchObject({ status: 'fulfilled', operation: 'capabilities' });
+    const hardware = {
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'trezor:T:2.8.10:signData',
+      vendor: 'trezor',
+      model: 'T',
+      firmwareVersion: '2.8.10',
+      certifiedExtensions: [95],
+      physicalCertified: false,
+    };
+    expect(
+      parseCip30WalletResponse(request, {
+        status: 'fulfilled',
+        operation: 'capabilities',
+        value: {
+          walletId: 'wallet',
+          walletName: 'Hardware',
+          walletKind: 'trezor',
+          network,
+          backendApiVersion: 1,
+          backendExtensions: [95, 103],
+          hardware,
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'capabilities',
+      value: { hardware },
+    });
+    expect(() =>
+      parseCip30WalletResponse(request, {
+        status: 'fulfilled',
+        operation: 'capabilities',
+        value: {
+          walletId: 'other',
+          walletName: 'Wallet',
+          walletKind: 'shelley-software',
+          network,
+          backendApiVersion: 1,
+          backendExtensions: [95, 103],
+        },
+      })
+    ).toThrow('Invalid CIP-30 wallet capabilities');
+  });
+
+  it('permits plain context data and fixed rejection reasons only', () => {
+    const contextRequest = { ...request, operation: 'context' as const };
+    expect(
+      parseCip30WalletResponse(contextRequest, {
+        status: 'fulfilled',
+        operation: 'context',
+        value: { revision: 1, outputs: [] },
+      })
+    ).toMatchObject({ status: 'fulfilled', operation: 'context' });
+    expect(
+      parseCip30WalletResponse(contextRequest, {
+        status: 'rejected',
+        reason: 'account-change',
+      })
+    ).toEqual({ status: 'rejected', reason: 'account-change' });
+    expect(() =>
+      parseCip30WalletResponse(contextRequest, {
+        status: 'rejected',
+        reason: 'backend-detail',
+      })
+    ).toThrow('Invalid CIP-30 wallet response');
+  });
+
+  it('requires software credentials or certified hardware for account keys', () => {
+    const accountRequest = {
+      ...request,
+      operation: 'account-public-key' as const,
+      passphrase: 'secret',
+    };
+    const hardware = {
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'ledger:nanoSP:8.0.0:signData',
+      vendor: 'ledger' as const,
+      model: 'nanoSP',
+      appVersion: '8.0.0',
+      certifiedExtensions: [104],
+      physicalCertified: true,
+      packagedEnabled: true,
+    };
+    const hardwareRequest = {
+      ...request,
+      operation: 'account-public-key' as const,
+      hardware,
+    };
+    expect(parseCip30WalletRequest(accountRequest)).toEqual(accountRequest);
+    expect(parseCip30WalletRequest(hardwareRequest)).toEqual(hardwareRequest);
+    expect(
+      parseCip30WalletResponse(accountRequest, {
+        status: 'fulfilled',
+        operation: 'account-public-key',
+        value: 'acct_xvk1account',
+      })
+    ).toEqual({
+      status: 'fulfilled',
+      operation: 'account-public-key',
+      value: 'acct_xvk1account',
+    });
+    for (const invalid of [
+      { ...accountRequest, passphrase: '' },
+      { ...accountRequest, hardware },
+      { ...request, operation: 'account-public-key' },
+    ])
+      expect(() => parseCip30WalletRequest(invalid)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
+  });
+
+  it('validates bounded collateral history without renderer summaries', () => {
+    const preferred = { transactionId: '33'.repeat(32), index: 0 };
+    const historyRequest = {
+      ...request,
+      operation: 'collateral-history' as const,
+      preferredInputs: [preferred],
+    };
+    expect(parseCip30WalletRequest(historyRequest)).toEqual(historyRequest);
+    expect(
+      parseCip30WalletResponse(historyRequest, {
+        status: 'fulfilled',
+        operation: 'collateral-history',
+        value: {
+          transactions: [
+            {
+              transactionId: '44'.repeat(32),
+              status: 'in_ledger',
+              scriptValidity: 'invalid',
+              normalInputs: [],
+              collateralInputs: [preferred],
+            },
+          ],
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'collateral-history',
+    });
+    expect(() =>
+      parseCip30WalletResponse(historyRequest, {
+        status: 'fulfilled',
+        operation: 'collateral-history',
+        value: {
+          transactions: [
+            {
+              transactionId: '44'.repeat(32),
+              status: 'in_ledger',
+              scriptValidity: 'unknown',
+              normalInputs: [],
+              collateralInputs: [preferred],
+            },
+          ],
+        },
+      })
+    ).toThrow('Invalid CIP-30 collateral history');
+  });
+
+  it('accepts only exact transient sign-data requests and fixed results', () => {
+    const signDataRequest = {
+      ...request,
+      operation: 'sign-data' as const,
+      address: `60${'11'.repeat(28)}`,
+      payload: '00',
+      passphrase: 'secret',
+    };
+    expect(parseCip30WalletRequest(signDataRequest)).toEqual(signDataRequest);
+    const hardware = {
+      matrixRevision: 'task-006-matrix-2026-08-14',
+      rowId: 'ledger:europa:7.3.1:signData',
+      vendor: 'ledger' as const,
+      model: 'europa',
+      appVersion: '7.3.1',
+      certifiedExtensions: [95],
+      physicalCertified: true,
+      packagedEnabled: true,
+    };
+    const hardwareRequest = {
+      ...request,
+      operation: 'sign-data' as const,
+      address: `60${'11'.repeat(28)}`,
+      payload: '00',
+      hardware,
+    };
+    expect(parseCip30WalletRequest(hardwareRequest)).toEqual(hardwareRequest);
+    for (const value of [
+      { ...hardwareRequest, passphrase: 'secret' },
+      {
+        ...hardwareRequest,
+        hardware: { ...hardware, firmwareVersion: '1.0.0' },
+      },
+      { ...hardwareRequest, drepCredential: '11'.repeat(27) },
+    ])
+      expect(() => parseCip30WalletRequest(value)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
+    for (const value of [
+      { ...signDataRequest, passphrase: 1 },
+      { ...signDataRequest, payload: '0' },
+      { ...signDataRequest, replacement: '00' },
+    ])
+      expect(() => parseCip30WalletRequest(value)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
+    expect(
+      parseCip30WalletResponse(signDataRequest, {
+        status: 'fulfilled',
+        operation: 'sign-data',
+        value: {
+          revision: 1,
+          credential_kind: 'payment',
+          credential: '11'.repeat(28),
+          cose_sign1: '00',
+          cose_key: '00',
+        },
+      })
+    ).toMatchObject({ status: 'fulfilled', operation: 'sign-data' });
+    expect(
+      parseCip30WalletResponse(signDataRequest, {
+        status: 'rejected',
+        reason: 'proof-generation',
+      })
+    ).toEqual({ status: 'rejected', reason: 'proof-generation' });
+  });
+  it('accepts only exact raw CIP-95 key-state results', () => {
+    const keyStateRequest = {
+      ...request,
+      operation: 'cip95-key-state' as const,
+    };
+    expect(parseCip30WalletRequest(keyStateRequest)).toEqual(keyStateRequest);
+    const keyState = {
+      drep_public_key: '33'.repeat(32),
+      registered_stake_public_keys: ['44'.repeat(32)],
+      unregistered_stake_public_keys: ['55'.repeat(32)],
+    };
+    expect(
+      parseCip30WalletResponse(keyStateRequest, {
+        status: 'fulfilled',
+        operation: 'cip95-key-state',
+        value: keyState,
+      })
+    ).toEqual({
+      status: 'fulfilled',
+      operation: 'cip95-key-state',
+      value: keyState,
+    });
+    for (const value of [
+      { ...keyState, drep_public_key: '33'.repeat(31) },
+      {
+        ...keyState,
+        registered_stake_public_keys: ['AA'.repeat(32)],
+      },
+      { ...keyState, extra: true },
+    ])
+      expect(() =>
+        parseCip30WalletResponse(keyStateRequest, {
+          status: 'fulfilled',
+          operation: 'cip95-key-state',
+          value,
+        })
+      ).toThrow('Invalid CIP-95 key state');
+    const getter = jest.fn(() => '33'.repeat(32));
+    const malicious = { ...keyState } as Record<string, unknown>;
+    Object.defineProperty(malicious, 'drep_public_key', {
+      enumerable: true,
+      get: getter,
+    });
+    expect(() =>
+      parseCip30WalletResponse(keyStateRequest, {
+        status: 'fulfilled',
+        operation: 'cip95-key-state',
+        value: malicious,
+      })
+    ).toThrow('Invalid CIP-95 key state');
+    expect(getter).not.toHaveBeenCalled();
+  });
+  it('binds exact transaction context and transient witness signing data', () => {
+    const transactionContextRequest = {
+      ...request,
+      operation: 'transaction-context' as const,
+      transactions: ['84a0a0f5f6'],
+    };
+    expect(parseCip30WalletRequest(transactionContextRequest)).toEqual(
+      transactionContextRequest
+    );
+    expect(
+      parseCip30WalletResponse(transactionContextRequest, {
+        status: 'fulfilled',
+        operation: 'transaction-context',
+        value: { revision: 1, outputs: [] },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'transaction-context',
+    });
+
+    const signRequest = {
+      ...request,
+      operation: 'sign-transactions' as const,
+      approvalRequestId: 'approval',
+      context: { revision: 1, outputs: [] },
+      transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
+      passphrase: 'secret',
+    };
+    expect(parseCip30WalletRequest(signRequest)).toEqual(signRequest);
+    const hardwareSignRequest = {
+      ...request,
+      operation: 'sign-transactions' as const,
+      approvalRequestId: 'approval',
+      context: { revision: 1, outputs: [] },
+      transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
+    };
+    const parsedHardwareRequest = parseCip30WalletRequest(hardwareSignRequest);
+    if (parsedHardwareRequest.operation !== 'sign-transactions')
+      throw new Error('Expected sign-transactions request');
+    expect(parsedHardwareRequest).toEqual(hardwareSignRequest);
+    expect(parsedHardwareRequest).not.toBe(hardwareSignRequest);
+    expect(parsedHardwareRequest.transactions).not.toBe(
+      hardwareSignRequest.transactions
+    );
+    expect(parsedHardwareRequest.context).not.toBe(hardwareSignRequest.context);
+    expect(
+      parseCip30WalletResponse(signRequest, {
+        status: 'fulfilled',
+        operation: 'sign-transactions',
+        value: {
+          revision: 1,
+          witnesses: [
+            {
+              transaction_index: 0,
+              body_hash: '66'.repeat(32),
+              witness_set_cbor: 'a0',
+            },
+          ],
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'sign-transactions',
+    });
+    for (const value of [
+      { ...signRequest, passphrase: '' },
+      { ...signRequest, passphrase: undefined },
+      { ...signRequest, transactions: [] },
+      {
+        ...signRequest,
+        transactions: [{ cbor: 'A0', partialSign: true }],
+      },
+    ])
+      expect(() => parseCip30WalletRequest(value)).toThrow(
+        'Invalid CIP-30 wallet request'
+      );
+    expect(() =>
+      parseCip30WalletResponse(signRequest, {
+        status: 'fulfilled',
+        operation: 'sign-transactions',
+        value: {
+          revision: 1,
+          witnesses: [
+            {
+              transaction_index: 1,
+              body_hash: '66'.repeat(32),
+              witness_set_cbor: 'a0',
+            },
+          ],
+        },
+      })
+    ).toThrow('Invalid CIP-30 transaction witnesses');
+  });
+
+  it('accepts only exact single-transaction submission contracts', () => {
+    const submitRequest = {
+      ...request,
+      operation: 'submit-transaction' as const,
+      transaction: '84a0a0f5f6',
+    };
+    expect(parseCip30WalletRequest(submitRequest)).toEqual(submitRequest);
+    expect(
+      parseCip30WalletResponse(submitRequest, {
+        status: 'fulfilled',
+        operation: 'submit-transaction',
+        value: {
+          revision: 1,
+          transaction_id: '77'.repeat(32),
+          status: 'outcome_unknown',
+        },
+      })
+    ).toMatchObject({
+      status: 'fulfilled',
+      operation: 'submit-transaction',
+    });
+    expect(() =>
+      parseCip30WalletRequest({ ...submitRequest, transaction: 'A0' })
+    ).toThrow('Invalid CIP-30 wallet request');
+    expect(() =>
+      parseCip30WalletResponse(submitRequest, {
+        status: 'fulfilled',
+        operation: 'submit-transaction',
+        value: {
+          revision: 1,
+          transaction_id: '77'.repeat(32),
+          status: 'unknown',
+        },
+      })
+    ).toThrow('Invalid CIP-30 transaction submission');
+  });
+});

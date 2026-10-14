@@ -269,11 +269,12 @@
       bundle-mithril-client = mkBundle "mithril-client" (common.mithril-client + "/bin/mithril-client");
       bundle-snapshot-converter = mkBundle "snapshot-converter" (lib.getExe common.snapshot-converter);
       # Unfortunately they bundle it upstream, but not in a subdir:
-      bundle-cardano-wallet = pkgs.runCommand "bundle-cardano-wallet" {} ''
-        cp -r ${common.cardano-wallet}/bin $out
-        chmod -R +w $out
-        ${moveDylibsToSubdir "cardano-wallet"}
-      '';
+      bundle-cardano-wallet = genClusters (cluster:
+        pkgs.runCommand "bundle-cardano-wallet" {} ''
+          cp -r ${(common.walletBackendForCluster cluster).packages.cardano-wallet}/bin $out
+          chmod -R +w $out
+          ${moveDylibsToSubdir "cardano-wallet"}
+        '');
 
       # HID.node and others depend on `/nix/store`, we have to bundle them, too:
       bundleNodeJsNativeModule = pkgs.writeShellScript "bundleNodeJsNativeModule" ''
@@ -324,7 +325,7 @@
           BUILD_REV = sourceLib.buildRev;
           BUILD_REV_SHORT = sourceLib.buildRevShort;
           BUILD_COUNTER = sourceLib.buildCounter;
-          CARDANO_WALLET_VERSION = cardanoWalletVersion;
+          CARDANO_WALLET_VERSION = cardanoWalletVersion cluster;
           CARDANO_NODE_VERSION = cardanoNodeVersion;
           configurePhase =
             common.setupCacheAndGypDirs
@@ -394,7 +395,7 @@
             cp -r ${bundle-cardano-watchdog}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-cardano-cli}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-cardano-address}/. "$dir"/ && chmod -R +w "$dir/"
-            cp -r ${bundle-cardano-wallet}/. "$dir"/ && chmod -R +w "$dir/"
+            cp -r ${bundle-cardano-wallet.${cluster}}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-mithril-client}/. "$dir"/ && chmod -R +w "$dir/"
             cp -r ${bundle-snapshot-converter}/. "$dir"/ && chmod -R +w "$dir/"
 
@@ -587,16 +588,16 @@
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
           hash =
             if archSuffix == "x64"
-            then "sha256-nQrMwhV98+s6FcefJ6nddjCZ2WqihgQcwbqaPOau1zc="
-            else "sha256-epj0f0xPSTmdOoOOkVC4go0vW/iqfbdpZXroL6sh+dA=";
+            then "sha256-8UrnxIVRobAl7/ttTJIb0F8vW4xQ1y83EIFXJvKUzlY="
+            else "sha256-ZZukJTyhTwvY501aLaLW2j5z5EwCCdLDtebKZaxAVYo=";
         };
 
         electronChromedriver = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
           hash =
             if archSuffix == "x64"
-            then "sha256-S2Vq0oflr+PvvLNxWE/IpgLIr6MyLUsZumVQtC8V0+k="
-            else "sha256-9lTlzUcf8J+GH9e8aKGIZogogdq4a3HlOqrJOawobxY=";
+            then "sha256-xn5q0Yxf306LZ0ZaHE+/sSEUU6Su3QAttT5GzOV0CxI="
+            else "sha256-G2HMXybKnTKfFQJpfcPh8A/ZK1k/axaIrOvTMnmFTRs=";
         };
       };
 

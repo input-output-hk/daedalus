@@ -7,7 +7,6 @@ import { backendLifecycle } from '../BackendLifecycle';
 import downloadLogsApi from './download-logs';
 import { handleElectronStoreChannel } from './electronStoreConversation';
 import getLogsApi from './get-logs';
-import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { downloadManagerChannel } from './downloadManagerChannel';
@@ -23,18 +22,27 @@ import { handleRewardsCsvRequests } from './generateCsvChannel';
 import { handleFileDialogRequests } from './show-file-dialog-channels';
 import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
-import { openExternalUrlChannel } from './open-external-url';
-import { openLocalDirectoryChannel } from './open-local-directory';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { createChannels } from './createHardwareWalletIPCChannels';
 import { handleGovernanceAnchorRequests } from './governanceAnchorChannel';
 import { handleExportWalletsRequests } from './exportWalletsChannel';
+import { handleWindowControlRequests } from './windowControlChannels';
+import { currentWindowSender } from './lib/currentWindowSender';
+import { handleDappBrowserRequests } from './dappBrowser';
+import { handleWalletApprovalRequests } from './walletApproval';
+import { handleCip30BrokerRequests } from '../cip30/Cip30Broker';
+import { handleDappConnectionRequests } from './dappConnections';
+import { handleDappCollateralRequests } from './collateral';
+import { handleNativeTransactionApprovalRequests } from './nativeTransactionApproval';
+
+const hardwareWalletChannels = createChannels(MainIpcChannel);
 
 export default (window: BrowserWindow) => {
+  currentWindowSender.bind(window);
   compressLogsApi();
   downloadLogsApi();
   getLogsApi();
-  resizeWindowApi(window);
+  handleWindowControlRequests(window);
   loadAsset();
   getGpuStatus();
   handleBugReportRequests();
@@ -49,14 +57,16 @@ export default (window: BrowserWindow) => {
   handleManageAppUpdateRequests(window);
   handleGovernanceAnchorRequests();
   handleExportWalletsRequests();
-  // eslint-disable-next-line no-unused-expressions
-  openExternalUrlChannel;
-  // eslint-disable-next-line no-unused-expressions
-  openLocalDirectoryChannel;
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
-  handleHardwareWalletRequests(window, createChannels(MainIpcChannel));
+  handleDappBrowserRequests(window);
+  handleWalletApprovalRequests(window);
+  handleCip30BrokerRequests();
+  handleDappConnectionRequests();
+  handleDappCollateralRequests();
+  handleNativeTransactionApprovalRequests();
+  handleHardwareWalletRequests(window, hardwareWalletChannels);
 
   // Watchdog IPC
   handleChainStorageRequests();

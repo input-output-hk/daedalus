@@ -122,6 +122,11 @@
         "id": "global.errors.fieldIsRequired"
       },
       {
+        "defaultMessage": "!!!The receiving address is not available. Wait for the wallet to load and try again.",
+        "description": "Error shown when the canonical receiving address is unavailable.",
+        "id": "global.errors.receivingAddressUnavailable"
+      },
+      {
         "defaultMessage": "!!!{actual} of {required} words entered",
         "description": "Info message displayed above mnemonic inputs about actual vs. required words entered",
         "id": "global.info.knownMnemonicWordCount"
@@ -627,9 +632,19 @@
         "id": "wallet.transactions.csv.value.statusPending"
       },
       {
+        "defaultMessage": "!!!Expired",
+        "description": "Transactions CSV value - Status Expired",
+        "id": "wallet.transactions.csv.value.statusExpired"
+      },
+      {
         "defaultMessage": "!!!Failed",
         "description": "Transactions CSV value - Status Failed",
         "id": "wallet.transactions.csv.value.statusFailed"
+      },
+      {
+        "defaultMessage": "!!!Submission status unknown",
+        "description": "Transactions CSV value - Submission status unknown",
+        "id": "wallet.transactions.csv.value.statusUnknown"
       },
       {
         "defaultMessage": "!!!Transactions",
@@ -1067,57 +1082,182 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transaction request",
-        "description": "\"title\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.title"
+        "defaultMessage": "!!!Apps",
+        "description": "Heading for the local apps catalog.",
+        "id": "dapp.catalog.title"
       },
       {
-        "defaultMessage": "!!!triggered from {triggeredFrom}",
-        "description": "\"subtitle\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.subtitle"
+        "defaultMessage": "!!!Preferred dApps have been compatibility-tested by Daedalus. This does not mean they have been security audited or endorsed.",
+        "description": "Security disclaimer shown above every available catalog.",
+        "id": "dapp.catalog.disclaimer"
       },
       {
-        "defaultMessage": "!!!From wallet",
-        "description": "\"fromWalletLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.fromWalletLabel"
+        "defaultMessage": "!!!The preferred dApp catalog is unavailable in this Daedalus build.",
+        "description": "Shown instead of catalog entries when the feature is unavailable.",
+        "id": "dapp.catalog.unavailable"
       },
       {
-        "defaultMessage": "!!!Receiver",
-        "description": "\"receiver\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.receiver.label"
+        "defaultMessage": "!!!Finish wallet setup and synchronization before launching a dApp.",
+        "description": "Explains why catalog launch controls are disabled.",
+        "id": "dapp.catalog.notReady"
       },
       {
-        "defaultMessage": "!!!Select a wallet",
-        "description": "\"walletsDropdownPlaceholder\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.walletsDropdown.placeholder"
+        "defaultMessage": "!!!A dApp session is open.",
+        "description": "Status shown while a trusted dApp session is open.",
+        "id": "dapp.catalog.open"
       },
       {
-        "defaultMessage": "!!!Add a wallet",
-        "description": "\"addWalletLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.walletsDropdown.addWalletLabel"
+        "defaultMessage": "!!!Launch",
+        "description": "Button label for launching a trusted dApp.",
+        "id": "dapp.catalog.launch"
       },
       {
-        "defaultMessage": "!!!Transaction fee",
-        "description": "\"transactionFeeLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.transactionFee.label"
+        "defaultMessage": "!!!Launching…",
+        "description": "Button label while a trusted dApp is launching.",
+        "id": "dapp.catalog.launching"
       },
       {
-        "defaultMessage": "!!!Additional data",
-        "description": "\"additionalDataLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.additionalData.label"
+        "defaultMessage": "!!!The dApp could not be opened.",
+        "description": "Privacy-safe catalog dApp launch failure.",
+        "id": "dapp.catalog.launchFailed"
       },
       {
-        "defaultMessage": "!!!Meta data",
-        "description": "\"metaDataLabel\" in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.metaData.label"
-      },
-      {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {adaBalanceRequired} which is required for delegation to be available. Please select a wallet with <b>a minimum amount of {adaBalanceRequired}</b>.",
-        "description": "\"Not enough ada\" error in the dApp transaction request dialog",
-        "id": "dapp.transaction.request.error.notEnoughAda"
+        "defaultMessage": "!!!Close dApp",
+        "description": "Button label for closing the open dApp session.",
+        "id": "dapp.catalog.close"
       }
     ],
-    "path": "source/renderer/app/components/dapp/DappTransactionRequest.tsx"
+    "path": "source/renderer/app/components/dapp/DappCatalog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Connect dApp",
+        "description": "Title for a dApp connection approval dialog.",
+        "id": "dapp.consent.connection.title"
+      },
+      {
+        "defaultMessage": "!!!Share wallet public keys",
+        "description": "Title for elevated public-key disclosure approval.",
+        "id": "dapp.consent.keyDisclosure.title"
+      },
+      {
+        "defaultMessage": "!!!Origin: {origin}",
+        "description": "Remote dApp origin requesting consent.",
+        "id": "dapp.consent.origin"
+      },
+      {
+        "defaultMessage": "!!!Wallet: {wallet}",
+        "description": "Wallet selected for a dApp consent request.",
+        "id": "dapp.consent.wallet"
+      },
+      {
+        "defaultMessage": "!!!Network: {network}",
+        "description": "Network selected for a dApp consent request.",
+        "id": "dapp.consent.network"
+      },
+      {
+        "defaultMessage": "!!!Permissions: {scopes}",
+        "description": "Permissions requested by a dApp.",
+        "id": "dapp.consent.scopes"
+      },
+      {
+        "defaultMessage": "!!!Extensions: {extensions}",
+        "description": "CIP extensions requested by a dApp.",
+        "id": "dapp.consent.extensions"
+      },
+      {
+        "defaultMessage": "!!!Stake and DRep public keys can correlate this wallet with governance activity. This permission is separate from the connection and can be revoked independently.",
+        "description": "Privacy warning before governance public-key disclosure.",
+        "id": "dapp.consent.keyDisclosure.governanceWarning"
+      },
+      {
+        "defaultMessage": "!!!The account public key reveals this wallet’s complete address history and future derivation paths. Revoking permission cannot make a dApp forget a key it already copied.",
+        "description": "Irreversible privacy warning before CIP-104 disclosure.",
+        "id": "dapp.consent.keyDisclosure.accountWarning"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Password requested before software-wallet CIP-104 disclosure.",
+        "id": "dapp.consent.keyDisclosure.password"
+      },
+      {
+        "defaultMessage": "!!!Reject",
+        "description": "Reject a dApp consent request.",
+        "id": "dapp.consent.reject"
+      },
+      {
+        "defaultMessage": "!!!Approve",
+        "description": "Approve a dApp consent request.",
+        "id": "dapp.consent.approve"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp-consent/DappConsentDialog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Review data signature request",
+        "description": "Title for a CIP-30 data-signing request.",
+        "id": "dapp.dataSign.approval.title"
+      },
+      {
+        "defaultMessage": "!!!Sign data",
+        "description": "Approve a CIP-30 data-signing request.",
+        "id": "dapp.dataSign.approval.approve"
+      },
+      {
+        "defaultMessage": "!!!Reject",
+        "description": "Reject a CIP-30 data-signing request.",
+        "id": "dapp.dataSign.approval.reject"
+      },
+      {
+        "defaultMessage": "!!!Origin: {value}",
+        "description": "Origin requesting a data signature.",
+        "id": "dapp.dataSign.approval.origin"
+      },
+      {
+        "defaultMessage": "!!!Wallet: {value}",
+        "description": "Wallet selected for data signing.",
+        "id": "dapp.dataSign.approval.wallet"
+      },
+      {
+        "defaultMessage": "!!!Network: {value}",
+        "description": "Network selected for data signing.",
+        "id": "dapp.dataSign.approval.network"
+      },
+      {
+        "defaultMessage": "!!!Credential: {value}",
+        "description": "Payment or stake credential selected for signing.",
+        "id": "dapp.dataSign.approval.credential"
+      },
+      {
+        "defaultMessage": "!!!Canonical address bytes",
+        "description": "Label for canonical raw address hex.",
+        "id": "dapp.dataSign.approval.address"
+      },
+      {
+        "defaultMessage": "!!!Exact payload bytes",
+        "description": "Label for exact payload hex.",
+        "id": "dapp.dataSign.approval.payload"
+      },
+      {
+        "defaultMessage": "!!!Safe UTF-8 preview",
+        "description": "Label for safe exact UTF-8 payload preview.",
+        "id": "dapp.dataSign.approval.preview"
+      },
+      {
+        "defaultMessage": "!!!No safe UTF-8 preview is available. Review the exact hex.",
+        "description": "Shown when payload bytes are not safe display text.",
+        "id": "dapp.dataSign.approval.noPreview"
+      },
+      {
+        "defaultMessage": "!!!Wallet spending password",
+        "description": "Label for software wallet spending password.",
+        "id": "dapp.dataSign.approval.password"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp-consent/DappDataSignApproval.messages.ts"
   },
   {
     "descriptors": [
@@ -1370,6 +1510,11 @@
         "defaultMessage": "!!!Wallets",
         "description": "Text for the tooltip of wallets category",
         "id": "sidebar.categoryTooltip.wallets"
+      },
+      {
+        "defaultMessage": "!!!Apps",
+        "description": "Text for the tooltip of apps category",
+        "id": "sidebar.categoryTooltip.apps"
       },
       {
         "defaultMessage": "!!!Staking",
@@ -1942,6 +2087,51 @@
         "id": "daedalus.diagnostics.dialog.lastSynchronizedBlock"
       },
       {
+        "defaultMessage": "!!!UNTRUSTED DAPP BROWSER",
+        "description": "Heading for the Diagnostics arbitrary dApp launcher.",
+        "id": "daedalus.diagnostics.dialog.dappBrowser"
+      },
+      {
+        "defaultMessage": "!!!This opens an untrusted website. Daedalus does not audit or endorse it. Review every wallet request.",
+        "description": "Security warning above the Diagnostics dApp launcher.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserWarning"
+      },
+      {
+        "defaultMessage": "!!!DApp URL",
+        "description": "Label for the Diagnostics dApp URL field.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserUrl"
+      },
+      {
+        "defaultMessage": "!!!Wallet",
+        "description": "Label for the Diagnostics dApp wallet selector.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserWallet"
+      },
+      {
+        "defaultMessage": "!!!Launch untrusted dApp",
+        "description": "Button that launches an arbitrary Diagnostics dApp.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserLaunch"
+      },
+      {
+        "defaultMessage": "!!!The dApp could not be opened.",
+        "description": "Privacy-safe Diagnostics dApp launch failure.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserLaunchFailed"
+      },
+      {
+        "defaultMessage": "!!!Untrusted dApp",
+        "description": "Local native window title for a Diagnostics dApp.",
+        "id": "daedalus.diagnostics.dialog.dappBrowserWindowTitle"
+      },
+      {
+        "defaultMessage": "!!!Capture dApp console warnings and errors",
+        "description": "Opt-in checkbox label for recording untrusted dApp console diagnostics.",
+        "id": "daedalus.diagnostics.dialog.dappConsoleCapture"
+      },
+      {
+        "defaultMessage": "!!!Applies to newly opened dApps for this Daedalus session. DApps control these messages, which may contain sensitive data.",
+        "description": "Security warning shown below the opt-in dApp console capture checkbox.",
+        "id": "daedalus.diagnostics.dialog.dappConsoleCaptureWarning"
+      },
+      {
         "defaultMessage": "!!!epoch",
         "description": "epoch",
         "id": "daedalus.diagnostics.dialog.epoch"
@@ -2043,6 +2233,521 @@
       }
     ],
     "path": "source/renderer/app/components/status/MithrilSyncProcessSummary.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Review transaction",
+        "id": "transaction.approval.title"
+      },
+      {
+        "defaultMessage": "!!!Wallet: {value}",
+        "id": "transaction.approval.wallet"
+      },
+      {
+        "defaultMessage": "!!!{value}",
+        "id": "transaction.approval.network"
+      },
+      {
+        "defaultMessage": "!!!Transaction fee",
+        "id": "transaction.approval.fee"
+      },
+      {
+        "defaultMessage": "!!!Collateral at risk",
+        "id": "transaction.approval.collateral"
+      },
+      {
+        "defaultMessage": "!!!up to {value}",
+        "id": "transaction.approval.upTo"
+      },
+      {
+        "defaultMessage": "!!!Your wallet changes",
+        "id": "transaction.approval.changes"
+      },
+      {
+        "defaultMessage": "!!!Net change to spendable assets if the transaction succeeds",
+        "id": "transaction.approval.changeHelp"
+      },
+      {
+        "defaultMessage": "!!!Leaving your wallet",
+        "id": "transaction.approval.leaving"
+      },
+      {
+        "defaultMessage": "!!!Coming into your wallet",
+        "id": "transaction.approval.coming"
+      },
+      {
+        "defaultMessage": "!!!No net assets leaving",
+        "id": "transaction.approval.noneLeaving"
+      },
+      {
+        "defaultMessage": "!!!No net assets coming in",
+        "id": "transaction.approval.noneComing"
+      },
+      {
+        "defaultMessage": "!!!Wallet change unavailable",
+        "id": "transaction.approval.unavailable"
+      },
+      {
+        "defaultMessage": "!!!How this is calculated",
+        "id": "transaction.approval.calculation"
+      },
+      {
+        "defaultMessage": "!!!Uses {inputs} from your wallet; creates {outputs} in it.",
+        "id": "transaction.approval.gross"
+      },
+      {
+        "defaultMessage": "!!!Amounts returned to your wallet are included in the net calculation.",
+        "id": "transaction.approval.returned"
+      },
+      {
+        "defaultMessage": "!!!Inputs and outputs show whole UTxOs, including returned assets. Your net change is shown above.",
+        "description": "Explains why gross input and output values can be larger than the net wallet change.",
+        "id": "transaction.approval.grossFlowHelp"
+      },
+      {
+        "defaultMessage": "!!!Inputs — consumed",
+        "id": "transaction.approval.inputs"
+      },
+      {
+        "defaultMessage": "!!!Outputs — created",
+        "id": "transaction.approval.outputs"
+      },
+      {
+        "defaultMessage": "!!!Reference inputs — read only, not spent",
+        "id": "transaction.approval.referenceInputs"
+      },
+      {
+        "defaultMessage": "!!!Collateral is at risk only if script execution fails.",
+        "description": "Explains the condition under which collateral can be lost.",
+        "id": "transaction.approval.collateralHelp"
+      },
+      {
+        "defaultMessage": "!!!Collateral inputs — conditional spending",
+        "description": "Heading for collateral inputs inspected during signing.",
+        "id": "transaction.approval.collateralInputs"
+      },
+      {
+        "defaultMessage": "!!!Collateral return — if scripts fail",
+        "description": "Heading for collateral returned after failed script execution.",
+        "id": "transaction.approval.collateralReturn"
+      },
+      {
+        "defaultMessage": "!!!Input {value}",
+        "id": "transaction.approval.input"
+      },
+      {
+        "defaultMessage": "!!!Output {value}",
+        "id": "transaction.approval.output"
+      },
+      {
+        "defaultMessage": "!!!Reference input {value}",
+        "description": "Title for one read-only transaction reference input.",
+        "id": "transaction.approval.referenceInput"
+      },
+      {
+        "defaultMessage": "!!!Collateral input {value}",
+        "description": "Title for one conditional collateral input.",
+        "id": "transaction.approval.collateralInput"
+      },
+      {
+        "defaultMessage": "!!!Collateral return {value}",
+        "description": "Title for one collateral return output.",
+        "id": "transaction.approval.collateralReturnEntry"
+      },
+      {
+        "defaultMessage": "!!!This wallet",
+        "id": "transaction.approval.thisWallet"
+      },
+      {
+        "defaultMessage": "!!!Other address",
+        "id": "transaction.approval.other"
+      },
+      {
+        "defaultMessage": "!!!Script",
+        "id": "transaction.approval.script"
+      },
+      {
+        "defaultMessage": "!!!Returned to this wallet",
+        "description": "Ownership badge for a normal output controlled by the reviewed wallet.",
+        "id": "transaction.approval.returnedToWallet"
+      },
+      {
+        "defaultMessage": "!!!Ownership unknown",
+        "id": "transaction.approval.ownershipUnknown"
+      },
+      {
+        "defaultMessage": "!!!Value unavailable",
+        "id": "transaction.approval.valueUnavailable"
+      },
+      {
+        "defaultMessage": "!!!Full address",
+        "id": "transaction.approval.fullAddress"
+      },
+      {
+        "defaultMessage": "!!!Copy address",
+        "id": "transaction.approval.copyAddress"
+      },
+      {
+        "defaultMessage": "!!!Transaction input",
+        "id": "transaction.approval.outpoint"
+      },
+      {
+        "defaultMessage": "!!!Copy transaction input",
+        "id": "transaction.approval.copyOutpoint"
+      },
+      {
+        "defaultMessage": "!!!Full transaction input",
+        "description": "Disclosure label for the complete transaction input identity.",
+        "id": "transaction.approval.fullOutpoint"
+      },
+      {
+        "defaultMessage": "!!!Datum attached",
+        "id": "transaction.approval.datum"
+      },
+      {
+        "defaultMessage": "!!!Reference script attached",
+        "id": "transaction.approval.referenceScript"
+      },
+      {
+        "defaultMessage": "!!!Other actions",
+        "id": "transaction.approval.otherActions"
+      },
+      {
+        "defaultMessage": "!!!Minting and burning",
+        "id": "transaction.approval.minting"
+      },
+      {
+        "defaultMessage": "!!!Reward withdrawals",
+        "id": "transaction.approval.withdrawals"
+      },
+      {
+        "defaultMessage": "!!!Certificates",
+        "id": "transaction.approval.certificates"
+      },
+      {
+        "defaultMessage": "!!!Governance",
+        "id": "transaction.approval.governance"
+      },
+      {
+        "defaultMessage": "!!!Technical details and exact transaction bytes",
+        "id": "transaction.approval.technical"
+      },
+      {
+        "defaultMessage": "!!!Transaction data checked",
+        "id": "transaction.approval.checked"
+      },
+      {
+        "defaultMessage": "!!!Transaction {current} of {total}",
+        "id": "transaction.approval.item"
+      },
+      {
+        "defaultMessage": "!!!Depends on transaction {value} in this batch",
+        "id": "transaction.approval.dependencies"
+      },
+      {
+        "defaultMessage": "!!!Conflicts with transaction {value} in this batch",
+        "id": "transaction.approval.conflict"
+      },
+      {
+        "defaultMessage": "!!!This transaction cannot be approved.",
+        "id": "transaction.approval.refusal"
+      },
+      {
+        "defaultMessage": "!!!Wallet spending password",
+        "id": "transaction.approval.password"
+      },
+      {
+        "defaultMessage": "!!!Reject",
+        "id": "transaction.approval.reject"
+      },
+      {
+        "defaultMessage": "!!!Sign transaction",
+        "id": "transaction.approval.sign"
+      },
+      {
+        "defaultMessage": "!!!Submit transaction",
+        "id": "transaction.approval.submit"
+      },
+      {
+        "defaultMessage": "!!!Sign and send",
+        "id": "transaction.approval.signAndSend"
+      },
+      {
+        "defaultMessage": "!!!Continue on device",
+        "id": "transaction.approval.device"
+      },
+      {
+        "defaultMessage": "!!!Continue on device and send",
+        "id": "transaction.approval.deviceAndSend"
+      },
+      {
+        "defaultMessage": "!!!Sign transaction returns the signature to the dApp. Sign and send also submits it through Daedalus.",
+        "id": "transaction.approval.signingGuidance"
+      },
+      {
+        "defaultMessage": "!!!This submits the reviewed transaction.",
+        "id": "transaction.approval.submissionGuidance"
+      },
+      {
+        "defaultMessage": "!!!Waiting for approval on your hardware wallet…",
+        "id": "transaction.approval.waiting"
+      },
+      {
+        "defaultMessage": "!!!Signing transaction…",
+        "id": "transaction.approval.signing"
+      },
+      {
+        "defaultMessage": "!!!Submitting transaction {current} of {total}…",
+        "id": "transaction.approval.submitting"
+      },
+      {
+        "defaultMessage": "!!!Done",
+        "description": "Closes a completed native transaction approval result.",
+        "id": "transaction.approval.result.done"
+      },
+      {
+        "defaultMessage": "!!!Transaction submitted",
+        "description": "Heading shown after the transaction was submitted.",
+        "id": "transaction.approval.result.submittedTitle"
+      },
+      {
+        "defaultMessage": "!!!Submission acknowledged. Waiting for blockchain confirmation.",
+        "description": "Submission receipt status before the wallet observes blockchain inclusion.",
+        "id": "transaction.approval.result.submittedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction failed",
+        "description": "Heading for a failed transaction approval.",
+        "id": "transaction.approval.result.rejectedTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction could not be completed. Check your transaction history before trying again.",
+        "description": "Generic failure copy that does not attribute the failure to the user.",
+        "id": "transaction.approval.result.rejectedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction declined on device",
+        "description": "Heading used only when the hardware wallet explicitly reports user refusal.",
+        "id": "transaction.approval.result.deviceRejectedTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction was declined on the hardware wallet. No transaction was submitted.",
+        "description": "Copy used only for the normalized hardware-wallet user-declined code.",
+        "id": "transaction.approval.result.deviceRejectedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction cancelled",
+        "description": "Heading shown after transaction approval was cancelled.",
+        "id": "transaction.approval.result.cancelledTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction was cancelled before submission. No transaction was submitted.",
+        "description": "Explains that cancellation happened before submission.",
+        "id": "transaction.approval.result.cancelledMessage"
+      },
+      {
+        "defaultMessage": "!!!Submission status unknown",
+        "description": "Heading shown when Daedalus cannot determine whether submission succeeded.",
+        "id": "transaction.approval.result.submissionUnknownTitle"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not determine whether the transaction was submitted. Check your transaction history before trying again to avoid duplicate payments or additional fees.",
+        "description": "Warns against retrying while transaction submission status is uncertain.",
+        "id": "transaction.approval.result.submissionUnknownMessage"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted",
+        "description": "Heading for a partially submitted transaction batch.",
+        "id": "transaction.approval.result.partialTitle"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted, but item {failedItem} failed. Review the transaction IDs before trying again.",
+        "description": "Partial batch result. failedItem is the one-based item number that failed.",
+        "id": "transaction.approval.result.partialMessage"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted before the batch was cancelled at item {failedItem}. Review the transaction IDs before trying again.",
+        "description": "Partial batch result when the remaining submission was cancelled.",
+        "id": "transaction.approval.result.partialCancelledMessage"
+      },
+      {
+        "defaultMessage": "!!!Some transactions were submitted, but item {failedItem} was declined on the hardware wallet. Review the transaction IDs before trying again.",
+        "description": "Partial batch result used only for normalized hardware-wallet refusal.",
+        "id": "transaction.approval.result.partialDeviceRejectedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction IDs",
+        "description": "Heading for returned transaction IDs, including when submission status is unknown.",
+        "id": "transaction.approval.result.transactionIds"
+      },
+      {
+        "defaultMessage": "!!!Transaction {value}",
+        "description": "One-based label for a returned submitted transaction ID.",
+        "id": "transaction.approval.result.transactionId"
+      },
+      {
+        "defaultMessage": "!!!Copy transaction ID",
+        "description": "Copies a returned transaction ID to the clipboard.",
+        "id": "transaction.approval.result.copyTransactionId"
+      },
+      {
+        "defaultMessage": "!!!Transaction receipt",
+        "description": "Completed transaction approval view, including sign-only results.",
+        "id": "transaction.approval.result.receiptTitle"
+      },
+      {
+        "defaultMessage": "!!!Transaction failed",
+        "description": "Receipt heading for a definite failed transaction.",
+        "id": "transaction.approval.result.failedTitle"
+      },
+      {
+        "defaultMessage": "!!!The wallet backend reports this transaction failed. Check your transaction history before trying again.",
+        "description": "Definite failure rather than a lost connection or unknown submission.",
+        "id": "transaction.approval.result.failedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction status updates",
+        "description": "Batch receipt where the backend reports different terminal outcomes.",
+        "id": "transaction.approval.result.updatedTitle"
+      },
+      {
+        "defaultMessage": "!!!Check the status of each transaction below before submitting again.",
+        "description": "Does not describe a mixed-outcome batch as wholly confirmed or failed.",
+        "id": "transaction.approval.result.updatedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction confirmed",
+        "description": "Receipt heading after the backend reports blockchain inclusion.",
+        "id": "transaction.approval.result.confirmedTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction is recorded on the Cardano blockchain.",
+        "description": "Confirmation observed by the wallet backend, not device approval.",
+        "id": "transaction.approval.result.confirmedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction signed",
+        "description": "Receipt heading for a sign-only dApp request.",
+        "id": "transaction.approval.result.signedTitle"
+      },
+      {
+        "defaultMessage": "!!!The signature was returned to the dApp. Signing does not mean the transaction was submitted or confirmed.",
+        "description": "Makes the sign-only boundary explicit without claiming submission.",
+        "id": "transaction.approval.result.signedMessage"
+      },
+      {
+        "defaultMessage": "!!!Transaction expired",
+        "description": "Receipt heading for a transaction reported expired by the backend.",
+        "id": "transaction.approval.result.expiredTitle"
+      },
+      {
+        "defaultMessage": "!!!The transaction expired before confirmation. Check your transaction history before trying again.",
+        "description": "Definitive expiry, not an elapsed-time guess or a connection error.",
+        "id": "transaction.approval.result.expiredMessage"
+      },
+      {
+        "defaultMessage": "!!!View transaction",
+        "description": "Opens and expands this transaction in wallet history.",
+        "id": "transaction.approval.result.viewTransaction"
+      },
+      {
+        "defaultMessage": "!!!Reviewed transaction details",
+        "description": "Expands the original authorization facts below a completed receipt.",
+        "id": "transaction.approval.result.reviewedDetails"
+      },
+      {
+        "defaultMessage": "!!!Amount transferred",
+        "description": "Explicit payment amount matched to a reviewed output; not change or fee.",
+        "id": "transaction.approval.result.transferAmount"
+      },
+      {
+        "defaultMessage": "!!!Network fee",
+        "description": "Actual transaction fee, shown separately from transferred amount.",
+        "id": "transaction.approval.result.networkFee"
+      },
+      {
+        "defaultMessage": "!!!Net wallet change",
+        "description": "Net effect on wallet funds, distinct from the payment principal.",
+        "id": "transaction.approval.result.walletChange"
+      },
+      {
+        "defaultMessage": "!!!Transfer within this wallet",
+        "description": "Used only when normal input and output ownership establish a self-transfer.",
+        "id": "transaction.approval.result.withinWallet"
+      },
+      {
+        "defaultMessage": "!!!Submitted · Awaiting confirmation",
+        "description": "Individual transaction status before blockchain inclusion is observed.",
+        "id": "transaction.approval.result.awaitingConfirmation"
+      },
+      {
+        "defaultMessage": "!!!Confirmed",
+        "description": "Individual transaction status after blockchain inclusion.",
+        "id": "transaction.approval.result.confirmedStatus"
+      },
+      {
+        "defaultMessage": "!!!Expired",
+        "description": "Individual transaction status after a definitive backend expiry.",
+        "id": "transaction.approval.result.expiredStatus"
+      },
+      {
+        "defaultMessage": "!!!Failed",
+        "description": "Individual transaction status after a definitive backend rejection.",
+        "id": "transaction.approval.result.failedStatus"
+      },
+      {
+        "defaultMessage": "!!!Confirmations: {count}",
+        "description": "Block confirmation count provided by the backend.",
+        "id": "transaction.approval.result.confirmations"
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Cancels an in-flight hardware approval before submission authorization.",
+        "id": "transaction.approval.cancel"
+      },
+      {
+        "defaultMessage": "!!!{value} base units — decimals unknown",
+        "id": "transaction.approval.baseUnits"
+      },
+      {
+        "defaultMessage": "!!!{value} base units",
+        "description": "Exact signed native asset quantity before decimal conversion.",
+        "id": "transaction.approval.rawUnits"
+      },
+      {
+        "defaultMessage": "!!!Asset details",
+        "description": "Accessible label for expanding exact native asset identity.",
+        "id": "transaction.approval.assetDetails"
+      },
+      {
+        "defaultMessage": "!!!{title} ({count})",
+        "description": "Expandable transaction entry group heading with entry count.",
+        "id": "transaction.approval.entrySection"
+      },
+      {
+        "defaultMessage": "!!!+{count} more assets",
+        "description": "Disclosure label for additional assets in a gross UTxO value.",
+        "id": "transaction.approval.moreAssets"
+      },
+      {
+        "defaultMessage": "!!!Unnamed token",
+        "id": "transaction.approval.unnamed"
+      },
+      {
+        "defaultMessage": "!!!I understand that this Flight build uses real mainnet funds and the transaction is irreversible.",
+        "id": "transaction.approval.flightMainnetFunds"
+      },
+      {
+        "defaultMessage": "!!!I understand that undelegated stake does not support the Cardano network.",
+        "id": "transaction.approval.undelegationNetworkSupport"
+      },
+      {
+        "defaultMessage": "!!!I understand that undelegated stake is not eligible to earn rewards.",
+        "id": "transaction.approval.undelegationRewards"
+      }
+    ],
+    "path": "source/renderer/app/components/transactions/TransactionApprovalDialog.messages.ts"
   },
   {
     "descriptors": [
@@ -2177,7 +2882,7 @@
         "id": "wallet.connect.dialog.button.cancel"
       },
       {
-        "defaultMessage": "!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
+        "defaultMessage": "!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano S Plus, Ledger Nano X, Ledger Flex, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
         "description": "Follow instructions label",
         "id": "wallet.connect.dialog.instructions"
       },
@@ -2195,6 +2900,21 @@
         "defaultMessage": "!!!read the instructions.",
         "description": "Connecting issue support link",
         "id": "wallet.connect.dialog.connectingIssueSupportLink"
+      },
+      {
+        "defaultMessage": "!!!Wallet name",
+        "description": "Label for the hardware wallet name field.",
+        "id": "wallet.connect.dialog.walletName"
+      },
+      {
+        "defaultMessage": "!!!Enter wallet name",
+        "description": "Placeholder for the hardware wallet name field.",
+        "id": "wallet.connect.dialog.walletNameHint"
+      },
+      {
+        "defaultMessage": "!!!Pair wallet",
+        "description": "Label for the button that creates the hardware wallet.",
+        "id": "wallet.connect.dialog.button.pair"
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletConnectDialog.tsx"
@@ -2482,6 +3202,66 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Liqwid Finance",
+        "description": "Name of the Liqwid Finance dApp in the curated catalog.",
+        "id": "dapp.catalog.liqwid.name"
+      },
+      {
+        "defaultMessage": "!!!Borrow, lend, and earn yield on Cardano.",
+        "description": "Description of Liqwid Finance in the curated dApp catalog.",
+        "id": "dapp.catalog.liqwid.description"
+      },
+      {
+        "defaultMessage": "!!!FluidTokens",
+        "description": "Name of the FluidTokens dApp in the curated catalog.",
+        "id": "dapp.catalog.fluidtokens.name"
+      },
+      {
+        "defaultMessage": "!!!Use FluidTokens on Cardano.",
+        "description": "Description of FluidTokens in the curated dApp catalog.",
+        "id": "dapp.catalog.fluidtokens.description"
+      },
+      {
+        "defaultMessage": "!!!SteelSwap",
+        "description": "Name of the SteelSwap dApp in the curated catalog.",
+        "id": "dapp.catalog.steelswap.name"
+      },
+      {
+        "defaultMessage": "!!!Swap tokens on Cardano.",
+        "description": "Description of SteelSwap in the curated dApp catalog.",
+        "id": "dapp.catalog.steelswap.description"
+      },
+      {
+        "defaultMessage": "!!!Strike Finance",
+        "description": "Name of the Strike Finance dApp in the curated catalog.",
+        "id": "dapp.catalog.strike.name"
+      },
+      {
+        "defaultMessage": "!!!Use Strike Finance on Cardano.",
+        "description": "Description of Strike Finance in the curated dApp catalog.",
+        "id": "dapp.catalog.strike.description"
+      },
+      {
+        "defaultMessage": "!!!unfrack.it",
+        "description": "Name of unfrack.it in the curated dApp catalog.",
+        "id": "dapp.catalog.unfrack.name"
+      },
+      {
+        "defaultMessage": "!!!Optimize your Cardano wallet’s UTxOs.",
+        "description": "Description of unfrack.it in the curated dApp catalog.",
+        "id": "dapp.catalog.unfrack.description"
+      }
+    ],
+    "path": "source/renderer/app/containers/dapp/DappCatalogPage.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Transaction confirmed on the Cardano blockchain",
+        "description": "Shown once when a dismissed submission is subsequently confirmed.",
+        "id": "notification.transactionConfirmed"
+      },
+      {
         "defaultMessage": "!!!Preparing logs for download",
         "description": "Notification for download logs in progress in the Loading and Settings pages.",
         "id": "notification.downloadLogsProgress"
@@ -2588,6 +3368,86 @@
       }
     ],
     "path": "source/renderer/app/containers/wallet/WalletSummaryPage.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Preferred collateral",
+        "description": "Title of the preferred collateral panel.",
+        "id": "dapp.collateral.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus uses 5 ADA as a compatibility convention, not a protocol maximum. This preference does not reserve the output; ordinary transactions may spend it.",
+        "description": "Explains the soft preferred collateral policy.",
+        "id": "dapp.collateral.convention"
+      },
+      {
+        "defaultMessage": "!!!Checking preferred collateral…",
+        "description": "Collateral state while wallet data is loading.",
+        "id": "dapp.collateral.checking"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral is ready.",
+        "description": "Collateral state when a suitable wallet output is selected.",
+        "id": "dapp.collateral.ready"
+      },
+      {
+        "defaultMessage": "!!!No suitable preferred collateral is available.",
+        "description": "Collateral state when preparation is available.",
+        "id": "dapp.collateral.notReady"
+      },
+      {
+        "defaultMessage": "!!!Preparation is waiting for a normal confirmed self-transfer. Complete or cancel the Send flow; Daedalus never signs or submits it automatically.",
+        "description": "Collateral state while the user prepares a suitable output.",
+        "id": "dapp.collateral.preparing"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral is referenced by a pending transaction.",
+        "description": "Collateral state while a pending script transaction uses it.",
+        "id": "dapp.collateral.inUse"
+      },
+      {
+        "defaultMessage": "!!!An approved ordinary transaction will spend the preferred collateral. Spending remains allowed.",
+        "description": "Warning when an ordinary transaction uses preferred collateral.",
+        "id": "dapp.collateral.willBeSpent"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral was charged by a failed script transaction. A replacement can be prepared.",
+        "description": "Collateral state after collateral was charged.",
+        "id": "dapp.collateral.charged"
+      },
+      {
+        "defaultMessage": "!!!The preferred collateral is no longer available. Clear it or prepare a replacement.",
+        "description": "Collateral state when the preferred output is unavailable.",
+        "id": "dapp.collateral.stale"
+      },
+      {
+        "defaultMessage": "!!!Prepare collateral",
+        "description": "Button opening the normal confirmed Send flow.",
+        "id": "dapp.collateral.prepare"
+      },
+      {
+        "defaultMessage": "!!!Cancel preparation",
+        "description": "Button cancelling a pending collateral preparation intent.",
+        "id": "dapp.collateral.cancelPreparation"
+      },
+      {
+        "defaultMessage": "!!!Clear preference",
+        "description": "Button clearing preferred collateral without a transaction.",
+        "id": "dapp.collateral.clear"
+      },
+      {
+        "defaultMessage": "!!!Repair collateral settings",
+        "description": "Button repairing corrupt collateral preference metadata.",
+        "id": "dapp.collateral.repair"
+      },
+      {
+        "defaultMessage": "!!!Preferred collateral could not be updated.",
+        "description": "Privacy-safe collateral action failure.",
+        "id": "dapp.collateral.failed"
+      }
+    ],
+    "path": "source/renderer/app/components/dapp/collateral/CollateralPanel.messages.ts"
   },
   {
     "descriptors": [
@@ -4407,6 +5267,111 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!dApp connections",
+        "description": "Title of the dApp connection settings page.",
+        "id": "settings.dappConnections.title"
+      },
+      {
+        "defaultMessage": "!!!Close dApp closes the browser window but remembers this connection.",
+        "description": "Explanation of closing a dApp browser.",
+        "id": "settings.dappConnections.closeDescription"
+      },
+      {
+        "defaultMessage": "!!!Disconnect ends the current wallet session but remembers this connection.",
+        "description": "Explanation of disconnecting a live dApp wallet session.",
+        "id": "settings.dappConnections.disconnectDescription"
+      },
+      {
+        "defaultMessage": "!!!Forget connection disconnects the dApp and permanently removes its saved permissions.",
+        "description": "Explanation of forgetting a dApp connection.",
+        "id": "settings.dappConnections.forgetDescription"
+      },
+      {
+        "defaultMessage": "!!!No saved dApp connections.",
+        "description": "Empty state for dApp connection settings.",
+        "id": "settings.dappConnections.empty"
+      },
+      {
+        "defaultMessage": "!!!Wallet connection and read access",
+        "description": "Label for the base CIP-30 connection permission.",
+        "id": "settings.dappConnections.baseAccess"
+      },
+      {
+        "defaultMessage": "!!!CIP-95 governance public-key disclosure",
+        "description": "Label for the separately revocable CIP-95 disclosure scope.",
+        "id": "settings.dappConnections.cip95"
+      },
+      {
+        "defaultMessage": "!!!CIP-104 account public-key disclosure",
+        "description": "Label for the separately revocable CIP-104 disclosure scope.",
+        "id": "settings.dappConnections.cip104"
+      },
+      {
+        "defaultMessage": "!!!Disconnect {origin}",
+        "description": "Button label to disconnect a dApp origin.",
+        "id": "settings.dappConnections.disconnect"
+      },
+      {
+        "defaultMessage": "!!!Forget {origin}",
+        "description": "Button label to forget a dApp origin.",
+        "id": "settings.dappConnections.forget"
+      },
+      {
+        "defaultMessage": "!!!Wallet",
+        "description": "Wallet field label for a saved dApp connection.",
+        "id": "settings.dappConnections.wallet"
+      },
+      {
+        "defaultMessage": "!!!Network magic",
+        "description": "Network magic field label for a saved dApp connection.",
+        "id": "settings.dappConnections.networkMagic"
+      },
+      {
+        "defaultMessage": "!!!Source",
+        "description": "Launch source field label for a saved dApp connection.",
+        "id": "settings.dappConnections.source"
+      },
+      {
+        "defaultMessage": "!!!Granted",
+        "description": "Grant date field label for a saved dApp connection.",
+        "id": "settings.dappConnections.granted"
+      },
+      {
+        "defaultMessage": "!!!Revoke {scope} for {origin}",
+        "description": "Button label to revoke one dApp disclosure scope.",
+        "id": "settings.dappConnections.revoke"
+      },
+      {
+        "defaultMessage": "!!!Saved dApp connections are damaged. Access is blocked until the empty connection store is repaired.",
+        "description": "Fail-closed corrupted grant store message.",
+        "id": "settings.dappConnections.corrupt"
+      },
+      {
+        "defaultMessage": "!!!Repair and remove saved connections",
+        "description": "Button label to repair the corrupted dApp grant store.",
+        "id": "settings.dappConnections.repair"
+      },
+      {
+        "defaultMessage": "!!!The connection change could not be completed.",
+        "description": "Generic connection management failure.",
+        "id": "settings.dappConnections.failed"
+      },
+      {
+        "defaultMessage": "!!!Preferred catalog",
+        "description": "Label for a preferred catalog dApp connection.",
+        "id": "settings.dappConnections.catalog"
+      },
+      {
+        "defaultMessage": "!!!Diagnostics",
+        "description": "Label for an arbitrary diagnostics dApp connection.",
+        "id": "settings.dappConnections.diagnostics"
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/DappConnectionsSettings.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Theme",
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "id": "settings.display.themeLabel"
@@ -4640,6 +5605,11 @@
         "defaultMessage": "!!!Wallets",
         "description": "Label for the \"Wallets\" link in the settings menu.",
         "id": "settings.menu.wallets.link.label"
+      },
+      {
+        "defaultMessage": "!!!dApp connections",
+        "description": "Label for the dApp connections link in the settings menu.",
+        "id": "settings.menu.dappConnections.link.label"
       },
       {
         "defaultMessage": "!!!Stake Pools",
@@ -5028,71 +5998,6 @@
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Confirm Delegation",
-        "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.title"
-      },
-      {
-        "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
-        "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel"
-      },
-      {
-        "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.",
-        "description": "Description on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.description"
-      },
-      {
-        "defaultMessage": "!!!Stake pool ID",
-        "description": "Stake pool ID label on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel"
-      },
-      {
-        "defaultMessage": "!!!Fees",
-        "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel"
-      },
-      {
-        "defaultMessage": "!!!Deposit",
-        "description": "Deposit label on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.depositLabel"
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Placeholder for \"spending password\"",
-        "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder"
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Label for \"spending password\"",
-        "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel"
-      },
-      {
-        "defaultMessage": "!!!Confirm",
-        "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel"
-      },
-      {
-        "defaultMessage": "!!!Cancel",
-        "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel"
-      },
-      {
-        "defaultMessage": "!!!Calculating fees",
-        "description": "\"Calculating fees\" message in the \"confirmation\" dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees"
-      },
-      {
-        "defaultMessage": "!!!Calculating deposit",
-        "description": "\"Calculating deposit\" message in the \"confirmation\" dialog.",
-        "id": "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.ts"
   },
   {
     "descriptors": [
@@ -5967,6 +6872,11 @@
         "id": "voting.governance.selectWalletPlaceholder"
       },
       {
+        "defaultMessage": "!!!Something went wrong with this transaction. Please try again in a few minutes.",
+        "description": "Shown when a delegation transaction fails to build or to submit",
+        "id": "voting.governance.transactionError.generic"
+      },
+      {
         "defaultMessage": "!!!This wallet already delegates to this choice. Please change delegation in order to proceed.",
         "description": "Shown when the wallet is already delegated to the chosen option",
         "id": "voting.governance.initializeTxError.sameVote"
@@ -5983,26 +6893,6 @@
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Something went wrong with this transaction. Please try again in a few minutes.",
-        "description": "Shown when a delegation transaction fails to build or to submit",
-        "id": "voting.governance.transactionError.generic"
-      },
-      {
-        "defaultMessage": "!!!Confirm Transaction",
-        "description": "Title of the voting power delegation confirmation dialog",
-        "id": "voting.governance.confirmationDialog.title"
-      },
-      {
-        "defaultMessage": "!!!Delegation certificate",
-        "description": "Heading above the delegation this transaction will record",
-        "id": "voting.governance.confirmationDialog.delegationCertificate"
-      }
-    ],
-    "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts"
   },
   {
     "descriptors": [
@@ -6905,6 +7795,16 @@
         "defaultMessage": "!!!Privacy warning: Please note that all of your receiving addresses include your stake key. When you share a receiving address, the recipient can search the blockchain using your stake key to locate all addresses associated with your wallet, and also discover your wallet balance and transaction history.",
         "description": "Privacy warning on the wallet \"Receive page\"",
         "id": "wallet.receive.page.instructions.privacyWarning"
+      },
+      {
+        "defaultMessage": "!!!Receiving address",
+        "description": "Title shown on the Receive page in single-address mode.",
+        "id": "wallet.receive.page.singleAddressTitle"
+      },
+      {
+        "defaultMessage": "!!!Share this address to receive ada or native Cardano tokens. Single-address mode is enabled.",
+        "description": "Instructions shown on the Receive page in single-address mode.",
+        "id": "wallet.receive.page.singleAddressDescription"
       }
     ],
     "path": "source/renderer/app/components/wallet/receive/WalletReceiveSequential.tsx"
@@ -7432,76 +8332,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Undelegate",
-        "description": "Title for the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.title"
-      },
-      {
-        "defaultMessage": "!!!Undelegate",
-        "description": "Label for the \"Undelegate\" button in the undelegate wallet dialog.",
-        "id": "wallet.settings.undelegate.dialog.confirmButtonLabel"
-      },
-      {
-        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
-        "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.descriptionWithTicker"
-      },
-      {
-        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
-        "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.descriptionWithUnknownTicker"
-      },
-      {
-        "defaultMessage": "!!!unknown",
-        "description": "unknown stake pool label in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.unknownStakePoolLabel"
-      },
-      {
-        "defaultMessage": "!!!I understand that I am not supporting the Cardano network when my stake is undelegated.",
-        "description": "Notice to confirm if the user understands unsupporting Cardano network after undelegation",
-        "id": "wallet.settings.undelegate.dialog.confirmUnsupportNotice"
-      },
-      {
-        "defaultMessage": "!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.",
-        "description": "Notice to confirm if the user understands non-earning rewards after undelegation",
-        "id": "wallet.settings.undelegate.dialog.confirmIneligibleNotice"
-      },
-      {
-        "defaultMessage": "!!!Fees",
-        "description": "Fees label in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.feesLabel"
-      },
-      {
-        "defaultMessage": "!!!Deposits reclaimed",
-        "description": "Deposits reclaimed label in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.depositLabel"
-      },
-      {
-        "defaultMessage": "!!!Spending password",
-        "description": "Spending password label in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.spendingPasswordLabel"
-      },
-      {
-        "defaultMessage": "!!!Type your spending password here",
-        "description": "Spending password placeholder in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.spendingPasswordPlaceholder"
-      },
-      {
-        "defaultMessage": "!!!Incorrect spending password.",
-        "description": "Label for password error in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.passwordError"
-      },
-      {
-        "defaultMessage": "!!!Calculating fees",
-        "description": "\"Calculating fees\" message in the \"Undelegate wallet\" dialog.",
-        "id": "wallet.settings.undelegate.dialog.calculatingFees"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Wallet undelegated",
         "description": "Title for the \"Undelegate Result\" dialog.",
         "id": "wallet.settings.undelegate.result.dialog.title"
@@ -7815,6 +8645,21 @@
         "defaultMessage": "!!!You still don't have password",
         "description": "You still don't have password set message.",
         "id": "wallet.settings.passwordNotSet"
+      },
+      {
+        "defaultMessage": "!!!Single-address mode",
+        "description": "Label for the single-address mode wallet setting.",
+        "id": "wallet.settings.singleAddressMode.label"
+      },
+      {
+        "defaultMessage": "!!!Use this wallet’s first receiving address for receiving payments and automatically selected wallet outputs, including change. Existing funds and explicitly entered recipient addresses are unchanged.",
+        "description": "Description of the single-address mode wallet setting.",
+        "id": "wallet.settings.singleAddressMode.description"
+      },
+      {
+        "defaultMessage": "!!!Reusing one address makes payments easier to link. Other receiving addresses are also linked through this wallet’s stake key.",
+        "description": "Privacy warning for the single-address mode wallet setting.",
+        "id": "wallet.settings.singleAddressMode.privacyWarning"
       }
     ],
     "path": "source/renderer/app/components/wallet/settings/WalletSettings.tsx"
@@ -7917,8 +8762,8 @@
         "id": "wallet.transaction.pending.cancelTransactionButton"
       },
       {
-        "defaultMessage": "!!!Remove failed transaction",
-        "description": "Label for the remove failed transaction button",
+        "defaultMessage": "!!!Remove expired transaction",
+        "description": "Label for removing a transaction that expired before confirmation",
         "id": "wallet.transaction.failed.removeTransactionButton"
       }
     ],
@@ -8042,11 +8887,6 @@
         "id": "wallet.transaction.type.card"
       },
       {
-        "defaultMessage": "!!!{typeOfTransaction} transaction",
-        "description": "Transaction type shown for {currency} transactions.",
-        "id": "wallet.transaction.type"
-      },
-      {
         "defaultMessage": "!!!Exchange",
         "description": "Transaction type shown for money exchanges between currencies.",
         "id": "wallet.transaction.type.exchange"
@@ -8095,6 +8935,11 @@
         "defaultMessage": "!!!{transactionsType} received",
         "description": "Label \"{transactionsType} received\" for the transaction.",
         "id": "wallet.transaction.received"
+      },
+      {
+        "defaultMessage": "!!!Transfer within this wallet",
+        "description": "Title for a pure ADA transfer whose input and output addresses are verified as belonging to this wallet.",
+        "id": "wallet.transaction.type.selfTransfer"
       },
       {
         "defaultMessage": "!!!Delegation Transaction",
@@ -8147,9 +8992,19 @@
         "id": "wallet.transaction.deposit"
       },
       {
-        "defaultMessage": "!!!Transaction amount",
-        "description": "Transaction amount.",
-        "id": "wallet.transaction.transactionAmount"
+        "defaultMessage": "!!!Net wallet change",
+        "description": "Label for an amount representing the net ADA balance change of the wallet.",
+        "id": "wallet.transaction.netWalletChange"
+      },
+      {
+        "defaultMessage": "!!!Amount transferred",
+        "description": "Label for a known intended ADA payment amount, distinct from fees and change.",
+        "id": "wallet.transaction.amountTransferred"
+      },
+      {
+        "defaultMessage": "!!!Unavailable",
+        "description": "Shown when a transaction amount is not known.",
+        "id": "wallet.transaction.amountUnavailable"
       },
       {
         "defaultMessage": "!!!Multiple tokens",
@@ -8197,44 +9052,49 @@
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel"
       },
       {
-        "defaultMessage": "!!!This transaction was submitted to the Cardano network, but it expired, so it failed. Transactions on the Cardano network have a ‘time to live’ attribute, which passed before the network processed the transaction. Please, remove it to release the funds (UTXOs) used by this transaction to use those funds in another transaction.",
-        "description": "Note to cancel a transaction that has been failed",
+        "defaultMessage": "!!!This transaction expired before the Cardano network confirmed it. Remove it to release its inputs for another transaction.",
+        "description": "Note explaining an expired transaction",
         "id": "wallet.transaction.failed.cancelFailedTxnNote"
       },
       {
-        "defaultMessage": "!!!Why should I cancel failed transactions?",
-        "description": "Link to support article for removing a failed transaction",
+        "defaultMessage": "!!!Why should I remove an expired transaction?",
+        "description": "Link to support information about expired transactions",
         "id": "wallet.transaction.failed.cancelFailedTxnSupportArticle"
       },
       {
-        "defaultMessage": "!!!Transaction confirmed",
-        "description": "Transaction state \"confirmed\"",
-        "id": "wallet.transaction.state.confirmed"
+        "defaultMessage": "!!!The submission was rejected and is not expected to confirm. Review the transaction before trying again.",
+        "description": "Note explaining a rejected transaction submission.",
+        "id": "wallet.transaction.failed.rejectedTxnNote"
       },
       {
-        "defaultMessage": "!!!Transaction pending",
-        "description": "Transaction state \"pending\"",
-        "id": "wallet.transaction.state.pending"
-      },
-      {
-        "defaultMessage": "!!!Transaction failed",
-        "description": "Transaction state \"failed\"",
-        "id": "wallet.transaction.state.failed"
+        "defaultMessage": "!!!Daedalus could not determine whether this transaction reached the network. Check transaction history before retrying to avoid a duplicate payment.",
+        "description": "Warning shown when the outcome of submission is unknown.",
+        "id": "wallet.transaction.submissionUnknown.note"
       },
       {
         "defaultMessage": "!!!Confirmed",
-        "description": "Transaction state \"confirmed\"",
-        "id": "wallet.transaction.state.confirmedHeading"
+        "description": "Transaction state \"confirmed\".",
+        "id": "wallet.transaction.state.confirmed"
       },
       {
-        "defaultMessage": "!!!Pending",
-        "description": "Transaction state \"pending\"",
-        "id": "wallet.transaction.state.pendingHeading"
+        "defaultMessage": "!!!Submitted · Awaiting confirmation",
+        "description": "Transaction state \"pending\".",
+        "id": "wallet.transaction.state.pending"
+      },
+      {
+        "defaultMessage": "!!!Expired",
+        "description": "Transaction state \"expired before confirmation\".",
+        "id": "wallet.transaction.state.expired"
       },
       {
         "defaultMessage": "!!!Failed",
-        "description": "Transaction state \"failed\"",
-        "id": "wallet.transaction.state.failedHeading"
+        "description": "Transaction state \"submission rejected\".",
+        "id": "wallet.transaction.state.failed"
+      },
+      {
+        "defaultMessage": "!!!Submission status unknown",
+        "description": "Transaction state used when Daedalus cannot determine whether submission reached the network.",
+        "id": "wallet.transaction.state.submissionUnknown"
       }
     ],
     "path": "source/renderer/app/components/wallet/transactions/Transaction.tsx"

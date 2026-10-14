@@ -8,7 +8,7 @@ import { itnShelleyMnemonics } from "./mnemonics";
 const names = ['Sabrina', 'Sarah', 'Scarlett', 'Sharon', 'Selena', 'Siena', 'Sofia', 'Sonia', 'Stella', 'Stephanie'];
 const API_PORT = process.env.API_PORT || 8088;
 const IS_HTTPS = process.env.IS_HTTPS || false;
-const WALLET_COUNT = process.env.WALLET_COUNT || 3;
+const WALLET_COUNT = Number(process.env.WALLET_COUNT || 3);
 
 (async () => {
   function generateImportPayload(mnemonic, name) {

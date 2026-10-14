@@ -8,6 +8,9 @@ import AppStore from './AppStore';
 import BackendStore from './BackendStore';
 import AppUpdateStore from './AppUpdateStore';
 import AssetsStore from './AssetsStore';
+import WalletApprovalStore from './WalletApprovalStore';
+import CollateralStore from './CollateralStore';
+import DappStore from './DappStore';
 import CurrencyStore from './CurrencyStore';
 import HardwareWalletsStore from './HardwareWalletsStore';
 import NetworkStatusStore from './NetworkStatusStore';
@@ -29,12 +32,16 @@ import GovernanceStore from './GovernanceStore';
 import { AnalyticsTracker } from '../analytics';
 import { Api } from '../api';
 import { ActionsMap } from '../actions';
+import { Cip30WalletService } from '../services/Cip30WalletService';
 
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
   backend: BackendStore,
   appUpdate: AppUpdateStore,
+  walletApproval: WalletApprovalStore,
+  collateral: CollateralStore,
+  dapp: DappStore,
   assets: AssetsStore,
   currency: CurrencyStore,
   hardwareWallets: HardwareWalletsStore,
@@ -61,6 +68,9 @@ export type StoresMap = {
   backend: BackendStore;
   appUpdate: AppUpdateStore;
   currency: CurrencyStore;
+  walletApproval: WalletApprovalStore;
+  collateral: CollateralStore;
+  dapp: DappStore;
   assets: AssetsStore;
   hardwareWallets: HardwareWalletsStore;
   governance: GovernanceStore;
@@ -82,6 +92,7 @@ export type StoresMap = {
   window: WindowStore;
 };
 let stores: StoresMap | null | undefined = null;
+let cip30WalletService: Cip30WalletService | undefined;
 const storeNames = Object.keys(storeClasses);
 
 // Helpers
@@ -104,6 +115,7 @@ export const setUpStores = action(
       return new StoreSubClass(api, actions, analyticsTracker);
     }
 
+    cip30WalletService?.teardown();
     // Teardown existing stores
     if (stores) executeOnEveryStore((store) => store.teardown());
     // Create fresh instances of all stores
@@ -113,6 +125,9 @@ export const setUpStores = action(
       app: createStoreInstanceOf(AppStore),
       backend: createStoreInstanceOf(BackendStore),
       assets: createStoreInstanceOf(AssetsStore),
+      walletApproval: createStoreInstanceOf(WalletApprovalStore),
+      collateral: createStoreInstanceOf(CollateralStore),
+      dapp: createStoreInstanceOf(DappStore),
       currency: createStoreInstanceOf(CurrencyStore),
       appUpdate: createStoreInstanceOf(AppUpdateStore),
       hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
@@ -139,6 +154,8 @@ export const setUpStores = action(
       if (stores) store.configure(stores);
     });
     executeOnEveryStore((store) => store.initialize());
+    cip30WalletService = new Cip30WalletService(api, stores);
+    cip30WalletService.setup();
     return stores;
   }
 );

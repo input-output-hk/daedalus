@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "task": "task-005-b",
+  "matrixRevision": "task-108-matrix-2026-08-18",
+  "executedAt": "2026-08-23",
+  "source": {
+    "baseRevision": "18d523815ac98c9ad68bb5e1c4dff1a0f93a4515",
+    "debBuildRelevantDiffSha256": "4faf528ee370537367b43da739519b87593346d61aab2a2e76170640bf43a828",
+    "flakeLockSha256": "0c48b22f50e937ff7a2a92f88e96b2378db9d2894138473707eeb7b7818abf90",
+    "probeSha256": "1f0f9188a68acb4c5c3676fb1163dcb1d8b3139dc5caeb8e4022875b9a8d281f"
+  },
+  "packages": {
+    "deb": {
+      "file": "daedalus-11.2.0-86593-mainnet-dirty-x86_64-linux.deb",
+      "sha256": "7115d83f29c8ed21d8a8c7f8167816ab5107e2071046583487e51965be975fa7"
+    },
+    "rpm": {
+      "file": "daedalus-11.2.0-0-mainnet-8462bbbaf-x86_64-linux.rpm",
+      "sha256": "09abf160f4f4fc1d51759c143987a321b5c92615d6534d03ce63e1845fc5c975"
+    }
+  },
+  "hostImages": {
+    "ubuntu-22.04": "ff271290a23279ce764561dbe2e9c3ec29da899535b571a987c37b47970c2ad9",
+    "ubuntu-24.04": "6e40c07ae715f744f84af0bec76415cc1987dd115b4b8de437818561f01a3733",
+    "ubuntu-26.04": "9dc7c5363c0146a08ba0c9aa834d82c2c6dfbb1c471ad9a2f0aba1189e21be05",
+    "debian-12": "3ac58d009df21d570bb10811ae1e07afd1125e9669c87897bfb58e52b8f5c937",
+    "debian-13": "283e85bb3dd1d27a1b8c20b67f421b6fa0cbfb9e607e807ae2b93d85518bcc29",
+    "fedora-43": "846574c8a97cd2d8dc1f231062d73107cc85cbbbda56335e264a46e3a6c8ab2f"
+  },
+  "supportedRows": [
+    "ubuntu-24.04-positive.json",
+    "ubuntu-26.04-positive.json",
+    "debian-12-positive.json",
+    "debian-13-positive.json",
+    "fedora-43-positive.json"
+  ],
+  "walletOnlyRows": ["ubuntu-22.04-wallet-only.json"],
+  "restrictedCases": {
+    "apparmor": {
+      "denied": "ubuntu-24.04-apparmor-denied.json",
+      "rollback": "ubuntu-24.04-apparmor-rollback.json"
+    },
+    "helper": {
+      "denied": "fedora-43-helper-denied.json",
+      "rollback": "fedora-43-helper-rollback.json"
+    },
+    "selinux": {
+      "denied": "fedora-43-selinux-denied.json",
+      "rollback": "fedora-43-selinux-rollback.json"
+    },
+    "userns": {
+      "denied": "fedora-43-userns-denied.json",
+      "rollback": "fedora-43-userns-rollback.json"
+    }
+  },
+  "invariants": {
+    "allSupportedRowsPassed": true,
+    "allRestrictedCasesFailedClosed": true,
+    "allRollbacksPassed": true,
+    "sandboxBypassUsed": false,
+    "hostPolicyWeakenedOutsideDisposableGuests": false,
+    "remoteContentLoaded": false,
+    "productionGuestEnabled": false,
+    "rawHostDataCommitted": false
+  }
+}

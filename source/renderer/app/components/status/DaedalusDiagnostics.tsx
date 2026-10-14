@@ -1,6 +1,5 @@
-import React, { Component, Fragment } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
-import type { Node } from 'react';
+import React, { Component, FormEvent, Fragment, Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
@@ -427,6 +426,55 @@ export const messages = defineMessages({
     defaultMessage: '!!!Last synchronized block',
     description: 'Last synchronized block',
   },
+  dappBrowser: {
+    id: 'daedalus.diagnostics.dialog.dappBrowser',
+    defaultMessage: '!!!UNTRUSTED DAPP BROWSER',
+    description: 'Heading for the Diagnostics arbitrary dApp launcher.',
+  },
+  dappBrowserWarning: {
+    id: 'daedalus.diagnostics.dialog.dappBrowserWarning',
+    defaultMessage:
+      '!!!This opens an untrusted website. Daedalus does not audit or endorse it. Review every wallet request.',
+    description: 'Security warning above the Diagnostics dApp launcher.',
+  },
+  dappBrowserUrl: {
+    id: 'daedalus.diagnostics.dialog.dappBrowserUrl',
+    defaultMessage: '!!!DApp URL',
+    description: 'Label for the Diagnostics dApp URL field.',
+  },
+  dappBrowserWallet: {
+    id: 'daedalus.diagnostics.dialog.dappBrowserWallet',
+    defaultMessage: '!!!Wallet',
+    description: 'Label for the Diagnostics dApp wallet selector.',
+  },
+  dappBrowserLaunch: {
+    id: 'daedalus.diagnostics.dialog.dappBrowserLaunch',
+    defaultMessage: '!!!Launch untrusted dApp',
+    description: 'Button that launches an arbitrary Diagnostics dApp.',
+  },
+  dappBrowserLaunchFailed: {
+    id: 'daedalus.diagnostics.dialog.dappBrowserLaunchFailed',
+    defaultMessage: '!!!The dApp could not be opened.',
+    description: 'Privacy-safe Diagnostics dApp launch failure.',
+  },
+  dappBrowserWindowTitle: {
+    id: 'daedalus.diagnostics.dialog.dappBrowserWindowTitle',
+    defaultMessage: '!!!Untrusted dApp',
+    description: 'Local native window title for a Diagnostics dApp.',
+  },
+  dappConsoleCapture: {
+    id: 'daedalus.diagnostics.dialog.dappConsoleCapture',
+    defaultMessage: '!!!Capture dApp console warnings and errors',
+    description:
+      'Opt-in checkbox label for recording untrusted dApp console diagnostics.',
+  },
+  dappConsoleCaptureWarning: {
+    id: 'daedalus.diagnostics.dialog.dappConsoleCaptureWarning',
+    defaultMessage:
+      '!!!Applies to newly opened dApps for this Daedalus session. DApps control these messages, which may contain sensitive data.',
+    description:
+      'Security warning shown below the opt-in dApp console capture checkbox.',
+  },
   epoch: {
     id: 'daedalus.diagnostics.dialog.epoch',
     defaultMessage: '!!!epoch',
@@ -471,11 +519,27 @@ type Props = {
   isMithrilAtOrPastSnapshot: boolean;
   mithrilBehindByEpochs?: number;
   onStartMithrilPartialSync: () => Promise<void>;
+  diagnosticsWallets: readonly Readonly<{ id: string; name: string }>[];
+  defaultDiagnosticsWalletId: string;
+  diagnosticsAvailable: boolean;
+  diagnosticsReady: boolean;
+  isDappLaunching: boolean;
+  consoleCaptureAvailable: boolean;
+  consoleCaptureEnabled: boolean;
+  onConsoleCaptureChange: (enabled: boolean) => void;
+  onLaunchDapp: (
+    url: string,
+    walletId: string,
+    localName: string
+  ) => Promise<void>;
 };
 type State = {
   isNodeRestarting: boolean;
   isWalletRestarting: boolean;
   isDiagnosticsCopied: boolean;
+  dappUrl: string;
+  diagnosticsWalletId: string;
+  dappLaunchFailed: boolean;
 };
 const COPIED_FEEDBACK_DURATION = 2000;
 const FINAL_CARDANO_NODE_STATES = [
@@ -499,6 +563,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isNodeRestarting: false,
       isWalletRestarting: false,
       isDiagnosticsCopied: false,
+      dappUrl: '',
+      diagnosticsWalletId: props.defaultDiagnosticsWalletId,
+      dappLaunchFailed: false,
     };
   }
 
@@ -534,6 +601,18 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const nextWalletPID = this.props.coreInfo.cardanoWalletPID;
     if (nextWalletPID !== 0 && nextWalletPID !== prevWalletPID) {
       this.setState({ isWalletRestarting: false }); // eslint-disable-line
+    }
+    if (
+      !this.props.diagnosticsWallets.some(
+        ({ id }) => id === this.state.diagnosticsWalletId
+      )
+    ) {
+      const diagnosticsWalletId =
+        this.props.defaultDiagnosticsWalletId ||
+        this.props.diagnosticsWallets[0]?.id ||
+        '';
+      if (diagnosticsWalletId !== this.state.diagnosticsWalletId)
+        this.setState({ diagnosticsWalletId });
     }
   }
 
@@ -659,7 +738,11 @@ class DaedalusDiagnostics extends Component<Props, State> {
     const { getSectionRow, getRow } = this;
 
     return (
-      <div className={styles.component}>
+      <div
+        className={classNames(styles.component, {
+          [styles.dappBrowserAvailable]: this.props.diagnosticsAvailable,
+        })}
+      >
         <DialogCloseButton
           className={styles.closeButton}
           icon={closeCrossThin}
@@ -962,6 +1045,84 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 onStartMithrilPartialSync={onStartMithrilPartialSync}
               />
             </div>
+            {this.props.diagnosticsAvailable && (
+              <form className={styles.dappBrowser} onSubmit={this.launchDapp}>
+                {getSectionRow('dappBrowser')}
+                <p className={styles.dappBrowserWarning}>
+                  {intl.formatMessage(messages.dappBrowserWarning)}
+                </p>
+                <label htmlFor="diagnostics-dapp-url">
+                  {intl.formatMessage(messages.dappBrowserUrl)}
+                </label>
+                <input
+                  id="diagnostics-dapp-url"
+                  type="url"
+                  required
+                  value={this.state.dappUrl}
+                  onChange={(event) =>
+                    this.setState({
+                      dappUrl: event.target.value,
+                      dappLaunchFailed: false,
+                    })
+                  }
+                />
+                <label htmlFor="diagnostics-dapp-wallet">
+                  {intl.formatMessage(messages.dappBrowserWallet)}
+                </label>
+                <select
+                  id="diagnostics-dapp-wallet"
+                  value={this.state.diagnosticsWalletId}
+                  onChange={(event) =>
+                    this.setState({
+                      diagnosticsWalletId: event.target.value,
+                      dappLaunchFailed: false,
+                    })
+                  }
+                >
+                  {this.props.diagnosticsWallets.map(({ id, name }) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+                {this.props.consoleCaptureAvailable && (
+                  <div className={styles.dappConsoleCapture}>
+                    <label htmlFor="diagnostics-dapp-console-capture">
+                      <input
+                        id="diagnostics-dapp-console-capture"
+                        type="checkbox"
+                        checked={this.props.consoleCaptureEnabled}
+                        onChange={(event) =>
+                          this.props.onConsoleCaptureChange(
+                            event.target.checked
+                          )
+                        }
+                      />
+                      {intl.formatMessage(messages.dappConsoleCapture)}
+                    </label>
+                    <p>
+                      {intl.formatMessage(messages.dappConsoleCaptureWarning)}
+                    </p>
+                  </div>
+                )}
+                {this.state.dappLaunchFailed && (
+                  <div className={styles.error} role="alert">
+                    {intl.formatMessage(messages.dappBrowserLaunchFailed)}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={
+                    !this.props.diagnosticsReady ||
+                    this.props.isDappLaunching ||
+                    this.state.dappUrl.trim() === '' ||
+                    this.state.diagnosticsWalletId === ''
+                  }
+                >
+                  {intl.formatMessage(messages.dappBrowserLaunch)}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
@@ -1147,6 +1308,19 @@ class DaedalusDiagnostics extends Component<Props, State> {
     return formatDiagnosticsText(sections);
   };
 
+  launchDapp = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+    this.setState({ dappLaunchFailed: false });
+    try {
+      await this.props.onLaunchDapp(
+        this.state.dappUrl,
+        this.state.diagnosticsWalletId,
+        this.context.intl.formatMessage(messages.dappBrowserWindowTitle)
+      );
+    } catch {
+      this.setState({ dappLaunchFailed: true });
+    }
+  };
   getLocalisationForCardanoNodeState = () => {
     const { cardanoNodeState } = this.props;
     let localisationKey;

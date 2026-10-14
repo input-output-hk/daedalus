@@ -27,3 +27,12 @@ source/renderer/app/i18n/locales/
 source/renderer/app/config/newsfeed-files/
 tests/paper-wallets/e2e/documents/*
 tests/wallets/e2e/documents/*
+
+# Reviewed byte-hashed and signed evidence must not be rewritten by formatting.
+source/common/cardano/fixtures/exact-cbor/*.json
+source/common/cip30/contracts/*.json
+source/common/cip30/contracts/fixtures/*.json
+source/common/hardware/fixtures/capability-matrix/*.json
+hardware-wallet-tests/capability-matrix/*.json
+hardware-wallet-tests/certification/**/*.json
+tests/dapps/conformance/fixtures/*.json

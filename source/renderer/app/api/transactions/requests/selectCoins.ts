@@ -1,3 +1,4 @@
+import type BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../../domains/Wallet';
 import type { RequestConfig } from '../../common/types';
 import type {
@@ -8,6 +9,7 @@ import type {
 } from '../types';
 import type { DelegationAction } from '../../../types/stakingTypes';
 import { request } from '../../utils/request';
+import { walletInputSelectionChannel } from '../../../ipc/collateral';
 
 export type PaymentsType = {
   payments: Array<TransactionPaymentData>;
@@ -53,18 +55,19 @@ export type SelectCoinsResponseType = {
     pool?: string;
     certificate_type: DelegationAction;
     reward_account_path: Array<string>;
+    vote?: string;
   }>;
   deposits_taken?: Array<{
-    quantity: number;
+    quantity: number | BigNumber;
     unit: WalletUnits.LOVELACE;
   }>;
   deposits_returned?: Array<{
-    quantity: number;
+    quantity: number | BigNumber;
     unit: WalletUnits.LOVELACE;
   }>;
   metadata?: string;
 };
-export const selectCoins = (
+export const selectCoins = async (
   config: RequestConfig,
   { walletId, data }: SelectCoinsRequestType
 ): Promise<SelectCoinsResponseType> => {
@@ -75,6 +78,6 @@ export const selectCoins = (
       ...config,
     },
     {},
-    data
+    { ...data, ...(await walletInputSelectionChannel.request({ walletId })) }
   );
 };

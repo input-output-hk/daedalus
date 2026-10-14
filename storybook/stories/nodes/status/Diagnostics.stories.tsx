@@ -82,6 +82,20 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onStartMithrilPartialSync: async () => {
     action('onStartMithrilPartialSync')();
   },
+  diagnosticsWallets: [
+    { id: 'wallet-a', name: 'Personal wallet' },
+    { id: 'wallet-b', name: 'Hardware wallet' },
+  ],
+  defaultDiagnosticsWalletId: 'wallet-a',
+  diagnosticsAvailable: true,
+  diagnosticsReady: true,
+  isDappLaunching: false,
+  consoleCaptureAvailable: true,
+  consoleCaptureEnabled: false,
+  onConsoleCaptureChange: action('onConsoleCaptureChange'),
+  onLaunchDapp: async (url, walletId, localName) => {
+    action('onLaunchDapp')({ url, walletId, localName });
+  },
 };
 
 type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;
@@ -148,8 +162,12 @@ storiesOf('Nodes / Diagnostic', module)
       mithrilBehindByEpochs={undefined}
     />
   ))
-  .add('Partial Sync Confirmation', () => (
-    <AutoOpenedPartialSyncConfirmation />
+  .add('Partial Sync Confirmation', () => <AutoOpenedPartialSyncConfirmation />)
+  .add('DApp Browser Not Ready', () => (
+    <DaedalusDiagnostics {...baseProps} diagnosticsReady={false} />
+  ))
+  .add('DApp Browser Unavailable', () => (
+    <DaedalusDiagnostics {...baseProps} diagnosticsAvailable={false} />
   ));
 
 storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)

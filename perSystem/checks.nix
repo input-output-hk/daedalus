@@ -30,6 +30,9 @@
           mkdir -p $HOME
           # Prevent yarn from hitting the network in the sandbox:
           echo '"--offline" true' >>$HOME/.yarnrc
+          # node_modules exports no registry metadata. Declare the pinned
+          # tarballs separately for live provenance against the original lock.
+          export DAEDALUS_YARN_OFFLINE_CACHE=${common.offlineCache}
           cp -r ${node_modules}/. ./
           chmod -R +w .
           patchShebangs .
@@ -40,7 +43,7 @@
       };
     linuxDebPackageContract =
       pkgs.runCommand "linux-deb-package-contract" {
-        nativeBuildInputs = [pkgs.dpkg pkgs.jq pkgs.file pkgs.patchelf];
+        nativeBuildInputs = [pkgs.dpkg pkgs.jq pkgs.file pkgs.patchelf pkgs.desktop-file-utils];
       } ''
           set -eu
           deb=$(printf '%s\n' ${config.packages."deb-installer-mainnet"}/*.deb)
@@ -52,12 +55,15 @@
           test -x "$root/bin/daedalus"
           test -x "$root/libexec/daedalus-frontend"
           test -x "$root/libexec/electron"
+          test -f "$root/libexec/electron" -a ! -L "$root/libexec/electron"
+          test -f "$root/libexec/daedalus-js/main/dapp.js"
           test ! -e "$root/libexec/update-runner"
           test ! -e "$root/libexec/.patchelf-static"
           test ! -e "$root/share/icon_large.png"
           test ! -e "$root/share/applications"
           test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
           test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
+          jq -e '.dappBrowserPolicy.globalEnabled == false and .dappSandboxPackageCluster == "mainnet" and .dappNetwork.cluster == "mainnet" and .dappNetwork.genesisFile == "genesis.json"' "$root/config/daedalus-config.json" >/dev/null
           jq -e '.electron.exe | endswith("/libexec/daedalus-frontend")' "$root/config/daedalus-config.json" >/dev/null
           test "$(stat -c %a "$root/libexec/bundle-electron/lib/electron/chrome-sandbox")" = 755
           test "$(patchelf --print-interpreter "$root/libexec/bundle-electron/lib/electron/electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
@@ -75,6 +81,14 @@
           done
 
           grep -F 'Exec=/opt/daedalus/mainnet/bin/daedalus' extracted/usr/share/applications/Daedalus-mainnet.desktop
+          desktop=extracted/usr/share/applications/Daedalus-mainnet.desktop
+          desktop-file-validate "$desktop"
+          desktop_name=$(jq -r '.desktopName' "$root/libexec/daedalus-js/package.json")
+          test "$desktop_name" = "$(basename "$desktop")"
+          grep -Fx "StartupWMClass=''${desktop_name%.desktop}" "$desktop"
+          icon=$(grep '^Icon=' "$desktop" | cut -d= -f2)
+          test -f "extracted/usr/share/icons/hicolor/512x512/apps/$icon.png"
+          grep -Fx "export DAEDALUS_WINDOW_ICON='/usr/share/icons/hicolor/512x512/apps/$icon.png'" "$root/libexec/daedalus-frontend"
         grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" "$root/bin/daedalus"
         grep -F 'abort-upgrade' control/preinst
         grep -F 'install)' control/preinst
@@ -250,6 +264,7 @@
         test -x "$root/bin/daedalus"
         test -x "$root/libexec/daedalus-frontend"
         test -x "$root/libexec/electron"
+        test -f "$root/libexec/daedalus-js/main/dapp.js"
         test ! -e "$root/libexec/update-runner"
         test ! -e "$root/libexec/.patchelf-static"
         test ! -e "$root/share/icon_large.png"
@@ -260,6 +275,7 @@
         test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
         test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
         test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
+        jq -e '.dappBrowserPolicy.globalEnabled == false and .dappSandboxPackageCluster == "mainnet" and .dappNetwork.cluster == "mainnet" and .dappNetwork.genesisFile == "genesis.json"' "$root/config/daedalus-config.json" >/dev/null
         jq -e '
           .packageFamily == "rpm"
           and .matrixRow == "fedora-43"
@@ -330,6 +346,7 @@
         test -x "$root/bin/daedalus"
         test -x "$root/libexec/daedalus-frontend"
         test -x "$root/libexec/electron"
+        test -f "$root/libexec/daedalus-js/main/dapp.js"
         test -f "$helper" -a ! -L "$helper"
         test "$(stat -c %a "$helper")" = 755
         test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
@@ -343,6 +360,7 @@
         fi
         test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
         test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
+        jq -e '.dappBrowserPolicy.globalEnabled == false and .dappSandboxPackageCluster == "mainnet" and .dappNetwork.cluster == "mainnet" and .dappNetwork.genesisFile == "genesis.json"' "$root/config/daedalus-config.json" >/dev/null
         jq -e '
           .packageFamily == "arch"
           and .matrixRevision == "task-111-matrix-2026-09-02"
@@ -378,6 +396,70 @@
           echo 'Arch lifecycle accesses wallet state or removes recursively' >&2
           exit 1
         fi
+        touch "$out"
+      '';
+    dappLaunchPolicyContract = let
+      clusters = ["mainnet" "mainnet-flight" "preprod" "preview"];
+      targets = [
+        "x86_64-linux"
+        "x86_64-windows"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      variants = [false true];
+      configs =
+        lib.concatMap
+        (target:
+          lib.concatMap
+          (cluster:
+            map
+            (devShell: let
+              cfg = (mkCommon target).mkDaedalusConfigs {
+                inherit cluster devShell;
+              };
+              enabled = cluster != "mainnet";
+              logicalCluster =
+                if cluster == "mainnet-flight"
+                then "mainnet"
+                else cluster;
+            in
+              assert cfg.dappBrowserPolicy.globalEnabled == enabled;
+              assert cfg.dappBrowserPolicy.preferredCatalogEnabled == enabled;
+              assert cfg.dappBrowserPolicy.diagnosticsEnabled == enabled;
+              assert cfg.dappBrowserPolicy.cip104Revision
+              == (
+                if enabled
+                then 1
+                else 0
+              );
+              assert cfg.dappBrowserPolicy.cip142Revision == 0;
+              assert cfg.dappBrowserPolicy.hardwareConnectorEnabled;
+              assert cfg.dappNetwork.cluster == logicalCluster;
+              assert cfg.dappNetwork.genesisFile == "genesis.json";
+              assert cfg.dappSandboxPackageCluster == cluster;
+              assert cfg.daedalusConfig.isFlight == (cluster == "mainnet-flight");
+                cfg.configFiles)
+            variants)
+          clusters)
+        targets;
+    in
+      pkgs.runCommand "dapp-launch-policy-contract" {
+        nativeBuildInputs = [pkgs.jq];
+      } ''
+        set -eu
+        for config_dir in ${lib.concatStringsSep " " configs}; do
+          config="$config_dir/daedalus-config.json"
+          jq -e '
+            (.dappBrowserPolicy.revision == 1)
+            and (.dappBrowserPolicy.cip142Revision == 0)
+            and (.dappBrowserPolicy.hardwareConnectorEnabled == true)
+            and (.dappSandboxPackageCluster | type == "string")
+            and (.cardanoWalletSourceRevision | test("^[0-9a-f]{40}$"))
+            and (.dappNetwork.cluster | type == "string")
+            and (.dappNetwork.genesisFile == "genesis.json")
+            and (.dappNetwork.genesisHash | test("^[0-9a-f]{64}$"))
+          ' "$config" >/dev/null
+        done
         touch "$out"
       '';
   in {
@@ -543,6 +625,7 @@
             echo "prettier ${pinned} in package.json and in nix fmt"
             touch $out
           '';
+        dapp-launch-policy-contract = dappLaunchPolicyContract;
         linux-deb-package-contract = linuxDebPackageContract;
         linux-rpm-package-contract = linuxRpmPackageContract;
         linux-arch-package-contract = linuxArchPackageContract;

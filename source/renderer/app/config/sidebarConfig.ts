@@ -1,6 +1,8 @@
 import { ROUTES } from '../routes-config';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/walle... Remove this comment to see the full error message
 import walletsIcon from '../assets/images/sidebar/wallet-ic.inline.svg';
+// @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/apps... Remove this comment to see the full error message
+import appsIcon from '../assets/images/sidebar/apps-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/setti... Remove this comment to see the full error message
 import settingsIcon from '../assets/images/sidebar/settings-ic.inline.svg';
 // @ts-ignore ts-migrate(2307) FIXME: Cannot find module '../assets/images/sidebar/paper... Remove this comment to see the full error message
@@ -26,6 +28,12 @@ export const CATEGORIES_BY_NAME = {
     icon: walletsIcon,
     route: ROUTES.WALLETS.ROOT,
     tooltipTextId: 'wallets',
+  },
+  APPS: {
+    name: 'APPS',
+    icon: appsIcon,
+    route: ROUTES.APPS.ROOT,
+    tooltipTextId: 'apps',
   },
   PAPER_WALLET_CREATE_CERTIFICATE: {
     name: 'PAPER_WALLET_CREATE_CERTIFICATE',
@@ -64,18 +72,21 @@ export const CATEGORIES_BY_NAME = {
 };
 export const CATEGORIES_WITH_DELEGATION_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.APPS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
   CATEGORIES_BY_NAME.NETWORK_INFO,
 ];
 export const CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.APPS,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
   CATEGORIES_BY_NAME.NETWORK_INFO,
 ];
 export const CATEGORIES_LIST = [
   CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.APPS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.GOVERNANCE,

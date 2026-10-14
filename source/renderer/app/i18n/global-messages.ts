@@ -21,6 +21,13 @@ export default defineMessages({
     defaultMessage: '!!!This field is required.',
     description: 'Error message when required fields are left empty.',
   },
+  receivingAddressUnavailable: {
+    id: 'global.errors.receivingAddressUnavailable',
+    defaultMessage:
+      '!!!The receiving address is not available. Wait for the wallet to load and try again.',
+    description:
+      'Error shown when the canonical receiving address is unavailable.',
+  },
   knownMnemonicWordCount: {
     id: 'global.info.knownMnemonicWordCount',
     defaultMessage: '!!!{actual} of {required} words entered',

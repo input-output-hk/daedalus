@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import type { ProcessMetric } from 'electron';
 import {
   hasSandboxBypass,
@@ -7,6 +10,7 @@ import {
   validatePackageIdentity,
   validateRendererEvidence,
   validateWindowsPackageIdentity,
+  validateNixOSProductionPackage,
 } from './dappSandboxAvailability';
 
 jest.mock('electron', () => ({
@@ -27,10 +31,13 @@ const mainEvidence = {
   argv: ['/electron', '.'],
   status: { Pid: '10' },
   startTime: '100',
+  uidMap: '0 0 4294967295\n',
+  gidMap: '0 0 4294967295\n',
   namespaces: {
     pid: 'pid:[10]',
     user: 'user:[10]',
     mnt: 'mnt:[10]',
+    net: 'net:[10]',
   },
 };
 
@@ -43,13 +50,50 @@ const rendererEvidence = {
     Seccomp: '2',
     Seccomp_filters: '1',
     CapEff: '0000000000000000',
+    CapPrm: '0000000000000000',
+    CapInh: '0000000000000000',
   },
   startTime: '200',
+  uidMap: '0 1000 1\n',
+  gidMap: '0 1000 1\n',
   namespaces: {
     pid: 'pid:[20]',
     user: 'user:[20]',
     mnt: 'mnt:[20]',
+    net: 'net:[20]',
   },
+};
+
+const mainFilesystem = {
+  device: '1',
+  inode: '2',
+  filesystemType: '61267',
+  isDirectory: true,
+  empty: false,
+  deadProcRoot: false,
+  chromiumFdinfoRoot: false,
+  cwdMatchesRoot: false,
+};
+
+const restrictedFilesystem = {
+  device: '3',
+  inode: '4',
+  filesystemType: '40864',
+  isDirectory: true,
+  empty: true,
+  deadProcRoot: false,
+  chromiumFdinfoRoot: true,
+  cwdMatchesRoot: true,
+};
+
+const sharedMain = { ...mainEvidence, filesystem: mainFilesystem };
+const sharedRenderer = {
+  ...rendererEvidence,
+  namespaces: {
+    ...rendererEvidence.namespaces,
+    mnt: mainEvidence.namespaces.mnt,
+  },
+  filesystem: restrictedFilesystem,
 };
 
 const archManifest = {
@@ -76,8 +120,7 @@ const windowsPackage = {
   executablePath: 'C:\\Program Files\\Daedalus Mainnet\\Daedalus Mainnet.exe',
   installRoot: 'C:\\Program Files\\Daedalus Mainnet',
   isPackaged: true,
-  launcherConfigPath:
-    'C:\\Program Files\\Daedalus Mainnet\\launcher-config.yaml',
+  configPath: 'C:\\Program Files\\Daedalus Mainnet\\daedalus-config.json',
   resourcesPath: 'C:\\Program Files\\Daedalus Mainnet\\resources',
 };
 
@@ -88,8 +131,8 @@ const darwinPackage = {
   executablePath: '/Applications/Daedalus Preview.app/Contents/MacOS/Frontend',
   installRoot: '/Applications/Daedalus Preview.app',
   isPackaged: true,
-  launcherConfigPath:
-    '/Applications/Daedalus Preview.app/Contents/Resources/launcher-config.yaml',
+  configPath:
+    '/Applications/Daedalus Preview.app/Contents/Resources/daedalus-config.json',
   resourcesPath: '/Applications/Daedalus Preview.app/Contents/Resources',
 };
 
@@ -148,6 +191,255 @@ describe('dApp sandbox availability', () => {
     ).toBe(false);
   });
 
+  test('accepts only proved Chromium roots on shared mounts', () => {
+    expect(validateRendererEvidence(sharedMain, sharedRenderer)).toBe(true);
+    expect(
+      validateRendererEvidence(sharedMain, {
+        ...sharedRenderer,
+        filesystem: {
+          ...restrictedFilesystem,
+          empty: false,
+          deadProcRoot: true,
+        },
+      })
+    ).toBe(true);
+    expect(
+      validateRendererEvidence(mainEvidence, {
+        ...rendererEvidence,
+        namespaces: sharedRenderer.namespaces,
+      })
+    ).toBe(false);
+  });
+
+  test.each([
+    [
+      'missing main root',
+      { ...sharedMain, filesystem: undefined },
+      sharedRenderer,
+    ],
+    [
+      'missing renderer root',
+      sharedMain,
+      { ...sharedRenderer, filesystem: undefined },
+    ],
+    [
+      'both missing roots',
+      mainEvidence,
+      { ...sharedRenderer, filesystem: undefined },
+    ],
+    [
+      'same root',
+      sharedMain,
+      {
+        ...sharedRenderer,
+        filesystem: { ...restrictedFilesystem, device: '1', inode: '2' },
+      },
+    ],
+    [
+      'invalid main root',
+      {
+        ...sharedMain,
+        filesystem: { ...mainFilesystem, device: 'invalid' },
+      },
+      sharedRenderer,
+    ],
+    [
+      'non-directory main root',
+      {
+        ...sharedMain,
+        filesystem: { ...mainFilesystem, isDirectory: false },
+      },
+      sharedRenderer,
+    ],
+    [
+      'invalid renderer root',
+      sharedMain,
+      {
+        ...sharedRenderer,
+        filesystem: { ...restrictedFilesystem, inode: '' },
+      },
+    ],
+  ])('rejects shared mounts with %s', (_name, main, renderer) => {
+    expect(
+      validateRendererEvidence(
+        main as typeof sharedMain,
+        renderer as typeof sharedRenderer
+      )
+    ).toBe(false);
+  });
+
+  test.each([
+    ['nonempty root', { empty: false }],
+    ['nonprocfs root', { filesystemType: '61267' }],
+    ['non-directory root', { isDirectory: false }],
+    ['arbitrary empty root', { chromiumFdinfoRoot: false }],
+    ['escaped cwd', { cwdMatchesRoot: false }],
+    [
+      'nonprocfs dead root',
+      { filesystemType: '61267', empty: false, deadProcRoot: true },
+    ],
+    [
+      'arbitrary dead root',
+      { chromiumFdinfoRoot: false, empty: false, deadProcRoot: true },
+    ],
+  ])('rejects %s', (_name, patch) => {
+    expect(
+      validateRendererEvidence(sharedMain, {
+        ...sharedRenderer,
+        filesystem: { ...restrictedFilesystem, ...(patch as object) },
+      })
+    ).toBe(false);
+  });
+
+  test.each(['pid', 'user', 'net'] as Array<'pid' | 'user' | 'net'>)(
+    'rejects shared %s namespace on the shared-mount route',
+    (namespace) => {
+      expect(
+        validateRendererEvidence(sharedMain, {
+          ...sharedRenderer,
+          namespaces: {
+            ...sharedRenderer.namespaces,
+            [namespace]: mainEvidence.namespaces[namespace],
+          },
+        })
+      ).toBe(false);
+    }
+  );
+
+  test.each(['pid', 'user', 'net'] as Array<'pid' | 'user' | 'net'>)(
+    'rejects missing %s namespace proof',
+    (namespace) => {
+      expect(
+        validateRendererEvidence(
+          {
+            ...sharedMain,
+            namespaces: { ...sharedMain.namespaces, [namespace]: '' },
+          },
+          sharedRenderer
+        )
+      ).toBe(false);
+      expect(
+        validateRendererEvidence(sharedMain, {
+          ...sharedRenderer,
+          namespaces: { ...sharedRenderer.namespaces, [namespace]: '' },
+        })
+      ).toBe(false);
+    }
+  );
+
+  test.each(['CapEff', 'CapPrm', 'CapInh'])(
+    'requires zero %s on the shared-mount route',
+    (field) => {
+      for (const value of ['0001', '', 'invalid']) {
+        expect(
+          validateRendererEvidence(sharedMain, {
+            ...sharedRenderer,
+            status: { ...sharedRenderer.status, [field]: value },
+          })
+        ).toBe(false);
+      }
+    }
+  );
+
+  test.each([
+    '',
+    '0 1000 0',
+    '0 1000 2',
+    '0 1000 1\n1 1001 1',
+    '-1 1000 1',
+    '0 +1000 1',
+    '0 1.5 1',
+    '0 1000',
+    '4294967296 1000 1',
+    '0 4294967296 1',
+    '4294967295 1000 2',
+    '0 4294967295 2',
+    '0 1000 4294967296',
+  ])('rejects invalid or non-singleton renderer mappings %s', (map) => {
+    for (const field of ['uidMap', 'gidMap']) {
+      expect(
+        validateRendererEvidence(sharedMain, {
+          ...sharedRenderer,
+          [field]: map,
+        })
+      ).toBe(false);
+    }
+  });
+
+  test('validates and structurally compares both main mappings', () => {
+    for (const field of ['uidMap', 'gidMap']) {
+      for (const map of ['', '0 0 0', '0 4294967295 2', '  0   1000  1  \n']) {
+        expect(
+          validateRendererEvidence(
+            {
+              ...sharedMain,
+              [field]: map,
+            },
+            sharedRenderer
+          )
+        ).toBe(false);
+      }
+    }
+    expect(
+      validateRendererEvidence(
+        {
+          ...sharedMain,
+          uidMap: '0 0 1000\n1000 2000 1000\n',
+          gidMap: '0 0 1000\n1000 2000 1000\n',
+        },
+        {
+          ...sharedRenderer,
+          uidMap: '\t0  1000\t1\n',
+          gidMap: '0 1000 1',
+        }
+      )
+    ).toBe(true);
+  });
+
+  test('accepts root identities differing in either component', () => {
+    for (const identity of [
+      { device: '1', inode: '4' },
+      { device: '3', inode: '2' },
+    ]) {
+      expect(
+        validateRendererEvidence(sharedMain, {
+          ...sharedRenderer,
+          filesystem: { ...restrictedFilesystem, ...identity },
+        })
+      ).toBe(true);
+    }
+  });
+
+  test('preserves the separated-mount route without optional root proof', () => {
+    expect(
+      validateRendererEvidence(mainEvidence, {
+        ...rendererEvidence,
+        status: { ...rendererEvidence.status, CapPrm: '1', CapInh: '1' },
+        namespaces: {
+          ...rendererEvidence.namespaces,
+          user: mainEvidence.namespaces.user,
+          net: mainEvidence.namespaces.net,
+        },
+      })
+    ).toBe(true);
+  });
+
+  test.each([
+    { argv: ['/electron', '--type=renderer', '--no-sandbox'] },
+    { argv: ['/electron', '--type=gpu-process'] },
+    { status: { ...rendererEvidence.status, Pid: '21' } },
+    { status: { ...rendererEvidence.status, NoNewPrivs: '0' } },
+    { status: { ...rendererEvidence.status, Seccomp: '0' } },
+    { status: { ...rendererEvidence.status, Seccomp_filters: '0' } },
+  ])('keeps common containment checks on shared mounts', (patch) => {
+    expect(
+      validateRendererEvidence(sharedMain, {
+        ...sharedRenderer,
+        ...patch,
+      })
+    ).toBe(false);
+  });
+
   test.each([
     {
       name: 'the exact Arch snapshot',
@@ -164,14 +456,14 @@ describe('dApp sandbox availability', () => {
           id: 'omarchy',
           versionId: '4.0.2',
           buildId: '4.0.2',
-          kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
+          kernelRelease: '7.1.9-arch1-2',
         },
       },
       host: {
         id: 'omarchy',
         versionId: '4.0.2',
         buildId: '4.0.2',
-        kernelRelease: '7.1.8-arch1-Watanare-T2-3-t2',
+        kernelRelease: '7.1.9-arch1-2',
       },
       accepted: true,
     },
@@ -253,7 +545,7 @@ describe('dApp sandbox availability', () => {
           appPath: `${installRoot}\\resources\\app`,
           executablePath: `${installRoot}\\${appName}.exe`,
           installRoot,
-          launcherConfigPath: `${installRoot}\\launcher-config.yaml`,
+          configPath: `${installRoot}\\daedalus-config.json`,
           resourcesPath: `${installRoot}\\resources`,
         },
         cluster
@@ -275,7 +567,7 @@ describe('dApp sandbox availability', () => {
           appPath: `${installRoot}/Contents/Resources/app`,
           executablePath: `${installRoot}/Contents/MacOS/Frontend`,
           installRoot,
-          launcherConfigPath: `${installRoot}/Contents/Resources/launcher-config.yaml`,
+          configPath: `${installRoot}/Contents/Resources/daedalus-config.json`,
           resourcesPath: `${installRoot}/Contents/Resources`,
         },
         'preview'
@@ -293,7 +585,7 @@ describe('dApp sandbox availability', () => {
           appPath: `${installRoot}/Contents/Resources/app`,
           executablePath: `${installRoot}/Contents/MacOS/Frontend`,
           installRoot,
-          launcherConfigPath: `${installRoot}/Contents/Resources/launcher-config.yaml`,
+          configPath: `${installRoot}/Contents/Resources/daedalus-config.json`,
           resourcesPath: `${installRoot}/Contents/Resources`,
         },
         'mainnet-flight'
@@ -320,8 +612,8 @@ describe('dApp sandbox availability', () => {
       'preview',
     ],
     [
-      'external launcher config',
-      { ...darwinPackage, launcherConfigPath: '/tmp/launcher-config.yaml' },
+      'external config',
+      { ...darwinPackage, configPath: '/tmp/daedalus-config.json' },
       'preview',
     ],
     [
@@ -509,6 +801,13 @@ describe('dApp sandbox availability', () => {
       },
     },
     {
+      name: 'shared mount namespace',
+      evidence: {
+        ...rendererEvidence,
+        namespaces: { ...rendererEvidence.namespaces, mnt: 'mnt:[10]' },
+      },
+    },
+    {
       name: 'wrong observed PID',
       evidence: {
         ...rendererEvidence,
@@ -524,5 +823,108 @@ describe('dApp sandbox availability', () => {
       name: 'DappSandboxUnavailableError',
       reason: 'not-checked',
     });
+  });
+});
+
+describe('NixOS package identity', () => {
+  const root = '/nix/store/aaaaaaaa-daedalus';
+  const configPath = `${root}/config/daedalus-config.json`;
+  const electronPath = `${root}/libexec/bundle-electron/lib/electron/electron`;
+  const manifestPath = '/var/lib/daedalus/preprod/sandbox-identity.json';
+  const helperPath = '/var/lib/daedalus/preprod/chrome-sandbox';
+  const helper = Buffer.from('sandbox helper');
+  const helperHash = crypto.createHash('sha256').update(helper).digest('hex');
+  const execPath = Object.getOwnPropertyDescriptor(process, 'execPath');
+  const hostPathSeparator = path.sep;
+  const posixResolve = path.posix.resolve;
+  const posixJoin = path.posix.join;
+
+  const installFixture = (
+    options: {
+      host?: string;
+      helperHash?: string;
+      root?: string;
+    } = {}
+  ) => {
+    const fixtureRoot = options.root || root;
+    // The fixture models Linux, regardless of the Jest host's native paths.
+    jest.spyOn(path, 'resolve').mockImplementation(posixResolve);
+    jest.spyOn(path, 'join').mockImplementation(posixJoin);
+    Object.defineProperty(path, 'sep', { value: path.posix.sep });
+    process.env.ENTRYPOINT_DIR = fixtureRoot;
+    process.env.DAEDALUS_CONFIG_FILE = `${fixtureRoot}/config/daedalus-config.json`;
+    Object.defineProperty(process, 'execPath', {
+      configurable: true,
+      value: electronPath,
+    });
+    jest.spyOn(fs, 'realpathSync').mockImplementation((value) => String(value));
+    jest.spyOn(fs, 'lstatSync').mockImplementation(((value: fs.PathLike) => {
+      const file = String(value);
+      let mode = 0o444;
+      if (file === helperPath) mode = 0o755;
+      else if (file === manifestPath) mode = 0o644;
+      return {
+        gid: 0,
+        isFile: () => true,
+        isSymbolicLink: () => false,
+        mode,
+        uid: 0,
+      };
+    }) as typeof fs.lstatSync);
+    jest.spyOn(fs, 'readFileSync').mockImplementation(((
+      value: fs.PathLike | number
+    ) => {
+      const file = String(value);
+      if (file === '/etc/os-release')
+        return options.host || 'ID=nixos\nVERSION_ID=26.05\n';
+      if (file === manifestPath)
+        return JSON.stringify({
+          schemaVersion: 2,
+          packageFamily: 'nix',
+          matrixRevision: 'task-112-matrix-2026-09-11',
+          matrixRow: 'nixos-26.05',
+          distribution: { id: 'nixos', versionId: '26.05' },
+          supportState: 'supported',
+          cluster: 'preprod',
+          policy: { kind: 'none' },
+          helper: { mode: '0755', sha256: options.helperHash || helperHash },
+          launch: { electron: electronPath },
+        });
+      if (file === helperPath) return helper;
+      throw new Error(`unexpected read: ${file}`);
+    }) as typeof fs.readFileSync);
+  };
+
+  afterEach(() => {
+    delete process.env.ENTRYPOINT_DIR;
+    delete process.env.DAEDALUS_CONFIG_FILE;
+    if (execPath) Object.defineProperty(process, 'execPath', execPath);
+    jest.restoreAllMocks();
+    Object.defineProperty(path, 'sep', { value: hostPathSeparator });
+  });
+
+  test('accepts the exact store config, manifest, helper, and Electron identity', () => {
+    installFixture();
+    expect(validateNixOSProductionPackage('preprod')).toEqual({
+      failure: null,
+      usernsOnly: true,
+    });
+  });
+
+  test.each([
+    ['an unknown host', { host: 'ID=nixos\nVERSION_ID=unstable\n' }],
+    ['a helper hash mismatch', { helperHash: '0'.repeat(64) }],
+    ['an entrypoint outside the Nix store', { root: '/tmp/daedalus' }],
+  ])('rejects %s', (_name, options) => {
+    installFixture(options);
+    expect(validateNixOSProductionPackage('preprod').failure).not.toBeNull();
+  });
+
+  test('rejects a substituted config path', () => {
+    installFixture();
+    process.env.DAEDALUS_CONFIG_FILE = '/tmp/daedalus-config.json';
+    expect(validateNixOSProductionPackage('preprod').failure).toBe(
+      'unsupported-package'
+    );
   });
 });

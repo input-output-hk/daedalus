@@ -46,11 +46,16 @@ import type {
   ResumeDownloadResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
+import type { DataSignature } from '../cip30/wire';
 import type {
   IntrospectAddressRequest,
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';
 import type {
+  DeviceType,
+  HardwareConnectorActivation,
+  HardwareExactTransaction,
+  HardwareMessageRequest,
   HardwareWalletCardanoAdaAppResponse,
   HardwareWalletConnectionRequest,
   HardwareWalletExtendedPublicKeyRequest,
@@ -67,6 +72,28 @@ import type {
   DRepAnchorPresence,
   DRepAnchorResult,
 } from '../types/governance.types';
+import type {
+  Cip30WalletRequest,
+  Cip30WalletResponse,
+} from '../cip30/executor';
+import type { Cip30TransactionReview } from '../cip30/review';
+import type { Cip103BatchReview } from '../cip30/cip103Review';
+import type { Cip8DataSignReview } from '../cardano/cip8';
+import type {
+  DappGrant,
+  DappGrantLaunch,
+  DappScope,
+} from '../types/dapp.types';
+import type {
+  CollateralRendererRequest,
+  CollateralSnapshot,
+} from '../types/collateral.types';
+import type {
+  NativeApprovalResult,
+  NativePreparedApproval,
+  NativeTransactionAction,
+} from '../transactions/nativePlan';
+import type { TransactionReviewDisplay } from '../transactions/reviewDisplay';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -93,6 +120,17 @@ export type DownloadLogsMainResponse = void;
 export const GET_GPU_STATUS_CHANNEL = 'GET_GPU_STATUS_CHANNEL';
 export type GetGPUStatusRendererRequest = void;
 export type GetGPUStatusMainResponse = GpuStatus;
+
+export const CLOSE_WINDOW_CHANNEL = 'close-window';
+export type CloseWindowRendererRequest = void;
+export type CloseWindowMainResponse = void;
+export const RESIZE_WINDOW_CHANNEL = 'resize-window';
+export type ResizeWindowRendererRequest = {
+  width: number;
+  height: number;
+  animate: boolean;
+};
+export type ResizeWindowMainResponse = void;
 
 /**
  * Channel for showing ui parts specified via constants
@@ -161,6 +199,229 @@ export type LoadAssetMainResponse = string;
 export const OPEN_EXTERNAL_URL_CHANNEL = 'OPEN_EXTERNAL_URL_CHANNEL';
 export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
+
+export const DAPP_BROWSER_OPEN_CHANNEL = 'DAPP_BROWSER_OPEN_CHANNEL';
+export type DappBrowserDiagnosticsOpenRendererRequest = Readonly<{
+  url: string;
+  walletId: string;
+  localName: string;
+  captureConsole: boolean;
+}>;
+export type DappBrowserCatalogOpenRendererRequest = Readonly<{
+  catalogId: string;
+  localName: string;
+  captureConsole: boolean;
+}>;
+export type DappBrowserOpenRendererRequest =
+  | DappBrowserDiagnosticsOpenRendererRequest
+  | DappBrowserCatalogOpenRendererRequest;
+export type DappBrowserOpenMainResponse = void;
+
+export const DAPP_BROWSER_CLOSE_CHANNEL = 'DAPP_BROWSER_CLOSE_CHANNEL';
+export type DappBrowserCloseRendererRequest = void;
+export type DappBrowserCloseMainResponse = void;
+
+export const DAPP_BROWSER_STATUS_CHANNEL = 'DAPP_BROWSER_STATUS_CHANNEL';
+export type DappBrowserStatusRendererRequest = void;
+export type DappBrowserStatusMainResponse = Readonly<{
+  isOpen: boolean;
+  catalogAvailable: boolean;
+  diagnosticsAvailable: boolean;
+  consoleCaptureAvailable: boolean;
+}>;
+
+export const DAPP_BROWSER_STATE_CHANNEL = 'DAPP_BROWSER_STATE_CHANNEL';
+export type DappBrowserStateMainRequest = boolean;
+export type DappBrowserStateRendererResponse = void;
+
+export const DAPP_CONNECTIONS_CHANNEL = 'DAPP_CONNECTIONS_CHANNEL';
+export type DappConnectionIdentity = Readonly<{
+  origin: string;
+  walletId: string;
+  networkGenesis: string;
+  launch: DappGrantLaunch;
+}>;
+export type DappConnectionScope = Extract<
+  DappScope,
+  'governance-key-disclosure' | 'account-public-key-disclosure'
+>;
+export type DappConnectionsRendererRequest =
+  | Readonly<{ type: 'list' | 'repair' }>
+  | Readonly<{
+      type: 'disconnect' | 'forget';
+      identity: DappConnectionIdentity;
+    }>
+  | Readonly<{
+      type: 'revoke-scope';
+      identity: DappConnectionIdentity;
+      scope: DappConnectionScope;
+    }>
+  | Readonly<{ type: 'remove-wallet'; walletId: string }>
+  | Readonly<{ type: 'prune-wallets'; walletIds: readonly string[] }>;
+export type DappConnectionsMainResponse = Readonly<{
+  corrupt: boolean;
+  grants: readonly DappGrant[];
+}>;
+
+export const DAPP_COLLATERAL_CHANNEL = 'DAPP_COLLATERAL_CHANNEL';
+export type DappCollateralRendererRequest = CollateralRendererRequest;
+export type DappCollateralMainResponse = CollateralSnapshot;
+
+export const WALLET_INPUT_SELECTION_CHANNEL = 'WALLET_INPUT_SELECTION_CHANNEL';
+export type WalletInputSelectionRendererRequest = Readonly<{
+  walletId: string;
+}>;
+export type WalletInputSelectionMainResponse = Readonly<{
+  preferred_collateral: readonly Readonly<{ id: string; index: number }>[];
+}>;
+
+export const WALLET_APPROVAL_RENDER_CHANNEL = 'WALLET_APPROVAL_RENDER_CHANNEL';
+export type DappConsentKind =
+  | 'connection'
+  | 'key-disclosure'
+  | 'data-sign'
+  | 'transaction-sign'
+  | 'transaction-submit'
+  | 'batch-sign'
+  | 'batch-submit';
+type DappConsentIdentity = Readonly<{
+  requestId: string;
+  walletId: string;
+  origin: string;
+  walletName: string;
+  networkName: string;
+  scopes: readonly string[];
+  extensions: readonly number[];
+}>;
+export type TransactionAuthorization =
+  | Readonly<{ kind: 'software' }>
+  | Readonly<{ kind: 'hardware'; vendor: 'ledger' | 'trezor' }>
+  | Readonly<{ kind: 'none' }>;
+export type DappConsentPresentation = DappConsentIdentity &
+  (
+    | Readonly<{ kind: 'connection' }>
+    | Readonly<{
+        kind: 'key-disclosure';
+        requiresPassphrase?: boolean;
+      }>
+    | Readonly<{
+        kind: 'transaction-sign';
+        authorization: TransactionAuthorization;
+        review: Cip30TransactionReview;
+        canSubmit: boolean;
+      }>
+    | Readonly<{
+        kind: 'transaction-submit';
+        authorization: TransactionAuthorization;
+        review: Cip30TransactionReview;
+      }>
+    | Readonly<{
+        kind: 'batch-sign' | 'batch-submit';
+        authorization: TransactionAuthorization;
+        review: Cip103BatchReview;
+      }>
+    | Readonly<{ kind: 'data-sign'; review: Cip8DataSignReview }>
+  );
+export type NativeTransactionAcknowledgement =
+  | 'flight-mainnet-funds'
+  | 'undelegation-network-support'
+  | 'undelegation-rewards';
+export type NativeTransactionPresentation = Readonly<{
+  kind: 'native-transaction';
+  requestId: string;
+  walletId: string;
+  attemptId: string;
+  walletName: string;
+  networkName: string;
+  action: NativeTransactionAction;
+  authorization: Exclude<TransactionAuthorization, Readonly<{ kind: 'none' }>>;
+  collection: 'single' | 'migration';
+  destinationWalletName?: string;
+  acknowledgements: readonly NativeTransactionAcknowledgement[];
+  items: readonly (
+    | Readonly<{ kind: 'exact-cbor'; review: Cip30TransactionReview }>
+    | Readonly<{
+        kind: 'native-plan';
+        display: TransactionReviewDisplay;
+        planCbor: string;
+        planDigest: string;
+      }>
+  )[];
+}>;
+export type WalletApprovalPresentation =
+  | DappConsentPresentation
+  | NativeTransactionPresentation;
+export type WalletApprovalResult =
+  | NativeApprovalResult
+  | Readonly<{ status: 'signed'; transactionIds: readonly string[] }>;
+export type WalletApprovalProgressPhase =
+  | 'signing'
+  | 'waiting-for-device'
+  | 'submitting';
+export type WalletApprovalRenderMainRequest =
+  | Readonly<{ type: 'present'; request: WalletApprovalPresentation }>
+  | Readonly<{
+      type: 'progress';
+      requestId: string;
+      phase: WalletApprovalProgressPhase;
+      itemIndex?: number;
+      submissionAuthorized: boolean;
+    }>
+  | Readonly<{
+      type: 'terminal';
+      requestId: string;
+      result?: WalletApprovalResult;
+    }>;
+export type WalletApprovalRenderRendererResponse = Readonly<{
+  requestId: string;
+  approved: boolean;
+  passphrase?: string;
+  submit?: true;
+}> | void;
+export const WALLET_TRANSACTION_APPROVAL_CHANNEL =
+  'WALLET_TRANSACTION_APPROVAL_CHANNEL';
+export type WalletTransactionApprovalRendererRequest =
+  | Readonly<{
+      type: 'request-native';
+      attemptId: string;
+      walletId: string;
+      network: NativePreparedApproval['network'];
+      prepared: NativePreparedApproval;
+    }>
+  | Readonly<{ type: 'cancel-native'; attemptId: string; requestId?: string }>
+  | Readonly<{
+      type: 'commit-native-submission';
+      attemptId: string;
+      requestId: string;
+    }>
+  | Readonly<{
+      type: 'progress';
+      requestId: string;
+      phase: WalletApprovalProgressPhase;
+      itemIndex?: number;
+    }>;
+export type WalletTransactionApprovalMainResponse = Readonly<{
+  status: 'accepted' | 'stale' | 'submission-authorized';
+  requestId?: string;
+  bindingDigest?: string;
+  result?: NativeApprovalResult;
+}>;
+export const NATIVE_TRANSACTION_EXECUTE_CHANNEL =
+  'NATIVE_TRANSACTION_EXECUTE_CHANNEL';
+export type NativeTransactionExecuteMainRequest =
+  | Readonly<{
+      type: 'execute';
+      attemptId: string;
+      requestId: string;
+      bindingDigest: string;
+      passphrase?: string;
+    }>
+  | Readonly<{ type: 'cancel'; attemptId: string; requestId: string }>;
+export type NativeTransactionExecuteRendererResponse = NativeApprovalResult;
+
+export const DAPP_CIP30_WALLET_CHANNEL = 'DAPP_CIP30_WALLET_CHANNEL';
+export type DappCip30WalletMainRequest = Cip30WalletRequest;
+export type DappCip30WalletRendererResponse = Cip30WalletResponse;
 
 /**
  * Channel for opening a local directory in the default desktop explorer
@@ -341,6 +602,7 @@ export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
 export type CheckFileExistsMainResponse = boolean;
 
 /**
+
  * Channel for quitting Daedalus and installing update
  */
 export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
@@ -435,6 +697,36 @@ export type signTransactionTrezorRendererRequest = CommonParams &
 export type signTransactionTrezorMainResponse =
   | Success<CardanoSignedTxData>
   | Unsuccessful;
+export const SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL =
+  'SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL';
+export type SignExactHardwareTransactionRendererRequest = Readonly<{
+  walletId: string;
+  vendor: DeviceType;
+  ledgerPath?: string;
+  exact: HardwareExactTransaction;
+}>;
+export type SignExactHardwareTransactionMainResponse = Readonly<{
+  witnessSetCbor: string;
+  signedTransactionCbor: string;
+}>;
+export const VERIFY_HARDWARE_TRANSACTION_CHANNEL =
+  'VERIFY_HARDWARE_TRANSACTION_CHANNEL';
+export type VerifyHardwareTransactionRequest = Readonly<{
+  walletId: string;
+  vendor: DeviceType;
+  unsignedTransaction: string;
+  signedTransaction: string;
+  signerPaths: readonly (readonly number[])[];
+}>;
+export const SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL =
+  'SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL';
+export type SignExactHardwareMessageRendererRequest = Readonly<{
+  vendor: DeviceType;
+  ledgerPath?: string;
+  capability: HardwareConnectorActivation;
+  message: HardwareMessageRequest;
+}>;
+export type SignExactHardwareMessageMainResponse = DataSignature;
 export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;

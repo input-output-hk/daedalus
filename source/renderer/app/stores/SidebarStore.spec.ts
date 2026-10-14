@@ -50,6 +50,31 @@ describe('Sidebar Store', () => {
     }));
   }
 
+  test.each([
+    ['mainnet', true, false, false],
+    ['flight', true, true, true],
+    ['testnet', false, false, true],
+  ])(
+    'configures Apps visibility for %s',
+    (_build, isMainnet, isFlight, expected) => {
+      const environment = global.environment;
+      const flight = global.isFlight;
+      global.environment = { ...environment, isMainnet };
+      global.isFlight = isFlight;
+
+      try {
+        const sidebarStore = setupStore({ wallets: [] });
+        sidebarStore._configureCategories();
+        expect(
+          sidebarStore.CATEGORIES.some(({ name }) => name === 'APPS')
+        ).toBe(expected);
+      } finally {
+        global.environment = environment;
+        global.isFlight = flight;
+      }
+    }
+  );
+
   it('should sort wallets initially by DATE from oldest to newest', () => {
     const sidebarStore = setupStore({
       wallets: [

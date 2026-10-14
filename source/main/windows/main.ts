@@ -1,13 +1,20 @@
 import path from 'path';
-import { app, BrowserWindow, ipcMain, Menu, Rectangle } from 'electron';
+import { app, BrowserWindow, Menu, Rectangle } from 'electron';
 import { environment } from '../environment';
 import ipcApi from '../ipc';
 import RendererErrorHandler from '../utils/rendererErrorHandler';
 import { getTranslation } from '../utils/getTranslation';
 import { getContentMinimumSize } from '../utils/getContentMinimumSize';
 import { buildLabel, stateDirectoryPath } from '../config';
-import { ledgerStatus } from '../ipc/getHardwareWalletChannel';
+import { hardwareWalletService } from '../ipc/getHardwareWalletChannel';
 import { getRtsFlagsSettings } from '../utils/rtsFlagsSettings';
+import {
+  bindWindowRecovery,
+  getTrustedRendererUrl,
+  installFailedLoadRecovery,
+  loadTrustedRenderer,
+} from './navigationPolicy';
+import { bindTrustedRenderer } from '../ipc/lib/trustedRendererIpcAuthority';
 
 const rendererErrorHandler = new RendererErrorHandler();
 const { isDev, isTest, isLinux, isBlankScreenFixActive, network } = environment;
@@ -60,31 +67,24 @@ export const createMainWindow = (
   };
 
   if (isLinux) {
-    windowOptions.icon = path.join(stateDirectoryPath, 'icon.png');
+    windowOptions.icon =
+      process.env.DAEDALUS_WINDOW_ICON ||
+      path.join(stateDirectoryPath, 'icon.png');
   }
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
-  rendererErrorHandler.setup(window, createMainWindow);
+  const trustedRendererUrl = getTrustedRendererUrl(isDev, __dirname);
+  bindTrustedRenderer(window, trustedRendererUrl);
+  rendererErrorHandler.setup(
+    window,
+    bindWindowRecovery(createMainWindow, locale, getSavedWindowBounds)
+  );
   const { minWindowsWidth, minWindowsHeight } = getContentMinimumSize(window);
   window.setMinimumSize(minWindowsWidth, minWindowsHeight);
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi(window);
-  // Provide render process with an api to resize the main window
-  ipcMain.on('resize-window', (event, { width, height, animate }) => {
-    if (event.sender !== window.webContents) return;
-    window.setSize(width, height, animate);
-  });
-  // Provide render process with an api to close the main window
-  ipcMain.on('close-window', (event) => {
-    if (event.sender !== window.webContents) return;
-    window.close();
-  });
-  if (isDev) {
-    window.loadURL(`http://127.0.0.1:8080`);
-  } else {
-    window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  }
+  loadTrustedRenderer(window, trustedRendererUrl);
   window.on('page-title-updated', (event) => {
     event.preventDefault();
   });
@@ -158,16 +158,15 @@ export const createMainWindow = (
   });
   // 'closed' fires after the window is destroyed and takes no parameters
   window.on('closed', () => {
-    if (ledgerStatus.listening && !!ledgerStatus.Listener) {
-      ledgerStatus.Listener.unsubscribe();
-      setTimeout(() => app.quit(), 5000);
-    } else {
+    const quitTimer = setTimeout(() => app.quit(), 5000);
+    hardwareWalletService.dispose().finally(() => {
+      clearTimeout(quitTimer);
       app.quit();
-    }
+    });
   });
-  window.webContents.on('did-fail-load', (err) => {
-    rendererErrorHandler.onError('did-fail-load', err);
-  });
+  installFailedLoadRecovery(window.webContents, (event) =>
+    rendererErrorHandler.onError('did-fail-load', event)
+  );
   // 'crashed' was renamed to 'render-process-gone' in Electron 23+
   window.webContents.on('render-process-gone', (_event, details) => {
     rendererErrorHandler.onError('render-process-gone', details);

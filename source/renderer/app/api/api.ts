@@ -43,9 +43,29 @@ import {
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
 import { getICOPublicKey } from './transactions/requests/getICOPublicKey';
+import {
+  getDappCapabilities,
+  getDappTransactionContext,
+  signDappTransactions,
+  signDappData,
+  getDappCip95KeyState,
+  submitDappTransaction,
+} from './transactions/dappBackend';
+import type {
+  DappNetwork,
+  DappCapabilities,
+  DappTransactionContextRequest,
+  DappTransactionContext,
+  DappWitnessRequest,
+  DappWitnessResponse,
+  DappDataSignatureRequest,
+  DappDataSignatureResponse,
+  DappCip95KeyState,
+  DappSubmissionRequest,
+  DappSubmissionResponse,
+} from './transactions/dappBackend';
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
-import { delegateVotes } from './voting/requests/delegateVotes';
 import { getCatalystFund } from './voting/requests/getCatalystFund';
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -141,6 +161,7 @@ import type {
 // Transactions Types
 import {
   Transaction,
+  Transactions,
   TransactionFee,
   TransactionWithdrawals,
   GetTransactionFeeRequest,
@@ -219,9 +240,7 @@ import type {
 import type {
   CreateVotingRegistrationRequest,
   CreateWalletSignatureRequest,
-  GetCatalystFundResponse,
   CatalystFund,
-  DelegateVotesParams,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import { TlsCertificateNotValidError } from './nodes/errors';
@@ -244,6 +263,8 @@ import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers'
 import { AssetLocalData } from '../types/localDataTypes';
 import { handleNotEnoughMoneyError } from './errors';
 import { constructTransaction } from './transactions/requests/constructTransaction';
+import { signTransaction as signFrozenTransaction } from './transactions/requests/signTransaction';
+import { submitTransaction as submitFrozenTransaction } from './transactions/requests/submitTransaction';
 
 const parseCoinSelectionResponse = ({
   delegation,
@@ -305,6 +326,7 @@ const parseCoinSelectionResponse = ({
         certificateType: certificate.certificate_type,
         rewardAccountPath: certificate.reward_account_path,
         pool: certificate.pool || null,
+        ...(certificate.vote ? { vote: certificate.vote } : {}),
       };
       // @ts-ignore ts-migrate(2339) FIXME: Property 'push' does not exist on type '{}'.
       certificatesData.push(certificateData);
@@ -322,12 +344,12 @@ const parseCoinSelectionResponse = ({
   const deposits = depositsArray.length
     ? BigNumber.sum.apply(null, depositsArray)
     : new BigNumber(0);
-  // @TODO - Use API response
-  // https://bump.sh/doc/cardano-wallet-diff/changes/c11ebb1b-39c1-40b6-96b9-610705c62cb8#operation-selectcoins-200-deposits_returned
-  const depositsReclaimed =
-    delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
-      ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
-      : new BigNumber(0);
+  const depositsReturned = map(response.deposits_returned, (deposit) =>
+    deposit.quantity.toString()
+  );
+  const depositsReclaimed = depositsReturned.length
+    ? BigNumber.sum.apply(null, depositsReturned)
+    : new BigNumber(0);
   const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
     withdrawal.amount.quantity.toString()
   );
@@ -389,6 +411,7 @@ export default class AdaApi {
       map(legacyWallets, (legacyAdaWallet) => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0,
+          single_address_mode: false,
           // Not needed for legacy wallets
           delegation: {
             active: {
@@ -445,6 +468,7 @@ export default class AdaApi {
         );
         const extraLegacyWalletProps = {
           address_pool_gap: 0,
+          single_address_mode: false,
           // Not needed for legacy wallets
           delegation: {
             active: {
@@ -509,9 +533,7 @@ export default class AdaApi {
         passphrase,
         extended,
       });
-      logger.debug('AdaApi::getAccountPublicKey success', {
-        accountPublicKey,
-      });
+      logger.debug('AdaApi::getAccountPublicKey success');
       return accountPublicKey;
     } catch (error) {
       logger.error('AdaApi::getAccountPublicKey error', {
@@ -527,9 +549,7 @@ export default class AdaApi {
   getAddresses = async (
     request: GetAddressesRequest
   ): Promise<Array<WalletAddress>> => {
-    logger.debug('AdaApi::getAddresses called', {
-      parameters: filterLogData(request),
-    });
+    logger.debug('AdaApi::getAddresses called');
     const { walletId, queryParams, isLegacy } = request;
 
     try {
@@ -546,14 +566,10 @@ export default class AdaApi {
         response.reverse();
       }
 
-      logger.debug('AdaApi::getAddresses success', {
-        addresses: response,
-      });
+      logger.debug('AdaApi::getAddresses success');
       return response.map(_createAddressFromServerData);
     } catch (error) {
-      logger.error('AdaApi::getAddresses error', {
-        error,
-      });
+      logger.error('AdaApi::getAddresses error');
       throw new ApiError(error);
     }
   };
@@ -582,6 +598,9 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
+  getDappCollateralHistory = async (walletId: string): Promise<Transactions> =>
+    getTransactionHistory(this.config, walletId, { order: 'descending' });
+
   getTransactions = async (
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
@@ -912,6 +931,7 @@ export default class AdaApi {
       });
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1321,7 +1341,7 @@ export default class AdaApi {
   };
 
   constructTransaction = async (params: ConstructTransactionData) => {
-    logger.debug('AdaApi::delegateVotes called', {
+    logger.debug('AdaApi::constructTransaction called', {
       parameters: filterLogData(params),
     });
 
@@ -1353,6 +1373,28 @@ export default class AdaApi {
       throw new ApiError(error).result();
     }
   };
+  signTransaction = async (params: {
+    walletId: string;
+    transaction: string;
+    passphrase: string;
+  }): Promise<{ transaction: string }> => {
+    try {
+      return await signFrozenTransaction(this.config, params);
+    } catch (error) {
+      throw new ApiError(error).result();
+    }
+  };
+
+  submitTransaction = async (params: {
+    walletId: string;
+    transaction: string;
+  }): Promise<{ id: string }> => {
+    try {
+      return await submitFrozenTransaction(this.config, params);
+    } catch (error) {
+      throw new ApiError(error).result();
+    }
+  };
 
   createExternalTransaction = async (
     request: CreateExternalTransactionRequest
@@ -1377,6 +1419,50 @@ export default class AdaApi {
       throw apiError.result();
     }
   };
+
+  getDappCapabilities = (expected: {
+    sourceRevision: string;
+    network: DappNetwork;
+  }): Promise<DappCapabilities> => getDappCapabilities(this.config, expected);
+
+  getDappTransactionContext = ({
+    walletId,
+    request,
+  }: {
+    walletId: string;
+    request: DappTransactionContextRequest;
+  }): Promise<DappTransactionContext> =>
+    getDappTransactionContext(this.config, walletId, request);
+
+  signDappTransactions = ({
+    walletId,
+    request,
+  }: {
+    walletId: string;
+    request: DappWitnessRequest;
+  }): Promise<DappWitnessResponse> =>
+    signDappTransactions(this.config, walletId, request);
+
+  signDappData = ({
+    walletId,
+    request,
+  }: {
+    walletId: string;
+    request: DappDataSignatureRequest;
+  }): Promise<DappDataSignatureResponse> =>
+    signDappData(this.config, walletId, request);
+
+  getDappCip95KeyState = (walletId: string): Promise<DappCip95KeyState> =>
+    getDappCip95KeyState(this.config, walletId);
+
+  submitDappTransaction = ({
+    walletId,
+    request,
+  }: {
+    walletId: string;
+    request: DappSubmissionRequest;
+  }): Promise<DappSubmissionResponse> =>
+    submitDappTransaction(this.config, walletId, request);
   inspectAddress = async (request: {
     addressId: string;
   }): Promise<InspectAddressResponse> => {
@@ -1734,6 +1820,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1797,6 +1884,7 @@ export default class AdaApi {
       });
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1851,6 +1939,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1905,6 +1994,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -1959,6 +2049,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -2005,6 +2096,7 @@ export default class AdaApi {
       );
       const extraLegacyWalletProps = {
         address_pool_gap: 0,
+        single_address_mode: false,
         // Not needed for legacy wallets
         delegation: {
           active: {
@@ -2087,19 +2179,20 @@ export default class AdaApi {
     logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletId, name, isLegacy } = request;
+    const { walletId, isLegacy } = request;
 
     try {
       let wallet: AdaWallet;
 
-      if (isLegacy) {
+      if (request.isLegacy === true) {
         const response = await updateByronWallet(this.config, {
           walletId,
-          name,
+          name: request.name,
         });
         wallet = {
           ...response,
           address_pool_gap: 0,
+          single_address_mode: false,
           // Not needed for legacy wallets
           delegation: {
             active: {
@@ -2111,7 +2204,8 @@ export default class AdaApi {
       } else {
         wallet = await updateWallet(this.config, {
           walletId,
-          name,
+          name: request.name,
+          singleAddressMode: request.singleAddressMode,
         });
       }
 
@@ -2893,27 +2987,6 @@ export default class AdaApi {
     }
   };
 
-  delegateVotes = async (params: DelegateVotesParams) => {
-    logger.debug('AdaApi::delegateVotes called', {
-      parameters: filterLogData(params),
-    });
-
-    try {
-      const response = await delegateVotes(this.config, params);
-      logger.debug('AdaApi::delegateVotes success', {
-        response,
-      });
-
-      return response;
-    } catch (error) {
-      logger.error('AdaApi::delegateVotes error', {
-        error,
-      });
-
-      throw new ApiError(error).result();
-    }
-  };
-
   createVotingRegistrationTransaction = async (
     request: CreateVotingRegistrationRequest
   ): Promise<WalletTransaction> => {
@@ -3128,6 +3201,7 @@ export const _createWalletFromServerData = action(
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
+      single_address_mode: singleAddressMode,
       balance,
       name,
       assets,
@@ -3138,6 +3212,12 @@ export const _createWalletFromServerData = action(
       discovery,
       isHardwareWallet = false,
     } = wallet;
+    if (!isLegacy && typeof singleAddressMode !== 'boolean')
+      throw new ApiError({
+        code: 'wallet_internal_error',
+        message:
+          'Missing or invalid single_address_mode in Shelley wallet response',
+      });
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
@@ -3237,6 +3317,7 @@ export const _createWalletFromServerData = action(
     return new Wallet({
       id,
       addressPoolGap,
+      singleAddressMode: isLegacy ? false : singleAddressMode,
       name,
       amount: walletTotalAmount,
       availableAmount: walletAvailableAmount,
@@ -3272,20 +3353,22 @@ const _createAddressFromServerData = action(
   }
 );
 
-const _conditionToTxState = (condition: string) => {
+export const _conditionToTxState = (condition: string) => {
   switch (condition) {
     case 'pending':
       return TransactionStates.PENDING;
-
-    case 'expired':
-      return TransactionStates.FAILED;
-
-    default:
+    case 'in_ledger':
       return TransactionStates.OK;
+    case 'expired':
+      return TransactionStates.EXPIRED;
+    case 'failed':
+      return TransactionStates.FAILED;
+    default:
+      return TransactionStates.SUBMISSION_UNKNOWN;
   }
 };
 
-const _createTransactionFromServerData = action(
+export const _createTransactionFromServerData = action(
   'AdaApi::_createTransactionFromServerData',
   (data: Transaction) => {
     const {
@@ -3302,6 +3385,7 @@ const _createTransactionFromServerData = action(
       withdrawals,
       status,
       metadata,
+      certificates = [],
     } = data;
 
     const state = _conditionToTxState(status);
@@ -3328,7 +3412,7 @@ const _createTransactionFromServerData = action(
       })
     );
 
-    const isVoteTx = data.certificates.find(
+    const isVoteTx = certificates.find(
       (c) => c.certificate_type === 'cast_vote'
     );
     const otherTxType =
@@ -3364,6 +3448,13 @@ const _createTransactionFromServerData = action(
       },
       state,
       metadata,
+      amountIsKnown: true,
+      hasCertificates: certificates.length > 0,
+      hasOnlyAda:
+        inputs.length > 0 &&
+        outputs.length > 0 &&
+        inputs.every(({ assets }) => !assets || assets.length === 0) &&
+        outputs.every(({ assets }) => !assets || assets.length === 0),
     });
   }
 );

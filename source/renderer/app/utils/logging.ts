@@ -1,4 +1,8 @@
-import { formatContext } from '../../../common/utils/logging';
+import {
+  filterLogData,
+  formatContext,
+  redactLogText,
+} from '../../../common/utils/logging';
 import type {
   FormatMessageContextParams,
   Logger,
@@ -24,13 +28,12 @@ const environmentData = {
 };
 
 const logToLevel =
-  (level: LoggingLevel) =>
-  (message: string, data: Record<string, any> | null | undefined) => {
+  (level: LoggingLevel) => (message: string, data?: object | null) => {
     const args = [
       formatContext({ ...messageContext, level }),
       {
-        message,
-        data,
+        message: redactLogText(message),
+        data: data ? filterLogData(data) : data,
         environmentData,
       },
     ];

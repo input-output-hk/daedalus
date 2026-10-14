@@ -1,5 +1,6 @@
 import os from 'os';
 import path from 'path';
+import net from 'net';
 import { app, dialog, BrowserWindow, screen, shell } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
@@ -18,7 +19,12 @@ import { activateWindow } from './windows/activateWindow';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { pubLogsFolderPath, RTS_FLAGS, stateDirectoryPath } from './config';
+import {
+  dappRuntimeConfig,
+  pubLogsFolderPath,
+  RTS_FLAGS,
+  stateDirectoryPath,
+} from './config';
 import { backendLifecycle } from './BackendLifecycle';
 import { safeExitWithCode } from './utils/safeExitWithCode';
 import { showInstallerLaunchFailure } from './utils/showInstallerLaunchFailure';
@@ -45,6 +51,11 @@ import { getRtsFlagsSettings } from './utils/rtsFlagsSettings';
 import { toggleRTSFlagsModeChannel } from './ipc/toggleRTSFlagsModeChannel';
 import { containsRTSFlags } from './utils/containsRTSFlags';
 import { parseDeviceScaleFactor } from './utils/parseDeviceScaleFactor';
+import { registerShellIpc } from './ipc/registerShellIpc';
+import { installGlobalPopupPolicy } from './windows/navigationPolicy';
+import { startDappSandboxAvailabilityCheck } from './sandbox/dappSandboxAvailability';
+import { installDappTransportRestrictions } from './dapp/DappSessionPolicy';
+import { closeDappBrowser } from './ipc/dappBrowser';
 /* eslint-disable consistent-return */
 // Global references to windows to prevent them from being garbage collected
 let mainWindow: BrowserWindow;
@@ -65,6 +76,7 @@ if (isBlankScreenFixActive) {
   // in DevTools JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
+installDappTransportRestrictions(app.commandLine);
 
 // Chromium sizes windows in device-independent pixels, so the minimum content
 // size set in `createMainWindow` is multiplied by the device scale factor that
@@ -86,7 +98,11 @@ if (deviceScaleFactor !== null) {
 // (1/2) this line increases the limit for the main process
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
+installGlobalPopupPolicy(app);
+registerShellIpc();
+
 const safeExit = async () => {
+  await closeDappBrowser();
   pauseActiveDownloads();
 
   const exitCode =
@@ -167,6 +183,15 @@ const onAppReady = async () => {
     () => restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
+  startDappSandboxAvailabilityCheck({
+    isDevelopment: isDev,
+    cluster: dappRuntimeConfig.dappSandboxPackageCluster,
+  }).then((result) => {
+    logger.info('dApp sandbox availability check completed', {
+      status: result.status,
+      reason: result.status === 'unavailable' ? result.reason : undefined,
+    });
+  });
   let rtsEnabled = containsRTSFlags(getRtsFlagsSettings(network) || []);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, userLocale, {
@@ -227,7 +252,7 @@ const onAppReady = async () => {
     });
     return Promise.resolve();
   });
-  const handleCheckDiskSpace = handleDiskSpace(mainWindow);
+  const handleCheckDiskSpace = handleDiskSpace();
 
   const onMainError = (error: string) => {
     if (error.indexOf('ENOSPC') > -1) {
@@ -242,7 +267,6 @@ const onAppReady = async () => {
   // Start watchdog IPC — watchdog is our parent process; node/wallet are its
   // children. Binary paths, args, and TLS config live in daedalus-config.json
   // (generated at Nix build time). We just wire up stdin/stdout.
-  backendLifecycle.setWindowProvider(() => mainWindow);
   const defaultChainPath = path.join(stateDirectoryPath, 'chain');
   const customChainPath =
     (requestElectronStore({
@@ -274,21 +298,6 @@ const onAppReady = async () => {
   backendLifecycle.start();
 
   mainWindow.on('close', handleWindowClose);
-  // Security feature: Prevent creation of new browser windows
-  // https://github.com/electron/electron/blob/master/docs/tutorial/security.md#14-disable-or-limit-creation-of-new-windows
-  app.on('web-contents-created', (_, contents) => {
-    contents.setWindowOpenHandler((details) => {
-      const { url } = details;
-      // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-      logger.info('Prevented creation of new browser window', {
-        url,
-      });
-      // Open these links with the default browser
-      shell.openExternal(url);
-      // Prevent creation of new BrowserWindows via links / window.open
-      return { action: 'deny' };
-    });
-  });
   // The watchdog stopped on its own (not because Daedalus asked it to quit):
   // there is no backend left to show, so close the app as well.
   backendLifecycle.onEvent((event) => {

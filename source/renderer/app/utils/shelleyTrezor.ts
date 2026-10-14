@@ -16,6 +16,8 @@ import type {
   CoinSelectionWithdrawal,
 } from '../api/transactions/types';
 
+export { toExactTrezorSignTransactionRequest } from '../../../common/hardware/trezorTransaction';
+
 export const TrezorTransactionSigningMode = {
   ORDINARY_TRANSACTION: 0,
   POOL_REGISTRATION_AS_OWNER: 1,

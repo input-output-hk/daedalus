@@ -9,3 +9,9 @@ if (typeof globalThis.crypto?.getRandomValues !== 'function') {
     writable: true,
   });
 }
+
+// Jest's jsdom Uint8Array lives in a different realm from Node Buffer.
+// blakejs and exact-CBOR parsers require Buffer to satisfy instanceof Uint8Array.
+globalThis.Uint8Array = Object.getPrototypeOf(
+  require('node:buffer').Buffer.prototype
+).constructor;

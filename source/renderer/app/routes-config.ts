@@ -3,6 +3,10 @@ export const ROUTES = {
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   REDEEM_ITN_REWARDS: '/redeem-itn-wallets',
   NETWORK_INFO: '/network-info',
+  APPS: {
+    ROOT: '/apps',
+    PAGE: '/apps/:id',
+  },
   STAKING: {
     ROOT: '/staking',
     COUNTDOWN: '/staking/countdown',
@@ -51,6 +55,7 @@ export const ROUTES = {
     STAKE_POOLS: '/settings/stake-pools',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
+    DAPP_CONNECTIONS: '/settings/dapp-connections',
     DISPLAY: '/settings/display',
   },
 };

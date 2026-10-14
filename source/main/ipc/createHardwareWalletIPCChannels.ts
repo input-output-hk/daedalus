@@ -24,6 +24,12 @@ import {
   signTransactionLedgerRendererRequest,
   signTransactionTrezorMainResponse,
   signTransactionTrezorRendererRequest,
+  SignExactHardwareTransactionMainResponse,
+  SignExactHardwareTransactionRendererRequest,
+  SignExactHardwareMessageMainResponse,
+  SignExactHardwareMessageRendererRequest,
+  VerifyHardwareTransactionRequest,
+  VERIFY_HARDWARE_TRANSACTION_CHANNEL,
   DERIVE_ADDRESS_CHANNEL,
   DERIVE_XPUB_CHANNEL,
   GET_CARDANO_ADA_APP_CHANNEL,
@@ -36,6 +42,8 @@ import {
   SHOW_ADDRESS_CHANNEL,
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
+  SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL,
+  SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL,
   WAIT_FOR_LEDGER_DEVICES,
   waitForLedgerDevicesRequest,
   waitForLedgerDevicesResponse,
@@ -68,6 +76,19 @@ export interface HardwareWalletChannels {
   signTransactionTrezorChannel: IpcChannel<
     signTransactionTrezorRendererRequest,
     signTransactionTrezorMainResponse
+  >;
+
+  signExactHardwareTransactionChannel: IpcChannel<
+    SignExactHardwareTransactionRendererRequest,
+    SignExactHardwareTransactionMainResponse
+  >;
+  signExactHardwareMessageChannel: IpcChannel<
+    SignExactHardwareMessageRendererRequest,
+    SignExactHardwareMessageMainResponse
+  >;
+  verifyHardwareTransactionChannel: IpcChannel<
+    VerifyHardwareTransactionRequest,
+    string
   >;
 
   resetTrezorActionChannel: IpcChannel<
@@ -120,6 +141,15 @@ export const createChannels = (
     ),
     signTransactionLedgerChannel: new Channel(SIGN_TRANSACTION_LEDGER_CHANNEL),
     signTransactionTrezorChannel: new Channel(SIGN_TRANSACTION_TREZOR_CHANNEL),
+    signExactHardwareTransactionChannel: new Channel(
+      SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL
+    ),
+    verifyHardwareTransactionChannel: new Channel(
+      VERIFY_HARDWARE_TRANSACTION_CHANNEL
+    ),
+    signExactHardwareMessageChannel: new Channel(
+      SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL
+    ),
     resetTrezorActionChannel: new Channel(RESET_ACTION_TREZOR_CHANNEL),
     handleInitTrezorConnectChannel: new Channel(
       GET_INIT_TREZOR_CONNECT_CHANNEL

@@ -9,6 +9,7 @@ import globalMessages from '../../../i18n/global-messages';
 interface CollapsibleSectionProps {
   intl: Intl;
   header: string;
+  contentId?: string;
   children: ReactNode;
   expandMessage?: ReactIntlMessage;
   collapseMessage?: ReactIntlMessage;
@@ -21,6 +22,7 @@ export const CollapsibleSection = injectIntl(
     intl,
     header,
     children,
+    contentId,
     expandMessage = globalMessages.view,
     collapseMessage,
     headerFontStyle = 'bold',
@@ -48,7 +50,14 @@ export const CollapsibleSection = injectIntl(
         >
           {header}
           {expandButtonStyle === 'button' && (
-            <button className={styles.toggleButton} onClick={handleToggle}>
+            <button
+              type="button"
+              className={styles.toggleButton}
+              onClick={handleToggle}
+              aria-expanded={expanded}
+              aria-controls={contentId}
+              aria-label={`${header}: ${buttonMessage}`}
+            >
               {buttonMessage}
             </button>
           )}
@@ -65,7 +74,8 @@ export const CollapsibleSection = injectIntl(
             </>
           )}
         </h2>
-        {expanded && children}
+        {expanded &&
+          (contentId ? <div id={contentId}>{children}</div> : children)}
       </>
     );
   }

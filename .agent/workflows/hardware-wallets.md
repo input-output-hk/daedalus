@@ -8,9 +8,15 @@ This workflow guides development and testing of hardware wallet integration in D
 
 ## Overview
 
-Daedalus supports two hardware wallet types:
+Daedalus currently supports two hardware wallet families:
 - **Ledger** (Nano S, Nano X, Nano S Plus)
-- **Trezor** (Model T, Model One, Safe 3)
+- **Trezor** (the live shared model currently distinguishes Model One and Model T)
+
+Safe/Core devices are planned dApp-connector certification targets, not current
+support claims. The static capability contract is frozen in
+`source/common/hardware/fixtures/capability-matrix/`. Exact transaction and
+CIP-8 connector routing is implemented, but certified and packaged activation
+rows remain empty pending task-607 physical model, app, and firmware evidence.
 
 Hardware wallets provide secure transaction signing where private keys never leave the device.
 
@@ -26,6 +32,8 @@ Hardware wallets provide secure transaction signing where private keys never lea
 │  │  - Device connection state                                       │   │
 │  │  - Extended public key caching                                   │   │
 │  │  - Transaction signing flow                                      │   │
+│  │  - Exact connector transaction and CIP-8 message signing            │   │
+│  │  - Runtime vendor/model/app-or-firmware capability evidence         │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
 │                                    │                                    │
 │                                    │ IPC Channels                       │
@@ -33,11 +41,10 @@ Hardware wallets provide secure transaction signing where private keys never lea
 ├─────────────────────────────────────────────────────────────────────────┤
 │                           Main Process                                  │
 │  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  source/main/ipc/hardwareWallets/                                │   │
-│  │  ├── ledger/                                                     │   │
-│  │  │   ├── deviceDetection/  # USB HID detection                   │   │
-│  │  │   └── api.ts            # Ledger API calls                    │   │
-│  │  └── trezor/               # (via Trezor Connect)                │   │
+│  │  source/main/hardware/HardwareWalletService.ts                    │   │
+│  │  ├── owns Ledger transports, detection and cancellation           │   │
+│  │  ├── owns Trezor listener and cancellation lifecycle              │   │
+│  │  └── serves authenticated legacy UI IPC and main-only connectors  │   │
 │  └──────────────────────────────────────────────────────────────────┘   │
 │                                    │                                    │
 │                                    ▼                                    │
@@ -64,6 +71,7 @@ Hardware wallets provide secure transaction signing where private keys never lea
 
 | File                                                      | Purpose                  |
 |-----------------------------------------------------------|--------------------------|
+| `source/main/hardware/HardwareWalletService.ts`            | Transport lifecycle owner |
 | `source/main/ipc/hardwareWallets/ledger/`                 | Ledger integration       |
 | `source/main/ipc/hardwareWallets/ledger/deviceDetection/` | USB device detection     |
 | `source/main/trezor/connection.ts`                        | Trezor Connect setup     |
@@ -98,12 +106,18 @@ Hardware wallets provide secure transaction signing where private keys never lea
 | `DERIVE_ADDRESS_CHANNEL`          | R → M     | Derive address from xpub     |
 | `SHOW_ADDRESS_CHANNEL`            | R → M     | Verify address on device     |
 
-### Transaction Signing
+### Exact Connector Signing
 
-| Channel                           | Direction | Purpose          |
-|-----------------------------------|-----------|------------------|
-| `SIGN_TRANSACTION_LEDGER_CHANNEL` | R → M     | Sign with Ledger |
-| `SIGN_TRANSACTION_TREZOR_CHANNEL` | R → M     | Sign with Trezor |
+| Channel                                   | Direction | Purpose                            |
+|-------------------------------------------|-----------|------------------------------------|
+| `SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL` | R → M     | Sign exact authenticated model     |
+| `SIGN_EXACT_HARDWARE_MESSAGE_CHANNEL`     | R → M     | Sign exact CIP-8 message request   |
+| `SIGN_TRANSACTION_LEDGER_CHANNEL`         | R → M     | Legacy Ledger transaction signing  |
+| `SIGN_TRANSACTION_TREZOR_CHANNEL`         | R → M     | Legacy Trezor transaction signing  |
+
+Connector calls require matching runtime capability evidence and a main-owned
+certified packaged row before device interaction. Both production row lists
+default to empty.
 
 ### Initialization
 
@@ -132,6 +146,12 @@ pollingDrivenDetection.ts  // Periodic USB polling
 deviceTracker.ts  // Tracks connected devices
 ```
 
+`HardwareWalletService` is the process-lifetime owner. Existing renderer flows
+retain their authenticated IPC contracts; main-only connector code uses its
+transport-scoped operation seam. Cancellation invalidates the operation
+generation before closing the transport, so late results are not released.
+This lifecycle behavior is mocked in Jest and is not physical certification.
+
 ### Signing Flow
 
 1. **User initiates transaction** in UI
@@ -143,30 +163,83 @@ deviceTracker.ts  // Tracks connected devices
 7. **Signed transaction returned** to renderer
 8. **Transaction submitted** to cardano-wallet
 
+Normal Ledger payments use `SIGN_EXACT_HARDWARE_TRANSACTION_CHANNEL`.
+Before signing, `bindPaymentChange` matches construction outputs to the exact
+transaction (address, ADA, and assets), derives account-0 internal payment and
+stake keys from the paired account xpub using local public-key derivation IPC,
+and requires the reconstructed change address to match byte-for-byte.
+Only construction-marked change receives an output-indexed `DEVICE_OWNED`
+binding; an explicit self-payment remains a recipient even at the same address.
+Change paths do not become witness requests. Address/path/network/value
+mismatches reject before Ledger interaction. This does not change Trezor or
+dApp output classification; device review behavior still requires a physical
+Ledger retest.
+
+Shared native approval no longer opens the legacy send confirmation dialog.
+Native Ledger execution refreshes the paired device path and Cardano app
+evidence before its live-connection check. The main exact-signing handler admits
+the matching `ledger-native` or `trezor-native` capability without the dApp
+connector allow-list; dApp rows remain allow-listed. Vendor/artifact/static
+gates, paired-account identity, exact-body reconstruction, and signature
+verification still apply. Native connection refresh does not export keys.
+
+Native terminal outcomes remain in the shared approval dialog until **Done**.
+The execution caller settles immediately; only the next queued approval waits
+for result dismissal. Wrong-password retries bypass terminal-result retention.
+`TxSignError.UserDeclined` alone identifies an explicit device refusal;
+`TxSignError.ProofGeneration` remains a signing/verification failure. Unexpected
+errors after submission authorization, or backend `authorized`, `broadcasting`,
+and `outcome_unknown` statuses, produce an unknown-submission result rather
+than claiming success or definite non-submission. Submitted does not mean
+confirmed on-chain.
+
+Address verification awaits device display completion and owns its failure
+state. Closing or replacing address verification invalidates its captured
+parameters, so a late device response cannot overwrite a newer operation.
+
+Exact Ledger signing resolves the account xpub from network-scoped persisted
+pairing data in the main process, keyed by wallet ID. Witness keys are derived
+locally below `1852'/1815'/0'` and checked against expected signer hashes before
+device interaction. Missing pairing data, another account, or hardened child
+paths fail without an automatic key export. Pairing remains the explicit
+account-key export step.
+
+The exact-signing IPC response contains `witnessSetCbor` and
+`signedTransactionCbor`. Native main-process crypto verifies returned signatures
+and merges witnesses without changing the transaction body; the renderer uses
+the signed transaction directly for payments and returns the witness set for
+dApps. Do not move this verification back into renderer `crypto-browserify`,
+which lacks Node's Ed25519 `createPublicKey` and `verify` APIs.
+
+Paired Ledger and Trezor operations use `_resumePairedOperation`; they do not
+export the account key to identify the device again. The same route handles
+legacy delegation/voting transactions, address verification, and reconnect
+retries. Address verification first derives and checks the full address
+locally, then retains device address derivation/display to detect a different
+connected wallet. Missing pairing data fails rather than initiating an export.
+
+Legacy signed transactions must pass `VERIFY_HARDWARE_TRANSACTION_CHANNEL`
+before the store reports success. The trusted main process requires an unchanged
+body, validity flag, and auxiliary data, verifies every signature with native
+crypto, and requires exactly the locally derived input/withdrawal/certificate
+witness keys. Registration-only certificates do not request an extra witness.
+Older Trezor three-field envelopes are validated with the same checks. Transport
+IDs and device model names are connection hints, not proof of wallet ownership.
+
 ---
 
 ## Trezor Integration
 
 ### Trezor Connect
 
-Trezor uses `@trezor/connect` which handles:
-- Device communication
-- Popup for user confirmation
-- Multi-device support
+Trezor uses `@trezor/connect` for device communication and multi-device support.
+Daedalus initializes it with `popup: false` and renders device interaction UI
+itself.
 
 ### Setup
 
-```typescript
-// source/main/trezor/connection.ts
-import TrezorConnect from '@trezor/connect';
-
-TrezorConnect.init({
-  manifest: {
-    email: 'support@iohk.io',
-    appUrl: 'https://daedaluswallet.io',
-  },
-});
-```
+See `source/main/trezor/connection.ts` for the live initialization contract. Do
+not duplicate its manifest or transport options in workflow examples.
 
 ### Signing Flow
 
@@ -174,7 +247,7 @@ TrezorConnect.init({
 2. **Store prepares transaction** with inputs/outputs
 3. **IPC sends to main process** via `SIGN_TRANSACTION_TREZOR_CHANNEL`
 4. **TrezorConnect.cardanoSignTransaction()** called
-5. **Trezor popup appears** for user confirmation
+5. **Daedalus device-interaction UI appears** (`popup: false`)
 6. **User confirms on device** (touchscreen/buttons)
 7. **Signed transaction returned** to renderer
 8. **Transaction submitted** to cardano-wallet
@@ -201,28 +274,35 @@ const mockSignedTx = {
 };
 ```
 
-### Hardware Wallet Test Script
+### Hardware Wallet Test Scripts
 
 ```bash
 yarn test:hardware-wallets
+yarn hardware:ledger:task607 inspect --operator reviewer-run-01
+yarn hardware:ledger:task607 sign-data --operator reviewer-run-01
+yarn hardware:ledger:task607 sign-tx --operator reviewer-run-01
+yarn hardware:ledger:task607 batch-success --operator reviewer-run-01
+yarn hardware:ledger:task607 batch-reject --index 0|1|2 --operator reviewer-run-01
+yarn hardware:ledger:task607 batch-cancel --operator reviewer-run-01
 ```
 
-Runs `hardware-wallet-tests/index.ts` for interactive testing.
+`test:hardware-wallets` runs `hardware-wallet-tests/index.ts`, a legacy
+interactive Ledger connection/public-key/disconnect diagnostic. It is not a
+Trezor, transaction, CIP-8, cancellation or physical-certification suite.
+
+The task-607 runner requires one unlocked Nano X with the Cardano app open.
+It emits fixed approval tokens before device calls and privacy-safe runtime
+evidence, digests and booleans afterwards. For `batch-cancel`, send `SIGINT`
+during the pending device request, then physically disconnect it; host
+cancellation alone does not interrupt an in-flight HID APDU. The operator
+records the result and a separate reviewer approves it. Neither role enables
+product support.
 
 ### Debugging
 
-Enable verbose logging:
-
-```typescript
-// In main process
-import { logger } from '../utils/logging';
-
-logger.info('Hardware wallet operation', {
-  channel: 'SIGN_TRANSACTION_LEDGER_CHANNEL',
-  devicePath: transport.devicePath,
-});
-```
-
+Diagnostics may log a fixed operation/status enum, but must not log USB paths,
+serials, labels, addresses, xpubs, raw requests/responses or arbitrary vendor
+errors. Keep physical evidence in the normalized task-607 schema.
 ---
 
 ## Common Issues
@@ -330,6 +410,7 @@ verifyAddress(params: VerifyAddressParams): Promise<void>
 
 1. **Private keys never leave device** - All signing on hardware
 2. **Address verification** - Always verify receive addresses on device
-3. **Transaction display** - User sees transaction details on device screen
+3. **Transaction display** - Current wallet flows require device confirmation;
+   exact dApp field/display coverage is not certified until task-607
 4. **Physical confirmation** - Requires button press on device
 5. **PIN protection** - Device locks after incorrect PINs

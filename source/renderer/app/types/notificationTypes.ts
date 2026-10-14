@@ -1,6 +1,7 @@
 import Action from '../actions/lib/Action';
 
 export type NotificationId =
+  | 'transactionConfirmed'
   | 'copyWalletPublicKey'
   | 'copyICOPublicKey'
   | 'copyAddress'

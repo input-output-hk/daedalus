@@ -166,9 +166,6 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-connecting-description-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-connecting-sync-progress-color': '#2d2d2d',
   },
-  dapps: {
-    '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
-  },
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#ffffff',
     '--theme-data-migration-layer-box-shadow-color': '#29b595',
@@ -1060,7 +1057,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-list-group-date-color': '#2d2d2d',
     '--theme-transactions-list-item-details-color': '#2d2d2d',
     '--theme-transactions-list-item-highlight-color': '#ea4c5b',
-    '--theme-transactions-state-ok-background-color': 'rgba(0, 118, 0, 1);',
+    '--theme-transactions-state-ok-background-color': 'rgba(0, 118, 0, 1)',
     '--theme-transactions-state-pending-background-color':
       'rgba(45, 45, 45, 0.5)',
     '--theme-transactions-state-text-color': '#ffffff',
@@ -1241,6 +1238,14 @@ export const WHITE_THEME_OUTPUT = {
   },
   walletSettings: {
     '--theme-wallet-settings-section-separator-color': '#2d2d2d1a',
+  },
+  transactionApproval: {
+    '--theme-transaction-review-outgoing-color': '#b20732',
+    '--theme-transaction-review-outgoing-background': '#ea4c5b14',
+    '--theme-transaction-review-incoming-color': '#007226',
+    '--theme-transaction-review-incoming-background': '#2dc06c14',
+    '--theme-transaction-review-warning-color': '#945500',
+    '--theme-transaction-review-warning-background': '#f2a21814',
   },
 };
 

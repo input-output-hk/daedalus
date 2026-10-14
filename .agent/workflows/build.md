@@ -66,14 +66,17 @@ This creates optimized bundles in `dist/`:
 - `dist/main/index.js` - Main process bundle
 - `dist/renderer/` - Renderer process bundle
 
-### Create Installer
+### Create a Yarn package
 
 ```bash
 # Inside Nix shell
 yarn package
 ```
 
-This creates platform-specific installers in `release/`.
+This produces Electron packaging output in `release/` for development. It is
+not the Linux product-package or release pipeline. Linux release artifacts must
+be built through the `.deb`/`.rpm` Nix outputs below; `yarn package` does not
+create a supported portable Linux channel.
 
 ---
 
@@ -240,21 +243,109 @@ Creates `.dmg` installer.
 ### Linux
 
 ```bash
-# In Nix shell
-yarn package
+# In Nix shell; choose the required cluster suffix
+nix build -L .#deb-installer-mainnet
+nix build -L .#rpm-installer-mainnet
+nix build -L .#arch-installer-mainnet
 ```
 
-Creates `.AppImage` and other Linux packages.
+These are the complete native Linux release output set. They create
+root-installable system `.deb`, `.rpm`, and `.pkg.tar.zst` outputs under
+`result/`; cluster variants use
+`{deb,rpm,arch}-installer-{mainnet,preprod,preview,selfnode}`. Linux has no
+`installer-<cluster>` or `makeSignedInstaller-<cluster>` output. The
+`daedalus-<cluster>` Nix package remains a wallet-only developer artifact, not a
+shipping channel.
+
+The native packages install under fixed `/opt/daedalus/<cluster>` paths. Only
+those installed fixed-path packages can satisfy the Linux dApp package-identity
+and sandbox gates. Arch support is limited to the certified Arch 2026.09.01 and
+Omarchy 4.0.2 snapshots; later snapshots remain wallet-only pending
+recertification. Portable `.bin`, AppImage, Flatpak, and Snap are rejected
+product formats.
 
 ---
 
-## CI Build
+## CI and release flow
 
-The CI pipeline runs:
+Buildkite invokes the Linux artifact pipeline with:
 
 ```bash
-yarn check:all && yarn build && yarn test
+nix </dev/null run --no-accept-flake-config -L .#packages.x86_64-linux.buildkitePipeline
 ```
+
+For each cluster, that pipeline builds and uploads only
+`deb-installer-<cluster>`, `rpm-installer-<cluster>`, and
+`arch-installer-<cluster>` on Linux. Hydra exposes the same artifacts under
+these exact job families:
+
+```text
+deb-installer.x86_64-linux.<cluster>
+rpm-installer.x86_64-linux.<cluster>
+arch-installer.x86_64-linux.<cluster>
+```
+
+Non-Linux Hydra artifacts continue to use
+`installer.<system>.<cluster>`. A release operator first fetches, signs, tests,
+and publishes the combined installer manifest with the existing `drt` flow:
+
+```bash
+nix develop .#ops
+drt fetch-installers --url https://ci.iog.io/eval/<ID> --env <cluster> -o installers/<cluster>/
+drt sign installers/<cluster>/
+drt serve --installers installers/<cluster>/
+drt release installers/<cluster>/ --bucket <bucket> --bucket-url <public-host>
+```
+
+The release manifest records the three Linux packages independently as
+`linux-deb`, `linux-rpm`, and `linux-arch`; the trio must be present together
+and all artifacts must report one release identity. None is emitted in
+`softwareUpdate`. All map to target OS `linux`.
+
+**`drt release` alone does not notify legacy Linux users.** After the published
+`daedalus-latest-version.json` is reachable, generate the production newsfeed
+changes in both newsfeed repositories:
+
+```bash
+drt newsfeed release \
+  --env <cluster> \
+  --newsfeed-repo ../daedalus-newsfeed-content \
+  --verification-repo ../daedalus-newsfeed-verification \
+  --installer-json https://<public-host>/daedalus-latest-version.json \
+  --release-notes https://github.com/input-output-hk/daedalus/releases/tag/<version>
+```
+
+`drt newsfeed release` opens the operator's editor before writing. Review the
+resulting content and verification files together: macOS/Windows keep their
+app-managed software-update entries, Linux has no `softwareUpdate` URL/hash,
+and the three native packages are deduplicated into one ordinary Linux
+release/migration announcement linking the release notes and manual
+package-manager instructions. Verify target versions/platforms and the
+verification file before publication.
+
+Optionally exercise those reviewed repository files against the test bucket:
+
+```bash
+drt newsfeed publish \
+  --env <cluster> \
+  --newsfeed-repo ../daedalus-newsfeed-content \
+  --verification-repo ../daedalus-newsfeed-verification \
+  --bucket <test-bucket> \
+  --bucket-url <test-public-host> \
+  --dry-run
+# Remove --dry-run only for the approved test publication.
+```
+
+Finally commit the reviewed generated file in
+`daedalus-newsfeed-content` and its matching verification file in
+`daedalus-newsfeed-verification`, then publish/push both through the approved
+newsfeed repository release process. Only that newsfeed publication makes the
+ordinary announcement visible to legacy portable users.
+
+The Linux application never executes package bytes or invokes a package
+manager. Users close Daedalus and manually install each newer local package
+with `apt`, `dnf`, or `pacman -U`; legacy `.bin` users receive the published
+announcement but no new portable artifact.
 
 ### Build Caching
 

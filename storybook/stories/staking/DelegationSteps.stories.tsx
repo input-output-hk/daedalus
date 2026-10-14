@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { BigNumber } from 'bignumber.js';
 import moment from 'moment';
-import { number, boolean } from '@storybook/addon-knobs';
+import { number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import DelegationStepsIntroDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsIntroDialog';
 import DelegationStepsChooseWalletDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog';
 import DelegationStepsChooseStakePoolDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog';
 import DelegationStepsNotAvailableDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsNotAvailableDialog';
-import DelegationStepsConfirmationDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog';
 import DelegationStepsSuccessDialog from '../../../source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog';
 import { MIN_DELEGATION_FUNDS } from '../../../source/renderer/app/config/stakingConfig';
 import translations from '../../../source/renderer/app/i18n/translations';
@@ -18,10 +17,7 @@ import {
   generatePolicyIdHash,
   generateWallet,
 } from '../_support/utils';
-import {
-  WalletSyncStateStatuses,
-  HwDeviceStatuses,
-} from '../../../source/renderer/app/domains/Wallet';
+import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
 
 const assets = {
   available: [
@@ -176,29 +172,6 @@ export class StakingDelegationSteps extends Component<Props, State> {
         onSelectPool={() => {}}
         selectedPool={null}
         selectedWallet={WALLETS[0]}
-        oversaturationPercentage={this.props.oversaturationPercentage}
-      />,
-      <DelegationStepsConfirmationDialog
-        key="DelegationStepsConfirmationDialog"
-        transactionFee={{
-          fee: new BigNumber(0.172081),
-          deposits: new BigNumber(2),
-          depositsReclaimed: new BigNumber(0),
-        }}
-        stepsList={getDelegationWizardStepsList(this.props.locale)}
-        // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-        selectedPool={STAKE_POOLS[0]}
-        isSubmitting={false}
-        selectedWallet={WALLETS[0]}
-        onConfirm={this.onContinue}
-        onClose={action('onClose')}
-        onBack={this.onBack}
-        error={null}
-        isHardwareWallet={false}
-        hwDeviceStatus={HwDeviceStatuses.CONNECTING}
-        onExternalLinkClick={action('onOpenExternalLink')}
-        isTrezor={boolean('isTrezor', false)}
-        maxDelegationFunds={63000000}
         oversaturationPercentage={this.props.oversaturationPercentage}
       />,
       <DelegationStepsSuccessDialog

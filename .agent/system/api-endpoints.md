@@ -15,6 +15,23 @@ Daedalus communicates with two types of APIs:
 | **cardano-wallet REST API**   | Wallet operations, blockchain queries  | `localhost:8090` |
 | **Electron IPC Channels**     | Main/renderer process communication    | In-process       |
 
+### IPC Transport Security
+
+Wrapper-backed channels preserve application payload types while using a private
+per-request correlation envelope. Response listeners are installed before send,
+filtered by request ID, and removed on settlement or trusted-document lifecycle
+invalidation. Main handlers run only for the exact active trusted main
+`WebContents`, main frame, canonical document, and origin, and respond through
+the originating frame via `event.reply`.
+
+`source/main/ipc/privilegedIpcManifest.ts` accounts for production
+`MainIpcChannel` and `MainIpcConversation` contracts, their constructor,
+registration and caller owners, direction, capability, settlement policy, and
+exact-frame authority. A TypeScript-checker audit rejects raw Electron ingress,
+direct renderer bypasses, unmanifested wrapper construction, and unowned
+main-originated response promises. Test-only fixture transport is outside the
+exact production roots and cannot authorize a production exception.
+
 ---
 
 ## cardano-wallet REST API
@@ -115,6 +132,38 @@ Generate a new address (for Byron wallets).
 ---
 
 ## Transaction Endpoints
+
+### Preferred collateral and ordinary input selection
+
+`WALLET_INPUT_SELECTION_CHANNEL` accepts `{ walletId }` from the trusted renderer.
+Main reads that wallet's saved collateral preference for the running network;
+the renderer cannot select a different genesis identity. Corrupt preferences
+must be repaired rather than silently treated as empty.
+
+Native payment construction, coin selection, fee estimation, and stake-pool
+join/quit requests include optional `preferred_collateral: [{ id, index }]`.
+Delegation-fee GET requests encode the same array as a JSON query parameter.
+The packaged backend first balances without those outpoints and retries with
+the complete available UTxO only if the ordinary-only attempt fails. This
+requires `nix/patches/cardano-wallet-collateral-selection.patch`, applied by
+`nix/internal/common.nix`; an unpatched backend does not implement the policy.
+
+CIP-30 amount-qualified `getUtxos` selects ordinary inputs before preferred
+collateral. Unqualified inventory remains complete, with collateral last;
+external dApps still control their own input selection. Spending/collateral
+overlap is valid because those inputs apply on alternative ledger paths.
+The backend accepts both roles in requested and pending transaction contexts.
+Submission journaling and legacy migration retain one active lock per outpoint;
+the sealed transaction preserves both roles. Daedalus still rejects same-role
+duplicates and reference-input overlap. The backend still rejects conflicting
+claims from different transactions.
+
+This does not relax Plutus script-data commitment validation. The production
+context adapter derives Plutus V1/V2/V3 language views from the authenticated
+Conway protocol-parameter CBOR (cost models at full-array index 15). V1 retains
+the ledger's byte-string-wrapped indefinite list; V2/V3 use definite lists.
+Coefficients retain signed 64-bit precision. Missing or malformed required cost
+models and mismatched script-data commitments fail closed.
 
 ### GET `/v2/wallets/{walletId}/transactions`
 List wallet transactions.
@@ -410,6 +459,13 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | `DERIVE_XPUB_CHANNEL`                    | Renderer → Main | Derive xpub       |
 | `RESET_ACTION_TREZOR_CHANNEL`            | Renderer → Main | Reset Trezor      |
 
+Ledger dApp capability refresh prefers the paired `device.path` while it is
+connected. If that path is stale, it may recover the legacy top-level `path`
+only when a connected Ledger of the paired model is present there. A successful
+Cardano app-version query updates `device.path` and clears the disconnected
+flag. This does not export account keys, choose an arbitrary USB device, or
+bypass connection approval.
+
 ### File Operation Channels
 
 | Channel                         | Direction       | Purpose                   |
@@ -450,9 +506,17 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | `GET_DESKTOP_DIRECTORY_PATH_CHANNEL` | Renderer → Main | Get desktop path     |
 | `GET_SYSTEM_LOCALE_CHANNEL`          | Renderer → Main | Get system locale    |
 | `GET_GPU_STATUS_CHANNEL`             | Renderer → Main | Get GPU status       |
-| `OPEN_EXTERNAL_URL_CHANNEL`          | Renderer → Main | Open URL in browser  |
+| `OPEN_EXTERNAL_URL_CHANNEL`          | Renderer → Main | Open parsed credential-free HTTPS URL in browser; canonicalize and await privacy-safe shell result |
 | `OPEN_LOCAL_DIRECTORY_CHANNEL`       | Renderer → Main | Open in file manager |
 | `INTROSPECT_ADDRESS_CHANNEL`         | Renderer → Main | Analyze address      |
+
+`OPEN_EXTERNAL_URL_CHANNEL` validates the runtime value as a string, rejects
+malformed, non-HTTPS, hostless, or credential-bearing URLs before side effects,
+and passes only the canonical serialization to `shell.openExternal`. Validation
+and shell failures use fixed errors that omit the submitted URL and OS error.
+The existing fire-and-forget store caller consumes rejection; awaited channel
+callers retain the rejecting response contract. The external-URL and
+local-directory listeners are registered explicitly once at process startup.
 
 ### UI Control Channels
 
@@ -461,6 +525,8 @@ Daedalus uses type-safe IPC channels for main/renderer communication. All channe
 | `SHOW_UI_PART_CHANNEL`     | Main → Renderer | Show UI element     |
 | `TOGGLE_UI_PART_CHANNEL`   | Main → Renderer | Toggle UI element   |
 | `REBUILD_APP_MENU_CHANNEL` | Renderer → Main | Rebuild native menu |
+| `close-window`             | Renderer → Main | Close trusted window after correlated response |
+| `resize-window`            | Renderer → Main | Resize current trusted window |
 
 ---
 

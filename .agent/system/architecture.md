@@ -567,11 +567,109 @@ dist/
 
 ---
 
+## Planned dApp Browser Security Boundary
+
+The embedded dApp connector remains incomplete. The current main window is a
+privileged legacy renderer (`nodeIntegration: true`, no context isolation)
+and must never host remote content or be reused as its preload/IPC surface.
+Its live policy permits only the canonical local main document, denies all
+subframe navigation and popups, filters policy-aborted load recovery, and opens
+only parsed credential-free HTTPS external links with awaited, privacy-safe
+failure handling. A machine-checked manifest accounts for all 87 production
+privileged IPC channels. They authenticate the exact active trusted main
+WebContents, main frame, canonical document, and origin, with correlated
+caller-targeted responses, lifecycle cancellation, and current-window targeting.
+The sole raw guest gateway is separately audited and authenticates the exact
+active guest top frame, origin, document generation, and route lease before
+dispatch. Production guest launch remains disabled by the independent PRD gates.
+
+The accepted target, defined normatively in the [dApp browser threat model and
+ADR](../plans/dapp-browser-cip30/dapp-browser-cip30-prd.md#hostile-renderer-threat-model-and-architecture-adr), is:
+
+```text
+Hostile remote dApp
+  -> dedicated least-authority guest preload
+  -> main-owned, sender/frame/origin/session/route authenticated broker
+  -> trusted Daedalus consent and execution UI
+  -> cardano-wallet or capability-checked hardware service
+  -> cardano-node
+```
+
+- Each guest uses a separately managed sandboxed `BrowserWindow` and fresh,
+  random, nonpersistent session; a dApp/origin switch destroys and recreates it.
+- Main owns guest lifecycle, canonical origin, top-frame/document identity,
+  route/wallet/network authority, immutable bytes, grants, approvals, and
+  result validation. The trusted renderer presents broker-authoritative data
+  but cannot replace it.
+- Main observes exact trusted in-page `/apps/:id` routes and owns a
+  monotonic wallet/network lease. Route, wallet, network, window, and direct
+  hash/history changes revoke staged launches before guest teardown. Authorized
+  submission work may finish after revocation, but stale results are withheld.
+- A revision-1 launcher policy independently gates global launch, preferred
+  catalog launch, Diagnostics, CIP-104, and CIP-142. Packaged defaults are all
+  disabled; only reviewed package/config releases can change them.
+- Existing privileged IPC must authenticate the exact trusted main WebContents
+  and main frame. A guest receives only a dedicated scoped gateway, never raw
+  Electron/Node APIs or existing IPC.
+- The active base-read broker persists only exact-origin read/key-disclosure
+  grants, keeps live capabilities memory-only, and routes every grant creation
+  or expansion through the correlated trusted consent coordinator. One
+  authenticated main-to-trusted-renderer executor validates the pinned backend,
+  exact wallet/network binding, connected/synced state, source addresses, and
+  empty-transaction context; main revalidates and serializes all CIP-30 results.
+- Hardware transaction and CIP-8 message signing use separate authenticated
+  privileged channels and only the exact Ledger/Trezor adapters. Connector
+  capability and invocation both require matching vendor/model/app-or-firmware,
+  matrix, physical-certification, certified-extension, and packaged-activation
+  evidence. Certified and packaged row lists are empty until task-607 and a
+  later reviewed release configuration.
+- Main owns the versioned collateral-preference repository and derives its
+  route-scoped projection from each authenticated empty-transaction wallet
+  context. The renderer caches that projection only. Existing candidates are
+  adopted deterministically; clearing changes metadata only; preparation opens
+  the normal confirmed Send flow and never signs or submits automatically.
+- Guest HTTPS/WSS policy is connection-destination-bound, including redirects,
+  subresources, WSS, rebinding, and IPv4/IPv6 forms. Bypass transports remain
+  disabled. Packaged Linux sandbox certification completed in task-005-b;
+  production launch remains fail-closed until every other PRD release gate has evidence.
+- Linux shipping for this feature is system **`.deb` and `.rpm`** packages with
+  privileged lifecycle setup for independently proven SUID or userns Chromium
+  containment, AppArmor on approved Ubuntu rows, and SELinux on Fedora 43.
+  Successor matrix revision `task-108-matrix-2026-08-18` covers x86_64 Ubuntu
+  24.04.x and 26.04.x with row-specific semantic AppArmor policy, Debian 12.x
+  and 13.x without a package policy asset, and Fedora 43 under the task-109
+  contract. The RPM's priority-200, cluster-specific module adds no permissions:
+  it binds the exact Electron path to `bin_t` and the exact SUID helper path to
+  Fedora's reviewed `chrome_sandbox_exec_t`/`chrome_sandbox_t` policy.
+  Task-005-b installed-artifact evidence proves every supported Ubuntu, Debian,
+  and Fedora exact renderer has no-new-privileges, seccomp-BPF, zero effective
+  capabilities, and separate PID/user namespaces, with exact AppArmor/SELinux
+  state where required. Ubuntu 22.04.x and omitted rows remain wallet-only and
+  dApp-disabled until reviewed and certified.
+- The portable `.bin` producer and home-extract updater are retired. Linux
+  release manifests contain paired `linux-deb` and `linux-rpm` artifacts, but
+  neither is application-managed `softwareUpdate` data. Both map to one
+  ordinary Linux release/migration announcement. The application never
+  executes package bytes or escalates privileges; installation and upgrades
+  are manual `apt`/`dnf` operations while Daedalus is stopped.
+- Legacy `$HOME/.daedalus/<cluster>` installations receive announcements only
+  and remain wallet-only until manually migrated. System package lifecycle
+  never mutates `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus`; a custom
+  `XDG_DATA_HOME` must remain consistent across the exact
+  `/usr/bin/daedalus-<cluster>` launch. A verified stale user desktop symlink
+  may be moved aside so it cannot shadow the system entry, but migration never
+  broadly removes the legacy tree or wallet state.
+- Only the fixed `/opt/daedalus/<cluster>` `.deb`/`.rpm` installation can pass
+  Linux production package-identity and sandbox gates. The reusable
+  `daedalus-<cluster>` Nix package is developer-only and wallet-only. Portable
+  `.bin`, AppImage, Flatpak, and Snap are rejected; see
+  [research/06-linux-system-package-decision.md](../plans/dapp-browser-cip30/research/06-linux-system-package-decision.md).
+
 ## Security Considerations
 
 1. **Sensitive Data**: Recovery phrases never stored unencrypted
 2. **Hardware Wallets**: All signing happens on device
-3. **IPC Security**: Preload script limits exposed APIs
+3. **IPC Security**: The broad legacy preload is trusted-main-only; every production main ingress is manifest-accounted and exact-frame authenticated
 4. **Local Node**: Full validation, no trust required
 5. **TLS**: cardano-wallet API uses mutual TLS
 

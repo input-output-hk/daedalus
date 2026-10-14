@@ -79,7 +79,7 @@ export default class AppStore extends Store {
 
   openExternalLink(url: string, event?: MouseEvent): void {
     if (event) event.preventDefault();
-    openExternalUrlChannel.send(url);
+    openExternalUrlChannel.send(url).catch(() => undefined);
   }
 
   isActiveDialog = (dialog: ApplicationDialog): boolean => {

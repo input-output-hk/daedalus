@@ -132,6 +132,8 @@ export default class NetworkStatusStore extends Store {
   @observable
   alonzoActivationTime = '';
   @observable
+  genesisBlockHash: string | null = null;
+  @observable
   epochLength: number | null | undefined = null; // unit: 1 slot
 
   @observable
@@ -510,6 +512,7 @@ export default class NetworkStatusStore extends Store {
         slotLength,
         epochLength,
         eras,
+        genesisBlockHash,
       } = networkParameters;
 
       if (eras) {
@@ -542,6 +545,7 @@ export default class NetworkStatusStore extends Store {
         this.shelleyActivationTime = shelleyActivationTime;
         this.isAlonzoActivated = isAlonzoActivated;
         this.isAlonzoPending = isAlonzoPending;
+        this.genesisBlockHash = genesisBlockHash;
         this.alonzoActivationTime = alonzoActivationTime;
       });
       runInAction('Update Desired Pool Number', () => {

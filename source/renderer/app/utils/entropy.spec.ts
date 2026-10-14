@@ -34,6 +34,7 @@ afterEach(() => setSource(realCrypto));
 
 describe('secureRandomBytes', () => {
   it('returns the number of bytes it was asked for', () => {
+    setSource({ getRandomValues: fillWith([0xab]) });
     expect(secureRandomBytes(32)).toHaveLength(32);
     expect(secureRandomBytes(20)).toHaveLength(20);
     expect(secureRandomBytes(1)).toHaveLength(1);

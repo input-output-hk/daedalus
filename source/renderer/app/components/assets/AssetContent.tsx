@@ -71,6 +71,7 @@ type Props = {
   onCopyAssetParam?: (...args: Array<any>) => any;
   highlightFingerprint?: boolean;
   className?: string;
+  displayMode?: 'popover' | 'review';
   intl: intlShape.isRequired;
   hasError?: boolean;
 };
@@ -112,29 +113,50 @@ const AssetContent = observer((props: Props) => {
       handleCopyParam(assetId, param, value);
     };
 
+    const content = (
+      <>
+        <span className={styles.value}>
+          {value}
+          <SVGInline svg={icon} className={iconClassnames} />
+        </span>
+        {assetId === 'assetName' && (
+          <span className={styles.assetAsciiName}>
+            (ASCII: {hexToString(value)})
+          </span>
+        )}
+      </>
+    );
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
-        <div className={styles.assetParam}>
-          <div className={styles.value}>
-            {value}
-            <SVGInline svg={icon} className={iconClassnames} />
-          </div>
-          {assetId === 'assetName' && (
-            <div className={styles.assetAsciiName}>
-              (ASCII: {hexToString(value)})
-            </div>
-          )}
-        </div>
+        {props.displayMode === 'review' ? (
+          <button
+            type="button"
+            className={classnames(styles.assetParam, styles.reviewCopy)}
+            aria-label={`Copy ${param}`}
+          >
+            {content}
+          </button>
+        ) : (
+          <div className={styles.assetParam}>{content}</div>
+        )}
       </CopyToClipboard>
     );
   };
 
-  const { asset, highlightFingerprint, className, intl, hasError } = props;
+  const {
+    asset,
+    highlightFingerprint,
+    className,
+    intl,
+    hasError,
+    displayMode = 'popover',
+  } = props;
   const { fingerprint, policyId, assetName, metadata } = asset;
   const { name, ticker, description } = metadata || {};
   const componentStyles = classnames([
     styles.component,
     className,
+    displayMode === 'review' ? styles.review : null,
     highlightFingerprint ? styles.highlightFingerprint : null,
     hasError ? styles.error : null,
   ]);

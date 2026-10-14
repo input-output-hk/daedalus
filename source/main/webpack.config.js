@@ -2,19 +2,14 @@ const webpack = require('webpack');
 const path = require('path');
 const { spawn } = require('child_process');
 
-class ManageElectronProcessPlugin {
+class ManageWatchdogProcessPlugin {
   isRunning = false;
   _process = null;
   _shouldRestart = false;
   start() {
-    this._process = spawn(
-      'yarn',
-      ['electron', '--disable-setuid-sandbox', '--no-sandbox', '.'],
-      {
-        stdio: 'inherit',
-        shell: true,
-      }
-    );
+    this._process = spawn(process.execPath, ['scripts/start-watchdog.cjs'], {
+      stdio: 'inherit',
+    });
     this.isRunning = true;
     // Handle next electron shutdown
     this._process.once('close', () => this.onProcessClose());
@@ -53,6 +48,9 @@ module.exports = {
   entry: {
     index: './source/main/index.ts',
     preload: './source/main/preload.ts',
+    dapp: './source/main/preloads/dapp.ts',
+    dappGuestSecurityHarness: './source/main/dapp/DappGuestSecurityHarness.ts',
+    dappSecurityHarnessPreload: './source/main/preloads/dappSecurityHarness.ts',
   },
   output: {
     path: path.join(process.cwd(), 'dist/main'),
@@ -63,6 +61,8 @@ module.exports = {
   devtool: isDevelopment ? 'eval-source-map' : 'source-map',
   optimization: {
     minimize: false,
+    splitChunks: false,
+    runtimeChunk: false,
   },
   resolve: {
     symlinks: true, // for native libraries
@@ -124,6 +124,6 @@ module.exports = {
       IS_WATCH_MODE: 'false',
       KEEP_LOCAL_CLUSTER_RUNNING: 'false',
     }),
-    new ManageElectronProcessPlugin(),
+    new ManageWatchdogProcessPlugin(),
   ].filter(Boolean),
 };

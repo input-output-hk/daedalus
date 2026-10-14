@@ -62,10 +62,12 @@ tasks_file=''
 prompt_file=''
 max_iterations=10
 #orchestrator_model='github-copilot/gpt-5.5'
-orchestrator_model='github-copilot/gpt-5.4'
+#orchestrator_model='github-copilot/gpt-5.4'
 #orchestrator_model='opencode-go/glm-5.1'
 #orchestrator_model='zai-coding-plan/glm-5.1'
 #orchestrator_model='openai/gpt-5.4'
+orchestrator_model='openai/gpt-5.6-terra-fast'
+
 orchestrator_variant='medium'
 iterations_completed=0
 start_head=''

@@ -14,6 +14,7 @@ import SecuritySettingsPage from './containers/settings/categories/SecuritySetti
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DataLayerMigrationPage from './containers/profile/DataLayerMigrationPage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
+import DappConnectionsSettingsPage from './containers/settings/categories/DappConnectionsSettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 import Staking from './containers/staking/Staking';
 import DelegationCenterPage from './containers/staking/DelegationCenterPage';
@@ -32,6 +33,9 @@ import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletTokensPage from './containers/wallet/WalletTokensPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
+import DappCatalogPage from './containers/dapp/DappCatalogPage';
+import AppsRootRedirect from './containers/dapp/AppsRootRedirect';
+import Apps from './containers/dapp/Apps';
 import VotingRegistrationPage from './containers/voting/VotingRegistrationPage';
 import { IS_STAKING_INFO_PAGE_AVAILABLE } from './config/stakingConfig';
 import AnalyticsConsentPage from './containers/profile/AnalyticsConsentPage';
@@ -72,6 +76,17 @@ export const Routes = withRouter(() => (
           path={ROUTES.WALLETS.ADD}
           component={WalletAddPage}
         />
+        <Route path={ROUTES.APPS.ROOT}>
+          <Apps>
+            <Route exact path={ROUTES.APPS.ROOT} component={AppsRootRedirect} />
+            <TrackedRoute
+              exact
+              pageTitle="Apps"
+              path={ROUTES.APPS.PAGE}
+              component={DappCatalogPage}
+            />
+          </Apps>
+        </Route>
         <Route path={ROUTES.WALLETS.ROOT}>
           <Wallet>
             <Route
@@ -157,6 +172,11 @@ export const Routes = withRouter(() => (
               pageTitle="Security Settings"
               path={ROUTES.SETTINGS.SECURITY}
               component={SecuritySettingsPage}
+            />
+            <TrackedRoute
+              pageTitle="dApp Connection Settings"
+              path={ROUTES.SETTINGS.DAPP_CONNECTIONS}
+              component={DappConnectionsSettingsPage}
             />
           </Settings>
         </Route>

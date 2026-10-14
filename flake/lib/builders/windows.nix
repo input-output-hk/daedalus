@@ -68,14 +68,14 @@
       windowsSources = {
         electron = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-win32-x64.zip";
-          hash = "sha256-CLYOSvnzmAm46Z8UA2pdFQhx9ejiXgLJV8Kg9U7M0Q0=";
+          hash = "sha256-VEfFDRlsIifjlnFuqWmGnB5bqhK2r3+zP3WuiXpoU6o=";
         };
 
         # XXX: normally, node-gyp would download it only for Windows
         node-lib = pkgs.fetchurl {
           name = "node.lib-${electronVersion}";
           url = "https://electronjs.org/headers/v${electronVersion}/win-x64/node.lib";
-          hash = "sha256-fmQN5y5hrEf2gbaf+Jc2PF7gEIixrSyAs9S62hu1v4g=";
+          hash = "sha256-pKM7AL77T8wPNW+YEuRjdi9VosOM6S2QnAm/h40mPaQ=";
         };
       };
 
@@ -700,7 +700,7 @@
             ++ (with pkgs; [pkg-config unzip jq])
             ++ [pkgs.python3];
           buildInputs = [pkgs.libusb1];
-          CARDANO_WALLET_VERSION = cardanoWalletVersion;
+          CARDANO_WALLET_VERSION = cardanoWalletVersion cluster;
           CARDANO_NODE_VERSION = cardanoNodeVersion;
           CI = "nix";
           NETWORK = daedalusConfigs.${cluster}.daedalusConfig.networkName;

@@ -27,3 +27,8 @@ export default class WalletAddress {
     Object.assign(this, data);
   }
 }
+
+export const getFirstReceivingAddress = (
+  addresses: ReadonlyArray<WalletAddress>
+): WalletAddress | undefined =>
+  addresses.find(({ spendingPath }) => spendingPath === "1852'/1815'/0'/0/0");

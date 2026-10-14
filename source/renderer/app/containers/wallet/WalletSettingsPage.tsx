@@ -84,6 +84,7 @@ class WalletSettingsPage extends Component<Props> {
     } = app;
     const {
       updateWalletRequest,
+      isSingleAddressModeUpdating,
       lastUpdatedWalletField,
       walletFieldBeingEdited,
       getWalletsRecoveryPhraseVerificationData,
@@ -94,6 +95,7 @@ class WalletSettingsPage extends Component<Props> {
       cancelEditingWalletField,
       updateWalletField,
       recoveryPhraseVerificationContinue,
+      setSingleAddressMode,
     } = actions.walletSettings;
     const {
       creationDate,
@@ -134,7 +136,19 @@ class WalletSettingsPage extends Component<Props> {
           walletPublicKey={activeWalletPublicKey}
           icoPublicKey={icoPublicKey}
           creationDate={creationDate}
-          isSubmitting={updateWalletRequest.isExecuting}
+          isSubmitting={
+            isSingleAddressModeUpdating || updateWalletRequest.isExecuting
+          }
+          singleAddressMode={activeWallet.singleAddressMode}
+          isSingleAddressModeDisabled={
+            isSingleAddressModeUpdating || updateWalletRequest.isExecuting
+          }
+          onSingleAddressModeChange={(enabled) =>
+            setSingleAddressMode.trigger({
+              walletId: activeWallet.id,
+              enabled,
+            })
+          }
           isInvalid={
             updateWalletRequest.wasExecuted &&
             updateWalletRequest.result === false
@@ -174,13 +188,7 @@ class WalletSettingsPage extends Component<Props> {
           icoPublicKeyQRCodeDialogContainer={
             <PublicKeyQRCodeDialogContainer isICO />
           }
-          undelegateWalletDialogContainer={
-            <UndelegateWalletDialogContainer
-              onExternalLinkClick={app.openExternalLink}
-              // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-              isTrezor={isHardwareWallet && isTrezor}
-            />
-          }
+          undelegateWalletDialogContainer={<UndelegateWalletDialogContainer />}
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           unpairWalletDialogContainer={<UnpairWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
