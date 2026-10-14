@@ -24,15 +24,20 @@ beforeEach(() => {
 });
 
 it('reads and freezes the packaged dApp identity', () => {
+  const windows = process.platform === 'win32';
   const result = readDappRuntimeConfig(
-    '/opt/daedalus/config/daedalus-config.json'
+    windows
+      ? 'C:\\opt\\daedalus\\config\\daedalus-config.json'
+      : '/opt/daedalus/config/daedalus-config.json'
   );
 
   expect(result).toEqual({
     ...config,
     dappNetwork: {
       ...config.dappNetwork,
-      genesisFile: '/opt/daedalus/config/genesis.json',
+      genesisFile: windows
+        ? 'C:\\opt\\daedalus\\config\\genesis.json'
+        : '/opt/daedalus/config/genesis.json',
     },
   });
   expect(Object.isFrozen(result)).toBe(true);

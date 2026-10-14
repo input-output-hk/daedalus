@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import fs from 'fs';
+import path from 'path';
 import type { ProcessMetric } from 'electron';
 import {
   hasSandboxBypass,
@@ -834,6 +835,9 @@ describe('NixOS package identity', () => {
   const helper = Buffer.from('sandbox helper');
   const helperHash = crypto.createHash('sha256').update(helper).digest('hex');
   const execPath = Object.getOwnPropertyDescriptor(process, 'execPath');
+  const hostPathSeparator = path.sep;
+  const posixResolve = path.posix.resolve;
+  const posixJoin = path.posix.join;
 
   const installFixture = (
     options: {
@@ -843,6 +847,10 @@ describe('NixOS package identity', () => {
     } = {}
   ) => {
     const fixtureRoot = options.root || root;
+    // The fixture models Linux, regardless of the Jest host's native paths.
+    jest.spyOn(path, 'resolve').mockImplementation(posixResolve);
+    jest.spyOn(path, 'join').mockImplementation(posixJoin);
+    Object.defineProperty(path, 'sep', { value: path.posix.sep });
     process.env.ENTRYPOINT_DIR = fixtureRoot;
     process.env.DAEDALUS_CONFIG_FILE = `${fixtureRoot}/config/daedalus-config.json`;
     Object.defineProperty(process, 'execPath', {
@@ -892,6 +900,7 @@ describe('NixOS package identity', () => {
     delete process.env.DAEDALUS_CONFIG_FILE;
     if (execPath) Object.defineProperty(process, 'execPath', execPath);
     jest.restoreAllMocks();
+    Object.defineProperty(path, 'sep', { value: hostPathSeparator });
   });
 
   test('accepts the exact store config, manifest, helper, and Electron identity', () => {

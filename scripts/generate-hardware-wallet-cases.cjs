@@ -95,7 +95,10 @@ const validateTransactionEnvelope = (bytes, requireCanonicalRoundTrip = false) =
   if (!(decoded[0][0] instanceof Map) || !(decoded[0][1] instanceof Map)) {
     throw new Error('Transaction recipe body and witness set must be maps');
   }
-  if (requireCanonicalRoundTrip && !cbor.encodeCanonical(decoded[0]).equals(bytes)) {
+  if (requireCanonicalRoundTrip && !cbor.encodeOne(decoded[0], {
+    canonical: true,
+    highWaterMark: bytes.length + 1,
+  }).equals(bytes)) {
     throw new Error('Generated transaction recipe is not canonical round-trip stable');
   }
   const validateMetadatum = (value) => {
@@ -157,7 +160,13 @@ const transactionBoundaryRecipe = (targetLength) => {
       chunks.push('x'.repeat(remaining));
       const candidate = [...source];
       candidate[3] = new Map([[0, chunks]]);
-      const bytes = cbor.encodeCanonical(candidate);
+      // Synchronous CBOR encoding must buffer the entire candidate. Its size is
+      // bounded by the source envelope plus padding and one header per chunk.
+      const bytes = cbor.encodeOne(candidate, {
+        canonical: true,
+        highWaterMark: Buffer.byteLength(txFixtureSource.cborHex, 'hex') +
+          2 * targetLength + prefixEmptyItems + 16,
+      });
       if (bytes.length === targetLength) {
         return transactionInputRecipe(
           bytes.toString('hex'),

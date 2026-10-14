@@ -35,6 +35,18 @@ import type { DappGuestAuthority } from '../dapp/DappBrowserManager';
 import type { DappRouteLease } from '../dapp/DappRouteLease';
 import type { ConsentRequest } from './ConsentCoordinator';
 
+jest.mock('electron', () => ({
+  ipcMain: { handle: jest.fn() },
+}));
+jest.mock('../utils/logging', () => ({
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
 jest.mock('../../common/cardano/transactionContext', () => ({
   ...(jest.requireActual('../../common/cardano/transactionContext') as object),
   reconcileTransactionContext: jest.fn(),

@@ -37,6 +37,10 @@ const manager = {
 jest.mock('./WatchdogManager', () => jest.fn(() => manager));
 
 jest.mock('./cip30/runtime', () => ({ revokeCip30Sessions: jest.fn() }));
+jest.mock('./utils/watchdogStateMigration', () => ({
+  buildMigrateStateCommand: jest.fn(),
+  forgetMigratedSettings: jest.fn(),
+}));
 jest.mock('./ipc/mithrilPushChannel', () => ({
   mithrilProgressChannel: { send: jest.fn(() => Promise.resolve()) },
   mithrilStatusChannel: { send: jest.fn(() => Promise.resolve()) },
@@ -154,7 +158,10 @@ describe('BackendLifecycle', () => {
       expect.anything()
     );
     expect(lifecycle.getState()).toEqual(
-      expect.objectContaining({ backendStopProgress: progress, walletPort: 8090 })
+      expect.objectContaining({
+        backendStopProgress: progress,
+        walletPort: 8090,
+      })
     );
 
     stopped.resolve(undefined);

@@ -287,7 +287,7 @@ export const createAuditFixtureProgram = (
 ): ts.Program => {
   const normalized = new Map(
     Object.entries(files).map(([file, source]) => [
-      path.join(root, file),
+      path.join(root, file).replace(/\\/g, '/'),
       source,
     ])
   );

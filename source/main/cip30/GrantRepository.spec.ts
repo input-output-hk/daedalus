@@ -107,7 +107,6 @@ describe('main-owned dApp authority stores', () => {
     );
 
     expect(stored.origin).toBe('https://example.com');
-    expect(fs.statSync(file).mode & 0o777).toBe(0o600);
     expect(fs.existsSync(`${file}.tmp`)).toBe(false);
     expect(new GrantRepository(file).list()).toEqual([stored]);
     expect(
@@ -127,8 +126,24 @@ describe('main-owned dApp authority stores', () => {
     ).toThrow('Invalid dApp origin');
     grants.forget(identity(stored));
     expect(fs.readFileSync(file, 'utf8')).not.toContain(stored.origin);
-    expect(fs.statSync(file).mode & 0o777).toBe(0o600);
   });
+
+  // Windows does not implement POSIX owner-only file modes.
+  (process.platform === 'win32' ? describe.skip : describe)(
+    'POSIX metadata permissions',
+    () => {
+      it('keeps grant metadata owner-only when granting and forgetting authority', () => {
+        const root = directory();
+        directories.push(root);
+        const file = path.join(root, 'grants.json');
+        const grants = new GrantRepository(file);
+        const stored = grants.put(grant());
+        expect(fs.statSync(file).mode & 0o777).toBe(0o600);
+        grants.forget(identity(stored));
+        expect(fs.statSync(file).mode & 0o777).toBe(0o600);
+      });
+    }
+  );
 
   it('keeps development loopback authority policy-bound and origin-only', () => {
     const root = directory();

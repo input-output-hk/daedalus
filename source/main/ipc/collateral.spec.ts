@@ -6,6 +6,9 @@ jest.mock('../cip30/Cip30Broker', () => ({
 jest.mock('./dappBrowser', () => ({
   getCurrentDappRouteLease: jest.fn(),
 }));
+jest.mock('./lib/MainIpcChannel', () => ({
+  MainIpcChannel: jest.fn(() => ({ onRequest: jest.fn() })),
+}));
 
 describe('collateral IPC', () => {
   it.each([

@@ -30,9 +30,19 @@ describe('CollateralPreferenceStore', () => {
     expect(
       new CollateralPreferenceStore(filePath).get(walletId, networkGenesis)
     ).toMatchObject(value);
-    expect(fs.statSync(filePath).mode & 0o777).toBe(0o600);
     expect(fs.readFileSync(filePath, 'utf8')).not.toContain('state');
   });
+
+  // Windows does not implement POSIX owner-only file modes.
+  (process.platform === 'win32' ? describe.skip : describe)(
+    'POSIX metadata permissions',
+    () => {
+      it('restricts collateral metadata to the owner', () => {
+        new CollateralPreferenceStore(filePath).put(value);
+        expect(fs.statSync(filePath).mode & 0o777).toBe(0o600);
+      });
+    }
+  );
 
   it('fails closed on corruption until explicit metadata repair', () => {
     fs.writeFileSync(filePath, '{bad');

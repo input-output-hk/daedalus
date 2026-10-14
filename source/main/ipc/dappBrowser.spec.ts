@@ -20,9 +20,11 @@ jest.mock('../environment', () => ({
 jest.mock('./lib/MainIpcChannel', () => ({
   MainIpcChannel: jest.fn(() => ({ onRequest: jest.fn() })),
 }));
-jest.mock('../windows/windowBounds', () => ({
-  restoreSavedWindowBounds: jest.fn(),
-  saveWindowBoundsOnSizeAndPositionChange: jest.fn(),
+jest.mock('../dapp/DappBrowserManager', () => ({
+  DappBrowserManager: jest.fn(),
+}));
+jest.mock('../utils/logging', () => ({
+  logger: { error: jest.fn() },
 }));
 
 const entry: DappCatalogEntry = {

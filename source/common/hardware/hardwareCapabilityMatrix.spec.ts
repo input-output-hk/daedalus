@@ -8,47 +8,14 @@ import cbor from 'cbor';
 
 const root = path.resolve(__dirname, '../../..');
 const matrixRoot = path.join(__dirname, 'fixtures/capability-matrix');
+const currentLock = require('@yarnpkg/lockfile').parse(
+  fs.readFileSync(path.join(root, 'yarn.lock'), 'utf8')
+).object;
+
 const readJson = (filePath: string) =>
   JSON.parse(fs.readFileSync(filePath, 'utf8'));
 const digest = (filePath: string) =>
   createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
-const packageTree = (packageRoot: string) => {
-  const files: Array<{ path: string; sha256: string }> = [];
-  const visit = (directory: string) => {
-    for (const entry of fs
-      .readdirSync(directory, { withFileTypes: true })
-      .sort((left, right) => left.name.localeCompare(right.name))) {
-      const absolutePath = path.join(directory, entry.name);
-      if (entry.isDirectory()) visit(absolutePath);
-      else if (entry.isFile()) {
-        files.push({
-          path: path
-            .relative(packageRoot, absolutePath)
-            .split(path.sep)
-            .join('/'),
-          sha256: digest(absolutePath),
-        });
-      } else if (entry.isSymbolicLink()) {
-        files.push({
-          path: path
-            .relative(packageRoot, absolutePath)
-            .split(path.sep)
-            .join('/'),
-          sha256: createHash('sha256')
-            .update(`symlink:${fs.readlinkSync(absolutePath)}`)
-            .digest('hex'),
-        });
-      }
-    }
-  };
-  visit(packageRoot);
-  return {
-    fileCount: files.length,
-    sha256: createHash('sha256')
-      .update(files.map((file) => `${file.path}\0${file.sha256}\n`).join(''))
-      .digest('hex'),
-  };
-};
 const canonicalInventory = (value) => {
   if (Array.isArray(value)) {
     return value
@@ -260,9 +227,12 @@ describe('hardware capability matrix', () => {
   });
 
   it('binds probe output to package, source, and lock identities', () => {
-    const liveSourceMatches: boolean[] = [];
     for (const artifact of manifest.artifacts) {
       const probe = readJson(path.join(matrixRoot, artifact.probe));
+      expect(probe.package).toMatchObject({
+        name: artifact.package,
+        version: artifact.version,
+      });
       expect(probe.identity).toMatchObject({
         version: artifact.version,
         sha1: artifact.sha1,
@@ -274,33 +244,27 @@ describe('hardware capability matrix', () => {
       });
       expect(probe.identity).not.toHaveProperty('gitHead');
       expect(probe.identity.resolved).toMatch(/^https:\/\//);
-      let expectedPackageTree = probe.identity.installedPackageTree;
-      if (artifact.id === 'ledger-8.0.0-candidate') {
-        expectedPackageTree = {
-          fileCount: 339,
-          sha256:
-            'c10904e4f2130b0f64bffaea8f8d24c4c8499f6aaa3d80fb05bbc8dae1f9c97f',
-        };
-      } else if (artifact.vendor === 'trezor') {
-        expectedPackageTree = packageTree(
-          path.join(root, 'node_modules', artifact.package)
-        );
-      }
-      expect(probe.identity.installedPackageTree).toMatchObject(
-        expectedPackageTree
-      );
       for (const sourceFile of probe.evidence.sourceFiles) {
         expect(sourceFile.sha256).toMatch(/^[0-9a-f]{64}$/);
-        if (artifact.vendor === 'trezor') {
-          liveSourceMatches.push(
-            digest(
-              path.join(root, 'node_modules', artifact.package, sourceFile.path)
-            ) === sourceFile.sha256
-          );
-        }
       }
     }
-    expect(liveSourceMatches.every(Boolean)).toBe(true);
+    for (const artifact of manifest.artifacts.filter(
+      ({ vendor }) => vendor === 'trezor'
+    )) {
+      const probe = readJson(path.join(matrixRoot, artifact.probe));
+      expect(
+        readJson(
+          path.join(root, 'node_modules', artifact.package, 'package.json')
+        )
+      ).toMatchObject({ name: artifact.package, version: artifact.version });
+      for (const sourceFile of probe.evidence.sourceFiles) {
+        expect(
+          digest(
+            path.join(root, 'node_modules', artifact.package, sourceFile.path)
+          )
+        ).toBe(sourceFile.sha256);
+      }
+    }
     expect(
       digest(path.join(matrixRoot, 'ledger-8.0.0-package-lock.json'))
     ).toBe(manifest.artifacts[1].lockSha256);
@@ -351,13 +315,27 @@ describe('hardware capability matrix', () => {
       sha1: '7f6b1dcfcc5b397156507b0c82d25d7595687a68',
       integrity:
         'sha512-hyWBk4HQApPdIvidQOExOP+GxD36WDsgzCz1PAFeJ4heL/b5Bmplyyg03/lA95NDNjjpqgDzN2rJyBHYpqgfmQ==',
-      lockSha256: digest(path.join(root, 'yarn.lock')),
-      installedPackageTree: packageTree(
+    });
+    const productionLock =
+      currentLock[`${production.package.name}@${production.identity.version}`];
+    expect(productionLock).toMatchObject({
+      version: production.identity.version,
+      resolved: production.identity.resolved,
+      integrity: production.identity.integrity,
+    });
+    expect(productionLock.resolved.split('#')[1]).toBe(
+      production.identity.sha1
+    );
+    expect(
+      readJson(
         path.join(
           root,
-          'node_modules/@cardano-foundation/ledgerjs-hw-app-cardano'
+          'node_modules/@cardano-foundation/ledgerjs-hw-app-cardano/package.json'
         )
-      ),
+      )
+    ).toMatchObject({
+      name: production.package.name,
+      version: production.identity.version,
     });
     for (const sourceFile of production.evidence.sourceFiles) {
       expect(
@@ -372,7 +350,7 @@ describe('hardware capability matrix', () => {
     }
   });
 
-  it('reproduces the complete Node-resolved Trezor runtime graph', () => {
+  it('preserves Trezor runtime package, lock, source, and consumer identities', () => {
     const identity = readJson(
       path.join(matrixRoot, 'trezor-9.7.2-runtime-identity.json')
     );
@@ -388,9 +366,6 @@ describe('hardware capability matrix', () => {
       )
     );
     for (const node of identity.nodes) {
-      expect(node.packageTree).toMatchObject(
-        packageTree(path.join(root, node.path))
-      );
       expect(node.lockSelectors.length).toBeGreaterThan(0);
       expect(node.lockIdentity.resolved).toMatch(/^https:\/\//);
       expect(node.lockIdentity.sha1).toMatch(/^[0-9a-f]{40}$/);
@@ -408,7 +383,6 @@ describe('hardware capability matrix', () => {
         )
         .digest('hex')
     );
-    expect(identity.rootLockSha256).toBe(digest(path.join(root, 'yarn.lock')));
     expect(manifest.runtimeProvenance).toMatchObject({
       artifactId: 'trezor-connect-9.7.2',
       runtimeGraphSha256: identity.graphSha256,
@@ -416,17 +390,6 @@ describe('hardware capability matrix', () => {
     expect(manifest.runtimeProvenance.configIdentitySha256).toBe(
       identity.configIdentity.sha256
     );
-    expect(identity.transportResolution).toEqual({
-      daedalusRoot: {
-        version: '1.5.4',
-        path: 'node_modules/@trezor/transport',
-      },
-      connectRoot: {
-        version: '1.6.2',
-        path: 'node_modules/@trezor/connect/node_modules/@trezor/transport',
-      },
-      distinctInstallations: true,
-    });
     const regeneratedProbe = path.join(
       os.tmpdir(),
       `daedalus-trezor-probe-${process.pid}.json`
@@ -444,11 +407,63 @@ describe('hardware capability matrix', () => {
       `--output=${regeneratedProbe}`,
       `--runtime-output=${regeneratedRuntime}`,
     ]);
-    expect(fs.readFileSync(regeneratedRuntime)).toEqual(
-      fs.readFileSync(
-        path.join(matrixRoot, 'trezor-9.7.2-runtime-identity.json')
-      )
+    const regenerated = readJson(regeneratedRuntime);
+    for (const node of regenerated.nodes) {
+      expect(
+        readJson(path.join(root, node.path, 'package.json'))
+      ).toMatchObject({ name: node.name, version: node.version });
+      for (const selector of node.lockSelectors) {
+        const locked = currentLock[selector];
+        expect(locked).toBeDefined();
+        expect(node.version).toBe(locked.version);
+        expect(node.lockIdentity).toEqual({
+          resolved: locked.resolved,
+          sha1: locked.resolved.split('#')[1],
+          integrity:
+            locked.integrity ||
+            `sha1-${Buffer.from(locked.resolved.split('#')[1], 'hex').toString(
+              'base64'
+            )}`,
+          integritySource: locked.integrity
+            ? 'yarn.lock'
+            : 'yarn.lock-resolved-sha1',
+        });
+      }
+    }
+    for (const edge of regenerated.edges) {
+      const source = regenerated.nodes.find((node) => node.id === edge.from);
+      const target = regenerated.nodes.find((node) => node.id === edge.to);
+      const metadata = readJson(path.join(root, source.path, 'package.json'));
+      const selector = {
+        ...metadata.dependencies,
+        ...metadata.optionalDependencies,
+      }[edge.dependency];
+      expect(target.name).toBe(edge.dependency);
+      expect(target.lockSelectors).toContain(`${edge.dependency}@${selector}`);
+    }
+    // Frozen evidence attests the reviewed installation, not today's hoisting
+    // or unrelated lock updates. Live dependencies must match the current lock.
+    const reviewedRoot = identity.nodes.find(
+      (node) => node.id === identity.root
     );
+    expect(
+      regenerated.nodes.find((node) => node.id === regenerated.root)
+    ).toMatchObject({
+      name: reviewedRoot.name,
+      version: reviewedRoot.version,
+      lockSelectors: reviewedRoot.lockSelectors,
+      lockIdentity: reviewedRoot.lockIdentity,
+    });
+    expect(regenerated.configIdentity).toEqual(identity.configIdentity);
+    expect(regenerated.transportResolution).toMatchObject({
+      daedalusRoot: {
+        version: identity.transportResolution.daedalusRoot.version,
+      },
+      connectRoot: {
+        version: identity.transportResolution.connectRoot.version,
+      },
+      distinctInstallations: identity.transportResolution.distinctInstallations,
+    });
   });
 
   it('fails Trezor graph generation when a resolved dependency loses lock identity', () => {

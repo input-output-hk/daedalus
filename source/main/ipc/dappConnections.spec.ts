@@ -3,6 +3,9 @@ import { parseDappConnectionsRequest } from './dappConnections';
 jest.mock('../cip30/Cip30Broker', () => ({
   getDappConnectionService: jest.fn(),
 }));
+jest.mock('./lib/MainIpcChannel', () => ({
+  MainIpcChannel: jest.fn(() => ({ onRequest: jest.fn() })),
+}));
 
 const identity = {
   origin: 'https://example.com',

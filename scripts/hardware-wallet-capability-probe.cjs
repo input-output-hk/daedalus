@@ -5,6 +5,7 @@ const path = require('path');
 const { createHash } = require('crypto');
 const prettier = require('prettier');
 
+async function main() {
 const args = Object.fromEntries(
   process.argv.slice(2).map((argument) => {
     const separator = argument.indexOf('=');
@@ -787,7 +788,7 @@ if (args.vendor === 'trezor' && args['runtime-output']) {
   };
   fs.writeFileSync(
     args['runtime-output'],
-    prettier.format(JSON.stringify(runtime), { parser: 'json' })
+    await prettier.format(JSON.stringify(runtime), { parser: 'json' })
   );
 }
 
@@ -804,4 +805,10 @@ const result = {
   evidence,
 };
 
-fs.writeFileSync(args.output, prettier.format(JSON.stringify(result), { parser: 'json' }));
+fs.writeFileSync(args.output, await prettier.format(JSON.stringify(result), { parser: 'json' }));
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

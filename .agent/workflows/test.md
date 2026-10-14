@@ -318,6 +318,33 @@ This runs:
 2. `yarn test:unit` - Unit tests
 3. `yarn test:e2e:fail-fast` - E2E tests (stops on first failure)
 
+### Windows Jest
+
+`.github/workflows/windows-tests.yml` runs Node 24 with:
+
+```bash
+yarn install --frozen-lockfile --ignore-scripts
+yarn test:jest --coverage=false --ci
+```
+
+Node-based specs must explicitly mock unused Electron integration boundaries:
+the install intentionally omits Electron's binary download and native builds.
+Platform simulations must supply the target platform's filesystem constants and
+path semantics, rather than inheriting them from the test host. POSIX file-mode
+assertions apply only outside Windows; persistence checks run on every platform.
+TypeScript audit paths must use consistent separators, including virtual files.
+
+The hardware case generator explicitly buffers complete CBOR candidates and
+canonical round trips, so the 65,536/65,537-byte boundary fixtures do not depend
+on the host's default stream buffer size.
+
+The hardware provenance probe awaits asynchronous Prettier formatting before
+writing evidence. Live dependency identities are checked against the current
+lockfile rather than historical installation layout or whole-lock snapshots.
+Archived evidence hashes remain unchanged. `.gitattributes` pins hash-sensitive
+lockfiles and fixture JSON to LF so Windows checkout conversion cannot alter
+the evidence bytes.
+
 ### Before pushing
 
 There are no git hooks in this repository, so nothing runs automatically on

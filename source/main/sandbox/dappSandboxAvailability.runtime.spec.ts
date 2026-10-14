@@ -260,6 +260,10 @@ const loadLinuxRuntime = (options: LinuxRuntimeOptions = {}) => {
   setProcessValue('platform', 'linux');
   setProcessValue('arch', 'x64');
   const actualFs = jest.requireActual<typeof Fs>('fs');
+  const linuxConstants = {
+    ...actualFs.constants,
+    O_DIRECTORY: 0x10000,
+  };
   const statusReads = new Map<number, number>();
   const rootLinkReads = new Map<number, number>();
   const samples = new Map<number, LinuxSample>();
@@ -324,6 +328,7 @@ const loadLinuxRuntime = (options: LinuxRuntimeOptions = {}) => {
   };
   const fsMock = {
     ...actualFs,
+    constants: linuxConstants,
     readFileSync: jest.fn((entryPath: string) => {
       const match = /^\/proc\/(\d+)\/(.+)$/.exec(entryPath);
       if (!match) throw new Error(`unexpected proc file: ${entryPath}`);
@@ -384,8 +389,8 @@ const loadLinuxRuntime = (options: LinuxRuntimeOptions = {}) => {
       const match = /^\/proc\/(\d+)\/(root|cwd)$/.exec(entryPath);
       if (!match) throw new Error('unexpected directory open');
       expect(flags & 0x200000).toBe(0x200000);
-      expect(flags & actualFs.constants.O_DIRECTORY).toBe(
-        actualFs.constants.O_DIRECTORY
+      expect(flags & linuxConstants.O_DIRECTORY).toBe(
+        linuxConstants.O_DIRECTORY
       );
       const pid = Number(match[1]);
       const cwd = match[2] === 'cwd';

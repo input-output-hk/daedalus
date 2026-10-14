@@ -16,11 +16,13 @@ const configPath = ts.findConfigFile(root, ts.sys.fileExists, 'tsconfig.json');
 if (!configPath) throw new Error('tsconfig.json not found');
 const config = ts.readConfigFile(configPath, ts.sys.readFile);
 const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
+const relative = (file: string) =>
+  path.relative(root, file).replace(/\\/g, '/');
 const productionFiles = parsed.fileNames
   .filter(
     (file) =>
-      file.startsWith(path.join(root, 'source/main/')) ||
-      file.startsWith(path.join(root, 'source/renderer/'))
+      relative(file).startsWith('source/main/') ||
+      relative(file).startsWith('source/renderer/')
   )
   .filter((file) => !/\.(spec|test)\.[jt]sx?$/.test(file));
 // These runtime fixtures deliberately construct wrappers and send raw hostile IPC.
@@ -31,8 +33,6 @@ const wrapperAuditFiles = productionFiles.filter(
 );
 const program = ts.createProgram(productionFiles, parsed.options);
 const checker = program.getTypeChecker();
-const relative = (file: string) =>
-  path.relative(root, file).replace(/\\/g, '/');
 
 const walk = (
   node: ts.Node,
@@ -471,7 +471,7 @@ const collectWrapperOperations = (
   return { registrations, callers, unresolved };
 };
 const mainProductionFiles = productionFiles.filter((fileName) =>
-  fileName.startsWith(path.join(root, 'source/main/'))
+  relative(fileName).startsWith('source/main/')
 );
 const {
   registrations,
@@ -605,9 +605,9 @@ const rendererMethods = new Set(
           const declaration =
             first?.valueDeclaration || first?.declarations?.[0];
           return (
-            (declaration as
-              | ts.ParameterDeclaration
-              | undefined)?.name.getText() === 'channel' &&
+            (
+              declaration as ts.ParameterDeclaration | undefined
+            )?.name.getText() === 'channel' &&
             !hasCallableParameter(signature, 1)
           );
         })
@@ -863,10 +863,12 @@ describe('privileged IPC manifest', () => {
     expect(
       findRawElectronCalls(
         fixtureProgram,
-        electronAuditFixtures.electronFiles.map((file) => path.join(root, file))
+        electronAuditFixtures.electronFiles.map((file) =>
+          path.join(root, file).replace(/\\/g, '/')
+        )
       )
     ).toHaveLength(26);
-    const fixtureFiles = [path.join(root, files.wrapper)];
+    const fixtureFiles = [path.join(root, files.wrapper).replace(/\\/g, '/')];
     const constructions = collectConstructions(fixtureProgram, fixtureFiles);
     const operations = collectWrapperOperations(fixtureProgram, fixtureFiles);
     expect({

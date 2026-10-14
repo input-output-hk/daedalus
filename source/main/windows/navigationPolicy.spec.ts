@@ -33,9 +33,13 @@ describe('trusted window navigation policy', () => {
     expect(getTrustedRendererUrl(true, '/app/main').href).toBe(
       'http://127.0.0.1:8080/'
     );
-    expect(getTrustedRendererUrl(false, '/app/main').href).toBe(
-      'file:///app/renderer/index.html'
-    );
+    const mainDirectory =
+      process.platform === 'win32' ? 'C:\\app\\main' : '/app/main';
+    const packagedUrl =
+      process.platform === 'win32'
+        ? 'file:///C:/app/renderer/index.html'
+        : 'file:///app/renderer/index.html';
+    expect(getTrustedRendererUrl(false, mainDirectory).href).toBe(packagedUrl);
   });
 
   it('denies untrusted main-frame navigation, redirects, and every subframe', () => {
