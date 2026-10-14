@@ -57,17 +57,9 @@ const apiSource = program.getSourceFile(
   path.join(root, 'source/common/ipc/api.ts')
 );
 const apiModule = apiSource && checker.getSymbolAtLocation(apiSource);
-// ponytail: the watchdog refactor left this renderer adapter without a main
-// endpoint; remove the exemption when wallet export is reintroduced.
-const inactiveRendererOnlyContracts: Record<string, true> = {
-  EXPORT_WALLETS_CHANNEL: true,
-};
 const apiContracts = new Map<ts.Symbol, string>();
 for (const symbol of apiModule ? checker.getExportsOfModule(apiModule) : []) {
-  if (
-    privilegedIpcManifest.some(({ contract }) => contract === symbol.name) ||
-    inactiveRendererOnlyContracts[symbol.name]
-  )
+  if (privilegedIpcManifest.some(({ contract }) => contract === symbol.name))
     apiContracts.set(unalias(symbol, checker) as ts.Symbol, symbol.name);
 }
 
@@ -368,12 +360,6 @@ const collectConstructions = (targetProgram: ts.Program, files: string[]) => {
       if (!ts.isNewExpression(node) || !node.arguments?.[0]) return;
       const wrapper = resolvedWrapper(node.expression, targetChecker);
       const contract = contractFromExpression(node.arguments[0], targetChecker);
-      if (
-        contract &&
-        inactiveRendererOnlyContracts[contract] &&
-        wrapper?.process === 'renderer'
-      )
-        return;
       if (isUnresolvedConstruction(wrapper, contract)) {
         unresolved.push(`${relative(sourceFile.fileName)}:${node.getStart()}`);
         return;

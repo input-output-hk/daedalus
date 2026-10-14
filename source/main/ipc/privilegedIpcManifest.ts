@@ -306,6 +306,12 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     capability: 'filesystem-export',
     receive: 'broadcast',
   }),
+  ...entries(['EXPORT_WALLETS_CHANNEL'], {
+    constructorOwner: 'source/main/ipc/exportWalletsChannel.ts',
+    rendererOwner: 'source/renderer/app/ipc/exportWalletsChannel.ts',
+    registrationOwner: 'source/main/ipc/exportWalletsChannel.ts',
+    capability: 'wallet-secrets-filesystem',
+  }),
   ...entries(['GENERATE_WALLET_MIGRATION_REPORT_CHANNEL'], {
     constructorOwner: 'source/main/ipc/generateWalletMigrationReportChannel.ts',
     rendererOwner:
@@ -397,6 +403,7 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
       'NODE_STARTUP_STATUS_CHANNEL',
       'NODE_BLOCK_SYNC_PROGRESS_CHANNEL',
       'WATCHDOG_STOPPED_CHANNEL',
+      'BACKEND_STOP_STATUS_CHANNEL',
     ],
     {
       constructorOwner: 'source/main/ipc/nodePushChannel.ts',
