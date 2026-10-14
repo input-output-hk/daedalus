@@ -2,6 +2,11 @@
 
 ## vNext
 
+### Fixes
+
+- Preserve success-only DRep favorites when delegation uses unified transaction approval, and retain watchdog-managed shutdown and installer handling alongside authenticated dApp IPC.
+- Restore the runtime configuration path passed by the watchdog to Electron on launch and restart, fixing startup failure before the Daedalus window appears.
+
 ## 11.5.0
 
 ### Features

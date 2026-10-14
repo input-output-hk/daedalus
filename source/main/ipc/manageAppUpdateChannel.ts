@@ -1,7 +1,6 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
-import { spawn } from 'child_process';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { MANAGE_APP_UPDATE } from '../../common/ipc/api';
@@ -30,7 +29,7 @@ const getMessage = (functionPrefix: string, message?: string): string => {
 };
 
 export const handleManageAppUpdateRequests = (
-  window: Pick<BrowserWindow, 'close'> & { daedalusExitCode?: number }
+  _window: Pick<BrowserWindow, 'close'> & { daedalusExitCode?: number }
 ) => {
   const response = (
     success: boolean | null | undefined,

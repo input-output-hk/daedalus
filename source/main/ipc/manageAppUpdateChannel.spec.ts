@@ -18,6 +18,10 @@ jest.mock('../environment', () => ({
   environment: { isLinux: true },
 }));
 
+jest.mock('../BackendLifecycle', () => ({
+  backendLifecycle: { installUpdate: jest.fn() },
+}));
+
 jest.mock('fs', () => ({
   __esModule: true,
   default: {
@@ -37,12 +41,12 @@ jest.mock('child_process', () => ({
 }));
 
 jest.mock('electron', () => ({
-  app: { on: jest.fn(), quit: jest.fn() },
+  app: { quit: jest.fn() },
   shell: { openPath: jest.fn() },
 }));
 
 jest.mock('../utils/logging', () => ({
-  logger: { error: jest.fn(), info: jest.fn() },
+  logger: { error: jest.fn(), info: jest.fn(), warn: jest.fn() },
 }));
 
 jest.mock('./lib/currentWindowSender', () => ({
@@ -63,13 +67,14 @@ const assertNoInstallerSideEffects = (window: { close: jest.Mock }) => {
   const shasum = jest.requireMock('shasum').default;
   const { spawn } = jest.requireMock('child_process');
   const { app, shell } = jest.requireMock('electron');
+  const { backendLifecycle } = jest.requireMock('../BackendLifecycle');
 
   expect(fs.existsSync).not.toHaveBeenCalled();
   expect(fs.readFileSync).not.toHaveBeenCalled();
   expect(fs.chmodSync).not.toHaveBeenCalled();
   expect(shasum).not.toHaveBeenCalled();
   expect(spawn).not.toHaveBeenCalled();
-  expect(app.on).not.toHaveBeenCalled();
+  expect(backendLifecycle.installUpdate).not.toHaveBeenCalled();
   expect(app.quit).not.toHaveBeenCalled();
   expect(shell.openPath).not.toHaveBeenCalled();
   expect(window.close).not.toHaveBeenCalled();
@@ -83,6 +88,10 @@ describe('manageAppUpdateChannel', () => {
     config.updateMode = 'installer-managed';
     config.updateRunnerBin = '/dangerous/update-runner';
     jest.requireMock('../environment').environment.isLinux = true;
+    jest
+      .requireMock('../BackendLifecycle')
+      .backendLifecycle.installUpdate.mockReset()
+      .mockReturnValue(true);
   });
 
   it('rejects package-managed Linux before installer side effects', async () => {
@@ -132,12 +141,13 @@ describe('manageAppUpdateChannel', () => {
     assertNoInstallerSideEffects(window);
   });
 
-  it('opens a verified macOS or Windows installer only after app quit', async () => {
+  it('hands a verified macOS or Windows installer to the watchdog before quitting', async () => {
     const handleManageAppUpdateRequests = loadHandler();
     const fs = jest.requireMock('fs').default;
     const shasum = jest.requireMock('shasum').default;
     const { spawn } = jest.requireMock('child_process');
     const { app, shell } = jest.requireMock('electron');
+    const { backendLifecycle } = jest.requireMock('../BackendLifecycle');
     const installer = Buffer.from('verified installer');
     const hash = 'verified-sha256';
     const window = { close: jest.fn() };
@@ -160,17 +170,74 @@ describe('manageAppUpdateChannel', () => {
       '/downloads/daedalus-installer'
     );
     expect(shasum).toHaveBeenCalledWith(installer, 'sha256');
-    expect(app.on).toHaveBeenCalledWith('quit', expect.any(Function));
+    expect(backendLifecycle.installUpdate).toHaveBeenCalledWith(
+      '/downloads/daedalus-installer'
+    );
+    expect(
+      backendLifecycle.installUpdate.mock.invocationCallOrder[0]
+    ).toBeLessThan(app.quit.mock.invocationCallOrder[0]);
     expect(app.quit).toHaveBeenCalledTimes(1);
     expect(shell.openPath).not.toHaveBeenCalled();
 
-    app.on.mock.calls[0][1]();
-
-    expect(shell.openPath).toHaveBeenCalledWith(
-      '/downloads/daedalus-installer'
-    );
     expect(fs.chmodSync).not.toHaveBeenCalled();
     expect(spawn).not.toHaveBeenCalled();
+    expect(window.close).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['missing installer', false, 'verified-sha256'],
+    ['mismatched hash', true, 'wrong-sha256'],
+    ['missing hash', true, undefined],
+  ])('rejects a %s without launching or quitting', async (_reason, exists, hash) => {
+    const handleManageAppUpdateRequests = loadHandler();
+    const fs = jest.requireMock('fs').default;
+    const shasum = jest.requireMock('shasum').default;
+    const { backendLifecycle } = jest.requireMock('../BackendLifecycle');
+    const { app, shell } = jest.requireMock('electron');
+    const window = { close: jest.fn() };
+
+    jest.requireMock('../environment').environment.isLinux = false;
+    fs.existsSync.mockReturnValue(exists);
+    fs.readFileSync.mockReturnValue(Buffer.from('installer'));
+    shasum.mockReturnValue('verified-sha256');
+
+    handleManageAppUpdateRequests(window);
+    const request = channel.onRequest.mock.calls[0][0];
+    const result = await request({
+      filePath: '/downloads/daedalus-installer',
+      hash,
+    });
+
+    expect(result).toEqual(expect.objectContaining({ status: 'error' }));
+    expect(backendLifecycle.installUpdate).not.toHaveBeenCalled();
+    expect(shell.openPath).not.toHaveBeenCalled();
+    expect(app.quit).not.toHaveBeenCalled();
+    expect(window.close).not.toHaveBeenCalled();
+  });
+
+  it('opens a verified installer directly only when no watchdog is available', async () => {
+    const handleManageAppUpdateRequests = loadHandler();
+    const fs = jest.requireMock('fs').default;
+    const shasum = jest.requireMock('shasum').default;
+    const { backendLifecycle } = jest.requireMock('../BackendLifecycle');
+    const { app, shell } = jest.requireMock('electron');
+    const window = { close: jest.fn() };
+    const filePath = '/downloads/daedalus-installer';
+
+    jest.requireMock('../environment').environment.isLinux = false;
+    fs.existsSync.mockReturnValue(true);
+    fs.readFileSync.mockReturnValue(Buffer.from('installer'));
+    shasum.mockReturnValue('verified-sha256');
+    backendLifecycle.installUpdate.mockReturnValue(false);
+
+    handleManageAppUpdateRequests(window);
+    const request = channel.onRequest.mock.calls[0][0];
+    const result = await request({ filePath, hash: 'verified-sha256' });
+
+    expect(result).toEqual(expect.objectContaining({ status: 'success' }));
+    expect(backendLifecycle.installUpdate).toHaveBeenCalledWith(filePath);
+    expect(shell.openPath).toHaveBeenCalledWith(filePath);
+    expect(app.quit).toHaveBeenCalledTimes(1);
     expect(window.close).not.toHaveBeenCalled();
   });
 });

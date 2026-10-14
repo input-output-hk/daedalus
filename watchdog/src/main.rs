@@ -416,6 +416,7 @@ async fn main() -> Result<()> {
                     .args(&base_electron_args)
                     .args(&current_electron_flags)
                     .envs(&electron_env)
+                    .env("DAEDALUS_CONFIG_FILE", &config_path)
                     .kill_on_drop(true);
 
                 // ── Windows: named-pipe IPC ──────────────────────────────────

@@ -168,10 +168,6 @@ const buildStores = ({
         ReturnType<VotingStore['delegateVotes']>,
         Parameters<VotingStore['delegateVotes']>
       >(async () => ({ success: true })),
-      initializeVPDelegationTx: jest.fn(async () => ({
-        fees: new BigNumber('0.174257'),
-        success: true as const,
-      })),
     },
     // allWallets is the Shelley-only collection the governance pages read:
     // a Byron wallet cannot delegate voting power.
@@ -230,33 +226,14 @@ const renderFlow = (
   };
 };
 
-const openConfirmation = async (
-  drepId: string,
-  storeOverrides: StoreOverrides = {},
-  delegationNavStateExtras: Partial<DelegationNavState> = {}
-) => {
-  const flow = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
-    ...storeOverrides,
+const renderDelegationForm = (drepId: string) =>
+  renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
     delegationNavState: {
       selectedDRepId: drepId,
       selectedWalletId: WALLET_ID,
       voteType: 'drep',
-      ...delegationNavStateExtras,
     },
   });
-  fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
-  await screen.findByText('Confirm Transaction');
-  return flow;
-};
-
-const confirmSoftwareDelegation = () => {
-  const passwordInput = document.querySelector('input[type="password"]');
-  expect(passwordInput).not.toBeNull();
-  fireEvent.change(passwordInput as Element, {
-    target: { value: 'secret123' },
-  });
-  fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
-};
 
 describe('Automatic favorites after delegation submission', () => {
   afterEach(() => {
@@ -277,21 +254,36 @@ describe('Automatic favorites after delegation submission', () => {
     expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
   });
 
-  it('does not save an unsigned candidate when confirmation is cancelled', async () => {
-    const { stores } = await openConfirmation(VALID_DREP_ID);
-    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+  it('does not save an unsigned candidate when unified approval is cancelled', async () => {
+    const { stores, actions } = renderDelegationForm(VALID_DREP_ID);
+    let cancelApproval!: () => void;
+    stores.voting.delegateVotes.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          // VotingStore maps a rejected approval to a generic failure.
+          cancelApproval = () =>
+            resolve({ success: false, errorCode: 'generic' });
+        })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
-    // The form remains mounted behind the dialog; cancel the dialog itself.
-    fireEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1]);
-
-    expect(screen.queryByText('Confirm Transaction')).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
+    await waitFor(() =>
+      expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
+    );
     expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
-    expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
+    expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
+
+    await act(async () => {
+      cancelApproval();
+    });
+
+    expect(screen.getByRole('button', { name: 'Submit' })).not.toBeDisabled();
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+    expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
   });
 
   it('waits for successful submission before saving the candidate', async () => {
-    const { stores, actions } = await openConfirmation(VALID_DREP_ID);
+    const { stores, actions } = renderDelegationForm(VALID_DREP_ID);
     let completeSubmission!: () => void;
     stores.voting.delegateVotes.mockImplementationOnce(
       () =>
@@ -299,10 +291,15 @@ describe('Automatic favorites after delegation submission', () => {
           completeSubmission = () => resolve({ success: true });
         })
     );
-    confirmSoftwareDelegation();
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
     await waitFor(() =>
       expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1)
     );
+    expect(stores.voting.delegateVotes).toHaveBeenCalledWith({
+      chosenOption: VALID_DREP_ID,
+      wallet: softwareWallet,
+    });
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
     expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
     expect(actions.router.goToRoute.trigger).not.toHaveBeenCalled();
 
@@ -321,15 +318,15 @@ describe('Automatic favorites after delegation submission', () => {
   });
 
   it('does not save the candidate when submission resolves with a failure', async () => {
-    const { stores, actions } = await openConfirmation(VALID_DREP_ID);
+    const { stores, actions } = renderDelegationForm(VALID_DREP_ID);
     stores.voting.delegateVotes.mockResolvedValueOnce({
       success: false,
       errorCode: 'generic',
     });
-    confirmSoftwareDelegation();
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Confirm' })).not.toBeDisabled()
+      expect(screen.getByRole('button', { name: 'Submit' })).not.toBeDisabled()
     );
     expect(stores.voting.delegateVotes).toHaveBeenCalledTimes(1);
     expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
@@ -337,9 +334,9 @@ describe('Automatic favorites after delegation submission', () => {
   });
 
   it('preserves an already-favorited DRep after successful submission', async () => {
-    const { stores, actions } = await openConfirmation(VALID_DREP_ID);
+    const { stores, actions } = renderDelegationForm(VALID_DREP_ID);
     stores.governance.favoriteDRepIds.add(VALID_DREP_ID);
-    confirmSoftwareDelegation();
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() =>
       expect(actions.router.goToRoute.trigger).toHaveBeenCalledTimes(1)
@@ -351,8 +348,8 @@ describe('Automatic favorites after delegation submission', () => {
   it.each(['abstain', 'no_confidence'])(
     'does not favorite %s after successful submission',
     async (sentinel) => {
-      const { stores, actions } = await openConfirmation(sentinel);
-      confirmSoftwareDelegation();
+      const { stores, actions } = renderDelegationForm(sentinel);
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
       await waitFor(() =>
         expect(actions.router.goToRoute.trigger).toHaveBeenCalledTimes(1)
@@ -522,7 +519,7 @@ describe('Current-vote enrichment in the delegation form', () => {
       screen.getByText(/already delegates to this choice/)
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
-    expect(stores.voting.initializeVPDelegationTx).not.toHaveBeenCalled();
+    expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
   });
 
   it('resolves the directory entry for a CIP-105 delegation through its CIP-129 form', async () => {

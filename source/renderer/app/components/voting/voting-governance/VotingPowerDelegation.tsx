@@ -204,6 +204,7 @@ function VotingPowerDelegation({
         wallet: selectedWallet,
       });
       if (result.success === true) {
+        if (selectedSentinel === null) onEnsureFavorited(selectedDRepId);
         onSuccess(selectedWallet.id);
       } else {
         setState({
@@ -216,7 +217,15 @@ function VotingPowerDelegation({
         });
       }
     })();
-  }, [onSuccess, selectedDRepId, selectedWallet, state, submitTransaction]);
+  }, [
+    onEnsureFavorited,
+    onSuccess,
+    selectedDRepId,
+    selectedSentinel,
+    selectedWallet,
+    state,
+    submitTransaction,
+  ]);
 
   const displayName =
     selectedDRepEntry?.verifiedName ??
