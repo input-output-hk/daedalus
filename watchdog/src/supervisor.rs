@@ -17,6 +17,7 @@ use tracing::{info, warn};
 #[cfg(unix)]
 use nix::sys::signal::Signal;
 
+use crate::chain_damage::{ChainDamageDetector, SharedDetector};
 use crate::chain_validation;
 use crate::config::WatchdogConfig;
 use crate::crash_window::CrashWindow;
@@ -618,7 +619,8 @@ const TRACE_HOSTNAME: &str = "daedalus";
 const MAX_LOG_LINE_BYTES: u64 = 1024 * 1024;
 
 /// Copy a child's output pipe into `log`, feeding startup and sync-progress
-/// parsers when `parse_sync_progress` is set. Output is decoded lossily, so
+/// parsers when `parse_sync_progress` is set, and every line to `damage` when
+/// one is given. Output is decoded lossily, so
 /// bytes that are not valid UTF-8 (a Windows user name in the active code page,
 /// for instance) are logged with replacement characters and reading continues:
 /// stopping would close the pipe and make the child's next write fail.
@@ -627,6 +629,7 @@ async fn pipe_to_log(
     log: RotatingLog,
     parse_sync_progress: bool,
     startup_tx: Option<mpsc::UnboundedSender<&'static str>>,
+    damage: Option<SharedDetector>,
 ) {
     let mut buf = BufReader::new(reader);
     let mut raw: Vec<u8> = Vec::new();
@@ -659,6 +662,12 @@ async fn pipe_to_log(
                         if let Some(ref tx) = startup_tx {
                             let _ = tx.send(phase);
                         }
+                    }
+                }
+                if let Some(ref detector) = damage {
+                    let detection = detector.lock().ok().and_then(|mut d| d.observe(&line));
+                    if let Some(detection) = detection {
+                        detection.report();
                     }
                 }
                 if let Ok(mut w) = log.lock() {
@@ -1407,18 +1416,23 @@ async fn run_node_wallet(
     // loop can gate wallet startup on chainDbReady.
     let (startup_tx, mut startup_rx) = mpsc::unbounded_channel::<&'static str>();
 
+    // One detector per node process, shared by both output streams.
+    let node_damage: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::node()));
+
     // Forward node logs
     tokio::spawn(pipe_to_log(
         node_proc.stdout.take().unwrap(),
         Arc::clone(&node_log),
         true,
         Some(startup_tx.clone()),
+        Some(Arc::clone(&node_damage)),
     ));
     tokio::spawn(pipe_to_log(
         node_proc.stderr.take().unwrap(),
         node_log,
         true,
         Some(startup_tx),
+        Some(node_damage),
     ));
 
     // Watch node for exit. The kill channel lets us force-kill via start_kill()
@@ -1807,11 +1821,13 @@ async fn run_node_wallet(
             Arc::clone(&wallet_log),
             false,
             None,
+            None,
         ));
         tokio::spawn(pipe_to_log(
             wallet.stderr.take().unwrap(),
             wallet_log,
             false,
+            None,
             None,
         ));
 
@@ -2216,7 +2232,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("out.log");
         let log = open_log(path.to_str().unwrap());
-        pipe_to_log(std::io::Cursor::new(input), log, false, None).await;
+        pipe_to_log(std::io::Cursor::new(input), log, false, None, None).await;
         let out = std::fs::read(&path).unwrap();
         let _ = std::fs::remove_dir_all(&dir);
         out

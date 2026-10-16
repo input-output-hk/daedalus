@@ -5,6 +5,7 @@
 // initialization clean.
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
+mod chain_damage;
 mod chain_validation;
 mod config;
 mod crash_window;
