@@ -912,6 +912,108 @@ fn startup_log_phase_parsing() {
     let _ = child.wait();
 }
 
+// ── Tests: chain damage detection ─────────────────────────────────────────────
+
+fn fixture(name: &str) -> String {
+    format!("{}/tests/fixtures/{name}", env!("CARGO_MANIFEST_DIR"))
+}
+
+/// Run a full start with `env` set, wait for the wallet, and return the
+/// `chain_damage` events seen up to a short while after the stack is ready.
+fn chain_damage_events(label: &str, env: &[(&str, &str)]) -> Vec<Value> {
+    let dir = TempDir::new(label);
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, env);
+
+    let mut seen = Vec::new();
+    let mut ready = false;
+    let deadline = std::time::Instant::now() + Duration::from_secs(15);
+    while let Some(left) = deadline.checked_duration_since(std::time::Instant::now()) {
+        let Ok(v) = rx.recv_timeout(left) else { break };
+        if v["event"] == "chain_damage" {
+            seen.push(v);
+        } else if v["event"] == "wallet_ready" {
+            ready = true;
+        }
+        if ready {
+            // The mock prints its lines before the node or wallet is ready,
+            // so anything they cause has arrived by now.
+            std::thread::sleep(Duration::from_millis(300));
+            while let Ok(v) = rx.try_recv() {
+                if v["event"] == "chain_damage" {
+                    seen.push(v);
+                }
+            }
+            break;
+        }
+    }
+    assert!(ready, "wallet never became ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+    seen
+}
+
+/// The missing ledger point line on node output produces one event.
+#[test]
+fn chain_damage_ledger_point_missing() {
+    let lines = fixture("node_ledger_point_missing.txt");
+    let events = chain_damage_events("damage-ledger", &[("MOCK_NODE_EXTRA_LINES", &lines)]);
+    assert_eq!(events.len(), 1, "{events:?}");
+    assert_eq!(events[0]["kind"], "ledger_point_missing");
+    assert_eq!(events[0]["slot"], 200_102_375u64);
+    assert!(events[0]["last_good_slot"].is_null());
+}
+
+/// Rejections of one slot from three distinct peers produce one event.
+#[test]
+fn chain_damage_block_rejected_by_three_peers() {
+    let lines = fixture("node_bad_inputs_three_peers.txt");
+    let events = chain_damage_events("damage-three-peers", &[("MOCK_NODE_EXTRA_LINES", &lines)]);
+    assert_eq!(events.len(), 1, "{events:?}");
+    assert_eq!(events[0]["kind"], "node_rejects_canonical_block");
+    assert_eq!(events[0]["slot"], 200_361_988u64);
+}
+
+/// Repeated rejections from a single peer produce no event.
+#[test]
+fn chain_damage_block_rejected_by_one_peer() {
+    let lines = fixture("node_bad_inputs_one_peer.txt");
+    let events = chain_damage_events("damage-one-peer", &[("MOCK_NODE_EXTRA_LINES", &lines)]);
+    assert!(events.is_empty(), "{events:?}");
+}
+
+/// The wallet discontinuity line, logged once per wallet worker, produces one
+/// event carrying both edges of the gap.
+#[test]
+fn chain_damage_wallet_discontinuity() {
+    let lines = fixture("wallet_discontinuity.txt");
+    let events = chain_damage_events("damage-wallet", &[("MOCK_WALLET_EXTRA_LINES", &lines)]);
+    assert_eq!(events.len(), 1, "{events:?}");
+    assert_eq!(events[0]["kind"], "wallet_chain_discontinuity");
+    assert_eq!(events[0]["slot"], 200_102_408u64);
+    assert_eq!(events[0]["last_good_slot"], 200_080_892u64);
+}
+
+/// Node signatures on wallet output and the wallet signature on node output
+/// are not recognised.
+#[test]
+fn chain_damage_signatures_are_read_from_their_own_process() {
+    let node_lines = fixture("wallet_discontinuity.txt");
+    let wallet_lines = fixture("node_ledger_point_missing.txt");
+    let events = chain_damage_events(
+        "damage-crossed",
+        &[
+            ("MOCK_NODE_EXTRA_LINES", &node_lines),
+            ("MOCK_WALLET_EXTRA_LINES", &wallet_lines),
+        ],
+    );
+    assert!(events.is_empty(), "{events:?}");
+}
+
 // ── Tests: non-UTF-8 child output ─────────────────────────────────────────────
 
 /// Poll until the mock has recorded `done`, then return its write results.
