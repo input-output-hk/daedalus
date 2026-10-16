@@ -187,7 +187,7 @@
           "id": "task-007",
           "title": "Rebuild custom chain locations in place",
           "description": "Resolve the wipe target with full_install_target and refuse it with CHAIN_DIR_NOT_REPLACEABLE unless check_replaceable passes; delete the contents of the real directory and keep any link or junction.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 5.0,
           "dependencies": [

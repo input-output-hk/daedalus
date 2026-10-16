@@ -1,7 +1,8 @@
 // Chain storage in a folder the user picked: the database lives in
 // `<folder>/chain` for the node and for Mithril, whether the folder came from
-// the storage picker or from an earlier version's settings, and a Mithril
-// bootstrap never deletes files that are not a node database.
+// the storage picker or from an earlier version's settings, a Mithril
+// bootstrap never deletes files that are not a node database, and a rebuild
+// replaces the database where it is, keeping any link that leads to it.
 //
 // Unix-only, like the other process tests: the node is a shell script that
 // reads the shutdown pipe on fd 3.
@@ -180,6 +181,13 @@ fn make_other_network_db(dir: &Path) {
     std::fs::write(dir.join("protocolMagicId"), OTHER_NETWORK_MAGIC).unwrap();
 }
 
+/// A database of this network in `dir`, with the same entries as
+/// `make_other_network_db`.
+fn make_this_network_db(dir: &Path) {
+    make_other_network_db(dir);
+    std::fs::write(dir.join("protocolMagicId"), NETWORK_MAGIC).unwrap();
+}
+
 /// Every entry under `dir` with the contents of each file, to show that a
 /// directory was left exactly as it was.
 fn tree(dir: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
@@ -257,6 +265,11 @@ fn stop(mut child: Child, mut stdin: ChildStdin, rx: &mpsc::Receiver<Value>) {
     expect(rx, "stopped");
     drop(stdin);
     let _ = child.wait();
+}
+
+/// Waits for the Mithril pipeline to report `phase`.
+fn expect_phase(rx: &mpsc::Receiver<Value>, phase: &str) {
+    while expect(rx, "mithril_status")["phase"] != phase {}
 }
 
 /// No state file yet, and an empty default location: the first-run path
@@ -695,6 +708,156 @@ fn this_networks_database_in_a_picked_folder_is_synced_as_before() {
     );
     assert!(!db.join("immutable").join("00009.chunk").exists());
     assert_eq!(dir.node_database_path().as_deref(), db.to_str());
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild of a chain directory that is a link, as 11.0 to 11.2 kept a
+/// custom location, deletes the database in the link's target outside the
+/// state directory, installs the new one there, and keeps the link.
+#[test]
+fn rebuild_through_a_link_replaces_the_target_and_keeps_the_link() {
+    let dir = TempDir::new("rebuild-link");
+    let target = dir.0.join("elsewhere");
+    make_this_network_db(&target);
+    let chain = dir.state().join("chain");
+    std::os::unix::fs::symlink(&target, &chain).unwrap();
+    std::fs::write(dir.state().join("watchdog-state.json"), b"{}").unwrap();
+    let (child, mut stdin, rx) = spawn(&dir, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_phase(&rx, "finalizing");
+    expect(&rx, "node_started");
+
+    assert!(
+        std::fs::symlink_metadata(&chain)
+            .unwrap()
+            .file_type()
+            .is_symlink(),
+        "the link was replaced"
+    );
+    assert_eq!(std::fs::read_link(&chain).unwrap(), target);
+    assert_eq!(
+        std::fs::read(target.join("protocolMagicId")).unwrap(),
+        NETWORK_MAGIC.as_bytes()
+    );
+    assert!(!target.join("immutable").join("00000.chunk").exists());
+    assert!(!target.join("ledger").join("999").exists());
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild of the database in a folder the user picked outside the state
+/// directory rebuilds it in place, and the folder's own files stay.
+#[test]
+fn rebuild_in_a_picked_folder_rebuilds_in_place() {
+    let dir = TempDir::new("rebuild-picked");
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    make_this_network_db(&db);
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let (child, mut stdin, rx) = spawn(&dir, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "node_socket_ready");
+    std::fs::remove_file(dir.node_args_file()).unwrap();
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_phase(&rx, "finalizing");
+    expect(&rx, "node_socket_ready");
+
+    assert_eq!(
+        std::fs::read(folder.join("notes.txt")).unwrap(),
+        b"user data"
+    );
+    assert_eq!(
+        std::fs::read(db.join("protocolMagicId")).unwrap(),
+        NETWORK_MAGIC.as_bytes()
+    );
+    assert!(!db.join("immutable").join("00000.chunk").exists());
+    assert!(!db.join("ledger").join("999").exists());
+    assert_eq!(dir.node_database_path().as_deref(), db.to_str());
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild refuses a chain directory that holds a file of the user's own
+/// next to the database, before anything is downloaded or deleted, and the
+/// node starts again on the chain it had.
+#[test]
+fn rebuild_refuses_a_chain_directory_with_unrelated_files_and_deletes_nothing() {
+    let dir = TempDir::new("rebuild-refuse");
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    make_this_network_db(&db);
+    std::fs::write(db.join("photo.jpg"), b"user data").unwrap();
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let before = tree(&folder);
+    let mithril_args = dir.0.join("mithril-args.json");
+    let (child, mut stdin, rx) = spawn(&dir, &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "CHAIN_DIR_NOT_REPLACEABLE");
+    assert!(
+        err["message"].as_str().unwrap().contains("photo.jpg"),
+        "{err}"
+    );
+    expect(&rx, "node_started");
+    assert!(!mithril_args.exists(), "a download was started");
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild refuses a relative chain path before it probes, downloads or
+/// deletes anything.
+#[test]
+fn rebuild_refuses_a_relative_chain_path() {
+    let dir = TempDir::new("rebuild-relative");
+    let db = dir.state().join("chain");
+    make_this_network_db(&db);
+    std::fs::write(dir.state().join("watchdog-state.json"), b"{}").unwrap();
+    let before = tree(&db);
+    let mithril_args = dir.0.join("mithril-args.json");
+    let mut cfg = config(&dir);
+    cfg["mithril"]["chain_path"] = json!("chain");
+    let (child, mut stdin, rx) =
+        spawn_with(&dir, &cfg, &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    assert_eq!(expect(&rx, "mithril_error")["code"], "INVALID_CHAIN_PATH");
+    expect(&rx, "node_started");
+    assert!(!mithril_args.exists(), "a download was started");
+    assert_eq!(tree(&db), before);
 
     stop(child, stdin, &rx);
 }
