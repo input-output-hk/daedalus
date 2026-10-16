@@ -1398,6 +1398,33 @@ fn probe_mithril_not_needed() {
     let _ = child.wait();
 }
 
+/// A Mithril sync that finds the local chain close enough to the certified
+/// tip changes nothing and starts the node again. Once the node has started,
+/// it ends with the `completed` status, as an installed sync does, so the
+/// renderer leaves the Mithril view.
+#[test]
+fn mithril_not_needed_ends_with_completed_once_the_node_restarts() {
+    let dir = TempDir::new("not-needed-completes");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .mithril_bin(env!("CARGO_BIN_EXE_mock-mithril-client-not-needed"))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect(&rx, "mithril_not_needed");
+    expect(&rx, "node_started");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── T6: wipe_chain: true ─────────────────────────────────────────────────────
 
 /// start_mithril with wipe_chain:true → chain dir deleted, full bootstrap install, restart.

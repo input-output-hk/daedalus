@@ -34,6 +34,20 @@ enum RunResult {
     StartMithril { force: bool, wipe_chain: bool },
 }
 
+/// How the Mithril pipeline before a node start ended, when the renderer has
+/// still to be told. The Mithril view stays up until the node has started
+/// again; then `completed` closes it.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum AfterMithril {
+    /// No pipeline ran, or the renderer already has its outcome.
+    Nothing,
+    /// A database was installed.
+    Installed,
+    /// The local chain is close enough to the certified tip, and nothing was
+    /// changed. Nothing else ends the renderer's Mithril view in this case.
+    NotNeeded,
+}
+
 fn unix_ms() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -1115,17 +1129,17 @@ pub async fn run(
                     let _ = mithril::write_marker(&mc.state_dir, "node-start-verified").await;
                 }
                 info!("Cleared stale installed-awaiting-node-start marker from previous session");
-                false
+                AfterMithril::Nothing
             }
             Some("cutover-in-progress") => {
                 // remove_stale_staging below deletes what it staged.
                 warn!("a Mithril install was interrupted in the previous session");
-                false
+                AfterMithril::Nothing
             }
-            _ => false,
+            _ => AfterMithril::Nothing,
         }
     } else {
-        false
+        AfterMithril::Nothing
     };
 
     // On the first launch after an upgrade from a pre-watchdog-state.json build,
@@ -1216,7 +1230,8 @@ pub async fn run(
 
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.
     let has_chain = !rebuild_pending
-        && (chain_has_data(&config, wstate.chain_path.as_deref()).await || after_mithril);
+        && (chain_has_data(&config, wstate.chain_path.as_deref()).await
+            || after_mithril == AfterMithril::Installed);
     info!("chain status: has_chain={has_chain} rebuild_pending={rebuild_pending}");
     emit(&Event::ChainStatus {
         has_chain,
@@ -1243,7 +1258,8 @@ pub async fn run(
             )
             .await
             {
-                Some(installed) => after_mithril = installed,
+                Some(true) => after_mithril = AfterMithril::Installed,
+                Some(false) => after_mithril = AfterMithril::Nothing,
                 None => return Ok(()),
             }
             choose_chain = false;
@@ -1271,7 +1287,7 @@ pub async fn run(
                     &el_restart_tx,
                 )
                 .await?;
-                after_mithril = false;
+                after_mithril = AfterMithril::Nothing;
                 result
             }
         };
@@ -1331,10 +1347,14 @@ pub async fn run(
                     let mut wiped = false;
                     match mithril::run_pipeline(mc, &mut cmd_rx, force, wipe_chain).await {
                         PipelineResult::Installed => {
-                            after_mithril = true;
+                            after_mithril = AfterMithril::Installed;
                             // loop continues to restart node/wallet
                         }
-                        PipelineResult::NotNeeded | PipelineResult::Cancelled => {
+                        PipelineResult::NotNeeded => {
+                            after_mithril = AfterMithril::NotNeeded;
+                            // loop continues to restart node/wallet
+                        }
+                        PipelineResult::Cancelled => {
                             // loop continues to restart node/wallet
                         }
                         PipelineResult::Stopped => break,
@@ -1351,11 +1371,14 @@ pub async fn run(
                                     }) => {
                                         match mithril::run_pipeline(mc, &mut cmd_rx, f, wc).await {
                                             PipelineResult::Installed => {
-                                                after_mithril = true;
+                                                after_mithril = AfterMithril::Installed;
                                                 break 'recovery;
                                             }
-                                            PipelineResult::NotNeeded
-                                            | PipelineResult::Cancelled => break 'recovery,
+                                            PipelineResult::NotNeeded => {
+                                                after_mithril = AfterMithril::NotNeeded;
+                                                break 'recovery;
+                                            }
+                                            PipelineResult::Cancelled => break 'recovery,
                                             PipelineResult::FailedAfterWipe => {
                                                 wiped = true;
                                                 break 'recovery;
@@ -1400,7 +1423,7 @@ pub async fn run(
                                     }) => {
                                         match mithril::run_pipeline(mc, &mut cmd_rx, f, wc).await {
                                             PipelineResult::Installed => {
-                                                after_mithril = true;
+                                                after_mithril = AfterMithril::Installed;
                                                 break 'failed_recovery;
                                             }
                                             PipelineResult::FailedAfterWipe => {
@@ -1469,7 +1492,7 @@ pub async fn run(
 async fn run_node_wallet(
     config: &mut WatchdogConfig,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
-    after_mithril: bool,
+    after_mithril: AfterMithril,
     crashes: &mut CrashCounters,
     base_node_args: &[String],
     wstate: &mut state::WatchdogState,
@@ -1542,10 +1565,12 @@ async fn run_node_wallet(
 
     // Dismiss the Mithril overlay now that the node is running so the user
     // sees normal sync/replay progress screens instead of the Mithril UI.
-    if after_mithril {
-        if let Some(ref mc) = config.mithril {
-            if let Err(e) = mithril::write_marker(&mc.state_dir, "node-start-verified").await {
-                warn!("Failed to write node-start-verified marker: {e}");
+    if after_mithril != AfterMithril::Nothing {
+        if after_mithril == AfterMithril::Installed {
+            if let Some(ref mc) = config.mithril {
+                if let Err(e) = mithril::write_marker(&mc.state_dir, "node-start-verified").await {
+                    warn!("Failed to write node-start-verified marker: {e}");
+                }
             }
         }
         emit(&Event::MithrilStatus {
