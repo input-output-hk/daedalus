@@ -266,7 +266,7 @@
           "id": "task-010",
           "title": "Add the chain-damaged phase to BackendStore",
           "description": "Copy chainDamage from the poll, add LoadingPhase 'chain-damaged' directly after the isStopping check, and add rebuildChain() and dismissChainDamage().",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 3.0,
           "dependencies": [
