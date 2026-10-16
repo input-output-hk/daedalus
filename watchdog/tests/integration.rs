@@ -1591,6 +1591,8 @@ fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
     assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
     expect_none_of(&rx, &["node_started"], 1500);
     assert!(!args_file.exists(), "a download was started");
+    // clean is deleted first, so a node would not trust what is left.
+    assert!(!chain.join("clean").exists());
     assert!(immutable.join("00000.chunk").exists());
 
     send(&mut stdin, json!({"cmd": "start_mithril"}));

@@ -443,6 +443,84 @@ async fn full_install_allowed(chain_path: &Path) -> bool {
     }
 }
 
+/// Why a rebuild may not delete the database in `chain_path`, if it may not.
+/// The chain directory, and the directory a symlink or junction there points
+/// to, must be absolute paths and must not be a filesystem root, as given and
+/// as resolved.
+async fn check_rebuild_path(chain_path: &Path) -> Result<()> {
+    fn check(dir: &Path) -> Result<()> {
+        if !dir.is_absolute() || dir.parent().is_none() {
+            anyhow::bail!(
+                "{} is a relative path or the root of a drive. Daedalus did not change it.",
+                dir.display()
+            );
+        }
+        Ok(())
+    }
+    check(chain_path)?;
+    let target = full_install_target(chain_path).await?;
+    check(&target)?;
+    if let Ok(resolved) = tokio::fs::canonicalize(&target).await {
+        check(&resolved)?;
+    }
+    Ok(())
+}
+
+/// Removes a symlink or junction itself, never what it points to. Windows
+/// removes a link to a directory as a directory.
+async fn remove_link(path: &Path) -> std::io::Result<()> {
+    match tokio::fs::remove_file(path).await {
+        Ok(()) => Ok(()),
+        Err(e) => tokio::fs::remove_dir(path).await.map_err(|_| e),
+    }
+}
+
+/// Deletes the cardano-node database a rebuild replaces. It lies in the
+/// directory `full_install_target` resolves: `chain_path` itself, or the
+/// target of a symlink or junction there. That directory and the link are
+/// kept, so a custom location is rebuilt where it is.
+///
+/// Only database entries are deleted, and a link among them is deleted
+/// without following it. check_replaceable refuses a directory that holds
+/// anything else before this runs, and the file-browser metadata it allows is
+/// left in place. `clean` goes first, so a node never trusts what a failed
+/// delete leaves, and `immutable` next, so no chunk is left to seed a partial
+/// sync.
+async fn wipe_database(chain_path: &Path) -> Result<()> {
+    let target = full_install_target(chain_path).await?;
+    if target == chain_path {
+        info!("mithril: deleting the database in {}", target.display());
+    } else {
+        info!(
+            "mithril: deleting the database in {}, the target of {}, which is kept",
+            target.display(),
+            chain_path.display()
+        );
+    }
+    let first = ["clean", "immutable"];
+    let rest = DATABASE_ENTRIES
+        .iter()
+        .copied()
+        .filter(|name| !first.contains(name));
+    for name in first.into_iter().chain(rest) {
+        let path = target.join(name);
+        let meta = match tokio::fs::symlink_metadata(&path).await {
+            Ok(meta) => meta,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
+            Err(e) => anyhow::bail!("Cannot read {}: {e}", path.display()),
+        };
+        let removed = if meta.is_dir() {
+            tokio::fs::remove_dir_all(&path).await
+        } else if meta.file_type().is_symlink() {
+            remove_link(&path).await
+        } else {
+            tokio::fs::remove_file(&path).await
+        };
+        removed.map_err(|e| anyhow::anyhow!("Could not delete {}: {e}", path.display()))?;
+    }
+    Ok(())
+}
+
 /// Whether Mithril may change the chain directory at all. Never when it holds
 /// another network's database: a partial sync would rewrite its chunks and
 /// ledger, and a full install or a wipe would delete it, although it holds
@@ -757,41 +835,15 @@ pub async fn run_pipeline(
         return PipelineResult::Cancelled;
     }
 
-    // A rebuild (wipe_chain) deletes the existing chain directory and installs
-    // a full bootstrap in its place. The path is checked here; nothing is
-    // deleted until the aggregator has answered the probe below.
+    // A rebuild (wipe_chain) deletes the database in the chain directory and
+    // installs a full bootstrap in its place. The path is checked here; nothing
+    // is deleted until the aggregator has answered the probe below.
     if wipe_chain {
-        let state_path = PathBuf::from(&cfg.state_dir);
-        // Safety: chain_path must be absolute and must live inside state_dir to
-        // prevent a misconfigured path (e.g. "/") from deleting the user's filesystem.
-        let chain_is_safe = chain_path.is_absolute()
-            && chain_path
-                .canonicalize()
-                .ok()
-                .or_else(|| {
-                    // chain_path may not exist yet; check the parent instead.
-                    chain_path
-                        .parent()
-                        .and_then(|p| p.canonicalize().ok())
-                        .map(|canon_parent| {
-                            canon_parent.join(chain_path.file_name().unwrap_or_default())
-                        })
-                })
-                .map(|canon| {
-                    canon.starts_with(state_path.canonicalize().unwrap_or(state_path.clone()))
-                })
-                .unwrap_or(false);
-        if !chain_is_safe {
-            warn!(
-                "mithril: chain_path '{}' is not inside state_dir '{}'",
-                cfg.chain_path, cfg.state_dir
-            );
+        if let Err(e) = check_rebuild_path(&chain_path).await {
+            warn!("mithril: refusing to rebuild the chain: {e}");
             emit(&Event::MithrilError {
                 code: "INVALID_CHAIN_PATH".to_string(),
-                message: format!(
-                    "chain_path '{}' is not inside state_dir '{}'",
-                    cfg.chain_path, cfg.state_dir
-                ),
+                message: e.to_string(),
             });
             return PipelineResult::Cancelled;
         }
@@ -859,27 +911,13 @@ pub async fn run_pipeline(
     // the old chain now, before the download, so the disk never has to hold
     // two full databases.
     if wipe_chain {
-        info!(
-            "mithril: deleting the old chain in {}",
-            chain_path.display()
-        );
-        match tokio::fs::remove_dir_all(&chain_path).await {
-            Ok(()) => {}
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
-            Err(e) => {
-                warn!(
-                    "mithril: could not delete the old chain in {}: {e}",
-                    chain_path.display()
-                );
-                emit(&Event::MithrilError {
-                    code: "WIPE_FAILED".to_string(),
-                    message: format!(
-                        "Could not delete the blockchain data in {}: {e}",
-                        chain_path.display()
-                    ),
-                });
-                return PipelineResult::FailedAfterWipe;
-            }
+        if let Err(e) = wipe_database(&chain_path).await {
+            warn!("mithril: could not delete the old chain: {e}");
+            emit(&Event::MithrilError {
+                code: "WIPE_FAILED".to_string(),
+                message: e.to_string(),
+            });
+            return PipelineResult::FailedAfterWipe;
         }
     }
 
@@ -1201,6 +1239,158 @@ mod tests {
         }
     }
 
+    mod rebuild {
+        use super::super::{check_rebuild_path, wipe_database};
+        use std::fs;
+        use std::path::{Path, PathBuf};
+
+        struct TempDir(PathBuf);
+
+        impl TempDir {
+            fn new(label: &str) -> Self {
+                let p = std::env::temp_dir().join(format!(
+                    "wdg-rebuild-{label}-{}-{}",
+                    std::process::id(),
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap()
+                        .subsec_nanos()
+                ));
+                fs::create_dir_all(&p).unwrap();
+                TempDir(p)
+            }
+        }
+
+        impl Drop for TempDir {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+
+        /// Every top-level entry of a node database, with some content.
+        fn make_db(dir: &Path) {
+            for sub in ["immutable", "volatile", "ledger", "gsm", "lsm"] {
+                fs::create_dir_all(dir.join(sub)).unwrap();
+                fs::write(dir.join(sub).join("data"), b"old").unwrap();
+            }
+            for file in ["lock", "clean", "protocolMagicId"] {
+                fs::write(dir.join(file), b"old").unwrap();
+            }
+        }
+
+        fn entries(dir: &Path) -> Vec<String> {
+            let mut names: Vec<String> = fs::read_dir(dir)
+                .unwrap()
+                .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
+                .collect();
+            names.sort();
+            names
+        }
+
+        #[tokio::test]
+        async fn deletes_the_database_and_keeps_the_directory() {
+            let t = TempDir::new("plain");
+            let chain = t.0.join("chain");
+            make_db(&chain);
+            fs::write(chain.join("desktop.ini"), b"folder settings").unwrap();
+
+            wipe_database(&chain).await.unwrap();
+
+            assert!(chain.is_dir());
+            assert_eq!(entries(&chain), vec!["desktop.ini"]);
+        }
+
+        #[tokio::test]
+        async fn a_missing_directory_has_nothing_to_delete() {
+            let t = TempDir::new("missing");
+            wipe_database(&t.0.join("chain")).await.unwrap();
+            assert!(!t.0.join("chain").exists());
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn keeps_a_link_and_empties_its_target() {
+            let t = TempDir::new("link");
+            let target = t.0.join("elsewhere");
+            make_db(&target);
+            let chain = t.0.join("state").join("chain");
+            fs::create_dir_all(chain.parent().unwrap()).unwrap();
+            std::os::unix::fs::symlink(&target, &chain).unwrap();
+
+            wipe_database(&chain).await.unwrap();
+
+            assert!(
+                fs::symlink_metadata(&chain)
+                    .unwrap()
+                    .file_type()
+                    .is_symlink()
+            );
+            assert_eq!(fs::read_link(&chain).unwrap(), target);
+            assert!(target.is_dir());
+            assert!(entries(&target).is_empty());
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn deletes_a_link_in_the_database_without_following_it() {
+            let t = TempDir::new("inner-link");
+            let chain = t.0.join("chain");
+            make_db(&chain);
+            let elsewhere = t.0.join("other-disk").join("immutable");
+            fs::create_dir_all(&elsewhere).unwrap();
+            fs::write(elsewhere.join("00000.chunk"), b"kept").unwrap();
+            fs::remove_dir_all(chain.join("immutable")).unwrap();
+            std::os::unix::fs::symlink(&elsewhere, chain.join("immutable")).unwrap();
+
+            wipe_database(&chain).await.unwrap();
+
+            assert!(fs::symlink_metadata(chain.join("immutable")).is_err());
+            assert_eq!(fs::read(elsewhere.join("00000.chunk")).unwrap(), b"kept");
+        }
+
+        #[tokio::test]
+        async fn accepts_an_absolute_directory() {
+            let t = TempDir::new("absolute");
+            assert!(check_rebuild_path(&t.0.join("chain")).await.is_ok());
+        }
+
+        #[tokio::test]
+        async fn refuses_a_relative_path() {
+            let err = check_rebuild_path(Path::new("chain")).await.unwrap_err();
+            assert!(err.to_string().contains("relative path"), "{err}");
+        }
+
+        #[tokio::test]
+        async fn refuses_a_filesystem_root() {
+            let root = std::env::temp_dir()
+                .ancestors()
+                .last()
+                .unwrap()
+                .to_path_buf();
+            assert!(check_rebuild_path(&root).await.is_err());
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn refuses_a_link_to_a_filesystem_root() {
+            let t = TempDir::new("link-root");
+            let chain = t.0.join("chain");
+            std::os::unix::fs::symlink("/", &chain).unwrap();
+            assert!(check_rebuild_path(&chain).await.is_err());
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn refuses_a_link_that_resolves_to_a_filesystem_root() {
+            let t = TempDir::new("link-root-via");
+            let hop = t.0.join("hop");
+            std::os::unix::fs::symlink("/", &hop).unwrap();
+            let chain = t.0.join("chain");
+            std::os::unix::fs::symlink(&hop, &chain).unwrap();
+            assert!(check_rebuild_path(&chain).await.is_err());
+        }
+    }
+
     // Real NTFS junction tests.
     //
     // The parallel TypeScript suite (chainStorageWindows.realfs.spec.ts) covers
@@ -1356,7 +1546,7 @@ mod tests {
 
     #[cfg(windows)]
     mod junction_install {
-        use super::super::install_staged;
+        use super::super::{install_staged, wipe_database};
         use std::fs;
         use std::path::Path;
 
@@ -1480,6 +1670,31 @@ mod tests {
                 chain_path.join("probe.txt").exists(),
                 "probe file must be reachable through the junction after install"
             );
+        }
+
+        // wipe_database with a junction chain_path must delete the database in
+        // the junction target and keep both the junction and the target, so a
+        // rebuild installs into the same custom location.
+        #[tokio::test]
+        async fn rebuild_empties_the_junction_target_and_keeps_the_junction() {
+            let root = temp_dir("rebuild");
+            let target = root.join("target");
+            fs::create_dir_all(target.join("immutable")).unwrap();
+            fs::write(target.join("immutable").join("00000.chunk"), b"old").unwrap();
+            fs::write(target.join("protocolMagicId"), b"1").unwrap();
+            let chain_path = root.join("chain");
+            make_junction(&chain_path, &target);
+
+            wipe_database(&chain_path).await.unwrap();
+
+            let meta = fs::symlink_metadata(&chain_path).unwrap();
+            assert!(
+                meta.file_type().is_symlink(),
+                "chain entry point should remain a junction after the wipe"
+            );
+            assert!(target.is_dir(), "junction target should be kept");
+            assert!(!target.join("immutable").exists());
+            assert!(!target.join("protocolMagicId").exists());
         }
 
         // install_staged uses read_link to get the raw target, then resolves
