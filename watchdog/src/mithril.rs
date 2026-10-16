@@ -751,8 +751,9 @@ pub async fn run_pipeline(
         return PipelineResult::Cancelled;
     }
 
-    // If wipe_chain is requested, delete the existing chain directory so the
-    // download is treated as a full bootstrap rather than an incremental sync.
+    // A rebuild (wipe_chain) deletes the existing chain directory and installs
+    // a full bootstrap in its place. The path is checked here; nothing is
+    // deleted until the aggregator has answered the probe below.
     if wipe_chain {
         let state_path = PathBuf::from(&cfg.state_dir);
         // Safety: chain_path must be absolute and must live inside state_dir to
@@ -788,7 +789,6 @@ pub async fn run_pipeline(
             });
             return PipelineResult::Cancelled;
         }
-        let _ = tokio::fs::remove_dir_all(&chain_path).await;
     }
 
     info!("mithril: preparing");
@@ -796,8 +796,9 @@ pub async fn run_pipeline(
         phase: "preparing".to_string(),
     });
 
-    // 1. Behind-ness probe
-    let (local_highest, certified) = match probe(cfg).await {
+    // 1. Behind-ness probe. It runs before a rebuild deletes anything, so an
+    //    aggregator that does not answer leaves the chain as it is.
+    let (probed_local, certified) = match probe(cfg).await {
         Ok(r) => r,
         Err(e) => {
             warn!("mithril probe failed: {e}");
@@ -809,9 +810,12 @@ pub async fn run_pipeline(
         }
     };
 
+    // A rebuild replaces the local chain with a full bootstrap, so its chunks
+    // neither decide whether a sync is needed nor narrow the download.
+    let local_highest = if wipe_chain { None } else { probed_local };
     let local_num = local_highest.unwrap_or(0);
     let behind = certified.saturating_sub(local_num);
-    if !force && behind < cfg.behind_threshold {
+    if !force && !wipe_chain && behind < cfg.behind_threshold {
         info!(
             "Mithril not needed: local={local_num}, certified={certified}, behind={behind}, threshold={}",
             cfg.behind_threshold
@@ -823,7 +827,12 @@ pub async fn run_pipeline(
         return PipelineResult::NotNeeded;
     }
 
-    if force {
+    if wipe_chain {
+        info!(
+            "Mithril rebuild requested: local={}, certified={certified}; the local chain is replaced by a full bootstrap",
+            probed_local.unwrap_or(0)
+        );
+    } else if force {
         info!(
             "Mithril forced by caller: local={local_num}, certified={certified}; skipping not-needed check"
         );
@@ -838,6 +847,13 @@ pub async fn run_pipeline(
     let is_partial = local_highest.is_some();
     if !is_partial && !full_install_allowed(&chain_path).await {
         return PipelineResult::Cancelled;
+    }
+
+    // The aggregator has answered and the directory may be replaced: delete
+    // the old chain now, before the download, so the disk never has to hold
+    // two full databases.
+    if wipe_chain {
+        let _ = tokio::fs::remove_dir_all(&chain_path).await;
     }
 
     // 2. Prepare staging

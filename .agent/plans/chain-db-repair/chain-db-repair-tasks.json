@@ -145,7 +145,7 @@
           "id": "task-005",
           "title": "Probe the aggregator before deleting",
           "description": "Move the wipe in run_pipeline after a successful probe, so an unreachable aggregator leaves the chain untouched.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 2.0,
           "dependencies": [],
