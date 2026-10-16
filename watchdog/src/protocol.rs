@@ -201,8 +201,13 @@ pub enum Event {
     MigrateStateRequest,
     /// Emitted once on startup. When `has_chain` is false the supervisor waits
     /// for a `start_node` or `start_mithril` command before doing anything.
+    /// `rebuild_pending` is true when that wait follows a rebuild that began
+    /// deleting the chain directory and installed nothing, in this session or
+    /// an earlier one: the directory is the one in use, and a `start_mithril`
+    /// then rebuilds it.
     ChainStatus {
         has_chain: bool,
+        rebuild_pending: bool,
     },
     /// Result of a `validate_chain_dir` command.
     ChainDirValidation {
@@ -592,15 +597,26 @@ mod tests {
 
     #[test]
     fn chain_status_true() {
-        let j = to_json(&Event::ChainStatus { has_chain: true });
+        let j = to_json(&Event::ChainStatus {
+            has_chain: true,
+            rebuild_pending: false,
+        });
         assert_eq!(j["event"], "chain_status");
         assert_eq!(j["has_chain"], true);
+        assert_eq!(j["rebuild_pending"], false);
     }
 
     #[test]
-    fn chain_status_false() {
-        let j = to_json(&Event::ChainStatus { has_chain: false });
-        assert_eq!(j["has_chain"], false);
+    fn chain_status_with_a_rebuild_pending() {
+        let line = serde_json::to_string(&Event::ChainStatus {
+            has_chain: false,
+            rebuild_pending: true,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"chain_status","has_chain":false,"rebuild_pending":true}"#
+        );
     }
 
     // ── Command deserialization tests ─────────────────────────────────────────

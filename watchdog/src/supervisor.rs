@@ -979,7 +979,14 @@ async fn await_chain_choice(
 ) -> Option<bool> {
     loop {
         match cmd_rx.recv().await {
-            Some(Cmd::StartNode) => return Some(false),
+            Some(Cmd::StartNode) => {
+                // The user chose to sync from genesis on what is there, so
+                // no rebuild is pending any more.
+                if let Some(ref mc) = config.mithril {
+                    mithril::clear_rebuild_marker(mc).await;
+                }
+                return Some(false);
+            }
             Some(Cmd::StartMithril { wipe_chain, .. }) => {
                 if let Some(ref mc) = config.mithril {
                     use mithril::PipelineResult;
@@ -992,7 +999,10 @@ async fn await_chain_choice(
                         }
                         PipelineResult::FailedAfterWipe => {
                             rebuild = true;
-                            emit(&Event::ChainStatus { has_chain: false });
+                            emit(&Event::ChainStatus {
+                                has_chain: false,
+                                rebuild_pending: true,
+                            });
                             continue;
                         }
                         PipelineResult::NotNeeded
@@ -1000,7 +1010,10 @@ async fn await_chain_choice(
                         | PipelineResult::UserCancelled
                         | PipelineResult::Failed => {
                             // Still no chain data (or install failed) — re-prompt.
-                            emit(&Event::ChainStatus { has_chain: false });
+                            emit(&Event::ChainStatus {
+                                has_chain: false,
+                                rebuild_pending: rebuild,
+                            });
                             continue;
                         }
                     }
@@ -1186,10 +1199,29 @@ pub async fn run(
         mithril::remove_stale_staging(mc).await;
     }
 
+    // A rebuild that began deleting the chain in an earlier session and
+    // installed nothing leaves database entries the node would replay from
+    // genesis. The user chooses again instead, as after a failed rebuild in
+    // this session.
+    let rebuild_pending = match config.mithril {
+        Some(ref mc) => mithril::rebuild_pending(mc).await,
+        None => false,
+    };
+    if rebuild_pending {
+        warn!(
+            "a rebuild of the chain did not finish in an earlier session; \
+             waiting for the user's choice instead of starting the node"
+        );
+    }
+
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.
-    let has_chain = chain_has_data(&config, wstate.chain_path.as_deref()).await || after_mithril;
-    info!("chain status: has_chain={has_chain}");
-    emit(&Event::ChainStatus { has_chain });
+    let has_chain = !rebuild_pending
+        && (chain_has_data(&config, wstate.chain_path.as_deref()).await || after_mithril);
+    info!("chain status: has_chain={has_chain} rebuild_pending={rebuild_pending}");
+    emit(&Event::ChainStatus {
+        has_chain,
+        rebuild_pending,
+    });
     let mut choose_chain = !has_chain;
 
     let mut crashes = CrashCounters::new(&config);
@@ -1197,7 +1229,7 @@ pub async fn run(
     let mut next: Option<RunResult> = None;
     // Set when a rebuild started deleting the chain and installed nothing,
     // for the wait for the user's choice that follows; see await_chain_choice.
-    let mut rebuild_chain = false;
+    let mut rebuild_chain = rebuild_pending;
     loop {
         if choose_chain {
             // Hold here until the UI sends start_node or start_mithril.
@@ -1222,7 +1254,10 @@ pub async fn run(
                 // Every start of the node passes here. Another network's
                 // database is reported as no chain, so the user chooses again.
                 if holds_other_network_db(&config, &wstate).await {
-                    emit(&Event::ChainStatus { has_chain: false });
+                    emit(&Event::ChainStatus {
+                        has_chain: false,
+                        rebuild_pending: false,
+                    });
                     choose_chain = true;
                     continue;
                 }
@@ -1412,7 +1447,10 @@ pub async fn run(
                             "the rebuild started deleting the chain and installed nothing; \
                              waiting for the user's choice instead of starting the node"
                         );
-                        emit(&Event::ChainStatus { has_chain: false });
+                        emit(&Event::ChainStatus {
+                            has_chain: false,
+                            rebuild_pending: true,
+                        });
                         choose_chain = true;
                         rebuild_chain = true;
                     }

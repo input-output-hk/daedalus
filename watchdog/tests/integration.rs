@@ -1572,6 +1572,80 @@ fn wipe_chain_refuses_a_snapshot_that_does_not_fit_and_deletes_nothing() {
     let _ = child.wait();
 }
 
+/// Records, in the state directory, a rebuild of `chain` that began deleting
+/// it in an earlier session and installed nothing.
+fn write_rebuild_marker(dir: &TempDir, chain: &Path) {
+    std::fs::write(
+        dir.path().join("chain-rebuild.json"),
+        json!({ "chain_path": chain.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+}
+
+/// A rebuild that did not finish in an earlier session leaves database entries
+/// the node would replay from genesis. At the next start the watchdog reports
+/// no chain with the rebuild pending and starts no node. The Mithril sync the
+/// bootstrap decision then sends is a rebuild: it deletes what is left,
+/// installs a full bootstrap, and ends the pending rebuild.
+#[test]
+fn restart_with_a_pending_rebuild_starts_no_node_and_rebuilds() {
+    let dir = TempDir::new("rebuild-pending");
+    let chain = dir.populate_database();
+    write_rebuild_marker(&dir, &chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap())],
+    );
+
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false);
+    assert_eq!(status["rebuild_pending"], true);
+    expect_none_of(&rx, &["node_started"], 1500);
+    assert!(chain.join("immutable").join("00000.chunk").exists());
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    assert!(
+        !args.iter().any(|a| a == "--start" || a == "--end"),
+        "args: {args:?}"
+    );
+    assert!(!chain.join("immutable").join("00000.chunk").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A pending rebuild of another chain directory does not stop the node from
+/// starting on this one.
+#[test]
+fn a_pending_rebuild_of_another_directory_is_ignored() {
+    let dir = TempDir::new("rebuild-elsewhere");
+    dir.populate_database();
+    write_rebuild_marker(&dir, &dir.path().join("elsewhere").join("chain"));
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], true);
+    assert_eq!(status["rebuild_pending"], false);
+    expect(&rx, "node_started");
+    assert!(dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// Staging left in the chain directory by an interrupted sync, and in the
 /// state directory by an earlier version, is deleted at startup. It is not a
 /// chain: a chain directory holding nothing else reports no chain.
@@ -1627,14 +1701,19 @@ fn wipe_chain_download_failure_starts_no_node() {
         expect(&rx, "mithril_error")["code"],
         "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED"
     );
-    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false);
+    assert_eq!(status["rebuild_pending"], true);
     expect_none_of(&rx, &["node_started"], 1500);
     assert!(!chain.join("immutable").exists());
     assert!(!chain.join("protocolMagicId").exists());
+    assert!(dir.path().join("chain-rebuild.json").exists());
 
+    // Choosing to sync from genesis ends the rebuild.
     send(&mut stdin, json!({"cmd": "start_node"}));
     expect(&rx, "node_started");
     expect(&rx, "wallet_ready");
+    assert!(!dir.path().join("chain-rebuild.json").exists());
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -1745,6 +1824,8 @@ fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
     // clean is deleted first, so a node would not trust what is left.
     assert!(!chain.join("clean").exists());
     assert!(immutable.join("00000.chunk").exists());
+    // The rebuild is recorded, so a restart now would not start the node.
+    assert!(dir.path().join("chain-rebuild.json").exists());
 
     send(&mut stdin, json!({"cmd": "start_mithril"}));
     expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
@@ -1757,6 +1838,7 @@ fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
         "args: {args:?}"
     );
     assert!(!immutable.join("00000.chunk").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
 
     stop(&mut stdin);
     expect(&rx, "stopped");
