@@ -4,6 +4,8 @@ import net from 'net';
 import { logger } from './utils/logging';
 import type {
   BackendStopProgress,
+  ChainDamage,
+  ChainDamageKind,
   RequestedRestart,
 } from '../common/types/watchdog.types';
 
@@ -56,6 +58,9 @@ export interface WatchdogState {
   // The code of the mithril_error that set lastError; null when lastError
   // came from an error without one
   lastErrorCode: string | null;
+  // The last hole in the chain database the watchdog detected; cleared when a
+  // node starts or a Mithril sync begins
+  chainDamage: ChainDamage | null;
   walletUnrecoverable: boolean;
 
   // Diagnostics
@@ -146,6 +151,7 @@ class WatchdogManager {
       mithrilSignificantlyBehind: null,
       lastError: null,
       lastErrorCode: null,
+      chainDamage: null,
       walletUnrecoverable: false,
       nodeSocketWaitMs: null,
       walletReadyWaitMs: null,
@@ -401,6 +407,8 @@ class WatchdogManager {
         s.nodeUnrecoverable = false;
         s.walletUnrecoverable = false;
         s.requestedRestart = null;
+        // The new node reports its own damage from its own output.
+        s.chainDamage = null;
         this._nodeRunning = true;
         s.blockSyncProgress = {
           replayedBlock: 0,
@@ -487,8 +495,20 @@ class WatchdogManager {
         };
         break;
 
+      case 'chain_damage':
+        s.chainDamage = {
+          kind: event.kind as ChainDamageKind,
+          slot: (event.slot as number | null | undefined) ?? null,
+          lastGoodSlot:
+            (event.last_good_slot as number | null | undefined) ?? null,
+          detectedAt: new Date().toISOString(),
+        };
+        break;
+
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;
+        // A rebuild is starting; the damage it replaces is no longer current.
+        if (event.phase === 'preparing') s.chainDamage = null;
         // A Mithril sync replaced the requested node restart.
         if (s.requestedRestart === 'node') s.requestedRestart = null;
         break;

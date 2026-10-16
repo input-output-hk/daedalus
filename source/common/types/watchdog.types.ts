@@ -20,6 +20,9 @@ export interface WatchdogState {
   // The code of the mithril_error that set lastError; null when lastError
   // came from an error without one
   lastErrorCode: string | null;
+  // The last hole in the chain database the watchdog detected; cleared when a
+  // node starts or a Mithril sync begins
+  chainDamage: ChainDamage | null;
   walletUnrecoverable: boolean;
   nodeSocketWaitMs: number | null;
   walletReadyWaitMs: number | null;
@@ -76,6 +79,15 @@ export type ChainDamageEvent = {
   kind: ChainDamageKind;
   slot: number | null;
   last_good_slot: number | null;
+};
+
+// ChainDamage — the polled form of a chain_damage event. detectedAt is the
+// ISO time the main process received the event.
+export type ChainDamage = {
+  kind: ChainDamageKind;
+  slot: number | null;
+  lastGoodSlot: number | null;
+  detectedAt: string;
 };
 
 // MithrilProgress — from mithril_progress events
