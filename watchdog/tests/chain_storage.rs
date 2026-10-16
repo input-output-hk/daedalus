@@ -723,7 +723,8 @@ fn rebuild_through_a_link_replaces_the_target_and_keeps_the_link() {
     let chain = dir.state().join("chain");
     std::os::unix::fs::symlink(&target, &chain).unwrap();
     std::fs::write(dir.state().join("watchdog-state.json"), b"{}").unwrap();
-    let (child, mut stdin, rx) = spawn(&dir, &[]);
+    let mithril_args = dir.0.join("mithril-args.json");
+    let (child, mut stdin, rx) = spawn(&dir, &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)]);
 
     assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
     expect(&rx, "wallet_ready");
@@ -733,6 +734,17 @@ fn rebuild_through_a_link_replaces_the_target_and_keeps_the_link() {
     );
     expect_phase(&rx, "finalizing");
     expect(&rx, "node_started");
+
+    // The download was staged inside the link's target, on its volume, and
+    // nothing of it is left once installed.
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&mithril_args).unwrap()).unwrap();
+    let i = args.iter().position(|a| a == "--download-dir").unwrap();
+    assert_eq!(
+        Path::new(&args[i + 1]),
+        target.join("mithril-staging").join("download")
+    );
+    assert!(!target.join("mithril-staging").exists());
 
     assert!(
         std::fs::symlink_metadata(&chain)

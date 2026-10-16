@@ -1105,9 +1105,8 @@ pub async fn run(
                 false
             }
             Some("cutover-in-progress") => {
-                let staging = std::path::PathBuf::from(&mc.state_dir).join("mithril-partial-sync");
-                let _ = tokio::fs::remove_dir_all(&staging).await;
-                warn!("Cleaned up stale Mithril staging from interrupted cutover");
+                // remove_stale_staging below deletes what it staged.
+                warn!("a Mithril install was interrupted in the previous session");
                 false
             }
             _ => false,
@@ -1179,6 +1178,12 @@ pub async fn run(
                 );
             }
         }
+    }
+
+    // No pipeline runs yet, so any Mithril staging is left from an
+    // interrupted run. The chain directory is known once the state is.
+    if let Some(ref mc) = config.mithril {
+        mithril::remove_stale_staging(mc).await;
     }
 
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.

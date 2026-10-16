@@ -133,6 +133,15 @@ impl Drop for TempDir {
     }
 }
 
+/// The `--download-dir` mock-mithril-client was given, from the arguments it
+/// recorded in `args_file`.
+fn download_dir(args_file: &Path) -> PathBuf {
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(args_file).unwrap()).unwrap();
+    let i = args.iter().position(|a| a == "--download-dir").unwrap();
+    PathBuf::from(&args[i + 1])
+}
+
 fn event_reader(stdout: std::process::ChildStdout) -> mpsc::Receiver<Value> {
     let (tx, rx) = mpsc::channel();
     std::thread::spawn(move || {
@@ -635,6 +644,14 @@ fn partial_sync_replaces_incomplete_highest_local_chunk() {
         args.iter().any(|a| a == "--allow-override"),
         "args: {args:?}"
     );
+    // The download is staged in the chain directory, on the chain's volume,
+    // and nothing of it is left once installed.
+    let chain = dir.path().join("chain");
+    assert_eq!(
+        download_dir(&args_file),
+        chain.join("mithril-staging").join("download")
+    );
+    assert!(!chain.join("mithril-staging").exists());
 
     let read = |n: u64, ext: &str| {
         std::fs::read_to_string(immutable.join(format!("{n:05}.{ext}"))).unwrap()
@@ -1501,6 +1518,84 @@ fn wipe_chain_downloads_everything_when_the_chain_is_level() {
         std::fs::read(chain.join("protocolMagicId")).unwrap(),
         b"764824073"
     );
+    assert_eq!(
+        download_dir(&args_file),
+        chain.join("mithril-staging").join("download")
+    );
+    assert!(!chain.join("mithril-staging").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild checks, before it deletes anything, that the chain's volume can
+/// hold the snapshot once the old chain is gone. When it cannot, it reports
+/// INSUFFICIENT_SPACE, leaves every chain file as it was, downloads nothing,
+/// and the node starts again on the chain it had.
+#[test]
+fn wipe_chain_refuses_a_snapshot_that_does_not_fit_and_deletes_nothing() {
+    let dir = TempDir::new("wipe-no-space");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_SNAPSHOT_SIZE", "1000000000000000000"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    expect(&rx, "node_shutdown_ms");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "INSUFFICIENT_SPACE", "{err}");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    assert_eq!(tree(&chain), before);
+    assert!(!args_file.exists(), "a download was started");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Staging left in the chain directory by an interrupted sync, and in the
+/// state directory by an earlier version, is deleted at startup. It is not a
+/// chain: a chain directory holding nothing else reports no chain.
+#[test]
+fn stale_staging_is_deleted_at_startup_and_is_not_a_chain() {
+    let dir = TempDir::new("stale-staging");
+    let staging = dir.path().join("chain").join("mithril-staging");
+    let staged_db = staging.join("download").join("db");
+    std::fs::create_dir_all(staged_db.join("immutable")).unwrap();
+    std::fs::write(staged_db.join("immutable").join("00000.chunk"), b"half").unwrap();
+    std::fs::write(staged_db.join("protocolMagicId"), b"1").unwrap();
+    let legacy = dir.path().join("mithril-partial-sync").join("download");
+    std::fs::create_dir_all(&legacy).unwrap();
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(!staging.exists(), "staging in the chain directory was kept");
+    assert!(
+        !dir.path().join("mithril-partial-sync").exists(),
+        "staging in the state directory was kept"
+    );
+    assert!(dir.path().join("chain").is_dir());
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -2086,7 +2181,8 @@ fn cancel_before_cutover_gate() {
     // pipeline is now inside the CUTOVER_GATE_MS blocking recv window.
     let sentinel = dir
         .path()
-        .join("mithril-partial-sync")
+        .join("chain")
+        .join("mithril-staging")
         .join("download")
         .join("db")
         .join("lsm")

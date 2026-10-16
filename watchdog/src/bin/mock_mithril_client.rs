@@ -15,6 +15,9 @@
 // MOCK_MITHRIL_ARGS_FILE, if set, receives the download arguments as a JSON
 // array so tests can assert what the watchdog passed.
 //
+// "snapshot show" states a database size of 1000 bytes, or of
+// MOCK_SNAPSHOT_SIZE bytes when that is set.
+//
 // With MOCK_MITHRIL_PROBE_FAIL=1, "snapshot show" fails with exit code 1, like
 // a client that cannot reach the aggregator.
 //
@@ -51,7 +54,15 @@ fn main() {
             .ok()
             .and_then(|v| v.parse().ok())
             .unwrap_or(999_999);
-        println!(r#"{{"beacon":{{"immutable_file_number":{certified}}}}}"#);
+        // MOCK_SNAPSHOT_SIZE overrides the database size the snapshot states;
+        // defaults to 1000 bytes, which any test volume has room for.
+        let size: u64 = env::var("MOCK_SNAPSHOT_SIZE")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(1000);
+        println!(
+            r#"{{"beacon":{{"immutable_file_number":{certified}}},"total_db_size_uncompressed":{size}}}"#
+        );
         return;
     }
 

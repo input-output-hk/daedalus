@@ -142,7 +142,7 @@ fn free_space_bytes_sync(_path: &Path) -> std::io::Result<u64> {
 ///
 /// The probe is bounded so a hung or slow call on Windows (which spawns a
 /// subprocess) cannot block validation indefinitely.
-async fn read_free_space(path: PathBuf) -> Option<u64> {
+pub(crate) async fn read_free_space(path: PathBuf) -> Option<u64> {
     timeout(
         DISK_SPACE_PROBE_TIMEOUT,
         tokio::task::spawn_blocking(move || free_space_bytes_sync(&path)),
