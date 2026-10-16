@@ -8,6 +8,7 @@ use tokio::process::Command;
 use tokio::sync::mpsc;
 use tracing::{info, warn};
 
+use crate::chain_validation;
 use crate::config::MithrilConfig;
 use crate::protocol::{Command as Cmd, Event, emit};
 use crate::state;
@@ -45,6 +46,9 @@ pub enum PipelineResult {
 #[derive(Deserialize)]
 struct SnapshotMeta {
     beacon: Beacon,
+    /// Size of the snapshot's database once unpacked, in bytes.
+    #[serde(default)]
+    total_db_size_uncompressed: Option<u64>,
 }
 
 #[derive(Deserialize)]
@@ -118,6 +122,13 @@ fn download_range(local_highest: Option<u64>, certified: u64) -> Option<(u64, u6
 }
 
 pub(crate) async fn probe(cfg: &MithrilConfig) -> Result<(Option<u64>, u64)> {
+    let (local_highest, certified, _) = probe_snapshot(cfg).await?;
+    Ok((local_highest, certified))
+}
+
+/// The highest local chunk, the certified chunk and, when the aggregator
+/// states it, the size of the snapshot's database once unpacked.
+async fn probe_snapshot(cfg: &MithrilConfig) -> Result<(Option<u64>, u64, Option<u64>)> {
     let mut cmd = Command::new(&cfg.mithril_bin);
     cmd.args([
         "--origin-tag",
@@ -139,7 +150,11 @@ pub(crate) async fn probe(cfg: &MithrilConfig) -> Result<(Option<u64>, u64)> {
     }
     let meta: SnapshotMeta = serde_json::from_slice(&output.stdout)?;
     let local_highest = highest_local_immutable(&cfg.chain_path).await;
-    Ok((local_highest, meta.beacon.immutable_file_number))
+    Ok((
+        local_highest,
+        meta.beacon.immutable_file_number,
+        meta.total_db_size_uncompressed,
+    ))
 }
 
 enum ProcResult {
@@ -384,6 +399,22 @@ const DATABASE_ENTRIES: &[&str] = &[
 /// Files a desktop file browser leaves in any directory it has displayed.
 const OS_METADATA_ENTRIES: &[&str] = &[".DS_Store", "Thumbs.db", "desktop.ini"];
 
+/// The entry in the chain directory that holds a Mithril download until it is
+/// installed. It lies inside the directory a link or junction at the chain
+/// path resolves to, so it is on the chain's own volume and the install is a
+/// rename. It is never part of the database: check_replaceable allows it, the
+/// wipe leaves it alone, and the has-chain check does not look at it.
+pub(crate) const STAGING_ENTRY: &str = "mithril-staging";
+
+/// Where earlier versions staged a Mithril download: in the state
+/// directory, which can be on another volume than the chain.
+const LEGACY_STAGING_DIR: &str = "mithril-partial-sync";
+
+/// Free space a full install needs beyond the snapshot's database size, in
+/// percent: the safety margin mithril-client adds to a partial download,
+/// here also covering the ledger conversion.
+const FREE_SPACE_MARGIN_PERCENT: u64 = 10;
+
 /// The directory a full install replaces: `chain_path` itself, or the target
 /// of `chain_path` when it is a symlink or junction, so the link is kept.
 async fn full_install_target(chain_path: &Path) -> Result<PathBuf> {
@@ -406,9 +437,10 @@ async fn full_install_target(chain_path: &Path) -> Result<PathBuf> {
     })
 }
 
-/// A full install deletes the directory it installs into, and that directory
-/// can sit inside a folder the user picked. Allow it only when the directory
-/// is missing, empty, or holds nothing but cardano-node database entries.
+/// A full install deletes the database in the directory it installs into, and
+/// that directory can sit inside a folder the user picked. Allow it only when
+/// the directory is missing, empty, or holds nothing but cardano-node database
+/// entries, file-browser metadata and the Mithril staging entry.
 async fn check_replaceable(dir: &Path) -> Result<()> {
     match tokio::fs::metadata(dir).await {
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(()),
@@ -424,6 +456,7 @@ async fn check_replaceable(dir: &Path) -> Result<()> {
         let name = entry.file_name().to_string_lossy().into_owned();
         if !DATABASE_ENTRIES.contains(&name.as_str())
             && !OS_METADATA_ENTRIES.contains(&name.as_str())
+            && name != STAGING_ENTRY
         {
             anyhow::bail!(
                 "{} contains {name}, which is not part of a Cardano node database. Daedalus did not change the folder. Move its contents elsewhere or choose an empty folder.",
@@ -486,17 +519,28 @@ async fn remove_link(path: &Path) -> std::io::Result<()> {
     }
 }
 
+/// Deletes `path`, whatever it is, without following it if it is a link.
+/// Returns false when there was nothing to delete.
+async fn remove_entry(path: &Path) -> std::io::Result<bool> {
+    let meta = match tokio::fs::symlink_metadata(path).await {
+        Ok(meta) => meta,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(false),
+        Err(e) => return Err(e),
+    };
+    if meta.file_type().is_symlink() {
+        remove_link(path).await?;
+    } else if meta.is_dir() {
+        tokio::fs::remove_dir_all(path).await?;
+    } else {
+        tokio::fs::remove_file(path).await?;
+    }
+    Ok(true)
+}
+
 /// Deletes the cardano-node database a rebuild replaces. It lies in the
 /// directory `full_install_target` resolves: `chain_path` itself, or the
 /// target of a symlink or junction there. That directory and the link are
 /// kept, so a custom location is rebuilt where it is.
-///
-/// Only database entries are deleted, and a link among them is deleted
-/// without following it. check_replaceable refuses a directory that holds
-/// anything else before this runs, and the file-browser metadata it allows is
-/// left in place. `clean` goes first, so a node never trusts what a failed
-/// delete leaves, and `immutable` next, so no chunk is left to seed a partial
-/// sync.
 async fn wipe_database(chain_path: &Path) -> Result<()> {
     let target = full_install_target(chain_path).await?;
     if target == chain_path {
@@ -508,28 +552,171 @@ async fn wipe_database(chain_path: &Path) -> Result<()> {
             chain_path.display()
         );
     }
+    delete_database(&target).await
+}
+
+/// Deletes the cardano-node database entries in `dir`. A link among them is
+/// deleted without following it. check_replaceable refuses a directory that
+/// holds anything else before this runs, and the file-browser metadata and
+/// the staging entry it allows are left in place. `clean` goes first, so a
+/// node never trusts what a failed delete leaves, and `immutable` next, so no
+/// chunk is left to seed a partial sync.
+async fn delete_database(dir: &Path) -> Result<()> {
     let first = ["clean", "immutable"];
     let rest = DATABASE_ENTRIES
         .iter()
         .copied()
         .filter(|name| !first.contains(name));
     for name in first.into_iter().chain(rest) {
-        let path = target.join(name);
-        let meta = match tokio::fs::symlink_metadata(&path).await {
-            Ok(meta) => meta,
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
-            Err(e) => anyhow::bail!("Cannot read {}: {e}", path.display()),
-        };
-        let removed = if meta.is_dir() {
-            tokio::fs::remove_dir_all(&path).await
-        } else if meta.file_type().is_symlink() {
-            remove_link(&path).await
-        } else {
-            tokio::fs::remove_file(&path).await
-        };
-        removed.map_err(|e| anyhow::anyhow!("Could not delete {}: {e}", path.display()))?;
+        let path = dir.join(name);
+        remove_entry(&path)
+            .await
+            .map_err(|e| anyhow::anyhow!("Could not delete {}: {e}", path.display()))?;
     }
     Ok(())
+}
+
+/// Moves every entry of the staged database `staging_db` into `dir`, the
+/// `clean` marker last, so an install that stops part-way never leaves a
+/// partial database that cardano-node opens without validating it. Staging
+/// and `dir` are on one volume, so each move is a rename.
+async fn install_entries(staging_db: &Path, dir: &Path) -> Result<()> {
+    let mut names = Vec::new();
+    let mut entries = tokio::fs::read_dir(staging_db).await?;
+    while let Some(entry) = entries.next_entry().await? {
+        names.push(entry.file_name());
+    }
+    names.sort_by_key(|name| name == "clean");
+    for name in names {
+        let (src, dst) = (staging_db.join(&name), dir.join(&name));
+        if tokio::fs::symlink_metadata(&src).await?.is_dir() {
+            move_dir(&src, &dst).await?;
+        } else {
+            move_file(&src, &dst).await?;
+        }
+    }
+    Ok(())
+}
+
+/// The size of the files under `path`, read without following links: deleting
+/// a link frees nothing on this volume.
+fn size_on_disk(path: &Path) -> u64 {
+    let Ok(meta) = std::fs::symlink_metadata(path) else {
+        return 0;
+    };
+    if meta.file_type().is_symlink() {
+        0
+    } else if meta.is_dir() {
+        std::fs::read_dir(path)
+            .map(|entries| entries.flatten().map(|e| size_on_disk(&e.path())).sum())
+            .unwrap_or(0)
+    } else {
+        meta.len()
+    }
+}
+
+/// The space a full install into `dir` frees before it downloads: a staging
+/// leftover, which is deleted before every download, and for a rebuild the
+/// database entries the wipe deletes.
+async fn space_freed_before_download(dir: &Path, wipe_chain: bool) -> u64 {
+    let mut names = vec![STAGING_ENTRY];
+    if wipe_chain {
+        names.extend_from_slice(DATABASE_ENTRIES);
+    }
+    let dir = dir.to_path_buf();
+    tokio::task::spawn_blocking(move || names.iter().map(|n| size_on_disk(&dir.join(n))).sum())
+        .await
+        .unwrap_or(0)
+}
+
+/// Bytes a full install of a snapshot whose database is `db_size` bytes needs
+/// free on the chain's volume.
+fn required_space(db_size: u64) -> u64 {
+    db_size.saturating_add(db_size / 100 * FREE_SPACE_MARGIN_PERCENT)
+}
+
+/// Bytes shown as gigabytes, for messages.
+fn gigabytes(bytes: u64) -> String {
+    format!("{:.1} GB", bytes as f64 / 1e9)
+}
+
+/// Whether the chain's volume has room for a full install into `dir` of a
+/// snapshot whose database is `db_size` bytes, counting what is deleted before
+/// the download. Emits an `INSUFFICIENT_SPACE` error when it has not. When the
+/// size or the free space cannot be read, the install goes ahead, as before.
+async fn space_allowed(dir: &Path, db_size: Option<u64>, wipe_chain: bool) -> bool {
+    let Some(db_size) = db_size else {
+        info!("mithril: the snapshot does not state its size; free space is not checked");
+        return true;
+    };
+    // The directory may not exist yet; its nearest existing ancestor is on
+    // the volume it will be created on.
+    let mut existing = dir.to_path_buf();
+    while !tokio::fs::try_exists(&existing).await.unwrap_or(false) {
+        match existing.parent() {
+            Some(parent) => existing = parent.to_path_buf(),
+            None => break,
+        }
+    }
+    let Some(free) = chain_validation::read_free_space(existing).await else {
+        warn!(
+            "mithril: could not read the free space for {}; it is not checked",
+            dir.display()
+        );
+        return true;
+    };
+    let freed = space_freed_before_download(dir, wipe_chain).await;
+    let required = required_space(db_size);
+    let available = free.saturating_add(freed);
+    info!(
+        "mithril: {} free on the volume of {}, {} more once old data is deleted; the install needs {}",
+        gigabytes(free),
+        dir.display(),
+        gigabytes(freed),
+        gigabytes(required)
+    );
+    if available >= required {
+        return true;
+    }
+    let message = format!(
+        "The blockchain data needs {} of free space on the drive that holds {}, and {} is available{}. Daedalus did not change anything. Free up space on that drive, or choose another location, and try again.",
+        gigabytes(required),
+        dir.display(),
+        gigabytes(available),
+        if wipe_chain {
+            ", counting the blockchain data the rebuild would delete"
+        } else {
+            ""
+        }
+    );
+    warn!("mithril: refusing to install: {message}");
+    emit(&Event::MithrilError {
+        code: "INSUFFICIENT_SPACE".to_string(),
+        message,
+    });
+    false
+}
+
+/// Deletes what an interrupted Mithril run left behind: the staging entry in
+/// the chain directory, and the staging directory earlier versions kept
+/// in the state directory. Called at startup, when no pipeline runs.
+pub async fn remove_stale_staging(cfg: &MithrilConfig) {
+    let mut leftovers = vec![Path::new(&cfg.state_dir).join(LEGACY_STAGING_DIR)];
+    if let Ok(target) = full_install_target(Path::new(&cfg.chain_path)).await {
+        if target.is_absolute() {
+            leftovers.push(target.join(STAGING_ENTRY));
+        }
+    }
+    for path in leftovers {
+        match remove_entry(&path).await {
+            Ok(true) => info!(
+                "mithril: deleted {}, left by an interrupted sync",
+                path.display()
+            ),
+            Ok(false) => {}
+            Err(e) => warn!("mithril: could not delete {}: {e}", path.display()),
+        }
+    }
 }
 
 /// Whether Mithril may change the chain directory at all. Never when it holds
@@ -558,14 +745,14 @@ async fn network_allowed(chain_path: &Path, network_magic: Option<u32>) -> bool 
 async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) -> Result<()> {
     if !is_partial {
         // If chain_path is a symlink or junction, install inside the real
-        // target so the link entry point is preserved.
+        // target so the link entry point is preserved. The directory itself
+        // is kept: it holds the staging entry, and any file-browser metadata
+        // check_replaceable allows.
         let target = full_install_target(chain_path).await?;
         check_replaceable(&target).await?;
-        let _ = tokio::fs::remove_dir_all(&target).await;
-        // move_dir, not rename: staging and chain can live on different
-        // filesystems (EXDEV), and the old chain is already gone at this
-        // point — a bare rename failure would leave no chain at all.
-        move_dir(staging_db, &target)
+        delete_database(&target).await?;
+        tokio::fs::create_dir_all(&target).await?;
+        install_entries(staging_db, &target)
             .await
             .map_err(|e| anyhow::anyhow!("install staged db to {}: {e}", target.display()))?;
         return Ok(());
@@ -867,7 +1054,7 @@ pub async fn run_pipeline(
 
     // 1. Behind-ness probe. It runs before a rebuild deletes anything, so an
     //    aggregator that does not answer leaves the chain as it is.
-    let (probed_local, certified) = match probe(cfg).await {
+    let (probed_local, certified, snapshot_size) = match probe_snapshot(cfg).await {
         Ok(r) => r,
         Err(e) => {
             warn!("mithril probe failed: {e}");
@@ -918,6 +1105,27 @@ pub async fn run_pipeline(
         return PipelineResult::Cancelled;
     }
 
+    // The download is staged inside the directory the database lives in, on
+    // its volume, so installing it is a rename and the volume that must hold
+    // the database is the one that holds the download.
+    let target = match full_install_target(&chain_path).await {
+        Ok(target) => target,
+        Err(e) => {
+            warn!("mithril: cannot resolve the chain directory: {e}");
+            emit(&Event::MithrilError {
+                code: "STAGING_FAILED".to_string(),
+                message: e.to_string(),
+            });
+            return PipelineResult::Cancelled;
+        }
+    };
+
+    // A full install needs room for the whole database. Refuse before a
+    // rebuild deletes anything when the volume cannot hold it.
+    if !is_partial && !space_allowed(&target, snapshot_size, wipe_chain).await {
+        return PipelineResult::Cancelled;
+    }
+
     // The aggregator has answered and the directory may be replaced: delete
     // the old chain now, before the download, so the disk never has to hold
     // two full databases.
@@ -950,12 +1158,12 @@ pub async fn run_pipeline(
     };
 
     // 2. Prepare staging
-    let staging_root = PathBuf::from(&cfg.state_dir).join("mithril-partial-sync");
+    let staging_root = target.join(STAGING_ENTRY);
     // mithril-client creates a `db/` subdirectory inside --download-dir, so we
     // pass `download_dir` to the client and then work with `download_dir/db`.
     let download_dir = staging_root.join("download");
     let staging_db = download_dir.join("db");
-    let _ = tokio::fs::remove_dir_all(&staging_root).await;
+    let _ = remove_entry(&staging_root).await;
     if let Err(e) = tokio::fs::create_dir_all(&download_dir).await {
         warn!("mithril: failed to create staging directory: {e}");
         emit(&Event::MithrilError {
@@ -1251,7 +1459,10 @@ mod tests {
     }
 
     mod rebuild {
-        use super::super::{check_rebuild_path, wipe_database};
+        use super::super::{
+            STAGING_ENTRY, check_rebuild_path, required_space, space_freed_before_download,
+            wipe_database,
+        };
         use std::fs;
         use std::path::{Path, PathBuf};
 
@@ -1309,6 +1520,54 @@ mod tests {
 
             assert!(chain.is_dir());
             assert_eq!(entries(&chain), vec!["desktop.ini"]);
+        }
+
+        #[tokio::test]
+        async fn leaves_the_staging_entry_alone() {
+            let t = TempDir::new("staging");
+            let chain = t.0.join("chain");
+            make_db(&chain);
+            fs::create_dir_all(chain.join(STAGING_ENTRY).join("download")).unwrap();
+
+            wipe_database(&chain).await.unwrap();
+
+            assert_eq!(entries(&chain), vec![STAGING_ENTRY]);
+        }
+
+        #[tokio::test]
+        async fn counts_the_space_deleted_before_the_download() {
+            let t = TempDir::new("freed");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            fs::write(chain.join("immutable").join("00000.chunk"), vec![0u8; 3000]).unwrap();
+            fs::write(chain.join("protocolMagicId"), vec![0u8; 10]).unwrap();
+            fs::create_dir_all(chain.join(STAGING_ENTRY)).unwrap();
+            fs::write(chain.join(STAGING_ENTRY).join("left"), vec![0u8; 500]).unwrap();
+            fs::write(chain.join("desktop.ini"), vec![0u8; 7]).unwrap();
+
+            assert_eq!(space_freed_before_download(&chain, true).await, 3510);
+            // Without a rebuild only the staging leftover is deleted first.
+            assert_eq!(space_freed_before_download(&chain, false).await, 500);
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn a_link_in_the_database_frees_nothing() {
+            let t = TempDir::new("freed-link");
+            let elsewhere = t.0.join("other-disk");
+            fs::create_dir_all(&elsewhere).unwrap();
+            fs::write(elsewhere.join("00000.chunk"), vec![0u8; 3000]).unwrap();
+            let chain = t.0.join("chain");
+            fs::create_dir_all(&chain).unwrap();
+            std::os::unix::fs::symlink(&elsewhere, chain.join("immutable")).unwrap();
+
+            assert_eq!(space_freed_before_download(&chain, true).await, 0);
+        }
+
+        #[test]
+        fn a_full_install_needs_a_tenth_more_than_the_database() {
+            assert_eq!(required_space(200_000), 220_000);
+            assert_eq!(required_space(u64::MAX), u64::MAX);
         }
 
         #[tokio::test]
@@ -1413,7 +1672,9 @@ mod tests {
     // Junctions are created with `mklink /J` (no elevation required) rather
     // than std::os::windows::fs::symlink_dir (requires Developer Mode or UAC).
     mod full_install {
-        use super::super::{check_replaceable, copy_dir_recursive, install_staged};
+        use super::super::{
+            STAGING_ENTRY, check_replaceable, copy_dir_recursive, install_entries, install_staged,
+        };
         use std::fs;
         use std::path::{Path, PathBuf};
 
@@ -1533,6 +1794,59 @@ mod tests {
             assert!(dst.join("clean").is_file());
             assert!(dst.join("protocolMagicId").is_file());
             assert!(dst.join("immutable").join("00001.chunk").is_file());
+        }
+
+        #[tokio::test]
+        async fn accepts_a_database_with_a_staging_leftover() {
+            let t = TempDir::new("staging-leftover");
+            let chain = t.0.join("chain");
+            for dir in ["immutable", "ledger"] {
+                fs::create_dir_all(chain.join(dir)).unwrap();
+            }
+            fs::write(chain.join("protocolMagicId"), b"1").unwrap();
+            fs::create_dir_all(chain.join(STAGING_ENTRY).join("download").join("db")).unwrap();
+            assert!(check_replaceable(&chain).await.is_ok());
+        }
+
+        #[tokio::test]
+        async fn installs_beside_the_staging_entry_and_keeps_the_directory() {
+            let t = TempDir::new("in-place");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            fs::write(chain.join("immutable").join("00000.chunk"), b"old").unwrap();
+            fs::write(chain.join("clean"), b"old").unwrap();
+            let staging = chain.join(STAGING_ENTRY).join("download").join("db");
+            fs::create_dir_all(staging.join("immutable")).unwrap();
+            fs::write(staging.join("immutable").join("00001.chunk"), b"new").unwrap();
+            fs::write(staging.join("protocolMagicId"), b"1").unwrap();
+            fs::write(staging.join("clean"), b"").unwrap();
+
+            install_staged(&staging, &chain, false).await.unwrap();
+
+            assert!(!chain.join("immutable").join("00000.chunk").exists());
+            assert_eq!(
+                fs::read(chain.join("immutable").join("00001.chunk")).unwrap(),
+                b"new"
+            );
+            assert_eq!(fs::read(chain.join("protocolMagicId")).unwrap(), b"1");
+            assert_eq!(fs::read(chain.join("clean")).unwrap(), b"");
+        }
+
+        #[tokio::test]
+        async fn an_install_that_stops_part_way_leaves_no_clean_marker() {
+            let t = TempDir::new("install-fail");
+            let db = make_clean_db(&t.0);
+            let dst = t.0.join("chain");
+            fs::create_dir_all(&dst).unwrap();
+            // A file where the chunk directory is to go makes that move fail.
+            fs::write(dst.join("immutable"), b"in the way").unwrap();
+
+            assert!(install_entries(&db, &dst).await.is_err());
+
+            assert!(
+                !dst.join("clean").exists(),
+                "a partial install is marked clean"
+            );
         }
 
         #[tokio::test]
