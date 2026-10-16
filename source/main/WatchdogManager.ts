@@ -53,6 +53,9 @@ export interface WatchdogState {
 
   // Error
   lastError: string | null;
+  // The code of the mithril_error that set lastError; null when lastError
+  // came from an error without one
+  lastErrorCode: string | null;
   walletUnrecoverable: boolean;
 
   // Diagnostics
@@ -142,6 +145,7 @@ class WatchdogManager {
       mithrilProgress: null,
       mithrilSignificantlyBehind: null,
       lastError: null,
+      lastErrorCode: null,
       walletUnrecoverable: false,
       nodeSocketWaitMs: null,
       walletReadyWaitMs: null,
@@ -505,10 +509,12 @@ class WatchdogManager {
       case 'mithril_error':
         s.mithrilPhase = 'error';
         s.lastError = event.message as string;
+        s.lastErrorCode = (event.code as string | undefined) ?? null;
         break;
 
       case 'error':
         s.lastError = event.message as string;
+        s.lastErrorCode = null;
         break;
 
       case 'stopped':

@@ -4,9 +4,14 @@ import BackendStore from './BackendStore';
 import { noopAnalyticsTracker } from '../analytics';
 import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
 import { validateChainStorageChannel } from '../ipc/chainStorageChannel';
+import { getCachedBackendStatusChannel } from '../ipc/backendStatusChannel';
 
 jest.mock('../ipc/mithrilCommandChannel', () => ({
   mithrilCommandChannel: { send: jest.fn() },
+}));
+
+jest.mock('../ipc/backendStatusChannel', () => ({
+  getCachedBackendStatusChannel: { request: jest.fn() },
 }));
 
 jest.mock('../ipc/chainStorageChannel', () => ({
@@ -192,6 +197,26 @@ describe('BackendStore._onBackendStopStatus', () => {
       progress: null,
     });
     expect(store.loadingPhase).toBe('node-starting');
+  });
+});
+
+describe('BackendStore._pollBackendStatus', () => {
+  it('copies the code of the Mithril error from the polled state', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'error',
+      lastError: 'connection refused',
+      lastErrorCode: 'PROBE_FAILED',
+    });
+    await store._pollBackendStatus();
+    expect(store.lastError).toBe('connection refused');
+    expect(store.lastErrorCode).toBe('PROBE_FAILED');
   });
 });
 

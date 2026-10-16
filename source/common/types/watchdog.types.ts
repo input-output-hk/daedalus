@@ -17,6 +17,9 @@ export interface WatchdogState {
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
   lastError: string | null;
+  // The code of the mithril_error that set lastError; null when lastError
+  // came from an error without one
+  lastErrorCode: string | null;
   walletUnrecoverable: boolean;
   nodeSocketWaitMs: number | null;
   walletReadyWaitMs: number | null;
