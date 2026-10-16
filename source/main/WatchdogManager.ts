@@ -61,6 +61,15 @@ export interface WatchdogState {
   // The last hole in the chain database the watchdog detected; cleared when a
   // node starts or a Mithril sync begins
   chainDamage: ChainDamage | null;
+  // The last detection of the session, which Diagnostics shows; unlike
+  // chainDamage it survives a node start and clears only when a rebuild
+  // completes
+  lastChainDamage: ChainDamage | null;
+  // True when lastError came from a rebuild, so Retry repeats the rebuild
+  lastErrorRebuild: boolean;
+  // True when a rebuild was confirmed and has not finished, e.g. the app was
+  // closed after the chain data was deleted
+  rebuildPending: boolean;
   walletUnrecoverable: boolean;
 
   // Diagnostics
@@ -123,6 +132,10 @@ class WatchdogManager {
   private _stopTimer: ReturnType<typeof setTimeout> | null = null;
   private _stopDeadline = 0;
 
+  // True from a start_mithril that wipes the chain until the pipeline
+  // completes, fails, or the node starts without it
+  private _rebuildInFlight = false;
+
   // True from node_started until the node exits or is stopped
   private _nodeRunning = false;
 
@@ -152,6 +165,9 @@ class WatchdogManager {
       lastError: null,
       lastErrorCode: null,
       chainDamage: null,
+      lastChainDamage: null,
+      lastErrorRebuild: false,
+      rebuildPending: false,
       walletUnrecoverable: false,
       nodeSocketWaitMs: null,
       walletReadyWaitMs: null,
@@ -255,6 +271,7 @@ class WatchdogManager {
       }
       this.socket.write(line);
       this._noteRequestedRestart(cmd);
+      this._noteMithrilCommand(cmd);
       return;
     }
     if (!process.stdout.writable) {
@@ -266,6 +283,23 @@ class WatchdogManager {
     }
     process.stdout.write(line);
     this._noteRequestedRestart(cmd);
+    this._noteMithrilCommand(cmd);
+  }
+
+  // A new Mithril run or a node start ends the error of the previous run, so
+  // a stale rebuild flag cannot change what Retry does next.
+  private _noteMithrilCommand(cmd: object): void {
+    const { cmd: name, wipe_chain: wipeChain } = cmd as {
+      cmd?: string;
+      wipe_chain?: boolean;
+    };
+    if (name === 'start_mithril') {
+      this.state.lastErrorRebuild = false;
+      this._rebuildInFlight = wipeChain === true;
+    } else if (name === 'start_node') {
+      this.state.lastErrorRebuild = false;
+      this._rebuildInFlight = false;
+    }
   }
 
   // Commands that make the watchdog stop and start a running process again.
@@ -388,6 +422,7 @@ class WatchdogManager {
 
       case 'chain_status':
         s.hasChain = event.has_chain as boolean;
+        s.rebuildPending = event.rebuild_pending === true;
         break;
 
       case 'node_started':
@@ -409,6 +444,8 @@ class WatchdogManager {
         s.requestedRestart = null;
         // The new node reports its own damage from its own output.
         s.chainDamage = null;
+        // A running node means no rebuild is waiting for the user's choice.
+        s.rebuildPending = false;
         this._nodeRunning = true;
         s.blockSyncProgress = {
           replayedBlock: 0,
@@ -503,12 +540,21 @@ class WatchdogManager {
             (event.last_good_slot as number | null | undefined) ?? null,
           detectedAt: new Date().toISOString(),
         };
+        s.lastChainDamage = s.chainDamage;
         break;
 
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;
         // A rebuild is starting; the damage it replaces is no longer current.
         if (event.phase === 'preparing') s.chainDamage = null;
+        if (event.phase === 'completed') {
+          s.lastErrorRebuild = false;
+          s.rebuildPending = false;
+          // Only a rebuild repairs the chain; a partial sync leaves the
+          // detection in place.
+          if (this._rebuildInFlight) s.lastChainDamage = null;
+          this._rebuildInFlight = false;
+        }
         // A Mithril sync replaced the requested node restart.
         if (s.requestedRestart === 'node') s.requestedRestart = null;
         break;
@@ -530,6 +576,8 @@ class WatchdogManager {
         s.mithrilPhase = 'error';
         s.lastError = event.message as string;
         s.lastErrorCode = (event.code as string | undefined) ?? null;
+        s.lastErrorRebuild = event.rebuild === true;
+        this._rebuildInFlight = false;
         break;
 
       case 'error':
