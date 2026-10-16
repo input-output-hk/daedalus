@@ -20,6 +20,7 @@ const makeBackend = (overrides = {}) => ({
   lastError: 'could not delete the files',
   lastErrorCode: 'WIPE_FAILED',
   startMithril: jest.fn(),
+  retryMithril: jest.fn(),
   startNode: jest.fn(),
   cancelMithril: jest.fn(),
   ...overrides,
@@ -62,14 +63,14 @@ describe('MithrilSyncContainer error view', () => {
     expect(screen.getByText('WIPE_FAILED')).toBeInTheDocument();
   });
 
-  it('labels the buttons from the locale and runs Mithril or the node from them', () => {
+  it('labels the buttons from the locale and retries or starts the node from them', () => {
     const backend = makeBackend();
     renderContainer(backend, {
       [messages.errorRetry.id]: 'Translated retry',
       [messages.errorSkip.id]: 'Translated skip',
     });
     fireEvent.click(screen.getByRole('button', { name: 'Translated retry' }));
-    expect(backend.startMithril).toHaveBeenCalledTimes(1);
+    expect(backend.retryMithril).toHaveBeenCalledTimes(1);
     fireEvent.click(screen.getByRole('button', { name: 'Translated skip' }));
     expect(backend.startNode).toHaveBeenCalledTimes(1);
   });
