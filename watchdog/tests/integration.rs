@@ -12,6 +12,7 @@
 #![cfg(unix)]
 
 use serde_json::{Value, json};
+use std::collections::BTreeMap;
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
@@ -76,6 +77,53 @@ impl TempDir {
         std::fs::create_dir_all(&chain).unwrap();
         std::fs::write(chain.join("protocolMagicId"), b"1").unwrap();
     }
+
+    /// Create `<state_dir>/chain/` holding a whole database: chunks 0 to 3, a
+    /// volatile block file, a ledger snapshot, an LSM directory and the
+    /// `clean` and `protocolMagicId` markers. Returns its path.
+    fn populate_database(&self) -> PathBuf {
+        let chain = self.0.join("chain");
+        let immutable = chain.join("immutable");
+        std::fs::create_dir_all(&immutable).unwrap();
+        for n in 0..4 {
+            for ext in ["chunk", "primary", "secondary"] {
+                std::fs::write(
+                    immutable.join(format!("{n:05}.{ext}")),
+                    format!("local {n}"),
+                )
+                .unwrap();
+            }
+        }
+        std::fs::create_dir_all(chain.join("volatile")).unwrap();
+        std::fs::write(chain.join("volatile").join("blocks-0.dat"), b"blocks").unwrap();
+        std::fs::create_dir_all(chain.join("ledger").join("999")).unwrap();
+        std::fs::write(chain.join("ledger").join("999").join("state"), b"ledger").unwrap();
+        std::fs::create_dir_all(chain.join("lsm")).unwrap();
+        std::fs::write(chain.join("lsm").join("table"), b"lsm").unwrap();
+        std::fs::write(chain.join("clean"), b"").unwrap();
+        std::fs::write(chain.join("protocolMagicId"), b"1").unwrap();
+        chain
+    }
+}
+
+/// Every entry under `dir` with the contents of each file, to show that a
+/// directory was left exactly as it was.
+fn tree(dir: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
+    let mut entries = BTreeMap::new();
+    let mut stack = vec![dir.to_path_buf()];
+    while let Some(d) = stack.pop() {
+        for entry in std::fs::read_dir(&d).unwrap() {
+            let path = entry.unwrap().path();
+            let rel = path.strip_prefix(dir).unwrap().to_path_buf();
+            if path.is_dir() {
+                entries.insert(rel, None);
+                stack.push(path);
+            } else {
+                entries.insert(rel, Some(std::fs::read(&path).unwrap()));
+            }
+        }
+    }
+    entries
 }
 
 impl Drop for TempDir {
@@ -1311,6 +1359,91 @@ fn wipe_chain_full_bootstrap() {
     assert!(
         chain_path.exists(),
         "chain dir should be recreated after install"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild asks the aggregator before it deletes anything. When the probe
+/// fails, PROBE_FAILED is reported, every chain file is left as it was, and
+/// the node starts again on the chain it had.
+#[test]
+fn wipe_chain_probe_failure_keeps_the_chain() {
+    let dir = TempDir::new("wipe-probe-fail");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_MITHRIL_PROBE_FAIL", "1"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    expect(&rx, "node_shutdown_ms");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(expect(&rx, "mithril_error")["code"], "PROBE_FAILED");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    assert_eq!(tree(&chain), before);
+    assert!(!args_file.exists(), "a download was started");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild replaces the chain however close it is to the certified tip:
+/// the local chunks neither make the sync "not needed" nor narrow the
+/// download to a partial range.
+#[test]
+fn wipe_chain_downloads_everything_when_the_chain_is_level() {
+    let dir = TempDir::new("wipe-level");
+    let chain = dir.populate_database();
+    let args_file = dir.path().join("mithril-download-args.json");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_CERTIFIED_IMMUTABLE", "3"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    assert!(
+        !args.iter().any(|a| a == "--start" || a == "--end"),
+        "args: {args:?}"
+    );
+    assert!(!chain.join("immutable").join("00000.chunk").exists());
+    assert!(!chain.join("ledger").join("999").exists());
+    assert_eq!(
+        std::fs::read(chain.join("protocolMagicId")).unwrap(),
+        b"764824073"
     );
 
     stop(&mut stdin);
