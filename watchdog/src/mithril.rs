@@ -338,20 +338,31 @@ async fn move_dir(src: &Path, dst: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Copies the tree at `src` into `dst`. When `src` is a database, its `clean`
+/// marker is copied after every other entry: cardano-node opens a database
+/// marked clean without validating its chunks, so a copy that fails part-way
+/// must not leave the marker on a partial database.
 async fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<()> {
     let mut stack: Vec<(PathBuf, PathBuf)> = vec![(src.to_path_buf(), dst.to_path_buf())];
+    let mut clean: Option<(PathBuf, PathBuf)> = None;
     while let Some((src_dir, dst_dir)) = stack.pop() {
         tokio::fs::create_dir_all(&dst_dir).await?;
+        let at_top = src_dir == src;
         let mut entries = tokio::fs::read_dir(&src_dir).await?;
         while let Some(entry) = entries.next_entry().await? {
             let from = entry.path();
             let to = dst_dir.join(entry.file_name());
             if entry.file_type().await?.is_dir() {
                 stack.push((from, to));
+            } else if at_top && entry.file_name() == "clean" {
+                clean = Some((from, to));
             } else {
                 tokio::fs::copy(&from, &to).await?;
             }
         }
+    }
+    if let Some((from, to)) = clean {
+        tokio::fs::copy(&from, &to).await?;
     }
     Ok(())
 }
@@ -1402,7 +1413,7 @@ mod tests {
     // Junctions are created with `mklink /J` (no elevation required) rather
     // than std::os::windows::fs::symlink_dir (requires Developer Mode or UAC).
     mod full_install {
-        use super::super::{check_replaceable, install_staged};
+        use super::super::{check_replaceable, copy_dir_recursive, install_staged};
         use std::fs;
         use std::path::{Path, PathBuf};
 
@@ -1481,6 +1492,47 @@ mod tests {
             let staging = make_staging(&t.0);
             install_staged(&staging, &chain, false).await.unwrap();
             assert!(chain.join("protocolMagicId").exists());
+        }
+
+        /// A staged database with a `clean` marker and two chunks.
+        fn make_clean_db(root: &Path) -> PathBuf {
+            let db = root.join("staged");
+            fs::create_dir_all(db.join("immutable")).unwrap();
+            for n in 0..2 {
+                fs::write(db.join("immutable").join(format!("{n:05}.chunk")), b"chunk").unwrap();
+            }
+            fs::write(db.join("protocolMagicId"), b"1").unwrap();
+            fs::write(db.join("clean"), b"").unwrap();
+            db
+        }
+
+        #[tokio::test]
+        async fn a_copy_that_fails_part_way_leaves_no_clean_marker() {
+            let t = TempDir::new("copy-fail");
+            let db = make_clean_db(&t.0);
+            let dst = t.0.join("chain");
+            // A directory where a chunk is to be copied makes that copy fail.
+            fs::create_dir_all(dst.join("immutable").join("00001.chunk")).unwrap();
+
+            assert!(copy_dir_recursive(&db, &dst).await.is_err());
+
+            assert!(
+                !dst.join("clean").exists(),
+                "a partial copy is marked clean"
+            );
+        }
+
+        #[tokio::test]
+        async fn a_complete_copy_ends_with_the_clean_marker() {
+            let t = TempDir::new("copy-ok");
+            let db = make_clean_db(&t.0);
+            let dst = t.0.join("chain");
+
+            copy_dir_recursive(&db, &dst).await.unwrap();
+
+            assert!(dst.join("clean").is_file());
+            assert!(dst.join("protocolMagicId").is_file());
+            assert!(dst.join("immutable").join("00001.chunk").is_file());
         }
 
         #[tokio::test]
