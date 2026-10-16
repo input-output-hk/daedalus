@@ -52,6 +52,8 @@ export default class BackendStore extends Store {
   @observable mithrilPhase: string | null = null;
   @observable mithrilProgress: MithrilProgress | null = null;
   @observable lastError: string | null = null;
+  // The code of the Mithril error that set lastError, e.g. PROBE_FAILED
+  @observable lastErrorCode: string | null = null;
   @observable walletUnrecoverable = false;
   @observable nodeUnrecoverable = false;
   @observable nodeSocketWaitMs: number | null = null;
@@ -148,6 +150,7 @@ export default class BackendStore extends Store {
         this.mithrilPhase = state.mithrilPhase;
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
+        this.lastErrorCode = state.lastErrorCode ?? null;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;

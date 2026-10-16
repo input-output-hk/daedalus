@@ -123,6 +123,33 @@ describe('WatchdogManager unrecoverable state', () => {
   });
 });
 
+describe('WatchdogManager Mithril error', () => {
+  it('keeps the code of a mithril_error as lastErrorCode', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().lastErrorCode).toBeNull();
+    emit({
+      event: 'mithril_error',
+      code: 'PROBE_FAILED',
+      message: 'connection refused',
+    });
+    expect(manager.getState().mithrilPhase).toBe('error');
+    expect(manager.getState().lastError).toBe('connection refused');
+    expect(manager.getState().lastErrorCode).toBe('PROBE_FAILED');
+  });
+
+  it('clears lastErrorCode when an error without a code replaces lastError', () => {
+    const { manager, emit } = makeManager();
+    emit({
+      event: 'mithril_error',
+      code: 'PROBE_FAILED',
+      message: 'connection refused',
+    });
+    emit({ event: 'error', message: 'cardano-node unrecoverable' });
+    expect(manager.getState().lastError).toBe('cardano-node unrecoverable');
+    expect(manager.getState().lastErrorCode).toBeNull();
+  });
+});
+
 describe('WatchdogManager.stop', () => {
   beforeEach(() => {
     jest.useFakeTimers();

@@ -213,7 +213,7 @@
           "id": "task-008",
           "title": "Pass the Mithril error code to the renderer",
           "description": "Keep the code of mithril_error as lastErrorCode on WatchdogState so the renderer can show a specific message.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2.0,
           "dependencies": [],
