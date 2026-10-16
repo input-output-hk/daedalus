@@ -87,7 +87,7 @@
           "id": "task-003",
           "title": "Parse the wallet signature",
           "description": "Turn on parsing for cardano-wallet stdout and stderr with a wallet-only parser that recognises signature 3 and emits chain_damage with slot and last_good_slot.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3.0,
           "dependencies": [

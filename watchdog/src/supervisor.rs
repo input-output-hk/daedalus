@@ -1816,19 +1816,21 @@ async fn run_node_wallet(
         });
         info!("cardano-wallet started (PID {wallet_pid}, attempt {attempt})");
 
+        // One detector per wallet process, shared by both output streams.
+        let wallet_damage: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::wallet()));
         tokio::spawn(pipe_to_log(
             wallet.stdout.take().unwrap(),
             Arc::clone(&wallet_log),
             false,
             None,
-            None,
+            Some(Arc::clone(&wallet_damage)),
         ));
         tokio::spawn(pipe_to_log(
             wallet.stderr.take().unwrap(),
             wallet_log,
             false,
             None,
-            None,
+            Some(wallet_damage),
         ));
 
         let wallet_wait_start = unix_ms();
