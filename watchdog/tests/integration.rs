@@ -1467,7 +1467,9 @@ fn wipe_chain_probe_failure_keeps_the_chain() {
 
     expect(&rx, "node_shutdown_ms");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
-    assert_eq!(expect(&rx, "mithril_error")["code"], "PROBE_FAILED");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PROBE_FAILED");
+    assert_eq!(err["rebuild"], true, "{err}");
     expect(&rx, "node_started");
     expect(&rx, "wallet_ready");
 
@@ -1560,6 +1562,7 @@ fn wipe_chain_refuses_a_snapshot_that_does_not_fit_and_deletes_nothing() {
     expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
     let err = expect(&rx, "mithril_error");
     assert_eq!(err["code"], "INSUFFICIENT_SPACE", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
     expect(&rx, "node_started");
     expect(&rx, "wallet_ready");
 
@@ -1617,6 +1620,32 @@ fn restart_with_a_pending_rebuild_starts_no_node_and_rebuilds() {
     );
     assert!(!chain.join("immutable").join("00000.chunk").exists());
     assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Errors of a sync that continues a rebuild left pending in an earlier
+/// session are reported as a rebuild's, so a retry repeats the rebuild.
+#[test]
+fn errors_of_a_pending_rebuild_are_marked_as_a_rebuild() {
+    let dir = TempDir::new("rebuild-pending-error");
+    let chain = dir.populate_database();
+    write_rebuild_marker(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_PROBE_FAIL", "1")]);
+
+    assert_eq!(expect(&rx, "chain_status")["rebuild_pending"], true);
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PROBE_FAILED");
+    assert_eq!(err["rebuild"], true, "{err}");
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false);
+    assert_eq!(status["rebuild_pending"], true);
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -1697,10 +1726,9 @@ fn wipe_chain_download_failure_starts_no_node() {
     );
 
     expect(&rx, "node_shutdown_ms");
-    assert_eq!(
-        expect(&rx, "mithril_error")["code"],
-        "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED"
-    );
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED");
+    assert_eq!(err["rebuild"], true, "{err}");
     let status = expect(&rx, "chain_status");
     assert_eq!(status["has_chain"], false);
     assert_eq!(status["rebuild_pending"], true);
@@ -1708,6 +1736,13 @@ fn wipe_chain_download_failure_starts_no_node() {
     assert!(!chain.join("immutable").exists());
     assert!(!chain.join("protocolMagicId").exists());
     assert!(dir.path().join("chain-rebuild.json").exists());
+
+    // A plain Mithril sync chosen in the wait is still a rebuild, and its
+    // failure says so.
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["rebuild"], true, "{err}");
+    assert_eq!(expect(&rx, "chain_status")["rebuild_pending"], true);
 
     // Choosing to sync from genesis ends the rebuild.
     send(&mut stdin, json!({"cmd": "start_node"}));
@@ -1766,10 +1801,9 @@ fn partial_sync_download_failure_restarts_the_node() {
     send(&mut stdin, json!({"cmd": "start_mithril", "force": true}));
 
     expect(&rx, "node_shutdown_ms");
-    assert_eq!(
-        expect(&rx, "mithril_error")["code"],
-        "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED"
-    );
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED");
+    assert_eq!(err["rebuild"], false, "{err}");
     expect(&rx, "node_started");
     expect(&rx, "wallet_ready");
     assert_eq!(tree(&chain), before);
@@ -1818,6 +1852,7 @@ fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
     let err = expect(&rx, "mithril_error");
     set_mode(0o755);
     assert_eq!(err["code"], "WIPE_FAILED", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
     assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
     expect_none_of(&rx, &["node_started"], 1500);
     assert!(!args_file.exists(), "a download was started");

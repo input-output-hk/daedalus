@@ -534,8 +534,9 @@ async fn check_replaceable(dir: &Path) -> Result<()> {
 }
 
 /// Whether a full install may replace the chain directory. Emits a
-/// `CHAIN_DIR_NOT_REPLACEABLE` error when it may not.
-async fn full_install_allowed(chain_path: &Path) -> bool {
+/// `CHAIN_DIR_NOT_REPLACEABLE` error when it may not; `wipe_chain` tells the
+/// renderer whether that install was a rebuild.
+async fn full_install_allowed(chain_path: &Path, wipe_chain: bool) -> bool {
     let checked = match full_install_target(chain_path).await {
         Ok(target) => check_replaceable(&target).await,
         Err(e) => Err(e),
@@ -547,6 +548,7 @@ async fn full_install_allowed(chain_path: &Path) -> bool {
             emit(&Event::MithrilError {
                 code: "CHAIN_DIR_NOT_REPLACEABLE".to_string(),
                 message: e.to_string(),
+                rebuild: wipe_chain,
             });
             false
         }
@@ -759,6 +761,7 @@ async fn space_allowed(dir: &Path, db_size: Option<u64>, wipe_chain: bool) -> bo
     emit(&Event::MithrilError {
         code: "INSUFFICIENT_SPACE".to_string(),
         message,
+        rebuild: wipe_chain,
     });
     false
 }
@@ -789,8 +792,8 @@ pub async fn remove_stale_staging(cfg: &MithrilConfig) {
 /// another network's database: a partial sync would rewrite its chunks and
 /// ledger, and a full install or a wipe would delete it, although it holds
 /// nothing but database entries. Emits a `CHAIN_DIR_OTHER_NETWORK` error when
-/// it may not.
-async fn network_allowed(chain_path: &Path, network_magic: Option<u32>) -> bool {
+/// it may not; `wipe_chain` tells the renderer whether the sync was a rebuild.
+async fn network_allowed(chain_path: &Path, network_magic: Option<u32>, wipe_chain: bool) -> bool {
     let (Some(expected), Some(found)) = (
         network_magic,
         state::other_network_magic(chain_path, network_magic).await,
@@ -802,6 +805,7 @@ async fn network_allowed(chain_path: &Path, network_magic: Option<u32>) -> bool 
     emit(&Event::MithrilError {
         code: "CHAIN_DIR_OTHER_NETWORK".to_string(),
         message,
+        rebuild: wipe_chain,
     });
     false
 }
@@ -1101,6 +1105,7 @@ pub async fn run_pipeline(
         emit(&Event::MithrilError {
             code: "ANCILLARY_VKEY_MISSING".to_string(),
             message: "Mithril is configured without an ancillary verification key".to_string(),
+            rebuild: wipe_chain,
         });
         return PipelineResult::Cancelled;
     }
@@ -1108,7 +1113,7 @@ pub async fn run_pipeline(
     // Nothing is wiped from, downloaded for or installed over another
     // network's database.
     let chain_path = PathBuf::from(&cfg.chain_path);
-    if !network_allowed(&chain_path, cfg.network_magic).await {
+    if !network_allowed(&chain_path, cfg.network_magic, wipe_chain).await {
         return PipelineResult::Cancelled;
     }
 
@@ -1121,6 +1126,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilError {
                 code: "INVALID_CHAIN_PATH".to_string(),
                 message: e.to_string(),
+                rebuild: wipe_chain,
             });
             return PipelineResult::Cancelled;
         }
@@ -1140,6 +1146,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilError {
                 code: "PROBE_FAILED".to_string(),
                 message: e.to_string(),
+                rebuild: wipe_chain,
             });
             return PipelineResult::Cancelled;
         }
@@ -1180,7 +1187,7 @@ pub async fn run_pipeline(
     // A full install replaces the chain directory. Refuse before downloading
     // anything if that would delete files that are not a node database.
     let is_partial = local_highest.is_some();
-    if !is_partial && !full_install_allowed(&chain_path).await {
+    if !is_partial && !full_install_allowed(&chain_path, wipe_chain).await {
         return PipelineResult::Cancelled;
     }
 
@@ -1194,6 +1201,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilError {
                 code: "STAGING_FAILED".to_string(),
                 message: e.to_string(),
+                rebuild: wipe_chain,
             });
             return PipelineResult::Cancelled;
         }
@@ -1215,6 +1223,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilError {
                 code: "MARKER_FAILED".to_string(),
                 message: e.to_string(),
+                rebuild: wipe_chain,
             });
             return PipelineResult::Cancelled;
         }
@@ -1223,6 +1232,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilError {
                 code: "WIPE_FAILED".to_string(),
                 message: e.to_string(),
+                rebuild: wipe_chain,
             });
             return PipelineResult::FailedAfterWipe;
         }
@@ -1257,6 +1267,7 @@ pub async fn run_pipeline(
         emit(&Event::MithrilError {
             code: "STAGING_FAILED".to_string(),
             message: e.to_string(),
+            rebuild: wipe_chain,
         });
         return failed();
     }
@@ -1270,6 +1281,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilError {
                 code: "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED".to_string(),
                 message: msg,
+                rebuild: wipe_chain,
             });
             return failed();
         }
@@ -1294,6 +1306,7 @@ pub async fn run_pipeline(
         emit(&Event::MithrilError {
             code: "PARTIAL_SYNC_STAGED_DB_INVALID".to_string(),
             message: e.to_string(),
+            rebuild: wipe_chain,
         });
         return failed();
     }
@@ -1311,6 +1324,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilError {
                 code: "PARTIAL_SYNC_CONVERSION_FAILED".to_string(),
                 message: msg,
+                rebuild: wipe_chain,
             });
             return failed();
         }
@@ -1365,8 +1379,8 @@ pub async fn run_pipeline(
     });
 
     // The download takes minutes; check again before anything is changed.
-    if !network_allowed(&chain_path, cfg.network_magic).await
-        || (!is_partial && !full_install_allowed(&chain_path).await)
+    if !network_allowed(&chain_path, cfg.network_magic, wipe_chain).await
+        || (!is_partial && !full_install_allowed(&chain_path, wipe_chain).await)
     {
         let _ = tokio::fs::remove_dir_all(&staging_root).await;
         return failed();
@@ -1379,6 +1393,7 @@ pub async fn run_pipeline(
         emit(&Event::MithrilError {
             code: "MARKER_FAILED".to_string(),
             message: e.to_string(),
+            rebuild: wipe_chain,
         });
         return failed();
     }
@@ -1392,6 +1407,7 @@ pub async fn run_pipeline(
         emit(&Event::MithrilError {
             code: "INSTALL_FAILED".to_string(),
             message: e.to_string(),
+            rebuild: wipe_chain,
         });
         return PipelineResult::Failed;
     }

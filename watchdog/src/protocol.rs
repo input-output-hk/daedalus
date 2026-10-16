@@ -191,9 +191,13 @@ pub enum Event {
         local_immutable_count: u64,
         latest_certified_immutable: u64,
     },
+    /// A Mithril pipeline failed or refused to run. `rebuild` is true when
+    /// that pipeline was a rebuild, asked for with `wipe_chain` or continuing
+    /// one that did not finish, so a retry repeats the rebuild.
     MithrilError {
         code: String,
         message: String,
+        rebuild: bool,
     },
     /// Emitted once on startup if watchdog-state.json is absent, before chain_status.
     /// Electron should respond with a `migrate_state` command carrying any persisted
@@ -586,13 +590,16 @@ mod tests {
 
     #[test]
     fn mithril_error() {
-        let j = to_json(&Event::MithrilError {
+        let line = serde_json::to_string(&Event::MithrilError {
             code: "PROBE_FAILED".to_string(),
             message: "connection refused".to_string(),
-        });
-        assert_eq!(j["event"], "mithril_error");
-        assert_eq!(j["code"], "PROBE_FAILED");
-        assert_eq!(j["message"], "connection refused");
+            rebuild: true,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"mithril_error","code":"PROBE_FAILED","message":"connection refused","rebuild":true}"#
+        );
     }
 
     #[test]
