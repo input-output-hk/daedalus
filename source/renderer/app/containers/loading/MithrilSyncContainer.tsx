@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
+import { intlShape } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import MithrilDecisionView from '../../components/loading/mithril/MithrilDecisionView';
 import MithrilProgressView from '../../components/loading/mithril/MithrilProgressView';
 import MithrilErrorView from '../../components/loading/mithril/MithrilErrorView';
+import messages from '../../components/loading/mithril/MithrilBootstrap.messages';
 import styles from '../../components/loading/mithril/MithrilBootstrap.scss';
 
 const TERMINAL_PHASES = new Set(['completed', 'cancelled', 'error']);
@@ -16,11 +18,22 @@ class MithrilSyncContainer extends Component<InjectedProps> {
     actions: null,
   };
 
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   _mithrilStartedAt: number | null = null;
 
   render() {
     const { backend, app } = this.props.stores;
-    const { loadingPhase, mithrilPhase, mithrilProgress, lastError } = backend;
+    const {
+      loadingPhase,
+      mithrilPhase,
+      mithrilProgress,
+      lastError,
+      lastErrorCode,
+    } = backend;
+    const { intl } = this.context;
 
     // Track wall-clock start time for elapsed timer; reset on terminal phases.
     if (mithrilPhase && !TERMINAL_PHASES.has(mithrilPhase)) {
@@ -52,17 +65,19 @@ class MithrilSyncContainer extends Component<InjectedProps> {
         <div className={styles.card}>
           <MithrilErrorView
             error={
-              lastError ? { code: 'mithril_error', message: lastError } : null
+              lastError
+                ? { code: lastErrorCode ?? 'mithril_error', message: lastError }
+                : null
             }
             onOpenExternalLink={(url) => app.openExternalLink(url)}
             actions={[
               {
-                label: 'Retry',
+                label: intl.formatMessage(messages.errorRetry),
                 onClick: () => backend.startMithril(),
                 variant: 'primary' as const,
               },
               {
-                label: 'Skip to blockchain sync',
+                label: intl.formatMessage(messages.errorSkip),
                 onClick: () => backend.startNode(),
                 variant: 'secondary' as const,
               },
