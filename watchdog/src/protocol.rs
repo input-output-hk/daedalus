@@ -82,6 +82,20 @@ pub enum Command {
     },
 }
 
+/// Which log signature identified the damage.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+#[allow(dead_code)]
+pub enum ChainDamageKind {
+    /// The node rejects a canonical block with `BadInputsUTxO` from several peers.
+    NodeRejectsCanonicalBlock,
+    /// The node cannot open its ledger because the ledger point is missing from
+    /// the ImmutableDB.
+    LedgerPointMissing,
+    /// The wallet is given a chain that does not continue from its checkpoint.
+    WalletChainDiscontinuity,
+}
+
 #[derive(Debug, Serialize)]
 #[serde(tag = "event", rename_all = "snake_case")]
 pub enum Event {
@@ -229,6 +243,17 @@ pub enum Event {
     /// `start_node`) to try again, or `stop`.
     NodeUnrecoverable {
         crashes: u32,
+    },
+    /// The node or wallet output shows that the local chain database has a hole.
+    /// `slot` is the slot named by the evidence (the rejected block, the missing
+    /// ledger point, or the first block after the gap). `last_good_slot` is the
+    /// wallet's last slot before the gap and is set only for
+    /// `wallet_chain_discontinuity`.
+    #[allow(dead_code)]
+    ChainDamage {
+        kind: ChainDamageKind,
+        slot: Option<u64>,
+        last_good_slot: Option<u64>,
     },
     /// The update installer requested with `install_update` was started.
     UpdateInstallerLaunched {
@@ -717,6 +742,55 @@ mod tests {
         let j = to_json(&Event::NodeUnrecoverable { crashes: 5 });
         assert_eq!(j["event"], "node_unrecoverable");
         assert_eq!(j["crashes"], 5);
+    }
+
+    #[test]
+    fn chain_damage_without_last_good_slot() {
+        let line = serde_json::to_string(&Event::ChainDamage {
+            kind: ChainDamageKind::LedgerPointMissing,
+            slot: Some(200_102_375),
+            last_good_slot: None,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"chain_damage","kind":"ledger_point_missing","slot":200102375,"last_good_slot":null}"#
+        );
+    }
+
+    #[test]
+    fn chain_damage_with_last_good_slot() {
+        let j = to_json(&Event::ChainDamage {
+            kind: ChainDamageKind::WalletChainDiscontinuity,
+            slot: Some(200_102_408),
+            last_good_slot: Some(200_080_892),
+        });
+        assert_eq!(j["kind"], "wallet_chain_discontinuity");
+        assert_eq!(j["slot"], 200_102_408u64);
+        assert_eq!(j["last_good_slot"], 200_080_892u64);
+    }
+
+    #[test]
+    fn chain_damage_kinds_serialise_in_snake_case() {
+        let kinds = [
+            (
+                ChainDamageKind::NodeRejectsCanonicalBlock,
+                "node_rejects_canonical_block",
+            ),
+            (ChainDamageKind::LedgerPointMissing, "ledger_point_missing"),
+            (
+                ChainDamageKind::WalletChainDiscontinuity,
+                "wallet_chain_discontinuity",
+            ),
+        ];
+        for (kind, expected) in kinds {
+            let j = to_json(&Event::ChainDamage {
+                kind,
+                slot: None,
+                last_good_slot: None,
+            });
+            assert_eq!(j["kind"], expected);
+        }
     }
 
     #[test]

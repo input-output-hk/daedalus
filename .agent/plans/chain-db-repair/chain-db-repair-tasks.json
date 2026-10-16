@@ -31,7 +31,7 @@
           "id": "task-001",
           "title": "Add the chain_damage event",
           "description": "Add Event::ChainDamage { kind, slot, last_good_slot } with kinds node_rejects_canonical_block, ledger_point_missing and wallet_chain_discontinuity, and the matching TypeScript event type.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 1.5,
           "dependencies": [],

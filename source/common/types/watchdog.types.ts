@@ -59,6 +59,22 @@ export type BackendStopProgress = {
 // starts; 'wallet' until the restarted wallet is ready.
 export type RequestedRestart = 'node' | 'wallet';
 
+// ChainDamageKind — which log signature identified a hole in the chain
+// database, from the `kind` of chain_damage events.
+export type ChainDamageKind =
+  | 'node_rejects_canonical_block'
+  | 'ledger_point_missing'
+  | 'wallet_chain_discontinuity';
+
+// ChainDamageEvent — a chain_damage event as the watchdog writes it.
+// last_good_slot is set only for wallet_chain_discontinuity.
+export type ChainDamageEvent = {
+  event: 'chain_damage';
+  kind: ChainDamageKind;
+  slot: number | null;
+  last_good_slot: number | null;
+};
+
 // MithrilProgress — from mithril_progress events
 export interface MithrilProgress {
   filesDownloaded: number;
