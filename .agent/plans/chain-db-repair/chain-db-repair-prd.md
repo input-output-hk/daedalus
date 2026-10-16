@@ -34,7 +34,7 @@ The wallet databases are intact in all four installs. These users need the chain
 - Show a full-screen explanation with a rebuild action. It takes precedence over every other loading screen except quitting and a running Mithril sync, including after the wallet is ready.
 - Make the rebuild safe to offer:
   - nothing is deleted until the aggregator answers;
-  - a failed rebuild returns to the first-run choice instead of a silent genesis sync;
+  - a rebuild whose download fails returns to the first-run choice instead of a silent genesis sync;
   - custom chain locations rebuild in place.
 - Record each detection in `watchdog.log` and Diagnostics, and offer the same rebuild manually from Diagnostics.
 - Establish on preprod whether a targeted repair recovers each symptom. If it does, run it first, ask before it installs a fresh ledger, and fall back to the rebuild.
@@ -69,7 +69,7 @@ Plan decisions:
 
 4. Detection lives in the watchdog. It already pipes the output of both processes; the renderer sees only polled state.
 5. The first signature fires when three distinct peers reject the same block. One misbehaving peer cannot reach that threshold. In every field install, at least one rejected block came from 12 or more peers.
-6. The rebuild deletes the old chain before downloading the new one. Staging the download beside the old chain would keep it if the download failed, but it needs room for two full databases, about 217 GB each on mainnet (measured 2026-09-30). The old chain is already damaged. A failure leads back to the first-run choice.
+6. The rebuild deletes the old chain before downloading the new one. Staging the download beside the old chain would keep it if the download failed, but it needs room for two full databases, about 217 GB each on mainnet (measured 2026-09-30). The old chain is already damaged. A failed or cancelled download leads back to the first-run choice.
 7. The offer screen asks before rebuilding, because the rebuild deletes local data and takes the app out of use for a full download. "Not now" dismisses the screen until the app restarts; Diagnostics keeps the detection and the manual rebuild.
 8. The targeted repair replaces chunks without asking (decision 1) and asks before installing a fresh ledger (decision 11). It falls back to the offer screen when it cannot locate or fix the damage.
 9. There is one `chain_damage` event with a `kind` field rather than one event per signature, so a later kind reuses the screen and the state.
@@ -79,6 +79,7 @@ Owner decisions on the questions raised while planning:
 10. **2026-10-16.** The rebuild offer does not ship ahead of the targeted repair. Phases 1 to 7 go out in one release. If phase 6 shows the targeted repair cannot recover a symptom, its decision record says so, and the owner decides then whether to release without it.
 11. **2026-10-16.** The targeted repair asks before the partial sync that installs a fresh ledger, because the node stays offline while it runs. Decision 1 still covers the chunk swap, which needs no prompt. A kind that phase 6 shows needs no fresh ledger is repaired without a prompt.
 12. **2026-10-16.** The background scan from decision 1 finds holes with the boundary scan instead of a full-range `cardano-db verify`, once phase 6 has measured the Rust scan on Windows. `verify` remains the check for corruption inside a chunk. The scan reads chunk indexes, not logs, so it keeps decision 2.
+13. **2026-10-16.** An install that fails after a rebuild keeps the existing strict wait: the Mithril error view with Retry, no node start, and no `chain_status { has_chain: false }`.
 
 ## Requirements
 
@@ -93,8 +94,8 @@ Detection (watchdog):
 
 Rebuild (watchdog):
 
-- [ ] FR5. With `wipe_chain`, probe the aggregator before deleting anything. A probe failure leaves the chain untouched and reports `PROBE_FAILED` as today.
-- [ ] FR6. If the pipeline fails or is cancelled after the delete, do not start the node. Report `chain_status { has_chain: false }` and wait as on first run, so the renderer shows the bootstrap decision.
+- [ ] FR5. With `wipe_chain`, probe the aggregator before deleting anything. A probe failure leaves the chain untouched and reports `PROBE_FAILED` as today. A rebuild always installs a full bootstrap and skips the check that the local chain is already current, so a chain that is level with the certified tip is still replaced.
+- [ ] FR6. If the download fails or is cancelled after the wipe, do not start the node. Report `chain_status { has_chain: false }` and wait as on first run, so the renderer shows the bootstrap decision. Until `set_chain_path` changes the chain directory, a `start_mithril` sent in that wait is also a rebuild, so it deletes what a failed wipe left and installs a full bootstrap. A failure to wipe the old chain reports `WIPE_FAILED` and ends in the same wait. An install that fails after a rebuild keeps the existing strict wait: the Mithril error view with Retry, no node start and no `has_chain: false`.
 - [ ] FR7. Resolve the chain directory the way full bootstrap does (`full_install_target`). Refuse with `CHAIN_DIR_NOT_REPLACEABLE` when it holds anything other than chain database files (`check_replaceable`). Otherwise, delete the real directory's contents and keep any link or junction that points to it. A user-picked folder outside the state directory rebuilds in place.
 - [ ] FR8. Pass the `code` of `mithril_error` through to the renderer as `lastErrorCode`.
 
@@ -103,9 +104,9 @@ Offer screen (main and renderer):
 - [ ] FR9. `chainDamage` in the polled state: set by `chain_damage`, cleared by `node_started` and by `mithril_status` with phase `preparing`.
 - [ ] FR10. A loading phase `chain-damaged` that takes precedence over everything except `stopping` and a running Mithril pipeline, `ready` and `error` included.
 - [ ] FR11. Choice view: a symptom sentence for the kind, what the rebuild does, that wallets and funds are safe and no recovery phrase is needed, and a detail line with the kind and slot for support. Actions: Rebuild blockchain data, Not now.
-- [ ] FR12. Confirm view: what will be deleted and downloaded, and that the app is unusable until it finishes. Actions: Rebuild, Back. Rebuild sends `{ cmd: 'start_mithril', wipe_chain: true }`, and the existing Mithril progress view takes over.
+- [ ] FR12. Confirm view: what will be deleted and downloaded, and that the app is unusable until it finishes. Actions: Rebuild, Back. Rebuild sends `{ cmd: 'start_mithril', wipe_chain: true }`, and the existing Mithril progress view takes over. Rebuild also marks the chain storage location as confirmed, because the rebuild targets the location in use. A rebuild that fails and leaves no chain therefore shows the Mithril error view with the reason and then the bootstrap decision, without the chain storage location picker.
 - [ ] FR13. Not now hides the screen until the app restarts.
-- [ ] FR14. The Mithril error view shows a specific message for `PROBE_FAILED`, `INVALID_CHAIN_PATH`, `CHAIN_DIR_NOT_REPLACEABLE` and `CHAIN_DIR_OTHER_NETWORK`, and its Retry and Skip buttons are translated (they are hard-coded English at `MithrilSyncContainer.tsx:50-70`).
+- [ ] FR14. The Mithril error view shows a specific message for `PROBE_FAILED`, `INVALID_CHAIN_PATH`, `CHAIN_DIR_NOT_REPLACEABLE`, `CHAIN_DIR_OTHER_NETWORK` and `WIPE_FAILED`, and its Retry and Skip buttons are translated (they are hard-coded English at `MithrilSyncContainer.tsx:50-70`).
 - [ ] FR15. Diagnostics shows the last detection of the session (kind, slot, time) and has a Rebuild blockchain data action behind the same confirmation, whether anything was detected.
 - [ ] FR16. All new copy exists in en-US and ja-JP.
 
@@ -136,7 +137,7 @@ Targeted repair (gated on phase 6):
 ### Components Affected
 
 - `watchdog/src/chain_damage.rs` (new): the three signature parsers and a `ChainDamageDetector` that holds per-slot peer sets for signature 1 (bounded: the most recent 16 slots, 3 peers each) and the once-per-process flags.
-- `watchdog/src/supervisor.rs`: node output calls the detector from `pipe_to_log`, next to `try_parse_startup_status` (`supervisor.rs:556-579`). Wallet output turns parsing on with a wallet-only parser (today `pipe_to_log(..., false, None)` at `supervisor.rs:1805-1816`). After a failed post-wipe pipeline, it waits in the no-chain state (`supervisor.rs:914`) instead of restarting (`supervisor.rs:1211-1213`).
+- `watchdog/src/supervisor.rs`: node output calls the detector from `pipe_to_log`, next to `try_parse_startup_status` (`supervisor.rs:556-579`). Wallet output turns parsing on with a wallet-only parser (today `pipe_to_log(..., false, None)` at `supervisor.rs:1805-1816`). After a failed or cancelled post-wipe download, it waits in the no-chain state (`supervisor.rs:914`) instead of restarting (`supervisor.rs:1211-1213`).
 - `watchdog/src/protocol.rs`: `Event::ChainDamage`.
 - `watchdog/src/mithril.rs`: the wipe moves after the probe and goes through `full_install_target` and `check_replaceable`. A distinct `PipelineResult` marks a failure after the wipe.
 - `watchdog/src/bin/mock_node.rs` and the wallet mock: an environment variable naming a file of extra lines to print, so integration tests can inject field lines.
@@ -215,6 +216,7 @@ Draft en-US copy, to be confirmed by phase 5 testing (the wallet sentence depend
 | `PROBE_FAILED` | Daedalus could not reach the Mithril service. Your blockchain data has not been changed. Check your internet connection and try again. |
 | `CHAIN_DIR_NOT_REPLACEABLE` | The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and try again. |
 | `INVALID_CHAIN_PATH` | Daedalus cannot rebuild the blockchain data in this folder. Choose a different blockchain data location and try again. |
+| `WIPE_FAILED` | Daedalus could not delete the blockchain data files. Close any other programs that might be using the blockchain folder, then retry. |
 | `CHAIN_DIR_OTHER_NETWORK` | The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again. |
 | Diagnostics | Blockchain data: No damage detected / Damage detected at slot {slot} ({time}). Action: Rebuild blockchain data |
 
@@ -291,7 +293,7 @@ Manual, on preprod (Linux under WSL2 and Windows), reproducing a hole with 11.4.
 
 ## Open Questions
 
-None. Decisions 10 to 12 settled the questions raised while planning.
+None. Decisions 10 to 13 settled the questions raised while planning.
 
 **Status:** In Progress
 **Date:** 2026-10-16
