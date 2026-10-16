@@ -22,6 +22,10 @@ const makeBackend = (overrides = {}) => ({
   startMithril: jest.fn(),
   retryMithril: jest.fn(),
   startNode: jest.fn(),
+  showBootstrapDecision: jest.fn(),
+  hasChain: true,
+  lastErrorRebuild: false,
+  rebuildPending: false,
   cancelMithril: jest.fn(),
   ...overrides,
 });
@@ -81,5 +85,79 @@ describe('MithrilSyncContainer error view', () => {
     });
     fireEvent.click(screen.getByText('View'));
     expect(screen.getByText('mithril_error')).toBeInTheDocument();
+  });
+});
+
+describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
+  afterEach(cleanup);
+
+  const copy = {
+    [messages.errorRetry.id]: 'Retry',
+    [messages.errorSkip.id]: 'Skip to blockchain sync',
+    [messages.errorChooseSync.id]: 'Choose how to sync',
+    [messages.errorChainRemovedHint.id]: 'The old blockchain data was removed.',
+    [messages.decisionChainRemovedNotice.id]: 'Old data removed, sync again.',
+  };
+  const removed = () =>
+    makeBackend({
+      hasChain: false,
+      lastErrorRebuild: true,
+      lastErrorCode: 'DOWNLOAD_FAILED',
+    });
+
+  it('says the old data was removed and offers the sync choice instead of skipping', () => {
+    const backend = removed();
+    renderContainer(backend, copy);
+    expect(
+      screen.getByText('The old blockchain data was removed.')
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Choose how to sync' }));
+    expect(backend.showBootstrapDecision).toHaveBeenCalledTimes(1);
+    expect(backend.startNode).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(backend.retryMithril).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['the rebuild did not delete anything', { hasChain: true }],
+    ['the error did not come from a rebuild', { lastErrorRebuild: false }],
+  ])('keeps the skip action when %s', (_name, overrides) => {
+    const backend = { ...removed(), ...overrides };
+    renderContainer(backend, copy);
+    expect(
+      screen.queryByText('The old blockchain data was removed.')
+    ).toBeNull();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Skip to blockchain sync' })
+    );
+    expect(backend.startNode).toHaveBeenCalledTimes(1);
+  });
+
+  it('notes the removal on the decision view after a restart mid-rebuild', () => {
+    renderContainer(
+      makeBackend({
+        loadingPhase: 'bootstrap-decision',
+        mithrilPhase: null,
+        hasChain: false,
+        rebuildPending: true,
+      }),
+      copy
+    );
+    expect(
+      screen.getByText('Old data removed, sync again.')
+    ).toBeInTheDocument();
+  });
+
+  it('shows no note on the decision view of a first run', () => {
+    renderContainer(
+      makeBackend({
+        loadingPhase: 'bootstrap-decision',
+        mithrilPhase: null,
+        hasChain: false,
+      }),
+      copy
+    );
+    expect(screen.queryByText('Old data removed, sync again.')).toBeNull();
   });
 });
