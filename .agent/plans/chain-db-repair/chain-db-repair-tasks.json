@@ -292,7 +292,7 @@
           "id": "task-011",
           "title": "Build the choice and confirm views",
           "description": "Create ChainDamageView (choice and confirm), ChainDamageContainer, and the LoadingPage branch on the full-screen backdrop.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 6.0,
           "dependencies": [
