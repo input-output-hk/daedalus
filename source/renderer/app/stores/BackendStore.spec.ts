@@ -264,6 +264,97 @@ describe('BackendStore chain damage', () => {
   });
 });
 
+describe('BackendStore.retryMithril', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  const failed = (
+    store: BackendStore,
+    code: string | null,
+    rebuild: boolean
+  ) => {
+    (store as any).hasChain = false;
+    (store as any).mithrilPhase = 'error';
+    (store as any).lastErrorCode = code;
+    (store as any).lastErrorRebuild = rebuild;
+  };
+
+  it('runs a plain Mithril sync when the error did not come from a rebuild', () => {
+    const store = makeStore();
+    failed(store, 'DOWNLOAD_FAILED', false);
+    store.retryMithril();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_mithril',
+    });
+  });
+
+  it.each([
+    'PROBE_FAILED',
+    'WIPE_FAILED',
+    'INSTALL_FAILED',
+    'INSUFFICIENT_SPACE',
+  ])('repeats the rebuild after a rebuild failed with %s', (code) => {
+    const store = makeStore();
+    failed(store, code, true);
+    store.retryMithril();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledTimes(1);
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_mithril',
+      wipe_chain: true,
+    });
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it.each(['INVALID_CHAIN_PATH', 'CHAIN_DIR_OTHER_NETWORK'])(
+    'asks for a storage location after a rebuild failed with %s',
+    (code) => {
+      const store = makeStore();
+      failed(store, code, true);
+      store.retryMithril();
+      expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+      expect(store.loadingPhase).toBe('chain-storage-setup');
+    }
+  );
+
+  it('shows the picker even when the node database still exists', () => {
+    const store = makeStore();
+    failed(store, 'INVALID_CHAIN_PATH', true);
+    (store as any).hasChain = true;
+    store.retryMithril();
+    expect(store.loadingPhase).toBe('chain-storage-setup');
+  });
+
+  it('returns to the error view once a location is confirmed', () => {
+    const store = makeStore();
+    failed(store, 'CHAIN_DIR_OTHER_NETWORK', true);
+    store.retryMithril();
+    store.confirmStorageLocation();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    store.retryMithril();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_mithril',
+      wipe_chain: true,
+    });
+  });
+
+  it('copies lastErrorRebuild from the poll', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'error',
+      lastErrorRebuild: true,
+    });
+    await store._pollBackendStatus();
+    expect(store.lastErrorRebuild).toBe(true);
+  });
+});
+
 describe('BackendStore unrecoverable backend', () => {
   beforeEach(() => {
     (mithrilCommandChannel.send as jest.Mock).mockClear();

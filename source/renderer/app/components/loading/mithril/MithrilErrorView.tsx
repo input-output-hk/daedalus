@@ -29,8 +29,6 @@ interface Props {
   }>;
   // Opt-in right-alignment of the actions footer; default keeps it left-aligned in caller order.
   rightAlignActions?: boolean;
-  onWipeRetry?(): void;
-  onDecline?(): void;
 }
 
 interface Context {
@@ -93,8 +91,6 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const {
     error,
     onOpenExternalLink,
-    onWipeRetry,
-    onDecline,
     title,
     hint,
     hintAsBody,
@@ -112,18 +108,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   }
   const hasTechnicalDetails = Boolean(error?.message || error?.code);
   const logPath = error?.logPath;
-  const resolvedActions = actions || [
-    {
-      label: intl.formatMessage(messages.wipeAndRetry),
-      onClick: onWipeRetry,
-      variant: 'primary' as const,
-    },
-    {
-      label: intl.formatMessage(messages.decline),
-      onClick: onDecline,
-      variant: 'secondary' as const,
-    },
-  ];
+  const resolvedActions = actions || [];
   // Actions render verbatim in caller order; any reordering is the caller's responsibility.
 
   return (

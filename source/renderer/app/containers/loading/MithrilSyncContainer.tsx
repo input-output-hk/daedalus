@@ -73,7 +73,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
             actions={[
               {
                 label: intl.formatMessage(messages.errorRetry),
-                onClick: () => backend.startMithril(),
+                onClick: () => backend.retryMithril(),
                 variant: 'primary' as const,
               },
               {

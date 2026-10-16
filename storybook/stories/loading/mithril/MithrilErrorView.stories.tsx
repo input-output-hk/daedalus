@@ -11,6 +11,19 @@ import {
   getErrorPreset,
 } from '../_support/mithrilFixtures';
 
+const errorActions = [
+  {
+    label: 'Retry',
+    onClick: () => bootstrapActions.onWipeRetry(),
+    variant: 'primary' as const,
+  },
+  {
+    label: 'Skip to blockchain sync',
+    onClick: () => bootstrapActions.onDecline(),
+    variant: 'secondary' as const,
+  },
+];
+
 storiesOf('Loading / Mithril / Error', module)
   .addDecorator((story, context) => (
     <StoryDecorator>
@@ -34,8 +47,7 @@ storiesOf('Loading / Mithril / Error', module)
         onOpenExternalLink={(value) =>
           bootstrapActions.onOpenExternalLink(value)
         }
-        onWipeRetry={() => bootstrapActions.onWipeRetry()}
-        onDecline={() => bootstrapActions.onDecline()}
+        actions={errorActions}
       />
     );
   })
@@ -47,16 +59,14 @@ storiesOf('Loading / Mithril / Error', module)
           'The bootstrap process failed before a stage-specific error could be derived.',
       }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      onWipeRetry={() => bootstrapActions.onWipeRetry()}
-      onDecline={() => bootstrapActions.onDecline()}
+      actions={errorActions}
     />
   ))
   .add('Probe Failed', () => (
     <MithrilErrorView
       error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      onWipeRetry={() => bootstrapActions.onWipeRetry()}
-      onDecline={() => bootstrapActions.onDecline()}
+      actions={errorActions}
     />
   ))
   .add('Invalid Chain Path', () => (
@@ -66,8 +76,7 @@ storiesOf('Loading / Mithril / Error', module)
         message: 'detail from the watchdog',
       }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      onWipeRetry={() => bootstrapActions.onWipeRetry()}
-      onDecline={() => bootstrapActions.onDecline()}
+      actions={errorActions}
     />
   ))
   .add('Chain Dir Not Replaceable', () => (
@@ -77,8 +86,7 @@ storiesOf('Loading / Mithril / Error', module)
         message: 'detail from the watchdog',
       }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      onWipeRetry={() => bootstrapActions.onWipeRetry()}
-      onDecline={() => bootstrapActions.onDecline()}
+      actions={errorActions}
     />
   ))
   .add('Chain Dir Other Network', () => (
@@ -88,15 +96,13 @@ storiesOf('Loading / Mithril / Error', module)
         message: 'detail from the watchdog',
       }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      onWipeRetry={() => bootstrapActions.onWipeRetry()}
-      onDecline={() => bootstrapActions.onDecline()}
+      actions={errorActions}
     />
   ))
   .add('Wipe Failed', () => (
     <MithrilErrorView
       error={{ code: 'WIPE_FAILED', message: 'detail from the watchdog' }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      onWipeRetry={() => bootstrapActions.onWipeRetry()}
-      onDecline={() => bootstrapActions.onDecline()}
+      actions={errorActions}
     />
   ));

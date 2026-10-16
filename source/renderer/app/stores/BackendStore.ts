@@ -29,6 +29,10 @@ import type {
 
 // DEFINE CONSTANTS
 const BACKEND_STATUS_POLL_INTERVAL = 2000; // ms
+
+// Codes of the errors a rebuild reports when the chain storage location itself
+// is the problem; repeating the rebuild there fails the same way.
+const LOCATION_ERROR_CODES = ['INVALID_CHAIN_PATH', 'CHAIN_DIR_OTHER_NETWORK'];
 // END CONSTANTS
 
 export default class BackendStore extends Store {
@@ -56,6 +60,8 @@ export default class BackendStore extends Store {
   @observable lastError: string | null = null;
   // The code of the Mithril error that set lastError, e.g. PROBE_FAILED
   @observable lastErrorCode: string | null = null;
+  // True when the Mithril error came from a rebuild of the chain data
+  @observable lastErrorRebuild = false;
   // The last hole in the chain database the watchdog detected
   @observable chainDamage: ChainDamage | null = null;
   @observable walletUnrecoverable = false;
@@ -72,6 +78,12 @@ export default class BackendStore extends Store {
   @observable _mithrilPromptDismissed = false;
   // Set by "Not now" on the chain-damaged screen; lasts until the app restarts
   @observable _chainDamageDismissed = false;
+  // Set by Retry after a rebuild failed on the chain storage location; the
+  // picker shows until a location is confirmed
+  @observable _chainStoragePickerRequested = false;
+  // Set when that picker confirmed a location, so the next Retry rebuilds
+  // there instead of asking again; cleared when a rebuild is sent
+  @observable _chainStorageReselected = false;
   @observable _probeHasFired = false;
   // Daedalus is quitting
   @observable isStopping = false;
@@ -157,6 +169,7 @@ export default class BackendStore extends Store {
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
         this.lastErrorCode = state.lastErrorCode ?? null;
+        this.lastErrorRebuild = state.lastErrorRebuild ?? false;
         this.chainDamage = state.chainDamage ?? null;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
@@ -297,6 +310,10 @@ export default class BackendStore extends Store {
     ) {
       return 'chain-damaged';
     }
+    // Retry after a rebuild failed on the storage location: pick another one
+    if (this._chainStoragePickerRequested) {
+      return 'chain-storage-setup';
+    }
     // Unrecoverable error takes top priority
     if (this.walletUnrecoverable || this.nodeUnrecoverable) {
       return 'error';
@@ -350,6 +367,7 @@ export default class BackendStore extends Store {
   @action
   rebuildChain = () => {
     this.chainPathConfirmed = true;
+    this._chainStorageReselected = false;
     mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
     // The logger sends its arguments over IPC, which cannot clone a MobX
     // observable, so only plain values go in.
@@ -357,6 +375,25 @@ export default class BackendStore extends Store {
       kind: this.chainDamage?.kind ?? null,
       slot: this.chainDamage?.slot ?? null,
     });
+  };
+
+  // Retry on the Mithril error view. After a failed or refused rebuild it
+  // repeats the rebuild, since the chain data may already be gone and a plain
+  // sync would not replace what is left; when the storage location caused the
+  // failure it asks for a location instead. Otherwise it runs Mithril again.
+  @action
+  retryMithril = () => {
+    if (!this.lastErrorRebuild) {
+      this.startMithril();
+    } else if (
+      !this._chainStorageReselected &&
+      this.lastErrorCode != null &&
+      LOCATION_ERROR_CODES.includes(this.lastErrorCode)
+    ) {
+      this._chainStoragePickerRequested = true;
+    } else {
+      this.rebuildChain();
+    }
   };
 
   // "Not now" on the chain-damaged screen; the screen stays hidden until the
@@ -440,6 +477,7 @@ export default class BackendStore extends Store {
     await confirmChainStorageChannel.request({ customPath });
     runInAction('set chainPathConfirmed after setChainStorageDirectory', () => {
       this.chainPathConfirmed = true;
+      this._confirmPickedLocation();
     });
     return null;
   };
@@ -452,6 +490,7 @@ export default class BackendStore extends Store {
         'set chainPathConfirmed after resetChainStorageDirectory',
         () => {
           this.chainPathConfirmed = true;
+          this._confirmPickedLocation();
         }
       );
       return null;
@@ -461,8 +500,17 @@ export default class BackendStore extends Store {
   confirmStorageLocation = () => {
     runInAction('set chainPathConfirmed', () => {
       this.chainPathConfirmed = true;
+      this._confirmPickedLocation();
     });
   };
+
+  // A location was confirmed on the picker that Retry asked for
+  _confirmPickedLocation() {
+    if (this._chainStoragePickerRequested) {
+      this._chainStorageReselected = true;
+    }
+    this._chainStoragePickerRequested = false;
+  }
 
   @action
   dismissMithrilPrompt = () => {
