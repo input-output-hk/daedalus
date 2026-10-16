@@ -18,6 +18,9 @@
 // With MOCK_MITHRIL_PROBE_FAIL=1, "snapshot show" fails with exit code 1, like
 // a client that cannot reach the aggregator.
 //
+// With MOCK_MITHRIL_DOWNLOAD_HANG=1, "download" emits its progress lines and
+// then waits until it is killed, so a test can cancel a download in progress.
+//
 // The snapshot's immutable_file_number is set very high (999_999) so the
 // behind-ness probe always concludes that a sync is needed when force=false.
 
@@ -67,6 +70,9 @@ fn main() {
                 s = i,
             );
             sleep(Duration::from_millis(20));
+        }
+        if env::var("MOCK_MITHRIL_DOWNLOAD_HANG").as_deref() == Ok("1") {
+            sleep(Duration::from_secs(300));
         }
         // Emit a verifying-phase progress line.
         println!(
