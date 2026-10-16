@@ -1669,6 +1669,51 @@ fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
     let _ = child.wait();
 }
 
+/// A Mithril sync requested while the node stops for a rebuild does not turn
+/// the rebuild into a partial sync over the old chain: the requests are
+/// merged, and the rebuild deletes the old chain and downloads everything.
+#[test]
+fn held_plain_sync_does_not_cancel_a_rebuild() {
+    let dir = TempDir::new("held-rebuild");
+    let chain = dir.populate_database();
+    let args_file = dir.path().join("mithril-download-args.json");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_NODE_EXIT_DELAY_MS", "1500"),
+            ("MOCK_CERTIFIED_IMMUTABLE", "30"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "backend_stop_progress", |v| {
+        v["stage"] == "stopping_node"
+    });
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    assert!(
+        !args.iter().any(|a| a == "--start" || a == "--end"),
+        "args: {args:?}"
+    );
+    assert!(!chain.join("immutable").join("00000.chunk").exists());
+    assert!(!chain.join("ledger").join("999").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── T7: node crash after wallet ready ────────────────────────────────────────
 
 /// Node is SIGKILL'd after wallet is ready → watchdog restarts node+wallet → recovers.

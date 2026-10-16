@@ -305,7 +305,17 @@ impl Settings<'_> {
 #[derive(Default)]
 struct HeldRequests {
     stop: bool,
+    /// `force` and `wipe_chain` of the Mithril sync to run, merged over every
+    /// request held.
     mithril: Option<(bool, bool)>,
+}
+
+/// One Mithril sync for two requests. A later request never turns off a
+/// rebuild (`wipe_chain`) or a forced sync that an earlier one asked for: a
+/// plain sync in place of a confirmed rebuild would sync over the damage the
+/// rebuild was to replace.
+fn merge_mithril(earlier: (bool, bool), later: (bool, bool)) -> (bool, bool) {
+    (earlier.0 || later.0, earlier.1 || later.1)
 }
 
 impl HeldRequests {
@@ -317,7 +327,10 @@ impl HeldRequests {
             }
             Cmd::StartMithril { force, wipe_chain } => {
                 info!("Mithril sync requested; it runs before the node starts again");
-                self.mithril = Some((force, wipe_chain));
+                self.mithril = Some(match self.mithril {
+                    Some(earlier) => merge_mithril(earlier, (force, wipe_chain)),
+                    None => (force, wipe_chain),
+                });
             }
             Cmd::SetChainPath { path } => {
                 settings.wstate.chain_path = path;
@@ -369,11 +382,16 @@ impl HeldRequests {
     }
 
     // The next step once the node has exited: `planned`, unless a held request
-    // replaces it. A planned stop is never replaced.
+    // replaces it. A planned stop is never replaced, and a planned Mithril
+    // sync is merged with a held one.
     fn after(&self, planned: RunResult) -> RunResult {
-        match planned {
-            RunResult::Stopped => RunResult::Stopped,
-            planned => self.instead().unwrap_or(planned),
+        match (planned, self.mithril) {
+            (RunResult::Stopped, _) => RunResult::Stopped,
+            (RunResult::StartMithril { force, wipe_chain }, Some(held)) if !self.stop => {
+                let (force, wipe_chain) = merge_mithril((force, wipe_chain), held);
+                RunResult::StartMithril { force, wipe_chain }
+            }
+            (planned, _) => self.instead().unwrap_or(planned),
         }
     }
 }
@@ -2413,6 +2431,65 @@ before we could open ledgerdb";
             mithril: Some((true, true)),
         };
         assert!(matches!(held.after(RunResult::Stopped), RunResult::Stopped));
+    }
+
+    #[test]
+    fn a_later_request_never_turns_off_a_rebuild_or_force() {
+        assert_eq!(merge_mithril((false, true), (false, false)), (false, true));
+        assert_eq!(merge_mithril((true, false), (false, false)), (true, false));
+        assert_eq!(merge_mithril((false, false), (true, true)), (true, true));
+        assert_eq!(merge_mithril((true, false), (false, true)), (true, true));
+    }
+
+    #[test]
+    fn held_plain_sync_keeps_a_planned_rebuild() {
+        let held = HeldRequests {
+            stop: false,
+            mithril: Some((false, false)),
+        };
+        assert!(matches!(
+            held.after(RunResult::StartMithril {
+                force: false,
+                wipe_chain: true
+            }),
+            RunResult::StartMithril {
+                force: false,
+                wipe_chain: true
+            }
+        ));
+    }
+
+    #[test]
+    fn held_rebuild_extends_a_planned_forced_sync() {
+        let held = HeldRequests {
+            stop: false,
+            mithril: Some((false, true)),
+        };
+        assert!(matches!(
+            held.after(RunResult::StartMithril {
+                force: true,
+                wipe_chain: false
+            }),
+            RunResult::StartMithril {
+                force: true,
+                wipe_chain: true
+            }
+        ));
+    }
+
+    #[test]
+    fn held_stop_replaces_a_planned_mithril_sync() {
+        let held = HeldRequests {
+            stop: true,
+            mithril: Some((false, true)),
+        };
+        assert!(matches!(
+            held.after(RunResult::StartMithril {
+                force: false,
+                wipe_chain: true
+            }),
+            RunResult::Stopped
+        ));
     }
 
     #[test]
