@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
 use anyhow::Result;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tokio::io::AsyncBufReadExt;
 use tokio::process::Command;
 use tokio::sync::mpsc;
@@ -83,6 +83,72 @@ pub async fn write_marker(state_dir: &str, state: &str) -> Result<()> {
     let json = serde_json::json!({ "state": state });
     tokio::fs::write(&path, serde_json::to_string_pretty(&json)?).await?;
     Ok(())
+}
+
+/// File in the state directory that records a rebuild in progress. It is
+/// written before the rebuild deletes anything and deleted once a database is
+/// installed, so a rebuild cut short by a failure, a crash or the user quitting
+/// is still known at the next start. What a part-failed delete leaves would
+/// otherwise look like a chain, and the node would replay it from genesis.
+const REBUILD_MARKER: &str = "chain-rebuild.json";
+
+#[derive(Serialize, Deserialize)]
+struct RebuildMarker {
+    /// The chain directory being rebuilt, as Mithril's chain_path names it.
+    chain_path: String,
+}
+
+/// Whether a rebuild of the configured chain directory began deleting it and
+/// has installed no database since. A marker for another chain directory does
+/// not count; a marker that cannot be read does, since it was written for a
+/// rebuild that may have deleted part of this one.
+pub async fn rebuild_pending(cfg: &MithrilConfig) -> bool {
+    let path = Path::new(&cfg.state_dir).join(REBUILD_MARKER);
+    let text = match tokio::fs::read_to_string(&path).await {
+        Ok(text) => text,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return false,
+        Err(e) => {
+            warn!("mithril: cannot read {}: {e}", path.display());
+            return true;
+        }
+    };
+    match serde_json::from_str::<RebuildMarker>(&text) {
+        Ok(marker) => marker.chain_path == cfg.chain_path,
+        Err(e) => {
+            warn!("mithril: {} is not a rebuild marker: {e}", path.display());
+            true
+        }
+    }
+}
+
+async fn write_rebuild_marker(cfg: &MithrilConfig) -> Result<()> {
+    let marker = RebuildMarker {
+        chain_path: cfg.chain_path.clone(),
+    };
+    tokio::fs::create_dir_all(&cfg.state_dir).await?;
+    tokio::fs::write(
+        Path::new(&cfg.state_dir).join(REBUILD_MARKER),
+        serde_json::to_string_pretty(&marker)?,
+    )
+    .await?;
+    Ok(())
+}
+
+/// Deletes the rebuild marker when it is for the configured chain directory:
+/// a database was installed there, or the user chose to sync it from genesis.
+pub async fn clear_rebuild_marker(cfg: &MithrilConfig) {
+    if !rebuild_pending(cfg).await {
+        return;
+    }
+    let path = Path::new(&cfg.state_dir).join(REBUILD_MARKER);
+    match tokio::fs::remove_file(&path).await {
+        Ok(()) => info!(
+            "mithril: the rebuild of {} is no longer pending",
+            cfg.chain_path
+        ),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        Err(e) => warn!("mithril: could not delete {}: {e}", path.display()),
+    }
 }
 
 /// Parses the chunk number from an immutable file name ("09170.chunk" → 9170).
@@ -1013,6 +1079,19 @@ pub async fn run_pipeline(
     force: bool,
     wipe_chain: bool,
 ) -> PipelineResult {
+    // Until a rebuild that began deleting this chain directory has installed
+    // a database, every sync of it is a rebuild: a partial sync would build on
+    // what the delete left.
+    let wipe_chain = if !wipe_chain && rebuild_pending(cfg).await {
+        info!(
+            "mithril: a rebuild of {} is pending; this sync rebuilds it",
+            cfg.chain_path
+        );
+        true
+    } else {
+        wipe_chain
+    };
+
     // The pipeline downloads with --include-ancillary (the converter needs the
     // ledger state it brings), and mithril-client refuses that flag without an
     // ANCILLARY_VERIFICATION_KEY — or, on older versions, skips signature
@@ -1128,8 +1207,17 @@ pub async fn run_pipeline(
 
     // The aggregator has answered and the directory may be replaced: delete
     // the old chain now, before the download, so the disk never has to hold
-    // two full databases.
+    // two full databases. The marker goes first, so a restart after a delete
+    // or download that did not finish still knows the chain is being rebuilt.
     if wipe_chain {
+        if let Err(e) = write_rebuild_marker(cfg).await {
+            warn!("mithril: could not record the rebuild: {e}");
+            emit(&Event::MithrilError {
+                code: "MARKER_FAILED".to_string(),
+                message: e.to_string(),
+            });
+            return PipelineResult::Cancelled;
+        }
         if let Err(e) = wipe_database(&chain_path).await {
             warn!("mithril: could not delete the old chain: {e}");
             emit(&Event::MithrilError {
@@ -1311,6 +1399,9 @@ pub async fn run_pipeline(
     // Clean up staging root (download dir and any remnants)
     let _ = tokio::fs::remove_dir_all(&staging_root).await;
 
+    // A database is installed: a rebuild of this directory is over.
+    clear_rebuild_marker(cfg).await;
+
     // Write installed-awaiting-node-start marker
     if let Err(e) = write_marker(&cfg.state_dir, "installed-awaiting-node-start").await {
         warn!("Failed to write installed-awaiting-node-start marker: {e}");
@@ -1328,6 +1419,82 @@ pub async fn run_pipeline(
 
 #[cfg(test)]
 mod tests {
+    mod rebuild_marker {
+        use super::super::{
+            REBUILD_MARKER, clear_rebuild_marker, rebuild_pending, write_rebuild_marker,
+        };
+        use crate::config::MithrilConfig;
+        use std::fs;
+        use std::path::PathBuf;
+
+        struct TempDir(PathBuf);
+
+        impl TempDir {
+            fn new(label: &str) -> Self {
+                let p = std::env::temp_dir().join(format!(
+                    "wdg-marker-{label}-{}-{}",
+                    std::process::id(),
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap()
+                        .subsec_nanos()
+                ));
+                fs::create_dir_all(&p).unwrap();
+                TempDir(p)
+            }
+        }
+
+        impl Drop for TempDir {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+
+        fn config(state_dir: &std::path::Path, chain: &str) -> MithrilConfig {
+            serde_json::from_value(serde_json::json!({
+                "mithril_bin": "m",
+                "snapshot_converter_bin": "c",
+                "converter_config": "cfg",
+                "aggregator_url": "u",
+                "genesis_vkey": "g",
+                "state_dir": state_dir.to_str().unwrap(),
+                "chain_path": chain,
+            }))
+            .unwrap()
+        }
+
+        #[tokio::test]
+        async fn a_marker_for_this_chain_is_pending_until_cleared() {
+            let t = TempDir::new("this");
+            let cfg = config(&t.0, "/data/chain");
+            assert!(!rebuild_pending(&cfg).await);
+            write_rebuild_marker(&cfg).await.unwrap();
+            assert!(rebuild_pending(&cfg).await);
+            clear_rebuild_marker(&cfg).await;
+            assert!(!rebuild_pending(&cfg).await);
+            assert!(!t.0.join(REBUILD_MARKER).exists());
+        }
+
+        #[tokio::test]
+        async fn a_marker_for_another_chain_is_not_pending_and_is_kept() {
+            let t = TempDir::new("other");
+            write_rebuild_marker(&config(&t.0, "/data/chain"))
+                .await
+                .unwrap();
+            let cfg = config(&t.0, "/elsewhere/chain");
+            assert!(!rebuild_pending(&cfg).await);
+            clear_rebuild_marker(&cfg).await;
+            assert!(t.0.join(REBUILD_MARKER).exists());
+        }
+
+        #[tokio::test]
+        async fn an_unreadable_marker_is_pending() {
+            let t = TempDir::new("garbled");
+            fs::write(t.0.join(REBUILD_MARKER), b"{\"chain_pa").unwrap();
+            assert!(rebuild_pending(&config(&t.0, "/data/chain")).await);
+        }
+    }
+
     mod download_range {
         use super::super::download_range;
 
