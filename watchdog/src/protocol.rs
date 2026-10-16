@@ -85,7 +85,6 @@ pub enum Command {
 /// Which log signature identified the damage.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
-#[allow(dead_code)]
 pub enum ChainDamageKind {
     /// The node rejects a canonical block with `BadInputsUTxO` from several peers.
     NodeRejectsCanonicalBlock,
@@ -93,7 +92,19 @@ pub enum ChainDamageKind {
     /// the ImmutableDB.
     LedgerPointMissing,
     /// The wallet is given a chain that does not continue from its checkpoint.
+    #[allow(dead_code)]
     WalletChainDiscontinuity,
+}
+
+impl ChainDamageKind {
+    /// The name used on the wire and in `watchdog.log`.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ChainDamageKind::NodeRejectsCanonicalBlock => "node_rejects_canonical_block",
+            ChainDamageKind::LedgerPointMissing => "ledger_point_missing",
+            ChainDamageKind::WalletChainDiscontinuity => "wallet_chain_discontinuity",
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -249,7 +260,6 @@ pub enum Event {
     /// ledger point, or the first block after the gap). `last_good_slot` is the
     /// wallet's last slot before the gap and is set only for
     /// `wallet_chain_discontinuity`.
-    #[allow(dead_code)]
     ChainDamage {
         kind: ChainDamageKind,
         slot: Option<u64>,

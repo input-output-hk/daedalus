@@ -54,7 +54,7 @@
           "id": "task-002",
           "title": "Parse the two node signatures",
           "description": "Create chain_damage.rs with parsers for signature 1 (BadInputsUTxO under ChainSync.Client.Exception, counted per slot across distinct remoteAddress values) and signature 2 (critical invariant violation), and a ChainDamageDetector called from the node's pipe_to_log.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 5.0,
           "dependencies": [
