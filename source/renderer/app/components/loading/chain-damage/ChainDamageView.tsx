@@ -17,6 +17,8 @@ const SYMPTOM_BY_KIND: Record<ChainDamageKind, string> = {
 
 type Props = {
   damage: ChainDamage;
+  // Which view opens first; only the stories start on the confirmation
+  initialView?: 'choice' | 'confirm';
   onRebuild: () => void;
   onDismiss: () => void;
 };
@@ -31,7 +33,10 @@ export default class ChainDamageView extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  state: State = { view: 'choice', isStarted: false };
+  state: State = {
+    view: this.props.initialView ?? 'choice',
+    isStarted: false,
+  };
 
   showConfirmation = () => {
     this.setState({ view: 'confirm' });
