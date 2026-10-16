@@ -905,17 +905,28 @@ async fn holds_other_network_db(config: &WatchdogConfig, wstate: &state::Watchdo
     true
 }
 
+/// The chain directory Mithril installs into, when Mithril is configured.
+fn mithril_chain_path(config: &WatchdogConfig) -> Option<String> {
+    config.mithril.as_ref().map(|mc| mc.chain_path.clone())
+}
+
 /// Waits, while there is no chain to start the node on, for the user to choose
 /// between syncing from genesis (`start_node`) and a Mithril bootstrap
 /// (`start_mithril`). Settings changes meanwhile are saved and applied.
 /// Returns whether Mithril installed a database, or None, after emitting
 /// `stopped`, when the watchdog is to stop.
+///
+/// `rebuild` is true when the wait follows a rebuild that started deleting the
+/// chain and installed nothing. Until the chain directory changes, a Mithril
+/// bootstrap of it is then a rebuild too, so it deletes whatever a failed
+/// delete left instead of syncing it.
 async fn await_chain_choice(
     config: &mut WatchdogConfig,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     base_node_args: &[String],
     wstate: &mut state::WatchdogState,
     el_restart_tx: &Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
+    mut rebuild: bool,
 ) -> Option<bool> {
     loop {
         match cmd_rx.recv().await {
@@ -923,11 +934,17 @@ async fn await_chain_choice(
             Some(Cmd::StartMithril { wipe_chain, .. }) => {
                 if let Some(ref mc) = config.mithril {
                     use mithril::PipelineResult;
+                    let wipe_chain = wipe_chain || rebuild;
                     match mithril::run_pipeline(mc, cmd_rx, true, wipe_chain).await {
                         PipelineResult::Installed => return Some(true),
                         PipelineResult::Stopped => {
                             emit(&Event::Stopped);
                             return None;
+                        }
+                        PipelineResult::FailedAfterWipe => {
+                            rebuild = true;
+                            emit(&Event::ChainStatus { has_chain: false });
+                            continue;
                         }
                         PipelineResult::NotNeeded
                         | PipelineResult::Cancelled
@@ -958,12 +975,17 @@ async fn await_chain_choice(
                 );
             }
             Some(Cmd::SetChainPath { path }) => {
+                let before = mithril_chain_path(config);
                 wstate.chain_path = path;
                 info!("chain_path updated: {:?}", wstate.chain_path);
                 if let Err(e) = state::save(&config.node.state_dir, wstate).await {
                     warn!("Failed to save watchdog state: {e}");
                 }
                 state::apply_to_config(config, base_node_args, wstate);
+                // Another directory is not the one the rebuild deleted.
+                if mithril_chain_path(config) != before {
+                    rebuild = false;
+                }
             }
             Some(Cmd::SetNodeExtraArgs { args }) => {
                 wstate.node_extra_args = args;
@@ -1119,6 +1141,9 @@ pub async fn run(
     let mut crashes = CrashCounters::new(&config);
     // Set when a request held during a wait replaces starting the node again.
     let mut next: Option<RunResult> = None;
+    // Set when a rebuild started deleting the chain and installed nothing,
+    // for the wait for the user's choice that follows; see await_chain_choice.
+    let mut rebuild_chain = false;
     loop {
         if choose_chain {
             // Hold here until the UI sends start_node or start_mithril.
@@ -1128,6 +1153,7 @@ pub async fn run(
                 &base_node_args,
                 &mut wstate,
                 &el_restart_tx,
+                std::mem::take(&mut rebuild_chain),
             )
             .await
             {
@@ -1212,6 +1238,8 @@ pub async fn run(
             RunResult::StartMithril { force, wipe_chain } => {
                 if let Some(ref mc) = config.mithril {
                     use mithril::PipelineResult;
+                    // Set when a rebuild started deleting the chain and installed nothing.
+                    let mut wiped = false;
                     match mithril::run_pipeline(mc, &mut cmd_rx, force, wipe_chain).await {
                         PipelineResult::Installed => {
                             after_mithril = true;
@@ -1221,6 +1249,7 @@ pub async fn run(
                             // loop continues to restart node/wallet
                         }
                         PipelineResult::Stopped => break,
+                        PipelineResult::FailedAfterWipe => wiped = true,
                         PipelineResult::UserCancelled => {
                             // Wait for the user to choose a recovery action before
                             // restarting the node.
@@ -1238,6 +1267,10 @@ pub async fn run(
                                             }
                                             PipelineResult::NotNeeded
                                             | PipelineResult::Cancelled => break 'recovery,
+                                            PipelineResult::FailedAfterWipe => {
+                                                wiped = true;
+                                                break 'recovery;
+                                            }
                                             PipelineResult::UserCancelled
                                             | PipelineResult::Failed => continue 'recovery,
                                             PipelineResult::Stopped => {
@@ -1281,6 +1314,10 @@ pub async fn run(
                                                 after_mithril = true;
                                                 break 'failed_recovery;
                                             }
+                                            PipelineResult::FailedAfterWipe => {
+                                                wiped = true;
+                                                break 'failed_recovery;
+                                            }
                                             PipelineResult::NotNeeded
                                             | PipelineResult::Cancelled
                                             | PipelineResult::UserCancelled
@@ -1312,6 +1349,18 @@ pub async fn run(
                             }
                             // fall through to restart node/wallet after successful wipe+install
                         }
+                    }
+                    if wiped {
+                        // A node started now would sync from genesis without
+                        // asking. Report no chain and wait for the user's
+                        // choice, as on first run.
+                        warn!(
+                            "the rebuild started deleting the chain and installed nothing; \
+                             waiting for the user's choice instead of starting the node"
+                        );
+                        emit(&Event::ChainStatus { has_chain: false });
+                        choose_chain = true;
+                        rebuild_chain = true;
                     }
                 } else {
                     break;

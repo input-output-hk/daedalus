@@ -33,6 +33,12 @@ pub enum PipelineResult {
     /// but `install_staged` failed. Chain data may be partially modified; the node
     /// must not restart. Only wipe-and-full-sync can recover.
     Failed,
+    /// A rebuild (`wipe_chain`) started deleting the old chain and installed
+    /// nothing: the delete or a later step failed, was refused, or was
+    /// cancelled by the user. A node started now would sync from genesis
+    /// without asking, so the supervisor reports no chain and waits for the
+    /// user's choice, as on first run.
+    FailedAfterWipe,
     Stopped,
 }
 
@@ -853,8 +859,46 @@ pub async fn run_pipeline(
     // the old chain now, before the download, so the disk never has to hold
     // two full databases.
     if wipe_chain {
-        let _ = tokio::fs::remove_dir_all(&chain_path).await;
+        info!(
+            "mithril: deleting the old chain in {}",
+            chain_path.display()
+        );
+        match tokio::fs::remove_dir_all(&chain_path).await {
+            Ok(()) => {}
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+            Err(e) => {
+                warn!(
+                    "mithril: could not delete the old chain in {}: {e}",
+                    chain_path.display()
+                );
+                emit(&Event::MithrilError {
+                    code: "WIPE_FAILED".to_string(),
+                    message: format!(
+                        "Could not delete the blockchain data in {}: {e}",
+                        chain_path.display()
+                    ),
+                });
+                return PipelineResult::FailedAfterWipe;
+            }
+        }
     }
+
+    // From here on a rebuild has deleted the old chain. Its failures and
+    // cancels must not end in a node started on the empty directory.
+    let failed = || {
+        if wipe_chain {
+            PipelineResult::FailedAfterWipe
+        } else {
+            PipelineResult::Cancelled
+        }
+    };
+    let cancelled_by_user = || {
+        if wipe_chain {
+            PipelineResult::FailedAfterWipe
+        } else {
+            PipelineResult::UserCancelled
+        }
+    };
 
     // 2. Prepare staging
     let staging_root = PathBuf::from(&cfg.state_dir).join("mithril-partial-sync");
@@ -869,7 +913,7 @@ pub async fn run_pipeline(
             code: "STAGING_FAILED".to_string(),
             message: e.to_string(),
         });
-        return PipelineResult::Cancelled;
+        return failed();
     }
 
     // 3. Download — "downloading" status is emitted by run_download on first real progress event.
@@ -882,7 +926,7 @@ pub async fn run_pipeline(
                 code: "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED".to_string(),
                 message: msg,
             });
-            return PipelineResult::Cancelled;
+            return failed();
         }
         ProcResult::Cancelled => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
@@ -890,7 +934,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilStatus {
                 phase: "cancelled".to_string(),
             });
-            return PipelineResult::UserCancelled;
+            return cancelled_by_user();
         }
         ProcResult::Stopped => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
@@ -906,7 +950,7 @@ pub async fn run_pipeline(
             code: "PARTIAL_SYNC_STAGED_DB_INVALID".to_string(),
             message: e.to_string(),
         });
-        return PipelineResult::Cancelled;
+        return failed();
     }
 
     // 5. Convert
@@ -923,7 +967,7 @@ pub async fn run_pipeline(
                 code: "PARTIAL_SYNC_CONVERSION_FAILED".to_string(),
                 message: msg,
             });
-            return PipelineResult::Cancelled;
+            return failed();
         }
         ProcResult::Cancelled => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
@@ -931,7 +975,7 @@ pub async fn run_pipeline(
             emit(&Event::MithrilStatus {
                 phase: "cancelled".to_string(),
             });
-            return PipelineResult::UserCancelled;
+            return cancelled_by_user();
         }
         ProcResult::Stopped => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
@@ -962,7 +1006,7 @@ pub async fn run_pipeline(
                 emit(&Event::MithrilStatus {
                     phase: "cancelled".to_string(),
                 });
-                PipelineResult::UserCancelled
+                cancelled_by_user()
             }
             ProcResult::Stopped => PipelineResult::Stopped,
             _ => unreachable!(),
@@ -980,7 +1024,7 @@ pub async fn run_pipeline(
         || (!is_partial && !full_install_allowed(&chain_path).await)
     {
         let _ = tokio::fs::remove_dir_all(&staging_root).await;
-        return PipelineResult::Cancelled;
+        return failed();
     }
 
     // Write cutover-in-progress marker before rename
@@ -991,7 +1035,7 @@ pub async fn run_pipeline(
             code: "MARKER_FAILED".to_string(),
             message: e.to_string(),
         });
-        return PipelineResult::Cancelled;
+        return failed();
     }
 
     if let Err(e) = install_staged(&staging_db, &chain_path, is_partial).await {

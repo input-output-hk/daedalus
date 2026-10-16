@@ -162,7 +162,7 @@
           "id": "task-006",
           "title": "No silent genesis sync after a failed rebuild",
           "description": "When the pipeline fails or is cancelled after the wipe, report chain_status { has_chain: false } and wait in the no-chain state instead of restarting the node on an empty directory.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 4.0,
           "dependencies": [
