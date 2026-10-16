@@ -96,6 +96,8 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onLaunchDapp: async (url, walletId, localName) => {
     action('onLaunchDapp')({ url, walletId, localName });
   },
+  chainDamage: null,
+  onRebuildChain: action('onRebuildChain'),
 };
 
 type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;

@@ -73,6 +73,8 @@ const defaultProps = {
   consoleCaptureEnabled: false,
   onConsoleCaptureChange: jest.fn(),
   onLaunchDapp: jest.fn(() => Promise.resolve()),
+  chainDamage: null,
+  onRebuildChain: jest.fn(),
 };
 
 const renderComponent = (overrides = {}) =>

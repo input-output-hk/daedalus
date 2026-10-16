@@ -12,6 +12,7 @@ import SVGInline from 'react-svg-inline';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+import ChainDataSection from './ChainDataSection';
 import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
@@ -19,6 +20,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { formatDiagnosticsText } from '../../utils/formatDiagnosticsText';
 import type { DiagnosticsTextSection } from '../../utils/formatDiagnosticsText';
+import type { ChainDamage } from '../../../../common/types/watchdog.types';
 import { getSupportUrl } from '../../../../common/utils/reporting';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -532,6 +534,8 @@ type Props = {
     walletId: string,
     localName: string
   ) => Promise<void>;
+  chainDamage: ChainDamage | null;
+  onRebuildChain: () => void;
 };
 type State = {
   isNodeRestarting: boolean;
@@ -691,6 +695,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isMithrilAtOrPastSnapshot,
       mithrilBehindByEpochs,
       onStartMithrilPartialSync,
+      chainDamage,
+      onRebuildChain,
     } = this.props;
     const {
       platform,
@@ -1044,6 +1050,12 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 behindByEpochs={mithrilBehindByEpochs}
                 onRestoreFocus={this.restoreDialogCloseOnEscKey}
                 onStartMithrilPartialSync={onStartMithrilPartialSync}
+              />
+              <ChainDataSection
+                chainDamage={chainDamage}
+                isActionBlocked={isMithrilPartialSyncWorking}
+                onRestoreFocus={this.restoreDialogCloseOnEscKey}
+                onRebuildChain={onRebuildChain}
               />
             </div>
             {global.cip30Enabled && this.props.diagnosticsAvailable && (
