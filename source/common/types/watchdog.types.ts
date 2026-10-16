@@ -108,6 +108,7 @@ export type LoadingPhase =
   | 'chain-storage-setup'
   | 'bootstrap-decision'
   | 'mithril-syncing'
+  | 'chain-damaged'
   | 'node-starting'
   | 'ready'
   | 'error'

@@ -1,5 +1,6 @@
 import { action, computed, observable, reaction, runInAction } from 'mobx';
 import Store from './lib/Store';
+import { logger } from '../utils/logging';
 import { getCachedBackendStatusChannel } from '../ipc/backendStatusChannel';
 import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
 import {
@@ -22,6 +23,7 @@ import type {
   MithrilProgress,
   ChainStorageValidation,
   BackendStopProgress,
+  ChainDamage,
   RequestedRestart,
 } from '../../../common/types/watchdog.types';
 
@@ -54,6 +56,8 @@ export default class BackendStore extends Store {
   @observable lastError: string | null = null;
   // The code of the Mithril error that set lastError, e.g. PROBE_FAILED
   @observable lastErrorCode: string | null = null;
+  // The last hole in the chain database the watchdog detected
+  @observable chainDamage: ChainDamage | null = null;
   @observable walletUnrecoverable = false;
   @observable nodeUnrecoverable = false;
   @observable nodeSocketWaitMs: number | null = null;
@@ -66,6 +70,8 @@ export default class BackendStore extends Store {
     latestCertifiedImmutable: number;
   } | null = null;
   @observable _mithrilPromptDismissed = false;
+  // Set by "Not now" on the chain-damaged screen; lasts until the app restarts
+  @observable _chainDamageDismissed = false;
   @observable _probeHasFired = false;
   // Daedalus is quitting
   @observable isStopping = false;
@@ -151,6 +157,7 @@ export default class BackendStore extends Store {
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
         this.lastErrorCode = state.lastErrorCode ?? null;
+        this.chainDamage = state.chainDamage ?? null;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;
@@ -264,12 +271,31 @@ export default class BackendStore extends Store {
     return this._mithrilPromptDismissed;
   }
 
+  // A Mithril pipeline is running, or has failed and shows its error
+  @computed
+  get _mithrilActive(): boolean {
+    return (
+      this.mithrilPhase !== null &&
+      this.mithrilPhase !== 'completed' &&
+      this.mithrilPhase !== 'cancelled'
+    );
+  }
+
   @computed
   get loadingPhase(): LoadingPhase {
     // Daedalus is quitting: the backend is being stopped, whatever state it
     // was in before
     if (this.isStopping) {
       return 'stopping';
+    }
+    // The chain database has a hole: offer the rebuild before anything else,
+    // including a ready wallet. A running Mithril pipeline keeps the screen.
+    if (
+      this.chainDamage !== null &&
+      !this._chainDamageDismissed &&
+      !this._mithrilActive
+    ) {
+      return 'chain-damaged';
     }
     // Unrecoverable error takes top priority
     if (this.walletUnrecoverable || this.nodeUnrecoverable) {
@@ -295,11 +321,7 @@ export default class BackendStore extends Store {
         : 'chain-storage-setup';
     }
     // Mithril sync is in progress (phase non-null, not yet completed or cancelled)
-    if (
-      this.mithrilPhase !== null &&
-      this.mithrilPhase !== 'completed' &&
-      this.mithrilPhase !== 'cancelled'
-    ) {
+    if (this._mithrilActive) {
       return 'mithril-syncing';
     }
     // Wallet not yet ready
@@ -319,6 +341,26 @@ export default class BackendStore extends Store {
   @action
   startMithrilForce = () => {
     mithrilCommandChannel.send({ cmd: 'start_mithril', force: true });
+  };
+
+  // Deletes the chain database and downloads a verified copy with Mithril.
+  // The rebuild targets the chain location already in use, so that location
+  // counts as confirmed: if the rebuild fails and the watchdog reports no
+  // chain, the bootstrap decision follows without the location picker.
+  @action
+  rebuildChain = () => {
+    logger.info('BackendStore: rebuilding the chain database', {
+      chainDamage: this.chainDamage,
+    });
+    this.chainPathConfirmed = true;
+    mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
+  };
+
+  // "Not now" on the chain-damaged screen; the screen stays hidden until the
+  // app restarts, and Diagnostics keeps the detection
+  @action
+  dismissChainDamage = () => {
+    this._chainDamageDismissed = true;
   };
 
   @action
