@@ -67,6 +67,9 @@ export default class BackendStore extends Store {
   @observable rebuildPending = false;
   // The last hole in the chain database the watchdog detected
   @observable chainDamage: ChainDamage | null = null;
+  // The last detection of the session, which Diagnostics shows; it outlives
+  // chainDamage and clears only when a rebuild completes
+  @observable lastChainDamage: ChainDamage | null = null;
   @observable walletUnrecoverable = false;
   @observable nodeUnrecoverable = false;
   @observable nodeSocketWaitMs: number | null = null;
@@ -180,6 +183,7 @@ export default class BackendStore extends Store {
         this.lastErrorRebuild = state.lastErrorRebuild ?? false;
         this.rebuildPending = state.rebuildPending ?? false;
         this.chainDamage = state.chainDamage ?? null;
+        this.lastChainDamage = state.lastChainDamage ?? null;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;

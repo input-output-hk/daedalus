@@ -222,6 +222,31 @@ describe('BackendStore chain damage', () => {
     expect(store.chainDamage).toEqual(damage);
   });
 
+  it('keeps lastChainDamage from the poll after chainDamage is cleared', async () => {
+    const store = makeStore();
+    const state = {
+      hasChain: true,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      chainDamage: damage,
+      lastChainDamage: damage,
+    };
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      state
+    );
+    await store._pollBackendStatus();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      ...state,
+      chainDamage: null,
+    });
+    await store._pollBackendStatus();
+    expect(store.chainDamage).toBeNull();
+    expect(store.lastChainDamage).toEqual(damage);
+  });
+
   it('sends start_mithril with wipe_chain and no force from rebuildChain', () => {
     const store = makeStore();
     store.rebuildChain();

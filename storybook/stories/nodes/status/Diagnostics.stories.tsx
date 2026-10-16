@@ -122,6 +122,7 @@ function AutoOpenedPartialSyncConfirmation() {
     <div ref={containerRef}>
       <MithrilPartialSyncSection
         isActionBlocked={false}
+        isBlockedByChainDamage={false}
         isMithrilPartialSyncWorking={false}
         isSignificantlyBehind
         isProbeFailed={false}

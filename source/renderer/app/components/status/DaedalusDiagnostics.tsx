@@ -13,7 +13,10 @@ import SVGInline from 'react-svg-inline';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
-import ChainDataSection from './ChainDataSection';
+import ChainDataSection, {
+  formatChainDataStatus,
+  messages as chainDataMessages,
+} from './ChainDataSection';
 import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
@@ -959,6 +962,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('cardanoNodeInSync', isNodeInSync)}
               <MithrilPartialSyncSection
                 isActionBlocked={isMithrilPartialSyncWorking}
+                isBlockedByChainDamage={chainDamage != null}
                 isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
                 isSignificantlyBehind={isMithrilSignificantlyBehind}
                 isProbeFailed={isMithrilProbeFailed}
@@ -1008,6 +1012,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       localTip,
       networkTip,
       nodeConnectionError,
+      chainDamage,
     } = this.props;
     const { formatMessage } = intl;
     const onOff = (value: boolean) =>
@@ -1153,6 +1158,10 @@ class DaedalusDiagnostics extends Component<Props, State> {
           row('cardanoNodeTimeCorrect', onOff(isNodeTimeCorrect)),
           row('cardanoNodeSyncing', onOff(isNodeSyncing)),
           row('cardanoNodeInSync', onOff(isNodeInSync)),
+          {
+            label: formatMessage(chainDataMessages.sectionLabel),
+            value: formatChainDataStatus(intl, chainDamage),
+          },
         ],
       },
     ];
