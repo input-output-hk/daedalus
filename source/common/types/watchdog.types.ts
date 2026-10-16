@@ -23,6 +23,15 @@ export interface WatchdogState {
   // The last hole in the chain database the watchdog detected; cleared when a
   // node starts or a Mithril sync begins
   chainDamage: ChainDamage | null;
+  // The last detection of the session, which Diagnostics shows; unlike
+  // chainDamage it survives a node start and clears only when a rebuild
+  // completes
+  lastChainDamage: ChainDamage | null;
+  // True when lastError came from a rebuild, so Retry repeats the rebuild
+  lastErrorRebuild: boolean;
+  // True when a rebuild was confirmed and has not finished, e.g. the app was
+  // closed after the chain data was deleted
+  rebuildPending: boolean;
   walletUnrecoverable: boolean;
   nodeSocketWaitMs: number | null;
   walletReadyWaitMs: number | null;
