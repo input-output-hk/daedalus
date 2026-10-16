@@ -339,7 +339,7 @@
           "id": "task-013",
           "title": "Copy and translations",
           "description": "Add en-US messages with the !!! prefix, run yarn i18n:manage, and add reviewed ja-JP translations for every new message.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3.0,
           "dependencies": [
