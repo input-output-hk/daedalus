@@ -150,8 +150,17 @@ storiesOf('Nodes / Diagnostic', module)
       mithrilBehindByEpochs={undefined}
     />
   ))
-  .add('Partial Sync Confirmation', () => (
-    <AutoOpenedPartialSyncConfirmation />
+  .add('Partial Sync Confirmation', () => <AutoOpenedPartialSyncConfirmation />)
+  .add('Chain Damage Detected', () => (
+    <DaedalusDiagnostics
+      {...baseProps}
+      chainDamage={{
+        kind: 'wallet_chain_discontinuity',
+        slot: 200102408,
+        lastGoodSlot: 200080892,
+        detectedAt: '2026-10-16T12:00:00.000Z',
+      }}
+    />
   ));
 
 storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)

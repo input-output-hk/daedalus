@@ -361,7 +361,7 @@
           "id": "task-014",
           "title": "Storybook stories",
           "description": "Add stories for each kind, the confirm view, and the error view for each code in FR14.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 2.0,
           "dependencies": [

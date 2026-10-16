@@ -50,4 +50,53 @@ storiesOf('Loading / Mithril / Error', module)
       onWipeRetry={() => bootstrapActions.onWipeRetry()}
       onDecline={() => bootstrapActions.onDecline()}
     />
+  ))
+  .add('Probe Failed', () => (
+    <MithrilErrorView
+      error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      onWipeRetry={() => bootstrapActions.onWipeRetry()}
+      onDecline={() => bootstrapActions.onDecline()}
+    />
+  ))
+  .add('Invalid Chain Path', () => (
+    <MithrilErrorView
+      error={{
+        code: 'INVALID_CHAIN_PATH',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      onWipeRetry={() => bootstrapActions.onWipeRetry()}
+      onDecline={() => bootstrapActions.onDecline()}
+    />
+  ))
+  .add('Chain Dir Not Replaceable', () => (
+    <MithrilErrorView
+      error={{
+        code: 'CHAIN_DIR_NOT_REPLACEABLE',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      onWipeRetry={() => bootstrapActions.onWipeRetry()}
+      onDecline={() => bootstrapActions.onDecline()}
+    />
+  ))
+  .add('Chain Dir Other Network', () => (
+    <MithrilErrorView
+      error={{
+        code: 'CHAIN_DIR_OTHER_NETWORK',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      onWipeRetry={() => bootstrapActions.onWipeRetry()}
+      onDecline={() => bootstrapActions.onDecline()}
+    />
+  ))
+  .add('Wipe Failed', () => (
+    <MithrilErrorView
+      error={{ code: 'WIPE_FAILED', message: 'detail from the watchdog' }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      onWipeRetry={() => bootstrapActions.onWipeRetry()}
+      onDecline={() => bootstrapActions.onDecline()}
+    />
   ));
