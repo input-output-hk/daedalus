@@ -6,9 +6,10 @@
 // Run with:
 //   cargo test --test integration
 //
-// These are intentionally excluded from the nix build because they spawn real
-// OS processes and require a pre-built watchdog binary.  The mock binaries
-// use raw fd 3 for the shutdown pipe, so the tests are Unix-only.
+// The nix `watchdog-test` check runs them: perSystem/watchdog.nix includes
+// this directory in the source and cargo builds the watchdog and mock binaries
+// before the tests spawn them.  The mock binaries use raw fd 3 for the
+// shutdown pipe, so the tests are Unix-only.
 #![cfg(unix)]
 
 use serde_json::{Value, json};
