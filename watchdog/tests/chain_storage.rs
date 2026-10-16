@@ -336,6 +336,8 @@ fn bootstrap_refuses_a_chain_directory_with_unrelated_files() {
 
     let err = expect(&rx, "mithril_error");
     assert_eq!(err["code"], "CHAIN_DIR_NOT_REPLACEABLE");
+    // A first-run bootstrap is not a rebuild.
+    assert_eq!(err["rebuild"], false, "{err}");
     assert!(
         err["message"].as_str().unwrap().contains("photo.jpg"),
         "{err}"
@@ -833,6 +835,7 @@ fn rebuild_refuses_a_chain_directory_with_unrelated_files_and_deletes_nothing() 
 
     let err = expect(&rx, "mithril_error");
     assert_eq!(err["code"], "CHAIN_DIR_NOT_REPLACEABLE");
+    assert_eq!(err["rebuild"], true, "{err}");
     assert!(
         err["message"].as_str().unwrap().contains("photo.jpg"),
         "{err}"
@@ -866,7 +869,9 @@ fn rebuild_refuses_a_relative_chain_path() {
         json!({"cmd": "start_mithril", "wipe_chain": true}),
     );
 
-    assert_eq!(expect(&rx, "mithril_error")["code"], "INVALID_CHAIN_PATH");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "INVALID_CHAIN_PATH");
+    assert_eq!(err["rebuild"], true, "{err}");
     expect(&rx, "node_started");
     assert!(!mithril_args.exists(), "a download was started");
     assert_eq!(tree(&db), before);
