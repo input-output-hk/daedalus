@@ -102,6 +102,23 @@ describe('ChainDamageView', () => {
     expect(onRebuild).toHaveBeenCalledTimes(1);
   });
 
+  it('enables the buttons again when sending the rebuild fails', () => {
+    const onRebuild = jest.fn(() => {
+      throw new Error('send failed');
+    });
+    renderView(damage(), { onRebuild });
+    // React rethrows an event handler error to the window.
+    const ignoreError = (event: ErrorEvent) => event.preventDefault();
+    window.addEventListener('error', ignoreError);
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    clickButton('Rebuild blockchain data');
+    clickButton('Rebuild');
+    window.removeEventListener('error', ignoreError);
+    expect(screen.getByRole('button', { name: 'Rebuild' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled();
+    jest.restoreAllMocks();
+  });
+
   it('dismisses from Not now without rebuilding', () => {
     const { onRebuild, onDismiss } = renderView();
     clickButton('Not now');

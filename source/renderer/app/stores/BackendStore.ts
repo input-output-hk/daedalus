@@ -349,11 +349,14 @@ export default class BackendStore extends Store {
   // chain, the bootstrap decision follows without the location picker.
   @action
   rebuildChain = () => {
-    logger.info('BackendStore: rebuilding the chain database', {
-      chainDamage: this.chainDamage,
-    });
     this.chainPathConfirmed = true;
     mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
+    // The logger sends its arguments over IPC, which cannot clone a MobX
+    // observable, so only plain values go in.
+    logger.info('BackendStore: rebuilding the chain database', {
+      kind: this.chainDamage?.kind ?? null,
+      slot: this.chainDamage?.slot ?? null,
+    });
   };
 
   // "Not now" on the chain-damaged screen; the screen stays hidden until the
