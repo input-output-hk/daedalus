@@ -1063,6 +1063,61 @@ fn chain_damage_signatures_are_read_from_their_own_process() {
     assert!(events.is_empty(), "{events:?}");
 }
 
+/// cardano-node writes the missing ledger point error without a newline and
+/// then hangs before the ledger database is open. The event arrives while the
+/// node is still running, and when the rest of the line arrives it is logged
+/// once, whole, and reported no more.
+#[test]
+fn chain_damage_from_an_unterminated_line_while_the_node_hangs() {
+    let dir = TempDir::new("damage-unterminated");
+    dir.populate_chain();
+    let cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET);
+    let finish = PathBuf::from(format!("{}.finish", cfg.socket_path.display()));
+    let (cfg, _port) = cfg.build();
+    let line = fixture("node_ledger_point_missing.txt");
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_UNTERMINATED_LINE", line.as_str())]);
+
+    expect(&rx, "node_started");
+    let damage = loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .expect("no chain_damage while the node hangs");
+        assert_ne!(v["event"], "node_exited", "{v}");
+        if v["event"] == "chain_damage" {
+            break v;
+        }
+    };
+    assert_eq!(damage["kind"], "ledger_point_missing");
+    assert_eq!(damage["slot"], 200_102_375u64);
+
+    std::fs::write(&finish, b"").unwrap();
+    let node_log = dir.path().join("logs").join("node.log");
+    let deadline = std::time::Instant::now() + Duration::from_secs(15);
+    loop {
+        let log = std::fs::read_to_string(&node_log).unwrap_or_default();
+        if log.contains("open ledgerdbNode configuration: NodeConfiguration {...}\n") {
+            assert_eq!(
+                log.matches("Critical invariant violation").count(),
+                1,
+                "{log}"
+            );
+            break;
+        }
+        assert!(
+            std::time::Instant::now() < deadline,
+            "the line was not logged: {log}"
+        );
+        std::thread::sleep(Duration::from_millis(50));
+    }
+    expect_none_of(&rx, &["chain_damage", "node_exited"], 1000);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── Tests: non-UTF-8 child output ─────────────────────────────────────────────
 
 /// Poll until the mock has recorded `done`, then return its write results.
