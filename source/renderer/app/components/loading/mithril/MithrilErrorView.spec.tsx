@@ -11,11 +11,14 @@ import { themeOverrides } from '../../../themes/overrides';
 
 import MithrilErrorView from './MithrilErrorView';
 
-const renderView = (error: {
-  code?: string;
-  stage?: string;
-  message: string;
-}) =>
+const renderView = (
+  error: {
+    code?: string;
+    stage?: string;
+    message: string;
+  },
+  extraProps: { chainRemoved?: boolean } = {}
+) =>
   render(
     <ThemeProvider
       theme={daedalusTheme}
@@ -24,13 +27,25 @@ const renderView = (error: {
       themeOverrides={themeOverrides}
     >
       <IntlProvider locale="en-US" messages={translations}>
-        <MithrilErrorView error={error as any} actions={[]} />
+        <MithrilErrorView error={error as any} actions={[]} {...extraProps} />
       </IntlProvider>
     </ThemeProvider>
   );
 
 describe('MithrilErrorView', () => {
   afterEach(cleanup);
+
+  it('says the old blockchain data was removed after a failed rebuild', () => {
+    renderView(
+      { code: 'DOWNLOAD_FAILED', stage: 'download', message: 'x' },
+      { chainRemoved: true }
+    );
+    expect(
+      screen.getByText(
+        'The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.'
+      )
+    ).toBeInTheDocument();
+  });
 
   it.each([
     [
@@ -48,6 +63,10 @@ describe('MithrilErrorView', () => {
     [
       'CHAIN_DIR_OTHER_NETWORK',
       'The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again.',
+    ],
+    [
+      'INSUFFICIENT_SPACE',
+      'There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry.',
     ],
     [
       'WIPE_FAILED',

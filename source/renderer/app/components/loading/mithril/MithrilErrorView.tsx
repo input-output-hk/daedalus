@@ -71,6 +71,7 @@ const ERROR_HINT_BY_CODE: Record<string, keyof typeof messages> = {
   CHAIN_DIR_NOT_REPLACEABLE: 'errorChainDirNotReplaceableHint',
   CHAIN_DIR_OTHER_NETWORK: 'errorChainDirOtherNetworkHint',
   WIPE_FAILED: 'errorWipeFailedHint',
+  INSUFFICIENT_SPACE: 'errorInsufficientSpaceHint',
 };
 
 const getLogPathHref = (logPath: string) => {
