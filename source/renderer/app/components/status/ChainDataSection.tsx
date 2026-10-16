@@ -3,13 +3,14 @@ import classNames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 
 import globalMessages from '../../i18n/global-messages';
+import type { Intl } from '../../types/i18nTypes';
 import type { ChainDamage } from '../../../../common/types/watchdog.types';
 import chainDamageMessages from '../loading/chain-damage/ChainDamage.messages';
 import Dialog from '../widgets/Dialog';
 import DialogBackButton from '../widgets/DialogBackButton';
 import styles from './DaedalusDiagnostics.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   sectionLabel: {
     id: 'daedalus.diagnostics.dialog.chainDataSectionLabel',
     defaultMessage: '!!!Blockchain data',
@@ -48,6 +49,24 @@ const messages = defineMessages({
   },
 });
 
+// The status line of the Blockchain data row, for the dialog and for the
+// copied diagnostics text
+export const formatChainDataStatus = (
+  intl: Intl,
+  chainDamage: ChainDamage | null
+): string => {
+  if (chainDamage == null) {
+    return intl.formatMessage(messages.statusOk);
+  }
+  const time = new Date(chainDamage.detectedAt).toLocaleString(intl.locale);
+  return chainDamage.slot == null
+    ? intl.formatMessage(messages.statusDamageNoSlot, { time })
+    : intl.formatMessage(messages.statusDamage, {
+        slot: chainDamage.slot,
+        time,
+      });
+};
+
 type Props = {
   chainDamage: ChainDamage | null;
   isActionBlocked: boolean;
@@ -84,21 +103,6 @@ export default class ChainDataSection extends Component<Props, State> {
     this.props.onRebuildChain();
     this.hideConfirmation();
   };
-
-  renderStatus() {
-    const { chainDamage } = this.props;
-    const { intl } = this.context;
-    if (chainDamage == null) {
-      return intl.formatMessage(messages.statusOk);
-    }
-    const time = new Date(chainDamage.detectedAt).toLocaleString(intl.locale);
-    return chainDamage.slot == null
-      ? intl.formatMessage(messages.statusDamageNoSlot, { time })
-      : intl.formatMessage(messages.statusDamage, {
-          slot: chainDamage.slot,
-          time,
-        });
-  }
 
   render() {
     const { isActionBlocked } = this.props;
@@ -155,7 +159,7 @@ export default class ChainDataSection extends Component<Props, State> {
                 this.props.chainDamage != null && styles.chainDataDamaged
               )}
             >
-              {this.renderStatus()}
+              {formatChainDataStatus(intl, this.props.chainDamage)}
             </div>
             <button
               className={styles.mithrilPartialSyncButton}

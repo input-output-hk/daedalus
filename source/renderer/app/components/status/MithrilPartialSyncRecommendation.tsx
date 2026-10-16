@@ -46,6 +46,13 @@ const messages = defineMessages({
     description:
       'Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active',
   },
+  buttonHintChainDamage: {
+    id: 'daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintChainDamage',
+    defaultMessage:
+      '!!!Unavailable while damaged blockchain data is detected. Use Rebuild blockchain data instead.',
+    description:
+      'Hint text beneath the disabled Mithril partial sync diagnostics button while damage to the blockchain data is detected and the rebuild is the repair',
+  },
 });
 
 export type MithrilAvailabilityVariant =
@@ -56,6 +63,7 @@ export type MithrilAvailabilityVariant =
 
 type Props = {
   isActionBlocked: boolean;
+  isBlockedByChainDamage: boolean;
   variant: MithrilAvailabilityVariant;
   onShowConfirmation: () => void;
 };
@@ -66,7 +74,13 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
   };
 
   render() {
-    const { isActionBlocked, variant, onShowConfirmation } = this.props;
+    const {
+      isActionBlocked,
+      isBlockedByChainDamage,
+      variant,
+      onShowConfirmation,
+    } = this.props;
+    const isDisabled = isActionBlocked || isBlockedByChainDamage;
     const { intl } = this.context;
 
     let tooltipMessage = messages.recommendation;
@@ -93,16 +107,20 @@ export default class MithrilPartialSyncRecommendation extends Component<Props> {
           >
             <button
               className={styles.mithrilPartialSyncButton}
-              disabled={isActionBlocked}
+              disabled={isDisabled}
               onClick={onShowConfirmation}
               type="button"
             >
               {intl.formatMessage(messages.buttonLabel)}
             </button>
           </PopOver>
-          {isActionBlocked && (
+          {isDisabled && (
             <div className={styles.mithrilPartialSyncHint}>
-              {intl.formatMessage(messages.buttonHintBlocked)}
+              {intl.formatMessage(
+                isActionBlocked
+                  ? messages.buttonHintBlocked
+                  : messages.buttonHintChainDamage
+              )}
             </div>
           )}
         </div>
