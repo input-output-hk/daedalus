@@ -123,6 +123,21 @@ impl ChainDamageDetector {
         }
     }
 
+    /// Inspect output the process has left without a newline for a while.
+    /// cardano-node writes the missing ledger point error that way and then
+    /// hangs, so the complete line would arrive only when the node exits. Each
+    /// node signature carries its evidence before the text that identifies
+    /// it, so a partial line that matches holds all of it. The wallet's slots
+    /// follow its identifying text, and it writes whole lines, so a wallet
+    /// detector waits for the newline. A kind reported here is not reported
+    /// again when the rest of the line arrives.
+    pub fn observe_partial(&mut self, line: &str) -> Option<Detection> {
+        match self.source {
+            Source::Node => self.observe_node(line),
+            Source::Wallet => None,
+        }
+    }
+
     fn observe_node(&mut self, line: &str) -> Option<Detection> {
         if !self.block_rejected_reported && line.contains(BAD_INPUTS) {
             return self.observe_rejected_block(line);
@@ -425,6 +440,53 @@ Node configuration: NodeConfiguration {{...}}\n"
         let mut d = ChainDamageDetector::node();
         assert!(d.observe(&invariant_line(200_102_375)).is_some());
         assert_eq!(d.observe(&invariant_line(200_102_375)), None);
+    }
+
+    #[test]
+    fn unterminated_missing_ledger_point_is_reported_once() {
+        let mut d = ChainDamageDetector::node();
+        let line = invariant_line(200_102_375);
+        let end = line.find("Node configuration").unwrap();
+        assert_eq!(
+            d.observe_partial(&line[..end]).map(|x| x.slot),
+            Some(Some(200_102_375))
+        );
+        assert_eq!(d.observe(&line), None);
+    }
+
+    #[test]
+    fn partial_line_cut_before_the_signature_reports_nothing() {
+        let mut d = ChainDamageDetector::node();
+        let line = invariant_line(200_102_375);
+        let end = line.find("that was in immutable db").unwrap();
+        assert_eq!(d.observe_partial(&line[..end]), None);
+        assert_eq!(d.observe(&line).map(|x| x.slot), Some(Some(200_102_375)));
+    }
+
+    #[test]
+    fn partial_rejection_is_not_counted_twice() {
+        let mut d = ChainDamageDetector::node();
+        let first = exception_line(200_361_988, "192.0.2.1:3001", 1);
+        assert_eq!(d.observe_partial(first.trim_end()), None);
+        assert_eq!(d.observe(&first), None);
+        assert_eq!(
+            d.observe(&exception_line(200_361_988, "192.0.2.2:3001", 1)),
+            None
+        );
+        assert_eq!(
+            d.observe(&exception_line(200_361_988, "192.0.2.3:3001", 1)),
+            Some(rejected_block(200_361_988))
+        );
+    }
+
+    #[test]
+    fn partial_wallet_line_waits_for_the_newline() {
+        let mut d = ChainDamageDetector::wallet();
+        assert_eq!(d.observe_partial(DISCONTINUITY.trim_end()), None);
+        assert_eq!(
+            d.observe(DISCONTINUITY).map(|x| (x.slot, x.last_good_slot)),
+            Some((Some(200_102_408), Some(200_080_892)))
+        );
     }
 
     #[test]

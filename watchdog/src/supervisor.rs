@@ -618,9 +618,18 @@ const TRACE_HOSTNAME: &str = "daedalus";
 /// as it fills, so a child that never writes a newline cannot grow the buffer.
 const MAX_LOG_LINE_BYTES: u64 = 1024 * 1024;
 
+/// How long a child may leave a line without its newline before `damage`
+/// reads what has arrived. cardano-node writes the missing ledger point error
+/// without a newline and then hangs, so the line would otherwise reach the
+/// detector only when the node exits.
+const PARTIAL_LINE_WAIT: Duration = Duration::from_millis(500);
+
 /// Copy a child's output pipe into `log`, feeding startup and sync-progress
 /// parsers when `parse_sync_progress` is set, and every line to `damage` when
-/// one is given. Output is decoded lossily, so
+/// one is given. A line the child leaves unterminated for PARTIAL_LINE_WAIT is
+/// also shown to `damage` as it stands; the bytes stay in the buffer, so the
+/// line is still logged once, whole, when its newline or the end of the
+/// output arrives. Output is decoded lossily, so
 /// bytes that are not valid UTF-8 (a Windows user name in the active code page,
 /// for instance) are logged with replacement characters and reading continues:
 /// stopping would close the pipe and make the child's next write fail.
@@ -635,16 +644,38 @@ async fn pipe_to_log(
     let mut raw: Vec<u8> = Vec::new();
     loop {
         raw.clear();
-        match (&mut buf)
-            .take(MAX_LOG_LINE_BYTES)
-            .read_until(b'\n', &mut raw)
-            .await
-        {
-            Ok(0) => break,
+        // How much of `raw` the detector has already seen as a partial line.
+        let mut partial_seen = 0;
+        // read_until is cancel safe: bytes read before the timeout stay in
+        // `raw`, and the next call appends to them.
+        let read = loop {
+            let mut limited = (&mut buf).take(MAX_LOG_LINE_BYTES - raw.len() as u64);
+            let next = limited.read_until(b'\n', &mut raw);
+            match timeout(PARTIAL_LINE_WAIT, next).await {
+                Ok(read) => break read,
+                Err(_) if raw.len() > partial_seen => {
+                    partial_seen = raw.len();
+                    if let Some(ref detector) = damage {
+                        let line = String::from_utf8_lossy(&raw);
+                        let detection = detector
+                            .lock()
+                            .ok()
+                            .and_then(|mut d| d.observe_partial(&line));
+                        if let Some(detection) = detection {
+                            detection.report();
+                        }
+                    }
+                }
+                Err(_) => {}
+            }
+        };
+        match read {
             Err(e) => {
                 warn!("child output pipe read failed; no longer logging it: {e}");
                 break;
             }
+            // End of output, with nothing left over from an unterminated line.
+            Ok(_) if raw.is_empty() => break,
             Ok(_) => {
                 let line = String::from_utf8_lossy(&raw);
                 if parse_sync_progress {
@@ -2302,6 +2333,39 @@ mod tests {
     async fn pipe_to_log_logs_final_line_without_newline() {
         let out = piped_log("no-newline", b"one\ntwo".to_vec()).await;
         assert_eq!(out, b"one\ntwo");
+    }
+
+    #[tokio::test]
+    async fn pipe_to_log_detects_an_unterminated_line_and_logs_it_once() {
+        use tokio::io::AsyncWriteExt;
+        const LINE: &str = "cardano-node.exe: Critical invariant violation: block Point (At (Block \
+{blockPointSlot = SlotNo 200102375, blockPointHash = <redacted>})) that was in immutable db is gone \
+before we could open ledgerdb";
+        let dir = std::env::temp_dir().join(format!("wdg-unit-partial-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("out.log");
+        let detector: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::node()));
+        let (mut child_end, our_end) = tokio::io::duplex(64 * 1024);
+        let reader = tokio::spawn(pipe_to_log(
+            our_end,
+            open_log(path.to_str().unwrap()),
+            false,
+            None,
+            Some(Arc::clone(&detector)),
+        ));
+
+        child_end.write_all(LINE.as_bytes()).await.unwrap();
+        sleep(PARTIAL_LINE_WAIT * 4).await;
+        // The detector has reported the line, so it does not report it again.
+        assert_eq!(detector.lock().unwrap().observe(LINE), None);
+        assert_eq!(std::fs::read(&path).unwrap_or_default(), b"");
+
+        child_end.write_all(b"Node configuration\n").await.unwrap();
+        drop(child_end);
+        reader.await.unwrap();
+        let out = std::fs::read_to_string(&path).unwrap();
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(out, format!("{LINE}Node configuration\n"));
     }
 
     #[tokio::test]
