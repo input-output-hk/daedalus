@@ -92,7 +92,6 @@ pub enum ChainDamageKind {
     /// the ImmutableDB.
     LedgerPointMissing,
     /// The wallet is given a chain that does not continue from its checkpoint.
-    #[allow(dead_code)]
     WalletChainDiscontinuity,
 }
 

@@ -1,10 +1,14 @@
 //! Recognises the log signatures of a hole in the chain database.
 //!
+//! The wallet reports it a third way, when the chain it is given skips blocks.
+//!
 //! The node reports the damage in two ways: it rejects a canonical block with
 //! `BadInputsUTxO` from every peer that serves it, or it cannot open its ledger
 //! because the ledger point is missing from the ImmutableDB. A detector is
-//! created per node process and sees every line the process writes, so the
-//! checks are plain substring tests and only a matching line is parsed.
+//! created per node or wallet process and sees every line the process writes,
+//! so the checks are plain substring tests and only a matching line is parsed.
+//! A node detector looks only for the node signatures and a wallet detector
+//! only for the wallet one.
 
 use std::borrow::Cow;
 use std::sync::{Arc, Mutex};
@@ -27,6 +31,9 @@ const REMOTE_ADDRESS: &str = "remoteAddress = ";
 const INVARIANT_VIOLATION: &str = "Critical invariant violation";
 const POINT_GONE: &str = "that was in immutable db is gone before we could open ledgerdb";
 const BLOCK_POINT_SLOT: &str = "blockPointSlot = SlotNo ";
+const NOT_A_CONTINUATION: &str = "restoreBlocks: given chain isn't a valid continuation";
+const WALLET_IS_AT: &str = "Wallet is at:";
+const CHAIN_CONTINUES: &str = "continues starting from:";
 
 /// One recognised signature.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -66,13 +73,21 @@ struct RejectedSlot {
     peers: Vec<String>,
 }
 
-/// Looks for chain damage in the output of one node process. Each kind is
-/// reported at most once.
-#[derive(Default)]
+/// Which process's output a detector reads.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Source {
+    Node,
+    Wallet,
+}
+
+/// Looks for chain damage in the output of one node or wallet process. Each
+/// kind is reported at most once.
 pub struct ChainDamageDetector {
+    source: Source,
     rejected: Vec<RejectedSlot>,
     block_rejected_reported: bool,
     ledger_point_reported: bool,
+    discontinuity_reported: bool,
 }
 
 /// A detector shared by the stdout and stderr readers of one process.
@@ -81,12 +96,34 @@ pub type SharedDetector = Arc<Mutex<ChainDamageDetector>>;
 impl ChainDamageDetector {
     /// A detector for the output of one cardano-node process.
     pub fn node() -> Self {
-        Self::default()
+        Self::new(Source::Node)
+    }
+
+    /// A detector for the output of one cardano-wallet process.
+    pub fn wallet() -> Self {
+        Self::new(Source::Wallet)
+    }
+
+    fn new(source: Source) -> Self {
+        Self {
+            source,
+            rejected: Vec::new(),
+            block_rejected_reported: false,
+            ledger_point_reported: false,
+            discontinuity_reported: false,
+        }
     }
 
     /// Inspect one output line. Returns a detection the first time a kind is
     /// recognised.
     pub fn observe(&mut self, line: &str) -> Option<Detection> {
+        match self.source {
+            Source::Node => self.observe_node(line),
+            Source::Wallet => self.observe_wallet(line),
+        }
+    }
+
+    fn observe_node(&mut self, line: &str) -> Option<Detection> {
         if !self.block_rejected_reported && line.contains(BAD_INPUTS) {
             return self.observe_rejected_block(line);
         }
@@ -146,6 +183,42 @@ impl ChainDamageDetector {
             last_good_slot: None,
         })
     }
+}
+
+impl ChainDamageDetector {
+    fn observe_wallet(&mut self, line: &str) -> Option<Detection> {
+        if self.discontinuity_reported || !line.contains(NOT_A_CONTINUATION) {
+            return None;
+        }
+        self.discontinuity_reported = true;
+        let line = strip_ansi(line);
+        let after = line.split_once(NOT_A_CONTINUATION).map_or("", |(_, r)| r);
+        let (wallet_part, chain_part) = match after.split_once(CHAIN_CONTINUES) {
+            Some((before, chain)) => (before, chain),
+            None => (after, ""),
+        };
+        let last_good_slot = wallet_part
+            .split_once(WALLET_IS_AT)
+            .and_then(|(_, r)| edge_slot(r));
+        Some(Detection {
+            kind: ChainDamageKind::WalletChainDiscontinuity,
+            slot: edge_slot(chain_part),
+            last_good_slot,
+        })
+    }
+}
+
+/// The slot of the first chain point in `text`, written `-<slot>#<blockNo>`.
+fn edge_slot(text: &str) -> Option<u64> {
+    let hash = text.find('#')?;
+    let before = &text[..hash];
+    let digits = before
+        .rfind(|c: char| !c.is_ascii_digit())
+        .map_or(0, |i| i + 1);
+    if digits == before.len() || !before[..digits].ends_with('-') {
+        return None;
+    }
+    before[digits..].parse().ok()
 }
 
 /// Remove ANSI escape sequences (`ESC [ ... <final byte>`) from `text`.
@@ -371,6 +444,74 @@ Node configuration: NodeConfiguration {{...}}\n"
             None
         );
         assert_eq!(d.observe(""), None);
+    }
+
+    /// The wallet line as cardano-wallet writes it, redacted as in the field logs.
+    const DISCONTINUITY: &str = "[cardano-wallet.wallet-engine:Error:53] [2026-10-15 02:03:38.48 UTC] \
+Worker has exited: Unhandled exception: user error (restoreBlocks: given chain isn't a valid continuation. \
+Wallet is at: <redacted><-[<redacted>-200080892#14050855] but the given chain continues starting from: \
+<redacted><-[<redacted>-200102408#14051883])\n";
+
+    #[test]
+    fn recognises_the_wallet_discontinuity() {
+        let mut d = ChainDamageDetector::wallet();
+        assert_eq!(
+            d.observe(DISCONTINUITY),
+            Some(Detection {
+                kind: ChainDamageKind::WalletChainDiscontinuity,
+                slot: Some(200_102_408),
+                last_good_slot: Some(200_080_892),
+            })
+        );
+    }
+
+    #[test]
+    fn eleven_repeats_emit_one_wallet_event() {
+        let mut d = ChainDamageDetector::wallet();
+        assert!(d.observe(DISCONTINUITY).is_some());
+        for _ in 0..10 {
+            assert_eq!(d.observe(DISCONTINUITY), None);
+        }
+    }
+
+    #[test]
+    fn wallet_line_with_ansi_codes_is_recognised() {
+        let mut d = ChainDamageDetector::wallet();
+        let line = DISCONTINUITY.replace("-200102408#", "-\x1b[0m200102408#");
+        assert_eq!(d.observe(&line).map(|x| x.slot), Some(Some(200_102_408)));
+    }
+
+    #[test]
+    fn wallet_line_without_readable_points_still_reports() {
+        let mut d = ChainDamageDetector::wallet();
+        let d1 =
+            d.observe("restoreBlocks: given chain isn't a valid continuation. Wallet is at: ?\n");
+        assert_eq!(
+            d1,
+            Some(Detection {
+                kind: ChainDamageKind::WalletChainDiscontinuity,
+                slot: None,
+                last_good_slot: None,
+            })
+        );
+    }
+
+    #[test]
+    fn wallet_detector_ignores_node_signatures() {
+        let mut d = ChainDamageDetector::wallet();
+        assert_eq!(d.observe(&invariant_line(200_102_375)), None);
+        for i in 0..4 {
+            assert_eq!(
+                d.observe(&exception_line(7, &format!("192.0.2.{i}:3001"), 1)),
+                None
+            );
+        }
+    }
+
+    #[test]
+    fn node_detector_ignores_the_wallet_signature() {
+        let mut d = ChainDamageDetector::node();
+        assert_eq!(d.observe(DISCONTINUITY), None);
     }
 
     #[test]
