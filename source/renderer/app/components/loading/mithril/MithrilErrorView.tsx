@@ -22,6 +22,8 @@ interface Props {
   title?: string;
   hint?: string | null;
   hintAsBody?: boolean;
+  // A rebuild removed the old blockchain data before it failed
+  chainRemoved?: boolean;
   actions?: Array<{
     label: string;
     onClick(): void;
@@ -94,6 +96,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     title,
     hint,
     hintAsBody,
+    chainRemoved,
     actions,
     rightAlignActions,
   } = props;
@@ -123,6 +126,11 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           ) : (
             <div className={styles.errorHint}>{resolvedHint}</div>
           ))}
+        {chainRemoved && (
+          <p className={styles.hintBody}>
+            {intl.formatMessage(messages.errorChainRemovedHint)}
+          </p>
+        )}
         {logPath && onOpenExternalLink && (
           <Link
             className={styles.logPathLink}

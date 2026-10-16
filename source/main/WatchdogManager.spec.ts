@@ -241,6 +241,23 @@ describe('WatchdogManager rebuild state', () => {
     expect(manager.getState().lastErrorRebuild).toBe(false);
   });
 
+  it('clears the Mithril phase and progress when the node is started', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_status', phase: 'downloading' });
+    emit({ event: 'mithril_error', code: 'X', message: 'x' });
+    expect(manager.getState().mithrilPhase).toBe('error');
+    manager.sendCommand({ cmd: 'start_node' });
+    expect(manager.getState().mithrilPhase).toBeNull();
+    expect(manager.getState().mithrilProgress).toBeNull();
+  });
+
+  it('keeps the Mithril phase when a Mithril run is started', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_error', code: 'X', message: 'x' });
+    manager.sendCommand({ cmd: 'start_mithril' });
+    expect(manager.getState().mithrilPhase).toBe('error');
+  });
+
   it('keeps lastErrorRebuild when other commands are sent', () => {
     const { manager, emit } = makeManagerWithSocket();
     emit({ event: 'mithril_error', code: 'X', message: 'x', rebuild: true });

@@ -79,11 +79,6 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Cancel',
     description: 'Button label to cancel Mithril bootstrap.',
   },
-  wipeAndRetry: {
-    id: 'loading.mithrilBootstrap.wipeAndRetry',
-    defaultMessage: '!!!Wipe chain & retry',
-    description: 'Button label to wipe chain and retry Mithril bootstrap.',
-  },
   errorTitle: {
     id: 'loading.mithrilBootstrap.errorTitle',
     defaultMessage: '!!!Mithril bootstrap failed',
@@ -106,6 +101,26 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Skip to blockchain sync',
     description:
       'Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.',
+  },
+  errorChainRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.chainRemovedHint',
+    defaultMessage:
+      '!!!The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.',
+    description:
+      'Note on the Mithril error view when a rebuild failed after it had already removed the old blockchain data.',
+  },
+  errorChooseSync: {
+    id: 'loading.mithrilBootstrap.error.chooseSync',
+    defaultMessage: '!!!Choose how to sync',
+    description:
+      'Button label on the Mithril error view that opens the choice between Mithril fast sync and a Blockchain Sync from Genesis, after the old blockchain data was removed.',
+  },
+  decisionChainRemovedNotice: {
+    id: 'loading.mithrilBootstrap.decisionChainRemovedNotice',
+    defaultMessage:
+      '!!!The old blockchain data was removed, so the blockchain needs to be synced again.',
+    description:
+      'Note on the Mithril bootstrap prompt when a rebuild removed the old blockchain data and did not finish.',
   },
   errorProbeFailedHint: {
     id: 'loading.mithrilBootstrap.error.probeFailed.hint',

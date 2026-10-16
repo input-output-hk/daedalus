@@ -355,6 +355,106 @@ describe('BackendStore.retryMithril', () => {
   });
 });
 
+describe('BackendStore after a rebuild removed the chain data', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  const failedAfterWipe = (store: BackendStore) => {
+    (store as any).hasChain = false;
+    (store as any).chainPathConfirmed = true;
+    (store as any).mithrilPhase = 'error';
+    (store as any).lastErrorRebuild = true;
+    (store as any).lastErrorCode = 'DOWNLOAD_FAILED';
+  };
+
+  it('shows the Mithril error first', () => {
+    const store = makeStore();
+    failedAfterWipe(store);
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('goes to the bootstrap decision from showBootstrapDecision', () => {
+    const store = makeStore();
+    failedAfterWipe(store);
+    store.showBootstrapDecision();
+    expect(store.loadingPhase).toBe('bootstrap-decision');
+    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+  });
+
+  it('shows the Mithril screen again when a Mithril run is started', () => {
+    const store = makeStore();
+    failedAfterWipe(store);
+    store.showBootstrapDecision();
+    store.startMithril();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('leaves the dismissed error once the Mithril phase moves on', async () => {
+    const store = makeStore();
+    failedAfterWipe(store);
+    store.showBootstrapDecision();
+    await (store as any)._onMithrilStatus({ phase: 'preparing' });
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    (store as any).mithrilPhase = 'error';
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('does not show the error during a sync from genesis after startNode', () => {
+    const store = makeStore();
+    failedAfterWipe(store);
+    store.startNode();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_node',
+    });
+    (store as any).hasChain = true;
+    expect(store.loadingPhase).toBe('node-starting');
+  });
+
+  it('keeps the error view hidden through polls that still report it', async () => {
+    const store = makeStore();
+    failedAfterWipe(store);
+    store.showBootstrapDecision();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'error',
+      lastErrorRebuild: true,
+    });
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('bootstrap-decision');
+  });
+
+  it('skips the location picker for a rebuild pending after a restart', () => {
+    const store = makeStore();
+    (store as any).hasChain = false;
+    expect(store.loadingPhase).toBe('chain-storage-setup');
+    (store as any).rebuildPending = true;
+    expect(store.loadingPhase).toBe('bootstrap-decision');
+  });
+
+  it('copies rebuildPending from the poll', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: null,
+      rebuildPending: true,
+    });
+    await store._pollBackendStatus();
+    expect(store.rebuildPending).toBe(true);
+    expect(store.loadingPhase).toBe('bootstrap-decision');
+  });
+});
+
 describe('BackendStore unrecoverable backend', () => {
   beforeEach(() => {
     (mithrilCommandChannel.send as jest.Mock).mockClear();

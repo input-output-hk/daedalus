@@ -62,6 +62,9 @@ export default class BackendStore extends Store {
   @observable lastErrorCode: string | null = null;
   // True when the Mithril error came from a rebuild of the chain data
   @observable lastErrorRebuild = false;
+  // True when a confirmed rebuild has not finished, e.g. Daedalus was closed
+  // after the chain data was deleted; the location is already decided
+  @observable rebuildPending = false;
   // The last hole in the chain database the watchdog detected
   @observable chainDamage: ChainDamage | null = null;
   @observable walletUnrecoverable = false;
@@ -84,6 +87,10 @@ export default class BackendStore extends Store {
   // Set when that picker confirmed a location, so the next Retry rebuilds
   // there instead of asking again; cleared when a rebuild is sent
   @observable _chainStorageReselected = false;
+  // Set by the error view's secondary action after a rebuild removed the chain
+  // data, so the bootstrap decision shows instead of the error; cleared when
+  // the Mithril phase moves on
+  @observable _mithrilErrorDismissed = false;
   @observable _probeHasFired = false;
   // Daedalus is quitting
   @observable isStopping = false;
@@ -166,10 +173,12 @@ export default class BackendStore extends Store {
         this.nodeStartupPhase = state.nodeStartupPhase;
         this.blockSyncProgress = { ...state.blockSyncProgress };
         this.mithrilPhase = state.mithrilPhase;
+        if (state.mithrilPhase !== 'error') this._mithrilErrorDismissed = false;
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
         this.lastErrorCode = state.lastErrorCode ?? null;
         this.lastErrorRebuild = state.lastErrorRebuild ?? false;
+        this.rebuildPending = state.rebuildPending ?? false;
         this.chainDamage = state.chainDamage ?? null;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
@@ -205,6 +214,7 @@ export default class BackendStore extends Store {
   _onMithrilStatus = async (event: { phase: string }): Promise<void> => {
     runInAction('update mithrilPhase', () => {
       this.mithrilPhase = event.phase;
+      if (event.phase !== 'error') this._mithrilErrorDismissed = false;
     });
   };
 
@@ -287,11 +297,17 @@ export default class BackendStore extends Store {
   // A Mithril pipeline is running, or has failed and shows its error
   @computed
   get _mithrilActive(): boolean {
-    return (
-      this.mithrilPhase !== null &&
-      this.mithrilPhase !== 'completed' &&
-      this.mithrilPhase !== 'cancelled'
-    );
+    const phase = this._shownMithrilPhase;
+    return phase !== null && phase !== 'completed' && phase !== 'cancelled';
+  }
+
+  // The Mithril phase the loading screens go by: a dismissed error counts as
+  // no Mithril run
+  @computed
+  get _shownMithrilPhase(): string | null {
+    return this._mithrilErrorDismissed && this.mithrilPhase === 'error'
+      ? null
+      : this.mithrilPhase;
   }
 
   @computed
@@ -331,9 +347,10 @@ export default class BackendStore extends Store {
     // chain_status { has_chain: false } — show storage picker first, then decision
     if (
       this.hasChain === false &&
-      (this.mithrilPhase === null || this.mithrilPhase === 'cancelled')
+      (this._shownMithrilPhase === null ||
+        this._shownMithrilPhase === 'cancelled')
     ) {
-      return this.chainPathConfirmed
+      return this.chainPathConfirmed || this.rebuildPending
         ? 'bootstrap-decision'
         : 'chain-storage-setup';
     }
@@ -352,11 +369,13 @@ export default class BackendStore extends Store {
   // =============== ACTIONS ===============
   @action
   startMithril = () => {
+    this._mithrilErrorDismissed = false;
     mithrilCommandChannel.send({ cmd: 'start_mithril' });
   };
 
   @action
   startMithrilForce = () => {
+    this._mithrilErrorDismissed = false;
     mithrilCommandChannel.send({ cmd: 'start_mithril', force: true });
   };
 
@@ -368,6 +387,7 @@ export default class BackendStore extends Store {
   rebuildChain = () => {
     this.chainPathConfirmed = true;
     this._chainStorageReselected = false;
+    this._mithrilErrorDismissed = false;
     mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
     // The logger sends its arguments over IPC, which cannot clone a MobX
     // observable, so only plain values go in.
@@ -405,7 +425,17 @@ export default class BackendStore extends Store {
 
   @action
   startNode = () => {
+    // The watchdog clears the Mithril phase when it gets the command; hiding
+    // the error now keeps it off the screen until the next poll shows that.
+    this._mithrilErrorDismissed = true;
     mithrilCommandChannel.send({ cmd: 'start_node' });
+  };
+
+  // Secondary action of the Mithril error view after a rebuild removed the
+  // chain data: back to the choice between Mithril and a sync from genesis
+  @action
+  showBootstrapDecision = () => {
+    this._mithrilErrorDismissed = true;
   };
 
   @action

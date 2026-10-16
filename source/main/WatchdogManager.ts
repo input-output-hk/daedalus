@@ -299,6 +299,10 @@ class WatchdogManager {
     } else if (name === 'start_node') {
       this.state.lastErrorRebuild = false;
       this._rebuildInFlight = false;
+      // The user moved on from a Mithril error; without this the error view
+      // stays up while the node syncs.
+      this.state.mithrilPhase = null;
+      this.state.mithrilProgress = null;
     }
   }
 
