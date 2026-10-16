@@ -2245,6 +2245,11 @@
         "defaultMessage": "!!!Unavailable while Mithril work is already active.",
         "description": "Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked"
+      },
+      {
+        "defaultMessage": "!!!Unavailable while damaged blockchain data is detected. Use Rebuild blockchain data instead.",
+        "description": "Hint text beneath the disabled Mithril partial sync diagnostics button while damage to the blockchain data is detected and the rebuild is the repair",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintChainDamage"
       }
     ],
     "path": "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx"
@@ -4417,11 +4422,6 @@
         "id": "loading.mithrilBootstrap.cancel"
       },
       {
-        "defaultMessage": "!!!Wipe chain & retry",
-        "description": "Button label to wipe chain and retry Mithril bootstrap.",
-        "id": "loading.mithrilBootstrap.wipeAndRetry"
-      },
-      {
         "defaultMessage": "!!!Mithril bootstrap failed",
         "description": "Generic title for the Mithril bootstrap error state.",
         "id": "loading.mithrilBootstrap.errorTitle"
@@ -4440,6 +4440,26 @@
         "defaultMessage": "!!!Skip to blockchain sync",
         "description": "Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.",
         "id": "loading.mithrilBootstrap.error.skip"
+      },
+      {
+        "defaultMessage": "!!!The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.",
+        "description": "Note on the Mithril error view when a rebuild failed after it had already removed the old blockchain data.",
+        "id": "loading.mithrilBootstrap.error.chainRemovedHint"
+      },
+      {
+        "defaultMessage": "!!!Choose how to sync",
+        "description": "Button label on the Mithril error view that opens the choice between Mithril fast sync and a Blockchain Sync from Genesis, after the old blockchain data was removed.",
+        "id": "loading.mithrilBootstrap.error.chooseSync"
+      },
+      {
+        "defaultMessage": "!!!The old blockchain data was removed, so the blockchain needs to be synced again.",
+        "description": "Note on the Mithril bootstrap prompt when a rebuild removed the old blockchain data and did not finish.",
+        "id": "loading.mithrilBootstrap.decisionChainRemovedNotice"
+      },
+      {
+        "defaultMessage": "!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry.",
+        "description": "Hint for the INSUFFICIENT_SPACE error on the Mithril error view, shown when a rebuild was refused before it deleted anything because the drive that holds the blockchain data is too full for the download.",
+        "id": "loading.mithrilBootstrap.error.insufficientSpaceHint"
       },
       {
         "defaultMessage": "!!!Daedalus could not reach the Mithril service. Your blockchain data has not been changed. Check your internet connection and try again.",

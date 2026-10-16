@@ -122,6 +122,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Note on the Mithril bootstrap prompt when a rebuild removed the old blockchain data and did not finish.',
   },
+  errorInsufficientSpaceHint: {
+    id: 'loading.mithrilBootstrap.error.insufficientSpaceHint',
+    defaultMessage:
+      '!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry.',
+    description:
+      'Hint for the INSUFFICIENT_SPACE error on the Mithril error view, shown when a rebuild was refused before it deleted anything because the drive that holds the blockchain data is too full for the download.',
+  },
   errorProbeFailedHint: {
     id: 'loading.mithrilBootstrap.error.probeFailed.hint',
     defaultMessage:

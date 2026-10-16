@@ -99,6 +99,35 @@ storiesOf('Loading / Mithril / Error', module)
       actions={errorActions}
     />
   ))
+  .add('Insufficient Space', () => (
+    <MithrilErrorView
+      error={{
+        code: 'INSUFFICIENT_SPACE',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
+  .add('Rebuild Failed After Data Removed', () => (
+    <MithrilErrorView
+      error={{
+        code: 'DOWNLOAD_FAILED',
+        stage: 'download',
+        message: 'detail from the watchdog',
+      }}
+      chainRemoved
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[
+        errorActions[0],
+        {
+          label: 'Choose how to sync',
+          onClick: () => bootstrapActions.onDecline(),
+          variant: 'secondary' as const,
+        },
+      ]}
+    />
+  ))
   .add('Wipe Failed', () => (
     <MithrilErrorView
       error={{ code: 'WIPE_FAILED', message: 'detail from the watchdog' }}
