@@ -388,7 +388,7 @@
           "id": "task-015",
           "title": "Diagnostics row and manual rebuild",
           "description": "Add a Blockchain data row with the last detection of the session and a Rebuild blockchain data action behind the same confirmation, available whether or not anything was detected.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 4.0,
           "dependencies": [

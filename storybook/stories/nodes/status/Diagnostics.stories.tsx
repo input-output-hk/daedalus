@@ -82,6 +82,8 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onStartMithrilPartialSync: async () => {
     action('onStartMithrilPartialSync')();
   },
+  chainDamage: null,
+  onRebuildChain: action('onRebuildChain'),
 };
 
 type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;
