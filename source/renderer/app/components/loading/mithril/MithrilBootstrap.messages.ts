@@ -95,6 +95,53 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
       '!!!The node could not start with the restored chain data. Wipe the chain and try Mithril Sync again, or do a Blockchain Sync from Genesis.',
     description: 'Hint for node-start failures after Mithril bootstrap.',
   },
+  errorRetry: {
+    id: 'loading.mithrilBootstrap.error.retry',
+    defaultMessage: '!!!Retry',
+    description:
+      'Button label on the Mithril error view that runs Mithril Sync again.',
+  },
+  errorSkip: {
+    id: 'loading.mithrilBootstrap.error.skip',
+    defaultMessage: '!!!Skip to blockchain sync',
+    description:
+      'Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.',
+  },
+  errorProbeFailedHint: {
+    id: 'loading.mithrilBootstrap.error.probeFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not reach the Mithril service. Your blockchain data has not been changed. Check your internet connection and try again.',
+    description:
+      'Hint shown when the Mithril service could not be reached before anything was changed or deleted.',
+  },
+  errorInvalidChainPathHint: {
+    id: 'loading.mithrilBootstrap.error.invalidChainPath.hint',
+    defaultMessage:
+      '!!!Daedalus cannot rebuild the blockchain data in this folder. Choose a different blockchain data location and try again.',
+    description:
+      'Hint shown when the configured blockchain data location cannot be used for a rebuild.',
+  },
+  errorChainDirNotReplaceableHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirNotReplaceable.hint',
+    defaultMessage:
+      '!!!The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and try again.',
+    description:
+      'Hint shown when the blockchain data folder holds files that are not blockchain data, so a rebuild refused to delete it.',
+  },
+  errorChainDirOtherNetworkHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirOtherNetwork.hint',
+    defaultMessage:
+      '!!!The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again.',
+    description:
+      'Hint shown when the blockchain data folder holds another Cardano network, so a rebuild refused to change it.',
+  },
+  errorWipeFailedHint: {
+    id: 'loading.mithrilBootstrap.error.wipeFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not delete the blockchain data files. Close any other programs that might be using the blockchain folder, then retry.',
+    description:
+      'Hint shown when deleting the old blockchain data failed during a rebuild, typically because another program holds a file open.',
+  },
   stepPreparing: {
     id: 'loading.mithrilBootstrap.step.preparing',
     defaultMessage: '!!!Preparing',

@@ -63,6 +63,16 @@ const ERROR_COPY_BY_STAGE: Partial<
   },
 };
 
+// Codes of the errors a rebuild reports before or while it replaces the chain
+// data. Each has its own message, which takes precedence over the stage copy.
+const ERROR_HINT_BY_CODE: Record<string, keyof typeof messages> = {
+  PROBE_FAILED: 'errorProbeFailedHint',
+  INVALID_CHAIN_PATH: 'errorInvalidChainPathHint',
+  CHAIN_DIR_NOT_REPLACEABLE: 'errorChainDirNotReplaceableHint',
+  CHAIN_DIR_OTHER_NETWORK: 'errorChainDirOtherNetworkHint',
+  WIPE_FAILED: 'errorWipeFailedHint',
+};
+
 const getLogPathHref = (logPath: string) => {
   const normalizedPath = logPath.replace(/\\/g, '/');
 
@@ -94,9 +104,11 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
+  const codeHint = error?.code ? ERROR_HINT_BY_CODE[error.code] : undefined;
   let resolvedHint = hint;
   if (resolvedHint === undefined) {
-    resolvedHint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
+    const hintKey = codeHint ?? copy.hint;
+    resolvedHint = hintKey ? intl.formatMessage(messages[hintKey]) : null;
   }
   const hasTechnicalDetails = Boolean(error?.message || error?.code);
   const logPath = error?.logPath;

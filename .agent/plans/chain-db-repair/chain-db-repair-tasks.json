@@ -319,7 +319,7 @@
           "id": "task-012",
           "title": "Make the Mithril error view code-aware and translated",
           "description": "Show a specific message for PROBE_FAILED, INVALID_CHAIN_PATH, CHAIN_DIR_NOT_REPLACEABLE and CHAIN_DIR_OTHER_NETWORK, and replace the hard-coded English Retry and Skip buttons with messages.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 3.0,
           "dependencies": [
