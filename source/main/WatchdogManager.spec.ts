@@ -150,6 +150,64 @@ describe('WatchdogManager Mithril error', () => {
   });
 });
 
+describe('WatchdogManager chain damage', () => {
+  const damage = {
+    event: 'chain_damage',
+    kind: 'wallet_chain_discontinuity',
+    slot: 200102408,
+    last_good_slot: 200080892,
+  };
+
+  it('starts with no chain damage', () => {
+    const { manager } = makeManager();
+    expect(manager.getState().chainDamage).toBeNull();
+  });
+
+  it('sets chainDamage from a chain_damage event, with the time it arrived', () => {
+    const { manager, emit } = makeManager();
+    const before = Date.now();
+    emit(damage);
+    const found = manager.getState().chainDamage;
+    expect(found).toMatchObject({
+      kind: 'wallet_chain_discontinuity',
+      slot: 200102408,
+      lastGoodSlot: 200080892,
+    });
+    expect(Date.parse(found!.detectedAt)).toBeGreaterThanOrEqual(before);
+  });
+
+  it('keeps null slots as null', () => {
+    const { manager, emit } = makeManager();
+    emit({
+      event: 'chain_damage',
+      kind: 'ledger_point_missing',
+      slot: null,
+      last_good_slot: null,
+    });
+    expect(manager.getState().chainDamage).toMatchObject({
+      kind: 'ledger_point_missing',
+      slot: null,
+      lastGoodSlot: null,
+    });
+  });
+
+  it('clears chainDamage when a node starts', () => {
+    const { manager, emit } = makeManager();
+    emit(damage);
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().chainDamage).toBeNull();
+  });
+
+  it('clears chainDamage when a Mithril sync starts preparing', () => {
+    const { manager, emit } = makeManager();
+    emit(damage);
+    emit({ event: 'mithril_status', phase: 'downloading' });
+    expect(manager.getState().chainDamage).not.toBeNull();
+    emit({ event: 'mithril_status', phase: 'preparing' });
+    expect(manager.getState().chainDamage).toBeNull();
+  });
+});
+
 describe('WatchdogManager.stop', () => {
   beforeEach(() => {
     jest.useFakeTimers();

@@ -243,7 +243,7 @@
           "id": "task-009",
           "title": "Carry chainDamage through the main process",
           "description": "Handle chain_damage in WatchdogManager, add chainDamage to WatchdogState, and clear it on node_started and on mithril_status preparing.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2.0,
           "dependencies": [

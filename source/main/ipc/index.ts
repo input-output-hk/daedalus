@@ -82,6 +82,7 @@ export default (window: BrowserWindow) => {
         mithrilSignificantlyBehind: null,
         lastError: null,
         lastErrorCode: null,
+        chainDamage: null,
         walletUnrecoverable: false,
         nodeSocketWaitMs: null,
         walletReadyWaitMs: null,
