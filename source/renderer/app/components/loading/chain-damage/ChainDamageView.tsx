@@ -52,7 +52,13 @@ export default class ChainDamageView extends Component<Props, State> {
   handleRebuild = () => {
     if (this.state.isStarted) return;
     this.setState({ isStarted: true });
-    this.props.onRebuild();
+    try {
+      this.props.onRebuild();
+    } catch (error) {
+      // Nothing was started, so the buttons must work again.
+      this.setState({ isStarted: false });
+      throw error;
+    }
   };
 
   renderChoiceView() {

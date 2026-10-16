@@ -1,14 +1,29 @@
+import { serialize } from 'v8';
 import type { Api } from '../api/index';
 import type { ActionsMap } from '../actions/index';
 import BackendStore from './BackendStore';
 import { noopAnalyticsTracker } from '../analytics';
+import { logger } from '../utils/logging';
 import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
 import { validateChainStorageChannel } from '../ipc/chainStorageChannel';
 import { getCachedBackendStatusChannel } from '../ipc/backendStatusChannel';
 
-jest.mock('../utils/logging', () => ({
-  logger: { debug: jest.fn(), info: jest.fn(), error: jest.fn() },
-}));
+// The real logger sends its arguments through ipcRenderer, which clones them
+// and throws on a MobX observable. The mock serializes its arguments too.
+jest.mock('../utils/logging', () => {
+  const cloning = () =>
+    jest.fn((...args: Array<unknown>) => {
+      serialize(args);
+    });
+  return {
+    logger: {
+      debug: cloning(),
+      info: cloning(),
+      error: cloning(),
+      warn: cloning(),
+    },
+  };
+});
 
 jest.mock('../ipc/mithrilCommandChannel', () => ({
   mithrilCommandChannel: { send: jest.fn() },
@@ -215,6 +230,21 @@ describe('BackendStore chain damage', () => {
       cmd: 'start_mithril',
       wipe_chain: true,
     });
+  });
+
+  it('sends the rebuild and logs plain values while a chain damage is set', () => {
+    const store = makeStore();
+    (store as any).chainDamage = damage;
+    // Assigned through the observable, so the stored value is a MobX proxy.
+    expect(() => store.rebuildChain()).not.toThrow();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_mithril',
+      wipe_chain: true,
+    });
+    expect(logger.info).toHaveBeenCalledWith(
+      'BackendStore: rebuilding the chain database',
+      { kind: 'ledger_point_missing', slot: 200102375 }
+    );
   });
 
   it('goes to the bootstrap decision, not the location picker, when a rebuild leaves no chain', () => {
