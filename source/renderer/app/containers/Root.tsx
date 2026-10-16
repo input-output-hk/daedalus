@@ -54,6 +54,10 @@ class Root extends Component<Props> {
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = backend.loadingPhase === 'stopping';
+    // The damaged blockchain data screen asks for a decision that no other
+    // page can wait on, so it replaces every page, including the ones that
+    // are otherwise shown without a connected node.
+    const isChainDamaged = backend.loadingPhase === 'chain-damaged';
 
     if (
       isCurrentLocaleSet &&
@@ -74,9 +78,10 @@ class Root extends Component<Props> {
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
-      (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
-      (isProfilePage &&
-        (isNotEnoughDiskSpace || !isNodeInStoppingSequence || isSetupPage))
+      !isChainDamaged &&
+      ((isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
+        (isProfilePage &&
+          (isNotEnoughDiskSpace || !isNodeInStoppingSequence || isSetupPage)))
     ) {
       return children;
     }
