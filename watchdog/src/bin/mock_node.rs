@@ -8,6 +8,8 @@
 // a node that takes a while to close its database.
 // With MOCK_NODE_CRASH_AFTER_READY_MS=<n> it exits with code 1 n milliseconds
 // after reporting chainDbReady, like a node that crashes once running.
+// With MOCK_NODE_EXTRA_LINES=<file> it prints that file's contents to stdout
+// after the startup phases, so a test can inject log lines.
 fn main() {
     let socket_path = std::env::args().nth(1).expect("socket path required");
     if let Some(parent) = std::path::Path::new(&socket_path).parent() {
@@ -28,6 +30,12 @@ fn main() {
     println!("StartedOpeningLgrDB");
     println!("OpenedLgrDB");
     println!("OpenedDB");
+    if let Some(extra) = std::env::var_os("MOCK_NODE_EXTRA_LINES") {
+        print!(
+            "{}",
+            std::fs::read_to_string(extra).expect("read MOCK_NODE_EXTRA_LINES")
+        );
+    }
     std::io::stdout().flush().unwrap();
     std::fs::File::create(&socket_path).expect("create socket file");
 

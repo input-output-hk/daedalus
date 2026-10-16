@@ -1,0 +1,1 @@
+cardano-node.exe: Critical invariant violation: block Point (At (Block {blockPointSlot = SlotNo 200102375, blockPointHash = <redacted>})) that was in immutable db is gone before we could open ledgerdbNode configuration: NodeConfiguration {...}

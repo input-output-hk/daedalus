@@ -112,7 +112,7 @@
           "id": "task-004",
           "title": "Inject field lines in integration tests",
           "description": "Give the mock node and the wallet mock a way to print extra lines from a file named by an environment variable, and add integration tests that each signature produces one chain_damage event.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 4.0,
           "dependencies": [
