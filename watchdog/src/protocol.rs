@@ -211,11 +211,13 @@ pub enum Event {
     /// for a `start_node` or `start_mithril` command before doing anything.
     /// `rebuild_pending` is true when that wait follows a rebuild that began
     /// deleting the chain directory and installed nothing, in this session or
-    /// an earlier one: the directory is the one in use, and a `start_mithril`
-    /// then rebuilds it.
+    /// an earlier one, and `install_pending` when it follows an install that
+    /// began changing the database and did not finish. Either way the
+    /// directory is the one in use, and a `start_mithril` then rebuilds it.
     ChainStatus {
         has_chain: bool,
         rebuild_pending: bool,
+        install_pending: bool,
     },
     /// Result of a `validate_chain_dir` command.
     ChainDirValidation {
@@ -626,10 +628,12 @@ mod tests {
         let j = to_json(&Event::ChainStatus {
             has_chain: true,
             rebuild_pending: false,
+            install_pending: false,
         });
         assert_eq!(j["event"], "chain_status");
         assert_eq!(j["has_chain"], true);
         assert_eq!(j["rebuild_pending"], false);
+        assert_eq!(j["install_pending"], false);
     }
 
     #[test]
@@ -637,11 +641,26 @@ mod tests {
         let line = serde_json::to_string(&Event::ChainStatus {
             has_chain: false,
             rebuild_pending: true,
+            install_pending: false,
         })
         .unwrap();
         assert_eq!(
             line,
-            r#"{"event":"chain_status","has_chain":false,"rebuild_pending":true}"#
+            r#"{"event":"chain_status","has_chain":false,"rebuild_pending":true,"install_pending":false}"#
+        );
+    }
+
+    #[test]
+    fn chain_status_with_an_install_pending() {
+        let line = serde_json::to_string(&Event::ChainStatus {
+            has_chain: false,
+            rebuild_pending: false,
+            install_pending: true,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"chain_status","has_chain":false,"rebuild_pending":false,"install_pending":true}"#
         );
     }
 

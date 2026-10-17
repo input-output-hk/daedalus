@@ -94,19 +94,36 @@ pub async fn write_marker(state_dir: &str, state: &str) -> Result<()> {
 /// installed, so a rebuild cut short by a failure, a crash or the user quitting
 /// is still known at the next start. What a part-failed delete leaves would
 /// otherwise look like a chain, and the node would replay it from genesis.
-/// Every other full install writes it too, just before it starts moving the
-/// download in, so an install cut short leaves no database that counts as a
-/// chain.
+/// Every other install writes it too, before it changes the database, so an
+/// install cut short leaves no database that counts as a chain.
 const REBUILD_MARKER: &str = "chain-rebuild.json";
 
 /// Where the rebuild marker is written before it is renamed into place, so
 /// the marker is never seen half-written.
 const REBUILD_MARKER_TEMP: &str = "chain-rebuild.json.tmp";
 
+/// What the record of an unfinished change to the chain directory is for.
+/// A record keeps the kind it was first written with until it is removed.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum RecordKind {
+    /// A rebuild began deleting the old chain. Records written before kinds
+    /// existed name none, and were all written by a rebuild or for a full
+    /// install, so they read as this kind.
+    #[default]
+    Rebuild,
+    /// An install that was not a rebuild began changing the database: a
+    /// full install moving the download in, or a partial sync replacing
+    /// chunks and the ledger.
+    Install,
+}
+
 #[derive(Serialize, Deserialize)]
 struct RebuildMarker {
     /// The chain directory being rebuilt, as Mithril's chain_path names it.
     chain_path: String,
+    #[serde(default)]
+    kind: RecordKind,
 }
 
 /// `path` without its trailing separators, unless nothing else is left.
@@ -125,21 +142,23 @@ pub(crate) fn same_chain_path(a: &str, b: &str) -> bool {
     )
 }
 
-/// Whether a rebuild of the configured chain directory began deleting it and
-/// has installed no database since. A marker for another chain directory does
-/// not count.
-pub async fn rebuild_pending(cfg: &MithrilConfig) -> bool {
+/// The kind of the record of an unfinished rebuild or install of the
+/// configured chain directory, or None when there is none. A rebuild of it
+/// began deleting it, or an install began changing its database, and no
+/// database has been installed since. A marker for another chain directory
+/// does not count.
+pub async fn pending_record(cfg: &MithrilConfig) -> Option<RecordKind> {
     let path = Path::new(&cfg.state_dir).join(REBUILD_MARKER);
     let text = match tokio::fs::read_to_string(&path).await {
         Ok(text) => text,
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return false,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return None,
         Err(e) => {
             warn!("mithril: cannot read {}: {e}", path.display());
             return unreadable_marker_pending(cfg, &path).await;
         }
     };
     match serde_json::from_str::<RebuildMarker>(&text) {
-        Ok(marker) => same_chain_path(&marker.chain_path, &cfg.chain_path),
+        Ok(marker) => same_chain_path(&marker.chain_path, &cfg.chain_path).then_some(marker.kind),
         Err(e) => {
             warn!("mithril: {} is not a rebuild marker: {e}", path.display());
             unreadable_marker_pending(cfg, &path).await
@@ -151,9 +170,10 @@ pub async fn rebuild_pending(cfg: &MithrilConfig) -> bool {
 /// counts as a pending rebuild of the configured chain directory. A rebuild
 /// deletes the `clean` marker before anything else and an install moves it in
 /// last, so while the directory has no `clean` the marker may be its own and
-/// counts. A directory with `clean` holds a database no unfinished rebuild has
-/// touched, and the marker is deleted.
-async fn unreadable_marker_pending(cfg: &MithrilConfig, path: &Path) -> bool {
+/// counts, as a rebuild's, since its kind cannot be read either. A directory
+/// with `clean` holds a database no unfinished rebuild has touched, and the
+/// marker is deleted.
+async fn unreadable_marker_pending(cfg: &MithrilConfig, path: &Path) -> Option<RecordKind> {
     let clean = Path::new(&cfg.chain_path).join("clean");
     if !tokio::fs::metadata(&clean).await.is_ok_and(|m| m.is_file()) {
         warn!(
@@ -161,7 +181,7 @@ async fn unreadable_marker_pending(cfg: &MithrilConfig, path: &Path) -> bool {
             cfg.chain_path,
             path.display()
         );
-        return true;
+        return Some(RecordKind::Rebuild);
     }
     match tokio::fs::remove_file(path).await {
         Ok(()) => warn!(
@@ -171,16 +191,17 @@ async fn unreadable_marker_pending(cfg: &MithrilConfig, path: &Path) -> bool {
         ),
         Err(e) => warn!("mithril: could not delete {}: {e}", path.display()),
     }
-    false
+    None
 }
 
 /// Writes the rebuild marker for the configured chain directory. It is
 /// written in full to a temporary file in the same directory and then renamed
 /// over the marker, so a crash or a full disk never leaves a partial marker.
-async fn write_rebuild_marker(cfg: &MithrilConfig) -> Result<()> {
+async fn write_rebuild_marker(cfg: &MithrilConfig, kind: RecordKind) -> Result<()> {
     use tokio::io::AsyncWriteExt;
     let marker = RebuildMarker {
         chain_path: cfg.chain_path.clone(),
+        kind,
     };
     let text = serde_json::to_string_pretty(&marker)?;
     tokio::fs::create_dir_all(&cfg.state_dir).await?;
@@ -202,7 +223,7 @@ async fn write_rebuild_marker(cfg: &MithrilConfig) -> Result<()> {
 /// Deletes the rebuild marker when it is for the configured chain directory:
 /// a database was installed there, or the user chose to sync it from genesis.
 pub async fn clear_rebuild_marker(cfg: &MithrilConfig) {
-    if !rebuild_pending(cfg).await {
+    if pending_record(cfg).await.is_none() {
         return;
     }
     let path = Path::new(&cfg.state_dir).join(REBUILD_MARKER);
@@ -1235,12 +1256,13 @@ pub async fn run_pipeline(
     force: bool,
     wipe_chain: bool,
 ) -> PipelineResult {
-    // Until a rebuild that began deleting this chain directory has installed
-    // a database, every sync of it is a rebuild: a partial sync would build on
-    // what the delete left.
-    let wipe_chain = if !wipe_chain && rebuild_pending(cfg).await {
+    // Until a rebuild that began deleting this chain directory, or an install
+    // that began changing its database, has installed a database, every sync
+    // of it is a rebuild: a partial sync would build on what was left.
+    let pending = pending_record(cfg).await;
+    let wipe_chain = if !wipe_chain && pending.is_some() {
         info!(
-            "mithril: a rebuild of {} is pending; this sync rebuilds it",
+            "mithril: a rebuild or install of {} is pending; this sync rebuilds it",
             cfg.chain_path
         );
         true
@@ -1370,8 +1392,11 @@ pub async fn run_pipeline(
     // the old chain now, before the download, so the disk never has to hold
     // two full databases. The marker goes first, so a restart after a delete
     // or download that did not finish still knows the chain is being rebuilt.
+    // A rebuild that continues an unfinished install keeps that install's
+    // record kind: what it deletes is what the install left.
     if wipe_chain {
-        if let Err(e) = write_rebuild_marker(cfg).await {
+        let kind = pending.unwrap_or(RecordKind::Rebuild);
+        if let Err(e) = write_rebuild_marker(cfg, kind).await {
             let message = format!("Could not record the rebuild in {}: {e}", cfg.state_dir);
             warn!("mithril: {message}");
             emit(&Event::MithrilError {
@@ -1574,7 +1599,7 @@ pub async fn run_pipeline(
     // no chain and installs again instead of starting the node on part of a
     // database.
     if !is_partial && !wipe_chain {
-        if let Err(e) = write_rebuild_marker(cfg).await {
+        if let Err(e) = write_rebuild_marker(cfg, RecordKind::Install).await {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
             let message = format!("Could not record the install in {}: {e}", cfg.state_dir);
             warn!("mithril: {message}");
@@ -1629,7 +1654,7 @@ pub async fn run_pipeline(
 mod tests {
     mod rebuild_marker {
         use super::super::{
-            REBUILD_MARKER, REBUILD_MARKER_TEMP, clear_rebuild_marker, rebuild_pending,
+            REBUILD_MARKER, REBUILD_MARKER_TEMP, RecordKind, clear_rebuild_marker, pending_record,
             same_chain_path, write_rebuild_marker,
         };
         use crate::config::MithrilConfig;
@@ -1676,22 +1701,51 @@ mod tests {
         async fn a_marker_for_this_chain_is_pending_until_cleared() {
             let t = TempDir::new("this");
             let cfg = config(&t.0, "/data/chain");
-            assert!(!rebuild_pending(&cfg).await);
-            write_rebuild_marker(&cfg).await.unwrap();
-            assert!(rebuild_pending(&cfg).await);
+            assert_eq!(pending_record(&cfg).await, None);
+            write_rebuild_marker(&cfg, RecordKind::Rebuild)
+                .await
+                .unwrap();
+            assert_eq!(pending_record(&cfg).await, Some(RecordKind::Rebuild));
             clear_rebuild_marker(&cfg).await;
-            assert!(!rebuild_pending(&cfg).await);
+            assert_eq!(pending_record(&cfg).await, None);
             assert!(!t.0.join(REBUILD_MARKER).exists());
+        }
+
+        #[tokio::test]
+        async fn a_marker_says_whether_it_is_for_a_rebuild_or_an_install() {
+            let t = TempDir::new("kind");
+            let cfg = config(&t.0, "/data/chain");
+            write_rebuild_marker(&cfg, RecordKind::Install)
+                .await
+                .unwrap();
+            let text = fs::read_to_string(t.0.join(REBUILD_MARKER)).unwrap();
+            let marker: serde_json::Value = serde_json::from_str(&text).unwrap();
+            assert_eq!(marker["kind"], "install");
+            assert_eq!(pending_record(&cfg).await, Some(RecordKind::Install));
+            write_rebuild_marker(&cfg, RecordKind::Rebuild)
+                .await
+                .unwrap();
+            assert_eq!(pending_record(&cfg).await, Some(RecordKind::Rebuild));
+        }
+
+        #[tokio::test]
+        async fn a_marker_without_a_kind_is_a_rebuilds() {
+            let t = TempDir::new("no-kind");
+            fs::write(t.0.join(REBUILD_MARKER), br#"{"chain_path":"/data/chain"}"#).unwrap();
+            assert_eq!(
+                pending_record(&config(&t.0, "/data/chain")).await,
+                Some(RecordKind::Rebuild)
+            );
         }
 
         #[tokio::test]
         async fn a_marker_for_another_chain_is_not_pending_and_is_kept() {
             let t = TempDir::new("other");
-            write_rebuild_marker(&config(&t.0, "/data/chain"))
+            write_rebuild_marker(&config(&t.0, "/data/chain"), RecordKind::Rebuild)
                 .await
                 .unwrap();
             let cfg = config(&t.0, "/elsewhere/chain");
-            assert!(!rebuild_pending(&cfg).await);
+            assert_eq!(pending_record(&cfg).await, None);
             clear_rebuild_marker(&cfg).await;
             assert!(t.0.join(REBUILD_MARKER).exists());
         }
@@ -1699,15 +1753,23 @@ mod tests {
         #[tokio::test]
         async fn a_marker_names_its_chain_with_or_without_a_trailing_separator() {
             let t = TempDir::new("separator");
-            write_rebuild_marker(&config(&t.0, "/data/chain/"))
+            write_rebuild_marker(&config(&t.0, "/data/chain/"), RecordKind::Rebuild)
                 .await
                 .unwrap();
-            assert!(rebuild_pending(&config(&t.0, "/data/chain")).await);
-            write_rebuild_marker(&config(&t.0, "/data/chain"))
+            assert!(pending_record(&config(&t.0, "/data/chain")).await.is_some());
+            write_rebuild_marker(&config(&t.0, "/data/chain"), RecordKind::Rebuild)
                 .await
                 .unwrap();
-            assert!(rebuild_pending(&config(&t.0, "/data/chain//")).await);
-            assert!(!rebuild_pending(&config(&t.0, "/data/chain-2")).await);
+            assert!(
+                pending_record(&config(&t.0, "/data/chain//"))
+                    .await
+                    .is_some()
+            );
+            assert!(
+                pending_record(&config(&t.0, "/data/chain-2"))
+                    .await
+                    .is_none()
+            );
         }
 
         #[test]
@@ -1731,7 +1793,9 @@ mod tests {
             let cfg = config(&t.0, "/data/chain");
             // A temporary file left by an earlier write that did not finish.
             fs::write(t.0.join(REBUILD_MARKER_TEMP), b"{\"chain_pa").unwrap();
-            write_rebuild_marker(&cfg).await.unwrap();
+            write_rebuild_marker(&cfg, RecordKind::Rebuild)
+                .await
+                .unwrap();
             assert!(!t.0.join(REBUILD_MARKER_TEMP).exists());
             let text = fs::read_to_string(t.0.join(REBUILD_MARKER)).unwrap();
             let marker: serde_json::Value = serde_json::from_str(&text).unwrap();
@@ -1744,7 +1808,10 @@ mod tests {
             let chain = t.0.join("chain");
             fs::create_dir_all(chain.join("immutable")).unwrap();
             fs::write(t.0.join(REBUILD_MARKER), b"{\"chain_pa").unwrap();
-            assert!(rebuild_pending(&config(&t.0, chain.to_str().unwrap())).await);
+            assert_eq!(
+                pending_record(&config(&t.0, chain.to_str().unwrap())).await,
+                Some(RecordKind::Rebuild)
+            );
             assert!(t.0.join(REBUILD_MARKER).exists());
         }
 
@@ -1755,7 +1822,10 @@ mod tests {
             fs::create_dir_all(chain.join("immutable")).unwrap();
             fs::write(chain.join("clean"), b"").unwrap();
             fs::write(t.0.join(REBUILD_MARKER), b"").unwrap();
-            assert!(!rebuild_pending(&config(&t.0, chain.to_str().unwrap())).await);
+            assert_eq!(
+                pending_record(&config(&t.0, chain.to_str().unwrap())).await,
+                None
+            );
             assert!(!t.0.join(REBUILD_MARKER).exists());
         }
     }

@@ -1687,6 +1687,7 @@ fn restart_with_a_pending_rebuild_starts_no_node_and_rebuilds() {
     let status = expect(&rx, "chain_status");
     assert_eq!(status["has_chain"], false);
     assert_eq!(status["rebuild_pending"], true);
+    assert_eq!(status["install_pending"], false);
     expect_none_of(&rx, &["node_started"], 1500);
     assert!(chain.join("immutable").join("00000.chunk").exists());
 
@@ -2151,8 +2152,8 @@ fn a_rebuild_sent_with_a_new_location_starts_no_node_there_first() {
 
 /// A first bootstrap records its install before it moves the download into
 /// the chain directory. When the install stops part-way, the record makes the
-/// next start report no chain with a rebuild pending and start no node,
-/// although the entries moved so far look like a database.
+/// next start report no chain with the install pending, not a rebuild, and
+/// start no node, although the entries moved so far look like a database.
 #[test]
 fn a_first_bootstrap_cut_short_in_its_install_is_not_a_chain_at_the_next_start() {
     let dir = TempDir::new("bootstrap-cut-short");
@@ -2175,6 +2176,7 @@ fn a_first_bootstrap_cut_short_in_its_install_is_not_a_chain_at_the_next_start()
     )
     .unwrap();
     assert_eq!(record["chain_path"], chain.to_str().unwrap());
+    assert_eq!(record["kind"], "install");
     stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);
@@ -2189,8 +2191,56 @@ fn a_first_bootstrap_cut_short_in_its_install_is_not_a_chain_at_the_next_start()
     let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
     let status = expect(&rx, "chain_status");
     assert_eq!(status["has_chain"], false, "{status}");
-    assert_eq!(status["rebuild_pending"], true, "{status}");
+    assert_eq!(status["rebuild_pending"], false, "{status}");
+    assert_eq!(status["install_pending"], true, "{status}");
     expect_none_of(&rx, &["node_started"], 1500);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// The Mithril sync chosen after an unfinished install rebuilds the chain
+/// directory, deleting what the install left. When its download then fails,
+/// the record still describes an install that did not finish, not a rebuild
+/// that removed old data, and chain_status says so.
+#[test]
+fn a_rebuild_after_an_unfinished_install_keeps_it_an_install() {
+    let dir = TempDir::new("install-pending-rebuild");
+    let chain = dir.path().join("chain");
+    std::fs::create_dir_all(chain.join("immutable")).unwrap();
+    std::fs::write(chain.join("immutable").join("00000.chunk"), b"half").unwrap();
+    std::fs::write(chain.join("protocolMagicId"), b"764824073").unwrap();
+    std::fs::write(
+        dir.path().join("chain-rebuild.json"),
+        json!({ "chain_path": chain.to_str().unwrap(), "kind": "install" }).to_string(),
+    )
+    .unwrap();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .mithril_bin(MOCK_MITHRIL_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["install_pending"], true, "{status}");
+    assert_eq!(status["rebuild_pending"], false, "{status}");
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false, "{status}");
+    assert_eq!(status["install_pending"], true, "{status}");
+    assert_eq!(status["rebuild_pending"], false, "{status}");
+    expect_none_of(&rx, &["node_started"], 1500);
+    // The rebuild deleted what the install left.
+    assert!(!chain.join("immutable").exists());
+    let record: Value = serde_json::from_str(
+        &std::fs::read_to_string(dir.path().join("chain-rebuild.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(record["kind"], "install");
 
     stop(&mut stdin);
     expect(&rx, "stopped");
