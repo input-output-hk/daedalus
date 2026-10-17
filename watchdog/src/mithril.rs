@@ -872,12 +872,28 @@ async fn space_allowed(dir: &Path, db_size: Option<u64>, wipe_chain: bool) -> bo
 
 /// Deletes what an interrupted Mithril run left behind: the staging entry in
 /// the chain directory, and the staging directory earlier versions kept
-/// in the state directory. Called at startup, when no pipeline runs.
+/// in the state directory. Called at startup, when no pipeline of this
+/// Daedalus runs. The staging entry is kept when the chain directory, or the
+/// database staged in it, belongs to another network: every network keeps
+/// its database in the chain directory of the storage folder, so the
+/// Daedalus of that network may be downloading into it now.
 pub async fn remove_stale_staging(cfg: &MithrilConfig) {
     let mut leftovers = vec![Path::new(&cfg.state_dir).join(LEGACY_STAGING_DIR)];
     if let Ok(target) = full_install_target(Path::new(&cfg.chain_path)).await {
         if target.is_absolute() {
-            leftovers.push(target.join(STAGING_ENTRY));
+            let staging = target.join(STAGING_ENTRY);
+            let staged_db = staging.join("download").join("db");
+            let other = match state::other_network_magic(&target, cfg.network_magic).await {
+                Some(found) => Some(found),
+                None => state::other_network_magic(&staged_db, cfg.network_magic).await,
+            };
+            match other {
+                Some(found) => info!(
+                    "mithril: {} belongs to network magic {found}, not this network's; it is left as it is",
+                    staging.display()
+                ),
+                None => leftovers.push(staging),
+            }
         }
     }
     for path in leftovers {

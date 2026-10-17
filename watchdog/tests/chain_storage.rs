@@ -649,6 +649,81 @@ fn configured_folder_with_another_networks_database_starts_no_node() {
     stop(child, stdin, &rx);
 }
 
+/// A Mithril staging entry beside a database of `magic` in the configured
+/// storage folder, holding a part-downloaded database staged for `staged`.
+/// Returns the storage folder.
+fn folder_with_staging(dir: &TempDir, magic: Option<&str>, staged: &str) -> PathBuf {
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    std::fs::create_dir_all(&db).unwrap();
+    if let Some(magic) = magic {
+        make_other_network_db(&db);
+        std::fs::write(db.join("protocolMagicId"), magic).unwrap();
+    }
+    let staged_db = db.join("mithril-staging").join("download").join("db");
+    std::fs::create_dir_all(staged_db.join("immutable")).unwrap();
+    std::fs::write(
+        staged_db.join("immutable").join("00000.chunk"),
+        b"in flight",
+    )
+    .unwrap();
+    std::fs::write(staged_db.join("protocolMagicId"), staged).unwrap();
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    folder
+}
+
+/// Startup leaves a staging entry alone when the chain directory holds
+/// another network's database: that network's Daedalus, sharing the storage
+/// folder, may be downloading into it.
+#[test]
+fn startup_keeps_the_staging_beside_another_networks_database() {
+    let dir = TempDir::new("other-staging");
+    let folder = folder_with_staging(&dir, Some(OTHER_NETWORK_MAGIC), OTHER_NETWORK_MAGIC);
+    let before = tree(&folder);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// The same holds for another network's first download into an empty chain
+/// directory, which only the staged database names.
+#[test]
+fn startup_keeps_a_staged_database_of_another_network() {
+    let dir = TempDir::new("other-staged");
+    let folder = folder_with_staging(&dir, None, OTHER_NETWORK_MAGIC);
+    let before = tree(&folder);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// A staging entry of this network is a leftover of an interrupted sync and
+/// is deleted at startup, as before.
+#[test]
+fn startup_deletes_the_staging_beside_this_networks_database() {
+    let dir = TempDir::new("own-staging");
+    let folder = folder_with_staging(&dir, Some(NETWORK_MAGIC), NETWORK_MAGIC);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    assert!(!folder.join("chain").join("mithril-staging").exists());
+
+    stop(child, stdin, &rx);
+}
+
 /// Every start of the node is checked, not only the first: moving a running
 /// node to a folder that holds another network's database stops it and does
 /// not start it again there.
