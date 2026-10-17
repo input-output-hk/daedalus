@@ -288,6 +288,31 @@ async fn probe_snapshot(cfg: &MithrilConfig) -> Result<(Option<u64>, u64, Option
     ))
 }
 
+/// `path` as an external program is given it. On Windows, `read_link` on a
+/// junction returns its target in the verbatim form `\\?\D:\...`, and the
+/// staging directory inside the chain directory inherits that form. Not every
+/// program accepts it, so a verbatim drive path is passed in its plain form,
+/// `D:\...`. Any other path, a verbatim network share `\\?\UNC\...`
+/// included, is passed as it is.
+fn for_external_program(path: &Path) -> PathBuf {
+    #[cfg(windows)]
+    if let Some(plain) = path.to_str().and_then(plain_drive_path) {
+        return PathBuf::from(plain);
+    }
+    path.to_path_buf()
+}
+
+/// The plain form of a verbatim drive path, `\\?\D:\data` for `D:\data`,
+/// or None when `path` is not one.
+#[cfg(any(windows, test))]
+fn plain_drive_path(path: &str) -> Option<&str> {
+    let rest = path.strip_prefix(r"\\?\")?;
+    let drive = rest.as_bytes();
+    let is_drive_root =
+        drive.len() >= 3 && drive[0].is_ascii_alphabetic() && drive[1] == b':' && drive[2] == b'\\';
+    is_drive_root.then_some(rest)
+}
+
 enum ProcResult {
     Success,
     Failed(String),
@@ -313,7 +338,7 @@ async fn run_download(
         "latest",
         "--download-dir",
     ])
-    .arg(staging_db)
+    .arg(for_external_program(staging_db))
     .arg("--include-ancillary")
     .env("AGGREGATOR_ENDPOINT", &cfg.aggregator_url)
     .env("GENESIS_VERIFICATION_KEY", &cfg.genesis_vkey);
@@ -1122,27 +1147,34 @@ async fn run_converter(
     let _ = tokio::fs::remove_dir_all(&lsm_export_dir).await;
     let _ = tokio::fs::remove_dir_all(&lsm_database).await;
 
+    // The paths as the converter is given them; see for_external_program.
+    let snapshot_in_arg = for_external_program(&temp_input);
+    let snapshot_out_arg = for_external_program(&output_lsm_snapshot);
+    let lsm_export_arg = for_external_program(&lsm_export_dir);
+    let lsm_database_arg = for_external_program(&lsm_database);
+    let config_arg = for_external_program(Path::new(&cfg.converter_config));
+
     // Step 1: convert Mem snapshot → LSM snapshot + export tables
     info!(
         "mithril: {} convert --snapshot-in {} --snapshot-out {} --lsm-export-to {} --config {}",
         cfg.snapshot_converter_bin,
-        temp_input.display(),
-        output_lsm_snapshot.display(),
-        lsm_export_dir.display(),
-        cfg.converter_config,
+        snapshot_in_arg.display(),
+        snapshot_out_arg.display(),
+        lsm_export_arg.display(),
+        config_arg.display(),
     );
 
     let mut convert_cmd = Command::new(&cfg.snapshot_converter_bin);
     convert_cmd
         .arg("convert")
         .arg("--snapshot-in")
-        .arg(&temp_input)
+        .arg(&snapshot_in_arg)
         .arg("--snapshot-out")
-        .arg(&output_lsm_snapshot)
+        .arg(&snapshot_out_arg)
         .arg("--lsm-export-to")
-        .arg(&lsm_export_dir)
+        .arg(&lsm_export_arg)
         .arg("--config")
-        .arg(&cfg.converter_config)
+        .arg(&config_arg)
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .kill_on_drop(true);
@@ -1167,8 +1199,8 @@ async fn run_converter(
     info!(
         "mithril: {} lsm import --lsm-database {} --lsm-import-from {} --snapshot {}",
         cfg.snapshot_converter_bin,
-        lsm_database.display(),
-        lsm_export_dir.display(),
+        lsm_database_arg.display(),
+        lsm_export_arg.display(),
         slot_str,
     );
 
@@ -1177,9 +1209,9 @@ async fn run_converter(
         .arg("lsm")
         .arg("import")
         .arg("--lsm-database")
-        .arg(&lsm_database)
+        .arg(&lsm_database_arg)
         .arg("--lsm-import-from")
-        .arg(&lsm_export_dir)
+        .arg(&lsm_export_arg)
         .arg("--snapshot")
         .arg(&slot_str)
         .stdout(std::process::Stdio::piped())
@@ -1725,6 +1757,49 @@ mod tests {
             fs::write(t.0.join(REBUILD_MARKER), b"").unwrap();
             assert!(!rebuild_pending(&config(&t.0, chain.to_str().unwrap())).await);
             assert!(!t.0.join(REBUILD_MARKER).exists());
+        }
+    }
+
+    mod external_paths {
+        use super::super::{for_external_program, plain_drive_path};
+        use std::path::Path;
+
+        #[test]
+        fn a_verbatim_drive_path_loses_its_prefix() {
+            assert_eq!(
+                plain_drive_path(r"\\?\D:\Daedalus\chain\mithril-staging"),
+                Some(r"D:\Daedalus\chain\mithril-staging")
+            );
+            assert_eq!(plain_drive_path(r"\\?\c:\"), Some(r"c:\"));
+        }
+
+        #[test]
+        fn other_paths_are_not_drive_paths() {
+            for path in [
+                r"\\?\UNC\server\share\chain",
+                r"\\?\Volume{0b1c2d3e-0000-0000-0000-100000000000}\chain",
+                r"\\?\D:",
+                r"D:\Daedalus\chain",
+                r"\\server\share\chain",
+                "/data/chain",
+            ] {
+                assert_eq!(plain_drive_path(path), None, "{path}");
+            }
+        }
+
+        #[test]
+        fn programs_get_the_plain_form_on_windows_only() {
+            let verbatim = Path::new(r"\\?\D:\chain");
+            let expected = if cfg!(windows) {
+                Path::new(r"D:\chain")
+            } else {
+                verbatim
+            };
+            assert_eq!(for_external_program(verbatim), expected);
+            assert_eq!(
+                for_external_program(Path::new("/data/chain")),
+                Path::new("/data/chain")
+            );
         }
     }
 
