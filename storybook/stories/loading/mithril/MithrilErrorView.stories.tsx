@@ -138,6 +138,23 @@ storiesOf('Loading / Mithril / Error', module)
       ]}
     />
   ))
+  .add('Install Failed', () => (
+    <MithrilErrorView
+      error={{ code: 'INSTALL_FAILED', message: 'detail from the watchdog' }}
+      retryOnly
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[errorActions[0]]}
+    />
+  ))
+  .add('Rebuild Install Failed After Data Removed', () => (
+    <MithrilErrorView
+      error={{ code: 'INSTALL_FAILED', message: 'detail from the watchdog' }}
+      chainRemoved
+      retryOnly
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[errorActions[0]]}
+    />
+  ))
   .add('Wipe Failed', () => (
     <MithrilErrorView
       error={{ code: 'WIPE_FAILED', message: 'detail from the watchdog' }}

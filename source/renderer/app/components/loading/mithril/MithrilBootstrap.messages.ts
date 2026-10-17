@@ -109,6 +109,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Note on the Mithril error view when a rebuild failed after it had already removed the old blockchain data.',
   },
+  errorChainRemovedRetryHint: {
+    id: 'loading.mithrilBootstrap.error.chainRemovedRetryHint',
+    defaultMessage:
+      '!!!The old blockchain data was removed. Retry downloads it again with Mithril.',
+    description:
+      'Note on the Mithril error view when the install of a rebuild failed after the old blockchain data was removed, where Retry is the only action.',
+  },
   errorChooseSync: {
     id: 'loading.mithrilBootstrap.error.chooseSync',
     defaultMessage: '!!!Choose how to sync',

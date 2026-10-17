@@ -471,6 +471,7 @@
   "loading.mithrilBootstrap.error.chainDirNotReplaceable.hint": "The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and try again.",
   "loading.mithrilBootstrap.error.chainDirOtherNetwork.hint": "The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again.",
   "loading.mithrilBootstrap.error.chainRemovedHint": "The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.",
+  "loading.mithrilBootstrap.error.chainRemovedRetryHint": "The old blockchain data was removed. Retry downloads it again with Mithril.",
   "loading.mithrilBootstrap.error.chooseSync": "Choose how to sync",
   "loading.mithrilBootstrap.error.convert.hint": "Daedalus could not prepare the downloaded snapshot for use. Try again or do a Blockchain Sync from Genesis.",
   "loading.mithrilBootstrap.error.convert.title": "Ledger conversion failed",
