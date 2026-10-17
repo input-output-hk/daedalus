@@ -4462,6 +4462,11 @@
         "id": "loading.mithrilBootstrap.error.insufficientSpaceHint"
       },
       {
+        "defaultMessage": "!!!Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry.",
+        "description": "Hint for the MARKER_FAILED error on the Mithril error view, shown when a rebuild was refused before it deleted anything because Daedalus could not write the record of the rebuild to its data folder.",
+        "id": "loading.mithrilBootstrap.error.markerFailed.hint"
+      },
+      {
         "defaultMessage": "!!!Daedalus could not reach the Mithril service. Your blockchain data has not been changed. Check your internet connection and try again.",
         "description": "Hint shown when the Mithril service could not be reached before anything was changed or deleted.",
         "id": "loading.mithrilBootstrap.error.probeFailed.hint"

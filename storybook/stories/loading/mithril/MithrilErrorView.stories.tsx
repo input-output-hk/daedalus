@@ -109,6 +109,16 @@ storiesOf('Loading / Mithril / Error', module)
       actions={errorActions}
     />
   ))
+  .add('Marker Failed', () => (
+    <MithrilErrorView
+      error={{
+        code: 'MARKER_FAILED',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
   .add('Rebuild Failed After Data Removed', () => (
     <MithrilErrorView
       error={{
