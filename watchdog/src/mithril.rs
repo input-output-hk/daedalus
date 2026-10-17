@@ -813,7 +813,7 @@ async fn space_allowed(dir: &Path, db_size: Option<u64>, wipe_chain: bool) -> bo
         return true;
     }
     let message = format!(
-        "The blockchain data needs {} of free space on the drive that holds {}, and {} is available{}. Daedalus did not change anything. Free up space on that drive, or choose another location, and try again.",
+        "The blockchain data needs {} of free space on the drive that holds {}, and {} is available{}. Daedalus did not delete or download anything. Free up space on that drive, or choose another location, and try again.",
         gigabytes(required),
         dir.display(),
         gigabytes(available),
@@ -1286,10 +1286,11 @@ pub async fn run_pipeline(
     // or download that did not finish still knows the chain is being rebuilt.
     if wipe_chain {
         if let Err(e) = write_rebuild_marker(cfg).await {
-            warn!("mithril: could not record the rebuild: {e}");
+            let message = format!("Could not record the rebuild in {}: {e}", cfg.state_dir);
+            warn!("mithril: {message}");
             emit(&Event::MithrilError {
-                code: "MARKER_FAILED".to_string(),
-                message: e.to_string(),
+                code: "REBUILD_MARKER_FAILED".to_string(),
+                message,
                 rebuild: wipe_chain,
             });
             return PipelineResult::Cancelled;
