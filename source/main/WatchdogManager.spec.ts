@@ -374,8 +374,31 @@ describe('WatchdogManager last chain damage', () => {
     const { manager, emit } = makeManagerWithSocket();
     emit(damage);
     manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
-    emit({ event: 'mithril_status', phase: 'preparing' });
-    emit({ event: 'mithril_status', phase: 'completed' });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
+    expect(manager.getState().lastChainDamage).toBeNull();
+  });
+
+  it('is cleared when the bootstrap decision is accepted after a failed rebuild and that sync completes', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit(damage);
+    manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({
+      event: 'mithril_error',
+      code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+      message: 'x',
+      rebuild: true,
+    });
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    // Accept on the bootstrap decision sends a plain sync, which the watchdog
+    // runs as a rebuild.
+    manager.sendCommand({ cmd: 'start_mithril' });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'finalizing', rebuild: true });
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
     expect(manager.getState().lastChainDamage).toBeNull();
   });
 
@@ -383,16 +406,16 @@ describe('WatchdogManager last chain damage', () => {
     const { manager, emit } = makeManagerWithSocket();
     emit(damage);
     manager.sendCommand({ cmd: 'start_mithril' });
-    emit({ event: 'mithril_status', phase: 'completed' });
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: false });
     expect(manager.getState().lastChainDamage).not.toBeNull();
   });
 
-  it('is kept when a rebuild fails', () => {
+  it('is kept when a rebuild was asked for but the sync that completed was not one', () => {
     const { manager, emit } = makeManagerWithSocket();
     emit(damage);
     manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
     emit({ event: 'mithril_error', code: 'X', message: 'x', rebuild: true });
-    emit({ event: 'mithril_status', phase: 'completed' });
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: false });
     expect(manager.getState().lastChainDamage).not.toBeNull();
   });
 });

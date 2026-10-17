@@ -138,10 +138,6 @@ class WatchdogManager {
   private _stopTimer: ReturnType<typeof setTimeout> | null = null;
   private _stopDeadline = 0;
 
-  // True from a start_mithril that wipes the chain until the pipeline
-  // completes, fails, or the node starts without it
-  private _rebuildInFlight = false;
-
   // True from node_started until the node exits or is stopped
   private _nodeRunning = false;
 
@@ -296,19 +292,14 @@ class WatchdogManager {
   // A new Mithril run or a node start ends the error of the previous run, so
   // a stale rebuild flag cannot change what Retry does next.
   private _noteMithrilCommand(cmd: object): void {
-    const { cmd: name, wipe_chain: wipeChain } = cmd as {
-      cmd?: string;
-      wipe_chain?: boolean;
-    };
+    const { cmd: name } = cmd as { cmd?: string };
     if (name === 'start_mithril') {
       this.state.lastErrorRebuild = false;
-      this._rebuildInFlight = wipeChain === true;
     } else if (name === 'start_node') {
       // The watchdog ignores start_node while it waits for an install after a
       // failed one, so the error stays where it is.
       if (this.state.installRetryRequired) return;
       this.state.lastErrorRebuild = false;
-      this._rebuildInFlight = false;
       // The user moved on from a Mithril error; without this the error view
       // stays up while the node syncs.
       this.state.mithrilPhase = null;
@@ -570,9 +561,10 @@ class WatchdogManager {
           s.lastErrorRebuild = false;
           s.rebuildPending = false;
           // Only a rebuild repairs the chain; a partial sync leaves the
-          // detection in place.
-          if (this._rebuildInFlight) s.lastChainDamage = null;
-          this._rebuildInFlight = false;
+          // detection in place. The watchdog says whether the pipeline was a
+          // rebuild, including one it ran in place of a plain sync because an
+          // earlier rebuild had deleted the chain and not finished.
+          if (event.rebuild === true) s.lastChainDamage = null;
         }
         // A Mithril sync replaced the requested node restart.
         if (s.requestedRestart === 'node') s.requestedRestart = null;
@@ -596,7 +588,6 @@ class WatchdogManager {
         s.lastError = event.message as string;
         s.lastErrorCode = (event.code as string | undefined) ?? null;
         s.lastErrorRebuild = event.rebuild === true;
-        this._rebuildInFlight = false;
         if (event.code === INSTALL_FAILED_CODE) {
           s.installRetryRequired = true;
           // A rebuild deletes the old chain before it installs, so its failed
