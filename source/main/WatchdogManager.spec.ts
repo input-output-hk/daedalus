@@ -285,6 +285,64 @@ describe('WatchdogManager rebuild state', () => {
   });
 });
 
+describe('WatchdogManager failed install', () => {
+  const installFailed = (rebuild: boolean) => ({
+    event: 'mithril_error',
+    code: 'INSTALL_FAILED',
+    message: 'install staged db: permission denied',
+    rebuild,
+  });
+
+  it('records the wait for another install until a node starts', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().installRetryRequired).toBe(false);
+    emit(installFailed(false));
+    expect(manager.getState().installRetryRequired).toBe(true);
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().installRetryRequired).toBe(false);
+  });
+
+  it('ends the wait when the watchdog reports that a rebuild left no chain', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(false));
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    expect(manager.getState().installRetryRequired).toBe(false);
+  });
+
+  it('keeps the wait through other errors', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(false));
+    emit({
+      event: 'mithril_error',
+      code: 'PROBE_FAILED',
+      message: 'x',
+      rebuild: true,
+    });
+    expect(manager.getState().installRetryRequired).toBe(true);
+  });
+
+  it('keeps the error when start_node is sent during the wait, which the watchdog ignores', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_status', phase: 'installing' });
+    emit(installFailed(true));
+    manager.sendCommand({ cmd: 'start_node' });
+    expect(manager.getState().mithrilPhase).toBe('error');
+    expect(manager.getState().lastErrorRebuild).toBe(true);
+  });
+
+  it('marks the rebuild pending when the install of a rebuild fails', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(true));
+    expect(manager.getState().rebuildPending).toBe(true);
+  });
+
+  it('marks no rebuild pending when the install of a partial sync fails', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(false));
+    expect(manager.getState().rebuildPending).toBe(false);
+  });
+});
+
 describe('WatchdogManager last chain damage', () => {
   const damage = {
     event: 'chain_damage',
