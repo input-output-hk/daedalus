@@ -51,6 +51,12 @@ class MithrilSyncContainer extends Component<InjectedProps> {
     // After a failed install the watchdog starts no node until a Mithril sync
     // installs a database, so Retry is the only action.
     const retryOnly = backend.installRetryRequired;
+    // Without a chain, skipping Mithril starts a sync from genesis, which the
+    // user must choose knowingly: the sync choice names it, Skip does not.
+    // This covers a refused first bootstrap and a rebuild refused in a new
+    // location as well as removed data.
+    const noChain =
+      backend.hasChain === false || chainRemoved || installUnfinished;
     const errorActions: Array<ErrorAction> = [
       {
         label: intl.formatMessage(messages.errorRetry),
@@ -67,7 +73,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
     }
     if (!retryOnly) {
       errorActions.push(
-        chainRemoved || installUnfinished
+        noChain
           ? {
               label: intl.formatMessage(messages.errorChooseSync),
               onClick: () => backend.showBootstrapDecision(),

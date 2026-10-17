@@ -135,12 +135,8 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
       { hasChain: true, rebuildPending: false },
     ],
     [
-      'the rebuild failed in a newly chosen location',
-      { hasChain: false, rebuildPending: false },
-    ],
-    [
-      'the error did not come from a rebuild',
-      { lastErrorRebuild: false, rebuildPending: false },
+      'the error did not come from a rebuild and a chain is there',
+      { hasChain: true, lastErrorRebuild: false, rebuildPending: false },
     ],
   ])('keeps the skip action when %s', (_name, overrides) => {
     const backend = { ...removed(), ...overrides };
@@ -153,6 +149,40 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
     );
     expect(backend.startNode).toHaveBeenCalledTimes(1);
   });
+
+  it.each([
+    [
+      'a rebuild was refused in a newly chosen location',
+      { lastErrorRebuild: true, lastErrorCode: 'PROBE_FAILED' },
+    ],
+    [
+      'a first bootstrap was refused',
+      { lastErrorRebuild: false, lastErrorCode: 'PROBE_FAILED' },
+    ],
+    [
+      'a first bootstrap failed to download',
+      { lastErrorRebuild: false, lastErrorCode: 'DOWNLOAD_FAILED' },
+    ],
+  ])(
+    'offers the sync choice and no skip when %s and there is no chain',
+    (_name, overrides) => {
+      const backend = makeBackend({
+        hasChain: false,
+        rebuildPending: false,
+        ...overrides,
+      });
+      renderContainer(backend, copy);
+      expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
+      expect(
+        screen.queryByText('The old blockchain data was removed.')
+      ).toBeNull();
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Choose how to sync' })
+      );
+      expect(backend.showBootstrapDecision).toHaveBeenCalledTimes(1);
+      expect(backend.startNode).not.toHaveBeenCalled();
+    }
+  );
 
   it('notes the removal on the decision view after a restart mid-rebuild', () => {
     renderContainer(
