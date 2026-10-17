@@ -44,6 +44,10 @@ class MithrilSyncContainer extends Component<InjectedProps> {
     // A rebuild deleted the chain data and has not finished: there is nothing
     // to skip to, since the node would start a sync from genesis.
     const chainRemoved = backend.rebuildPending;
+    // A Mithril install began changing the chain data and did not finish, e.g.
+    // a first download cut short; nothing old was removed, and there is no
+    // chain to skip to either.
+    const installUnfinished = !chainRemoved && backend.installPending;
     // After a failed install the watchdog starts no node until a Mithril sync
     // installs a database, so Retry is the only action.
     const retryOnly = backend.installRetryRequired;
@@ -63,7 +67,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
     }
     if (!retryOnly) {
       errorActions.push(
-        chainRemoved
+        chainRemoved || installUnfinished
           ? {
               label: intl.formatMessage(messages.errorChooseSync),
               onClick: () => backend.showBootstrapDecision(),
@@ -96,6 +100,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
         <div className={styles.card}>
           <MithrilDecisionView
             chainRemoved={chainRemoved}
+            installUnfinished={installUnfinished}
             onAccept={() => backend.startMithril()}
             onDecline={() => backend.startNode()}
           />
@@ -125,6 +130,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
                 : null
             }
             chainRemoved={chainRemoved}
+            installUnfinished={installUnfinished}
             retryOnly={retryOnly}
             onOpenExternalLink={(url) => app.openExternalLink(url)}
             actions={errorActions}

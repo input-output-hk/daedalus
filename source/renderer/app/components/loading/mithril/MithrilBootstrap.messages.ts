@@ -116,6 +116,20 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Note on the Mithril error view when the install of a rebuild failed after the old blockchain data was removed, where Retry is the only action.',
   },
+  errorInstallUnfinishedHint: {
+    id: 'loading.mithrilBootstrap.error.installUnfinishedHint',
+    defaultMessage:
+      '!!!A download of the blockchain data did not finish installing. Retry downloads it again with Mithril, or choose how to sync.',
+    description:
+      'Note on the Mithril error view when a Mithril install began changing the blockchain data and did not finish, for example because Daedalus was closed during the first download, without any old blockchain data having been removed.',
+  },
+  errorInstallUnfinishedRetryHint: {
+    id: 'loading.mithrilBootstrap.error.installUnfinishedRetryHint',
+    defaultMessage:
+      '!!!A download of the blockchain data did not finish installing. Retry downloads it again with Mithril.',
+    description:
+      'Note on the Mithril error view when a Mithril install that was not a rebuild failed part-way, where Retry is the only action.',
+  },
   errorChooseLocation: {
     id: 'loading.mithrilBootstrap.error.chooseLocation',
     defaultMessage: '!!!Choose another location',
@@ -134,6 +148,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
       '!!!The old blockchain data was removed, so the blockchain needs to be synced again.',
     description:
       'Note on the Mithril bootstrap prompt when a rebuild removed the old blockchain data and did not finish.',
+  },
+  decisionInstallUnfinishedNotice: {
+    id: 'loading.mithrilBootstrap.decisionInstallUnfinishedNotice',
+    defaultMessage:
+      '!!!A download of the blockchain data did not finish installing, so the blockchain needs to be synced again.',
+    description:
+      'Note on the Mithril bootstrap prompt when a Mithril install began changing the blockchain data and did not finish, without any old blockchain data having been removed.',
   },
   errorInsufficientSpaceHint: {
     id: 'loading.mithrilBootstrap.error.insufficientSpaceHint',

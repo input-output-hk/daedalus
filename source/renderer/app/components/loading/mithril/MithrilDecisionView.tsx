@@ -10,6 +10,9 @@ import styles from './MithrilDecisionView.scss';
 interface Props {
   // A rebuild removed the old blockchain data and did not finish
   chainRemoved?: boolean;
+  // A Mithril install began changing the blockchain data and did not finish,
+  // without removing old data
+  installUnfinished?: boolean;
   onAccept(): void;
   onDecline(): void;
 }
@@ -19,7 +22,7 @@ interface Context {
 }
 
 function MithrilDecisionView(
-  { chainRemoved, onAccept, onDecline }: Props,
+  { chainRemoved, installUnfinished, onAccept, onDecline }: Props,
   { intl }: Context
 ) {
   return (
@@ -30,6 +33,9 @@ function MithrilDecisionView(
         </h1>
         {chainRemoved && (
           <p>{intl.formatMessage(messages.decisionChainRemovedNotice)}</p>
+        )}
+        {!chainRemoved && installUnfinished && (
+          <p>{intl.formatMessage(messages.decisionInstallUnfinishedNotice)}</p>
         )}
         <p>{intl.formatMessage(messages.description)}</p>
       </div>

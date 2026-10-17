@@ -70,6 +70,10 @@ export interface WatchdogState {
   // True when a rebuild was confirmed and has not finished, e.g. the app was
   // closed after the chain data was deleted
   rebuildPending: boolean;
+  // True when a Mithril install began changing the chain data and did not
+  // finish, e.g. the app was closed during a first download's install; unlike
+  // rebuildPending no old chain data was removed
+  installPending: boolean;
   // True after a Mithril install failed part-way: the watchdog starts no node
   // and ignores start_node until a Mithril sync installs a database
   installRetryRequired: boolean;
@@ -170,6 +174,7 @@ class WatchdogManager {
       lastChainDamage: null,
       lastErrorRebuild: false,
       rebuildPending: false,
+      installPending: false,
       installRetryRequired: false,
       walletUnrecoverable: false,
       nodeSocketWaitMs: null,
@@ -428,6 +433,7 @@ class WatchdogManager {
       case 'chain_status':
         s.hasChain = event.has_chain as boolean;
         s.rebuildPending = event.rebuild_pending === true;
+        s.installPending = event.install_pending === true;
         // The watchdog reports no chain once a rebuild deleted it, which also
         // ends the wait after a failed install.
         s.installRetryRequired = false;
@@ -452,9 +458,10 @@ class WatchdogManager {
         s.requestedRestart = null;
         // The new node reports its own damage from its own output.
         s.chainDamage = null;
-        // A running node means no rebuild is waiting for the user's choice,
-        // and no failed install is waiting for another.
+        // A running node means no rebuild or install is waiting for the
+        // user's choice, and no failed install is waiting for another.
         s.rebuildPending = false;
+        s.installPending = false;
         s.installRetryRequired = false;
         this._nodeRunning = true;
         s.blockSyncProgress = {
@@ -560,6 +567,7 @@ class WatchdogManager {
         if (event.phase === 'completed') {
           s.lastErrorRebuild = false;
           s.rebuildPending = false;
+          s.installPending = false;
           // Only a rebuild repairs the chain; a partial sync leaves the
           // detection in place. The watchdog says whether the pipeline was a
           // rebuild, including one it ran in place of a plain sync because an
@@ -591,8 +599,12 @@ class WatchdogManager {
         if (event.code === INSTALL_FAILED_CODE) {
           s.installRetryRequired = true;
           // A rebuild deletes the old chain before it installs, so its failed
-          // install leaves the rebuild unfinished.
-          if (event.rebuild === true) s.rebuildPending = true;
+          // install leaves the rebuild unfinished. Any other install leaves
+          // itself unfinished, without having removed old chain data. As in
+          // the watchdog's record, a rebuild that continues an unfinished
+          // install stays an install.
+          if (event.rebuild !== true) s.installPending = true;
+          else if (!s.installPending) s.rebuildPending = true;
         }
         break;
 

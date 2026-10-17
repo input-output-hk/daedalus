@@ -24,6 +24,9 @@ interface Props {
   hintAsBody?: boolean;
   // A rebuild removed the old blockchain data before it failed
   chainRemoved?: boolean;
+  // A Mithril install began changing the blockchain data and did not finish,
+  // without removing old data
+  installUnfinished?: boolean;
   // Retry is the only action, so the removal note offers no sync choice
   retryOnly?: boolean;
   actions?: Array<{
@@ -67,8 +70,9 @@ const ERROR_COPY_BY_STAGE: Partial<
 
 type CodeHint = {
   hint: keyof typeof messages;
-  // Used once a rebuild has removed the old data: the same message without
-  // its statement that the blockchain data was not changed
+  // Used once a rebuild has removed the old data, or an install has changed
+  // it: the same message without its statement that the blockchain data was
+  // not changed
   afterRemoval?: keyof typeof messages;
 };
 
@@ -124,16 +128,20 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     hint,
     hintAsBody,
     chainRemoved,
+    installUnfinished,
     retryOnly,
     actions,
     rightAlignActions,
   } = props;
+  // The blockchain data is no longer what it was before Mithril changed it,
+  // so no message may say that it was not changed
+  const dataChanged = Boolean(chainRemoved || installUnfinished);
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
   const codeCopy = error?.code ? ERROR_HINT_BY_CODE[error.code] : undefined;
   const codeHint =
-    chainRemoved && codeCopy?.afterRemoval
+    dataChanged && codeCopy?.afterRemoval
       ? codeCopy.afterRemoval
       : codeCopy?.hint;
   let resolvedHint = hint;
@@ -164,6 +172,15 @@ function MithrilErrorView(props: Props, { intl }: Context) {
               retryOnly
                 ? messages.errorChainRemovedRetryHint
                 : messages.errorChainRemovedHint
+            )}
+          </p>
+        )}
+        {!chainRemoved && installUnfinished && (
+          <p className={styles.hintBody}>
+            {intl.formatMessage(
+              retryOnly
+                ? messages.errorInstallUnfinishedRetryHint
+                : messages.errorInstallUnfinishedHint
             )}
           </p>
         )}

@@ -17,7 +17,11 @@ const renderView = (
     stage?: string;
     message: string;
   },
-  extraProps: { chainRemoved?: boolean; retryOnly?: boolean } = {}
+  extraProps: {
+    chainRemoved?: boolean;
+    installUnfinished?: boolean;
+    retryOnly?: boolean;
+  } = {}
 ) =>
   render(
     <ThemeProvider
@@ -55,6 +59,33 @@ describe('MithrilErrorView', () => {
     expect(
       screen.getByText(
         'The old blockchain data was removed. Retry downloads it again with Mithril.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/choose how to sync/)).toBeNull();
+  });
+
+  it('says a download did not finish installing, and nothing about removed data, after an unfinished install', () => {
+    renderView(
+      { code: 'PROBE_FAILED', message: 'x' },
+      { installUnfinished: true }
+    );
+    expect(
+      screen.getByText(
+        'A download of the blockchain data did not finish installing. Retry downloads it again with Mithril, or choose how to sync.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/was removed/)).toBeNull();
+    expect(screen.queryByText(/has not been changed/)).toBeNull();
+  });
+
+  it('says a download did not finish installing and offers no sync choice when Retry is the only action', () => {
+    renderView(
+      { code: 'INSTALL_FAILED', message: 'x' },
+      { installUnfinished: true, retryOnly: true }
+    );
+    expect(
+      screen.getByText(
+        'A download of the blockchain data did not finish installing. Retry downloads it again with Mithril.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByText(/choose how to sync/)).toBeNull();

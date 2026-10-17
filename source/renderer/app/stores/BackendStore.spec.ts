@@ -654,6 +654,33 @@ describe('BackendStore after a rebuild removed the chain data', () => {
     expect(store.loadingPhase).toBe('bootstrap-decision');
   });
 
+  it('skips the location picker for an install pending after a restart', () => {
+    const store = makeStore();
+    (store as any).hasChain = false;
+    expect(store.loadingPhase).toBe('chain-storage-setup');
+    (store as any).installPending = true;
+    expect(store.loadingPhase).toBe('bootstrap-decision');
+  });
+
+  it('copies installPending from the poll', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: null,
+      rebuildPending: false,
+      installPending: true,
+    });
+    await store._pollBackendStatus();
+    expect(store.installPending).toBe(true);
+    expect(store.rebuildPending).toBe(false);
+    expect(store.loadingPhase).toBe('bootstrap-decision');
+  });
+
   it('copies installRetryRequired from the poll', async () => {
     const store = makeStore();
     (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({

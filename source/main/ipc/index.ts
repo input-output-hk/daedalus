@@ -96,6 +96,7 @@ export default (window: BrowserWindow) => {
         lastChainDamage: null,
         lastErrorRebuild: false,
         rebuildPending: false,
+        installPending: false,
         installRetryRequired: false,
         walletUnrecoverable: false,
         nodeSocketWaitMs: null,

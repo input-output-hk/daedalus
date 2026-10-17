@@ -274,6 +274,37 @@ describe('WatchdogManager rebuild state', () => {
     expect(manager.getState().rebuildPending).toBe(false);
   });
 
+  it('maps install_pending from chain_status and defaults it to false', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().installPending).toBe(false);
+    emit({
+      event: 'chain_status',
+      has_chain: false,
+      rebuild_pending: false,
+      install_pending: true,
+    });
+    expect(manager.getState().installPending).toBe(true);
+    expect(manager.getState().rebuildPending).toBe(false);
+    emit({ event: 'chain_status', has_chain: false });
+    expect(manager.getState().installPending).toBe(false);
+  });
+
+  it('clears installPending when a node starts or the pipeline completes', () => {
+    const { manager, emit } = makeManager();
+    const pending = {
+      event: 'chain_status',
+      has_chain: false,
+      rebuild_pending: false,
+      install_pending: true,
+    };
+    emit(pending);
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().installPending).toBe(false);
+    emit(pending);
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
+    expect(manager.getState().installPending).toBe(false);
+  });
+
   it('clears rebuildPending when a node starts or the pipeline completes', () => {
     const { manager, emit } = makeManager();
     emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
@@ -339,6 +370,31 @@ describe('WatchdogManager failed install', () => {
   it('marks no rebuild pending when the install of a partial sync fails', () => {
     const { manager, emit } = makeManager();
     emit(installFailed(false));
+    expect(manager.getState().rebuildPending).toBe(false);
+  });
+
+  it('marks the install pending when an install that was not a rebuild fails', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(false));
+    expect(manager.getState().installPending).toBe(true);
+  });
+
+  it('marks no install pending when the install of a rebuild fails', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(true));
+    expect(manager.getState().installPending).toBe(false);
+  });
+
+  it('keeps an unfinished install an install when the rebuild that follows fails to install', () => {
+    const { manager, emit } = makeManager();
+    emit({
+      event: 'chain_status',
+      has_chain: false,
+      rebuild_pending: false,
+      install_pending: true,
+    });
+    emit(installFailed(true));
+    expect(manager.getState().installPending).toBe(true);
     expect(manager.getState().rebuildPending).toBe(false);
   });
 });

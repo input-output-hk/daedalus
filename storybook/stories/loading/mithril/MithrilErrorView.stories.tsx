@@ -176,9 +176,25 @@ storiesOf('Loading / Mithril / Error', module)
   .add('Install Failed', () => (
     <MithrilErrorView
       error={{ code: 'INSTALL_FAILED', message: 'detail from the watchdog' }}
+      installUnfinished
       retryOnly
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
       actions={[errorActions[0]]}
+    />
+  ))
+  .add('Probe Failed After An Unfinished Install', () => (
+    <MithrilErrorView
+      error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
+      installUnfinished
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[
+        errorActions[0],
+        {
+          label: 'Choose how to sync',
+          onClick: () => bootstrapActions.onDecline(),
+          variant: 'secondary' as const,
+        },
+      ]}
     />
   ))
   .add('Rebuild Install Failed After Data Removed', () => (

@@ -30,6 +30,7 @@ const makeBackend = (overrides = {}) => ({
   hasChain: true,
   lastErrorRebuild: false,
   rebuildPending: false,
+  installPending: false,
   installRetryRequired: false,
   canChooseAnotherLocation: false,
   chooseAnotherLocation: jest.fn(),
@@ -178,6 +179,70 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
       copy
     );
     expect(screen.queryByText('Old data removed, sync again.')).toBeNull();
+  });
+});
+
+describe('MithrilSyncContainer after an install did not finish', () => {
+  afterEach(cleanup);
+
+  const copy = {
+    [messages.errorRetry.id]: 'Retry',
+    [messages.errorSkip.id]: 'Skip to blockchain sync',
+    [messages.errorChooseSync.id]: 'Choose how to sync',
+    [messages.errorChainRemovedHint.id]: 'Removed; retry or choose.',
+    [messages.errorChainRemovedRetryHint.id]: 'Removed; retry.',
+    [messages.errorInstallUnfinishedHint.id]: 'Unfinished; retry or choose.',
+    [messages.errorInstallUnfinishedRetryHint.id]: 'Unfinished; retry.',
+    [messages.decisionChainRemovedNotice.id]: 'Old data removed, sync again.',
+    [messages.decisionInstallUnfinishedNotice.id]:
+      'Install unfinished, sync again.',
+  };
+
+  it('says the install did not finish, not that data was removed, on the decision view after a restart', () => {
+    renderContainer(
+      makeBackend({
+        loadingPhase: 'bootstrap-decision',
+        mithrilPhase: null,
+        hasChain: false,
+        installPending: true,
+      }),
+      copy
+    );
+    expect(
+      screen.getByText('Install unfinished, sync again.')
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Old data removed, sync again.')).toBeNull();
+  });
+
+  it('says the install did not finish and offers the sync choice instead of skipping after a later error', () => {
+    const backend = makeBackend({
+      hasChain: false,
+      installPending: true,
+      lastErrorRebuild: true,
+      lastErrorCode: 'PROBE_FAILED',
+    });
+    renderContainer(backend, copy);
+    expect(
+      screen.getByText('Unfinished; retry or choose.')
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Removed; retry or choose.')).toBeNull();
+    expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Choose how to sync' }));
+    expect(backend.showBootstrapDecision).toHaveBeenCalledTimes(1);
+  });
+
+  it('says the install did not finish and offers only Retry after an install that was not a rebuild failed', () => {
+    renderContainer(
+      makeBackend({
+        lastErrorCode: 'INSTALL_FAILED',
+        installRetryRequired: true,
+        installPending: true,
+      }),
+      copy
+    );
+    expect(screen.getByText('Unfinished; retry.')).toBeInTheDocument();
+    expect(screen.queryByText('Removed; retry.')).toBeNull();
+    expect(screen.getAllByRole('button')).toHaveLength(1);
   });
 });
 

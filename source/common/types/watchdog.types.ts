@@ -32,6 +32,10 @@ export interface WatchdogState {
   // True when a rebuild was confirmed and has not finished, e.g. the app was
   // closed after the chain data was deleted
   rebuildPending: boolean;
+  // True when a Mithril install began changing the chain data and did not
+  // finish, e.g. the app was closed during a first download's install; unlike
+  // rebuildPending no old chain data was removed
+  installPending: boolean;
   // True after a Mithril install failed part-way: the watchdog starts no node
   // and ignores start_node until a Mithril sync installs a database
   installRetryRequired: boolean;
