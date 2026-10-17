@@ -94,6 +94,9 @@ pub async fn write_marker(state_dir: &str, state: &str) -> Result<()> {
 /// installed, so a rebuild cut short by a failure, a crash or the user quitting
 /// is still known at the next start. What a part-failed delete leaves would
 /// otherwise look like a chain, and the node would replay it from genesis.
+/// Every other full install writes it too, just before it starts moving the
+/// download in, so an install cut short leaves no database that counts as a
+/// chain.
 const REBUILD_MARKER: &str = "chain-rebuild.json";
 
 /// Where the rebuild marker is written before it is renamed into place, so
@@ -1478,6 +1481,27 @@ pub async fn run_pipeline(
             rebuild: wipe_chain,
         });
         return failed();
+    }
+
+    // A full install deletes the database in the chain directory and moves
+    // the download in entry by entry, the clean marker last. A rebuild
+    // recorded itself before it deleted the old chain; any other full
+    // install, a first bootstrap included, records itself here. An install
+    // cut short by a crash then leaves the record, and the next start reports
+    // no chain and installs again instead of starting the node on part of a
+    // database.
+    if !is_partial && !wipe_chain {
+        if let Err(e) = write_rebuild_marker(cfg).await {
+            let _ = tokio::fs::remove_dir_all(&staging_root).await;
+            let message = format!("Could not record the install in {}: {e}", cfg.state_dir);
+            warn!("mithril: {message}");
+            emit(&Event::MithrilError {
+                code: "MARKER_FAILED".to_string(),
+                message,
+                rebuild: wipe_chain,
+            });
+            return failed();
+        }
     }
 
     if let Err(e) = install_staged(&staging_db, &chain_path, is_partial).await {
