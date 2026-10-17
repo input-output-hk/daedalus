@@ -25,6 +25,7 @@ class ChainStorageContainer extends Component<InjectedProps> {
       setChainStorageDirectory,
       resetChainStorageDirectory,
       confirmStorageLocation,
+      locationPickerForRebuild,
     } = backend;
 
     return (
@@ -36,6 +37,7 @@ class ChainStorageContainer extends Component<InjectedProps> {
         onSetChainStorageDirectory={setChainStorageDirectory}
         onResetChainStorageDirectory={resetChainStorageDirectory}
         onConfirmStorageLocation={confirmStorageLocation}
+        forRebuild={locationPickerForRebuild}
       />
     );
   }

@@ -38,6 +38,9 @@ interface Props {
     arg: string
   ) => Promise<ChainStorageValidation>;
   onConfirmStorageLocation?(): void;
+  // The picker was opened from a failed or refused rebuild: the rebuild that
+  // follows deletes any blockchain data in the location picked
+  forRebuild?: boolean;
 }
 
 interface Context {
@@ -71,6 +74,7 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
     onResetChainStorageDirectory,
     onValidateChainStorageDirectory,
     onConfirmStorageLocation,
+    forRebuild,
   } = props;
   const [isSelectingDirectory, setIsSelectingDirectory] = React.useState(false);
   const [isApplyingStorageChange, setIsApplyingStorageChange] =
@@ -430,7 +434,11 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
             }
           >
             {hasBlockchainData
-              ? intl.formatMessage(messages.dataFoundNotice)
+              ? intl.formatMessage(
+                  forRebuild
+                    ? messages.rebuildDataNotice
+                    : messages.dataFoundNotice
+                )
               : storageHelpText}
           </p>
         )}

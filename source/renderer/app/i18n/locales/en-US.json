@@ -97,6 +97,7 @@
   "chainStorage.locationPicker.descriptionLargeRequirement": "Choose where Daedalus should keep blockchain data before you continue. Blockchain data can require a large amount of free space, so choose a location with plenty of capacity.",
   "chainStorage.locationPicker.descriptionWithRequiredSpaceEstimate": "Choose where Daedalus should keep blockchain data before you continue. The latest available snapshot is about {requiredSpace}, so make sure this location has plenty of free space.",
   "chainStorage.locationPicker.directoryLabel": "Blockchain data location",
+  "chainStorage.locationPicker.rebuildDataNotice": "Existing blockchain data found. The rebuild deletes the blockchain data in this folder and downloads it again.",
   "chainStorage.locationPicker.recoveryNotice": "We couldn't access your previous storage location. A default fallback location has been selected. You can proceed with this or choose a new one.",
   "chainStorage.locationPicker.resetToDefault": "Reset to default",
   "chainStorage.locationPicker.subdirectoryCreationNotice": "Daedalus will create a chain subdirectory inside the selected parent folder.",

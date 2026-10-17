@@ -515,6 +515,35 @@ describe('ChainStorageLocationPicker', () => {
     expect(describedByIds).toContain(dataFoundNotice.getAttribute('id'));
   });
 
+  it('says the rebuild deletes the data found instead of reusing it when the picker leads to a rebuild', () => {
+    renderComponent({
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/current-chain',
+        resolvedPath: '/mnt/current-chain',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+        chainSubdirectoryStatus: 'existing-directory',
+      },
+      forRebuild: true,
+    });
+
+    const input = screen.getByLabelText(/blockchain data location/i);
+    const rebuildNotice = screen.getByText(
+      'Existing blockchain data found. The rebuild deletes the blockchain data in this folder and downloads it again.'
+    );
+    const describedByIds =
+      input.getAttribute('aria-describedby')?.split(' ') ?? [];
+
+    expect(screen.queryByText(/will reuse this data/i)).not.toBeInTheDocument();
+    expect(describedByIds).toContain(rebuildNotice.getAttribute('id'));
+  });
+
+  it('shows no rebuild notice for a location without blockchain data', () => {
+    renderComponent({ forRebuild: true });
+    expect(screen.queryByText(/The rebuild deletes/)).not.toBeInTheDocument();
+  });
+
   it('shows no storage status message for an empty directly selected chain directory', () => {
     renderComponent({
       customChainPath: '/mnt/current-parent',

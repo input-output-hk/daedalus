@@ -593,6 +593,14 @@ export default class BackendStore extends Store {
     return this._chainStoragePickerRequested && this.lastErrorRebuild;
   }
 
+  // The location picker shows on the way to a rebuild, which deletes any
+  // blockchain data in the location picked, so it must not say that data
+  // found there will be reused
+  @computed
+  get locationPickerForRebuild(): boolean {
+    return this._holdsPickedLocation;
+  }
+
   @action
   setChainStorageDirectory = async (
     customPath: string | null

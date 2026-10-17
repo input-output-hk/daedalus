@@ -1012,6 +1012,11 @@
         "id": "chainStorage.locationPicker.dataFoundNotice"
       },
       {
+        "defaultMessage": "!!!Existing blockchain data found. The rebuild deletes the blockchain data in this folder and downloads it again.",
+        "description": "Notice shown when the location picker was opened from a failed or refused rebuild and the selected blockchain data location already contains chain data, which the rebuild deletes.",
+        "id": "chainStorage.locationPicker.rebuildDataNotice"
+      },
+      {
         "defaultMessage": "!!!Daedalus will create a chain subdirectory inside the selected parent folder.",
         "description": "Help text shown when Daedalus will create the managed chain subdirectory.",
         "id": "chainStorage.locationPicker.subdirectoryCreationNotice"

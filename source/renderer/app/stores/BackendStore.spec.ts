@@ -494,6 +494,31 @@ describe('BackendStore choosing another location after a failed sync', () => {
     expect(store.loadingPhase).toBe('chain-storage-setup');
   });
 
+  it('marks the picker as leading to a rebuild after a rebuild error', () => {
+    const store = makeStore();
+    failed(store, 'INSUFFICIENT_SPACE', true);
+    expect(store.locationPickerForRebuild).toBe(false);
+    store.chooseAnotherLocation();
+    expect(store.locationPickerForRebuild).toBe(true);
+    store.confirmStorageLocation();
+    expect(store.locationPickerForRebuild).toBe(false);
+  });
+
+  it('marks the picker as leading to a rebuild after a location error of a rebuild', () => {
+    const store = makeStore();
+    failed(store, 'INVALID_CHAIN_PATH', true);
+    store.retryMithril();
+    expect(store.loadingPhase).toBe('chain-storage-setup');
+    expect(store.locationPickerForRebuild).toBe(true);
+  });
+
+  it('does not mark the picker as leading to a rebuild after a sync that was not a rebuild', () => {
+    const store = makeStore();
+    failed(store, 'INSUFFICIENT_SPACE', false);
+    store.chooseAnotherLocation();
+    expect(store.locationPickerForRebuild).toBe(false);
+  });
+
   it('rebuilds in the default location when the picker resets to it', async () => {
     const store = makeStore();
     failed(store, 'INSUFFICIENT_SPACE', true);
