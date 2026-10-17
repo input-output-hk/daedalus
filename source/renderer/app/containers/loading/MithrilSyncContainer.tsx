@@ -4,6 +4,7 @@ import { intlShape } from 'react-intl';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import MithrilDecisionView from '../../components/loading/mithril/MithrilDecisionView';
 import MithrilProgressView from '../../components/loading/mithril/MithrilProgressView';
+import RebuildConfirmView from '../../components/loading/chain-damage/RebuildConfirmView';
 import MithrilErrorView from '../../components/loading/mithril/MithrilErrorView';
 import messages from '../../components/loading/mithril/MithrilBootstrap.messages';
 import styles from '../../components/loading/mithril/MithrilBootstrap.scss';
@@ -59,6 +60,17 @@ class MithrilSyncContainer extends Component<InjectedProps> {
             chainRemoved={backend.rebuildPending || chainRemoved}
             onAccept={() => backend.startMithril()}
             onDecline={() => backend.startNode()}
+          />
+        </div>
+      );
+    }
+
+    if (mithrilPhase === 'error' && backend._rebuildConfirmationRequested) {
+      return (
+        <div className={styles.card}>
+          <RebuildConfirmView
+            onRebuild={() => backend.rebuildChain()}
+            onBack={() => backend.cancelRebuildConfirmation()}
           />
         </div>
       );

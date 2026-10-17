@@ -363,6 +363,53 @@ describe('BackendStore.retryMithril', () => {
     });
   });
 
+  it('asks to confirm a rebuild when a partial sync failed to install', () => {
+    const store = makeStore();
+    failed(store, 'INSTALL_FAILED', false);
+    store.retryMithril();
+    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+    expect(store._rebuildConfirmationRequested).toBe(true);
+  });
+
+  it('leaves the confirmation from Back without sending anything', () => {
+    const store = makeStore();
+    failed(store, 'INSTALL_FAILED', false);
+    store.retryMithril();
+    store.cancelRebuildConfirmation();
+    expect(store._rebuildConfirmationRequested).toBe(false);
+    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+  });
+
+  it('sends the rebuild only when the confirmation is confirmed', () => {
+    const store = makeStore();
+    failed(store, 'INSTALL_FAILED', false);
+    store.retryMithril();
+    store.rebuildChain();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledTimes(1);
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_mithril',
+      wipe_chain: true,
+    });
+    expect(store._rebuildConfirmationRequested).toBe(false);
+  });
+
+  it('drops the confirmation when the Mithril phase leaves the error', async () => {
+    const store = makeStore();
+    failed(store, 'INSTALL_FAILED', false);
+    store.retryMithril();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'preparing',
+    });
+    await store._pollBackendStatus();
+    expect(store._rebuildConfirmationRequested).toBe(false);
+  });
+
   it('copies lastErrorRebuild from the poll', async () => {
     const store = makeStore();
     (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({

@@ -11,6 +11,7 @@ import { themeOverrides } from '../../themes/overrides';
 
 import globalMessages from '../../i18n/global-messages';
 import messages from '../../components/loading/mithril/MithrilBootstrap.messages';
+import chainDamageMessages from '../../components/loading/chain-damage/ChainDamage.messages';
 import MithrilSyncContainer from './MithrilSyncContainer';
 
 const makeBackend = (overrides = {}) => ({
@@ -23,6 +24,9 @@ const makeBackend = (overrides = {}) => ({
   retryMithril: jest.fn(),
   startNode: jest.fn(),
   showBootstrapDecision: jest.fn(),
+  rebuildChain: jest.fn(),
+  cancelRebuildConfirmation: jest.fn(),
+  _rebuildConfirmationRequested: false,
   hasChain: true,
   lastErrorRebuild: false,
   rebuildPending: false,
@@ -159,5 +163,46 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
       copy
     );
     expect(screen.queryByText('Old data removed, sync again.')).toBeNull();
+  });
+});
+
+describe('MithrilSyncContainer after a partial sync failed to install', () => {
+  afterEach(cleanup);
+
+  const confirmation = () =>
+    makeBackend({
+      lastErrorCode: 'INSTALL_FAILED',
+      _rebuildConfirmationRequested: true,
+    });
+
+  it('shows the rebuild confirmation in place of the error once Retry asked for it', () => {
+    renderContainer(confirmation(), {
+      [chainDamageMessages.confirmTitle.id]: 'Rebuild blockchain data?',
+      [messages.errorRetry.id]: 'Retry',
+    });
+    expect(
+      screen.getByRole('heading', { name: 'Rebuild blockchain data?' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Retry' })).toBeNull();
+  });
+
+  it('rebuilds only from the confirmation and returns to the error from Back', () => {
+    const backend = confirmation();
+    renderContainer(backend, {
+      [chainDamageMessages.confirmBack.id]: 'Back',
+      [chainDamageMessages.confirmRebuild.id]: 'Rebuild',
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(backend.cancelRebuildConfirmation).toHaveBeenCalledTimes(1);
+    expect(backend.rebuildChain).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Rebuild' }));
+    expect(backend.rebuildChain).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the error view while no confirmation was asked for', () => {
+    renderContainer(makeBackend({ lastErrorCode: 'INSTALL_FAILED' }), {
+      [messages.errorRetry.id]: 'Retry',
+    });
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
   });
 });

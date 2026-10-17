@@ -7,6 +7,7 @@ import type {
   ChainDamageKind,
 } from '../../../../../common/types/watchdog.types';
 import messages from './ChainDamage.messages';
+import RebuildConfirmView from './RebuildConfirmView';
 import styles from './ChainDamageView.scss';
 
 const SYMPTOM_BY_KIND: Record<ChainDamageKind, string> = {
@@ -25,7 +26,6 @@ type Props = {
 
 type State = {
   view: 'choice' | 'confirm';
-  isStarted: boolean;
 };
 
 export default class ChainDamageView extends Component<Props, State> {
@@ -35,7 +35,6 @@ export default class ChainDamageView extends Component<Props, State> {
 
   state: State = {
     view: this.props.initialView ?? 'choice',
-    isStarted: false,
   };
 
   showConfirmation = () => {
@@ -44,21 +43,6 @@ export default class ChainDamageView extends Component<Props, State> {
 
   cancelConfirmation = () => {
     this.setState({ view: 'choice' });
-  };
-
-  // The only caller of onRebuild, so the confirmation always precedes the
-  // rebuild. Once sent, the button stays disabled until the Mithril progress
-  // view replaces this one, so a second click cannot send it again.
-  handleRebuild = () => {
-    if (this.state.isStarted) return;
-    this.setState({ isStarted: true });
-    try {
-      this.props.onRebuild();
-    } catch (error) {
-      // Nothing was started, so the buttons must work again.
-      this.setState({ isStarted: false });
-      throw error;
-    }
   };
 
   renderChoiceView() {
@@ -99,39 +83,14 @@ export default class ChainDamageView extends Component<Props, State> {
     );
   }
 
-  renderConfirmView() {
-    const { intl } = this.context;
-    const { isStarted } = this.state;
-
-    return (
-      <div className={styles.root}>
-        <div className={styles.header}>
-          <h1>{intl.formatMessage(messages.confirmTitle)}</h1>
-          <p>{intl.formatMessage(messages.confirmBody)}</p>
-        </div>
-        <div className={styles.actions}>
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.confirmBack)}
-            disabled={isStarted}
-            onClick={this.cancelConfirmation}
-          />
-          <Button
-            className={styles.primaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.confirmRebuild)}
-            disabled={isStarted}
-            onClick={this.handleRebuild}
-          />
-        </div>
-      </div>
-    );
-  }
-
   render() {
-    return this.state.view === 'confirm'
-      ? this.renderConfirmView()
-      : this.renderChoiceView();
+    return this.state.view === 'confirm' ? (
+      <RebuildConfirmView
+        onRebuild={this.props.onRebuild}
+        onBack={this.cancelConfirmation}
+      />
+    ) : (
+      this.renderChoiceView()
+    );
   }
 }
