@@ -30,6 +30,7 @@ const makeBackend = (overrides = {}) => ({
   hasChain: true,
   lastErrorRebuild: false,
   rebuildPending: false,
+  installRetryRequired: false,
   cancelMithril: jest.fn(),
   ...overrides,
 });
@@ -106,6 +107,7 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
     makeBackend({
       hasChain: false,
       lastErrorRebuild: true,
+      rebuildPending: true,
       lastErrorCode: 'DOWNLOAD_FAILED',
     });
 
@@ -124,8 +126,18 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
   });
 
   it.each([
-    ['the rebuild did not delete anything', { hasChain: true }],
-    ['the error did not come from a rebuild', { lastErrorRebuild: false }],
+    [
+      'the rebuild did not delete anything',
+      { hasChain: true, rebuildPending: false },
+    ],
+    [
+      'the rebuild failed in a newly chosen location',
+      { hasChain: false, rebuildPending: false },
+    ],
+    [
+      'the error did not come from a rebuild',
+      { lastErrorRebuild: false, rebuildPending: false },
+    ],
   ])('keeps the skip action when %s', (_name, overrides) => {
     const backend = { ...removed(), ...overrides };
     renderContainer(backend, copy);
@@ -166,12 +178,62 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
   });
 });
 
+describe('MithrilSyncContainer after an install failed', () => {
+  afterEach(cleanup);
+
+  const copy = {
+    [messages.errorRetry.id]: 'Retry',
+    [messages.errorSkip.id]: 'Skip to blockchain sync',
+    [messages.errorChooseSync.id]: 'Choose how to sync',
+    [messages.errorChainRemovedHint.id]: 'Removed; retry or choose.',
+    [messages.errorChainRemovedRetryHint.id]: 'Removed; retry.',
+  };
+  const installFailed = (overrides = {}) =>
+    makeBackend({
+      lastErrorCode: 'INSTALL_FAILED',
+      installRetryRequired: true,
+      ...overrides,
+    });
+
+  it('offers only Retry after a partial sync failed to install', () => {
+    const backend = installFailed();
+    renderContainer(backend, copy);
+    expect(screen.getAllByRole('button')).toHaveLength(1);
+    expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
+    expect(screen.queryByText('Removed; retry.')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(backend.retryMithril).toHaveBeenCalledTimes(1);
+    expect(backend.startNode).not.toHaveBeenCalled();
+  });
+
+  it('says the old data was removed and offers only Retry after the install of a rebuild failed', () => {
+    renderContainer(
+      installFailed({ lastErrorRebuild: true, rebuildPending: true }),
+      copy
+    );
+    expect(screen.getByText('Removed; retry.')).toBeInTheDocument();
+    expect(screen.queryByText('Removed; retry or choose.')).toBeNull();
+    expect(screen.queryByText('Choose how to sync')).toBeNull();
+    expect(screen.getAllByRole('button')).toHaveLength(1);
+  });
+
+  it('offers only Retry for a later error while the watchdog still waits for an install', () => {
+    renderContainer(
+      installFailed({ lastErrorCode: 'PROBE_FAILED', lastErrorRebuild: true }),
+      copy
+    );
+    expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
+    expect(screen.getAllByRole('button')).toHaveLength(1);
+  });
+});
+
 describe('MithrilSyncContainer after a partial sync failed to install', () => {
   afterEach(cleanup);
 
   const confirmation = () =>
     makeBackend({
       lastErrorCode: 'INSTALL_FAILED',
+      installRetryRequired: true,
       _rebuildConfirmationRequested: true,
     });
 
@@ -200,9 +262,13 @@ describe('MithrilSyncContainer after a partial sync failed to install', () => {
   });
 
   it('shows the error view while no confirmation was asked for', () => {
-    renderContainer(makeBackend({ lastErrorCode: 'INSTALL_FAILED' }), {
-      [messages.errorRetry.id]: 'Retry',
-    });
+    renderContainer(
+      makeBackend({
+        lastErrorCode: 'INSTALL_FAILED',
+        installRetryRequired: true,
+      }),
+      { [messages.errorRetry.id]: 'Retry' }
+    );
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
   });
 });

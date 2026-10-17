@@ -24,6 +24,8 @@ interface Props {
   hintAsBody?: boolean;
   // A rebuild removed the old blockchain data before it failed
   chainRemoved?: boolean;
+  // Retry is the only action, so the removal note offers no sync choice
+  retryOnly?: boolean;
   actions?: Array<{
     label: string;
     onClick(): void;
@@ -99,6 +101,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     hint,
     hintAsBody,
     chainRemoved,
+    retryOnly,
     actions,
     rightAlignActions,
   } = props;
@@ -130,7 +133,11 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           ))}
         {chainRemoved && (
           <p className={styles.hintBody}>
-            {intl.formatMessage(messages.errorChainRemovedHint)}
+            {intl.formatMessage(
+              retryOnly
+                ? messages.errorChainRemovedRetryHint
+                : messages.errorChainRemovedHint
+            )}
           </p>
         )}
         {logPath && onOpenExternalLink && (

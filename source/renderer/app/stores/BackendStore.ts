@@ -67,6 +67,9 @@ export default class BackendStore extends Store {
   // True when a confirmed rebuild has not finished, e.g. Daedalus was closed
   // after the chain data was deleted; the location is already decided
   @observable rebuildPending = false;
+  // True after a Mithril install failed part-way: the watchdog starts no node
+  // until a Mithril sync installs a database, so only Retry is offered
+  @observable installRetryRequired = false;
   // The last hole in the chain database the watchdog detected
   @observable chainDamage: ChainDamage | null = null;
   // The last detection of the session, which Diagnostics shows; it outlives
@@ -190,6 +193,7 @@ export default class BackendStore extends Store {
         this.lastErrorCode = state.lastErrorCode ?? null;
         this.lastErrorRebuild = state.lastErrorRebuild ?? false;
         this.rebuildPending = state.rebuildPending ?? false;
+        this.installRetryRequired = state.installRetryRequired ?? false;
         this.chainDamage = state.chainDamage ?? null;
         this.lastChainDamage = state.lastChainDamage ?? null;
         this.walletUnrecoverable = state.walletUnrecoverable;

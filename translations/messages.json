@@ -4447,6 +4447,11 @@
         "id": "loading.mithrilBootstrap.error.chainRemovedHint"
       },
       {
+        "defaultMessage": "!!!The old blockchain data was removed. Retry downloads it again with Mithril.",
+        "description": "Note on the Mithril error view when the install of a rebuild failed after the old blockchain data was removed, where Retry is the only action.",
+        "id": "loading.mithrilBootstrap.error.chainRemovedRetryHint"
+      },
+      {
         "defaultMessage": "!!!Choose how to sync",
         "description": "Button label on the Mithril error view that opens the choice between Mithril fast sync and a Blockchain Sync from Genesis, after the old blockchain data was removed.",
         "id": "loading.mithrilBootstrap.error.chooseSync"

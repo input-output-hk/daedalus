@@ -17,7 +17,7 @@ const renderView = (
     stage?: string;
     message: string;
   },
-  extraProps: { chainRemoved?: boolean } = {}
+  extraProps: { chainRemoved?: boolean; retryOnly?: boolean } = {}
 ) =>
   render(
     <ThemeProvider
@@ -45,6 +45,19 @@ describe('MithrilErrorView', () => {
         'The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.'
       )
     ).toBeInTheDocument();
+  });
+
+  it('says the old blockchain data was removed and offers no sync choice when Retry is the only action', () => {
+    renderView(
+      { code: 'INSTALL_FAILED', message: 'x' },
+      { chainRemoved: true, retryOnly: true }
+    );
+    expect(
+      screen.getByText(
+        'The old blockchain data was removed. Retry downloads it again with Mithril.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/choose how to sync/)).toBeNull();
   });
 
   it.each([

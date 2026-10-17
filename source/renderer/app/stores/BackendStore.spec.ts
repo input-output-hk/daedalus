@@ -509,6 +509,23 @@ describe('BackendStore after a rebuild removed the chain data', () => {
     expect(store.loadingPhase).toBe('bootstrap-decision');
   });
 
+  it('copies installRetryRequired from the poll', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: true,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'error',
+      lastErrorCode: 'INSTALL_FAILED',
+      installRetryRequired: true,
+    });
+    await store._pollBackendStatus();
+    expect(store.installRetryRequired).toBe(true);
+  });
+
   it('copies rebuildPending from the poll', async () => {
     const store = makeStore();
     (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({

@@ -11,6 +11,12 @@ import styles from '../../components/loading/mithril/MithrilBootstrap.scss';
 
 const TERMINAL_PHASES = new Set(['completed', 'cancelled', 'error']);
 
+type ErrorAction = {
+  label: string;
+  onClick: () => void;
+  variant: 'primary' | 'secondary';
+};
+
 @inject('stores', 'actions')
 @observer
 class MithrilSyncContainer extends Component<InjectedProps> {
@@ -35,9 +41,34 @@ class MithrilSyncContainer extends Component<InjectedProps> {
       lastErrorCode,
     } = backend;
     const { intl } = this.context;
-    // A failed rebuild that had already deleted the chain data leaves nothing
-    // to skip to: the node would start a sync from genesis.
-    const chainRemoved = backend.lastErrorRebuild && backend.hasChain === false;
+    // A rebuild deleted the chain data and has not finished: there is nothing
+    // to skip to, since the node would start a sync from genesis.
+    const chainRemoved = backend.rebuildPending;
+    // After a failed install the watchdog starts no node until a Mithril sync
+    // installs a database, so Retry is the only action.
+    const retryOnly = backend.installRetryRequired;
+    const errorActions: Array<ErrorAction> = [
+      {
+        label: intl.formatMessage(messages.errorRetry),
+        onClick: () => backend.retryMithril(),
+        variant: 'primary',
+      },
+    ];
+    if (!retryOnly) {
+      errorActions.push(
+        chainRemoved
+          ? {
+              label: intl.formatMessage(messages.errorChooseSync),
+              onClick: () => backend.showBootstrapDecision(),
+              variant: 'secondary',
+            }
+          : {
+              label: intl.formatMessage(messages.errorSkip),
+              onClick: () => backend.startNode(),
+              variant: 'secondary',
+            }
+      );
+    }
 
     // Track wall-clock start time for elapsed timer; reset on terminal phases.
     if (mithrilPhase && !TERMINAL_PHASES.has(mithrilPhase)) {
@@ -57,7 +88,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
       return (
         <div className={styles.card}>
           <MithrilDecisionView
-            chainRemoved={backend.rebuildPending || chainRemoved}
+            chainRemoved={chainRemoved}
             onAccept={() => backend.startMithril()}
             onDecline={() => backend.startNode()}
           />
@@ -86,25 +117,9 @@ class MithrilSyncContainer extends Component<InjectedProps> {
                 : null
             }
             chainRemoved={chainRemoved}
+            retryOnly={retryOnly}
             onOpenExternalLink={(url) => app.openExternalLink(url)}
-            actions={[
-              {
-                label: intl.formatMessage(messages.errorRetry),
-                onClick: () => backend.retryMithril(),
-                variant: 'primary' as const,
-              },
-              chainRemoved
-                ? {
-                    label: intl.formatMessage(messages.errorChooseSync),
-                    onClick: () => backend.showBootstrapDecision(),
-                    variant: 'secondary' as const,
-                  }
-                : {
-                    label: intl.formatMessage(messages.errorSkip),
-                    onClick: () => backend.startNode(),
-                    variant: 'secondary' as const,
-                  },
-            ]}
+            actions={errorActions}
           />
         </div>
       );

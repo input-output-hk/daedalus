@@ -529,6 +529,7 @@
   "loading.mithrilBootstrap.error.chainDirNotReplaceable.hint": "ブロックチェーンデータのフォルダーにほかのファイルが含まれているため、Daedalusは削除しませんでした。それらのファイルを別の場所に移動してから、もう一度お試しください。",
   "loading.mithrilBootstrap.error.chainDirOtherNetwork.hint": "ブロックチェーンデータのフォルダーに別のCardanoネットワークのデータがあるため、Daedalusは変更しませんでした。別のブロックチェーンデータの保存先を選択して、もう一度お試しください。",
   "loading.mithrilBootstrap.error.chainRemovedHint": "古いブロックチェーンデータは削除されました。再試行するとMithrilで再度ダウンロードします。または、同期方法を選択してください。",
+  "loading.mithrilBootstrap.error.chainRemovedRetryHint": "古いブロックチェーンデータは削除されました。再試行するとMithrilで再度ダウンロードします。",
   "loading.mithrilBootstrap.error.chooseSync": "同期方法を選択",
   "loading.mithrilBootstrap.error.convert.hint": "ダウンロードしたスナップショットをDaedalusで使用できる状態に準備できませんでした。もう一度試すか、ジェネシスからブロックチェーン同期を実行してください。",
   "loading.mithrilBootstrap.error.convert.title": "レジャー変換に失敗しました",
