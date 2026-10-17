@@ -69,6 +69,10 @@ describe('MithrilErrorView', () => {
       'There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry.',
     ],
     [
+      'MARKER_FAILED',
+      'Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry.',
+    ],
+    [
       'WIPE_FAILED',
       'Daedalus could not delete the blockchain data files. Close any other programs that might be using the blockchain folder, then retry.',
     ],

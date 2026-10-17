@@ -478,6 +478,7 @@
   "loading.mithrilBootstrap.error.download.title": "スナップショットのダウンロードに失敗しました",
   "loading.mithrilBootstrap.error.insufficientSpaceHint": "ブロックチェーンデータを保存しているドライブの空き容量が不足しています。ブロックチェーンデータは変更されていません。ドライブの空き容量を増やしてから、もう一度お試しください。",
   "loading.mithrilBootstrap.error.invalidChainPath.hint": "Daedalusはこのフォルダーでブロックチェーンデータを再構築できません。別のブロックチェーンデータの保存先を選択して、もう一度お試しください。",
+  "loading.mithrilBootstrap.error.markerFailed.hint": "Daedalusは再構築を自身のデータフォルダーに記録できなかったため、何も変更していません。データフォルダーに書き込みできることを確認してから、もう一度お試しください。",
   "loading.mithrilBootstrap.error.nodeStart.title": "ノードの起動に失敗しました",
   "loading.mithrilBootstrap.error.probeFailed.hint": "DaedalusはMithrilサービスに接続できませんでした。ブロックチェーンデータは変更されていません。インターネット接続を確認して、もう一度お試しください。",
   "loading.mithrilBootstrap.error.retry": "再試行",
