@@ -466,10 +466,44 @@ async fn validate_staged(staging_db: &Path) -> Result<()> {
     Ok(())
 }
 
-// Move a file, falling back to copy+delete if src and dst are on different devices.
+/// How many times in all a rename that fails without crossing volumes is
+/// tried before an install falls back to copying, and the pause between
+/// tries. On Windows a file that another program, such as a virus scanner,
+/// briefly holds open cannot be renamed. The download is staged on the
+/// chain's own volume, so a copy there needs as much free space again as the
+/// space check reserved for the database.
+const RENAME_ATTEMPTS: u32 = 5;
+const RENAME_RETRY_DELAY: Duration = Duration::from_millis(200);
+
+/// Renames `src` to `dst`. A rename between volumes cannot succeed and fails
+/// at once; any other failure is tried again, RENAME_ATTEMPTS times in all.
+async fn rename_with_retry(src: &Path, dst: &Path) -> std::io::Result<()> {
+    let mut attempt = 1;
+    loop {
+        match tokio::fs::rename(src, dst).await {
+            Ok(()) => return Ok(()),
+            Err(e)
+                if e.kind() == std::io::ErrorKind::CrossesDevices || attempt >= RENAME_ATTEMPTS =>
+            {
+                return Err(e);
+            }
+            Err(e) => {
+                warn!(
+                    "mithril: could not rename {} (attempt {attempt}): {e}; trying again",
+                    src.display()
+                );
+                tokio::time::sleep(RENAME_RETRY_DELAY).await;
+                attempt += 1;
+            }
+        }
+    }
+}
+
+// Move a file, falling back to copy+delete when it cannot be renamed.
 async fn move_file(src: &Path, dst: &Path) -> Result<()> {
-    if tokio::fs::rename(src, dst).await.is_ok() {
-        return Ok(());
+    match rename_with_retry(src, dst).await {
+        Ok(()) => return Ok(()),
+        Err(e) => warn!("mithril: copying {} instead: {e}", src.display()),
     }
     tokio::fs::copy(src, dst)
         .await
@@ -478,10 +512,11 @@ async fn move_file(src: &Path, dst: &Path) -> Result<()> {
     Ok(())
 }
 
-// Move a directory tree, falling back to copy+delete if cross-device.
+// Move a directory tree, falling back to copy+delete when it cannot be renamed.
 async fn move_dir(src: &Path, dst: &Path) -> Result<()> {
-    if tokio::fs::rename(src, dst).await.is_ok() {
-        return Ok(());
+    match rename_with_retry(src, dst).await {
+        Ok(()) => return Ok(()),
+        Err(e) => warn!("mithril: copying {} instead: {e}", src.display()),
     }
     copy_dir_recursive(src, dst).await?;
     let _ = tokio::fs::remove_dir_all(src).await;
@@ -2022,7 +2057,8 @@ mod tests {
     // than std::os::windows::fs::symlink_dir (requires Developer Mode or UAC).
     mod full_install {
         use super::super::{
-            STAGING_ENTRY, check_replaceable, copy_dir_recursive, install_entries, install_staged,
+            RENAME_ATTEMPTS, RENAME_RETRY_DELAY, STAGING_ENTRY, check_replaceable,
+            copy_dir_recursive, install_entries, install_staged, rename_with_retry,
         };
         use std::fs;
         use std::path::{Path, PathBuf};
@@ -2197,6 +2233,46 @@ mod tests {
                 !dst.join("clean").exists(),
                 "a partial install is marked clean"
             );
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn a_rename_refused_at_first_succeeds_when_tried_again() {
+            use std::os::unix::fs::PermissionsExt;
+            let t = TempDir::new("rename-retry");
+            let src = t.0.join("staged");
+            fs::write(&src, b"chunk").unwrap();
+            let dir = t.0.join("chain");
+            fs::create_dir_all(&dir).unwrap();
+            fs::set_permissions(&dir, fs::Permissions::from_mode(0o555)).unwrap();
+            if fs::File::create(dir.join("probe")).is_ok() {
+                fs::set_permissions(&dir, fs::Permissions::from_mode(0o755)).unwrap();
+                eprintln!("skipped: directory permissions are not enforced for this user");
+                return;
+            }
+            // Like a file another program holds open for a moment: the first
+            // tries fail, and a later one succeeds once it lets go.
+            let unlock = {
+                let dir = dir.clone();
+                tokio::spawn(async move {
+                    tokio::time::sleep(RENAME_RETRY_DELAY * 2).await;
+                    fs::set_permissions(&dir, fs::Permissions::from_mode(0o755)).unwrap();
+                })
+            };
+            let renamed = rename_with_retry(&src, &dir.join("00000.chunk")).await;
+            unlock.await.unwrap();
+            renamed.unwrap();
+            assert_eq!(fs::read(dir.join("00000.chunk")).unwrap(), b"chunk");
+            assert!(!src.exists());
+        }
+
+        #[tokio::test]
+        async fn a_rename_that_keeps_failing_gives_up_after_its_attempts() {
+            let t = TempDir::new("rename-gives-up");
+            let src = t.0.join("missing");
+            let started = std::time::Instant::now();
+            assert!(rename_with_retry(&src, &t.0.join("dst")).await.is_err());
+            assert!(started.elapsed() >= RENAME_RETRY_DELAY * (RENAME_ATTEMPTS - 1));
         }
 
         #[tokio::test]
