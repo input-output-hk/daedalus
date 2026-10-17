@@ -1419,6 +1419,9 @@ pub async fn run(
                 let mut wiped = false;
                 // Set when an install failed part-way.
                 let mut install_failed = false;
+                // Set when the sync changed nothing and the chain directory
+                // holds no chain to start the node on.
+                let mut no_chain = false;
                 match mithril::run_pipeline(&mc, &mut cmd_rx, force, wipe_chain).await {
                     PipelineResult::Installed { rebuild } => {
                         after_mithril = AfterMithril::Installed { rebuild };
@@ -1429,7 +1432,13 @@ pub async fn run(
                         // loop continues to restart node/wallet
                     }
                     PipelineResult::Cancelled => {
-                        // loop continues to restart node/wallet
+                        // The sync was refused or failed before it changed
+                        // anything, and the loop starts the node again on the
+                        // chain it had. A chain location sent with the sync,
+                        // as the renderer sends a rebuild in another
+                        // location, can hold no chain: a node started there
+                        // would sync from genesis without asking.
+                        no_chain = !chain_has_data(&config, wstate.chain_path.as_deref()).await;
                     }
                     PipelineResult::Stopped => break,
                     PipelineResult::FailedAfterWipe => wiped = true,
@@ -1505,6 +1514,17 @@ pub async fn run(
                         InstallRetry::Wiped => wiped = true,
                         InstallRetry::Stopped => break,
                     }
+                }
+                if no_chain {
+                    warn!(
+                        "the chain directory holds no chain after a sync that changed nothing; \
+                         waiting for the user's choice instead of starting the node"
+                    );
+                    emit(&Event::ChainStatus {
+                        has_chain: false,
+                        rebuild_pending: false,
+                    });
+                    choose_chain = true;
                 }
                 if wiped {
                     // A node started now would sync from genesis without
