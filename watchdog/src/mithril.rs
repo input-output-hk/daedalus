@@ -1935,8 +1935,8 @@ mod tests {
 
     mod rebuild {
         use super::super::{
-            STAGING_ENTRY, check_rebuild_path, required_space, space_freed_before_download,
-            wipe_database,
+            STAGING_ENTRY, check_rebuild_path, required_space, space_allowed,
+            space_freed_before_download, wipe_database,
         };
         use std::fs;
         use std::path::{Path, PathBuf};
@@ -2037,6 +2037,41 @@ mod tests {
             std::os::unix::fs::symlink(&elsewhere, chain.join("immutable")).unwrap();
 
             assert_eq!(space_freed_before_download(&chain, true).await, 0);
+        }
+
+        #[tokio::test]
+        async fn a_folder_not_created_yet_is_checked_on_the_volume_it_will_be_on() {
+            let t = TempDir::new("not-yet");
+            let chain = t.0.join("picked").join("chain");
+            assert!(space_allowed(&chain, Some(1000), false).await);
+            // Refused rather than waved through, so the free space was read
+            // from the nearest folder that exists.
+            assert!(!space_allowed(&chain, Some(u64::MAX / 2), false).await);
+            assert!(!chain.exists());
+        }
+
+        // The old chain is a sparse file: it counts as its full length, and
+        // takes no space. Sparse files cost real space on Windows.
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn a_rebuild_fits_once_the_space_its_wipe_frees_is_counted() {
+            let t = TempDir::new("fits-after-wipe");
+            let free = crate::chain_validation::read_free_space(t.0.clone())
+                .await
+                .expect("free space of the test volume");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            let old_chain = free / 2 + 1_000_000_000;
+            fs::File::create(chain.join("immutable").join("00000.chunk"))
+                .unwrap()
+                .set_len(old_chain)
+                .unwrap();
+            // More than the volume has free, less than it will have once the
+            // old chain is deleted.
+            let db_size = free + old_chain / 4;
+
+            assert!(space_allowed(&chain, Some(db_size), true).await);
+            assert!(!space_allowed(&chain, Some(db_size), false).await);
         }
 
         #[test]
