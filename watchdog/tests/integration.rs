@@ -1908,6 +1908,136 @@ fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
     let _ = child.wait();
 }
 
+/// Whether this user is refused writes to a directory without write
+/// permission. When it is not, no install into one can fail.
+fn directory_permissions_enforced(dir: &Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    let probe = dir.join("permission-probe");
+    std::fs::create_dir_all(&probe).unwrap();
+    std::fs::set_permissions(&probe, std::fs::Permissions::from_mode(0o555)).unwrap();
+    let enforced = std::fs::File::create(probe.join("file")).is_err();
+    std::fs::set_permissions(&probe, std::fs::Permissions::from_mode(0o755)).unwrap();
+    std::fs::remove_dir_all(&probe).unwrap();
+    enforced
+}
+
+/// Makes the chain directory writable again after the mock converter made it
+/// read-only.
+fn make_writable(dir: &Path) {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(dir, std::fs::Permissions::from_mode(0o755)).unwrap();
+}
+
+/// Environment for a sync whose install cannot move the converted database
+/// into `chain`: the mock converter makes it read-only, once, as it exits.
+fn install_fails_into(dir: &TempDir, chain: &Path) -> Vec<(&'static str, String)> {
+    let trigger = dir.path().join("readonly-trigger");
+    std::fs::write(&trigger, b"").unwrap();
+    vec![
+        (
+            "MOCK_CONVERTER_READONLY_TRIGGER",
+            trigger.to_str().unwrap().to_string(),
+        ),
+        (
+            "MOCK_CONVERTER_READONLY_DIR",
+            chain.to_str().unwrap().to_string(),
+        ),
+    ]
+}
+
+/// Borrows an owned environment as `spawn_watchdog_with_env` takes it.
+fn env_refs<'a>(env: &'a [(&'static str, String)]) -> Vec<(&'static str, &'a str)> {
+    env.iter().map(|(k, v)| (*k, v.as_str())).collect()
+}
+
+/// A rebuild whose install fails after the old chain was deleted keeps its
+/// record and waits strictly: no chain_status, and start_node starts no node
+/// on what the install left. A Retry that rebuilds installs the database,
+/// starts the node and ends the record.
+#[test]
+fn a_rebuild_whose_install_fails_waits_for_a_mithril_install() {
+    let dir = TempDir::new("rebuild-install-fail");
+    if !directory_permissions_enforced(dir.path()) {
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let chain = dir.populate_database();
+    let env = install_fails_into(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env_refs(&env));
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    let err = expect(&rx, "mithril_error");
+    make_writable(&chain);
+    assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
+    assert!(dir.path().join("chain-rebuild.json").exists());
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect_none_of(&rx, &["node_started", "chain_status"], 1500);
+
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(
+        std::fs::read(chain.join("protocolMagicId")).unwrap(),
+        b"764824073"
+    );
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A first Mithril bootstrap whose install fails waits the same way: the
+/// wait for the user's choice does not offer a sync from genesis on what the
+/// install left, and only a Mithril sync that installs a database ends it.
+#[test]
+fn a_first_bootstrap_whose_install_fails_waits_for_a_mithril_install() {
+    let dir = TempDir::new("bootstrap-install-fail");
+    if !directory_permissions_enforced(dir.path()) {
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let chain = dir.path().join("chain");
+    let env = install_fails_into(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env_refs(&env));
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    make_writable(&chain);
+    assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
+    assert_eq!(err["rebuild"], false, "{err}");
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect_none_of(&rx, &["node_started", "chain_status"], 1500);
+
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    assert!(chain.join("protocolMagicId").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// A Mithril sync requested while the node stops for a rebuild does not turn
 /// the rebuild into a partial sync over the old chain: the requests are
 /// merged, and the rebuild deletes the old chain and downloads everything.

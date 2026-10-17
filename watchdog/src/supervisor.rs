@@ -522,6 +522,53 @@ async fn wait_for_retry(
     }
 }
 
+/// How the wait that follows a failed install ended.
+enum InstallRetry {
+    /// A Mithril sync installed a database.
+    Installed,
+    /// A rebuild began deleting the chain and installed nothing.
+    Wiped,
+    /// The watchdog is to stop.
+    Stopped,
+}
+
+/// Waits after a Mithril install failed part-way. The chain may be partly
+/// replaced, so no node starts on it and `start_node` is ignored: the wait
+/// ends only when a Mithril sync installs a database, or when a rebuild
+/// deletes the chain and installs nothing, which leaves no chain at all.
+/// Settings changes are saved and applied, so a chain location chosen
+/// meanwhile is the one the next sync installs into.
+async fn await_install_retry(
+    cmd_rx: &mut mpsc::Receiver<Cmd>,
+    settings: &mut Settings<'_>,
+) -> InstallRetry {
+    use mithril::PipelineResult;
+    loop {
+        match cmd_rx.recv().await {
+            Some(Cmd::StartMithril { force, wipe_chain }) => {
+                let Some(mc) = settings.config.mithril.clone() else {
+                    continue;
+                };
+                match mithril::run_pipeline(&mc, cmd_rx, force, wipe_chain).await {
+                    PipelineResult::Installed => return InstallRetry::Installed,
+                    PipelineResult::FailedAfterWipe => return InstallRetry::Wiped,
+                    PipelineResult::Stopped => return InstallRetry::Stopped,
+                    PipelineResult::NotNeeded
+                    | PipelineResult::Cancelled
+                    | PipelineResult::UserCancelled
+                    | PipelineResult::Failed => {}
+                }
+            }
+            Some(Cmd::Stop) | None => return InstallRetry::Stopped,
+            Some(Cmd::StartNode) => info!(
+                "start_node ignored: the failed install left no chain to start the node on; \
+                 waiting for a Mithril sync to install one"
+            ),
+            Some(cmd) => HeldRequests::default().take(cmd, settings).await,
+        }
+    }
+}
+
 // Waits `delay` before a crashed node is restarted, holding the commands that
 // arrive meanwhile. A stop ends the wait at once.
 async fn hold_requests_for(
@@ -1002,37 +1049,49 @@ async fn await_chain_choice(
                 return Some(false);
             }
             Some(Cmd::StartMithril { wipe_chain, .. }) => {
-                if let Some(ref mc) = config.mithril {
-                    use mithril::PipelineResult;
-                    let wipe_chain = wipe_chain || rebuild;
-                    match mithril::run_pipeline(mc, cmd_rx, true, wipe_chain).await {
-                        PipelineResult::Installed => return Some(true),
-                        PipelineResult::Stopped => {
-                            emit(&Event::Stopped);
-                            return None;
-                        }
-                        PipelineResult::FailedAfterWipe => {
-                            rebuild = true;
-                            emit(&Event::ChainStatus {
-                                has_chain: false,
-                                rebuild_pending: true,
-                            });
-                            continue;
-                        }
-                        PipelineResult::NotNeeded
-                        | PipelineResult::Cancelled
-                        | PipelineResult::UserCancelled
-                        | PipelineResult::Failed => {
-                            // Still no chain data (or install failed) — re-prompt.
-                            emit(&Event::ChainStatus {
-                                has_chain: false,
-                                rebuild_pending: rebuild,
-                            });
-                            continue;
+                // Mithril not configured; ignore and keep waiting.
+                let Some(mc) = config.mithril.clone() else {
+                    continue;
+                };
+                use mithril::PipelineResult;
+                let wipe_chain = wipe_chain || rebuild;
+                let wiped = match mithril::run_pipeline(&mc, cmd_rx, true, wipe_chain).await {
+                    PipelineResult::Installed => return Some(true),
+                    PipelineResult::Stopped => {
+                        emit(&Event::Stopped);
+                        return None;
+                    }
+                    PipelineResult::FailedAfterWipe => true,
+                    // An install that failed part-way may have replaced part
+                    // of the chain, so a sync from genesis is not offered on
+                    // it: only another Mithril sync ends the wait.
+                    PipelineResult::Failed => {
+                        let mut settings = Settings {
+                            config: &mut *config,
+                            base_node_args,
+                            wstate: &mut *wstate,
+                        };
+                        match await_install_retry(cmd_rx, &mut settings).await {
+                            InstallRetry::Installed => return Some(true),
+                            InstallRetry::Wiped => true,
+                            InstallRetry::Stopped => {
+                                emit(&Event::Stopped);
+                                return None;
+                            }
                         }
                     }
+                    PipelineResult::NotNeeded
+                    | PipelineResult::Cancelled
+                    | PipelineResult::UserCancelled => false,
+                };
+                if wiped {
+                    rebuild = true;
                 }
-                // Mithril not configured; ignore and keep waiting.
+                // Still no chain data: re-prompt.
+                emit(&Event::ChainStatus {
+                    has_chain: false,
+                    rebuild_pending: rebuild,
+                });
             }
             Some(Cmd::Stop) | None => {
                 emit(&Event::Stopped);
@@ -1341,144 +1400,113 @@ pub async fn run(
                 // continue loop immediately — no delay, no crash-count increment
             }
             RunResult::StartMithril { force, wipe_chain } => {
-                if let Some(ref mc) = config.mithril {
-                    use mithril::PipelineResult;
-                    // Set when a rebuild started deleting the chain and installed nothing.
-                    let mut wiped = false;
-                    match mithril::run_pipeline(mc, &mut cmd_rx, force, wipe_chain).await {
-                        PipelineResult::Installed => {
-                            after_mithril = AfterMithril::Installed;
-                            // loop continues to restart node/wallet
-                        }
-                        PipelineResult::NotNeeded => {
-                            after_mithril = AfterMithril::NotNeeded;
-                            // loop continues to restart node/wallet
-                        }
-                        PipelineResult::Cancelled => {
-                            // loop continues to restart node/wallet
-                        }
-                        PipelineResult::Stopped => break,
-                        PipelineResult::FailedAfterWipe => wiped = true,
-                        PipelineResult::UserCancelled => {
-                            // Wait for the user to choose a recovery action before
-                            // restarting the node.
-                            'recovery: loop {
-                                match cmd_rx.recv().await {
-                                    Some(Cmd::StartNode) => break 'recovery,
-                                    Some(Cmd::StartMithril {
-                                        force: f,
-                                        wipe_chain: wc,
-                                    }) => {
-                                        match mithril::run_pipeline(mc, &mut cmd_rx, f, wc).await {
-                                            PipelineResult::Installed => {
-                                                after_mithril = AfterMithril::Installed;
-                                                break 'recovery;
-                                            }
-                                            PipelineResult::NotNeeded => {
-                                                after_mithril = AfterMithril::NotNeeded;
-                                                break 'recovery;
-                                            }
-                                            PipelineResult::Cancelled => break 'recovery,
-                                            PipelineResult::FailedAfterWipe => {
-                                                wiped = true;
-                                                break 'recovery;
-                                            }
-                                            PipelineResult::UserCancelled
-                                            | PipelineResult::Failed => continue 'recovery,
-                                            PipelineResult::Stopped => {
-                                                emit(&Event::Stopped);
-                                                return Ok(());
-                                            }
-                                        }
-                                    }
-                                    Some(Cmd::Stop) | None => {
-                                        emit(&Event::Stopped);
-                                        return Ok(());
-                                    }
-                                    Some(Cmd::ValidateChainDir {
-                                        path,
-                                        default_chain_path,
-                                        required_space_bytes,
-                                    }) => {
-                                        spawn_validate_chain_dir(
-                                            config.node.state_dir.clone(),
-                                            path,
-                                            default_chain_path,
-                                            required_space_bytes,
-                                        );
-                                    }
-                                    _ => {}
-                                }
-                            }
-                            // fall through to restart node/wallet
-                        }
-                        PipelineResult::Failed => {
-                            // Post-cutover install failure: chain may be partially installed.
-                            // Must not restart node. Require wipe-and-full-sync to recover.
-                            'failed_recovery: loop {
-                                match cmd_rx.recv().await {
-                                    Some(Cmd::StartMithril {
-                                        force: f,
-                                        wipe_chain: wc,
-                                    }) => {
-                                        match mithril::run_pipeline(mc, &mut cmd_rx, f, wc).await {
-                                            PipelineResult::Installed => {
-                                                after_mithril = AfterMithril::Installed;
-                                                break 'failed_recovery;
-                                            }
-                                            PipelineResult::FailedAfterWipe => {
-                                                wiped = true;
-                                                break 'failed_recovery;
-                                            }
-                                            PipelineResult::NotNeeded
-                                            | PipelineResult::Cancelled
-                                            | PipelineResult::UserCancelled
-                                            | PipelineResult::Failed => continue 'failed_recovery,
-                                            PipelineResult::Stopped => {
-                                                emit(&Event::Stopped);
-                                                return Ok(());
-                                            }
-                                        }
-                                    }
-                                    Some(Cmd::Stop) | None => {
-                                        emit(&Event::Stopped);
-                                        return Ok(());
-                                    }
-                                    Some(Cmd::ValidateChainDir {
-                                        path,
-                                        default_chain_path,
-                                        required_space_bytes,
-                                    }) => {
-                                        spawn_validate_chain_dir(
-                                            config.node.state_dir.clone(),
-                                            path,
-                                            default_chain_path,
-                                            required_space_bytes,
-                                        );
-                                    }
-                                    _ => {} // StartNode is intentionally ignored here
-                                }
-                            }
-                            // fall through to restart node/wallet after successful wipe+install
-                        }
-                    }
-                    if wiped {
-                        // A node started now would sync from genesis without
-                        // asking. Report no chain and wait for the user's
-                        // choice, as on first run.
-                        warn!(
-                            "the rebuild started deleting the chain and installed nothing; \
-                             waiting for the user's choice instead of starting the node"
-                        );
-                        emit(&Event::ChainStatus {
-                            has_chain: false,
-                            rebuild_pending: true,
-                        });
-                        choose_chain = true;
-                        rebuild_chain = true;
-                    }
-                } else {
+                let Some(mc) = config.mithril.clone() else {
                     break;
+                };
+                use mithril::PipelineResult;
+                // Set when a rebuild started deleting the chain and installed nothing.
+                let mut wiped = false;
+                // Set when an install failed part-way.
+                let mut install_failed = false;
+                match mithril::run_pipeline(&mc, &mut cmd_rx, force, wipe_chain).await {
+                    PipelineResult::Installed => {
+                        after_mithril = AfterMithril::Installed;
+                        // loop continues to restart node/wallet
+                    }
+                    PipelineResult::NotNeeded => {
+                        after_mithril = AfterMithril::NotNeeded;
+                        // loop continues to restart node/wallet
+                    }
+                    PipelineResult::Cancelled => {
+                        // loop continues to restart node/wallet
+                    }
+                    PipelineResult::Stopped => break,
+                    PipelineResult::FailedAfterWipe => wiped = true,
+                    PipelineResult::Failed => install_failed = true,
+                    PipelineResult::UserCancelled => {
+                        // Wait for the user to choose a recovery action before
+                        // restarting the node.
+                        'recovery: loop {
+                            match cmd_rx.recv().await {
+                                Some(Cmd::StartNode) => break 'recovery,
+                                Some(Cmd::StartMithril {
+                                    force: f,
+                                    wipe_chain: wc,
+                                }) => match mithril::run_pipeline(&mc, &mut cmd_rx, f, wc).await {
+                                    PipelineResult::Installed => {
+                                        after_mithril = AfterMithril::Installed;
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::NotNeeded => {
+                                        after_mithril = AfterMithril::NotNeeded;
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::Cancelled => break 'recovery,
+                                    PipelineResult::FailedAfterWipe => {
+                                        wiped = true;
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::Failed => {
+                                        install_failed = true;
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::UserCancelled => continue 'recovery,
+                                    PipelineResult::Stopped => {
+                                        emit(&Event::Stopped);
+                                        return Ok(());
+                                    }
+                                },
+                                Some(Cmd::Stop) | None => {
+                                    emit(&Event::Stopped);
+                                    return Ok(());
+                                }
+                                Some(Cmd::ValidateChainDir {
+                                    path,
+                                    default_chain_path,
+                                    required_space_bytes,
+                                }) => {
+                                    spawn_validate_chain_dir(
+                                        config.node.state_dir.clone(),
+                                        path,
+                                        default_chain_path,
+                                        required_space_bytes,
+                                    );
+                                }
+                                _ => {}
+                            }
+                        }
+                        // fall through to restart node/wallet
+                    }
+                }
+                if install_failed {
+                    // Post-cutover install failure: the chain may be partly
+                    // installed, so the node must not start on it until a
+                    // Mithril sync installs a database.
+                    let mut settings = Settings {
+                        config: &mut config,
+                        base_node_args: &base_node_args,
+                        wstate: &mut wstate,
+                    };
+                    match await_install_retry(&mut cmd_rx, &mut settings).await {
+                        InstallRetry::Installed => after_mithril = AfterMithril::Installed,
+                        InstallRetry::Wiped => wiped = true,
+                        InstallRetry::Stopped => break,
+                    }
+                }
+                if wiped {
+                    // A node started now would sync from genesis without
+                    // asking. Report no chain and wait for the user's
+                    // choice, as on first run.
+                    warn!(
+                        "the rebuild started deleting the chain and installed nothing; \
+                         waiting for the user's choice instead of starting the node"
+                    );
+                    emit(&Event::ChainStatus {
+                        has_chain: false,
+                        rebuild_pending: true,
+                    });
+                    choose_chain = true;
+                    rebuild_chain = true;
                 }
             }
         }

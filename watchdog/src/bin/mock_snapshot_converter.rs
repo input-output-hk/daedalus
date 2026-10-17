@@ -5,6 +5,11 @@
 //   lsm import --lsm-database D --lsm-import-from E --snapshot S
 //
 // Creates the required output directories and exits 0.
+//
+// When the file named by MOCK_CONVERTER_READONLY_TRIGGER exists, the import
+// step deletes it and makes the directory named by MOCK_CONVERTER_READONLY_DIR
+// read-only before it exits 0, once, so the install that follows cannot move
+// the converted database into that directory.
 
 use std::env;
 use std::fs;
@@ -28,6 +33,7 @@ fn main() {
             if let Some(p) = get_flag(&args, "--lsm-database") {
                 fs::create_dir_all(&p).unwrap_or_else(|e| panic!("create {p}: {e}"));
             }
+            make_read_only_once();
         }
         _ => {
             eprintln!(
@@ -38,3 +44,21 @@ fn main() {
         }
     }
 }
+
+#[cfg(unix)]
+fn make_read_only_once() {
+    use std::os::unix::fs::PermissionsExt;
+    let (Ok(trigger), Ok(dir)) = (
+        env::var("MOCK_CONVERTER_READONLY_TRIGGER"),
+        env::var("MOCK_CONVERTER_READONLY_DIR"),
+    ) else {
+        return;
+    };
+    if fs::remove_file(&trigger).is_ok() {
+        fs::set_permissions(&dir, fs::Permissions::from_mode(0o555))
+            .unwrap_or_else(|e| panic!("make {dir} read-only: {e}"));
+    }
+}
+
+#[cfg(not(unix))]
+fn make_read_only_once() {}
