@@ -3472,6 +3472,11 @@
         "id": "loading.chainDamage.confirm.body"
       },
       {
+        "defaultMessage": "!!!Daedalus will keep the blockchain data in {location}, delete any blockchain data already there, and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer and finish syncing afterward.",
+        "description": "Body of the confirmation for rebuilding the blockchain data in a newly chosen location: the location, what is deleted there, what is downloaded, and that Daedalus is unusable meanwhile",
+        "id": "loading.chainDamage.confirm.bodyInLocation"
+      },
+      {
         "defaultMessage": "!!!Rebuild",
         "description": "Button label that starts rebuilding the blockchain data, in the confirmation",
         "id": "loading.chainDamage.confirm.rebuild"
@@ -3592,6 +3597,11 @@
         "id": "loading.mithrilBootstrap.error.chainRemovedRetryHint"
       },
       {
+        "defaultMessage": "!!!Choose another location",
+        "description": "Button label on the Mithril error view that opens the blockchain data location picker, shown when the drive is too full or the folder holds other files.",
+        "id": "loading.mithrilBootstrap.error.chooseLocation"
+      },
+      {
         "defaultMessage": "!!!Choose how to sync",
         "description": "Button label on the Mithril error view that opens the choice between Mithril fast sync and a Blockchain Sync from Genesis, after the old blockchain data was removed.",
         "id": "loading.mithrilBootstrap.error.chooseSync"
@@ -3602,7 +3612,7 @@
         "id": "loading.mithrilBootstrap.decisionChainRemovedNotice"
       },
       {
-        "defaultMessage": "!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry.",
+        "defaultMessage": "!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry, or choose another location.",
         "description": "Hint for the INSUFFICIENT_SPACE error on the Mithril error view, shown when a rebuild was refused before it deleted anything because the drive that holds the blockchain data is too full for the download.",
         "id": "loading.mithrilBootstrap.error.insufficientSpaceHint"
       },
@@ -3622,7 +3632,7 @@
         "id": "loading.mithrilBootstrap.error.invalidChainPath.hint"
       },
       {
-        "defaultMessage": "!!!The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and try again.",
+        "defaultMessage": "!!!The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and retry, or choose another location.",
         "description": "Hint shown when the blockchain data folder holds files that are not blockchain data, so a rebuild refused to delete it.",
         "id": "loading.mithrilBootstrap.error.chainDirNotReplaceable.hint"
       },

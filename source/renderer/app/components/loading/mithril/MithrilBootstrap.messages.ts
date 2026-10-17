@@ -116,6 +116,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Note on the Mithril error view when the install of a rebuild failed after the old blockchain data was removed, where Retry is the only action.',
   },
+  errorChooseLocation: {
+    id: 'loading.mithrilBootstrap.error.chooseLocation',
+    defaultMessage: '!!!Choose another location',
+    description:
+      'Button label on the Mithril error view that opens the blockchain data location picker, shown when the drive is too full or the folder holds other files.',
+  },
   errorChooseSync: {
     id: 'loading.mithrilBootstrap.error.chooseSync',
     defaultMessage: '!!!Choose how to sync',
@@ -132,7 +138,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   errorInsufficientSpaceHint: {
     id: 'loading.mithrilBootstrap.error.insufficientSpaceHint',
     defaultMessage:
-      '!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry.',
+      '!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry, or choose another location.',
     description:
       'Hint for the INSUFFICIENT_SPACE error on the Mithril error view, shown when a rebuild was refused before it deleted anything because the drive that holds the blockchain data is too full for the download.',
   },
@@ -160,7 +166,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   errorChainDirNotReplaceableHint: {
     id: 'loading.mithrilBootstrap.error.chainDirNotReplaceable.hint',
     defaultMessage:
-      '!!!The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and try again.',
+      '!!!The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and retry, or choose another location.',
     description:
       'Hint shown when the blockchain data folder holds files that are not blockchain data, so a rebuild refused to delete it.',
   },

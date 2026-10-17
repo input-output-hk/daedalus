@@ -31,6 +31,9 @@ const makeBackend = (overrides = {}) => ({
   lastErrorRebuild: false,
   rebuildPending: false,
   installRetryRequired: false,
+  canChooseAnotherLocation: false,
+  chooseAnotherLocation: jest.fn(),
+  pendingChainLocation: null,
   cancelMithril: jest.fn(),
   ...overrides,
 });
@@ -270,5 +273,71 @@ describe('MithrilSyncContainer after a partial sync failed to install', () => {
       { [messages.errorRetry.id]: 'Retry' }
     );
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
+  });
+});
+
+describe('MithrilSyncContainer location choice', () => {
+  afterEach(cleanup);
+
+  const copy = {
+    [messages.errorRetry.id]: 'Retry',
+    [messages.errorSkip.id]: 'Skip to blockchain sync',
+    [messages.errorChooseLocation.id]: 'Choose another location',
+    [chainDamageMessages.confirmBody.id]: 'Delete and download.',
+    [chainDamageMessages.confirmBodyInLocation.id]:
+      'Keep it in {location}, delete what is there and download.',
+  };
+
+  it('offers another location beside Retry when the error allows it', () => {
+    const backend = makeBackend({
+      lastErrorCode: 'INSUFFICIENT_SPACE',
+      lastErrorRebuild: true,
+      canChooseAnotherLocation: true,
+    });
+    renderContainer(backend, copy);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Choose another location' })
+    );
+    expect(backend.chooseAnotherLocation).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
+  });
+
+  it('offers no location choice for other errors', () => {
+    renderContainer(makeBackend(), copy);
+    expect(screen.queryByText('Choose another location')).toBeNull();
+  });
+
+  it('offers the location choice but no skip while the watchdog waits for an install', () => {
+    renderContainer(
+      makeBackend({
+        lastErrorCode: 'INSUFFICIENT_SPACE',
+        lastErrorRebuild: true,
+        installRetryRequired: true,
+        canChooseAnotherLocation: true,
+      }),
+      copy
+    );
+    expect(
+      screen.getByRole('button', { name: 'Choose another location' })
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
+  });
+
+  it('names the picked location in the rebuild confirmation', () => {
+    renderContainer(
+      makeBackend({
+        lastErrorCode: 'INSUFFICIENT_SPACE',
+        lastErrorRebuild: true,
+        _rebuildConfirmationRequested: true,
+        pendingChainLocation: 'D:\\Cardano',
+      }),
+      copy
+    );
+    expect(
+      screen.getByText(
+        'Keep it in D:\\Cardano, delete what is there and download.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Delete and download.')).toBeNull();
   });
 });

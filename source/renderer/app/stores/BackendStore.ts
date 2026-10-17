@@ -35,6 +35,12 @@ const INSTALL_FAILED_CODE = 'INSTALL_FAILED';
 // Codes of the errors a rebuild reports when the chain storage location itself
 // is the problem; repeating the rebuild there fails the same way.
 const LOCATION_ERROR_CODES = ['INVALID_CHAIN_PATH', 'CHAIN_DIR_OTHER_NETWORK'];
+// Codes of the errors that the user can resolve in the location or by
+// choosing another one, so the error view offers both
+const LOCATION_CHOICE_CODES = [
+  'INSUFFICIENT_SPACE',
+  'CHAIN_DIR_NOT_REPLACEABLE',
+];
 // END CONSTANTS
 
 export default class BackendStore extends Store {
@@ -89,12 +95,14 @@ export default class BackendStore extends Store {
   @observable _mithrilPromptDismissed = false;
   // Set by "Not now" on the chain-damaged screen; lasts until the app restarts
   @observable _chainDamageDismissed = false;
-  // Set by Retry after a rebuild failed on the chain storage location; the
-  // picker shows until a location is confirmed
+  // Set from the Mithril error view to choose another chain storage location;
+  // the picker shows until a location is confirmed
   @observable _chainStoragePickerRequested = false;
-  // Set when that picker confirmed a location, so the next Retry rebuilds
-  // there instead of asking again; cleared when a rebuild is sent
-  @observable _chainStorageReselected = false;
+  // A location confirmed on that picker after a failed or refused rebuild. It
+  // is not applied yet: it goes to the watchdog together with the rebuild,
+  // once the rebuild confirmation is confirmed. customPath null is the
+  // default location.
+  @observable _pendingChainPath: { customPath: string | null } | null = null;
   // Set by Retry after a partial sync failed to install; the rebuild
   // confirmation shows in place of the error until it is confirmed or left
   @observable _rebuildConfirmationRequested = false;
@@ -187,6 +195,7 @@ export default class BackendStore extends Store {
         if (state.mithrilPhase !== 'error') {
           this._mithrilErrorDismissed = false;
           this._rebuildConfirmationRequested = false;
+          this._pendingChainPath = null;
         }
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
@@ -310,6 +319,23 @@ export default class BackendStore extends Store {
     return this._mithrilPromptDismissed;
   }
 
+  // The Mithril error is one the user can resolve by choosing another
+  // chain storage location as well as by retrying
+  @computed
+  get canChooseAnotherLocation(): boolean {
+    return (
+      this.lastErrorCode != null &&
+      LOCATION_CHOICE_CODES.includes(this.lastErrorCode)
+    );
+  }
+
+  // The location the pending rebuild confirmation is for, when one was picked
+  @computed
+  get pendingChainLocation(): string | null {
+    if (this._pendingChainPath == null) return null;
+    return this._pendingChainPath.customPath ?? this.defaultChainPath;
+  }
+
   // A Mithril pipeline is running, or has failed and shows its error
   @computed
   get _mithrilActive(): boolean {
@@ -396,16 +422,30 @@ export default class BackendStore extends Store {
   };
 
   // Deletes the chain database and downloads a verified copy with Mithril.
-  // The rebuild targets the chain location already in use, so that location
-  // counts as confirmed: if the rebuild fails and the watchdog reports no
-  // chain, the bootstrap decision follows without the location picker.
+  // The rebuild targets the chain location in use, or the one picked for it,
+  // so that location counts as confirmed: if the rebuild fails and the
+  // watchdog reports no chain, the bootstrap decision follows without the
+  // location picker. A picked location and the rebuild go in one request:
+  // main sends the location change and the rebuild back to back, so the
+  // watchdog never starts a node on the new location before the rebuild.
   @action
   rebuildChain = () => {
+    const picked = this._pendingChainPath;
     this.chainPathConfirmed = true;
-    this._chainStorageReselected = false;
+    this._pendingChainPath = null;
     this._rebuildConfirmationRequested = false;
     this._mithrilErrorDismissed = false;
-    mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
+    if (picked != null) {
+      confirmChainStorageChannel
+        .request({ customPath: picked.customPath, rebuild: true })
+        .catch((error) => {
+          logger.error('BackendStore: the rebuild in another location failed', {
+            error: String(error),
+          });
+        });
+    } else {
+      mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
+    }
     // The logger sends its arguments over IPC, which cannot clone a MobX
     // observable, so only plain values go in.
     logger.info('BackendStore: rebuilding the chain database', {
@@ -417,7 +457,8 @@ export default class BackendStore extends Store {
   // Retry on the Mithril error view. After a failed or refused rebuild it
   // repeats the rebuild, since the chain data may already be gone and a plain
   // sync would not replace what is left; when the storage location caused the
-  // failure it asks for a location instead. A partial sync that failed to
+  // failure it asks for another location, which leads to the rebuild
+  // confirmation for that location. A partial sync that failed to
   // install leaves the chain partly replaced, and the watchdog waits for
   // another sync that a plain Retry usually finds nothing to download for, so
   // Retry asks to confirm a rebuild. Otherwise it runs Mithril again.
@@ -430,7 +471,6 @@ export default class BackendStore extends Store {
         this.startMithril();
       }
     } else if (
-      !this._chainStorageReselected &&
       this.lastErrorCode != null &&
       LOCATION_ERROR_CODES.includes(this.lastErrorCode)
     ) {
@@ -440,11 +480,19 @@ export default class BackendStore extends Store {
     }
   };
 
-  // "Back" on the rebuild confirmation that follows a failed install: the
-  // Mithril error view shows again
+  // "Choose another location" on the Mithril error view
+  @action
+  chooseAnotherLocation = () => {
+    this._chainStoragePickerRequested = true;
+  };
+
+  // "Back" on the rebuild confirmation that follows a failed install or a
+  // picked location: the Mithril error view shows again, and a picked
+  // location is dropped without being applied
   @action
   cancelRebuildConfirmation = () => {
     this._rebuildConfirmationRequested = false;
+    this._pendingChainPath = null;
   };
 
   // "Not now" on the chain-damaged screen; the screen stays hidden until the
@@ -531,10 +579,22 @@ export default class BackendStore extends Store {
     });
   };
 
+  // A location picked after a failed or refused rebuild is held for the
+  // rebuild confirmation instead of being applied: applied now, it would make
+  // the watchdog start a node there before the user chose the rebuild.
+  get _holdsPickedLocation(): boolean {
+    return this._chainStoragePickerRequested && this.lastErrorRebuild;
+  }
+
   @action
   setChainStorageDirectory = async (
     customPath: string | null
   ): Promise<ChainStorageValidation | null> => {
+    if (this._holdsPickedLocation) {
+      this._pendingChainPath = { customPath };
+      this.chainPathConfirmed = true;
+      return null;
+    }
     await confirmChainStorageChannel.request({ customPath });
     runInAction('set chainPathConfirmed after setChainStorageDirectory', () => {
       this.chainPathConfirmed = true;
@@ -546,6 +606,11 @@ export default class BackendStore extends Store {
   @action
   resetChainStorageDirectory =
     async (): Promise<ChainStorageValidation | null> => {
+      if (this._holdsPickedLocation) {
+        this._pendingChainPath = { customPath: null };
+        this.chainPathConfirmed = true;
+        return null;
+      }
       await confirmChainStorageChannel.request({ customPath: null });
       runInAction(
         'set chainPathConfirmed after resetChainStorageDirectory',
@@ -565,10 +630,12 @@ export default class BackendStore extends Store {
     });
   };
 
-  // A location was confirmed on the picker that Retry asked for
+  // A location was confirmed on the picker the Mithril error view asked for.
+  // After a failed or refused rebuild the rebuild confirmation follows, for
+  // the picked location if one was picked; otherwise the error view returns.
   _confirmPickedLocation() {
-    if (this._chainStoragePickerRequested) {
-      this._chainStorageReselected = true;
+    if (this._holdsPickedLocation) {
+      this._rebuildConfirmationRequested = true;
     }
     this._chainStoragePickerRequested = false;
   }

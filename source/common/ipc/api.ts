@@ -539,7 +539,12 @@ export type ValidateChainStorageMainResponse =
 
 // Chain storage: renderer asks main to apply a new chain path and restart watchdog
 export const CONFIRM_CHAIN_STORAGE_CHANNEL = 'CONFIRM_CHAIN_STORAGE_CHANNEL';
-export type ConfirmChainStorageRendererRequest = { customPath: string | null };
+// rebuild: a rebuild of the chain data in that location follows the change,
+// confirmed together with it
+export type ConfirmChainStorageRendererRequest = {
+  customPath: string | null;
+  rebuild?: boolean;
+};
 export type ConfirmChainStorageMainResponse = void;
 
 /**

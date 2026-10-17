@@ -2099,6 +2099,55 @@ fn a_first_bootstrap_whose_install_fails_waits_for_a_mithril_install() {
     let _ = child.wait();
 }
 
+/// A new chain location sent with a rebuild right behind it, as the renderer
+/// does once both are confirmed, stops the running node and rebuilds in the
+/// new location. The rebuild is held while the node stops and replaces the
+/// restart, so no node starts on the new location before it, and the old
+/// location is left as it was.
+#[test]
+fn a_rebuild_sent_with_a_new_location_starts_no_node_there_first() {
+    let dir = TempDir::new("rebuild-new-location");
+    let old_chain = dir.populate_database();
+    let before = tree(&old_chain);
+    let folder = dir.path().join("picked");
+    std::fs::create_dir_all(&folder).unwrap();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .expect("timeout waiting for the rebuild to start");
+        assert_ne!(v["event"], "node_started", "a node started first: {v}");
+        if v["event"] == "mithril_status" && v["phase"] == "preparing" {
+            assert_eq!(v["rebuild"], true, "{v}");
+            break;
+        }
+    }
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    assert_eq!(
+        std::fs::read(folder.join("chain").join("protocolMagicId")).unwrap(),
+        b"764824073"
+    );
+    assert_eq!(tree(&old_chain), before);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// A Mithril sync requested while the node stops for a rebuild does not turn
 /// the rebuild into a partial sync over the old chain: the requests are
 /// merged, and the rebuild deletes the old chain and downloads everything.

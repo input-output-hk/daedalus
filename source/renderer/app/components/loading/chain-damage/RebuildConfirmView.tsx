@@ -6,6 +6,9 @@ import messages from './ChainDamage.messages';
 import styles from './ChainDamageView.scss';
 
 type Props = {
+  // A newly chosen location the rebuild is for; it is applied together with
+  // the rebuild, so the confirmation names it
+  location?: string | null;
   onRebuild: () => void;
   onBack: () => void;
 };
@@ -41,14 +44,18 @@ export default class RebuildConfirmView extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onBack } = this.props;
+    const { location, onBack } = this.props;
     const { isStarted } = this.state;
 
     return (
       <div className={styles.root}>
         <div className={styles.header}>
           <h1>{intl.formatMessage(messages.confirmTitle)}</h1>
-          <p>{intl.formatMessage(messages.confirmBody)}</p>
+          <p>
+            {location
+              ? intl.formatMessage(messages.confirmBodyInLocation, { location })
+              : intl.formatMessage(messages.confirmBody)}
+          </p>
         </div>
         <div className={styles.actions}>
           <Button

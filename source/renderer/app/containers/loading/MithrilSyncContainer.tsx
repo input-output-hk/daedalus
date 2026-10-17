@@ -54,6 +54,13 @@ class MithrilSyncContainer extends Component<InjectedProps> {
         variant: 'primary',
       },
     ];
+    if (backend.canChooseAnotherLocation) {
+      errorActions.push({
+        label: intl.formatMessage(messages.errorChooseLocation),
+        onClick: () => backend.chooseAnotherLocation(),
+        variant: 'secondary',
+      });
+    }
     if (!retryOnly) {
       errorActions.push(
         chainRemoved
@@ -100,6 +107,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
       return (
         <div className={styles.card}>
           <RebuildConfirmView
+            location={backend.pendingChainLocation}
             onRebuild={() => backend.rebuildChain()}
             onBack={() => backend.cancelRebuildConfirmation()}
           />

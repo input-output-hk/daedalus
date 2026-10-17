@@ -72,6 +72,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Body of the confirmation for rebuilding the blockchain data: what is deleted, what is downloaded, and that Daedalus is unusable meanwhile',
   },
+  confirmBodyInLocation: {
+    id: 'loading.chainDamage.confirm.bodyInLocation',
+    defaultMessage:
+      '!!!Daedalus will keep the blockchain data in {location}, delete any blockchain data already there, and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer and finish syncing afterward.',
+    description:
+      'Body of the confirmation for rebuilding the blockchain data in a newly chosen location: the location, what is deleted there, what is downloaded, and that Daedalus is unusable meanwhile',
+  },
   confirmRebuild: {
     id: 'loading.chainDamage.confirm.rebuild',
     defaultMessage: '!!!Rebuild',
