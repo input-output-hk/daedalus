@@ -1610,6 +1610,52 @@ fn wipe_chain_refuses_a_snapshot_that_does_not_fit_and_deletes_nothing() {
     let _ = child.wait();
 }
 
+/// A rebuild that cannot record itself in the state directory refuses with
+/// REBUILD_MARKER_FAILED before it deletes or downloads anything, and the
+/// node starts again on the chain it had.
+#[test]
+fn a_rebuild_that_cannot_record_itself_changes_nothing() {
+    let dir = TempDir::new("rebuild-record-fail");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+    // The record is written through a temporary file. A link from there into
+    // a directory that does not exist makes that write fail, while the record
+    // itself reads as absent.
+    std::os::unix::fs::symlink(
+        dir.path().join("missing").join("record"),
+        dir.path().join("chain-rebuild.json.tmp"),
+    )
+    .unwrap();
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap())],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "REBUILD_MARKER_FAILED", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    assert_eq!(tree(&chain), before);
+    assert!(!args_file.exists(), "a download was started");
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// Records, in the state directory, a rebuild of `chain` that began deleting
 /// it in an earlier session and installed nothing.
 fn write_rebuild_marker(dir: &TempDir, chain: &Path) {
