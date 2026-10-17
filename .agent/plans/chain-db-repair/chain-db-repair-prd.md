@@ -81,7 +81,8 @@ Owner decisions on the questions raised while planning:
 11. **2026-10-16.** The targeted repair asks before the partial sync that installs a fresh ledger, because the node stays offline while it runs. Decision 1 still covers the chunk swap, which needs no prompt. A kind that phase 6 shows needs no fresh ledger is repaired without a prompt.
 12. **2026-10-16.** The background scan from decision 1 finds holes with the boundary scan instead of a full-range `cardano-db verify`, once phase 6 has measured the Rust scan on Windows. `verify` remains the check for corruption inside a chunk. The scan reads chunk indexes, not logs, so it keeps decision 2.
 13. **2026-10-16.** An install that fails after a rebuild keeps the existing strict wait: the Mithril error view with Retry, no node start, and no `chain_status { has_chain: false }`.
-14. **2026-10-16.** Mithril staging lives inside the chain folder, on the chain's own volume, for every Mithril install into that location, so an install is a rename and never a copy between volumes. A rebuild checks the free space on that volume before it deletes anything, counting the space the wipe frees, and refuses with `INSUFFICIENT_SPACE` when the download would not fit. Decision 6 stands: the old chain is still deleted before the download starts.
+14. **2026-10-16.** Mithril staging lives inside the chain folder, on the chain's own volume, for every Mithril install into that location, so an install is a rename and never a copy between volumes. A rebuild checks the free space on that volume before it deletes anything, counting the space the wipe frees, and refuses with `INSUFFICIENT_SPACE` when the download would not fit. Decision 6 stands: the old chain is still deleted before the download starts. The database size comes from `total_db_size_uncompressed` in `mithril-client snapshot show`, and the check requires that size plus 10 percent, the margin `mithril-client` adds to a partial download, to fit in the free space plus what the wipe and a staging leftover will free. The staging entry, `mithril-staging`, is never chain data: the replaceability check, the wipe, the has-chain check and the storage location picker all accept or ignore it, and leftovers are deleted before each download and at startup.
+15. **2026-10-17.** Retry on the Mithril error view after a partial sync failed during its install step (`INSTALL_FAILED` with `rebuild: false`) offers the rebuild behind the confirmation. The watchdog waits for another Mithril sync there, and a plain Retry usually finds nothing to download. Nothing is deleted before the confirmation, and confirming sends `start_mithril` with `wipe_chain: true`.
 
 ## Requirements
 
@@ -96,9 +97,10 @@ Detection (watchdog):
 
 Rebuild (watchdog):
 
-- [ ] FR5. With `wipe_chain`, probe the aggregator before deleting anything. A probe failure leaves the chain untouched and reports `PROBE_FAILED` as today. Then check the free space on the volume that holds the chain folder, counting the space the wipe frees. If the download would not fit, refuse with `INSUFFICIENT_SPACE` before anything is deleted (decision 14). A rebuild always installs a full bootstrap and skips the check that the local chain is already current, so a chain that is level with the certified tip is still replaced.
-- [ ] FR6. If the download fails or is cancelled after the wipe, do not start the node. Report `chain_status { has_chain: false }` and wait as on first run, so the renderer shows the bootstrap decision. Until `set_chain_path` changes the chain directory, a `start_mithril` sent in that wait is also a rebuild, so it deletes what a failed wipe left and installs a full bootstrap. A failure to wipe the old chain reports `WIPE_FAILED` and ends in the same wait. An install that fails after a rebuild keeps the existing strict wait: the Mithril error view with Retry, no node start and no `has_chain: false`. The rebuild intent persists across an app restart: the watchdog records it before the wipe and clears it when the install succeeds, and while it is recorded it reports `chain_status { has_chain: false, rebuild_pending: true }` at start. Every `mithril_error` from a rebuild carries `rebuild: true`.
-- [ ] FR7. Resolve the chain directory the way full bootstrap does (`full_install_target`). Refuse with `CHAIN_DIR_NOT_REPLACEABLE` when it holds anything other than chain database files (`check_replaceable`). Otherwise, delete the real directory's contents and keep any link or junction that points to it. A user-picked folder outside the state directory rebuilds in place.
+- [ ] FR5. With `wipe_chain`, probe the aggregator before deleting anything. A probe failure leaves the chain untouched and reports `PROBE_FAILED` as today. Then check the free space on the volume that holds the chain folder, counting the space the wipe and a staging leftover free. If the download would not fit, refuse with `INSUFFICIENT_SPACE` before anything is deleted (decision 14). The size comes from `total_db_size_uncompressed` in `mithril-client snapshot show`, and the download needs that size plus 10 percent, the margin `mithril-client` adds to a partial download. When the size or the free space cannot be read, the install goes ahead. A rebuild always installs a full bootstrap and skips the check that the local chain is already current, so a chain that is level with the certified tip is still replaced.
+- [ ] FR6. If the download fails or is cancelled after the wipe, do not start the node. Report `chain_status { has_chain: false }` and wait as on first run, so the renderer shows the bootstrap decision. Until `set_chain_path` changes the chain directory, a `start_mithril` sent in that wait is also a rebuild, so it deletes what a failed wipe left and installs a full bootstrap. A failure to wipe the old chain reports `WIPE_FAILED` and ends in the same wait. An install that fails after a rebuild keeps the existing strict wait: the Mithril error view with Retry, no node start and no `has_chain: false`. The rebuild intent persists across an app restart: the watchdog records it before the wipe and clears it when the install succeeds, and while it is recorded it reports `chain_status { has_chain: false, rebuild_pending: true }` at start. Every `mithril_error` from a rebuild carries `rebuild: true`. The record is `chain-rebuild.json` in the state directory, naming the chain directory (`{"chain_path": ...}`), written before the wipe. If it cannot be written, the rebuild is refused with `MARKER_FAILED` before anything is deleted. A record for another chain directory is ignored and kept. Choosing to sync from genesis in the wait that follows a rebuild (`start_node`) also removes the record, because the user has then chosen the replay. While the record is present, no node starts and every Mithril sync of that directory is a rebuild.
+- [ ] FR7. Resolve the chain directory the way full bootstrap does (`full_install_target`). Refuse with `CHAIN_DIR_NOT_REPLACEABLE` when it holds anything other than chain database files (`check_replaceable`). Otherwise, delete the real directory's contents and keep any link or junction that points to it. A user-picked folder outside the state directory rebuilds in place. The `mithril-staging` entry inside the chain folder does not count as other content: `check_replaceable` accepts it, the wipe leaves it, and the has-chain check reads only `protocolMagicId` and `immutable`.
+- [ ] FR7a. The storage location picker accepts a chain folder that holds only database entries plus a `mithril-staging` leftover, instead of refusing it as `chain-subdirectory-not-database`.
 - [ ] FR8. Pass the `code` of `mithril_error` through to the renderer as `lastErrorCode`, and its `rebuild` flag as `lastErrorRebuild`.
 
 Offer screen (main and renderer):
@@ -108,7 +110,7 @@ Offer screen (main and renderer):
 - [ ] FR11. Choice view: a symptom sentence for the kind, what the rebuild does, that wallets and funds are safe and no recovery phrase is needed, and a detail line with the kind and slot for support. Actions: Rebuild blockchain data, Not now.
 - [ ] FR12. Confirm view: what will be deleted and downloaded, and that the app is unusable until it finishes. Actions: Rebuild, Back. Rebuild sends `{ cmd: 'start_mithril', wipe_chain: true }`, and the existing Mithril progress view takes over. Rebuild also marks the chain storage location as confirmed, because the rebuild targets the location in use. A rebuild that fails and leaves no chain therefore shows the Mithril error view with the reason and then the bootstrap decision, without the chain storage location picker. The same holds after an app restart in the middle of a rebuild (`rebuildPending`): the picker is skipped and the bootstrap decision shows. When the chain is gone after a failed rebuild, the error view says the old blockchain data was removed, Retry repeats the rebuild, and the secondary action Choose how to sync opens the bootstrap decision, which labels the sync from genesis explicitly. The error view offers no Skip to blockchain sync there, because the node would start a sync from genesis the user did not choose.
 - [ ] FR13. Not now hides the screen until the app restarts.
-- [ ] FR14. The Mithril error view shows a specific message for `PROBE_FAILED`, `INVALID_CHAIN_PATH`, `CHAIN_DIR_NOT_REPLACEABLE`, `CHAIN_DIR_OTHER_NETWORK`, `WIPE_FAILED` and `INSUFFICIENT_SPACE`, and its Retry and Skip buttons are translated (they are hard-coded English at `MithrilSyncContainer.tsx:50-70`). After a failed or refused rebuild (`lastErrorRebuild`), Retry repeats the rebuild with `wipe_chain`, whatever the code, including a failed install. For `INVALID_CHAIN_PATH` and `CHAIN_DIR_OTHER_NETWORK`, where the location is the cause, Retry opens the chain storage location picker, and the next Retry after a location is confirmed rebuilds there. When the error did not come from a rebuild, Retry runs Mithril as before.
+- [ ] FR14. The Mithril error view shows a specific message for `PROBE_FAILED`, `INVALID_CHAIN_PATH`, `CHAIN_DIR_NOT_REPLACEABLE`, `CHAIN_DIR_OTHER_NETWORK`, `WIPE_FAILED`, `INSUFFICIENT_SPACE` and `MARKER_FAILED`, and its Retry and Skip buttons are translated (they are hard-coded English at `MithrilSyncContainer.tsx:50-70`). After a failed or refused rebuild (`lastErrorRebuild`), Retry repeats the rebuild with `wipe_chain`, whatever the code, including a failed install. For `INVALID_CHAIN_PATH` and `CHAIN_DIR_OTHER_NETWORK`, where the location is the cause, Retry opens the chain storage location picker, and the next Retry after a location is confirmed rebuilds there. When a partial sync failed during its install step (`INSTALL_FAILED` with `rebuild: false`), Retry shows the confirmation of FR12 and confirming rebuilds (decision 15). When any other error did not come from a rebuild, Retry runs Mithril as before.
 - [ ] FR15. Diagnostics shows the last detection of the session (kind, slot, time) from `lastChainDamage`, so a node start does not erase it, and has a Rebuild blockchain data action behind the same confirmation, whether anything was detected. While damage is detected the partial Mithril Sync action is disabled, with a hint that points to Rebuild blockchain data, because a partial sync moves the symptom without repairing the hole. The copied Diagnostics text includes the Blockchain data row.
 - [ ] FR16. All new copy exists in en-US and ja-JP.
 
@@ -187,7 +189,14 @@ lastErrorRebuild: boolean;
 rebuildPending: boolean;
 ```
 
-`mithril_error` gains `rebuild: bool`, `chain_status` gains an optional `rebuild_pending: bool` that defaults to false, and `INSUFFICIENT_SPACE` is a new error code.
+`mithril_error` gains `rebuild: bool`, which is always present, `chain_status` gains `rebuild_pending: bool`, which is always sent, and `INSUFFICIENT_SPACE` and `MARKER_FAILED` are new error codes:
+
+```json
+{"event":"mithril_error","code":"MARKER_FAILED","message":"...","rebuild":true}
+{"event":"chain_status","has_chain":false,"rebuild_pending":true}
+```
+
+A Mithril sync that finds the local chain current ends with `mithril_status` `completed` after `node_started`, so the renderer leaves its Mithril view.
 
 There is no new IPC channel. The renderer reads the state through the existing 2-second poll, and the rebuild uses `MITHRIL_COMMAND_CHANNEL`, which already forwards `wipe_chain` verbatim.
 
@@ -227,6 +236,7 @@ Draft en-US copy, to be confirmed by phase 5 testing (the wallet sentence depend
 | `WIPE_FAILED` | Daedalus could not delete the blockchain data files. Close any other programs that might be using the blockchain folder, then retry. |
 | `CHAIN_DIR_OTHER_NETWORK` | The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again. |
 | `INSUFFICIENT_SPACE` | There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry. |
+| `MARKER_FAILED` | Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry. |
 | Old data removed, error view | The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync. |
 | Old data removed, decision view | The old blockchain data was removed, so the blockchain needs to be synced again. |
 | Secondary action after removal | Choose how to sync |
@@ -282,6 +292,8 @@ Jest:
 - `WatchdogManager.spec.ts`: `chain_damage` sets `chainDamage` and `lastChainDamage`; `node_started` and `preparing` clear only the first; a completed rebuild clears the second; `mithril_error` keeps `code` and `rebuild`; `chain_status` keeps `rebuild_pending`; `start_node` clears the Mithril phase.
 - `BackendStore.spec.ts`: the phase precedence over `ready` and `error`; dismissal; `rebuildChain()` sends `wipe_chain: true` and logs only plain values; each branch of `retryMithril()`; the bootstrap decision after a rebuild that removed the data, and after a restart with `rebuildPending`.
 - `Root.spec.tsx`: the damaged data screen replaces each of the five pages that otherwise render without a connected node.
+- `chainStorageValidate.realfs.spec.ts`: the picker accepts database entries plus a staging leftover.
+- `MithrilSyncContainer.spec.tsx` and `BackendStore.spec.ts`: Retry after a failed install asks for the confirmation, Back sends nothing, and confirming sends `wipe_chain`.
 - A component spec for the choice-to-confirm flow.
 
 Storybook: one story per kind, the confirm view, and the error view for each code in FR14, in en-US and ja-JP.
@@ -308,8 +320,8 @@ Manual, on preprod (Linux under WSL2 and Windows), reproducing a hole with 11.4.
 
 ## Open Questions
 
-None. Decisions 10 to 14 settled the questions raised while planning.
+None. Decisions 10 to 15 settled the questions raised while planning.
 
 **Status:** In Progress
-**Date:** 2026-10-16
+**Date:** 2026-10-17
 **Author:** Adam Dean
