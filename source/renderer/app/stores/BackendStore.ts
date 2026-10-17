@@ -30,6 +30,8 @@ import type {
 // DEFINE CONSTANTS
 const BACKEND_STATUS_POLL_INTERVAL = 2000; // ms
 
+// The error a sync reports when installing the downloaded database failed
+const INSTALL_FAILED_CODE = 'INSTALL_FAILED';
 // Codes of the errors a rebuild reports when the chain storage location itself
 // is the problem; repeating the rebuild there fails the same way.
 const LOCATION_ERROR_CODES = ['INVALID_CHAIN_PATH', 'CHAIN_DIR_OTHER_NETWORK'];
@@ -90,6 +92,9 @@ export default class BackendStore extends Store {
   // Set when that picker confirmed a location, so the next Retry rebuilds
   // there instead of asking again; cleared when a rebuild is sent
   @observable _chainStorageReselected = false;
+  // Set by Retry after a partial sync failed to install; the rebuild
+  // confirmation shows in place of the error until it is confirmed or left
+  @observable _rebuildConfirmationRequested = false;
   // Set by the error view's secondary action after a rebuild removed the chain
   // data, so the bootstrap decision shows instead of the error; cleared when
   // the Mithril phase moves on
@@ -176,7 +181,10 @@ export default class BackendStore extends Store {
         this.nodeStartupPhase = state.nodeStartupPhase;
         this.blockSyncProgress = { ...state.blockSyncProgress };
         this.mithrilPhase = state.mithrilPhase;
-        if (state.mithrilPhase !== 'error') this._mithrilErrorDismissed = false;
+        if (state.mithrilPhase !== 'error') {
+          this._mithrilErrorDismissed = false;
+          this._rebuildConfirmationRequested = false;
+        }
         this.mithrilProgress = state.mithrilProgress;
         this.lastError = state.lastError;
         this.lastErrorCode = state.lastErrorCode ?? null;
@@ -391,6 +399,7 @@ export default class BackendStore extends Store {
   rebuildChain = () => {
     this.chainPathConfirmed = true;
     this._chainStorageReselected = false;
+    this._rebuildConfirmationRequested = false;
     this._mithrilErrorDismissed = false;
     mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
     // The logger sends its arguments over IPC, which cannot clone a MobX
@@ -404,11 +413,18 @@ export default class BackendStore extends Store {
   // Retry on the Mithril error view. After a failed or refused rebuild it
   // repeats the rebuild, since the chain data may already be gone and a plain
   // sync would not replace what is left; when the storage location caused the
-  // failure it asks for a location instead. Otherwise it runs Mithril again.
+  // failure it asks for a location instead. A partial sync that failed to
+  // install leaves the chain partly replaced, and the watchdog waits for
+  // another sync that a plain Retry usually finds nothing to download for, so
+  // Retry asks to confirm a rebuild. Otherwise it runs Mithril again.
   @action
   retryMithril = () => {
     if (!this.lastErrorRebuild) {
-      this.startMithril();
+      if (this.lastErrorCode === INSTALL_FAILED_CODE) {
+        this._rebuildConfirmationRequested = true;
+      } else {
+        this.startMithril();
+      }
     } else if (
       !this._chainStorageReselected &&
       this.lastErrorCode != null &&
@@ -418,6 +434,13 @@ export default class BackendStore extends Store {
     } else {
       this.rebuildChain();
     }
+  };
+
+  // "Back" on the rebuild confirmation that follows a failed install: the
+  // Mithril error view shows again
+  @action
+  cancelRebuildConfirmation = () => {
+    this._rebuildConfirmationRequested = false;
   };
 
   // "Not now" on the chain-damaged screen; the screen stays hidden until the
