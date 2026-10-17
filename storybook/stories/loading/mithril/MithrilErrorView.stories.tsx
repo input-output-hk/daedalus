@@ -119,6 +119,31 @@ storiesOf('Loading / Mithril / Error', module)
       actions={locationErrorActions}
     />
   ))
+  .add('Rebuild Marker Failed', () => (
+    <MithrilErrorView
+      error={{
+        code: 'REBUILD_MARKER_FAILED',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
+  .add('Probe Failed After Data Removed', () => (
+    <MithrilErrorView
+      error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
+      chainRemoved
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[
+        errorActions[0],
+        {
+          label: 'Choose how to sync',
+          onClick: () => bootstrapActions.onDecline(),
+          variant: 'secondary' as const,
+        },
+      ]}
+    />
+  ))
   .add('Marker Failed', () => (
     <MithrilErrorView
       error={{

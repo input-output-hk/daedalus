@@ -82,8 +82,12 @@ describe('MithrilErrorView', () => {
       'There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry, or choose another location.',
     ],
     [
-      'MARKER_FAILED',
+      'REBUILD_MARKER_FAILED',
       'Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry.',
+    ],
+    [
+      'MARKER_FAILED',
+      'Daedalus could not write to its data folder before installing the downloaded blockchain data, so it did not install it. Check that the data folder is writable and retry.',
     ],
     [
       'WIPE_FAILED',
@@ -94,6 +98,48 @@ describe('MithrilErrorView', () => {
     expect(screen.getByText(hint)).toBeInTheDocument();
     fireEvent.click(screen.getByText('View'));
     expect(screen.getByText(code)).toBeInTheDocument();
+  });
+
+  it.each([
+    [
+      'PROBE_FAILED',
+      'Daedalus could not reach the Mithril service. Check your internet connection and try again.',
+    ],
+    [
+      'INSUFFICIENT_SPACE',
+      'There is not enough free space on the drive that holds the blockchain data. Free some space on that drive and retry, or choose another location.',
+    ],
+    [
+      'CHAIN_DIR_NOT_REPLACEABLE',
+      'The blockchain data folder contains other files, so Daedalus cannot install the blockchain data there. Move those files elsewhere and retry, or choose another location.',
+    ],
+    [
+      'CHAIN_DIR_OTHER_NETWORK',
+      'The blockchain data folder holds data for a different Cardano network. Choose a different blockchain data location and try again.',
+    ],
+    [
+      'REBUILD_MARKER_FAILED',
+      'Daedalus could not record the rebuild in its data folder. Check that the data folder is writable and retry.',
+    ],
+  ])(
+    'does not say that nothing changed for %s once the old data was removed',
+    (code, hint) => {
+      renderView({ code, message: 'x' }, { chainRemoved: true });
+      expect(screen.getByText(hint)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /has not been changed|changed nothing|did not delete it|did not change it/
+        )
+      ).toBeNull();
+      expect(
+        screen.getByText(/The old blockchain data was removed/)
+      ).toBeInTheDocument();
+    }
+  );
+
+  it('keeps the message of a code that says nothing about unchanged data once the old data was removed', () => {
+    renderView({ code: 'MARKER_FAILED', message: 'x' }, { chainRemoved: true });
+    expect(screen.getByText(/so it did not install it/)).toBeInTheDocument();
   });
 
   it('prefers the message for the code over the one for the stage', () => {

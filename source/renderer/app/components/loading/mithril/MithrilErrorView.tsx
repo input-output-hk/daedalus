@@ -65,16 +65,39 @@ const ERROR_COPY_BY_STAGE: Partial<
   },
 };
 
+type CodeHint = {
+  hint: keyof typeof messages;
+  // Used once a rebuild has removed the old data: the same message without
+  // its statement that the blockchain data was not changed
+  afterRemoval?: keyof typeof messages;
+};
+
 // Codes of the errors a rebuild reports before or while it replaces the chain
 // data. Each has its own message, which takes precedence over the stage copy.
-const ERROR_HINT_BY_CODE: Record<string, keyof typeof messages> = {
-  PROBE_FAILED: 'errorProbeFailedHint',
-  INVALID_CHAIN_PATH: 'errorInvalidChainPathHint',
-  CHAIN_DIR_NOT_REPLACEABLE: 'errorChainDirNotReplaceableHint',
-  CHAIN_DIR_OTHER_NETWORK: 'errorChainDirOtherNetworkHint',
-  WIPE_FAILED: 'errorWipeFailedHint',
-  INSUFFICIENT_SPACE: 'errorInsufficientSpaceHint',
-  MARKER_FAILED: 'errorMarkerFailedHint',
+const ERROR_HINT_BY_CODE: Record<string, CodeHint> = {
+  PROBE_FAILED: {
+    hint: 'errorProbeFailedHint',
+    afterRemoval: 'errorProbeFailedRemovedHint',
+  },
+  INVALID_CHAIN_PATH: { hint: 'errorInvalidChainPathHint' },
+  CHAIN_DIR_NOT_REPLACEABLE: {
+    hint: 'errorChainDirNotReplaceableHint',
+    afterRemoval: 'errorChainDirNotReplaceableRemovedHint',
+  },
+  CHAIN_DIR_OTHER_NETWORK: {
+    hint: 'errorChainDirOtherNetworkHint',
+    afterRemoval: 'errorChainDirOtherNetworkRemovedHint',
+  },
+  WIPE_FAILED: { hint: 'errorWipeFailedHint' },
+  INSUFFICIENT_SPACE: {
+    hint: 'errorInsufficientSpaceHint',
+    afterRemoval: 'errorInsufficientSpaceRemovedHint',
+  },
+  REBUILD_MARKER_FAILED: {
+    hint: 'errorRebuildMarkerFailedHint',
+    afterRemoval: 'errorRebuildMarkerFailedRemovedHint',
+  },
+  MARKER_FAILED: { hint: 'errorMarkerFailedHint' },
 };
 
 const getLogPathHref = (logPath: string) => {
@@ -108,7 +131,11 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
-  const codeHint = error?.code ? ERROR_HINT_BY_CODE[error.code] : undefined;
+  const codeCopy = error?.code ? ERROR_HINT_BY_CODE[error.code] : undefined;
+  const codeHint =
+    chainRemoved && codeCopy?.afterRemoval
+      ? codeCopy.afterRemoval
+      : codeCopy?.hint;
   let resolvedHint = hint;
   if (resolvedHint === undefined) {
     const hintKey = codeHint ?? copy.hint;

@@ -142,12 +142,33 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Hint for the INSUFFICIENT_SPACE error on the Mithril error view, shown when a rebuild was refused before it deleted anything because the drive that holds the blockchain data is too full for the download.',
   },
-  errorMarkerFailedHint: {
-    id: 'loading.mithrilBootstrap.error.markerFailed.hint',
+  errorInsufficientSpaceRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.insufficientSpace.removedHint',
+    defaultMessage:
+      '!!!There is not enough free space on the drive that holds the blockchain data. Free some space on that drive and retry, or choose another location.',
+    description:
+      'Hint for the INSUFFICIENT_SPACE error on the Mithril error view after an earlier rebuild attempt removed the old blockchain data, so it does not say the data is unchanged.',
+  },
+  errorRebuildMarkerFailedHint: {
+    id: 'loading.mithrilBootstrap.error.rebuildMarkerFailed.hint',
     defaultMessage:
       '!!!Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry.',
     description:
-      'Hint for the MARKER_FAILED error on the Mithril error view, shown when a rebuild was refused before it deleted anything because Daedalus could not write the record of the rebuild to its data folder.',
+      'Hint for the REBUILD_MARKER_FAILED error on the Mithril error view, shown when a rebuild was refused before it deleted anything because Daedalus could not write the record of the rebuild to its data folder.',
+  },
+  errorRebuildMarkerFailedRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.rebuildMarkerFailed.removedHint',
+    defaultMessage:
+      '!!!Daedalus could not record the rebuild in its data folder. Check that the data folder is writable and retry.',
+    description:
+      'Hint for the REBUILD_MARKER_FAILED error on the Mithril error view after an earlier rebuild attempt removed the old blockchain data, so it does not say nothing was changed.',
+  },
+  errorMarkerFailedHint: {
+    id: 'loading.mithrilBootstrap.error.markerFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not write to its data folder before installing the downloaded blockchain data, so it did not install it. Check that the data folder is writable and retry.',
+    description:
+      'Hint for the MARKER_FAILED error on the Mithril error view, shown when Daedalus could not write to its data folder after the download and before the install, so the downloaded blockchain data was not installed.',
   },
   errorProbeFailedHint: {
     id: 'loading.mithrilBootstrap.error.probeFailed.hint',
@@ -155,6 +176,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
       '!!!Daedalus could not reach the Mithril service. Your blockchain data has not been changed. Check your internet connection and try again.',
     description:
       'Hint shown when the Mithril service could not be reached before anything was changed or deleted.',
+  },
+  errorProbeFailedRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.probeFailed.removedHint',
+    defaultMessage:
+      '!!!Daedalus could not reach the Mithril service. Check your internet connection and try again.',
+    description:
+      'Hint shown when the Mithril service could not be reached after an earlier rebuild attempt removed the old blockchain data, so it does not say the data is unchanged.',
   },
   errorInvalidChainPathHint: {
     id: 'loading.mithrilBootstrap.error.invalidChainPath.hint',
@@ -170,12 +198,26 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Hint shown when the blockchain data folder holds files that are not blockchain data, so a rebuild refused to delete it.',
   },
+  errorChainDirNotReplaceableRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirNotReplaceable.removedHint',
+    defaultMessage:
+      '!!!The blockchain data folder contains other files, so Daedalus cannot install the blockchain data there. Move those files elsewhere and retry, or choose another location.',
+    description:
+      'Hint shown when the blockchain data folder holds files that are not blockchain data, after an earlier rebuild attempt removed the old blockchain data.',
+  },
   errorChainDirOtherNetworkHint: {
     id: 'loading.mithrilBootstrap.error.chainDirOtherNetwork.hint',
     defaultMessage:
       '!!!The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again.',
     description:
       'Hint shown when the blockchain data folder holds another Cardano network, so a rebuild refused to change it.',
+  },
+  errorChainDirOtherNetworkRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirOtherNetwork.removedHint',
+    defaultMessage:
+      '!!!The blockchain data folder holds data for a different Cardano network. Choose a different blockchain data location and try again.',
+    description:
+      'Hint shown when the blockchain data folder holds another Cardano network, after an earlier rebuild attempt removed the old blockchain data.',
   },
   errorWipeFailedHint: {
     id: 'loading.mithrilBootstrap.error.wipeFailed.hint',
