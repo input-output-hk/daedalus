@@ -383,28 +383,60 @@ async fn probe_snapshot(cfg: &MithrilConfig) -> Result<(Option<u64>, u64, Option
 }
 
 /// `path` as an external program is given it. On Windows, `read_link` on a
-/// junction returns its target in the verbatim form `\\?\D:\...`, and the
-/// staging directory inside the chain directory inherits that form. Not every
-/// program accepts it, so a verbatim drive path is passed in its plain form,
-/// `D:\...`. Any other path, a verbatim network share `\\?\UNC\...`
-/// included, is passed as it is.
+/// junction returns its target in the verbatim form, `\\?\D:\...` or
+/// `\\?\UNC\server\share\...`, and the staging directory inside the chain
+/// directory inherits that form. Not every program accepts it, so a verbatim
+/// drive or network path is passed in its plain form, `D:\...` or
+/// `\\server\share\...`, unless the plain form is too long for programs
+/// bound by the classic Windows path limit, which reach it only in the
+/// verbatim form. Any other path is passed as it is.
 fn for_external_program(path: &Path) -> PathBuf {
     #[cfg(windows)]
-    if let Some(plain) = path.to_str().and_then(plain_drive_path) {
+    if let Some(plain) = path.to_str().and_then(plain_form) {
         return PathBuf::from(plain);
     }
     path.to_path_buf()
 }
 
-/// The plain form of a verbatim drive path, `\\?\D:\data` for `D:\data`,
-/// or None when `path` is not one.
+/// The length, in UTF-16 units, from which a directory path no longer fits
+/// the classic Windows limit: MAX_PATH, 260, less room for an 8.3 file name.
 #[cfg(any(windows, test))]
-fn plain_drive_path(path: &str) -> Option<&str> {
+const PLAIN_PATH_LIMIT: usize = 248;
+
+/// The plain form of a verbatim drive path, `D:\data` for `\\?\D:\data`, or of
+/// a verbatim network path, `\\server\share\data` for
+/// `\\?\UNC\server\share\data`. None when `path` is neither, or when the
+/// plain form would be PLAIN_PATH_LIMIT units long or longer.
+#[cfg(any(windows, test))]
+fn plain_form(path: &str) -> Option<String> {
     let rest = path.strip_prefix(r"\\?\")?;
-    let drive = rest.as_bytes();
-    let is_drive_root =
-        drive.len() >= 3 && drive[0].is_ascii_alphabetic() && drive[1] == b':' && drive[2] == b'\\';
-    is_drive_root.then_some(rest)
+    let unc = rest
+        .get(..4)
+        .filter(|prefix| prefix.eq_ignore_ascii_case(r"UNC\"))
+        .map(|_| &rest[4..]);
+    let plain = match unc {
+        Some(share_path) => {
+            let mut parts = share_path.split('\\');
+            let server = parts.next().unwrap_or_default();
+            let share = parts.next().unwrap_or_default();
+            if server.is_empty() || share.is_empty() {
+                return None;
+            }
+            format!(r"\\{share_path}")
+        }
+        None => {
+            let drive = rest.as_bytes();
+            let is_drive_root = drive.len() >= 3
+                && drive[0].is_ascii_alphabetic()
+                && drive[1] == b':'
+                && drive[2] == b'\\';
+            if !is_drive_root {
+                return None;
+            }
+            rest.to_string()
+        }
+    };
+    (plain.encode_utf16().count() < PLAIN_PATH_LIMIT).then_some(plain)
 }
 
 enum ProcResult {
@@ -2046,41 +2078,82 @@ mod tests {
     }
 
     mod external_paths {
-        use super::super::{for_external_program, plain_drive_path};
+        use super::super::{PLAIN_PATH_LIMIT, for_external_program, plain_form};
         use std::path::Path;
 
         #[test]
         fn a_verbatim_drive_path_loses_its_prefix() {
             assert_eq!(
-                plain_drive_path(r"\\?\D:\Daedalus\chain\mithril-staging"),
+                plain_form(r"\\?\D:\Daedalus\chain\mithril-staging").as_deref(),
                 Some(r"D:\Daedalus\chain\mithril-staging")
             );
-            assert_eq!(plain_drive_path(r"\\?\c:\"), Some(r"c:\"));
+            assert_eq!(plain_form(r"\\?\c:\").as_deref(), Some(r"c:\"));
         }
 
         #[test]
-        fn other_paths_are_not_drive_paths() {
+        fn a_verbatim_network_path_becomes_a_plain_share_path() {
+            assert_eq!(
+                plain_form(r"\\?\UNC\server\share\Daedalus\chain").as_deref(),
+                Some(r"\\server\share\Daedalus\chain")
+            );
+            assert_eq!(
+                plain_form(r"\\?\unc\server\share").as_deref(),
+                Some(r"\\server\share")
+            );
+        }
+
+        #[test]
+        fn other_paths_have_no_plain_form() {
             for path in [
-                r"\\?\UNC\server\share\chain",
+                r"\\?\UNC\server",
+                r"\\?\UNC\\share\chain",
+                r"\\?\UNC\server\",
                 r"\\?\Volume{0b1c2d3e-0000-0000-0000-100000000000}\chain",
                 r"\\?\D:",
                 r"D:\Daedalus\chain",
                 r"\\server\share\chain",
                 "/data/chain",
             ] {
-                assert_eq!(plain_drive_path(path), None, "{path}");
+                assert_eq!(plain_form(path), None, "{path}");
             }
         }
 
         #[test]
+        fn a_path_too_long_for_its_plain_form_stays_verbatim() {
+            // D:\ and a name filling the rest up to the given length.
+            let drive = |len: usize| format!(r"\\?\D:\{}", "a".repeat(len - 3));
+            assert!(plain_form(&drive(PLAIN_PATH_LIMIT - 1)).is_some());
+            assert_eq!(plain_form(&drive(PLAIN_PATH_LIMIT)), None);
+            assert_eq!(plain_form(&drive(400)), None);
+            // \\server\share\ is 15 units long.
+            let share = |len: usize| format!(r"\\?\UNC\server\share\{}", "a".repeat(len - 15));
+            assert!(plain_form(&share(PLAIN_PATH_LIMIT - 1)).is_some());
+            assert_eq!(plain_form(&share(PLAIN_PATH_LIMIT)), None);
+        }
+
+        #[test]
+        fn the_limit_counts_utf16_units() {
+            // Each of these characters is two UTF-16 units.
+            let name = "\u{1F4BE}".repeat(123);
+            assert_eq!(plain_form(&format!(r"\\?\D:\{name}")), None);
+            let name = "\u{1F4BE}".repeat(122);
+            assert!(plain_form(&format!(r"\\?\D:\{name}")).is_some());
+        }
+
+        #[test]
         fn programs_get_the_plain_form_on_windows_only() {
-            let verbatim = Path::new(r"\\?\D:\chain");
-            let expected = if cfg!(windows) {
-                Path::new(r"D:\chain")
-            } else {
-                verbatim
-            };
-            assert_eq!(for_external_program(verbatim), expected);
+            for (verbatim, plain) in [
+                (r"\\?\D:\chain", r"D:\chain"),
+                (r"\\?\UNC\server\share\chain", r"\\server\share\chain"),
+            ] {
+                let verbatim = Path::new(verbatim);
+                let expected = if cfg!(windows) {
+                    Path::new(plain)
+                } else {
+                    verbatim
+                };
+                assert_eq!(for_external_program(verbatim), expected);
+            }
             assert_eq!(
                 for_external_program(Path::new("/data/chain")),
                 Path::new("/data/chain")
