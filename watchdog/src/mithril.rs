@@ -24,7 +24,11 @@ const CUTOVER_GATE_MS: u64 = 100;
 const SUBPROCESS_OUTPUT_TAIL: usize = 16 * 1024;
 
 pub enum PipelineResult {
-    Installed,
+    /// A database was installed. `rebuild` is true when the pipeline was a
+    /// rebuild, asked for or forced by one that did not finish.
+    Installed {
+        rebuild: bool,
+    },
     NotNeeded,
     Cancelled,
     /// The user explicitly cancelled via `cancel_mithril`; the supervisor should
@@ -236,6 +240,7 @@ async fn run_download(
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     local_highest: Option<u64>,
     certified: u64,
+    rebuild: bool,
 ) -> ProcResult {
     let mut cmd = Command::new(&cfg.mithril_bin);
     cmd.args([
@@ -282,6 +287,7 @@ async fn run_download(
     fn spawn_progress_reader(
         reader: impl tokio::io::AsyncRead + Unpin + Send + 'static,
         tx: mpsc::Sender<Event>,
+        rebuild: bool,
     ) {
         tokio::spawn(async move {
             let mut lines = tokio::io::BufReader::new(reader).lines();
@@ -312,6 +318,7 @@ async fn run_download(
                             let _ = tx
                                 .send(Event::MithrilStatus {
                                     phase: "verifying".to_string(),
+                                    rebuild,
                                 })
                                 .await;
                         }
@@ -321,8 +328,8 @@ async fn run_download(
         });
     }
 
-    spawn_progress_reader(stdout, prog_tx.clone());
-    spawn_progress_reader(stderr, prog_tx);
+    spawn_progress_reader(stdout, prog_tx.clone(), rebuild);
+    spawn_progress_reader(stderr, prog_tx, rebuild);
 
     let mut downloading_announced = false;
     let mut announce_downloading = |ev: &Event| {
@@ -334,6 +341,7 @@ async fn run_download(
                 if *files_total > 0 && phase == "snapshot" {
                     emit(&Event::MithrilStatus {
                         phase: "downloading".to_string(),
+                        rebuild,
                     });
                     downloading_announced = true;
                 }
@@ -1135,6 +1143,7 @@ pub async fn run_pipeline(
     info!("mithril: preparing");
     emit(&Event::MithrilStatus {
         phase: "preparing".to_string(),
+        rebuild: wipe_chain,
     });
 
     // 1. Behind-ness probe. It runs before a rebuild deletes anything, so an
@@ -1273,7 +1282,16 @@ pub async fn run_pipeline(
     }
 
     // 3. Download — "downloading" status is emitted by run_download on first real progress event.
-    match run_download(cfg, &download_dir, cmd_rx, local_highest, certified).await {
+    match run_download(
+        cfg,
+        &download_dir,
+        cmd_rx,
+        local_highest,
+        certified,
+        wipe_chain,
+    )
+    .await
+    {
         ProcResult::Success => {}
         ProcResult::Failed(msg) => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
@@ -1290,6 +1308,7 @@ pub async fn run_pipeline(
             info!("mithril: cancelled by user");
             emit(&Event::MithrilStatus {
                 phase: "cancelled".to_string(),
+                rebuild: wipe_chain,
             });
             return cancelled_by_user();
         }
@@ -1315,6 +1334,7 @@ pub async fn run_pipeline(
     info!("mithril: converting");
     emit(&Event::MithrilStatus {
         phase: "converting".to_string(),
+        rebuild: wipe_chain,
     });
     match run_converter(cfg, &staging_db, cmd_rx).await {
         ProcResult::Success => {}
@@ -1333,6 +1353,7 @@ pub async fn run_pipeline(
             info!("mithril: cancelled by user (post-convert)");
             emit(&Event::MithrilStatus {
                 phase: "cancelled".to_string(),
+                rebuild: wipe_chain,
             });
             return cancelled_by_user();
         }
@@ -1364,6 +1385,7 @@ pub async fn run_pipeline(
                 info!("mithril: cancelled by user (cutover gate)");
                 emit(&Event::MithrilStatus {
                     phase: "cancelled".to_string(),
+                    rebuild: wipe_chain,
                 });
                 cancelled_by_user()
             }
@@ -1376,6 +1398,7 @@ pub async fn run_pipeline(
     info!("mithril: installing");
     emit(&Event::MithrilStatus {
         phase: "installing".to_string(),
+        rebuild: wipe_chain,
     });
 
     // The download takes minutes; check again before anything is changed.
@@ -1426,9 +1449,12 @@ pub async fn run_pipeline(
     info!("mithril: installed successfully");
     emit(&Event::MithrilStatus {
         phase: "finalizing".to_string(),
+        rebuild: wipe_chain,
     });
 
-    PipelineResult::Installed
+    PipelineResult::Installed {
+        rebuild: wipe_chain,
+    }
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────────────

@@ -504,7 +504,8 @@ fn empty_chain_mithril_bootstrap() {
 
     send(&mut stdin, json!({"cmd": "start_mithril"}));
 
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], false, "{preparing}");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
     expect(&rx, "mithril_progress"); // at least one progress event
     expect_with(&rx, "mithril_status", |v| v["phase"] == "converting");
@@ -515,7 +516,8 @@ fn empty_chain_mithril_bootstrap() {
     expect(&rx, "node_started");
     // completed fires right after node_started (before wallet is up) so the
     // renderer can leave the Mithril overlay and show normal sync progress.
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], false, "{completed}");
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
@@ -581,7 +583,8 @@ fn partial_sync_while_running() {
     // Wallet stops, then node shuts down gracefully.
     expect(&rx, "node_shutdown_ms");
 
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], false, "{preparing}");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
     expect(&rx, "mithril_progress");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
@@ -589,7 +592,8 @@ fn partial_sync_while_running() {
 
     // Comes back up.
     expect(&rx, "node_started");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], false, "{completed}");
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
@@ -1416,7 +1420,8 @@ fn mithril_not_needed_ends_with_completed_once_the_node_restarts() {
     expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
     expect(&rx, "mithril_not_needed");
     expect(&rx, "node_started");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], false, "{completed}");
     expect(&rx, "wallet_ready");
 
     stop(&mut stdin);
@@ -1447,13 +1452,16 @@ fn wipe_chain_full_bootstrap() {
     );
 
     expect(&rx, "node_shutdown_ms");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], true, "{preparing}");
+    let downloading = expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    assert_eq!(downloading["rebuild"], true, "{downloading}");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
 
     expect(&rx, "node_started");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], true, "{completed}");
     expect(&rx, "wallet_ready");
 
     assert!(
@@ -1636,8 +1644,12 @@ fn restart_with_a_pending_rebuild_starts_no_node_and_rebuilds() {
     assert!(chain.join("immutable").join("00000.chunk").exists());
 
     send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], true, "{preparing}");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
     expect(&rx, "node_started");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], true, "{completed}");
 
     let args: Vec<String> =
         serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
@@ -1892,6 +1904,9 @@ fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
     send(&mut stdin, json!({"cmd": "start_mithril"}));
     expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
     expect(&rx, "node_started");
+    // The plain sync was a rebuild, and completed says so.
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], true, "{completed}");
 
     let args: Vec<String> =
         serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
