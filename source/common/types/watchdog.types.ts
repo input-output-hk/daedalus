@@ -32,6 +32,9 @@ export interface WatchdogState {
   // True when a rebuild was confirmed and has not finished, e.g. the app was
   // closed after the chain data was deleted
   rebuildPending: boolean;
+  // True after a Mithril install failed part-way: the watchdog starts no node
+  // and ignores start_node until a Mithril sync installs a database
+  installRetryRequired: boolean;
   walletUnrecoverable: boolean;
   nodeSocketWaitMs: number | null;
   walletReadyWaitMs: number | null;
