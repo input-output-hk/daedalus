@@ -1657,14 +1657,51 @@ fn a_rebuild_that_cannot_record_itself_changes_nothing() {
     let _ = child.wait();
 }
 
-/// Records, in the state directory, a rebuild of `chain` that began deleting
-/// it in an earlier session and installed nothing.
+/// Records, in the state directory, a rebuild of `chain` as an earlier
+/// session records it before it deletes anything. The record names no kind,
+/// as records written before kinds existed, and reads as a rebuild's.
 fn write_rebuild_marker(dir: &TempDir, chain: &Path) {
     std::fs::write(
         dir.path().join("chain-rebuild.json"),
         json!({ "chain_path": chain.to_str().unwrap() }).to_string(),
     )
     .unwrap();
+}
+
+/// What a rebuild that began deleting `chain` in an earlier session and
+/// installed nothing leaves: its record, and the database without the clean
+/// marker, which the delete removes first.
+fn leave_rebuild_unfinished(dir: &TempDir, chain: &Path) {
+    write_rebuild_marker(dir, chain);
+    std::fs::remove_file(chain.join("clean")).unwrap();
+}
+
+/// A rebuild records itself before it deletes anything. When the app stopped
+/// between the two, the chain is whole and still marked clean, so at the next
+/// start the record is removed and the node starts on that chain. The same
+/// holds for a record that could not be deleted after an install.
+#[test]
+fn a_rebuild_stopped_before_it_deleted_anything_starts_the_node_on_the_chain() {
+    let dir = TempDir::new("rebuild-before-wipe");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    write_rebuild_marker(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], true, "{status}");
+    assert_eq!(status["rebuild_pending"], false, "{status}");
+    assert_eq!(status["install_pending"], false, "{status}");
+    expect(&rx, "node_started");
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+    expect(&rx, "wallet_ready");
+    assert_eq!(tree(&chain), before);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
 }
 
 /// A rebuild that did not finish in an earlier session leaves database entries
@@ -1676,7 +1713,7 @@ fn write_rebuild_marker(dir: &TempDir, chain: &Path) {
 fn restart_with_a_pending_rebuild_starts_no_node_and_rebuilds() {
     let dir = TempDir::new("rebuild-pending");
     let chain = dir.populate_database();
-    write_rebuild_marker(&dir, &chain);
+    leave_rebuild_unfinished(&dir, &chain);
     let args_file = dir.path().join("mithril-download-args.json");
     let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
     let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
@@ -1720,7 +1757,7 @@ fn restart_with_a_pending_rebuild_starts_no_node_and_rebuilds() {
 fn errors_of_a_pending_rebuild_are_marked_as_a_rebuild() {
     let dir = TempDir::new("rebuild-pending-error");
     let chain = dir.populate_database();
-    write_rebuild_marker(&dir, &chain);
+    leave_rebuild_unfinished(&dir, &chain);
     let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
     let (mut child, mut stdin, rx) =
         spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_PROBE_FAIL", "1")]);

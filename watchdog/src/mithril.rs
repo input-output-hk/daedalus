@@ -119,6 +119,16 @@ pub enum RecordKind {
     Install,
 }
 
+impl RecordKind {
+    /// What the record is for, in words for the log.
+    pub fn describe(self) -> &'static str {
+        match self {
+            RecordKind::Rebuild => "rebuild",
+            RecordKind::Install => "Mithril install",
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 struct RebuildMarker {
     /// The chain directory being rebuilt, as Mithril's chain_path names it.
@@ -221,20 +231,82 @@ async fn write_rebuild_marker(cfg: &MithrilConfig, kind: RecordKind) -> Result<(
     Ok(written?)
 }
 
+/// The pauses before each further try to delete the rebuild marker. On
+/// Windows a file that another program, such as a virus scanner, holds open
+/// for a moment cannot be deleted, and a marker left after a database was
+/// installed keeps the next start from starting the node on it.
+const MARKER_DELETE_RETRY_DELAYS: [Duration; 4] = [
+    Duration::from_millis(100),
+    Duration::from_millis(250),
+    Duration::from_millis(500),
+    Duration::from_millis(1000),
+];
+
+/// Deletes the file at `path`, trying again after each of `delays` while it
+/// fails. A file that is already gone counts as deleted.
+async fn remove_marker_file(path: &Path, delays: &[Duration]) -> std::io::Result<()> {
+    let mut delays = delays.iter();
+    loop {
+        match tokio::fs::remove_file(path).await {
+            Ok(()) => return Ok(()),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+            Err(e) => match delays.next() {
+                Some(delay) => {
+                    warn!(
+                        "mithril: could not delete {}: {e}; trying again",
+                        path.display()
+                    );
+                    tokio::time::sleep(*delay).await;
+                }
+                None => return Err(e),
+            },
+        }
+    }
+}
+
 /// Deletes the rebuild marker when it is for the configured chain directory:
 /// a database was installed there, or the user chose to sync it from genesis.
 pub async fn clear_rebuild_marker(cfg: &MithrilConfig) {
+    clear_rebuild_marker_trying(cfg, &MARKER_DELETE_RETRY_DELAYS).await;
+}
+
+async fn clear_rebuild_marker_trying(cfg: &MithrilConfig, delays: &[Duration]) {
     if pending_record(cfg).await.is_none() {
         return;
     }
     let path = Path::new(&cfg.state_dir).join(REBUILD_MARKER);
-    match tokio::fs::remove_file(&path).await {
+    match remove_marker_file(&path, delays).await {
         Ok(()) => info!(
-            "mithril: the rebuild of {} is no longer pending",
+            "mithril: the rebuild or install of {} is no longer pending",
             cfg.chain_path
         ),
-        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
         Err(e) => warn!("mithril: could not delete {}: {e}", path.display()),
+    }
+}
+
+/// Removes, at startup, the record of a rebuild or install of the configured
+/// chain directory when that directory has a `clean` marker. Every rebuild
+/// and install deletes `clean` before it changes the database, and an install
+/// moves it in last, so a database marked clean is whole: the install the
+/// record describes finished and the record was not deleted, or the rebuild
+/// stopped before it deleted anything. The node then starts on it as usual.
+pub async fn remove_finished_record(cfg: &MithrilConfig) {
+    let clean = Path::new(&cfg.chain_path).join("clean");
+    if !tokio::fs::metadata(&clean).await.is_ok_and(|m| m.is_file()) {
+        return;
+    }
+    let Some(kind) = pending_record(cfg).await else {
+        return;
+    };
+    let path = Path::new(&cfg.state_dir).join(REBUILD_MARKER);
+    warn!(
+        "mithril: {} is marked clean, so the {} that {} records left it whole; the record is removed",
+        cfg.chain_path,
+        kind.describe(),
+        path.display()
+    );
+    if let Err(e) = remove_marker_file(&path, &MARKER_DELETE_RETRY_DELAYS).await {
+        warn!("mithril: could not delete {}: {e}", path.display());
     }
 }
 
@@ -1666,12 +1738,14 @@ pub async fn run_pipeline(
 mod tests {
     mod rebuild_marker {
         use super::super::{
-            REBUILD_MARKER, REBUILD_MARKER_TEMP, RecordKind, clear_rebuild_marker, pending_record,
-            same_chain_path, write_rebuild_marker,
+            REBUILD_MARKER, REBUILD_MARKER_TEMP, RecordKind, clear_rebuild_marker,
+            clear_rebuild_marker_trying, pending_record, remove_finished_record, same_chain_path,
+            write_rebuild_marker,
         };
         use crate::config::MithrilConfig;
         use std::fs;
         use std::path::PathBuf;
+        use std::time::Duration;
 
         struct TempDir(PathBuf);
 
@@ -1782,6 +1856,114 @@ mod tests {
                     .await
                     .is_none()
             );
+        }
+
+        #[tokio::test]
+        async fn a_record_beside_a_clean_chain_is_removed_at_startup() {
+            let t = TempDir::new("finished");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            fs::write(chain.join("clean"), b"").unwrap();
+            for kind in [RecordKind::Rebuild, RecordKind::Install] {
+                let cfg = config(&t.0, chain.to_str().unwrap());
+                write_rebuild_marker(&cfg, kind).await.unwrap();
+                remove_finished_record(&cfg).await;
+                assert!(!t.0.join(REBUILD_MARKER).exists(), "{kind:?} kept");
+                assert_eq!(pending_record(&cfg).await, None);
+            }
+        }
+
+        #[tokio::test]
+        async fn a_record_beside_a_chain_without_clean_is_kept_at_startup() {
+            let t = TempDir::new("unfinished");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            let cfg = config(&t.0, chain.to_str().unwrap());
+            write_rebuild_marker(&cfg, RecordKind::Install)
+                .await
+                .unwrap();
+            remove_finished_record(&cfg).await;
+            assert_eq!(pending_record(&cfg).await, Some(RecordKind::Install));
+        }
+
+        #[tokio::test]
+        async fn a_record_of_another_chain_is_kept_at_startup() {
+            let t = TempDir::new("finished-other");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(&chain).unwrap();
+            fs::write(chain.join("clean"), b"").unwrap();
+            write_rebuild_marker(&config(&t.0, "/elsewhere/chain"), RecordKind::Rebuild)
+                .await
+                .unwrap();
+            remove_finished_record(&config(&t.0, chain.to_str().unwrap())).await;
+            assert!(t.0.join(REBUILD_MARKER).exists());
+        }
+
+        /// Makes `dir` read-only. False when this user may write to it anyway,
+        /// and it is left writable.
+        #[cfg(unix)]
+        fn make_read_only(dir: &std::path::Path) -> bool {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(dir, fs::Permissions::from_mode(0o555)).unwrap();
+            if fs::File::create(dir.join("probe")).is_ok() {
+                let _ = fs::remove_file(dir.join("probe"));
+                make_writable(dir);
+                return false;
+            }
+            true
+        }
+
+        #[cfg(unix)]
+        fn make_writable(dir: &std::path::Path) {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(dir, fs::Permissions::from_mode(0o755)).unwrap();
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn a_record_that_cannot_be_deleted_at_first_is_deleted_when_tried_again() {
+            let t = TempDir::new("delete-retry");
+            let state = t.0.join("state");
+            fs::create_dir_all(&state).unwrap();
+            let cfg = config(&state, "/data/chain");
+            write_rebuild_marker(&cfg, RecordKind::Install)
+                .await
+                .unwrap();
+            if !make_read_only(&state) {
+                eprintln!("skipped: directory permissions are not enforced for this user");
+                return;
+            }
+            // Like a file another program holds open for a moment.
+            let unlock = {
+                let state = state.clone();
+                tokio::spawn(async move {
+                    tokio::time::sleep(Duration::from_millis(60)).await;
+                    make_writable(&state);
+                })
+            };
+            let delays = [Duration::from_millis(20); 10];
+            clear_rebuild_marker_trying(&cfg, &delays).await;
+            unlock.await.unwrap();
+            assert!(!state.join(REBUILD_MARKER).exists());
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn a_record_that_cannot_be_deleted_is_kept_after_the_last_try() {
+            let t = TempDir::new("delete-gives-up");
+            let state = t.0.join("state");
+            fs::create_dir_all(&state).unwrap();
+            let cfg = config(&state, "/data/chain");
+            write_rebuild_marker(&cfg, RecordKind::Rebuild)
+                .await
+                .unwrap();
+            if !make_read_only(&state) {
+                eprintln!("skipped: directory permissions are not enforced for this user");
+                return;
+            }
+            clear_rebuild_marker_trying(&cfg, &[Duration::from_millis(1); 2]).await;
+            make_writable(&state);
+            assert_eq!(pending_record(&cfg).await, Some(RecordKind::Rebuild));
         }
 
         #[test]

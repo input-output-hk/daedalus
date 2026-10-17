@@ -1308,6 +1308,12 @@ pub async fn run(
         mithril::remove_stale_staging(mc).await;
     }
 
+    // A record beside a chain marked clean is left from an install that
+    // finished or a rebuild that deleted nothing: the node starts as usual.
+    if let Some(ref mc) = config.mithril {
+        mithril::remove_finished_record(mc).await;
+    }
+
     // A rebuild that began deleting the chain in an earlier session and
     // installed nothing, or an install that began changing the database and
     // did not finish, leaves database entries the node would replay from
@@ -1321,10 +1327,7 @@ pub async fn run(
         warn!(
             "a {} of the chain did not finish in an earlier session; \
              waiting for the user's choice instead of starting the node",
-            match kind {
-                mithril::RecordKind::Rebuild => "rebuild",
-                mithril::RecordKind::Install => "Mithril install",
-            }
+            kind.describe()
         );
     }
 
