@@ -134,8 +134,10 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     rightAlignActions,
   } = props;
   // The blockchain data is no longer what it was before Mithril changed it,
-  // so no message may say that it was not changed
-  const dataChanged = Boolean(chainRemoved || installUnfinished);
+  // so no message may say that it was not changed. That includes the wait
+  // after a failed install, where only Retry is offered: the install may have
+  // changed part of the data before a later attempt was refused.
+  const dataChanged = Boolean(chainRemoved || installUnfinished || retryOnly);
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);

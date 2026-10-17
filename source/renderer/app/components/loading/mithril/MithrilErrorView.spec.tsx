@@ -168,6 +168,25 @@ describe('MithrilErrorView', () => {
     }
   );
 
+  it.each([
+    ['PROBE_FAILED', /could not reach the Mithril service/],
+    ['INSUFFICIENT_SPACE', /not enough free space/],
+    ['CHAIN_DIR_NOT_REPLACEABLE', /cannot install the blockchain data there/],
+    ['CHAIN_DIR_OTHER_NETWORK', /different Cardano network/],
+    ['REBUILD_MARKER_FAILED', /could not record the rebuild/],
+  ])(
+    'does not say that nothing changed for %s in the wait after a failed install',
+    (code, hint) => {
+      renderView({ code, message: 'x' }, { retryOnly: true });
+      expect(screen.getByText(hint)).toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          /has not been changed|changed nothing|did not delete it|did not change it/
+        )
+      ).toBeNull();
+    }
+  );
+
   it('keeps the message of a code that says nothing about unchanged data once the old data was removed', () => {
     renderView({ code: 'MARKER_FAILED', message: 'x' }, { chainRemoved: true });
     expect(screen.getByText(/so it did not install it/)).toBeInTheDocument();
