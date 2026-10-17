@@ -41,8 +41,9 @@ enum RunResult {
 enum AfterMithril {
     /// No pipeline ran, or the renderer already has its outcome.
     Nothing,
-    /// A database was installed.
-    Installed,
+    /// A database was installed; `rebuild` is true when a rebuild installed
+    /// it, which `completed` passes on.
+    Installed { rebuild: bool },
     /// The local chain is close enough to the certified tip, and nothing was
     /// changed. Nothing else ends the renderer's Mithril view in this case.
     NotNeeded,
@@ -524,8 +525,9 @@ async fn wait_for_retry(
 
 /// How the wait that follows a failed install ended.
 enum InstallRetry {
-    /// A Mithril sync installed a database.
-    Installed,
+    /// A Mithril sync installed a database; `rebuild` is true when it was a
+    /// rebuild.
+    Installed { rebuild: bool },
     /// A rebuild began deleting the chain and installed nothing.
     Wiped,
     /// The watchdog is to stop.
@@ -550,7 +552,9 @@ async fn await_install_retry(
                     continue;
                 };
                 match mithril::run_pipeline(&mc, cmd_rx, force, wipe_chain).await {
-                    PipelineResult::Installed => return InstallRetry::Installed,
+                    PipelineResult::Installed { rebuild } => {
+                        return InstallRetry::Installed { rebuild };
+                    }
                     PipelineResult::FailedAfterWipe => return InstallRetry::Wiped,
                     PipelineResult::Stopped => return InstallRetry::Stopped,
                     PipelineResult::NotNeeded
@@ -1023,8 +1027,8 @@ fn mithril_chain_path(config: &WatchdogConfig) -> Option<String> {
 /// Waits, while there is no chain to start the node on, for the user to choose
 /// between syncing from genesis (`start_node`) and a Mithril bootstrap
 /// (`start_mithril`). Settings changes meanwhile are saved and applied.
-/// Returns whether Mithril installed a database, or None, after emitting
-/// `stopped`, when the watchdog is to stop.
+/// Returns what the renderer is to be told once the node has started, or
+/// None, after emitting `stopped`, when the watchdog is to stop.
 ///
 /// `rebuild` is true when the wait follows a rebuild that started deleting the
 /// chain and installed nothing. Until the chain directory changes, a Mithril
@@ -1037,7 +1041,7 @@ async fn await_chain_choice(
     wstate: &mut state::WatchdogState,
     el_restart_tx: &Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
     mut rebuild: bool,
-) -> Option<bool> {
+) -> Option<AfterMithril> {
     loop {
         match cmd_rx.recv().await {
             Some(Cmd::StartNode) => {
@@ -1046,7 +1050,7 @@ async fn await_chain_choice(
                 if let Some(ref mc) = config.mithril {
                     mithril::clear_rebuild_marker(mc).await;
                 }
-                return Some(false);
+                return Some(AfterMithril::Nothing);
             }
             Some(Cmd::StartMithril { wipe_chain, .. }) => {
                 // Mithril not configured; ignore and keep waiting.
@@ -1056,7 +1060,9 @@ async fn await_chain_choice(
                 use mithril::PipelineResult;
                 let wipe_chain = wipe_chain || rebuild;
                 let wiped = match mithril::run_pipeline(&mc, cmd_rx, true, wipe_chain).await {
-                    PipelineResult::Installed => return Some(true),
+                    PipelineResult::Installed { rebuild } => {
+                        return Some(AfterMithril::Installed { rebuild });
+                    }
                     PipelineResult::Stopped => {
                         emit(&Event::Stopped);
                         return None;
@@ -1072,7 +1078,9 @@ async fn await_chain_choice(
                             wstate: &mut *wstate,
                         };
                         match await_install_retry(cmd_rx, &mut settings).await {
-                            InstallRetry::Installed => return Some(true),
+                            InstallRetry::Installed { rebuild } => {
+                                return Some(AfterMithril::Installed { rebuild });
+                            }
                             InstallRetry::Wiped => true,
                             InstallRetry::Stopped => {
                                 emit(&Event::Stopped);
@@ -1290,7 +1298,7 @@ pub async fn run(
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.
     let has_chain = !rebuild_pending
         && (chain_has_data(&config, wstate.chain_path.as_deref()).await
-            || after_mithril == AfterMithril::Installed);
+            || matches!(after_mithril, AfterMithril::Installed { .. }));
     info!("chain status: has_chain={has_chain} rebuild_pending={rebuild_pending}");
     emit(&Event::ChainStatus {
         has_chain,
@@ -1317,8 +1325,7 @@ pub async fn run(
             )
             .await
             {
-                Some(true) => after_mithril = AfterMithril::Installed,
-                Some(false) => after_mithril = AfterMithril::Nothing,
+                Some(after) => after_mithril = after,
                 None => return Ok(()),
             }
             choose_chain = false;
@@ -1409,8 +1416,8 @@ pub async fn run(
                 // Set when an install failed part-way.
                 let mut install_failed = false;
                 match mithril::run_pipeline(&mc, &mut cmd_rx, force, wipe_chain).await {
-                    PipelineResult::Installed => {
-                        after_mithril = AfterMithril::Installed;
+                    PipelineResult::Installed { rebuild } => {
+                        after_mithril = AfterMithril::Installed { rebuild };
                         // loop continues to restart node/wallet
                     }
                     PipelineResult::NotNeeded => {
@@ -1433,8 +1440,8 @@ pub async fn run(
                                     force: f,
                                     wipe_chain: wc,
                                 }) => match mithril::run_pipeline(&mc, &mut cmd_rx, f, wc).await {
-                                    PipelineResult::Installed => {
-                                        after_mithril = AfterMithril::Installed;
+                                    PipelineResult::Installed { rebuild } => {
+                                        after_mithril = AfterMithril::Installed { rebuild };
                                         break 'recovery;
                                     }
                                     PipelineResult::NotNeeded => {
@@ -1488,7 +1495,9 @@ pub async fn run(
                         wstate: &mut wstate,
                     };
                     match await_install_retry(&mut cmd_rx, &mut settings).await {
-                        InstallRetry::Installed => after_mithril = AfterMithril::Installed,
+                        InstallRetry::Installed { rebuild } => {
+                            after_mithril = AfterMithril::Installed { rebuild };
+                        }
                         InstallRetry::Wiped => wiped = true,
                         InstallRetry::Stopped => break,
                     }
@@ -1594,7 +1603,7 @@ async fn run_node_wallet(
     // Dismiss the Mithril overlay now that the node is running so the user
     // sees normal sync/replay progress screens instead of the Mithril UI.
     if after_mithril != AfterMithril::Nothing {
-        if after_mithril == AfterMithril::Installed {
+        if let AfterMithril::Installed { .. } = after_mithril {
             if let Some(ref mc) = config.mithril {
                 if let Err(e) = mithril::write_marker(&mc.state_dir, "node-start-verified").await {
                     warn!("Failed to write node-start-verified marker: {e}");
@@ -1603,6 +1612,7 @@ async fn run_node_wallet(
         }
         emit(&Event::MithrilStatus {
             phase: "completed".to_string(),
+            rebuild: matches!(after_mithril, AfterMithril::Installed { rebuild: true }),
         });
     }
 

@@ -167,8 +167,12 @@ pub enum Event {
     Error {
         message: String,
     },
+    /// A step of a Mithril pipeline. `rebuild` is true when the pipeline is a
+    /// rebuild, asked for with `wipe_chain` or forced by one that did not
+    /// finish, so a `completed` that carries it means the chain was replaced.
     MithrilStatus {
         phase: String,
+        rebuild: bool,
     },
     MithrilProgress {
         files_downloaded: u64,
@@ -521,10 +525,25 @@ mod tests {
         ] {
             let j = to_json(&Event::MithrilStatus {
                 phase: phase.to_string(),
+                rebuild: false,
             });
             assert_eq!(j["event"], "mithril_status", "phase={phase}");
             assert_eq!(j["phase"], phase, "phase={phase}");
+            assert_eq!(j["rebuild"], false, "phase={phase}");
         }
+    }
+
+    #[test]
+    fn mithril_status_of_a_rebuild() {
+        let line = serde_json::to_string(&Event::MithrilStatus {
+            phase: "completed".to_string(),
+            rebuild: true,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"mithril_status","phase":"completed","rebuild":true}"#
+        );
     }
 
     #[test]
