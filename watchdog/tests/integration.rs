@@ -2101,6 +2101,94 @@ fn a_first_bootstrap_whose_install_fails_waits_for_a_mithril_install() {
     let _ = child.wait();
 }
 
+/// A partial sync whose install fails part-way leaves a chain partly
+/// replaced. It recorded the install and deleted the clean marker before it
+/// changed anything, so the failure outlasts a restart: the next start
+/// reports the install pending and starts no node, and the Mithril sync chosen
+/// then rebuilds the chain directory and removes the record.
+#[test]
+fn a_partial_sync_whose_install_fails_is_still_pending_at_the_next_start() {
+    let dir = TempDir::new("partial-install-fail");
+    if !directory_permissions_enforced(dir.path()) {
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let chain = dir.populate_database();
+    let immutable = chain.join("immutable");
+    // The chunks cannot be moved in, while the clean marker beside them can
+    // be deleted.
+    let mut env = install_fails_into(&dir, &immutable);
+    env.push(("MOCK_CERTIFIED_IMMUTABLE", "30".to_string()));
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env_refs(&env));
+
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "start_mithril", "force": true}));
+    let err = expect(&rx, "mithril_error");
+    make_writable(&immutable);
+    assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
+    assert_eq!(err["rebuild"], false, "{err}");
+    assert!(
+        !chain.join("clean").exists(),
+        "a changed database is marked clean"
+    );
+    let record: Value = serde_json::from_str(
+        &std::fs::read_to_string(dir.path().join("chain-rebuild.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(record["chain_path"], chain.to_str().unwrap());
+    assert_eq!(record["kind"], "install");
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect_none_of(&rx, &["node_started", "chain_status"], 1500);
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false, "{status}");
+    assert_eq!(status["install_pending"], true, "{status}");
+    assert_eq!(status["rebuild_pending"], false, "{status}");
+    expect_none_of(&rx, &["node_started"], 1500);
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], true, "{preparing}");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    assert!(chain.join("clean").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A partial sync that installs removes the record it wrote before it changed
+/// the database, and leaves the chain marked clean.
+#[test]
+fn a_partial_sync_that_installs_leaves_no_record() {
+    let dir = TempDir::new("partial-install-record");
+    let chain = dir.populate_database();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_CERTIFIED_IMMUTABLE", "30")]);
+
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "start_mithril", "force": true}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    assert!(chain.join("clean").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// A new chain location sent with a rebuild right behind it, as the renderer
 /// does once both are confirmed, stops the running node and rebuilds in the
 /// new location. The rebuild is held while the node stops and replaces the

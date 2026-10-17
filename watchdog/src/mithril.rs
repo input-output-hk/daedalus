@@ -34,9 +34,10 @@ pub enum PipelineResult {
     /// The user explicitly cancelled via `cancel_mithril`; the supervisor should
     /// wait for a recovery action rather than restarting the node immediately.
     UserCancelled,
-    /// Post-cutover install failure: the `cutover-in-progress` marker was written
-    /// but `install_staged` failed. Chain data may be partially modified; the node
-    /// must not restart. Only wipe-and-full-sync can recover.
+    /// Post-cutover install failure: the `cutover-in-progress` marker and the
+    /// record of the install were written but `install_staged` failed. Chain
+    /// data may be partially modified; the node must not restart, in this
+    /// session or the next. Only wipe-and-full-sync can recover.
     Failed,
     /// A rebuild (`wipe_chain`) started deleting the old chain and installed
     /// nothing: the delete or a later step failed, was refused, or was
@@ -977,7 +978,8 @@ async fn network_allowed(chain_path: &Path, network_magic: Option<u32>, wipe_cha
 }
 
 // For bootstrap (local_highest = None): replace the entire chain directory.
-// For partial sync (local_highest = Some): merge new immutables in and replace ledger/lsm.
+// For partial sync (local_highest = Some): delete the clean marker, merge new
+// immutables in, replace ledger/lsm, and move the new clean marker in last.
 async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) -> Result<()> {
     if !is_partial {
         // If chain_path is a symlink or junction, install inside the real
@@ -992,6 +994,16 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
             .await
             .map_err(|e| anyhow::anyhow!("install staged db to {}: {e}", target.display()))?;
         return Ok(());
+    }
+
+    // Nothing in the database changes while it is marked clean: cardano-node
+    // opens a clean database without validating its chunks, so an install
+    // that stops part-way must not leave the old marker on a mixed database.
+    let dst_clean = chain_path.join("clean");
+    match tokio::fs::remove_file(&dst_clean).await {
+        Ok(()) => {}
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        Err(e) => anyhow::bail!("delete {}: {e}", dst_clean.display()),
     }
 
     // Partial sync: move new immutable files into the existing chain directory.
@@ -1041,12 +1053,10 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
         move_dir(&src_lsm, &dst_lsm).await?;
     }
 
-    // Install the clean sentinel so cardano-node skips chunk validation on
-    // next startup. Without this, node treats the partial-sync state as an
-    // unclean shutdown and re-validates every immutable chunk.
+    // Install the clean sentinel, last, so cardano-node skips chunk
+    // validation on next startup. Without this, node treats the partial-sync
+    // state as an unclean shutdown and re-validates every immutable chunk.
     let src_clean = staging_db.join("clean");
-    let dst_clean = chain_path.join("clean");
-    let _ = tokio::fs::remove_file(&dst_clean).await;
     move_file(&src_clean, &dst_clean).await?;
 
     Ok(())
@@ -1592,13 +1602,15 @@ pub async fn run_pipeline(
     }
 
     // A full install deletes the database in the chain directory and moves
-    // the download in entry by entry, the clean marker last. A rebuild
-    // recorded itself before it deleted the old chain; any other full
-    // install, a first bootstrap included, records itself here. An install
-    // cut short by a crash then leaves the record, and the next start reports
-    // no chain and installs again instead of starting the node on part of a
-    // database.
-    if !is_partial && !wipe_chain {
+    // the download in entry by entry, the clean marker last. A partial sync
+    // deletes the clean marker, replaces chunks, the ledger and the LSM
+    // tables, and moves the new clean marker in last. A rebuild recorded
+    // itself before it deleted the old chain; any other install, a first
+    // bootstrap and a partial sync included, records itself here. An install
+    // that fails or is cut short by a crash then leaves the record, and the
+    // next start reports no chain and installs again instead of starting the
+    // node on part of a database.
+    if !wipe_chain {
         if let Err(e) = write_rebuild_marker(cfg, RecordKind::Install).await {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
             let message = format!("Could not record the install in {}: {e}", cfg.state_dir);
@@ -1978,6 +1990,55 @@ mod tests {
                 assert_eq!(read(&immutable, 8, ext).as_deref(), Some("certified 8"));
                 assert_eq!(read(&immutable, 9, ext).as_deref(), Some("ancillary"));
             }
+        }
+
+        #[cfg(unix)]
+        #[tokio::test]
+        async fn deletes_the_clean_marker_before_it_changes_anything() {
+            use std::os::unix::fs::PermissionsExt;
+            let root = TempDir::new("clean-first");
+            let chain = root.0.join("chain");
+            let immutable = chain.join("immutable");
+            for n in 0..5 {
+                write_trio(&immutable, n, &format!("local {n}"));
+            }
+            fs::create_dir_all(chain.join("ledger").join("999")).unwrap();
+            fs::write(chain.join("clean"), b"").unwrap();
+            let staging = make_staging(&root.0, 4, 8);
+            // The first change, moving a chunk in, cannot be made.
+            fs::set_permissions(&immutable, fs::Permissions::from_mode(0o555)).unwrap();
+            if fs::File::create(immutable.join("probe")).is_ok() {
+                fs::set_permissions(&immutable, fs::Permissions::from_mode(0o755)).unwrap();
+                eprintln!("skipped: directory permissions are not enforced for this user");
+                return;
+            }
+
+            let installed = install_staged(&staging, &chain, true).await;
+            fs::set_permissions(&immutable, fs::Permissions::from_mode(0o755)).unwrap();
+
+            assert!(installed.is_err());
+            assert!(
+                !chain.join("clean").exists(),
+                "a changed database is marked clean"
+            );
+            for n in 0..5 {
+                assert_eq!(read(&immutable, n, "chunk"), Some(format!("local {n}")));
+            }
+            assert!(chain.join("ledger").join("999").is_dir());
+        }
+
+        #[tokio::test]
+        async fn a_completed_partial_install_is_marked_clean() {
+            let root = TempDir::new("clean-last");
+            let chain = root.0.join("chain");
+            write_trio(&chain.join("immutable"), 4, "local 4");
+            fs::write(chain.join("clean"), b"old").unwrap();
+            let staging = make_staging(&root.0, 4, 8);
+
+            install_staged(&staging, &chain, true).await.unwrap();
+
+            assert_eq!(fs::read(chain.join("clean")).unwrap(), b"");
+            assert!(chain.join("ledger").join("12345").is_dir());
         }
 
         #[tokio::test]
