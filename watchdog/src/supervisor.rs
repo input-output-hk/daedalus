@@ -1126,7 +1126,11 @@ async fn await_chain_choice(
                 }
                 state::apply_to_config(config, base_node_args, wstate);
                 // Another directory is not the one the rebuild deleted.
-                if mithril_chain_path(config) != before {
+                let same = match (before.as_deref(), mithril_chain_path(config).as_deref()) {
+                    (Some(before), Some(after)) => mithril::same_chain_path(before, after),
+                    (before, after) => before == after,
+                };
+                if !same {
                     rebuild = false;
                 }
             }

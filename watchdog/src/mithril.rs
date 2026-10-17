@@ -96,16 +96,35 @@ pub async fn write_marker(state_dir: &str, state: &str) -> Result<()> {
 /// otherwise look like a chain, and the node would replay it from genesis.
 const REBUILD_MARKER: &str = "chain-rebuild.json";
 
+/// Where the rebuild marker is written before it is renamed into place, so
+/// the marker is never seen half-written.
+const REBUILD_MARKER_TEMP: &str = "chain-rebuild.json.tmp";
+
 #[derive(Serialize, Deserialize)]
 struct RebuildMarker {
     /// The chain directory being rebuilt, as Mithril's chain_path names it.
     chain_path: String,
 }
 
+/// `path` without its trailing separators, unless nothing else is left.
+fn without_trailing_separators(path: &str) -> &str {
+    let trimmed = path.trim_end_matches(std::path::is_separator);
+    if trimmed.is_empty() { path } else { trimmed }
+}
+
+/// Whether two spellings of a chain directory name the same directory, as
+/// the platform compares paths (without regard to case on Windows), with
+/// trailing separators ignored.
+pub(crate) fn same_chain_path(a: &str, b: &str) -> bool {
+    chain_validation::is_same_path(
+        Path::new(without_trailing_separators(a)),
+        Path::new(without_trailing_separators(b)),
+    )
+}
+
 /// Whether a rebuild of the configured chain directory began deleting it and
 /// has installed no database since. A marker for another chain directory does
-/// not count; a marker that cannot be read does, since it was written for a
-/// rebuild that may have deleted part of this one.
+/// not count.
 pub async fn rebuild_pending(cfg: &MithrilConfig) -> bool {
     let path = Path::new(&cfg.state_dir).join(REBUILD_MARKER);
     let text = match tokio::fs::read_to_string(&path).await {
@@ -113,29 +132,68 @@ pub async fn rebuild_pending(cfg: &MithrilConfig) -> bool {
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => return false,
         Err(e) => {
             warn!("mithril: cannot read {}: {e}", path.display());
-            return true;
+            return unreadable_marker_pending(cfg, &path).await;
         }
     };
     match serde_json::from_str::<RebuildMarker>(&text) {
-        Ok(marker) => marker.chain_path == cfg.chain_path,
+        Ok(marker) => same_chain_path(&marker.chain_path, &cfg.chain_path),
         Err(e) => {
             warn!("mithril: {} is not a rebuild marker: {e}", path.display());
-            true
+            unreadable_marker_pending(cfg, &path).await
         }
     }
 }
 
+/// Whether a marker that cannot be read, and so names no directory, still
+/// counts as a pending rebuild of the configured chain directory. A rebuild
+/// deletes the `clean` marker before anything else and an install moves it in
+/// last, so while the directory has no `clean` the marker may be its own and
+/// counts. A directory with `clean` holds a database no unfinished rebuild has
+/// touched, and the marker is deleted.
+async fn unreadable_marker_pending(cfg: &MithrilConfig, path: &Path) -> bool {
+    let clean = Path::new(&cfg.chain_path).join("clean");
+    if !tokio::fs::metadata(&clean).await.is_ok_and(|m| m.is_file()) {
+        warn!(
+            "mithril: {} has no clean marker, so the rebuild the unreadable {} recorded counts as pending",
+            cfg.chain_path,
+            path.display()
+        );
+        return true;
+    }
+    match tokio::fs::remove_file(path).await {
+        Ok(()) => warn!(
+            "mithril: deleted the unreadable {}; {} holds a clean database",
+            path.display(),
+            cfg.chain_path
+        ),
+        Err(e) => warn!("mithril: could not delete {}: {e}", path.display()),
+    }
+    false
+}
+
+/// Writes the rebuild marker for the configured chain directory. It is
+/// written in full to a temporary file in the same directory and then renamed
+/// over the marker, so a crash or a full disk never leaves a partial marker.
 async fn write_rebuild_marker(cfg: &MithrilConfig) -> Result<()> {
+    use tokio::io::AsyncWriteExt;
     let marker = RebuildMarker {
         chain_path: cfg.chain_path.clone(),
     };
+    let text = serde_json::to_string_pretty(&marker)?;
     tokio::fs::create_dir_all(&cfg.state_dir).await?;
-    tokio::fs::write(
-        Path::new(&cfg.state_dir).join(REBUILD_MARKER),
-        serde_json::to_string_pretty(&marker)?,
-    )
-    .await?;
-    Ok(())
+    let temp = Path::new(&cfg.state_dir).join(REBUILD_MARKER_TEMP);
+    let written = async {
+        let mut file = tokio::fs::File::create(&temp).await?;
+        file.write_all(text.as_bytes()).await?;
+        file.sync_all().await?;
+        drop(file);
+        tokio::fs::rename(&temp, Path::new(&cfg.state_dir).join(REBUILD_MARKER)).await
+    }
+    .await;
+    if written.is_err() {
+        let _ = tokio::fs::remove_file(&temp).await;
+    }
+    Ok(written?)
 }
 
 /// Deletes the rebuild marker when it is for the configured chain directory:
@@ -1463,7 +1521,8 @@ pub async fn run_pipeline(
 mod tests {
     mod rebuild_marker {
         use super::super::{
-            REBUILD_MARKER, clear_rebuild_marker, rebuild_pending, write_rebuild_marker,
+            REBUILD_MARKER, REBUILD_MARKER_TEMP, clear_rebuild_marker, rebuild_pending,
+            same_chain_path, write_rebuild_marker,
         };
         use crate::config::MithrilConfig;
         use std::fs;
@@ -1530,10 +1589,66 @@ mod tests {
         }
 
         #[tokio::test]
-        async fn an_unreadable_marker_is_pending() {
-            let t = TempDir::new("garbled");
-            fs::write(t.0.join(REBUILD_MARKER), b"{\"chain_pa").unwrap();
+        async fn a_marker_names_its_chain_with_or_without_a_trailing_separator() {
+            let t = TempDir::new("separator");
+            write_rebuild_marker(&config(&t.0, "/data/chain/"))
+                .await
+                .unwrap();
             assert!(rebuild_pending(&config(&t.0, "/data/chain")).await);
+            write_rebuild_marker(&config(&t.0, "/data/chain"))
+                .await
+                .unwrap();
+            assert!(rebuild_pending(&config(&t.0, "/data/chain//")).await);
+            assert!(!rebuild_pending(&config(&t.0, "/data/chain-2")).await);
+        }
+
+        #[test]
+        fn chain_paths_compare_as_the_platform_compares_them() {
+            assert!(same_chain_path("/data/chain", "/data/chain/"));
+            assert!(!same_chain_path("/data/chain", "/data"));
+            assert!(same_chain_path("/", "/"));
+            // Windows paths do not depend on case; other platforms' do.
+            assert_eq!(same_chain_path("/Data/Chain", "/data/chain"), cfg!(windows));
+        }
+
+        #[cfg(windows)]
+        #[test]
+        fn windows_chain_paths_ignore_case_and_a_trailing_backslash() {
+            assert!(same_chain_path(r"D:\Daedalus\Chain\", r"d:\daedalus\chain"));
+        }
+
+        #[tokio::test]
+        async fn the_marker_is_renamed_into_place_whole() {
+            let t = TempDir::new("atomic");
+            let cfg = config(&t.0, "/data/chain");
+            // A temporary file left by an earlier write that did not finish.
+            fs::write(t.0.join(REBUILD_MARKER_TEMP), b"{\"chain_pa").unwrap();
+            write_rebuild_marker(&cfg).await.unwrap();
+            assert!(!t.0.join(REBUILD_MARKER_TEMP).exists());
+            let text = fs::read_to_string(t.0.join(REBUILD_MARKER)).unwrap();
+            let marker: serde_json::Value = serde_json::from_str(&text).unwrap();
+            assert_eq!(marker["chain_path"], "/data/chain");
+        }
+
+        #[tokio::test]
+        async fn a_corrupt_marker_is_pending_while_the_chain_has_no_clean_marker() {
+            let t = TempDir::new("garbled");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            fs::write(t.0.join(REBUILD_MARKER), b"{\"chain_pa").unwrap();
+            assert!(rebuild_pending(&config(&t.0, chain.to_str().unwrap())).await);
+            assert!(t.0.join(REBUILD_MARKER).exists());
+        }
+
+        #[tokio::test]
+        async fn an_empty_marker_beside_a_clean_chain_is_removed() {
+            let t = TempDir::new("empty-clean");
+            let chain = t.0.join("chain");
+            fs::create_dir_all(chain.join("immutable")).unwrap();
+            fs::write(chain.join("clean"), b"").unwrap();
+            fs::write(t.0.join(REBUILD_MARKER), b"").unwrap();
+            assert!(!rebuild_pending(&config(&t.0, chain.to_str().unwrap())).await);
+            assert!(!t.0.join(REBUILD_MARKER).exists());
         }
     }
 
