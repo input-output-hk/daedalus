@@ -449,6 +449,7 @@
             "Windows build: use Hydra's installer for the branch commit; a full Windows installer does not build under WSL2.",
             "Repeat on Windows with the chain in a user-picked folder reached through a junction.",
             "On Windows, rebuild through a junction, and in a folder on a second drive picked with Choose another location from the Mithril error view: watchdog.log must show the download staged on that drive, mithril-client and snapshot-converter given plain drive paths without the \\\\?\\ prefix, and an install that renames rather than copies.",
+            "Give Daedalus Mainnet and Daedalus Pre-Prod the same storage folder, start a first Mithril download in one and launch the other while it downloads: check that the launch keeps the first one's staging. The startup cleanup recognizes another network's staging by the protocolMagicId of the staged database, so the result depends on when mithril-client writes that file.",
             "Also run the delete-ledger variant (step 5) and record whether signature 1 appears.",
             "Record the results and dates in the PRD and update the confirm copy if the wallet needs a resync."
           ],
