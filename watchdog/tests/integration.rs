@@ -521,6 +521,7 @@ fn empty_chain_mithril_bootstrap() {
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
+    assert!(!dir.path().join("chain-rebuild.json").exists());
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -2141,6 +2142,55 @@ fn a_rebuild_sent_with_a_new_location_starts_no_node_there_first() {
         b"764824073"
     );
     assert_eq!(tree(&old_chain), before);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A first bootstrap records its install before it moves the download into
+/// the chain directory. When the install stops part-way, the record makes the
+/// next start report no chain with a rebuild pending and start no node,
+/// although the entries moved so far look like a database.
+#[test]
+fn a_first_bootstrap_cut_short_in_its_install_is_not_a_chain_at_the_next_start() {
+    let dir = TempDir::new("bootstrap-cut-short");
+    if !directory_permissions_enforced(dir.path()) {
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let chain = dir.path().join("chain");
+    let env = install_fails_into(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env_refs(&env));
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    make_writable(&chain);
+    assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
+    let record: Value = serde_json::from_str(
+        &std::fs::read_to_string(dir.path().join("chain-rebuild.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(record["chain_path"], chain.to_str().unwrap());
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    // What an install that stopped after moving some entries leaves: chunks
+    // and the network marker, without the clean marker that is moved last.
+    std::fs::create_dir_all(chain.join("immutable")).unwrap();
+    std::fs::write(chain.join("immutable").join("00000.chunk"), b"half").unwrap();
+    std::fs::write(chain.join("protocolMagicId"), b"764824073").unwrap();
+
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false, "{status}");
+    assert_eq!(status["rebuild_pending"], true, "{status}");
+    expect_none_of(&rx, &["node_started"], 1500);
 
     stop(&mut stdin);
     expect(&rx, "stopped");
