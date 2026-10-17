@@ -2198,6 +2198,47 @@ fn a_first_bootstrap_cut_short_in_its_install_is_not_a_chain_at_the_next_start()
     let _ = child.wait();
 }
 
+/// When the rebuild sent with a new location is refused before it changes
+/// anything, no node starts in the new location, which holds no chain: a node
+/// there would sync from genesis. The watchdog reports no chain and waits, and
+/// starts the node only when the user chooses to sync from genesis.
+#[test]
+fn a_refused_rebuild_in_a_new_location_starts_no_node_there() {
+    let dir = TempDir::new("refused-new-location");
+    dir.populate_database();
+    let folder = dir.path().join("picked");
+    std::fs::create_dir_all(&folder).unwrap();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_PROBE_FAIL", "1")]);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PROBE_FAILED", "{err}");
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false, "{status}");
+    assert_eq!(status["rebuild_pending"], false, "{status}");
+    expect_none_of(&rx, &["node_started"], 1500);
+    assert!(!folder.join("chain").join("protocolMagicId").exists());
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect(&rx, "node_started");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// A Mithril sync requested while the node stops for a rebuild does not turn
 /// the rebuild into a partial sync over the old chain: the requests are
 /// merged, and the rebuild deletes the old chain and downloads everything.
