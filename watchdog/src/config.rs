@@ -166,6 +166,12 @@ pub struct MithrilConfig {
     pub chain_path: String,
     #[serde(default = "default_behind_threshold")]
     pub behind_threshold: u64,
+    /// How long, in seconds, an install keeps trying a rename that fails
+    /// without crossing volumes before the install fails. On Windows a file
+    /// that another program, such as a virus scanner, holds open cannot be
+    /// renamed until it lets go.
+    #[serde(default = "default_rename_retry_secs")]
+    pub rename_retry_secs: u64,
     /// `chain_path` as configured. A storage folder picked by the user
     /// replaces `chain_path`, and clearing the folder restores this value.
     /// Recorded by `state::apply_to_config` the first time it runs.
@@ -178,6 +184,10 @@ pub struct MithrilConfig {
 
 fn default_behind_threshold() -> u64 {
     20
+}
+
+fn default_rename_retry_secs() -> u64 {
+    60
 }
 
 /// The network magic cardano-node checks a database against: the

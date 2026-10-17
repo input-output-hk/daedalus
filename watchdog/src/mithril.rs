@@ -585,44 +585,51 @@ async fn validate_staged(staging_db: &Path) -> Result<()> {
     Ok(())
 }
 
-/// How many times in all a rename that fails without crossing volumes is
-/// tried before an install falls back to copying, and the pause between
-/// tries. On Windows a file that another program, such as a virus scanner,
-/// briefly holds open cannot be renamed. The download is staged on the
-/// chain's own volume, so a copy there needs as much free space again as the
-/// space check reserved for the database.
-const RENAME_ATTEMPTS: u32 = 5;
-const RENAME_RETRY_DELAY: Duration = Duration::from_millis(200);
+/// The pause before the second try of a rename that fails without crossing
+/// volumes, and the longest pause between later tries: each pause doubles,
+/// up to the longest, until the install's rename budget is spent.
+const RENAME_FIRST_DELAY: Duration = Duration::from_millis(100);
+const RENAME_MAX_DELAY: Duration = Duration::from_secs(5);
 
 /// Renames `src` to `dst`. A rename between volumes cannot succeed and fails
-/// at once; any other failure is tried again, RENAME_ATTEMPTS times in all.
-async fn rename_with_retry(src: &Path, dst: &Path) -> std::io::Result<()> {
-    let mut attempt = 1;
+/// at once. Any other failure, such as a file that another program holds
+/// open for a moment, is tried again with growing pauses for as long as
+/// `budget` allows, and then fails.
+async fn rename_with_retry(src: &Path, dst: &Path, budget: Duration) -> std::io::Result<()> {
+    let mut waited = Duration::ZERO;
+    let mut delay = RENAME_FIRST_DELAY;
     loop {
         match tokio::fs::rename(src, dst).await {
             Ok(()) => return Ok(()),
-            Err(e)
-                if e.kind() == std::io::ErrorKind::CrossesDevices || attempt >= RENAME_ATTEMPTS =>
-            {
+            Err(e) if e.kind() == std::io::ErrorKind::CrossesDevices || waited >= budget => {
                 return Err(e);
             }
             Err(e) => {
+                let pause = delay.min(budget - waited);
                 warn!(
-                    "mithril: could not rename {} (attempt {attempt}): {e}; trying again",
-                    src.display()
+                    "mithril: could not rename {} after {} ms: {e}; trying again",
+                    src.display(),
+                    waited.as_millis()
                 );
-                tokio::time::sleep(RENAME_RETRY_DELAY).await;
-                attempt += 1;
+                tokio::time::sleep(pause).await;
+                waited += pause;
+                delay = (delay * 2).min(RENAME_MAX_DELAY);
             }
         }
     }
 }
 
-// Move a file, falling back to copy+delete when it cannot be renamed.
-async fn move_file(src: &Path, dst: &Path) -> Result<()> {
-    match rename_with_retry(src, dst).await {
+/// Moves a file. A rename that fails because `dst` is on another volume
+/// falls back to copy and delete; any other failure fails the move. A copy
+/// within the volume would need as much free space again as the space check
+/// reserved for the database.
+async fn move_file(src: &Path, dst: &Path, budget: Duration) -> Result<()> {
+    match rename_with_retry(src, dst, budget).await {
         Ok(()) => return Ok(()),
-        Err(e) => warn!("mithril: copying {} instead: {e}", src.display()),
+        Err(e) if e.kind() == std::io::ErrorKind::CrossesDevices => {
+            warn!("mithril: copying {} to another volume: {e}", src.display());
+        }
+        Err(e) => anyhow::bail!("rename {} to {}: {e}", src.display(), dst.display()),
     }
     tokio::fs::copy(src, dst)
         .await
@@ -631,11 +638,14 @@ async fn move_file(src: &Path, dst: &Path) -> Result<()> {
     Ok(())
 }
 
-// Move a directory tree, falling back to copy+delete when it cannot be renamed.
-async fn move_dir(src: &Path, dst: &Path) -> Result<()> {
-    match rename_with_retry(src, dst).await {
+/// Moves a directory tree, as move_file moves a file.
+async fn move_dir(src: &Path, dst: &Path, budget: Duration) -> Result<()> {
+    match rename_with_retry(src, dst, budget).await {
         Ok(()) => return Ok(()),
-        Err(e) => warn!("mithril: copying {} instead: {e}", src.display()),
+        Err(e) if e.kind() == std::io::ErrorKind::CrossesDevices => {
+            warn!("mithril: copying {} to another volume: {e}", src.display());
+        }
+        Err(e) => anyhow::bail!("rename {} to {}: {e}", src.display(), dst.display()),
     }
     copy_dir_recursive(src, dst).await?;
     let _ = tokio::fs::remove_dir_all(src).await;
@@ -871,7 +881,7 @@ async fn delete_database(dir: &Path) -> Result<()> {
 /// `clean` marker last, so an install that stops part-way never leaves a
 /// partial database that cardano-node opens without validating it. Staging
 /// and `dir` are on one volume, so each move is a rename.
-async fn install_entries(staging_db: &Path, dir: &Path) -> Result<()> {
+async fn install_entries(staging_db: &Path, dir: &Path, rename_budget: Duration) -> Result<()> {
     let mut names = Vec::new();
     let mut entries = tokio::fs::read_dir(staging_db).await?;
     while let Some(entry) = entries.next_entry().await? {
@@ -881,9 +891,9 @@ async fn install_entries(staging_db: &Path, dir: &Path) -> Result<()> {
     for name in names {
         let (src, dst) = (staging_db.join(&name), dir.join(&name));
         if tokio::fs::symlink_metadata(&src).await?.is_dir() {
-            move_dir(&src, &dst).await?;
+            move_dir(&src, &dst, rename_budget).await?;
         } else {
-            move_file(&src, &dst).await?;
+            move_file(&src, &dst, rename_budget).await?;
         }
     }
     Ok(())
@@ -1052,7 +1062,14 @@ async fn network_allowed(chain_path: &Path, network_magic: Option<u32>, wipe_cha
 // For bootstrap (local_highest = None): replace the entire chain directory.
 // For partial sync (local_highest = Some): delete the clean marker, merge new
 // immutables in, replace ledger/lsm, and move the new clean marker in last.
-async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) -> Result<()> {
+// A rename that fails without crossing volumes is tried again for up to
+// `rename_budget`.
+async fn install_staged(
+    staging_db: &Path,
+    chain_path: &Path,
+    is_partial: bool,
+    rename_budget: Duration,
+) -> Result<()> {
     if !is_partial {
         // If chain_path is a symlink or junction, install inside the real
         // target so the link entry point is preserved. The directory itself
@@ -1062,7 +1079,7 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
         check_replaceable(&target).await?;
         delete_database(&target).await?;
         tokio::fs::create_dir_all(&target).await?;
-        install_entries(staging_db, &target)
+        install_entries(staging_db, &target, rename_budget)
             .await
             .map_err(|e| anyhow::anyhow!("install staged db to {}: {e}", target.display()))?;
         return Ok(());
@@ -1091,7 +1108,7 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
         }
         let src = entry.path();
         let dst = dst_immutable.join(entry.file_name());
-        move_file(&src, &dst).await?;
+        move_file(&src, &dst, rename_budget).await?;
     }
 
     // The highest staged chunk comes from the ancillary archive and is not
@@ -1113,7 +1130,7 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
     let src_ledger = staging_db.join("ledger");
     let dst_ledger = chain_path.join("ledger");
     let _ = tokio::fs::remove_dir_all(&dst_ledger).await;
-    move_dir(&src_ledger, &dst_ledger).await?;
+    move_dir(&src_ledger, &dst_ledger, rename_budget).await?;
 
     // Always remove the old lsm — it belongs to the old ledger and is
     // stale the moment we install a new one.  Install the new lsm if the
@@ -1122,14 +1139,14 @@ async fn install_staged(staging_db: &Path, chain_path: &Path, is_partial: bool) 
     let _ = tokio::fs::remove_dir_all(&dst_lsm).await;
     let src_lsm = staging_db.join("lsm");
     if tokio::fs::metadata(&src_lsm).await.is_ok() {
-        move_dir(&src_lsm, &dst_lsm).await?;
+        move_dir(&src_lsm, &dst_lsm, rename_budget).await?;
     }
 
     // Install the clean sentinel, last, so cardano-node skips chunk
     // validation on next startup. Without this, node treats the partial-sync
     // state as an unclean shutdown and re-validates every immutable chunk.
     let src_clean = staging_db.join("clean");
-    move_file(&src_clean, &dst_clean).await?;
+    move_file(&src_clean, &dst_clean, rename_budget).await?;
 
     Ok(())
 }
@@ -1696,11 +1713,15 @@ pub async fn run_pipeline(
         }
     }
 
-    if let Err(e) = install_staged(&staging_db, &chain_path, is_partial).await {
-        // The cutover-in-progress marker is already written and chain may be
-        // partially modified. Retain staging material for potential recovery;
-        // return Failed so the supervisor does not restart the node against
-        // a partially installed chain.
+    let rename_budget = Duration::from_secs(cfg.rename_retry_secs);
+    if let Err(e) = install_staged(&staging_db, &chain_path, is_partial, rename_budget).await {
+        // The cutover-in-progress marker and the record are already written
+        // and the chain may be partially modified. Return Failed so the
+        // supervisor does not restart the node against a partially installed
+        // chain. Only a rebuild recovers, and it downloads everything again,
+        // so the rest of the download is deleted rather than left to fill the
+        // volume.
+        let _ = tokio::fs::remove_dir_all(&staging_root).await;
         warn!("mithril install failed (chain may be partially modified): {e}");
         emit(&Event::MithrilError {
             code: "INSTALL_FAILED".to_string(),
@@ -2100,6 +2121,7 @@ mod tests {
         use super::super::install_staged;
         use std::fs;
         use std::path::{Path, PathBuf};
+        use std::time::Duration;
 
         struct TempDir(PathBuf);
 
@@ -2164,7 +2186,9 @@ mod tests {
             write_trio(&immutable, 5, "local 5 prefix");
 
             let staging = make_staging(&root.0, 5, 8);
-            install_staged(&staging, &chain, true).await.unwrap();
+            install_staged(&staging, &chain, true, Duration::ZERO)
+                .await
+                .unwrap();
 
             for ext in TRIO {
                 assert_eq!(read(&immutable, 4, ext).as_deref(), Some("local 4"));
@@ -2195,7 +2219,7 @@ mod tests {
                 return;
             }
 
-            let installed = install_staged(&staging, &chain, true).await;
+            let installed = install_staged(&staging, &chain, true, Duration::ZERO).await;
             fs::set_permissions(&immutable, fs::Permissions::from_mode(0o755)).unwrap();
 
             assert!(installed.is_err());
@@ -2217,7 +2241,9 @@ mod tests {
             fs::write(chain.join("clean"), b"old").unwrap();
             let staging = make_staging(&root.0, 4, 8);
 
-            install_staged(&staging, &chain, true).await.unwrap();
+            install_staged(&staging, &chain, true, Duration::ZERO)
+                .await
+                .unwrap();
 
             assert_eq!(fs::read(chain.join("clean")).unwrap(), b"");
             assert!(chain.join("ledger").join("12345").is_dir());
@@ -2233,7 +2259,9 @@ mod tests {
             }
 
             let staging = make_staging(&root.0, 8, 8);
-            install_staged(&staging, &chain, true).await.unwrap();
+            install_staged(&staging, &chain, true, Duration::ZERO)
+                .await
+                .unwrap();
 
             for ext in TRIO {
                 assert_eq!(read(&immutable, 7, ext).as_deref(), Some("local 7"));
@@ -2496,11 +2524,12 @@ mod tests {
     // than std::os::windows::fs::symlink_dir (requires Developer Mode or UAC).
     mod full_install {
         use super::super::{
-            RENAME_ATTEMPTS, RENAME_RETRY_DELAY, STAGING_ENTRY, check_replaceable,
-            copy_dir_recursive, install_entries, install_staged, rename_with_retry,
+            STAGING_ENTRY, check_replaceable, copy_dir_recursive, install_entries, install_staged,
+            move_dir, rename_with_retry,
         };
         use std::fs;
         use std::path::{Path, PathBuf};
+        use std::time::{Duration, Instant};
 
         struct TempDir(PathBuf);
 
@@ -2540,7 +2569,9 @@ mod tests {
             fs::write(chain.join("notes.txt"), b"user data").unwrap();
             let staging = make_staging(&t.0);
 
-            let err = install_staged(&staging, &chain, false).await.unwrap_err();
+            let err = install_staged(&staging, &chain, false, Duration::ZERO)
+                .await
+                .unwrap_err();
 
             assert!(err.to_string().contains("notes.txt"), "{err}");
             assert_eq!(fs::read(chain.join("notes.txt")).unwrap(), b"user data");
@@ -2563,7 +2594,9 @@ mod tests {
             }
             let staging = make_staging(&t.0);
 
-            install_staged(&staging, &chain, false).await.unwrap();
+            install_staged(&staging, &chain, false, Duration::ZERO)
+                .await
+                .unwrap();
 
             assert!(chain.join("immutable").is_dir());
             assert_eq!(fs::read(chain.join("protocolMagicId")).unwrap(), b"1");
@@ -2575,7 +2608,9 @@ mod tests {
             let t = TempDir::new("missing");
             let chain = t.0.join("chain");
             let staging = make_staging(&t.0);
-            install_staged(&staging, &chain, false).await.unwrap();
+            install_staged(&staging, &chain, false, Duration::ZERO)
+                .await
+                .unwrap();
             assert!(chain.join("protocolMagicId").exists());
         }
 
@@ -2645,7 +2680,9 @@ mod tests {
             fs::write(staging.join("protocolMagicId"), b"1").unwrap();
             fs::write(staging.join("clean"), b"").unwrap();
 
-            install_staged(&staging, &chain, false).await.unwrap();
+            install_staged(&staging, &chain, false, Duration::ZERO)
+                .await
+                .unwrap();
 
             assert!(!chain.join("immutable").join("00000.chunk").exists());
             assert_eq!(
@@ -2666,7 +2703,7 @@ mod tests {
             // writes the chunk over a directory. Windows renames over a file.
             fs::create_dir_all(dst.join("immutable").join("00001.chunk")).unwrap();
 
-            assert!(install_entries(&db, &dst).await.is_err());
+            assert!(install_entries(&db, &dst, Duration::ZERO).await.is_err());
 
             assert!(
                 !dst.join("clean").exists(),
@@ -2694,11 +2731,12 @@ mod tests {
             let unlock = {
                 let dir = dir.clone();
                 tokio::spawn(async move {
-                    tokio::time::sleep(RENAME_RETRY_DELAY * 2).await;
+                    tokio::time::sleep(Duration::from_millis(250)).await;
                     fs::set_permissions(&dir, fs::Permissions::from_mode(0o755)).unwrap();
                 })
             };
-            let renamed = rename_with_retry(&src, &dir.join("00000.chunk")).await;
+            let renamed =
+                rename_with_retry(&src, &dir.join("00000.chunk"), Duration::from_secs(10)).await;
             unlock.await.unwrap();
             renamed.unwrap();
             assert_eq!(fs::read(dir.join("00000.chunk")).unwrap(), b"chunk");
@@ -2706,12 +2744,49 @@ mod tests {
         }
 
         #[tokio::test]
-        async fn a_rename_that_keeps_failing_gives_up_after_its_attempts() {
+        async fn a_rename_that_keeps_failing_gives_up_once_its_time_is_spent() {
             let t = TempDir::new("rename-gives-up");
             let src = t.0.join("missing");
-            let started = std::time::Instant::now();
-            assert!(rename_with_retry(&src, &t.0.join("dst")).await.is_err());
-            assert!(started.elapsed() >= RENAME_RETRY_DELAY * (RENAME_ATTEMPTS - 1));
+            let budget = Duration::from_millis(400);
+            let started = Instant::now();
+            assert!(
+                rename_with_retry(&src, &t.0.join("dst"), budget)
+                    .await
+                    .is_err()
+            );
+            let spent = started.elapsed();
+            assert!(spent >= budget, "gave up after {spent:?}");
+            assert!(spent < budget * 5, "kept trying for {spent:?}");
+        }
+
+        #[tokio::test]
+        async fn a_rename_without_time_to_retry_is_tried_once() {
+            let t = TempDir::new("rename-once");
+            let started = Instant::now();
+            assert!(
+                rename_with_retry(&t.0.join("missing"), &t.0.join("dst"), Duration::ZERO)
+                    .await
+                    .is_err()
+            );
+            assert!(started.elapsed() < Duration::from_millis(100));
+        }
+
+        #[tokio::test]
+        async fn a_failed_rename_on_one_volume_is_not_copied() {
+            let t = TempDir::new("no-copy");
+            let src = t.0.join("staged-ledger");
+            fs::create_dir_all(&src).unwrap();
+            fs::write(src.join("state"), b"new").unwrap();
+            // A directory cannot be renamed over one that is not empty, while
+            // a copy into it would succeed.
+            let dst = t.0.join("ledger");
+            fs::create_dir_all(&dst).unwrap();
+            fs::write(dst.join("old"), b"old").unwrap();
+
+            assert!(move_dir(&src, &dst, Duration::ZERO).await.is_err());
+
+            assert!(!dst.join("state").exists(), "the directory was copied");
+            assert_eq!(fs::read(src.join("state")).unwrap(), b"new");
         }
 
         #[tokio::test]
@@ -2740,7 +2815,11 @@ mod tests {
             std::os::unix::fs::symlink(&target, &chain).unwrap();
             let staging = make_staging(&t.0);
 
-            assert!(install_staged(&staging, &chain, false).await.is_err());
+            assert!(
+                install_staged(&staging, &chain, false, Duration::ZERO)
+                    .await
+                    .is_err()
+            );
 
             assert_eq!(fs::read(target.join("photo.jpg")).unwrap(), b"user data");
             assert!(
@@ -2762,7 +2841,9 @@ mod tests {
             std::os::unix::fs::symlink(&target, &chain).unwrap();
             let staging = make_staging(&t.0);
 
-            install_staged(&staging, &chain, false).await.unwrap();
+            install_staged(&staging, &chain, false, Duration::ZERO)
+                .await
+                .unwrap();
 
             assert!(
                 fs::symlink_metadata(&chain)
@@ -2780,6 +2861,7 @@ mod tests {
         use super::super::{install_staged, wipe_database};
         use std::fs;
         use std::path::Path;
+        use std::time::Duration;
 
         fn temp_dir(label: &str) -> std::path::PathBuf {
             let p = std::env::temp_dir().join(format!(
@@ -2830,7 +2912,9 @@ mod tests {
             make_junction(&chain_path, &target);
 
             let staging = make_staging(&root);
-            install_staged(&staging, &chain_path, false).await.unwrap();
+            install_staged(&staging, &chain_path, false, Duration::ZERO)
+                .await
+                .unwrap();
 
             // Junction entry point still reports as a symlink
             let meta = fs::symlink_metadata(&chain_path).unwrap();
@@ -2858,7 +2942,9 @@ mod tests {
             fs::write(chain_path.join("clean"), b"old").unwrap();
 
             let staging = make_staging(&root);
-            install_staged(&staging, &chain_path, false).await.unwrap();
+            install_staged(&staging, &chain_path, false, Duration::ZERO)
+                .await
+                .unwrap();
 
             // chain_path must not have become a junction
             let meta = fs::symlink_metadata(&chain_path).unwrap();
@@ -2892,7 +2978,7 @@ mod tests {
             );
 
             let staging = make_staging(&root);
-            install_staged(&staging, &chain_path, false)
+            install_staged(&staging, &chain_path, false, Duration::ZERO)
                 .await
                 .expect("install_staged should succeed by recreating junction target");
 
@@ -2948,7 +3034,9 @@ mod tests {
             make_junction(&chain_path, &target);
 
             let staging = make_staging(&state_dir);
-            install_staged(&staging, &chain_path, false).await.unwrap();
+            install_staged(&staging, &chain_path, false, Duration::ZERO)
+                .await
+                .unwrap();
 
             assert_eq!(
                 fs::read_to_string(chain_path.join("probe.txt")).unwrap(),

@@ -380,7 +380,10 @@ impl<'a> Cfg<'a> {
                 "ancillary_vkey": "test",
                 "state_dir": state,
                 "chain_path": self.dir.path().join("chain").to_str().unwrap(),
-                "behind_threshold": 20
+                "behind_threshold": 20,
+                // An install whose rename fails, as the tests make it fail,
+                // fails at once instead of trying again for a minute.
+                "rename_retry_secs": 0
             });
         }
 
@@ -2120,6 +2123,11 @@ fn a_first_bootstrap_whose_install_fails_waits_for_a_mithril_install() {
     make_writable(&chain);
     assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
     assert_eq!(err["rebuild"], false, "{err}");
+    // Nothing reuses the rest of the download, so it does not take up space.
+    assert!(
+        !chain.join("mithril-staging").join("download").exists(),
+        "the download was kept"
+    );
 
     send(&mut stdin, json!({"cmd": "start_node"}));
     expect_none_of(&rx, &["node_started", "chain_status"], 1500);
@@ -2168,6 +2176,10 @@ fn a_partial_sync_whose_install_fails_is_still_pending_at_the_next_start() {
     assert!(
         !chain.join("clean").exists(),
         "a changed database is marked clean"
+    );
+    assert!(
+        !chain.join("mithril-staging").exists(),
+        "the download was kept"
     );
     let record: Value = serde_json::from_str(
         &std::fs::read_to_string(dir.path().join("chain-rebuild.json")).unwrap(),
