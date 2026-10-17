@@ -1791,14 +1791,15 @@ pub async fn run_pipeline(
 mod tests {
     mod rebuild_marker {
         use super::super::{
-            REBUILD_MARKER, REBUILD_MARKER_TEMP, RecordKind, clear_rebuild_marker,
-            clear_rebuild_marker_trying, pending_record, remove_finished_record, same_chain_path,
-            write_rebuild_marker,
+            REBUILD_MARKER, REBUILD_MARKER_TEMP, RecordKind, clear_rebuild_marker, pending_record,
+            remove_finished_record, same_chain_path, write_rebuild_marker,
         };
         use crate::config::MithrilConfig;
         use std::fs;
         use std::path::PathBuf;
-        use std::time::Duration;
+        // Used by the tests that need Unix directory permissions.
+        #[cfg(unix)]
+        use {super::super::clear_rebuild_marker_trying, std::time::Duration};
 
         struct TempDir(PathBuf);
 
