@@ -5,7 +5,10 @@ import BackendStore from './BackendStore';
 import { noopAnalyticsTracker } from '../analytics';
 import { logger } from '../utils/logging';
 import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
-import { validateChainStorageChannel } from '../ipc/chainStorageChannel';
+import {
+  confirmChainStorageChannel,
+  validateChainStorageChannel,
+} from '../ipc/chainStorageChannel';
 import { getCachedBackendStatusChannel } from '../ipc/backendStatusChannel';
 
 // The real logger sends its arguments through ipcRenderer, which clones them
@@ -292,6 +295,9 @@ describe('BackendStore chain damage', () => {
 describe('BackendStore.retryMithril', () => {
   beforeEach(() => {
     (mithrilCommandChannel.send as jest.Mock).mockClear();
+    (confirmChainStorageChannel.request as jest.Mock)
+      .mockReset()
+      .mockResolvedValue(undefined);
   });
 
   const failed = (
@@ -350,17 +356,37 @@ describe('BackendStore.retryMithril', () => {
     expect(store.loadingPhase).toBe('chain-storage-setup');
   });
 
-  it('returns to the error view once a location is confirmed', () => {
+  it('asks to confirm the rebuild in a location picked after a location error, and sends both together', async () => {
     const store = makeStore();
     failed(store, 'CHAIN_DIR_OTHER_NETWORK', true);
     store.retryMithril();
+    await store.setChainStorageDirectory('/new');
+    expect(confirmChainStorageChannel.request).not.toHaveBeenCalled();
     store.confirmStorageLocation();
     expect(store.loadingPhase).toBe('mithril-syncing');
-    store.retryMithril();
-    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
-      cmd: 'start_mithril',
-      wipe_chain: true,
+    expect(store._rebuildConfirmationRequested).toBe(true);
+    expect(store.pendingChainLocation).toBe('/new');
+    store.rebuildChain();
+    expect(confirmChainStorageChannel.request).toHaveBeenCalledWith({
+      customPath: '/new',
+      rebuild: true,
     });
+    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+    expect(store.pendingChainLocation).toBeNull();
+  });
+
+  it('asks for a location again when Retry follows Back from that confirmation', async () => {
+    const store = makeStore();
+    failed(store, 'INVALID_CHAIN_PATH', true);
+    store.retryMithril();
+    await store.setChainStorageDirectory('/new');
+    store.confirmStorageLocation();
+    store.cancelRebuildConfirmation();
+    expect(store.pendingChainLocation).toBeNull();
+    store.retryMithril();
+    expect(store.loadingPhase).toBe('chain-storage-setup');
+    expect(confirmChainStorageChannel.request).not.toHaveBeenCalled();
+    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
   });
 
   it('asks to confirm a rebuild when a partial sync failed to install', () => {
@@ -424,6 +450,125 @@ describe('BackendStore.retryMithril', () => {
     });
     await store._pollBackendStatus();
     expect(store.lastErrorRebuild).toBe(true);
+  });
+});
+
+describe('BackendStore choosing another location after a failed sync', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+    (confirmChainStorageChannel.request as jest.Mock)
+      .mockReset()
+      .mockResolvedValue(undefined);
+  });
+
+  const failed = (store: BackendStore, code: string, rebuild: boolean) => {
+    (store as any).hasChain = true;
+    (store as any).mithrilPhase = 'error';
+    (store as any).lastErrorCode = code;
+    (store as any).lastErrorRebuild = rebuild;
+    (store as any).defaultChainPath = '/state/chain';
+  };
+
+  it.each(['INSUFFICIENT_SPACE', 'CHAIN_DIR_NOT_REPLACEABLE'])(
+    'offers another location after %s',
+    (code) => {
+      const store = makeStore();
+      failed(store, code, true);
+      expect(store.canChooseAnotherLocation).toBe(true);
+    }
+  );
+
+  it.each(['PROBE_FAILED', 'INSTALL_FAILED', 'INVALID_CHAIN_PATH'])(
+    'offers no separate location choice after %s',
+    (code) => {
+      const store = makeStore();
+      failed(store, code, true);
+      expect(store.canChooseAnotherLocation).toBe(false);
+    }
+  );
+
+  it('shows the picker when another location is chosen', () => {
+    const store = makeStore();
+    failed(store, 'INSUFFICIENT_SPACE', true);
+    store.chooseAnotherLocation();
+    expect(store.loadingPhase).toBe('chain-storage-setup');
+  });
+
+  it('rebuilds in the default location when the picker resets to it', async () => {
+    const store = makeStore();
+    failed(store, 'INSUFFICIENT_SPACE', true);
+    store.chooseAnotherLocation();
+    await store.resetChainStorageDirectory();
+    expect(confirmChainStorageChannel.request).not.toHaveBeenCalled();
+    store.confirmStorageLocation();
+    expect(store.pendingChainLocation).toBe('/state/chain');
+    store.rebuildChain();
+    expect(confirmChainStorageChannel.request).toHaveBeenCalledWith({
+      customPath: null,
+      rebuild: true,
+    });
+  });
+
+  it('drops the picked location on Back and changes nothing', async () => {
+    const store = makeStore();
+    failed(store, 'CHAIN_DIR_NOT_REPLACEABLE', true);
+    store.chooseAnotherLocation();
+    await store.setChainStorageDirectory('/new');
+    store.confirmStorageLocation();
+    store.cancelRebuildConfirmation();
+    expect(store._rebuildConfirmationRequested).toBe(false);
+    expect(store.pendingChainLocation).toBeNull();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    expect(confirmChainStorageChannel.request).not.toHaveBeenCalled();
+    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+  });
+
+  it('rebuilds where it is when the picker keeps the location', () => {
+    const store = makeStore();
+    failed(store, 'INSUFFICIENT_SPACE', true);
+    store.chooseAnotherLocation();
+    store.confirmStorageLocation();
+    expect(store._rebuildConfirmationRequested).toBe(true);
+    expect(store.pendingChainLocation).toBeNull();
+    store.rebuildChain();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_mithril',
+      wipe_chain: true,
+    });
+    expect(confirmChainStorageChannel.request).not.toHaveBeenCalled();
+  });
+
+  it('applies a location at once and returns to the error after a sync that was not a rebuild', async () => {
+    const store = makeStore();
+    failed(store, 'INSUFFICIENT_SPACE', false);
+    (store as any).hasChain = false;
+    store.chooseAnotherLocation();
+    await store.setChainStorageDirectory('/new');
+    expect(confirmChainStorageChannel.request).toHaveBeenCalledWith({
+      customPath: '/new',
+    });
+    store.confirmStorageLocation();
+    expect(store._rebuildConfirmationRequested).toBe(false);
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('drops a picked location when the Mithril phase leaves the error', async () => {
+    const store = makeStore();
+    failed(store, 'INSUFFICIENT_SPACE', true);
+    store.chooseAnotherLocation();
+    await store.setChainStorageDirectory('/new');
+    store.confirmStorageLocation();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: true,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'preparing',
+    });
+    await store._pollBackendStatus();
+    expect(store.pendingChainLocation).toBeNull();
   });
 });
 

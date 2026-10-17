@@ -71,7 +71,7 @@ describe('MithrilErrorView', () => {
     ],
     [
       'CHAIN_DIR_NOT_REPLACEABLE',
-      'The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and try again.',
+      'The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and retry, or choose another location.',
     ],
     [
       'CHAIN_DIR_OTHER_NETWORK',
@@ -79,7 +79,7 @@ describe('MithrilErrorView', () => {
     ],
     [
       'INSUFFICIENT_SPACE',
-      'There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry.',
+      'There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry, or choose another location.',
     ],
     [
       'MARKER_FAILED',

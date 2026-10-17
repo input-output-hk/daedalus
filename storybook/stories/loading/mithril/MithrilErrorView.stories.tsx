@@ -24,6 +24,16 @@ const errorActions = [
   },
 ];
 
+const locationErrorActions = [
+  errorActions[0],
+  {
+    label: 'Choose another location',
+    onClick: () => bootstrapActions.onDecline(),
+    variant: 'secondary' as const,
+  },
+  errorActions[1],
+];
+
 storiesOf('Loading / Mithril / Error', module)
   .addDecorator((story, context) => (
     <StoryDecorator>
@@ -86,7 +96,7 @@ storiesOf('Loading / Mithril / Error', module)
         message: 'detail from the watchdog',
       }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={errorActions}
+      actions={locationErrorActions}
     />
   ))
   .add('Chain Dir Other Network', () => (
@@ -106,7 +116,7 @@ storiesOf('Loading / Mithril / Error', module)
         message: 'detail from the watchdog',
       }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={errorActions}
+      actions={locationErrorActions}
     />
   ))
   .add('Marker Failed', () => (

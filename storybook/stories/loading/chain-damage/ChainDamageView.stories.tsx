@@ -2,6 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { storiesOf } from '@storybook/react';
 import ChainDamageView from '../../../../source/renderer/app/components/loading/chain-damage/ChainDamageView';
+import RebuildConfirmView from '../../../../source/renderer/app/components/loading/chain-damage/RebuildConfirmView';
 import type { ChainDamage } from '../../../../source/common/types/watchdog.types';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
@@ -53,4 +54,11 @@ storiesOf('Loading / Chain Damage', module)
   .add('Detection Without Slot', () =>
     renderView({ ...ledgerPointMissing, slot: null })
   )
-  .add('Confirm Rebuild', () => renderView(ledgerPointMissing, 'confirm'));
+  .add('Confirm Rebuild', () => renderView(ledgerPointMissing, 'confirm'))
+  .add('Confirm Rebuild In Another Location', () => (
+    <RebuildConfirmView
+      location={'D:\\Cardano'}
+      onRebuild={action('onRebuild')}
+      onBack={action('onBack')}
+    />
+  ));
