@@ -8,6 +8,7 @@ import type {
 // Top-level entries of a cardano-node database directory, and the files that
 // desktop file browsers leave in any directory they display. The watchdog
 // replaces a directory with a Mithril snapshot only when it holds nothing else.
+// mithril-staging is the watchdog's download area inside the chain directory.
 const DATABASE_ENTRIES = new Set([
   'immutable',
   'volatile',
@@ -17,6 +18,7 @@ const DATABASE_ENTRIES = new Set([
   'lock',
   'clean',
   'protocolMagicId',
+  'mithril-staging',
 ]);
 const OS_METADATA_ENTRIES = new Set(['.DS_Store', 'Thumbs.db', 'desktop.ini']);
 
