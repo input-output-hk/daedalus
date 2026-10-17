@@ -156,6 +156,8 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           isMithrilAtOrPastSnapshot={false}
           mithrilBehindByEpochs={behindByEpochs}
           onStartMithrilPartialSync={this.handleStartMithrilPartialSync}
+          chainDamage={backend.lastChainDamage}
+          onRebuildChain={backend.rebuildChain}
         />
       </ReactModal>
     );

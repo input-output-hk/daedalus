@@ -8,6 +8,8 @@
 // exiting that way, so a test can tell a clean stop from a kill.
 // With MOCK_WALLET_CRASH_AFTER_MS=<n> it exits with code 1 n milliseconds
 // after binding its port, like a wallet that crashes once running.
+// With MOCK_WALLET_EXTRA_LINES=<file> it prints that file's contents to stdout
+// after binding its port, so a test can inject log lines.
 fn main() {
     let port: u16 = std::env::args()
         .nth(1)
@@ -15,6 +17,15 @@ fn main() {
         .parse()
         .expect("valid port number");
     let listener = std::net::TcpListener::bind(("127.0.0.1", port)).expect("bind port");
+
+    if let Some(extra) = std::env::var_os("MOCK_WALLET_EXTRA_LINES") {
+        use std::io::Write as _;
+        print!(
+            "{}",
+            std::fs::read_to_string(extra).expect("read MOCK_WALLET_EXTRA_LINES")
+        );
+        std::io::stdout().flush().unwrap();
+    }
 
     if let Some(ms) = std::env::var("MOCK_WALLET_CRASH_AFTER_MS")
         .ok()

@@ -123,6 +123,303 @@ describe('WatchdogManager unrecoverable state', () => {
   });
 });
 
+describe('WatchdogManager Mithril error', () => {
+  it('keeps the code of a mithril_error as lastErrorCode', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().lastErrorCode).toBeNull();
+    emit({
+      event: 'mithril_error',
+      code: 'PROBE_FAILED',
+      message: 'connection refused',
+    });
+    expect(manager.getState().mithrilPhase).toBe('error');
+    expect(manager.getState().lastError).toBe('connection refused');
+    expect(manager.getState().lastErrorCode).toBe('PROBE_FAILED');
+  });
+
+  it('clears lastErrorCode when an error without a code replaces lastError', () => {
+    const { manager, emit } = makeManager();
+    emit({
+      event: 'mithril_error',
+      code: 'PROBE_FAILED',
+      message: 'connection refused',
+    });
+    emit({ event: 'error', message: 'cardano-node unrecoverable' });
+    expect(manager.getState().lastError).toBe('cardano-node unrecoverable');
+    expect(manager.getState().lastErrorCode).toBeNull();
+  });
+});
+
+describe('WatchdogManager chain damage', () => {
+  const damage = {
+    event: 'chain_damage',
+    kind: 'wallet_chain_discontinuity',
+    slot: 200102408,
+    last_good_slot: 200080892,
+  };
+
+  it('starts with no chain damage', () => {
+    const { manager } = makeManager();
+    expect(manager.getState().chainDamage).toBeNull();
+  });
+
+  it('sets chainDamage from a chain_damage event, with the time it arrived', () => {
+    const { manager, emit } = makeManager();
+    const before = Date.now();
+    emit(damage);
+    const found = manager.getState().chainDamage;
+    expect(found).toMatchObject({
+      kind: 'wallet_chain_discontinuity',
+      slot: 200102408,
+      lastGoodSlot: 200080892,
+    });
+    expect(Date.parse(found!.detectedAt)).toBeGreaterThanOrEqual(before);
+  });
+
+  it('keeps null slots as null', () => {
+    const { manager, emit } = makeManager();
+    emit({
+      event: 'chain_damage',
+      kind: 'ledger_point_missing',
+      slot: null,
+      last_good_slot: null,
+    });
+    expect(manager.getState().chainDamage).toMatchObject({
+      kind: 'ledger_point_missing',
+      slot: null,
+      lastGoodSlot: null,
+    });
+  });
+
+  it('clears chainDamage when a node starts', () => {
+    const { manager, emit } = makeManager();
+    emit(damage);
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().chainDamage).toBeNull();
+  });
+
+  it('clears chainDamage when a Mithril sync starts preparing', () => {
+    const { manager, emit } = makeManager();
+    emit(damage);
+    emit({ event: 'mithril_status', phase: 'downloading' });
+    expect(manager.getState().chainDamage).not.toBeNull();
+    emit({ event: 'mithril_status', phase: 'preparing' });
+    expect(manager.getState().chainDamage).toBeNull();
+  });
+});
+
+describe('WatchdogManager rebuild state', () => {
+  it('records whether a mithril_error came from a rebuild', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().lastErrorRebuild).toBe(false);
+    emit({
+      event: 'mithril_error',
+      code: 'INSUFFICIENT_SPACE',
+      message: 'not enough space',
+      rebuild: true,
+    });
+    expect(manager.getState().lastErrorRebuild).toBe(true);
+    emit({ event: 'mithril_error', code: 'DOWNLOAD_FAILED', message: 'x' });
+    expect(manager.getState().lastErrorRebuild).toBe(false);
+  });
+
+  it.each([
+    ['a Mithril run starts', { cmd: 'start_mithril' }],
+    ['a rebuild starts', { cmd: 'start_mithril', wipe_chain: true }],
+    ['the node is started without Mithril', { cmd: 'start_node' }],
+  ])('clears lastErrorRebuild when %s', (_name, cmd) => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_error', code: 'X', message: 'x', rebuild: true });
+    manager.sendCommand(cmd);
+    expect(manager.getState().lastErrorRebuild).toBe(false);
+  });
+
+  it('clears lastErrorRebuild when the pipeline completes', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'mithril_error', code: 'X', message: 'x', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'completed' });
+    expect(manager.getState().lastErrorRebuild).toBe(false);
+  });
+
+  it('clears the Mithril phase and progress when the node is started', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_status', phase: 'downloading' });
+    emit({ event: 'mithril_error', code: 'X', message: 'x' });
+    expect(manager.getState().mithrilPhase).toBe('error');
+    manager.sendCommand({ cmd: 'start_node' });
+    expect(manager.getState().mithrilPhase).toBeNull();
+    expect(manager.getState().mithrilProgress).toBeNull();
+  });
+
+  it('keeps the Mithril phase when a Mithril run is started', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_error', code: 'X', message: 'x' });
+    manager.sendCommand({ cmd: 'start_mithril' });
+    expect(manager.getState().mithrilPhase).toBe('error');
+  });
+
+  it('keeps lastErrorRebuild when other commands are sent', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_error', code: 'X', message: 'x', rebuild: true });
+    manager.sendCommand({ cmd: 'probe_mithril' });
+    expect(manager.getState().lastErrorRebuild).toBe(true);
+  });
+
+  it('maps rebuild_pending from chain_status and defaults it to false', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().rebuildPending).toBe(false);
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    expect(manager.getState().rebuildPending).toBe(true);
+    emit({ event: 'chain_status', has_chain: false });
+    expect(manager.getState().rebuildPending).toBe(false);
+  });
+
+  it('clears rebuildPending when a node starts or the pipeline completes', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().rebuildPending).toBe(false);
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    emit({ event: 'mithril_status', phase: 'completed' });
+    expect(manager.getState().rebuildPending).toBe(false);
+  });
+});
+
+describe('WatchdogManager failed install', () => {
+  const installFailed = (rebuild: boolean) => ({
+    event: 'mithril_error',
+    code: 'INSTALL_FAILED',
+    message: 'install staged db: permission denied',
+    rebuild,
+  });
+
+  it('records the wait for another install until a node starts', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().installRetryRequired).toBe(false);
+    emit(installFailed(false));
+    expect(manager.getState().installRetryRequired).toBe(true);
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().installRetryRequired).toBe(false);
+  });
+
+  it('ends the wait when the watchdog reports that a rebuild left no chain', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(false));
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    expect(manager.getState().installRetryRequired).toBe(false);
+  });
+
+  it('keeps the wait through other errors', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(false));
+    emit({
+      event: 'mithril_error',
+      code: 'PROBE_FAILED',
+      message: 'x',
+      rebuild: true,
+    });
+    expect(manager.getState().installRetryRequired).toBe(true);
+  });
+
+  it('keeps the error when start_node is sent during the wait, which the watchdog ignores', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'mithril_status', phase: 'installing' });
+    emit(installFailed(true));
+    manager.sendCommand({ cmd: 'start_node' });
+    expect(manager.getState().mithrilPhase).toBe('error');
+    expect(manager.getState().lastErrorRebuild).toBe(true);
+  });
+
+  it('marks the rebuild pending when the install of a rebuild fails', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(true));
+    expect(manager.getState().rebuildPending).toBe(true);
+  });
+
+  it('marks no rebuild pending when the install of a partial sync fails', () => {
+    const { manager, emit } = makeManager();
+    emit(installFailed(false));
+    expect(manager.getState().rebuildPending).toBe(false);
+  });
+});
+
+describe('WatchdogManager last chain damage', () => {
+  const damage = {
+    event: 'chain_damage',
+    kind: 'ledger_point_missing',
+    slot: 200102375,
+    last_good_slot: null,
+  };
+
+  it('is set with chainDamage', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().lastChainDamage).toBeNull();
+    emit(damage);
+    expect(manager.getState().lastChainDamage).toEqual(
+      manager.getState().chainDamage
+    );
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+  });
+
+  it('survives a node start and a Mithril sync preparing', () => {
+    const { manager, emit } = makeManager();
+    emit(damage);
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    emit({ event: 'mithril_status', phase: 'preparing' });
+    expect(manager.getState().chainDamage).toBeNull();
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+  });
+
+  it('is cleared when a rebuild completes', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit(damage);
+    manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
+    expect(manager.getState().lastChainDamage).toBeNull();
+  });
+
+  it('is cleared when the bootstrap decision is accepted after a failed rebuild and that sync completes', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit(damage);
+    manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({
+      event: 'mithril_error',
+      code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+      message: 'x',
+      rebuild: true,
+    });
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    // Accept on the bootstrap decision sends a plain sync, which the watchdog
+    // runs as a rebuild.
+    manager.sendCommand({ cmd: 'start_mithril' });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'finalizing', rebuild: true });
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
+    expect(manager.getState().lastChainDamage).toBeNull();
+  });
+
+  it('is kept when a partial sync completes', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit(damage);
+    manager.sendCommand({ cmd: 'start_mithril' });
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: false });
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+  });
+
+  it('is kept when a rebuild was asked for but the sync that completed was not one', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit(damage);
+    manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
+    emit({ event: 'mithril_error', code: 'X', message: 'x', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: false });
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+  });
+});
+
 describe('WatchdogManager.stop', () => {
   beforeEach(() => {
     jest.useFakeTimers();

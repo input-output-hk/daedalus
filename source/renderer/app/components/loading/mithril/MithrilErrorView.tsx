@@ -22,6 +22,10 @@ interface Props {
   title?: string;
   hint?: string | null;
   hintAsBody?: boolean;
+  // A rebuild removed the old blockchain data before it failed
+  chainRemoved?: boolean;
+  // Retry is the only action, so the removal note offers no sync choice
+  retryOnly?: boolean;
   actions?: Array<{
     label: string;
     onClick(): void;
@@ -29,8 +33,6 @@ interface Props {
   }>;
   // Opt-in right-alignment of the actions footer; default keeps it left-aligned in caller order.
   rightAlignActions?: boolean;
-  onWipeRetry?(): void;
-  onDecline?(): void;
 }
 
 interface Context {
@@ -63,6 +65,41 @@ const ERROR_COPY_BY_STAGE: Partial<
   },
 };
 
+type CodeHint = {
+  hint: keyof typeof messages;
+  // Used once a rebuild has removed the old data: the same message without
+  // its statement that the blockchain data was not changed
+  afterRemoval?: keyof typeof messages;
+};
+
+// Codes of the errors a rebuild reports before or while it replaces the chain
+// data. Each has its own message, which takes precedence over the stage copy.
+const ERROR_HINT_BY_CODE: Record<string, CodeHint> = {
+  PROBE_FAILED: {
+    hint: 'errorProbeFailedHint',
+    afterRemoval: 'errorProbeFailedRemovedHint',
+  },
+  INVALID_CHAIN_PATH: { hint: 'errorInvalidChainPathHint' },
+  CHAIN_DIR_NOT_REPLACEABLE: {
+    hint: 'errorChainDirNotReplaceableHint',
+    afterRemoval: 'errorChainDirNotReplaceableRemovedHint',
+  },
+  CHAIN_DIR_OTHER_NETWORK: {
+    hint: 'errorChainDirOtherNetworkHint',
+    afterRemoval: 'errorChainDirOtherNetworkRemovedHint',
+  },
+  WIPE_FAILED: { hint: 'errorWipeFailedHint' },
+  INSUFFICIENT_SPACE: {
+    hint: 'errorInsufficientSpaceHint',
+    afterRemoval: 'errorInsufficientSpaceRemovedHint',
+  },
+  REBUILD_MARKER_FAILED: {
+    hint: 'errorRebuildMarkerFailedHint',
+    afterRemoval: 'errorRebuildMarkerFailedRemovedHint',
+  },
+  MARKER_FAILED: { hint: 'errorMarkerFailedHint' },
+};
+
 const getLogPathHref = (logPath: string) => {
   const normalizedPath = logPath.replace(/\\/g, '/');
 
@@ -83,35 +120,30 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const {
     error,
     onOpenExternalLink,
-    onWipeRetry,
-    onDecline,
     title,
     hint,
     hintAsBody,
+    chainRemoved,
+    retryOnly,
     actions,
     rightAlignActions,
   } = props;
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
+  const codeCopy = error?.code ? ERROR_HINT_BY_CODE[error.code] : undefined;
+  const codeHint =
+    chainRemoved && codeCopy?.afterRemoval
+      ? codeCopy.afterRemoval
+      : codeCopy?.hint;
   let resolvedHint = hint;
   if (resolvedHint === undefined) {
-    resolvedHint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
+    const hintKey = codeHint ?? copy.hint;
+    resolvedHint = hintKey ? intl.formatMessage(messages[hintKey]) : null;
   }
   const hasTechnicalDetails = Boolean(error?.message || error?.code);
   const logPath = error?.logPath;
-  const resolvedActions = actions || [
-    {
-      label: intl.formatMessage(messages.wipeAndRetry),
-      onClick: onWipeRetry,
-      variant: 'primary' as const,
-    },
-    {
-      label: intl.formatMessage(messages.decline),
-      onClick: onDecline,
-      variant: 'secondary' as const,
-    },
-  ];
+  const resolvedActions = actions || [];
   // Actions render verbatim in caller order; any reordering is the caller's responsibility.
 
   return (
@@ -126,6 +158,15 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           ) : (
             <div className={styles.errorHint}>{resolvedHint}</div>
           ))}
+        {chainRemoved && (
+          <p className={styles.hintBody}>
+            {intl.formatMessage(
+              retryOnly
+                ? messages.errorChainRemovedRetryHint
+                : messages.errorChainRemovedHint
+            )}
+          </p>
+        )}
         {logPath && onOpenExternalLink && (
           <Link
             className={styles.logPathLink}

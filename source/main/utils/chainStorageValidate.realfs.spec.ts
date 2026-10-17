@@ -69,6 +69,17 @@ describe('validatePath', () => {
     expect(validatePath(folder, stateDir, NETWORK_MAGIC).isValid).toBe(true);
   });
 
+  it('accepts a chain subdirectory holding database entries and a staging leftover', () => {
+    fs.mkdirSync(path.join(chain, 'volatile'), { recursive: true });
+    fs.mkdirSync(path.join(chain, 'mithril-staging', 'download', 'db'), {
+      recursive: true,
+    });
+
+    const result = validatePath(folder, stateDir, NETWORK_MAGIC);
+
+    expect(result.isValid).toBe(true);
+  });
+
   it('refuses a chain subdirectory holding other files and leaves them', () => {
     fs.mkdirSync(chain);
     fs.writeFileSync(path.join(chain, 'photo.jpg'), 'user data');

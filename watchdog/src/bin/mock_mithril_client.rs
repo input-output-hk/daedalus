@@ -15,6 +15,15 @@
 // MOCK_MITHRIL_ARGS_FILE, if set, receives the download arguments as a JSON
 // array so tests can assert what the watchdog passed.
 //
+// "snapshot show" states a database size of 1000 bytes, or of
+// MOCK_SNAPSHOT_SIZE bytes when that is set.
+//
+// With MOCK_MITHRIL_PROBE_FAIL=1, "snapshot show" fails with exit code 1, like
+// a client that cannot reach the aggregator.
+//
+// With MOCK_MITHRIL_DOWNLOAD_HANG=1, "download" emits its progress lines and
+// then waits until it is killed, so a test can cancel a download in progress.
+//
 // The snapshot's immutable_file_number is set very high (999_999) so the
 // behind-ness probe always concludes that a sync is needed when force=false.
 
@@ -35,13 +44,25 @@ fn main() {
     let is_download = args.iter().any(|a| a == "download");
 
     if is_show {
+        if env::var("MOCK_MITHRIL_PROBE_FAIL").as_deref() == Ok("1") {
+            eprintln!("mock-mithril-client: aggregator unreachable");
+            std::process::exit(1);
+        }
         // MOCK_CERTIFIED_IMMUTABLE overrides the returned immutable file number;
         // defaults to 999999 so the behind-ness probe always triggers a sync.
         let certified: u64 = env::var("MOCK_CERTIFIED_IMMUTABLE")
             .ok()
             .and_then(|v| v.parse().ok())
             .unwrap_or(999_999);
-        println!(r#"{{"beacon":{{"immutable_file_number":{certified}}}}}"#);
+        // MOCK_SNAPSHOT_SIZE overrides the database size the snapshot states;
+        // defaults to 1000 bytes, which any test volume has room for.
+        let size: u64 = env::var("MOCK_SNAPSHOT_SIZE")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(1000);
+        println!(
+            r#"{{"beacon":{{"immutable_file_number":{certified}}},"total_db_size_uncompressed":{size}}}"#
+        );
         return;
     }
 
@@ -60,6 +81,9 @@ fn main() {
                 s = i,
             );
             sleep(Duration::from_millis(20));
+        }
+        if env::var("MOCK_MITHRIL_DOWNLOAD_HANG").as_deref() == Ok("1") {
+            sleep(Duration::from_secs(300));
         }
         // Emit a verifying-phase progress line.
         println!(

@@ -4,6 +4,8 @@ import net from 'net';
 import { logger } from './utils/logging';
 import type {
   BackendStopProgress,
+  ChainDamage,
+  ChainDamageKind,
   RequestedRestart,
 } from '../common/types/watchdog.types';
 
@@ -53,6 +55,24 @@ export interface WatchdogState {
 
   // Error
   lastError: string | null;
+  // The code of the mithril_error that set lastError; null when lastError
+  // came from an error without one
+  lastErrorCode: string | null;
+  // The last hole in the chain database the watchdog detected; cleared when a
+  // node starts or a Mithril sync begins
+  chainDamage: ChainDamage | null;
+  // The last detection of the session, which Diagnostics shows; unlike
+  // chainDamage it survives a node start and clears only when a rebuild
+  // completes
+  lastChainDamage: ChainDamage | null;
+  // True when lastError came from a rebuild, so Retry repeats the rebuild
+  lastErrorRebuild: boolean;
+  // True when a rebuild was confirmed and has not finished, e.g. the app was
+  // closed after the chain data was deleted
+  rebuildPending: boolean;
+  // True after a Mithril install failed part-way: the watchdog starts no node
+  // and ignores start_node until a Mithril sync installs a database
+  installRetryRequired: boolean;
   walletUnrecoverable: boolean;
 
   // Diagnostics
@@ -94,6 +114,9 @@ export const INSTALLER_RESULT_TIMEOUT_MS = 30_000;
 
 // What came of an install_update request. message says why it failed.
 export type InstallerResult = { launched: boolean; message: string | null };
+
+// The code of the mithril_error a Mithril install that failed part-way reports
+const INSTALL_FAILED_CODE = 'INSTALL_FAILED';
 
 class WatchdogManager {
   private rl: ReadlineInterface | null = null;
@@ -142,6 +165,12 @@ class WatchdogManager {
       mithrilProgress: null,
       mithrilSignificantlyBehind: null,
       lastError: null,
+      lastErrorCode: null,
+      chainDamage: null,
+      lastChainDamage: null,
+      lastErrorRebuild: false,
+      rebuildPending: false,
+      installRetryRequired: false,
       walletUnrecoverable: false,
       nodeSocketWaitMs: null,
       walletReadyWaitMs: null,
@@ -245,6 +274,7 @@ class WatchdogManager {
       }
       this.socket.write(line);
       this._noteRequestedRestart(cmd);
+      this._noteMithrilCommand(cmd);
       return;
     }
     if (!process.stdout.writable) {
@@ -256,6 +286,25 @@ class WatchdogManager {
     }
     process.stdout.write(line);
     this._noteRequestedRestart(cmd);
+    this._noteMithrilCommand(cmd);
+  }
+
+  // A new Mithril run or a node start ends the error of the previous run, so
+  // a stale rebuild flag cannot change what Retry does next.
+  private _noteMithrilCommand(cmd: object): void {
+    const { cmd: name } = cmd as { cmd?: string };
+    if (name === 'start_mithril') {
+      this.state.lastErrorRebuild = false;
+    } else if (name === 'start_node') {
+      // The watchdog ignores start_node while it waits for an install after a
+      // failed one, so the error stays where it is.
+      if (this.state.installRetryRequired) return;
+      this.state.lastErrorRebuild = false;
+      // The user moved on from a Mithril error; without this the error view
+      // stays up while the node syncs.
+      this.state.mithrilPhase = null;
+      this.state.mithrilProgress = null;
+    }
   }
 
   // Commands that make the watchdog stop and start a running process again.
@@ -378,6 +427,10 @@ class WatchdogManager {
 
       case 'chain_status':
         s.hasChain = event.has_chain as boolean;
+        s.rebuildPending = event.rebuild_pending === true;
+        // The watchdog reports no chain once a rebuild deleted it, which also
+        // ends the wait after a failed install.
+        s.installRetryRequired = false;
         break;
 
       case 'node_started':
@@ -397,6 +450,12 @@ class WatchdogManager {
         s.nodeUnrecoverable = false;
         s.walletUnrecoverable = false;
         s.requestedRestart = null;
+        // The new node reports its own damage from its own output.
+        s.chainDamage = null;
+        // A running node means no rebuild is waiting for the user's choice,
+        // and no failed install is waiting for another.
+        s.rebuildPending = false;
+        s.installRetryRequired = false;
         this._nodeRunning = true;
         s.blockSyncProgress = {
           replayedBlock: 0,
@@ -483,8 +542,30 @@ class WatchdogManager {
         };
         break;
 
+      case 'chain_damage':
+        s.chainDamage = {
+          kind: event.kind as ChainDamageKind,
+          slot: (event.slot as number | null | undefined) ?? null,
+          lastGoodSlot:
+            (event.last_good_slot as number | null | undefined) ?? null,
+          detectedAt: new Date().toISOString(),
+        };
+        s.lastChainDamage = s.chainDamage;
+        break;
+
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;
+        // A rebuild is starting; the damage it replaces is no longer current.
+        if (event.phase === 'preparing') s.chainDamage = null;
+        if (event.phase === 'completed') {
+          s.lastErrorRebuild = false;
+          s.rebuildPending = false;
+          // Only a rebuild repairs the chain; a partial sync leaves the
+          // detection in place. The watchdog says whether the pipeline was a
+          // rebuild, including one it ran in place of a plain sync because an
+          // earlier rebuild had deleted the chain and not finished.
+          if (event.rebuild === true) s.lastChainDamage = null;
+        }
         // A Mithril sync replaced the requested node restart.
         if (s.requestedRestart === 'node') s.requestedRestart = null;
         break;
@@ -505,10 +586,19 @@ class WatchdogManager {
       case 'mithril_error':
         s.mithrilPhase = 'error';
         s.lastError = event.message as string;
+        s.lastErrorCode = (event.code as string | undefined) ?? null;
+        s.lastErrorRebuild = event.rebuild === true;
+        if (event.code === INSTALL_FAILED_CODE) {
+          s.installRetryRequired = true;
+          // A rebuild deletes the old chain before it installs, so its failed
+          // install leaves the rebuild unfinished.
+          if (event.rebuild === true) s.rebuildPending = true;
+        }
         break;
 
       case 'error':
         s.lastError = event.message as string;
+        s.lastErrorCode = null;
         break;
 
       case 'stopped':

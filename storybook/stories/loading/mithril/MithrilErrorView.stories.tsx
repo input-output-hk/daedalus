@@ -11,6 +11,29 @@ import {
   getErrorPreset,
 } from '../_support/mithrilFixtures';
 
+const errorActions = [
+  {
+    label: 'Retry',
+    onClick: () => bootstrapActions.onWipeRetry(),
+    variant: 'primary' as const,
+  },
+  {
+    label: 'Skip to blockchain sync',
+    onClick: () => bootstrapActions.onDecline(),
+    variant: 'secondary' as const,
+  },
+];
+
+const locationErrorActions = [
+  errorActions[0],
+  {
+    label: 'Choose another location',
+    onClick: () => bootstrapActions.onDecline(),
+    variant: 'secondary' as const,
+  },
+  errorActions[1],
+];
+
 storiesOf('Loading / Mithril / Error', module)
   .addDecorator((story, context) => (
     <StoryDecorator>
@@ -34,8 +57,7 @@ storiesOf('Loading / Mithril / Error', module)
         onOpenExternalLink={(value) =>
           bootstrapActions.onOpenExternalLink(value)
         }
-        onWipeRetry={() => bootstrapActions.onWipeRetry()}
-        onDecline={() => bootstrapActions.onDecline()}
+        actions={errorActions}
       />
     );
   })
@@ -47,7 +69,131 @@ storiesOf('Loading / Mithril / Error', module)
           'The bootstrap process failed before a stage-specific error could be derived.',
       }}
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      onWipeRetry={() => bootstrapActions.onWipeRetry()}
-      onDecline={() => bootstrapActions.onDecline()}
+      actions={errorActions}
+    />
+  ))
+  .add('Probe Failed', () => (
+    <MithrilErrorView
+      error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
+  .add('Invalid Chain Path', () => (
+    <MithrilErrorView
+      error={{
+        code: 'INVALID_CHAIN_PATH',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
+  .add('Chain Dir Not Replaceable', () => (
+    <MithrilErrorView
+      error={{
+        code: 'CHAIN_DIR_NOT_REPLACEABLE',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={locationErrorActions}
+    />
+  ))
+  .add('Chain Dir Other Network', () => (
+    <MithrilErrorView
+      error={{
+        code: 'CHAIN_DIR_OTHER_NETWORK',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
+  .add('Insufficient Space', () => (
+    <MithrilErrorView
+      error={{
+        code: 'INSUFFICIENT_SPACE',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={locationErrorActions}
+    />
+  ))
+  .add('Rebuild Marker Failed', () => (
+    <MithrilErrorView
+      error={{
+        code: 'REBUILD_MARKER_FAILED',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
+  .add('Probe Failed After Data Removed', () => (
+    <MithrilErrorView
+      error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
+      chainRemoved
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[
+        errorActions[0],
+        {
+          label: 'Choose how to sync',
+          onClick: () => bootstrapActions.onDecline(),
+          variant: 'secondary' as const,
+        },
+      ]}
+    />
+  ))
+  .add('Marker Failed', () => (
+    <MithrilErrorView
+      error={{
+        code: 'MARKER_FAILED',
+        message: 'detail from the watchdog',
+      }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
+    />
+  ))
+  .add('Rebuild Failed After Data Removed', () => (
+    <MithrilErrorView
+      error={{
+        code: 'DOWNLOAD_FAILED',
+        stage: 'download',
+        message: 'detail from the watchdog',
+      }}
+      chainRemoved
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[
+        errorActions[0],
+        {
+          label: 'Choose how to sync',
+          onClick: () => bootstrapActions.onDecline(),
+          variant: 'secondary' as const,
+        },
+      ]}
+    />
+  ))
+  .add('Install Failed', () => (
+    <MithrilErrorView
+      error={{ code: 'INSTALL_FAILED', message: 'detail from the watchdog' }}
+      retryOnly
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[errorActions[0]]}
+    />
+  ))
+  .add('Rebuild Install Failed After Data Removed', () => (
+    <MithrilErrorView
+      error={{ code: 'INSTALL_FAILED', message: 'detail from the watchdog' }}
+      chainRemoved
+      retryOnly
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={[errorActions[0]]}
+    />
+  ))
+  .add('Wipe Failed', () => (
+    <MithrilErrorView
+      error={{ code: 'WIPE_FAILED', message: 'detail from the watchdog' }}
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={errorActions}
     />
   ));

@@ -17,6 +17,24 @@ export interface WatchdogState {
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
   lastError: string | null;
+  // The code of the mithril_error that set lastError; null when lastError
+  // came from an error without one
+  lastErrorCode: string | null;
+  // The last hole in the chain database the watchdog detected; cleared when a
+  // node starts or a Mithril sync begins
+  chainDamage: ChainDamage | null;
+  // The last detection of the session, which Diagnostics shows; unlike
+  // chainDamage it survives a node start and clears only when a rebuild
+  // completes
+  lastChainDamage: ChainDamage | null;
+  // True when lastError came from a rebuild, so Retry repeats the rebuild
+  lastErrorRebuild: boolean;
+  // True when a rebuild was confirmed and has not finished, e.g. the app was
+  // closed after the chain data was deleted
+  rebuildPending: boolean;
+  // True after a Mithril install failed part-way: the watchdog starts no node
+  // and ignores start_node until a Mithril sync installs a database
+  installRetryRequired: boolean;
   walletUnrecoverable: boolean;
   nodeSocketWaitMs: number | null;
   walletReadyWaitMs: number | null;
@@ -59,6 +77,31 @@ export type BackendStopProgress = {
 // starts; 'wallet' until the restarted wallet is ready.
 export type RequestedRestart = 'node' | 'wallet';
 
+// ChainDamageKind — which log signature identified a hole in the chain
+// database, from the `kind` of chain_damage events.
+export type ChainDamageKind =
+  | 'node_rejects_canonical_block'
+  | 'ledger_point_missing'
+  | 'wallet_chain_discontinuity';
+
+// ChainDamageEvent — a chain_damage event as the watchdog writes it.
+// last_good_slot is set only for wallet_chain_discontinuity.
+export type ChainDamageEvent = {
+  event: 'chain_damage';
+  kind: ChainDamageKind;
+  slot: number | null;
+  last_good_slot: number | null;
+};
+
+// ChainDamage — the polled form of a chain_damage event. detectedAt is the
+// ISO time the main process received the event.
+export type ChainDamage = {
+  kind: ChainDamageKind;
+  slot: number | null;
+  lastGoodSlot: number | null;
+  detectedAt: string;
+};
+
 // MithrilProgress — from mithril_progress events
 export interface MithrilProgress {
   filesDownloaded: number;
@@ -77,6 +120,7 @@ export type LoadingPhase =
   | 'chain-storage-setup'
   | 'bootstrap-decision'
   | 'mithril-syncing'
+  | 'chain-damaged'
   | 'node-starting'
   | 'ready'
   | 'error'

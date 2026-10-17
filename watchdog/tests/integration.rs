@@ -6,12 +6,14 @@
 // Run with:
 //   cargo test --test integration
 //
-// These are intentionally excluded from the nix build because they spawn real
-// OS processes and require a pre-built watchdog binary.  The mock binaries
-// use raw fd 3 for the shutdown pipe, so the tests are Unix-only.
+// The nix `watchdog-test` check runs them: perSystem/watchdog.nix includes
+// this directory in the source and cargo builds the watchdog and mock binaries
+// before the tests spawn them.  The mock binaries use raw fd 3 for the
+// shutdown pipe, so the tests are Unix-only.
 #![cfg(unix)]
 
 use serde_json::{Value, json};
+use std::collections::BTreeMap;
 use std::io::{BufRead, BufReader, Write};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
@@ -76,12 +78,68 @@ impl TempDir {
         std::fs::create_dir_all(&chain).unwrap();
         std::fs::write(chain.join("protocolMagicId"), b"1").unwrap();
     }
+
+    /// Create `<state_dir>/chain/` holding a whole database: chunks 0 to 3, a
+    /// volatile block file, a ledger snapshot, an LSM directory and the
+    /// `clean` and `protocolMagicId` markers. Returns its path.
+    fn populate_database(&self) -> PathBuf {
+        let chain = self.0.join("chain");
+        let immutable = chain.join("immutable");
+        std::fs::create_dir_all(&immutable).unwrap();
+        for n in 0..4 {
+            for ext in ["chunk", "primary", "secondary"] {
+                std::fs::write(
+                    immutable.join(format!("{n:05}.{ext}")),
+                    format!("local {n}"),
+                )
+                .unwrap();
+            }
+        }
+        std::fs::create_dir_all(chain.join("volatile")).unwrap();
+        std::fs::write(chain.join("volatile").join("blocks-0.dat"), b"blocks").unwrap();
+        std::fs::create_dir_all(chain.join("ledger").join("999")).unwrap();
+        std::fs::write(chain.join("ledger").join("999").join("state"), b"ledger").unwrap();
+        std::fs::create_dir_all(chain.join("lsm")).unwrap();
+        std::fs::write(chain.join("lsm").join("table"), b"lsm").unwrap();
+        std::fs::write(chain.join("clean"), b"").unwrap();
+        std::fs::write(chain.join("protocolMagicId"), b"1").unwrap();
+        chain
+    }
+}
+
+/// Every entry under `dir` with the contents of each file, to show that a
+/// directory was left exactly as it was.
+fn tree(dir: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
+    let mut entries = BTreeMap::new();
+    let mut stack = vec![dir.to_path_buf()];
+    while let Some(d) = stack.pop() {
+        for entry in std::fs::read_dir(&d).unwrap() {
+            let path = entry.unwrap().path();
+            let rel = path.strip_prefix(dir).unwrap().to_path_buf();
+            if path.is_dir() {
+                entries.insert(rel, None);
+                stack.push(path);
+            } else {
+                entries.insert(rel, Some(std::fs::read(&path).unwrap()));
+            }
+        }
+    }
+    entries
 }
 
 impl Drop for TempDir {
     fn drop(&mut self) {
         let _ = std::fs::remove_dir_all(&self.0);
     }
+}
+
+/// The `--download-dir` mock-mithril-client was given, from the arguments it
+/// recorded in `args_file`.
+fn download_dir(args_file: &Path) -> PathBuf {
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(args_file).unwrap()).unwrap();
+    let i = args.iter().position(|a| a == "--download-dir").unwrap();
+    PathBuf::from(&args[i + 1])
 }
 
 fn event_reader(stdout: std::process::ChildStdout) -> mpsc::Receiver<Value> {
@@ -446,7 +504,8 @@ fn empty_chain_mithril_bootstrap() {
 
     send(&mut stdin, json!({"cmd": "start_mithril"}));
 
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], false, "{preparing}");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
     expect(&rx, "mithril_progress"); // at least one progress event
     expect_with(&rx, "mithril_status", |v| v["phase"] == "converting");
@@ -457,10 +516,12 @@ fn empty_chain_mithril_bootstrap() {
     expect(&rx, "node_started");
     // completed fires right after node_started (before wallet is up) so the
     // renderer can leave the Mithril overlay and show normal sync progress.
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], false, "{completed}");
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
+    assert!(!dir.path().join("chain-rebuild.json").exists());
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -523,7 +584,8 @@ fn partial_sync_while_running() {
     // Wallet stops, then node shuts down gracefully.
     expect(&rx, "node_shutdown_ms");
 
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], false, "{preparing}");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
     expect(&rx, "mithril_progress");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
@@ -531,7 +593,8 @@ fn partial_sync_while_running() {
 
     // Comes back up.
     expect(&rx, "node_started");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], false, "{completed}");
     expect(&rx, "node_socket_ready");
     expect(&rx, "wallet_started");
     expect(&rx, "wallet_ready");
@@ -586,6 +649,14 @@ fn partial_sync_replaces_incomplete_highest_local_chunk() {
         args.iter().any(|a| a == "--allow-override"),
         "args: {args:?}"
     );
+    // The download is staged in the chain directory, on the chain's volume,
+    // and nothing of it is left once installed.
+    let chain = dir.path().join("chain");
+    assert_eq!(
+        download_dir(&args_file),
+        chain.join("mithril-staging").join("download")
+    );
+    assert!(!chain.join("mithril-staging").exists());
 
     let read = |n: u64, ext: &str| {
         std::fs::read_to_string(immutable.join(format!("{n:05}.{ext}"))).unwrap()
@@ -912,6 +983,163 @@ fn startup_log_phase_parsing() {
     let _ = child.wait();
 }
 
+// ── Tests: chain damage detection ─────────────────────────────────────────────
+
+fn fixture(name: &str) -> String {
+    format!("{}/tests/fixtures/{name}", env!("CARGO_MANIFEST_DIR"))
+}
+
+/// Run a full start with `env` set, wait for the wallet, and return the
+/// `chain_damage` events seen up to a short while after the stack is ready.
+fn chain_damage_events(label: &str, env: &[(&str, &str)]) -> Vec<Value> {
+    let dir = TempDir::new(label);
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, env);
+
+    let mut seen = Vec::new();
+    let mut ready = false;
+    let deadline = std::time::Instant::now() + Duration::from_secs(15);
+    while let Some(left) = deadline.checked_duration_since(std::time::Instant::now()) {
+        let Ok(v) = rx.recv_timeout(left) else { break };
+        if v["event"] == "chain_damage" {
+            seen.push(v);
+        } else if v["event"] == "wallet_ready" {
+            ready = true;
+        }
+        if ready {
+            // The mock prints its lines before the node or wallet is ready,
+            // so anything they cause has arrived by now.
+            std::thread::sleep(Duration::from_millis(300));
+            while let Ok(v) = rx.try_recv() {
+                if v["event"] == "chain_damage" {
+                    seen.push(v);
+                }
+            }
+            break;
+        }
+    }
+    assert!(ready, "wallet never became ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+    seen
+}
+
+/// The missing ledger point line on node output produces one event.
+#[test]
+fn chain_damage_ledger_point_missing() {
+    let lines = fixture("node_ledger_point_missing.txt");
+    let events = chain_damage_events("damage-ledger", &[("MOCK_NODE_EXTRA_LINES", &lines)]);
+    assert_eq!(events.len(), 1, "{events:?}");
+    assert_eq!(events[0]["kind"], "ledger_point_missing");
+    assert_eq!(events[0]["slot"], 200_102_375u64);
+    assert!(events[0]["last_good_slot"].is_null());
+}
+
+/// Rejections of one slot from three distinct peers produce one event.
+#[test]
+fn chain_damage_block_rejected_by_three_peers() {
+    let lines = fixture("node_bad_inputs_three_peers.txt");
+    let events = chain_damage_events("damage-three-peers", &[("MOCK_NODE_EXTRA_LINES", &lines)]);
+    assert_eq!(events.len(), 1, "{events:?}");
+    assert_eq!(events[0]["kind"], "node_rejects_canonical_block");
+    assert_eq!(events[0]["slot"], 200_361_988u64);
+}
+
+/// Repeated rejections from a single peer produce no event.
+#[test]
+fn chain_damage_block_rejected_by_one_peer() {
+    let lines = fixture("node_bad_inputs_one_peer.txt");
+    let events = chain_damage_events("damage-one-peer", &[("MOCK_NODE_EXTRA_LINES", &lines)]);
+    assert!(events.is_empty(), "{events:?}");
+}
+
+/// The wallet discontinuity line, logged once per wallet worker, produces one
+/// event carrying both edges of the gap.
+#[test]
+fn chain_damage_wallet_discontinuity() {
+    let lines = fixture("wallet_discontinuity.txt");
+    let events = chain_damage_events("damage-wallet", &[("MOCK_WALLET_EXTRA_LINES", &lines)]);
+    assert_eq!(events.len(), 1, "{events:?}");
+    assert_eq!(events[0]["kind"], "wallet_chain_discontinuity");
+    assert_eq!(events[0]["slot"], 200_102_408u64);
+    assert_eq!(events[0]["last_good_slot"], 200_080_892u64);
+}
+
+/// Node signatures on wallet output and the wallet signature on node output
+/// are not recognised.
+#[test]
+fn chain_damage_signatures_are_read_from_their_own_process() {
+    let node_lines = fixture("wallet_discontinuity.txt");
+    let wallet_lines = fixture("node_ledger_point_missing.txt");
+    let events = chain_damage_events(
+        "damage-crossed",
+        &[
+            ("MOCK_NODE_EXTRA_LINES", &node_lines),
+            ("MOCK_WALLET_EXTRA_LINES", &wallet_lines),
+        ],
+    );
+    assert!(events.is_empty(), "{events:?}");
+}
+
+/// cardano-node writes the missing ledger point error without a newline and
+/// then hangs before the ledger database is open. The event arrives while the
+/// node is still running, and when the rest of the line arrives it is logged
+/// once, whole, and reported no more.
+#[test]
+fn chain_damage_from_an_unterminated_line_while_the_node_hangs() {
+    let dir = TempDir::new("damage-unterminated");
+    dir.populate_chain();
+    let cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET);
+    let finish = PathBuf::from(format!("{}.finish", cfg.socket_path.display()));
+    let (cfg, _port) = cfg.build();
+    let line = fixture("node_ledger_point_missing.txt");
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_UNTERMINATED_LINE", line.as_str())]);
+
+    expect(&rx, "node_started");
+    let damage = loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .expect("no chain_damage while the node hangs");
+        assert_ne!(v["event"], "node_exited", "{v}");
+        if v["event"] == "chain_damage" {
+            break v;
+        }
+    };
+    assert_eq!(damage["kind"], "ledger_point_missing");
+    assert_eq!(damage["slot"], 200_102_375u64);
+
+    std::fs::write(&finish, b"").unwrap();
+    let node_log = dir.path().join("logs").join("node.log");
+    let deadline = std::time::Instant::now() + Duration::from_secs(15);
+    loop {
+        let log = std::fs::read_to_string(&node_log).unwrap_or_default();
+        if log.contains("open ledgerdbNode configuration: NodeConfiguration {...}\n") {
+            assert_eq!(
+                log.matches("Critical invariant violation").count(),
+                1,
+                "{log}"
+            );
+            break;
+        }
+        assert!(
+            std::time::Instant::now() < deadline,
+            "the line was not logged: {log}"
+        );
+        std::thread::sleep(Duration::from_millis(50));
+    }
+    expect_none_of(&rx, &["chain_damage", "node_exited"], 1000);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── Tests: non-UTF-8 child output ─────────────────────────────────────────────
 
 /// Poll until the mock has recorded `done`, then return its write results.
@@ -1175,6 +1403,34 @@ fn probe_mithril_not_needed() {
     let _ = child.wait();
 }
 
+/// A Mithril sync that finds the local chain close enough to the certified
+/// tip changes nothing and starts the node again. Once the node has started,
+/// it ends with the `completed` status, as an installed sync does, so the
+/// renderer leaves the Mithril view.
+#[test]
+fn mithril_not_needed_ends_with_completed_once_the_node_restarts() {
+    let dir = TempDir::new("not-needed-completes");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .mithril_bin(env!("CARGO_BIN_EXE_mock-mithril-client-not-needed"))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    expect(&rx, "mithril_not_needed");
+    expect(&rx, "node_started");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], false, "{completed}");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── T6: wipe_chain: true ─────────────────────────────────────────────────────
 
 /// start_mithril with wipe_chain:true → chain dir deleted, full bootstrap install, restart.
@@ -1197,19 +1453,830 @@ fn wipe_chain_full_bootstrap() {
     );
 
     expect(&rx, "node_shutdown_ms");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], true, "{preparing}");
+    let downloading = expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    assert_eq!(downloading["rebuild"], true, "{downloading}");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "installing");
     expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
 
     expect(&rx, "node_started");
-    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], true, "{completed}");
     expect(&rx, "wallet_ready");
 
     assert!(
         chain_path.exists(),
         "chain dir should be recreated after install"
     );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild asks the aggregator before it deletes anything. When the probe
+/// fails, PROBE_FAILED is reported, every chain file is left as it was, and
+/// the node starts again on the chain it had.
+#[test]
+fn wipe_chain_probe_failure_keeps_the_chain() {
+    let dir = TempDir::new("wipe-probe-fail");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_MITHRIL_PROBE_FAIL", "1"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    expect(&rx, "node_shutdown_ms");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PROBE_FAILED");
+    assert_eq!(err["rebuild"], true, "{err}");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    assert_eq!(tree(&chain), before);
+    assert!(!args_file.exists(), "a download was started");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild replaces the chain however close it is to the certified tip:
+/// the local chunks neither make the sync "not needed" nor narrow the
+/// download to a partial range.
+#[test]
+fn wipe_chain_downloads_everything_when_the_chain_is_level() {
+    let dir = TempDir::new("wipe-level");
+    let chain = dir.populate_database();
+    let args_file = dir.path().join("mithril-download-args.json");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_CERTIFIED_IMMUTABLE", "3"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    assert!(
+        !args.iter().any(|a| a == "--start" || a == "--end"),
+        "args: {args:?}"
+    );
+    assert!(!chain.join("immutable").join("00000.chunk").exists());
+    assert!(!chain.join("ledger").join("999").exists());
+    assert_eq!(
+        std::fs::read(chain.join("protocolMagicId")).unwrap(),
+        b"764824073"
+    );
+    assert_eq!(
+        download_dir(&args_file),
+        chain.join("mithril-staging").join("download")
+    );
+    assert!(!chain.join("mithril-staging").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild checks, before it deletes anything, that the chain's volume can
+/// hold the snapshot once the old chain is gone. When it cannot, it reports
+/// INSUFFICIENT_SPACE, leaves every chain file as it was, downloads nothing,
+/// and the node starts again on the chain it had.
+#[test]
+fn wipe_chain_refuses_a_snapshot_that_does_not_fit_and_deletes_nothing() {
+    let dir = TempDir::new("wipe-no-space");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_SNAPSHOT_SIZE", "1000000000000000000"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    expect(&rx, "node_shutdown_ms");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "INSUFFICIENT_SPACE", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    assert_eq!(tree(&chain), before);
+    assert!(!args_file.exists(), "a download was started");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild that cannot record itself in the state directory refuses with
+/// REBUILD_MARKER_FAILED before it deletes or downloads anything, and the
+/// node starts again on the chain it had.
+#[test]
+fn a_rebuild_that_cannot_record_itself_changes_nothing() {
+    let dir = TempDir::new("rebuild-record-fail");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+    // The record is written through a temporary file. A link from there into
+    // a directory that does not exist makes that write fail, while the record
+    // itself reads as absent.
+    std::os::unix::fs::symlink(
+        dir.path().join("missing").join("record"),
+        dir.path().join("chain-rebuild.json.tmp"),
+    )
+    .unwrap();
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap())],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "REBUILD_MARKER_FAILED", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    assert_eq!(tree(&chain), before);
+    assert!(!args_file.exists(), "a download was started");
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Records, in the state directory, a rebuild of `chain` that began deleting
+/// it in an earlier session and installed nothing.
+fn write_rebuild_marker(dir: &TempDir, chain: &Path) {
+    std::fs::write(
+        dir.path().join("chain-rebuild.json"),
+        json!({ "chain_path": chain.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+}
+
+/// A rebuild that did not finish in an earlier session leaves database entries
+/// the node would replay from genesis. At the next start the watchdog reports
+/// no chain with the rebuild pending and starts no node. The Mithril sync the
+/// bootstrap decision then sends is a rebuild: it deletes what is left,
+/// installs a full bootstrap, and ends the pending rebuild.
+#[test]
+fn restart_with_a_pending_rebuild_starts_no_node_and_rebuilds() {
+    let dir = TempDir::new("rebuild-pending");
+    let chain = dir.populate_database();
+    write_rebuild_marker(&dir, &chain);
+    let args_file = dir.path().join("mithril-download-args.json");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap())],
+    );
+
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false);
+    assert_eq!(status["rebuild_pending"], true);
+    expect_none_of(&rx, &["node_started"], 1500);
+    assert!(chain.join("immutable").join("00000.chunk").exists());
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], true, "{preparing}");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], true, "{completed}");
+
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    assert!(
+        !args.iter().any(|a| a == "--start" || a == "--end"),
+        "args: {args:?}"
+    );
+    assert!(!chain.join("immutable").join("00000.chunk").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Errors of a sync that continues a rebuild left pending in an earlier
+/// session are reported as a rebuild's, so a retry repeats the rebuild.
+#[test]
+fn errors_of_a_pending_rebuild_are_marked_as_a_rebuild() {
+    let dir = TempDir::new("rebuild-pending-error");
+    let chain = dir.populate_database();
+    write_rebuild_marker(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_PROBE_FAIL", "1")]);
+
+    assert_eq!(expect(&rx, "chain_status")["rebuild_pending"], true);
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PROBE_FAILED");
+    assert_eq!(err["rebuild"], true, "{err}");
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false);
+    assert_eq!(status["rebuild_pending"], true);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A pending rebuild of another chain directory does not stop the node from
+/// starting on this one.
+#[test]
+fn a_pending_rebuild_of_another_directory_is_ignored() {
+    let dir = TempDir::new("rebuild-elsewhere");
+    dir.populate_database();
+    write_rebuild_marker(&dir, &dir.path().join("elsewhere").join("chain"));
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], true);
+    assert_eq!(status["rebuild_pending"], false);
+    expect(&rx, "node_started");
+    assert!(dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Staging left in the chain directory by an interrupted sync, and in the
+/// state directory by an earlier version, is deleted at startup. It is not a
+/// chain: a chain directory holding nothing else reports no chain.
+#[test]
+fn stale_staging_is_deleted_at_startup_and_is_not_a_chain() {
+    let dir = TempDir::new("stale-staging");
+    let staging = dir.path().join("chain").join("mithril-staging");
+    let staged_db = staging.join("download").join("db");
+    std::fs::create_dir_all(staged_db.join("immutable")).unwrap();
+    std::fs::write(staged_db.join("immutable").join("00000.chunk"), b"half").unwrap();
+    std::fs::write(staged_db.join("protocolMagicId"), b"1").unwrap();
+    let legacy = dir.path().join("mithril-partial-sync").join("download");
+    std::fs::create_dir_all(&legacy).unwrap();
+
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert!(!staging.exists(), "staging in the chain directory was kept");
+    assert!(
+        !dir.path().join("mithril-partial-sync").exists(),
+        "staging in the state directory was kept"
+    );
+    assert!(dir.path().join("chain").is_dir());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild whose download fails after the old chain was deleted does not
+/// start the node on the empty directory, which would sync from genesis. It
+/// reports no chain and waits for the user's choice, as on first run, and
+/// starts the node only when the user chooses to sync from genesis.
+#[test]
+fn wipe_chain_download_failure_starts_no_node() {
+    let dir = TempDir::new("wipe-dl-fail");
+    let chain = dir.populate_database();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .mithril_bin(MOCK_MITHRIL_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    expect(&rx, "node_shutdown_ms");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED");
+    assert_eq!(err["rebuild"], true, "{err}");
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false);
+    assert_eq!(status["rebuild_pending"], true);
+    expect_none_of(&rx, &["node_started"], 1500);
+    assert!(!chain.join("immutable").exists());
+    assert!(!chain.join("protocolMagicId").exists());
+    assert!(dir.path().join("chain-rebuild.json").exists());
+
+    // A plain Mithril sync chosen in the wait is still a rebuild, and its
+    // failure says so.
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["rebuild"], true, "{err}");
+    assert_eq!(expect(&rx, "chain_status")["rebuild_pending"], true);
+
+    // Choosing to sync from genesis ends the rebuild.
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Cancelling a rebuild's download after the old chain was deleted does the
+/// same: no chain is reported and no node is started.
+#[test]
+fn wipe_chain_cancel_starts_no_node() {
+    let dir = TempDir::new("wipe-cancel");
+    let chain = dir.populate_database();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_DOWNLOAD_HANG", "1")]);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "downloading");
+    send(&mut stdin, json!({"cmd": "cancel_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "cancelled");
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    expect_none_of(&rx, &["node_started"], 1500);
+    assert!(!chain.join("immutable").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A partial sync that fails deletes nothing, so the node is started again on
+/// the chain it had, as before.
+#[test]
+fn partial_sync_download_failure_restarts_the_node() {
+    let dir = TempDir::new("partial-dl-fail");
+    let chain = dir.populate_database();
+    let before = tree(&chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .mithril_bin(MOCK_MITHRIL_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "start_mithril", "force": true}));
+
+    expect(&rx, "node_shutdown_ms");
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED");
+    assert_eq!(err["rebuild"], false, "{err}");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+    assert_eq!(tree(&chain), before);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// When a rebuild cannot delete all of the old chain, it reports WIPE_FAILED
+/// and starts no node on what is left. The Mithril sync chosen next, as the
+/// bootstrap decision sends it, is a rebuild as well: it deletes the rest and
+/// installs a full bootstrap instead of a partial sync of the remains.
+#[test]
+fn wipe_chain_delete_failure_starts_no_node_and_rebuilds_next() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = TempDir::new("wipe-delete-fail");
+    let chain = dir.populate_database();
+    let immutable = chain.join("immutable");
+    let set_mode = |mode: u32| {
+        std::fs::set_permissions(&immutable, std::fs::Permissions::from_mode(mode)).unwrap();
+    };
+    // Chunks in a directory without write permission cannot be deleted.
+    set_mode(0o555);
+    if std::fs::File::create(immutable.join("probe")).is_ok() {
+        // Permissions are not enforced for this user, so no delete can fail.
+        let _ = std::fs::remove_file(immutable.join("probe"));
+        set_mode(0o755);
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let args_file = dir.path().join("mithril-download-args.json");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap())],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    set_mode(0o755);
+    assert_eq!(err["code"], "WIPE_FAILED", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    expect_none_of(&rx, &["node_started"], 1500);
+    assert!(!args_file.exists(), "a download was started");
+    // clean is deleted first, so a node would not trust what is left.
+    assert!(!chain.join("clean").exists());
+    assert!(immutable.join("00000.chunk").exists());
+    // The rebuild is recorded, so a restart now would not start the node.
+    assert!(dir.path().join("chain-rebuild.json").exists());
+
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    // The plain sync was a rebuild, and completed says so.
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], true, "{completed}");
+
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    assert!(
+        !args.iter().any(|a| a == "--start" || a == "--end"),
+        "args: {args:?}"
+    );
+    assert!(!immutable.join("00000.chunk").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Whether this user is refused writes to a directory without write
+/// permission. When it is not, no install into one can fail.
+fn directory_permissions_enforced(dir: &Path) -> bool {
+    use std::os::unix::fs::PermissionsExt;
+    let probe = dir.join("permission-probe");
+    std::fs::create_dir_all(&probe).unwrap();
+    std::fs::set_permissions(&probe, std::fs::Permissions::from_mode(0o555)).unwrap();
+    let enforced = std::fs::File::create(probe.join("file")).is_err();
+    std::fs::set_permissions(&probe, std::fs::Permissions::from_mode(0o755)).unwrap();
+    std::fs::remove_dir_all(&probe).unwrap();
+    enforced
+}
+
+/// Makes the chain directory writable again after the mock converter made it
+/// read-only.
+fn make_writable(dir: &Path) {
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(dir, std::fs::Permissions::from_mode(0o755)).unwrap();
+}
+
+/// Environment for a sync whose install cannot move the converted database
+/// into `chain`: the mock converter makes it read-only, once, as it exits.
+fn install_fails_into(dir: &TempDir, chain: &Path) -> Vec<(&'static str, String)> {
+    let trigger = dir.path().join("readonly-trigger");
+    std::fs::write(&trigger, b"").unwrap();
+    vec![
+        (
+            "MOCK_CONVERTER_READONLY_TRIGGER",
+            trigger.to_str().unwrap().to_string(),
+        ),
+        (
+            "MOCK_CONVERTER_READONLY_DIR",
+            chain.to_str().unwrap().to_string(),
+        ),
+    ]
+}
+
+/// Borrows an owned environment as `spawn_watchdog_with_env` takes it.
+fn env_refs<'a>(env: &'a [(&'static str, String)]) -> Vec<(&'static str, &'a str)> {
+    env.iter().map(|(k, v)| (*k, v.as_str())).collect()
+}
+
+/// A rebuild whose install fails after the old chain was deleted keeps its
+/// record and waits strictly: no chain_status, and start_node starts no node
+/// on what the install left. A Retry that rebuilds installs the database,
+/// starts the node and ends the record.
+#[test]
+fn a_rebuild_whose_install_fails_waits_for_a_mithril_install() {
+    let dir = TempDir::new("rebuild-install-fail");
+    if !directory_permissions_enforced(dir.path()) {
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let chain = dir.populate_database();
+    let env = install_fails_into(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env_refs(&env));
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    let err = expect(&rx, "mithril_error");
+    make_writable(&chain);
+    assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
+    assert_eq!(err["rebuild"], true, "{err}");
+    assert!(dir.path().join("chain-rebuild.json").exists());
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect_none_of(&rx, &["node_started", "chain_status"], 1500);
+
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(
+        std::fs::read(chain.join("protocolMagicId")).unwrap(),
+        b"764824073"
+    );
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A first Mithril bootstrap whose install fails waits the same way: the
+/// wait for the user's choice does not offer a sync from genesis on what the
+/// install left, and only a Mithril sync that installs a database ends it.
+#[test]
+fn a_first_bootstrap_whose_install_fails_waits_for_a_mithril_install() {
+    let dir = TempDir::new("bootstrap-install-fail");
+    if !directory_permissions_enforced(dir.path()) {
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let chain = dir.path().join("chain");
+    let env = install_fails_into(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env_refs(&env));
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    make_writable(&chain);
+    assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
+    assert_eq!(err["rebuild"], false, "{err}");
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect_none_of(&rx, &["node_started", "chain_status"], 1500);
+
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    assert!(chain.join("protocolMagicId").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A new chain location sent with a rebuild right behind it, as the renderer
+/// does once both are confirmed, stops the running node and rebuilds in the
+/// new location. The rebuild is held while the node stops and replaces the
+/// restart, so no node starts on the new location before it, and the old
+/// location is left as it was.
+#[test]
+fn a_rebuild_sent_with_a_new_location_starts_no_node_there_first() {
+    let dir = TempDir::new("rebuild-new-location");
+    let old_chain = dir.populate_database();
+    let before = tree(&old_chain);
+    let folder = dir.path().join("picked");
+    std::fs::create_dir_all(&folder).unwrap();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .expect("timeout waiting for the rebuild to start");
+        assert_ne!(v["event"], "node_started", "a node started first: {v}");
+        if v["event"] == "mithril_status" && v["phase"] == "preparing" {
+            assert_eq!(v["rebuild"], true, "{v}");
+            break;
+        }
+    }
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    assert_eq!(
+        std::fs::read(folder.join("chain").join("protocolMagicId")).unwrap(),
+        b"764824073"
+    );
+    assert_eq!(tree(&old_chain), before);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A first bootstrap records its install before it moves the download into
+/// the chain directory. When the install stops part-way, the record makes the
+/// next start report no chain with a rebuild pending and start no node,
+/// although the entries moved so far look like a database.
+#[test]
+fn a_first_bootstrap_cut_short_in_its_install_is_not_a_chain_at_the_next_start() {
+    let dir = TempDir::new("bootstrap-cut-short");
+    if !directory_permissions_enforced(dir.path()) {
+        eprintln!("skipped: directory permissions are not enforced for this user");
+        return;
+    }
+    let chain = dir.path().join("chain");
+    let env = install_fails_into(&dir, &chain);
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &env_refs(&env));
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&rx, "mithril_error");
+    make_writable(&chain);
+    assert_eq!(err["code"], "INSTALL_FAILED", "{err}");
+    let record: Value = serde_json::from_str(
+        &std::fs::read_to_string(dir.path().join("chain-rebuild.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(record["chain_path"], chain.to_str().unwrap());
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    // What an install that stopped after moving some entries leaves: chunks
+    // and the network marker, without the clean marker that is moved last.
+    std::fs::create_dir_all(chain.join("immutable")).unwrap();
+    std::fs::write(chain.join("immutable").join("00000.chunk"), b"half").unwrap();
+    std::fs::write(chain.join("protocolMagicId"), b"764824073").unwrap();
+
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false, "{status}");
+    assert_eq!(status["rebuild_pending"], true, "{status}");
+    expect_none_of(&rx, &["node_started"], 1500);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// When the rebuild sent with a new location is refused before it changes
+/// anything, no node starts in the new location, which holds no chain: a node
+/// there would sync from genesis. The watchdog reports no chain and waits, and
+/// starts the node only when the user chooses to sync from genesis.
+#[test]
+fn a_refused_rebuild_in_a_new_location_starts_no_node_there() {
+    let dir = TempDir::new("refused-new-location");
+    dir.populate_database();
+    let folder = dir.path().join("picked");
+    std::fs::create_dir_all(&folder).unwrap();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_PROBE_FAIL", "1")]);
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PROBE_FAILED", "{err}");
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], false, "{status}");
+    assert_eq!(status["rebuild_pending"], false, "{status}");
+    expect_none_of(&rx, &["node_started"], 1500);
+    assert!(!folder.join("chain").join("protocolMagicId").exists());
+
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect(&rx, "node_started");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A Mithril sync requested while the node stops for a rebuild does not turn
+/// the rebuild into a partial sync over the old chain: the requests are
+/// merged, and the rebuild deletes the old chain and downloads everything.
+#[test]
+fn held_plain_sync_does_not_cancel_a_rebuild() {
+    let dir = TempDir::new("held-rebuild");
+    let chain = dir.populate_database();
+    let args_file = dir.path().join("mithril-download-args.json");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril().build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_NODE_EXIT_DELAY_MS", "1500"),
+            ("MOCK_CERTIFIED_IMMUTABLE", "30"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_with(&rx, "backend_stop_progress", |v| {
+        v["stage"] == "stopping_node"
+    });
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&args_file).unwrap()).unwrap();
+    assert!(
+        !args.iter().any(|a| a == "--start" || a == "--end"),
+        "args: {args:?}"
+    );
+    assert!(!chain.join("immutable").join("00000.chunk").exists());
+    assert!(!chain.join("ledger").join("999").exists());
 
     stop(&mut stdin);
     expect(&rx, "stopped");
@@ -1589,7 +2656,8 @@ fn cancel_before_cutover_gate() {
     // pipeline is now inside the CUTOVER_GATE_MS blocking recv window.
     let sentinel = dir
         .path()
-        .join("mithril-partial-sync")
+        .join("chain")
+        .join("mithril-staging")
         .join("download")
         .join("db")
         .join("lsm")

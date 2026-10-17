@@ -8,6 +8,8 @@ import { MITHRIL_DECISION_HEADING_ID } from './accessibilityIds';
 import styles from './MithrilDecisionView.scss';
 
 interface Props {
+  // A rebuild removed the old blockchain data and did not finish
+  chainRemoved?: boolean;
   onAccept(): void;
   onDecline(): void;
 }
@@ -17,7 +19,7 @@ interface Context {
 }
 
 function MithrilDecisionView(
-  { onAccept, onDecline }: Props,
+  { chainRemoved, onAccept, onDecline }: Props,
   { intl }: Context
 ) {
   return (
@@ -26,6 +28,9 @@ function MithrilDecisionView(
         <h1 id={MITHRIL_DECISION_HEADING_ID}>
           {intl.formatMessage(messages.title)}
         </h1>
+        {chainRemoved && (
+          <p>{intl.formatMessage(messages.decisionChainRemovedNotice)}</p>
+        )}
         <p>{intl.formatMessage(messages.description)}</p>
       </div>
 
