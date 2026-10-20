@@ -1,7 +1,7 @@
 import os from 'os';
 import path from 'path';
 import net from 'net';
-import { app, dialog, BrowserWindow, screen, shell } from 'electron';
+import { app, dialog, BrowserWindow, screen } from 'electron';
 import type { Event } from 'electron';
 import EventEmitter from 'events';
 import { WalletSettingsStateEnum } from '../common/ipc/api';

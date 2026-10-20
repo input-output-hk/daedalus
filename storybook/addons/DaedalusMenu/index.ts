@@ -1,4 +1,4 @@
-import addons from '@storybook/addons';
+import { addons } from '@storybook/manager-api';
 
 const channel = addons.getChannel();
 export const setInitialState = (initialState: Record<string, any>) =>

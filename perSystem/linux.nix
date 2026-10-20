@@ -767,8 +767,8 @@
       archInstallerDev = genClusters (cluster: mkArchInstaller ((commonPackagingArgs cluster) // {zstdLevel = 1;}));
 
       nixosPackage = genClusters (cluster: let
-        nixosElectronBin = "${pkgs.electron}/libexec/electron/electron";
-        helperSha256 = builtins.hashFile "sha256" "${pkgs.electron}/libexec/electron/chrome-sandbox";
+        nixosElectronBin = "${common.electron}/libexec/electron/electron";
+        helperSha256 = builtins.hashFile "sha256" "${common.electron}/libexec/electron/chrome-sandbox";
         manifest = pkgs.writeText "sandbox-identity-${cluster}.json" (builtins.toJSON {
           schemaVersion = 2;
           packageFamily = "nix";
@@ -865,7 +865,7 @@
             # Bundle manifest and chrome-sandbox so the activation script always copies
             # from the same derivation that built the package (no version skew).
             cp ${manifest} $out/share/sandbox-identity.json
-            cp ${pkgs.electron}/libexec/electron/chrome-sandbox $out/share/chrome-sandbox
+            cp ${common.electron}/libexec/electron/chrome-sandbox $out/share/chrome-sandbox
           '';
         });
 

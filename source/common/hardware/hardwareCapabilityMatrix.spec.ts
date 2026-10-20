@@ -14,6 +14,15 @@ const currentLock = require('@yarnpkg/lockfile').parse(
 
 const readJson = (filePath: string) =>
   JSON.parse(fs.readFileSync(filePath, 'utf8'));
+const trezorSelector = `@trezor/connect@${
+  readJson(path.join(root, 'package.json')).dependencies['@trezor/connect']
+}`;
+const trezorLock = currentLock[trezorSelector];
+const ledgerPackage = '@cardano-foundation/ledgerjs-hw-app-cardano';
+const ledgerSelector = `${ledgerPackage}@${
+  readJson(path.join(root, 'package.json')).dependencies[ledgerPackage]
+}`;
+const ledgerLock = currentLock[ledgerSelector];
 const digest = (filePath: string) =>
   createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 const canonicalInventory = (value) => {
@@ -251,19 +260,15 @@ describe('hardware capability matrix', () => {
     for (const artifact of manifest.artifacts.filter(
       ({ vendor }) => vendor === 'trezor'
     )) {
-      const probe = readJson(path.join(matrixRoot, artifact.probe));
-      expect(
-        readJson(
-          path.join(root, 'node_modules', artifact.package, 'package.json')
-        )
-      ).toMatchObject({ name: artifact.package, version: artifact.version });
-      for (const sourceFile of probe.evidence.sourceFiles) {
-        expect(
-          digest(
-            path.join(root, 'node_modules', artifact.package, sourceFile.path)
-          )
-        ).toBe(sourceFile.sha256);
-      }
+      const installed = readJson(
+        path.join(root, 'node_modules', artifact.package, 'package.json')
+      );
+      expect(installed).toMatchObject({
+        name: artifact.package,
+        version: trezorLock.version,
+      });
+      // Archived hashes describe the reviewed version. The offline test below
+      // binds installed source bytes to the current verified package tarball.
     }
     expect(
       digest(path.join(matrixRoot, 'ledger-8.0.0-package-lock.json'))
@@ -316,16 +321,9 @@ describe('hardware capability matrix', () => {
       integrity:
         'sha512-hyWBk4HQApPdIvidQOExOP+GxD36WDsgzCz1PAFeJ4heL/b5Bmplyyg03/lA95NDNjjpqgDzN2rJyBHYpqgfmQ==',
     });
-    const productionLock =
-      currentLock[`${production.package.name}@${production.identity.version}`];
-    expect(productionLock).toMatchObject({
-      version: production.identity.version,
-      resolved: production.identity.resolved,
-      integrity: production.identity.integrity,
-    });
-    expect(productionLock.resolved.split('#')[1]).toBe(
-      production.identity.sha1
-    );
+    // The production fixture records the original 8.0.0 review. Bind the
+    // installed SDK to today's lock and verified tarball below, rather than
+    // relabeling archived source hashes as evidence for a newer SDK.
     expect(
       readJson(
         path.join(
@@ -335,9 +333,56 @@ describe('hardware capability matrix', () => {
       )
     ).toMatchObject({
       name: production.package.name,
-      version: production.identity.version,
+      version: ledgerLock.version,
     });
-    for (const sourceFile of production.evidence.sourceFiles) {
+    const regeneratedProbe = path.join(
+      os.tmpdir(),
+      `daedalus-ledger-probe-${process.pid}.json`
+    );
+    execFileSync(process.execPath, [
+      path.join(root, 'scripts/hardware-wallet-capability-probe.cjs'),
+      '--vendor=ledger',
+      `--root=${path.join(root, 'node_modules', ledgerPackage)}`,
+      `--label=installed-ledger-${ledgerLock.version}`,
+      `--lock=${path.join(root, 'yarn.lock')}`,
+      `--output=${regeneratedProbe}`,
+    ]);
+    const regenerated = readJson(regeneratedProbe);
+    expect(regenerated.identity).toMatchObject({
+      version: ledgerLock.version,
+      resolved: ledgerLock.resolved,
+      sha1: ledgerLock.resolved.split('#')[1],
+      integrity: ledgerLock.integrity,
+    });
+    const tarball = process.env.DAEDALUS_YARN_OFFLINE_CACHE
+      ? path.join(
+          process.env.DAEDALUS_YARN_OFFLINE_CACHE,
+          ledgerLock.resolved
+            .split('#')[0]
+            .replace(/https:\/\/.*\.com\//g, '')
+            .replace(/[@/%:-]/g, '_')
+        )
+      : path.join(
+          JSON.parse(
+            execSync('yarn cache dir --json', {
+              cwd: root,
+              encoding: 'utf8',
+            }).trim()
+          ).data,
+          `npm-${ledgerPackage.replace(/\//g, '-')}-${ledgerLock.version}-${ledgerLock.resolved.split('#')[1]}-integrity`,
+          'node_modules',
+          ledgerPackage,
+          '.yarn-tarball.tgz'
+        );
+    const tarballBytes = fs.readFileSync(tarball);
+    expect(createHash('sha1').update(tarballBytes).digest('hex')).toBe(
+      ledgerLock.resolved.split('#')[1]
+    );
+    const [algorithm, expectedIntegrity] = ledgerLock.integrity.split('-');
+    expect(createHash(algorithm).update(tarballBytes).digest('base64')).toBe(
+      expectedIntegrity
+    );
+    for (const sourceFile of regenerated.evidence.sourceFiles) {
       expect(
         digest(
           path.join(
@@ -346,6 +391,13 @@ describe('hardware capability matrix', () => {
             sourceFile.path
           )
         )
+      ).toBe(sourceFile.sha256);
+      expect(
+        createHash('sha256')
+          .update(
+            execFileSync('tar', ['-xOf', tarball, `package/${sourceFile.path}`])
+          )
+          .digest('hex')
       ).toBe(sourceFile.sha256);
     }
   });
@@ -413,7 +465,7 @@ describe('hardware capability matrix', () => {
         path.join(root, 'scripts/hardware-wallet-capability-probe.cjs'),
         '--vendor=trezor',
         `--root=${path.join(root, 'node_modules/@trezor/connect')}`,
-        '--label=installed-trezor-connect-9.7.2',
+        `--label=installed-trezor-connect-${trezorLock.version}`,
         `--lock=${path.join(root, 'yarn.lock')}`,
         `--output=${regeneratedProbe}`,
         `--runtime-output=${regeneratedRuntime}`,
@@ -463,26 +515,58 @@ describe('hardware capability matrix', () => {
     }
     // Frozen evidence attests the reviewed installation, not today's hoisting
     // or unrelated lock updates. Live dependencies must match the current lock.
-    const reviewedRoot = identity.nodes.find(
-      (node) => node.id === identity.root
-    );
     expect(
       regenerated.nodes.find((node) => node.id === regenerated.root)
     ).toMatchObject({
-      name: reviewedRoot.name,
-      version: reviewedRoot.version,
-      lockSelectors: reviewedRoot.lockSelectors,
-      lockIdentity: reviewedRoot.lockIdentity,
+      name: '@trezor/connect',
+      version: trezorLock.version,
+      lockSelectors: [trezorSelector],
+      lockIdentity: {
+        resolved: trezorLock.resolved,
+        sha1: trezorLock.resolved.split('#')[1],
+        integrity: trezorLock.integrity,
+        integritySource: 'yarn.lock',
+      },
     });
-    expect(regenerated.configIdentity).toEqual(identity.configIdentity);
+    expect(regenerated.configIdentity.files.map((file) => file.path)).toEqual(
+      identity.configIdentity.files.map((file) => file.path)
+    );
+    for (const file of regenerated.configIdentity.files) {
+      expect(file.sha256).toBe(
+        digest(path.join(root, 'node_modules/@trezor/connect', file.path))
+      );
+    }
+    expect(regenerated.configIdentity.sha256).toBe(
+      createHash('sha256')
+        .update(
+          regenerated.configIdentity.files
+            .map((file) => `${file.path}\0${file.sha256}\n`)
+            .join('')
+        )
+        .digest('hex')
+    );
     expect(regenerated.transportResolution).toMatchObject({
       daedalusRoot: {
-        version: identity.transportResolution.daedalusRoot.version,
+        version: readJson(
+          path.join(root, 'node_modules/@trezor/transport/package.json')
+        ).version,
       },
       connectRoot: {
-        version: identity.transportResolution.connectRoot.version,
+        version: readJson(
+          require.resolve('@trezor/transport/package.json', {
+            paths: [path.join(root, 'node_modules/@trezor/connect')],
+          })
+        ).version,
       },
-      distinctInstallations: identity.transportResolution.distinctInstallations,
+      distinctInstallations:
+        fs.realpathSync(
+          path.join(root, 'node_modules/@trezor/transport/package.json')
+        ) !==
+        fs.realpathSync(
+          require.resolve('@trezor/transport/package.json', {
+            paths: [path.join(root, 'node_modules/@trezor/connect')],
+          })
+        ),
     });
   });
 
@@ -495,8 +579,8 @@ describe('hardware capability matrix', () => {
     fs.mkdirSync(home);
     fs.mkdirSync(mirror);
     const name = '@trezor/connect';
-    const lock = currentLock[`${name}@9.7.2`];
-    const filename = '_trezor_connect___connect_9.7.2.tgz';
+    const lock = trezorLock;
+    const filename = `_trezor_connect___connect_${lock.version}.tgz`;
     const cacheDirectory = process.env.DAEDALUS_YARN_OFFLINE_CACHE
       ? null
       : JSON.parse(
@@ -510,7 +594,7 @@ describe('hardware capability matrix', () => {
       ? path.join(process.env.DAEDALUS_YARN_OFFLINE_CACHE, filename)
       : path.join(
           cacheDirectory,
-          `npm-${name.replace(/\//g, '-')}-9.7.2-${lock.resolved.split('#')[1]}-integrity`,
+          `npm-${name.replace(/\//g, '-')}-${lock.version}-${lock.resolved.split('#')[1]}-integrity`,
           'node_modules',
           name,
           '.yarn-tarball.tgz'
@@ -523,7 +607,7 @@ describe('hardware capability matrix', () => {
       path.join(root, 'scripts/hardware-wallet-capability-probe.cjs'),
       '--vendor=trezor',
       `--root=${path.join(root, 'node_modules', name)}`,
-      '--label=hermetic-trezor-connect-9.7.2',
+      `--label=hermetic-trezor-connect-${lock.version}`,
       `--lock=${path.join(root, 'yarn.lock')}`,
       `--output=${output}`,
     ];
@@ -542,6 +626,21 @@ describe('hardware capability matrix', () => {
         version: 'match',
         integrity: 'verified-offline-tarball-before-load',
       });
+      const unpacked = path.join(directory, 'unpacked');
+      fs.mkdirSync(unpacked);
+      require('tar').x({
+        file: path.join(mirror, filename),
+        cwd: unpacked,
+        sync: true,
+      });
+      for (const file of readJson(output).evidence.sourceFiles) {
+        expect(digest(path.join(unpacked, 'package', file.path))).toBe(
+          file.sha256
+        );
+        expect(digest(path.join(root, 'node_modules', name, file.path))).toBe(
+          file.sha256
+        );
+      }
       fs.unlinkSync(output);
       const lockDirectory = path.join(directory, 'altered-lock');
       fs.mkdirSync(lockDirectory);

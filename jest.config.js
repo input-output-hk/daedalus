@@ -205,7 +205,7 @@ module.exports = {
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    'node_modules/(?!react-polymorph)',
+    'node_modules/(?!react-polymorph|@faker-js/faker)',
     // "\\.pnp\\.[^\\/]+$"
   ],
 

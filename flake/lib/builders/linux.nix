@@ -43,10 +43,14 @@
 
           yarn install --ignore-scripts
 
-          # Remove all prebuilt *.node files extracted from `.tgz`s
-          find . -type f -name '*.node' -not -path '*/@swc*/*' -exec rm -vf {} ';'
+          # Keep N-API build tools; rebuild application native modules below.
+          find . -type f -name '*.node' \
+            -not -path '*/@swc*/*' \
+            -not -path '*/@formatjs/cli-native-*/*' \
+            -exec rm -vf {} ';'
 
           patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+          yarn patch-package --error-on-fail
 
           # And now, with correct shebangs, run the install scripts:
           find node_modules -type f -name 'package.json' | sort | xargs grep -F '"install":' | cut -d: -f1 | while IFS= read -r dependency ; do
@@ -232,15 +236,17 @@
           ( cd $out/lib/electron && mv libffmpeg.so lib/libffmpeg.so && ln -s lib/libffmpeg.so libffmpeg.so ; )
           ( cd $out/lib/electron/lib && ln -s libatk-bridge-2.0.so libatk-bridge.so ; )
 
-          # nixpkgs-25.11: libgtk-3 now depends on libtinysparql, which has libsqlite3.so
-          # as a full-path DT_NEEDED that was nuked to eeee... Replace with a soname so
-          # the bundled sqlite copy can satisfy it.
+          # libtinysparql's absolute SQLite DT_NEEDED path is scrubbed by
+          # nix-bundle-exe. Resolve the actual entry so nixpkgs updates cannot
+          # leave a stale version-specific replacement behind.
           cp ${pkgs.sqlite.out}/lib/libsqlite3.so.0 $out/lib/electron/lib/
           for f in $out/lib/electron/lib/libtinysparql-3.0.so*; do
-            patchelf --replace-needed \
-              '/nix/store/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-sqlite-3.50.4/lib/libsqlite3.so' \
-              'libsqlite3.so.0' \
-              "$f"
+            while IFS= read -r needed; do
+              case "$needed" in
+                /nix/store/*-sqlite-*/lib/libsqlite3.so)
+                  patchelf --replace-needed "$needed" libsqlite3.so.0 "$f" ;;
+              esac
+            done < <(patchelf --print-needed "$f")
           done
 
           patchelf --set-rpath '$ORIGIN/lib:$ORIGIN' $out/lib/electron/electron
@@ -495,10 +501,10 @@
           cp -r ${tarball}/. $out/dat${tarball}/
         '');
 
-      # The pinned binary Electron derivation exposes the runtime under libexec.
+      # Use the explicitly selected source-built Electron from nixpkgs.
       electronBin = pkgs.runCommand "electron-${electronVersion}" {} ''
         mkdir -p $out/lib $out/bin
-        cp -r ${pkgs.electron}/libexec/electron $out/lib/
+        cp -r ${common.electron.unwrapped}/libexec/electron $out/lib/
         ln -sf $out/lib/electron/electron $out/bin/electron
       '';
 

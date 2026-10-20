@@ -5,6 +5,9 @@ const pick = require('lodash/pick');
 // https://formatjs.io/docs/tooling/cli#extraction
 module.exports = {
   format(messages) {
+    if (Object.keys(messages).length === 0) {
+      throw new Error('No translations extracted; check the native FormatJS binding.');
+    }
     const messagesIncludingIds = Object.entries(messages).map(([id, data]) => ({ id, ...data }));
     return values(groupBy(messagesIncludingIds, 'file')).map((fileDescriptor) => ({
       // required format for react-intl-translations-manager

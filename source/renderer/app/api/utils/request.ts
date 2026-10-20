@@ -119,9 +119,10 @@ function typedRequest<Response>(
           'Content-Type': 'application/octet-stream',
         };
       } else {
-        requestBody = JSONBigInt.stringify(rawBodyParams);
+        const jsonBody: string = JSONBigInt.stringify(rawBodyParams);
+        requestBody = jsonBody;
         options.headers = {
-          'Content-Length': getContentLength(requestBody),
+          'Content-Length': getContentLength(jsonBody),
           'Content-Type': 'application/json',
         };
       }

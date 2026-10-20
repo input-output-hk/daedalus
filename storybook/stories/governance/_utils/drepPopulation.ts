@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import {
   createSeededRandom,
   drawDRepCohort,
@@ -153,8 +153,8 @@ function createNameSource(seed: number) {
       // organisations standing behind a person.
       return distinct(
         dealt % 3 === 0
-          ? `${faker.company.companyName()} DRep`
-          : faker.name.findName()
+          ? `${faker.company.name()} DRep`
+          : faker.person.fullName()
       );
     },
   };

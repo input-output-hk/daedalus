@@ -285,6 +285,7 @@ export const bindPaymentChange = async (
   const remaining = new Set(exact.transaction.outputs.map((_, index) => index));
   for (const output of outputs) {
     if (
+      typeof output.amount.quantity !== 'number' ||
       !Number.isSafeInteger(output.amount.quantity) ||
       output.amount.quantity < 0
     )

@@ -51,8 +51,8 @@
             git
             python3
             jq
-            nodePackages.node-gyp
-            nodePackages.node-pre-gyp
+            node-gyp
+            node-pre-gyp
             gnumake
             pkg-config
             libusb1
@@ -100,6 +100,7 @@
           }
 
           ${lib.optionalString pkgs.stdenv.isLinux ''
+            export LD_LIBRARY_PATH="${lib.makeLibraryPath [pkgs.systemd]}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
             export XDG_DATA_HOME=$HOME/.local/share
             # Prevent GTK from loading system ibus/input method modules that require newer glibc
             export GTK_IM_MODULE=xim

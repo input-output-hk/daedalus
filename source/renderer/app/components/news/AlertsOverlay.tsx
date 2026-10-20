@@ -126,7 +126,7 @@ class AlertsOverlay extends Component<Props, State> {
             role="presentation"
             onClick={this.contentClickHandler.bind(this)}
           >
-            <ReactMarkdown escapeHtml={false} source={content} />
+            <ReactMarkdown source={content} />
           </div>
 
           {this.renderAction(action)}

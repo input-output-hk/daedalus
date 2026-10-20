@@ -1,0 +1,4502 @@
+[
+  {
+    "number": 675,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 3.0.0, <= 4.7.9",
+    "fixed": "4.7.10",
+    "ghsa": "GHSA-p8wg-vrv2-v86f",
+    "summary": "Handlebars: JavaScript Injection via Own Property Check Bypass",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/675"
+  },
+  {
+    "number": 674,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 4.0.0, <= 4.7.9",
+    "fixed": "4.7.10",
+    "ghsa": "GHSA-xw65-4hp5-5hc7",
+    "summary": "Handlebars: JavaScript Injection via Unsafe Inline Embedding of Precompiled Templates",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/674"
+  },
+  {
+    "number": 673,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 4.0.0, <= 4.7.9",
+    "fixed": "4.7.10",
+    "ghsa": "GHSA-8r5x-fm3f-whwj",
+    "summary": "Handlebars: JavaScript Injection via AST Type Confusion in compile (bypass of CVE-2026-33937)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/673"
+  },
+  {
+    "number": 671,
+    "package": {
+      "ecosystem": "npm",
+      "name": "pbkdf2"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 3.1.6",
+    "fixed": "3.1.7",
+    "ghsa": "GHSA-477h-4r7f-fvrx",
+    "summary": "pbkdf2 rehashes long passwords on every iteration, enabling denial of service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/671"
+  },
+  {
+    "number": 670,
+    "package": {
+      "ecosystem": "npm",
+      "name": "sprintf-js"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 1.1.3",
+    "fixed": null,
+    "ghsa": "GHSA-hp3w-g68c-fv3c",
+    "summary": "sprintf-js vulnerable to denial of service through unbounded precision specifiers",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/670"
+  },
+  {
+    "number": 669,
+    "package": {
+      "ecosystem": "npm",
+      "name": "source-map-js"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.2.2",
+    "fixed": "1.2.2",
+    "ghsa": "GHSA-68fv-2mgg-jv7q",
+    "summary": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/669"
+  },
+  {
+    "number": 668,
+    "package": {
+      "ecosystem": "npm",
+      "name": "proxy-addr"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 1.1.0, < 2.0.8",
+    "fixed": "2.0.8",
+    "ghsa": "GHSA-jqcg-44mw-7w3h",
+    "summary": "proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/668"
+  },
+  {
+    "number": 667,
+    "package": {
+      "ecosystem": "npm",
+      "name": "joi"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 17.13.8",
+    "fixed": "17.13.8",
+    "ghsa": "GHSA-wr44-6hxh-3jwq",
+    "summary": "joi messages compilation allows prototype replacement through __proto__ error codes",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/667"
+  },
+  {
+    "number": 666,
+    "package": {
+      "ecosystem": "npm",
+      "name": "compression"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 1.8.2",
+    "fixed": "1.8.2",
+    "ghsa": "GHSA-vc2v-76pw-4v95",
+    "summary": "compression vulnerable to Denial of Service via memory leak on premature response close",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/666"
+  },
+  {
+    "number": 665,
+    "package": {
+      "ecosystem": "npm",
+      "name": "postcss-selector-parser"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 7.1.6",
+    "fixed": "7.1.6",
+    "ghsa": "GHSA-rj75-hqrm-r3gf",
+    "summary": "PostCSS: Quadratic complexity in flat selector parsing allows CPU exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/665"
+  },
+  {
+    "number": 664,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@vue/server-renderer"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 3.5.42",
+    "fixed": "3.5.42",
+    "ghsa": "GHSA-g2v6-rqmx-r4w6",
+    "summary": "@vue/server-renderer: XSS via missing CR in attribute-name blacklist",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/664"
+  },
+  {
+    "number": 663,
+    "package": {
+      "ecosystem": "rust",
+      "name": "rustls"
+    },
+    "manifest": "release-cli/Cargo.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 0.23.13, < 0.23.45",
+    "fixed": "0.23.45",
+    "ghsa": "GHSA-2mjx-qc3c-rqvc",
+    "summary": "Rustls: TLS 1.3 handshake messages incorrectly accepted across encryption level boundaries",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/663"
+  },
+  {
+    "number": 661,
+    "package": {
+      "ecosystem": "rust",
+      "name": "aws-smithy-json"
+    },
+    "manifest": "release-cli/Cargo.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 0.62.6",
+    "fixed": "0.62.7",
+    "ghsa": "GHSA-8ffr-xgwf-xj56",
+    "summary": "aws-smithy-json: Uncontrolled recursion in the aws-smithy-json unknown-key skip path allows unauthenticated remote denial of service in smithy-rs generated servers",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/661"
+  },
+  {
+    "number": 660,
+    "package": {
+      "ecosystem": "npm",
+      "name": "http-cache-semantics"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 4.2.0",
+    "fixed": null,
+    "ghsa": "GHSA-ch52-4w7c-c8xp",
+    "summary": "http-cache-semantics max-stale handling can disclose cross-user cached responses",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/660"
+  },
+  {
+    "number": 658,
+    "package": {
+      "ecosystem": "npm",
+      "name": "node-forge"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 1.4.0",
+    "fixed": null,
+    "ghsa": "GHSA-86w9-cpqp-85rv",
+    "summary": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/658"
+  },
+  {
+    "number": 657,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-j8rh-479h-cp32",
+    "summary": "Axios: Header Injection via Inherited headers After Minimal Interceptor",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/657"
+  },
+  {
+    "number": 656,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.12.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-4hqw-qxg8-jxx2",
+    "summary": "Axios: Fetch Adapter Header Injection via Inherited FormData getHeaders",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/656"
+  },
+  {
+    "number": 655,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.15.2, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-m8m8-qj5v-23w3",
+    "summary": "Axios: Node HTTP adapter prototype-pollution gadget allows request socket hijack via inherited createConnection",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/655"
+  },
+  {
+    "number": 654,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.15.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-44g4-m2mj-wpvx",
+    "summary": "Axios: CIDR-form NO_PROXY entries are ignored, causing proxy exclusion bypass for internal IP ranges",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/654"
+  },
+  {
+    "number": 653,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.7.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-vh66-26gq-q6x8",
+    "summary": "Axios: Prototype pollution gadget in fetch adapter can alter outbound requests",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/653"
+  },
+  {
+    "number": 652,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-9fr6-4gfg-395g",
+    "summary": "Axios: Prototype-Pollution Gadget in the Default Instance Allows Inherited Object.prototype.method to Override HTTP Method",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/652"
+  },
+  {
+    "number": 651,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.15.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-mghh-pgcx-3jjj",
+    "summary": "Axios: ReDoS (O(N²)) in shouldBypassProxy host normalization, reachable via untrusted redirect Location",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/651"
+  },
+  {
+    "number": 650,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.15.1, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-x97p-jq2g-jp4f",
+    "summary": "Axios: Prototype Pollution Gadget in axios toFormData Options",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/650"
+  },
+  {
+    "number": 649,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.13.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-3pq3-5fj3-cg6v",
+    "summary": "Axios: HTTP/2 adapter bypasses configured DNS lookup and proxy controls",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/649"
+  },
+  {
+    "number": 648,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.13.0, < 1.20.0",
+    "fixed": "1.20.0",
+    "ghsa": "GHSA-542g-h47m-68v8",
+    "summary": "Axios: Denial of Service via Unhandled 'error' Event in HTTP/2 ClientHttp2Session Initialization",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/648"
+  },
+  {
+    "number": 646,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 1.1.21",
+    "fixed": "1.1.21",
+    "ghsa": "GHSA-q2hr-2g5m-vwhr",
+    "summary": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/646"
+  },
+  {
+    "number": 645,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 1.1.20",
+    "fixed": "1.1.20",
+    "ghsa": "GHSA-qhr7-859c-m2p7",
+    "summary": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/645"
+  },
+  {
+    "number": 644,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 1.1.19",
+    "fixed": "1.1.19",
+    "ghsa": "GHSA-6j4f-fj2g-mc7p",
+    "summary": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/644"
+  },
+  {
+    "number": 643,
+    "package": {
+      "ecosystem": "npm",
+      "name": "undici"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 6.28.1",
+    "fixed": "6.28.1",
+    "ghsa": "GHSA-r53p-7pc4-xj5r",
+    "summary": "undici vulnerable to downstream response splitting via retry interceptor",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/643"
+  },
+  {
+    "number": 640,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 41.10.4",
+    "fixed": "41.10.4",
+    "ghsa": "GHSA-hq2x-r82h-9wj4",
+    "summary": "Electron drops inherited HTML sandbox restrictions for popups opened through OpenURLFromTab",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/640"
+  },
+  {
+    "number": 639,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 41.10.6",
+    "fixed": "41.10.6",
+    "ghsa": "GHSA-gr2m-v5gq-v685",
+    "summary": "Electron: Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/639"
+  },
+  {
+    "number": 638,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 41.10.6",
+    "fixed": "41.10.6",
+    "ghsa": "GHSA-j84w-jfhq-vhvj",
+    "summary": "Electron: File and HTTP protocol handlers allow cross-origin reads without corsEnabled",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/638"
+  },
+  {
+    "number": 637,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 41.10.6",
+    "fixed": "41.10.6",
+    "ghsa": "GHSA-9qh4-3jw8-366w",
+    "summary": "Electron: <webview> can enable Node.js integration in Web Workers despite embedder restrictions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/637"
+  },
+  {
+    "number": 636,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack-dev-middleware"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 7.4.5",
+    "fixed": "7.4.6",
+    "ghsa": "GHSA-g84c-rxfj-3j2c",
+    "summary": "webpack-dev-middleware vulnerable to Path Traversal via non-slash-terminated publicPath",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/636"
+  },
+  {
+    "number": 635,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 2.0.0, < 2.1.7",
+    "fixed": "2.1.7",
+    "ghsa": "GHSA-q2hr-2g5m-vwhr",
+    "summary": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/635"
+  },
+  {
+    "number": 634,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.6",
+    "fixed": "2.1.6",
+    "ghsa": "GHSA-qhr7-859c-m2p7",
+    "summary": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/634"
+  },
+  {
+    "number": 633,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.5",
+    "fixed": "2.1.5",
+    "ghsa": "GHSA-6j4f-fj2g-mc7p",
+    "summary": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/633"
+  },
+  {
+    "number": 632,
+    "package": {
+      "ecosystem": "npm",
+      "name": "moment"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 2.29.2, < 2.31.0",
+    "fixed": "2.31.0",
+    "ghsa": "GHSA-4p3w-j4w9-5jqw",
+    "summary": "moment vulnerable to Path Traversal via crafted non-string locale name",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/632"
+  },
+  {
+    "number": 630,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ip-address"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 10.7.0",
+    "fixed": "10.7.1",
+    "ghsa": "GHSA-j6r3-76f7-8jcv",
+    "summary": "ip-address: isInSubnet() and isHostInSubnet() compare addresses of different families as if they shared an address space, allowing an allowlist check to admit an address outside its range",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/630"
+  },
+  {
+    "number": 629,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ip-address"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 10.7.0",
+    "fixed": "10.7.1",
+    "ghsa": "GHSA-h3mg-xc3c-68pw",
+    "summary": "ip-address: Address6 builds a parse diagnostic proportional to the input with no length bound, allowing a single long string to stall or crash the process",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/629"
+  },
+  {
+    "number": 628,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.1.7",
+    "fixed": "3.1.7",
+    "ghsa": "GHSA-qw65-cvwx-89v3",
+    "summary": "fast-uri vulnerable to authority injection via an unvalidated port in serialize",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/628"
+  },
+  {
+    "number": 627,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 40.0.0-alpha.1, < 41.10.5",
+    "fixed": "41.10.5",
+    "ghsa": "GHSA-vv43-5jgx-7qv8",
+    "summary": "Electron: Local race condition in Squirrel.Mac update installation on macOS",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/627"
+  },
+  {
+    "number": 624,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ip-address"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 10.5.0",
+    "fixed": "10.5.1",
+    "ghsa": "GHSA-rpw4-54j3-4h4q",
+    "summary": "ip-address: Address6.isLinkLocal() recognizes fe80::/64 rather than fe80::/10, allowing SSRF and trust-boundary bypass to on-link hosts",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/624"
+  },
+  {
+    "number": 623,
+    "package": {
+      "ecosystem": "npm",
+      "name": "immutable"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0-rc.1, < 4.3.9",
+    "fixed": "4.3.9",
+    "ghsa": "GHSA-v56q-mh7h-f735",
+    "summary": "Immutable.js `List` 32-bit trie overflow → unrecoverable DoS",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/623"
+  },
+  {
+    "number": 622,
+    "package": {
+      "ecosystem": "npm",
+      "name": "baseline-browser-mapping"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 2.0.0, < 2.11.0",
+    "fixed": "2.11.0",
+    "ghsa": "GHSA-w5vr-8v7q-w6rv",
+    "summary": "baseline-browser-mapping process termination on invalid input causes denial of service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/622"
+  },
+  {
+    "number": 621,
+    "package": {
+      "ecosystem": "npm",
+      "name": "joi"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": ">= 17.2.0, < 17.13.6",
+    "fixed": "17.13.6",
+    "ghsa": "GHSA-6w3j-5fw6-r9vr",
+    "summary": "joi: Prototype pollution via a `__proto__` language key in custom messages",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/621"
+  },
+  {
+    "number": 620,
+    "package": {
+      "ecosystem": "npm",
+      "name": "joi"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": ">= 16.0.0, < 17.13.5",
+    "fixed": "17.13.5",
+    "ghsa": "GHSA-gg4h-3hg2-grpc",
+    "summary": "joi: object().rename() with a template target can set the validated object's prototype",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/620"
+  },
+  {
+    "number": 619,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.15.2",
+    "fixed": "3.15.2",
+    "ghsa": "GHSA-2883-xcg3-v3hh",
+    "summary": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/619"
+  },
+  {
+    "number": 618,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0, < 4.3.2",
+    "fixed": "4.3.2",
+    "ghsa": "GHSA-2883-xcg3-v3hh",
+    "summary": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/618"
+  },
+  {
+    "number": 617,
+    "package": {
+      "ecosystem": "npm",
+      "name": "extract-zip"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 2.0.1",
+    "fixed": null,
+    "ghsa": "GHSA-7pqw-9j4j-h8q3",
+    "summary": "extract-zip allows arbitrary file writes through symlink archive entries",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/617"
+  },
+  {
+    "number": 615,
+    "package": {
+      "ecosystem": "npm",
+      "name": "nanoid"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 3.3.12",
+    "fixed": "3.3.12",
+    "ghsa": "GHSA-xwg4-73v4-xw9w",
+    "summary": "nanoid: Integer Overflow or Wraparound",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/615"
+  },
+  {
+    "number": 614,
+    "package": {
+      "ecosystem": "npm",
+      "name": "browserslist"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 4.28.6",
+    "fixed": "4.28.7",
+    "ghsa": "GHSA-73wf-gq98-2v4g",
+    "summary": "Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/614"
+  },
+  {
+    "number": 612,
+    "package": {
+      "ecosystem": "npm",
+      "name": "immutable"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0-beta.1, < 4.3.9",
+    "fixed": "4.3.9",
+    "ghsa": "GHSA-xvcm-6775-5m9r",
+    "summary": "Immutable: Hash-collision algorithmic complexity denial of service in Immutable.Map/Set",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/612"
+  },
+  {
+    "number": 611,
+    "package": {
+      "ecosystem": "npm",
+      "name": "toml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 4.2.0",
+    "fixed": "4.2.0",
+    "ghsa": "GHSA-82x6-q7mm-w9cf",
+    "summary": "toml-node: Uncontrolled Recursion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/611"
+  },
+  {
+    "number": 610,
+    "package": {
+      "ecosystem": "npm",
+      "name": "toml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 4.1.2",
+    "fixed": "4.1.2",
+    "ghsa": "GHSA-v5mp-jgw5-2x6j",
+    "summary": "toml-node: Prototype Pollution Leads to `Object.prototype` Corruption via `__proto__` Key-Path Desynchronization",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/610"
+  },
+  {
+    "number": 609,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.1.6",
+    "fixed": "3.1.6",
+    "ghsa": "GHSA-jqff-g426-hqxp",
+    "summary": "fast-uri vulnerable to host confusion via percent-encoded scheme normalization",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/609"
+  },
+  {
+    "number": 608,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.1.6",
+    "fixed": "3.1.6",
+    "ghsa": "GHSA-f65p-4m7j-42xc",
+    "summary": "fast-uri vulnerable to server-side request forgery via malformed IPv6 normalization",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/608"
+  },
+  {
+    "number": 607,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@faker-js/faker"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 10.4.0",
+    "fixed": "10.5.0",
+    "ghsa": "GHSA-qxc2-j82w-r537",
+    "summary": "Faker: helpers.fake exploitable into arbritary code execution",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/607"
+  },
+  {
+    "number": 605,
+    "package": {
+      "ecosystem": "npm",
+      "name": "qs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 6.14.2, <= 6.15.3",
+    "fixed": "6.16.0",
+    "ghsa": "GHSA-x5fp-wj9c-mxmx",
+    "summary": "qs array-limit bypass via bracket-key comma parsing",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/605"
+  },
+  {
+    "number": 604,
+    "package": {
+      "ecosystem": "npm",
+      "name": "qs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 2.2.5, < 6.16.0",
+    "fixed": "6.16.0",
+    "ghsa": "GHSA-4mjr-xmp4-gh2g",
+    "summary": "qs: Denial of Service via Attacker Controlled isBuffer",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/604"
+  },
+  {
+    "number": 603,
+    "package": {
+      "ecosystem": "npm",
+      "name": "postcss-selector-parser"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 6.1.0, < 6.1.3",
+    "fixed": "6.1.3",
+    "ghsa": "GHSA-w9m9-85wc-3x92",
+    "summary": "postcss-selector-parser allows denial of service through uncontrolled AST recursion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/603"
+  },
+  {
+    "number": 602,
+    "package": {
+      "ecosystem": "npm",
+      "name": "decode-uri-component"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 0.4.2",
+    "fixed": "0.5.0",
+    "ghsa": "GHSA-vcc3-ghjq-m6fr",
+    "summary": "decode-uri-component: Denial of service via exponential decoding of malformed percent-encoded input",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/602"
+  },
+  {
+    "number": 601,
+    "package": {
+      "ecosystem": "npm",
+      "name": "pacote"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 11.2.7, < 21.5.1",
+    "fixed": "21.5.1",
+    "ghsa": "GHSA-w4pp-8pjf-rmxw",
+    "summary": "pacote is vulnerable to Denial of Service (DoS) via the addGitSha function",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/601"
+  },
+  {
+    "number": 599,
+    "package": {
+      "ecosystem": "npm",
+      "name": "nanoid"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 3.3.18",
+    "fixed": "3.3.18",
+    "ghsa": "GHSA-2v37-7h3g-55p8",
+    "summary": "nanoid: custom generators can loop indefinitely when size is zero",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/599"
+  },
+  {
+    "number": 598,
+    "package": {
+      "ecosystem": "npm",
+      "name": "extract-zip"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 2.0.1",
+    "fixed": null,
+    "ghsa": "GHSA-jmr9-qjv8-65gv",
+    "summary": "extract-zip unvalidated symlink path traversal",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/598"
+  },
+  {
+    "number": 597,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, <= 3.1.1",
+    "fixed": "3.1.2",
+    "ghsa": "GHSA-v39h-62p7-jpjc",
+    "summary": "fast-uri vulnerable to host confusion via percent-encoded authority delimiters",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/597"
+  },
+  {
+    "number": 596,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, <= 3.1.0",
+    "fixed": "3.1.1",
+    "ghsa": "GHSA-q3j6-qgpj-74h6",
+    "summary": "fast-uri vulnerable to path traversal via percent-encoded dot segments",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/596"
+  },
+  {
+    "number": 593,
+    "package": {
+      "ecosystem": "npm",
+      "name": "nanoid"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 3.3.16",
+    "fixed": "3.3.16",
+    "ghsa": "GHSA-28wg-ghj8-5hjv",
+    "summary": "nanoid: non-secure generators can loop indefinitely with negative size",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/593"
+  },
+  {
+    "number": 590,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0, < 4.3.1",
+    "fixed": "4.3.1",
+    "ghsa": "GHSA-5p4m-2wfm-xmqj",
+    "summary": "JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/590"
+  },
+  {
+    "number": 589,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.15.1",
+    "fixed": "3.15.1",
+    "ghsa": "GHSA-5p4m-2wfm-xmqj",
+    "summary": "JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/589"
+  },
+  {
+    "number": 588,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 40.0.0-alpha.1, < 41.10.3",
+    "fixed": "41.10.3",
+    "ghsa": "GHSA-9f4c-93c8-jc8g",
+    "summary": "Electron: Sandboxed iframe can bypass the allow-popups restriction via the OpenURL navigation path",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/588"
+  },
+  {
+    "number": 586,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 41.0.0-alpha.1, < 41.9.1",
+    "fixed": "41.9.1",
+    "ghsa": "GHSA-r4w5-6pfg-jxp5",
+    "summary": "Electron: ProtocolResponse.url reuses the default session cache instead of the registering session",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/586"
+  },
+  {
+    "number": 584,
+    "package": {
+      "ecosystem": "npm",
+      "name": "electron"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 41.0.0-alpha.1, < 41.4.0",
+    "fixed": "41.4.0",
+    "ghsa": "GHSA-v3j7-r9gq-3gjw",
+    "summary": "Electron: Custom protocol with supportFetchAPI but not corsEnabled allows cross-origin reads",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/584"
+  },
+  {
+    "number": 582,
+    "package": {
+      "ecosystem": "npm",
+      "name": "undici"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 6.28.0",
+    "fixed": "6.28.0",
+    "ghsa": "GHSA-m8rv-5g2x-5cg5",
+    "summary": "undici vulnerable to CRLF Injection via blob-like body 'type' property",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/582"
+  },
+  {
+    "number": 581,
+    "package": {
+      "ecosystem": "npm",
+      "name": "undici"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 6.28.0",
+    "fixed": "6.28.0",
+    "ghsa": "GHSA-v3r7-h72x-cjcm",
+    "summary": "undici vulnerable to cookie attribute injection via unsanitized domain and unparsed setCookie fields",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/581"
+  },
+  {
+    "number": 580,
+    "package": {
+      "ecosystem": "npm",
+      "name": "undici"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 6.28.0",
+    "fixed": "6.28.0",
+    "ghsa": "GHSA-8xcm-r25x-g524",
+    "summary": "undici vulnerable to downstream response desynchronization via retry interceptor",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/580"
+  },
+  {
+    "number": 579,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.1.5",
+    "fixed": "3.1.5",
+    "ghsa": "GHSA-7p8r-x3mc-p8w7",
+    "summary": "fast-uri vulnerable to host confusion via backslash authority introducer",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/579"
+  },
+  {
+    "number": 578,
+    "package": {
+      "ecosystem": "npm",
+      "name": "postcss"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 8.5.22",
+    "fixed": "8.5.23",
+    "ghsa": "GHSA-fxqj-rqcc-2cmp",
+    "summary": "PostCSS: incomplete fix of GHSA-6g55-p6wh-862q — attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is unset",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/578"
+  },
+  {
+    "number": 577,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ip-address"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 10.3.0",
+    "fixed": "10.3.1",
+    "ghsa": "GHSA-mwp4-54f8-5fhr",
+    "summary": "ip-address: Address4 decodes leading-zero octets as decimal while resolvers decode them as octal, allowing SSRF and trust-boundary bypass",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/577"
+  },
+  {
+    "number": 576,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 1.1.18",
+    "fixed": "1.1.18",
+    "ghsa": "GHSA-rgw5-rvv9-x895",
+    "summary": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/576"
+  },
+  {
+    "number": 575,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.4",
+    "fixed": "2.1.4",
+    "ghsa": "GHSA-rgw5-rvv9-x895",
+    "summary": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/575"
+  },
+  {
+    "number": 574,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 1.1.17",
+    "fixed": "1.1.17",
+    "ghsa": "GHSA-mh99-v99m-4gvg",
+    "summary": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/574"
+  },
+  {
+    "number": 573,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.3",
+    "fixed": "2.1.3",
+    "ghsa": "GHSA-mh99-v99m-4gvg",
+    "summary": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/573"
+  },
+  {
+    "number": 572,
+    "package": {
+      "ecosystem": "npm",
+      "name": "d3-color"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.0.2, < 3.1.0",
+    "fixed": "3.1.0",
+    "ghsa": "GHSA-36jr-mh4h-2g58",
+    "summary": "d3-color vulnerable to ReDoS",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/572"
+  },
+  {
+    "number": 569,
+    "package": {
+      "ecosystem": "npm",
+      "name": "postcss"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 8.5.17",
+    "fixed": "8.5.18",
+    "ghsa": "GHSA-r28c-9q8g-f849",
+    "summary": "PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/569"
+  },
+  {
+    "number": 568,
+    "package": {
+      "ecosystem": "npm",
+      "name": "postcss"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 8.5.11",
+    "fixed": "8.5.12",
+    "ghsa": "GHSA-6g55-p6wh-862q",
+    "summary": "PostCSS: Arbitrary file read and information disclosure via attacker-controlled sourceMappingURL in CSS comments",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/568"
+  },
+  {
+    "number": 566,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.20",
+    "fixed": "7.5.21",
+    "ghsa": "GHSA-r292-9mhp-454m",
+    "summary": "node-tar: Uncontrolled recursion in mapHas/filesFilter allows uncatchable stack-overflow DoS via crafted long-path tar with member selection",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/566"
+  },
+  {
+    "number": 565,
+    "package": {
+      "ecosystem": "rust",
+      "name": "quinn-proto"
+    },
+    "manifest": "release-cli/Cargo.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 0.1.0, < 0.11.15",
+    "fixed": "0.11.15",
+    "ghsa": "GHSA-4w2j-m93h-cj5j",
+    "summary": "Quinn: Remote memory exhaustion in quinn-proto from unbounded out-of-order stream reassembly",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/565"
+  },
+  {
+    "number": 564,
+    "package": {
+      "ecosystem": "npm",
+      "name": "react-router"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 6.0.0, < 7.18.0",
+    "fixed": "7.18.0",
+    "ghsa": "GHSA-wrjc-x8rr-h8h6",
+    "summary": "React Router: Open redirect via backslash in <Link> and useNavigate (CVE-2025-68470 bypass)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/564"
+  },
+  {
+    "number": 561,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, <= 3.1.3",
+    "fixed": "3.1.4",
+    "ghsa": "GHSA-v2hh-gcrm-f6hx",
+    "summary": "fast-uri vulnerable to host confusion via literal backslash authority delimiter",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/561"
+  },
+  {
+    "number": 558,
+    "package": {
+      "ecosystem": "npm",
+      "name": "fast-uri"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.1.3",
+    "fixed": "3.1.3",
+    "ghsa": "GHSA-4c8g-83qw-93j6",
+    "summary": "fast-uri vulnerable to host confusion via failed IDN canonicalization",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/558"
+  },
+  {
+    "number": 551,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.15.2, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-gcfj-64vw-6mp9",
+    "summary": "Axios Node HTTP adapter can use an inherited proxy after interceptor config cloning",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/551"
+  },
+  {
+    "number": 550,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.15.1, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-hcpx-6fm6-wx23",
+    "summary": "Axios form serializer maxDepth bypass via {} metatoken",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/550"
+  },
+  {
+    "number": 549,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-7q8q-rj6j-mhjq",
+    "summary": "Axios: Nested axios option objects can consume polluted prototype values",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/549"
+  },
+  {
+    "number": 548,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 0.8.0, < 0.33.0",
+    "fixed": "0.33.0",
+    "ghsa": "GHSA-7q8q-rj6j-mhjq",
+    "summary": "Axios: Nested axios option objects can consume polluted prototype values",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/548"
+  },
+  {
+    "number": 547,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.13.0, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-mwf2-3pr3-8698",
+    "summary": "Axios: HTTP/2 streamed uploads bypass `maxBodyLength`",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/547"
+  },
+  {
+    "number": 546,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.7.0, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-jqh4-m9w3-8hp9",
+    "summary": "Axios: Fetch adapter `ReadableStream` uploads bypass `maxBodyLength`",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/546"
+  },
+  {
+    "number": 545,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 0.33.0",
+    "fixed": "0.33.0",
+    "ghsa": "GHSA-mmx7-hfxf-jppx",
+    "summary": "Axios: Prototype pollution gadgets can alter axios request construction",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/545"
+  },
+  {
+    "number": 544,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-mmx7-hfxf-jppx",
+    "summary": "Axios: Prototype pollution gadgets can alter axios request construction",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/544"
+  },
+  {
+    "number": 543,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.15.0, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-f4gw-2p7v-4548",
+    "summary": "Axios: NO_PROXY bypass for 0.0.0.0 local addresses in axios",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/543"
+  },
+  {
+    "number": 542,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack-dev-server"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 5.2.5",
+    "fixed": "5.2.6",
+    "ghsa": "GHSA-f5vj-f2hx-8m93",
+    "summary": "webpack-dev-server vulnerable to cross-site request forgery via internal developer endpoints",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/542"
+  },
+  {
+    "number": 541,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack-dev-server"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 5.2.5",
+    "fixed": "5.2.6",
+    "ghsa": "GHSA-m28w-2pqf-7qgj",
+    "summary": "webpack-dev-server vulnerable to denial of service via a malformed Host or Origin header",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/541"
+  },
+  {
+    "number": 540,
+    "package": {
+      "ecosystem": "npm",
+      "name": "shell-quote"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 1.8.4",
+    "fixed": "1.9.0",
+    "ghsa": "GHSA-395f-4hp3-45gv",
+    "summary": "shell-quote: Quadratic-complexity Denial of Service in `parse()` (CWE-407)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/540"
+  },
+  {
+    "number": 539,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-42h9-826w-cgv3",
+    "summary": "Axios: Excessive recursion in formDataToJSON can cause denial of service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/539"
+  },
+  {
+    "number": 538,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-pmv8-rq9r-6j72",
+    "summary": "Axios: Deep formToJSON Key Recursion Can Cause Denial of Service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/538"
+  },
+  {
+    "number": 537,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.5.17",
+    "fixed": "7.5.18",
+    "ghsa": "GHSA-w8wr-v893-vjvp",
+    "summary": "node-tar: Process crash via PAX numeric path type confusion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/537"
+  },
+  {
+    "number": 536,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "critical",
+    "range": "<= 7.5.18",
+    "fixed": "7.5.19",
+    "ghsa": "GHSA-23hp-3jrh-7fpw",
+    "summary": "node-tar: Decompression/parse DoS via unlimited input",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/536"
+  },
+  {
+    "number": 535,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.17",
+    "fixed": "7.5.18",
+    "ghsa": "GHSA-8x88-c5mf-7j5w",
+    "summary": "node-tar: Negative tar entry size causes infinite loop in archive replace",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/535"
+  },
+  {
+    "number": 534,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.5.16",
+    "fixed": "7.5.17",
+    "ghsa": "GHSA-gvwx-54wh-qm9j",
+    "summary": "node-tar: Uncaught Exception DoS via NUL byte in PAX path/linkpath records",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/534"
+  },
+  {
+    "number": 533,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.15.0",
+    "fixed": "3.15.0",
+    "ghsa": "GHSA-52cp-r559-cp3m",
+    "summary": "js-yaml: YAML merge-key chains can force quadratic CPU consumption",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/533"
+  },
+  {
+    "number": 532,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0, < 4.3.0",
+    "fixed": "4.3.0",
+    "ghsa": "GHSA-52cp-r559-cp3m",
+    "summary": "js-yaml: YAML merge-key chains can force quadratic CPU consumption",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/532"
+  },
+  {
+    "number": 531,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 1.1.16",
+    "fixed": "1.1.16",
+    "ghsa": "GHSA-3jxr-9vmj-r5cp",
+    "summary": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/531"
+  },
+  {
+    "number": 530,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.2",
+    "fixed": "2.1.2",
+    "ghsa": "GHSA-3jxr-9vmj-r5cp",
+    "summary": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/530"
+  },
+  {
+    "number": 529,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.15.2, < 1.18.0",
+    "fixed": "1.18.0",
+    "ghsa": "GHSA-xj6q-8x83-jv6g",
+    "summary": "Axios: Prototype pollution auth subfields can inject Basic auth",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/529"
+  },
+  {
+    "number": 527,
+    "package": {
+      "ecosystem": "npm",
+      "name": "websocket-driver"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": "< 0.7.5",
+    "fixed": "0.7.5",
+    "ghsa": "GHSA-xv26-6w52-cph6",
+    "summary": "websocket-driver: Message corruption via abuse of protocol length headers",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/527"
+  },
+  {
+    "number": 526,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.15.0, < 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-pjwm-pj3p-43mv",
+    "summary": "axios's shouldBypassProxy does not recognize IPv4-mapped IPv6 addresses, allowing NO_PROXY bypass (incomplete fix for CVE-2025-62718)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/526"
+  },
+  {
+    "number": 525,
+    "package": {
+      "ecosystem": "npm",
+      "name": "sigstore"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 4.1.0",
+    "fixed": "4.1.1",
+    "ghsa": "GHSA-52v5-jr5w-gjxr",
+    "summary": "sigstore's `certificateOIDs` verification constraints are silently dropped and never enforced",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/525"
+  },
+  {
+    "number": 524,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 3.15.0",
+    "fixed": "3.15.0",
+    "ghsa": "GHSA-h67p-54hq-rp68",
+    "summary": "JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/524"
+  },
+  {
+    "number": 523,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 4.0.0, <= 4.1.1",
+    "fixed": "4.2.0",
+    "ghsa": "GHSA-h67p-54hq-rp68",
+    "summary": "JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/523"
+  },
+  {
+    "number": 522,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack-dev-server"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 5.2.5",
+    "fixed": "5.2.5",
+    "ghsa": "GHSA-mx8g-39q3-5c79",
+    "summary": "webpack-dev-server vulnerable to HMR WebSocket interception via permissive user proxies",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/522"
+  },
+  {
+    "number": 520,
+    "package": {
+      "ecosystem": "npm",
+      "name": "http-proxy-middleware"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 0.16.0, < 2.0.10",
+    "fixed": "2.0.10",
+    "ghsa": "GHSA-64mm-vxmg-q3vj",
+    "summary": "http-proxy-middleware `router` host+path substring matching allows Host-header-driven backend routing bypass",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/520"
+  },
+  {
+    "number": 519,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@babel/core"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "<= 7.29.0",
+    "fixed": "7.29.6",
+    "ghsa": "GHSA-4x5r-pxfx-6jf8",
+    "summary": "@babel/core: Arbitrary File Read via sourceMappingURL Comment",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/519"
+  },
+  {
+    "number": 518,
+    "package": {
+      "ecosystem": "npm",
+      "name": "undici"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 6.27.0",
+    "fixed": "6.27.0",
+    "ghsa": "GHSA-g8m3-5g58-fq7m",
+    "summary": "undici vulnerable to Set-Cookie SameSite attribute downgrade via permissive substring matching",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/518"
+  },
+  {
+    "number": 517,
+    "package": {
+      "ecosystem": "npm",
+      "name": "undici"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 6.27.0",
+    "fixed": "6.27.0",
+    "ghsa": "GHSA-35p6-xmwp-9g52",
+    "summary": "undici vulnerable to HTTP response queue poisoning via keep-alive socket reuse",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/517"
+  },
+  {
+    "number": 516,
+    "package": {
+      "ecosystem": "npm",
+      "name": "undici"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 6.27.0",
+    "fixed": "6.27.0",
+    "ghsa": "GHSA-p88m-4jfj-68fv",
+    "summary": "undici vulnerable to HTTP header injection via Set-Cookie percent-decoding",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/516"
+  },
+  {
+    "number": 514,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ws"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 8.0.0, < 8.21.0",
+    "fixed": "8.21.0",
+    "ghsa": "GHSA-96hv-2xvq-fx4p",
+    "summary": "ws: Memory exhaustion DoS from tiny fragments and data chunks",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/514"
+  },
+  {
+    "number": 512,
+    "package": {
+      "ecosystem": "npm",
+      "name": "form-data"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 4.0.0, < 4.0.6",
+    "fixed": "4.0.6",
+    "ghsa": "GHSA-hmw2-7cc7-3qxx",
+    "summary": "form-data: CRLF injection in form-data via unescaped multipart field names and filenames",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/512"
+  },
+  {
+    "number": 510,
+    "package": {
+      "ecosystem": "npm",
+      "name": "launch-editor"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 2.14.0",
+    "fixed": "2.14.1",
+    "ghsa": "GHSA-v6wh-96g9-6wx3",
+    "summary": "launch-editor: NTLMv2 hash disclosure via UNC path handling on Windows",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/510"
+  },
+  {
+    "number": 509,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.6.0",
+    "fixed": "7.6.1",
+    "ghsa": "GHSA-wcpc-wj8m-hjx6",
+    "summary": "protobufjs: Denial of service through unbounded Any expansion during JSON conversion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/509"
+  },
+  {
+    "number": 508,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.6.2",
+    "fixed": "7.6.3",
+    "ghsa": "GHSA-f38q-mgvj-vph7",
+    "summary": "protobufjs : Schema-derived names can shadow runtime-significant properties",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/508"
+  },
+  {
+    "number": 507,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ua-parser-js"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 2.0.1, < 2.0.10",
+    "fixed": "2.0.10",
+    "ghsa": "GHSA-9h5v-pfqq-x599",
+    "summary": "UAParser.js: Unbounded `Sec-CH-UA-Model` parsing can trigger ReDoS in `withClientHints()`",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/507"
+  },
+  {
+    "number": 506,
+    "package": {
+      "ecosystem": "npm",
+      "name": "form-data"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 2.5.6",
+    "fixed": "2.5.6",
+    "ghsa": "GHSA-hmw2-7cc7-3qxx",
+    "summary": "form-data: CRLF injection in form-data via unescaped multipart field names and filenames",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/506"
+  },
+  {
+    "number": 505,
+    "package": {
+      "ecosystem": "npm",
+      "name": "form-data"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 3.0.0, < 3.0.5",
+    "fixed": "3.0.5",
+    "ghsa": "GHSA-hmw2-7cc7-3qxx",
+    "summary": "form-data: CRLF injection in form-data via unescaped multipart field names and filenames",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/505"
+  },
+  {
+    "number": 503,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.5.15",
+    "fixed": "7.5.16",
+    "ghsa": "GHSA-vmf3-w455-68vh",
+    "summary": "node-tar applies PAX size override to intermediary GNU long-name/long-link headers, causing tar parser interpretation differential (file smuggling)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/503"
+  },
+  {
+    "number": 500,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-35jp-ww65-95wh",
+    "summary": "axios Vulnerable to Full Man-in-the-Middle via Prototype Pollution Gadget in `config.proxy`",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/500"
+  },
+  {
+    "number": 498,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-898c-q2cr-xwhg",
+    "summary": "axios has DoS & Header Injection via Prototype Pollution Read-Side Gadgets in axios merge functions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/498"
+  },
+  {
+    "number": 495,
+    "package": {
+      "ecosystem": "npm",
+      "name": "shell-quote"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 1.1.0, <= 1.8.3",
+    "fixed": "1.8.4",
+    "ghsa": "GHSA-w7jw-789q-3m8p",
+    "summary": "shell-quote quote() does not escape newlines in object .op values",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/495"
+  },
+  {
+    "number": 492,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 0.31.1",
+    "fixed": "0.32.0",
+    "ghsa": "GHSA-pjwm-pj3p-43mv",
+    "summary": "axios's shouldBypassProxy does not recognize IPv4-mapped IPv6 addresses, allowing NO_PROXY bypass (incomplete fix for CVE-2025-62718)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/492"
+  },
+  {
+    "number": 491,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.15.2",
+    "fixed": "1.15.2",
+    "ghsa": "GHSA-3g43-6gmg-66jw",
+    "summary": "axios Vulnerable to Credential Theft and Response Hijacking via Prototype Pollution Gadget in Config Merge",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/491"
+  },
+  {
+    "number": 489,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 0.19.0, < 0.31.1",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-3g43-6gmg-66jw",
+    "summary": "axios Vulnerable to Credential Theft and Response Hijacking via Prototype Pollution Gadget in Config Merge",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/489"
+  },
+  {
+    "number": 488,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-p92q-9vqr-4j8v",
+    "summary": "Axios: Proxy-Authorization Credential Leak to Origin Server Across HTTP-to-HTTPS Redirect in Axios Node.js HTTP Adapter",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/488"
+  },
+  {
+    "number": 486,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-hfxv-24rg-xrqf",
+    "summary": "Axios: Regular Expression Denial of Service (ReDoS) via Cookie Name Injection",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/486"
+  },
+  {
+    "number": 484,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-j5f8-grm9-p9fc",
+    "summary": "Axios: Proxy-Authorization header leaks to redirect target when proxy is re-evaluated to direct connection",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/484"
+  },
+  {
+    "number": 482,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 0.31.1",
+    "fixed": "0.32.0",
+    "ghsa": "GHSA-p92q-9vqr-4j8v",
+    "summary": "Axios: Proxy-Authorization Credential Leak to Origin Server Across HTTP-to-HTTPS Redirect in Axios Node.js HTTP Adapter",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/482"
+  },
+  {
+    "number": 481,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 0.31.1",
+    "fixed": "0.32.0",
+    "ghsa": "GHSA-j5f8-grm9-p9fc",
+    "summary": "Axios: Proxy-Authorization header leaks to redirect target when proxy is re-evaluated to direct connection",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/481"
+  },
+  {
+    "number": 479,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 1.7.0, < 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-777c-7fjr-54vf",
+    "summary": "Allocation of Resources Without Limits or Throttling in Axios",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/479"
+  },
+  {
+    "number": 477,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 0.31.1",
+    "fixed": "0.32.0",
+    "ghsa": "GHSA-898c-q2cr-xwhg",
+    "summary": "axios has DoS & Header Injection via Prototype Pollution Read-Side Gadgets in axios merge functions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/477"
+  },
+  {
+    "number": 475,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": "= 1.15.2",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-654m-c8p4-x5fp",
+    "summary": "Axios has a Patch Bypass: Proxy-Authorization Header Injection via Prototype Pollution — Incomplete Null-Prototype Fix",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/475"
+  },
+  {
+    "number": 474,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ws"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 8.0.0, < 8.20.1",
+    "fixed": "8.20.1",
+    "ghsa": "GHSA-58qx-3vcg-4xpx",
+    "summary": "ws: Uninitialized memory disclosure",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/474"
+  },
+  {
+    "number": 472,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.5.7",
+    "fixed": "7.5.8",
+    "ghsa": "GHSA-jggg-4jg4-v7c6",
+    "summary": "protobufjs: Denial of Service via unbounded recursive JSON descriptor expansion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/472"
+  },
+  {
+    "number": 470,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tmp"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 0.2.6",
+    "fixed": "0.2.6",
+    "ghsa": "GHSA-ph9p-34f9-6g65",
+    "summary": "tmp has Path Traversal via unsanitized prefix/postfix that enables directory escape",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/470"
+  },
+  {
+    "number": 469,
+    "package": {
+      "ecosystem": "npm",
+      "name": "qs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 6.11.1, <= 6.15.1",
+    "fixed": "6.15.2",
+    "ghsa": "GHSA-q8mj-m7cp-5q26",
+    "summary": "qs has a remotely triggerable DoS: qs.stringify crashes with TypeError on null/undefined entries in comma-format arrays when encodeValuesOnly is set",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/469"
+  },
+  {
+    "number": 468,
+    "package": {
+      "ecosystem": "npm",
+      "name": "serialize-javascript"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 5.0.0, < 7.0.5",
+    "fixed": "7.0.5",
+    "ghsa": "GHSA-qj8w-gfj5-8c6v",
+    "summary": "Serialize JavaScript has CPU Exhaustion Denial of Service via crafted array-like objects",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/468"
+  },
+  {
+    "number": 467,
+    "package": {
+      "ecosystem": "npm",
+      "name": "uuid"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 11.1.1",
+    "fixed": "11.1.1",
+    "ghsa": "GHSA-w5hq-g745-h8pq",
+    "summary": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/467"
+  },
+  {
+    "number": 465,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@tootallnate/once"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": "< 2.0.1",
+    "fixed": "2.0.1",
+    "ghsa": "GHSA-vpq2-c234-7xj6",
+    "summary": "@tootallnate/once vulnerable to Incorrect Control Flow Scoping",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/465"
+  },
+  {
+    "number": 464,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack-dev-server"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 5.2.3",
+    "fixed": "5.2.4",
+    "ghsa": "GHSA-79cf-xcqc-c78w",
+    "summary": "webpack-dev-server vulnerable to cross-origin source code exposure on non-HTTPS origins",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/464"
+  },
+  {
+    "number": 454,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-445q-vr5w-6q77",
+    "summary": "Axios: CRLF Injection in multipart/form-data body via unsanitized blob.type in formDataToStream",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/454"
+  },
+  {
+    "number": 453,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-m7pr-hjqh-92cm",
+    "summary": "Axios: no_proxy bypass via IP alias allows SSRF",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/453"
+  },
+  {
+    "number": 449,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-pf86-5x62-jrwf",
+    "summary": "Axios: Prototype Pollution Gadgets - Response Tampering, Data Exfiltration, and Request Hijacking",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/449"
+  },
+  {
+    "number": 448,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-6chq-wfr3-2hj9",
+    "summary": "Axios: Header Injection via Prototype Pollution",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/448"
+  },
+  {
+    "number": 447,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-xx6v-rp6x-q39c",
+    "summary": "Axios: XSRF Token Cross-Origin Leakage via Prototype Pollution Gadget in `withXSRFToken` Boolean Coercion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/447"
+  },
+  {
+    "number": 446,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-w9j2-pvgh-6h63",
+    "summary": "Axios: Authentication Bypass via Prototype Pollution Gadget in `validateStatus` Merge Strategy",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/446"
+  },
+  {
+    "number": 445,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-pmwg-cvhr-8vh7",
+    "summary": "Axios: Incomplete Fix for CVE-2025-62718 — NO_PROXY Protection Bypassed via RFC 1122 Loopback Subnet (127.0.0.0/8) in Axios 1.15.0",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/445"
+  },
+  {
+    "number": 444,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.15.2",
+    "fixed": "1.15.2",
+    "ghsa": "GHSA-3w6x-2g7m-8v23",
+    "summary": "Axios: Invisible JSON Response Tampering via Prototype Pollution Gadget in `parseReviver`",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/444"
+  },
+  {
+    "number": 443,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.15.2",
+    "fixed": "1.15.2",
+    "ghsa": "GHSA-q8qp-cvcw-x6jj",
+    "summary": "Axios has prototype pollution read-side gadgets in HTTP adapter that allow credential injection and request hijacking",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/443"
+  },
+  {
+    "number": 442,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": ">= 1.0.0, < 1.15.1",
+    "fixed": "1.15.1",
+    "ghsa": "GHSA-xhjh-pmcv-23jw",
+    "summary": "Axios: Null Byte Injection via Reverse-Encoding in AxiosURLSearchParams",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/442"
+  },
+  {
+    "number": 441,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.15.0",
+    "fixed": "1.15.0",
+    "ghsa": "GHSA-3p68-rc4w-qgx5",
+    "summary": "Axios has a NO_PROXY Hostname Normalization Bypass that Leads to SSRF",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/441"
+  },
+  {
+    "number": 440,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.0.0, < 1.15.0",
+    "fixed": "1.15.0",
+    "ghsa": "GHSA-fvcv-3m26-pcqx",
+    "summary": "Axios has Unrestricted Cloud Metadata Exfiltration via Header Injection Chain",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/440"
+  },
+  {
+    "number": 439,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, <= 1.13.4",
+    "fixed": "1.13.5",
+    "ghsa": "GHSA-43fc-jf86-j433",
+    "summary": "Axios is Vulnerable to Denial of Service via __proto__ Key in mergeConfig",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/439"
+  },
+  {
+    "number": 437,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 1.0.0, < 1.8.2",
+    "fixed": "1.8.2",
+    "ghsa": "GHSA-jr5f-v2jv-69x6",
+    "summary": "axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/437"
+  },
+  {
+    "number": 436,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.5",
+    "fixed": "7.5.6",
+    "ghsa": "GHSA-66ff-xgx4-vchm",
+    "summary": "protobuf.js: Code injection through bytes field defaults in generated toObject code",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/436"
+  },
+  {
+    "number": 435,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.5.5",
+    "fixed": "7.5.6",
+    "ghsa": "GHSA-2pr8-phx7-x9h3",
+    "summary": "protobuf.js: Denial of service from crafted field names in generated code",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/435"
+  },
+  {
+    "number": 434,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.5",
+    "fixed": "7.5.6",
+    "ghsa": "GHSA-685m-2w69-288q",
+    "summary": "protobuf.js: Denial of service through unbounded protobuf recursion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/434"
+  },
+  {
+    "number": 433,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.5.5",
+    "fixed": "7.5.6",
+    "ghsa": "GHSA-fx83-v9x8-x52w",
+    "summary": "protobuf.js: Prototype injection in generated message constructors",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/433"
+  },
+  {
+    "number": 432,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.5",
+    "fixed": "7.5.6",
+    "ghsa": "GHSA-75px-5xx7-5xc7",
+    "summary": "protobuf.js: Code generation gadget after prototype pollution",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/432"
+  },
+  {
+    "number": 431,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.5",
+    "fixed": "7.5.6",
+    "ghsa": "GHSA-jvwf-75h9-cwgg",
+    "summary": "protobuf.js: Process-wide denial of service through unsafe option paths",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/431"
+  },
+  {
+    "number": 430,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 7.5.5",
+    "fixed": "7.5.6",
+    "ghsa": "GHSA-q6x5-8v7m-xcrf",
+    "summary": "protobufjs has overlong UTF-8 decoding",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/430"
+  },
+  {
+    "number": 429,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@protobufjs/utf8"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 1.1.0",
+    "fixed": "1.1.1",
+    "ghsa": "GHSA-q6x5-8v7m-xcrf",
+    "summary": "protobufjs has overlong UTF-8 decoding",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/429"
+  },
+  {
+    "number": 428,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@babel/plugin-transform-modules-systemjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 7.12.0, <= 7.29.3",
+    "fixed": "7.29.4",
+    "ghsa": "GHSA-fv7c-fp4j-7gwp",
+    "summary": "@babel/plugin-transform-modules-systemjs generates arbitrary code when compiling malicious input",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/428"
+  },
+  {
+    "number": 427,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ip-address"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "<= 10.1.0",
+    "fixed": "10.1.1",
+    "ghsa": "GHSA-v2v4-37r5-5v8g",
+    "summary": "ip-address has XSS in Address6 HTML-emitting methods",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/427"
+  },
+  {
+    "number": 426,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 0.31.0",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-m7pr-hjqh-92cm",
+    "summary": "Axios: no_proxy bypass via IP alias allows SSRF",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/426"
+  },
+  {
+    "number": 420,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 0.31.0",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-w9j2-pvgh-6h63",
+    "summary": "Axios: Authentication Bypass via Prototype Pollution Gadget in `validateStatus` Merge Strategy",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/420"
+  },
+  {
+    "number": 418,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 0.31.0",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-pf86-5x62-jrwf",
+    "summary": "Axios: Prototype Pollution Gadgets - Response Tampering, Data Exfiltration, and Request Hijacking",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/418"
+  },
+  {
+    "number": 416,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 0.31.0",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-xx6v-rp6x-q39c",
+    "summary": "Axios: XSRF Token Cross-Origin Leakage via Prototype Pollution Gadget in `withXSRFToken` Boolean Coercion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/416"
+  },
+  {
+    "number": 414,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 0.31.0",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-6chq-wfr3-2hj9",
+    "summary": "Axios: Header Injection via Prototype Pollution",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/414"
+  },
+  {
+    "number": 412,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "<= 0.31.0",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-xhjh-pmcv-23jw",
+    "summary": "Axios: Null Byte Injection via Reverse-Encoding in AxiosURLSearchParams",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/412"
+  },
+  {
+    "number": 410,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 0.31.0",
+    "fixed": "0.31.1",
+    "ghsa": "GHSA-pmwg-cvhr-8vh7",
+    "summary": "Axios: Incomplete Fix for CVE-2025-62718 — NO_PROXY Protection Bypassed via RFC 1122 Loopback Subnet (127.0.0.0/8) in Axios 1.15.0",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/410"
+  },
+  {
+    "number": 406,
+    "package": {
+      "ecosystem": "npm",
+      "name": "postcss"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 8.5.10",
+    "fixed": "8.5.10",
+    "ghsa": "GHSA-qx2v-qp2m-jg93",
+    "summary": "PostCSS has XSS via Unescaped </style> in its CSS Stringify Output",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/406"
+  },
+  {
+    "number": 405,
+    "package": {
+      "ecosystem": "rust",
+      "name": "rustls-webpki"
+    },
+    "manifest": "release-cli/Cargo.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 0.103.13",
+    "fixed": "0.103.13",
+    "ghsa": "GHSA-82j2-j2ch-gfr8",
+    "summary": "rustls-webpki: Denial of service via panic on malformed CRL BIT STRING",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/405"
+  },
+  {
+    "number": 403,
+    "package": {
+      "ecosystem": "rust",
+      "name": "rustls-webpki"
+    },
+    "manifest": "release-cli/Cargo.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 0.101.0, < 0.103.12",
+    "fixed": "0.103.12",
+    "ghsa": "GHSA-xgp8-3hg3-c2mh",
+    "summary": "webpki: Name constraints were accepted for certificates asserting a wildcard name",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/403"
+  },
+  {
+    "number": 402,
+    "package": {
+      "ecosystem": "rust",
+      "name": "rustls-webpki"
+    },
+    "manifest": "release-cli/Cargo.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 0.101.0, < 0.103.12",
+    "fixed": "0.103.12",
+    "ghsa": "GHSA-965h-392x-2mh5",
+    "summary": "webpki: Name constraints for URI names were incorrectly accepted",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/402"
+  },
+  {
+    "number": 401,
+    "package": {
+      "ecosystem": "npm",
+      "name": "protobufjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "critical",
+    "range": "< 7.5.5",
+    "fixed": "7.5.5",
+    "ghsa": "GHSA-xq3m-2v4x-88gg",
+    "summary": "Arbitrary code execution in protobufjs",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/401"
+  },
+  {
+    "number": 400,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 0.31.0",
+    "fixed": "0.31.0",
+    "ghsa": "GHSA-3p68-rc4w-qgx5",
+    "summary": "Axios has a NO_PROXY Hostname Normalization Bypass that Leads to SSRF",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/400"
+  },
+  {
+    "number": 398,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 0.31.0",
+    "fixed": "0.31.0",
+    "ghsa": "GHSA-fvcv-3m26-pcqx",
+    "summary": "Axios has Unrestricted Cloud Metadata Exfiltration via Header Injection Chain",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/398"
+  },
+  {
+    "number": 396,
+    "package": {
+      "ecosystem": "npm",
+      "name": "follow-redirects"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 1.15.11",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-r4q5-vmmm-2653",
+    "summary": "follow-redirects leaks Custom Authentication Headers to Cross-Domain Redirect Targets",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/396"
+  },
+  {
+    "number": 357,
+    "package": {
+      "ecosystem": "npm",
+      "name": "telejson"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 6.0.0",
+    "fixed": "6.0.0",
+    "ghsa": "GHSA-ccgf-5rwj-j3hv",
+    "summary": "TeleJSON: DOM XSS via unsanitised constructor name in `new Function()`",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/357"
+  },
+  {
+    "number": 348,
+    "package": {
+      "ecosystem": "npm",
+      "name": "lodash.template"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0, < 4.18.0",
+    "fixed": "4.18.0",
+    "ghsa": "GHSA-r5fr-rjxr-66jc",
+    "summary": "lodash vulnerable to Code Injection via `_.template` imports key names",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/348"
+  },
+  {
+    "number": 347,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 4.6.0, <= 4.7.8",
+    "fixed": "4.7.9",
+    "ghsa": "GHSA-7rx3-28cr-v5wh",
+    "summary": "Handlebars.js has a Prototype Method Access Control Gap via Missing __lookupSetter__ Blocklist Entry",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/347"
+  },
+  {
+    "number": 346,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "fixed": "4.7.9",
+    "ghsa": "GHSA-442j-39wm-28r2",
+    "summary": "Handlebars.js has a Property Access Validation Bypass in container.lookup",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/346"
+  },
+  {
+    "number": 339,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "fixed": "4.7.9",
+    "ghsa": "GHSA-3mfm-83xf-c92r",
+    "summary": "Handlebars.js has JavaScript Injection via AST Type Confusion by tampering @partial-block",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/339"
+  },
+  {
+    "number": 338,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "fixed": "4.7.9",
+    "ghsa": "GHSA-xjpj-3mr7-gcpf",
+    "summary": "Handlebars.js has JavaScript Injection in CLI Precompiler via Unescaped Names and Options",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/338"
+  },
+  {
+    "number": 337,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "fixed": "4.7.9",
+    "ghsa": "GHSA-2w6w-674q-4c4q",
+    "summary": "Handlebars.js has JavaScript Injection via AST Type Confusion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/337"
+  },
+  {
+    "number": 336,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "fixed": "4.7.9",
+    "ghsa": "GHSA-xhpv-hc6g-r9c6",
+    "summary": "Handlebars.js has JavaScript Injection via AST Type Confusion when passing an object as dynamic partial",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/336"
+  },
+  {
+    "number": 334,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 1.1.13",
+    "fixed": "1.1.13",
+    "ghsa": "GHSA-f886-m6hf-6m8v",
+    "summary": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/334"
+  },
+  {
+    "number": 333,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 2.0.0, < 2.0.3",
+    "fixed": "2.0.3",
+    "ghsa": "GHSA-f886-m6hf-6m8v",
+    "summary": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/333"
+  },
+  {
+    "number": 332,
+    "package": {
+      "ecosystem": "npm",
+      "name": "handlebars"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 4.0.0, < 4.7.9",
+    "fixed": "4.7.9",
+    "ghsa": "GHSA-2qvq-rjwj-gvw9",
+    "summary": "Handlebars.js has Prototype Pollution Leading to XSS through Partial Template Injection",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/332"
+  },
+  {
+    "number": 326,
+    "package": {
+      "ecosystem": "npm",
+      "name": "picomatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 2.3.2",
+    "fixed": "2.3.2",
+    "ghsa": "GHSA-3v7f-55p6-f55p",
+    "summary": "Picomatch: Method Injection in POSIX Character Classes causes incorrect Glob Matching",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/326"
+  },
+  {
+    "number": 323,
+    "package": {
+      "ecosystem": "npm",
+      "name": "flatted"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 3.4.1",
+    "fixed": "3.4.2",
+    "ghsa": "GHSA-rf6f-7fwh-wjgh",
+    "summary": "Prototype Pollution via parse() in NodeJS flatted",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/323"
+  },
+  {
+    "number": 320,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.10",
+    "fixed": "7.5.11",
+    "ghsa": "GHSA-9ppj-qmqm-q256",
+    "summary": "node-tar Symlink Path Traversal via Drive-Relative Linkpath",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/320"
+  },
+  {
+    "number": 319,
+    "package": {
+      "ecosystem": "npm",
+      "name": "immutable"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 4.0.0-rc.1, < 4.3.8",
+    "fixed": "4.3.8",
+    "ghsa": "GHSA-wf6x-7x77-mvgw",
+    "summary": "Immutable is vulnerable to Prototype Pollution",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/319"
+  },
+  {
+    "number": 318,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.9",
+    "fixed": "7.5.10",
+    "ghsa": "GHSA-qffp-2rhf-9h96",
+    "summary": "tar has Hardlink Path Traversal via Drive-Relative Linkpath",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/318"
+  },
+  {
+    "number": 315,
+    "package": {
+      "ecosystem": "npm",
+      "name": "serialize-javascript"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 7.0.2",
+    "fixed": "7.0.3",
+    "ghsa": "GHSA-5c6j-r48x-rmvq",
+    "summary": "Serialize JavaScript is Vulnerable to RCE via RegExp.flags and Date.prototype.toISOString()",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/315"
+  },
+  {
+    "number": 314,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 9.0.0, < 9.0.7",
+    "fixed": "9.0.7",
+    "ghsa": "GHSA-23c5-xmqv-rm74",
+    "summary": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/314"
+  },
+  {
+    "number": 313,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 9.0.0, < 9.0.7",
+    "fixed": "9.0.7",
+    "ghsa": "GHSA-7r86-cg39-jmmj",
+    "summary": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/313"
+  },
+  {
+    "number": 312,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 3.1.3",
+    "fixed": "3.1.3",
+    "ghsa": "GHSA-7r86-cg39-jmmj",
+    "summary": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/312"
+  },
+  {
+    "number": 311,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 3.1.4",
+    "fixed": "3.1.4",
+    "ghsa": "GHSA-23c5-xmqv-rm74",
+    "summary": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/311"
+  },
+  {
+    "number": 310,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 5.0.0, < 5.1.8",
+    "fixed": "5.1.8",
+    "ghsa": "GHSA-7r86-cg39-jmmj",
+    "summary": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/310"
+  },
+  {
+    "number": 309,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 5.0.0, < 5.1.8",
+    "fixed": "5.1.8",
+    "ghsa": "GHSA-23c5-xmqv-rm74",
+    "summary": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/309"
+  },
+  {
+    "number": 308,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 9.0.0, < 9.0.6",
+    "fixed": "9.0.6",
+    "ghsa": "GHSA-3ppc-4f35-3m26",
+    "summary": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/308"
+  },
+  {
+    "number": 307,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 3.1.3",
+    "fixed": "3.1.3",
+    "ghsa": "GHSA-3ppc-4f35-3m26",
+    "summary": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/307"
+  },
+  {
+    "number": 306,
+    "package": {
+      "ecosystem": "npm",
+      "name": "minimatch"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 5.0.0, < 5.1.7",
+    "fixed": "5.1.7",
+    "ghsa": "GHSA-3ppc-4f35-3m26",
+    "summary": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/306"
+  },
+  {
+    "number": 305,
+    "package": {
+      "ecosystem": "npm",
+      "name": "bn.js"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 4.12.3",
+    "fixed": "4.12.3",
+    "ghsa": "GHSA-378v-28hj-76wf",
+    "summary": "bn.js affected by an infinite loop",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/305"
+  },
+  {
+    "number": 304,
+    "package": {
+      "ecosystem": "npm",
+      "name": "bn.js"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 5.0.0, < 5.2.3",
+    "fixed": "5.2.3",
+    "ghsa": "GHSA-378v-28hj-76wf",
+    "summary": "bn.js affected by an infinite loop",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/304"
+  },
+  {
+    "number": 303,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ajv"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": ">= 7.0.0-alpha.0, < 8.18.0",
+    "fixed": "8.18.0",
+    "ghsa": "GHSA-2g4f-4pwh-qvx6",
+    "summary": "ajv has ReDoS when using `$data` option",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/303"
+  },
+  {
+    "number": 300,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 0.30.2",
+    "fixed": "0.30.3",
+    "ghsa": "GHSA-43fc-jf86-j433",
+    "summary": "Axios is Vulnerable to Denial of Service via __proto__ Key in mergeConfig",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/300"
+  },
+  {
+    "number": 297,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 7.5.8",
+    "fixed": "7.5.8",
+    "ghsa": "GHSA-83g3-92jg-28cx",
+    "summary": "Arbitrary File Read/Write via Hardlink Target Escape Through Symlink Chain in node-tar Extraction",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/297"
+  },
+  {
+    "number": 293,
+    "package": {
+      "ecosystem": "npm",
+      "name": "qs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": ">= 6.7.0, <= 6.14.1",
+    "fixed": "6.14.2",
+    "ghsa": "GHSA-w7fw-mjwx-w883",
+    "summary": "qs's arrayLimit bypass in comma parsing allows denial of service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/293"
+  },
+  {
+    "number": 289,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": ">= 5.49.0, <= 5.104.0",
+    "fixed": "5.104.1",
+    "ghsa": "GHSA-8fgc-7cc6-rx7x",
+    "summary": "webpack buildHttp: allowedUris allow-list bypass via URL userinfo (@) leading to build-time SSRF behavior",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/289"
+  },
+  {
+    "number": 287,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": ">= 5.49.0, < 5.104.0",
+    "fixed": "5.104.0",
+    "ghsa": "GHSA-38r7-794h-5758",
+    "summary": "webpack buildHttp HttpUriPlugin allowedUris bypass via HTTP redirects → SSRF + cache persistence",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/287"
+  },
+  {
+    "number": 280,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 7.5.7",
+    "fixed": "7.5.7",
+    "ghsa": "GHSA-34x7-hfp2-rc4v",
+    "summary": "node-tar Vulnerable to Arbitrary File Creation/Overwrite via Hardlink Path Traversal",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/280"
+  },
+  {
+    "number": 275,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.3",
+    "fixed": "7.5.4",
+    "ghsa": "GHSA-r6q2-hw4h-h46w",
+    "summary": "Race Condition in node-tar Path Reservations via Unicode Ligature Collisions on macOS APFS",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/275"
+  },
+  {
+    "number": 273,
+    "package": {
+      "ecosystem": "npm",
+      "name": "diff"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 5.0.0, < 5.2.2",
+    "fixed": "5.2.2",
+    "ghsa": "GHSA-73rr-hh4g-fpgx",
+    "summary": "jsdiff has a Denial of Service vulnerability in parsePatch and applyPatch",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/273"
+  },
+  {
+    "number": 272,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 7.5.2",
+    "fixed": "7.5.3",
+    "ghsa": "GHSA-8qq5-rm4j-mr97",
+    "summary": "node-tar is Vulnerable to Arbitrary File Overwrite and Symlink Poisoning via Insufficient Path Sanitization",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/272"
+  },
+  {
+    "number": 270,
+    "package": {
+      "ecosystem": "npm",
+      "name": "elliptic"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": "<= 6.6.1",
+    "fixed": null,
+    "ghsa": "GHSA-848j-6mx2-7j84",
+    "summary": "Elliptic Uses a Cryptographic Primitive with a Risky Implementation",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/270"
+  },
+  {
+    "number": 269,
+    "package": {
+      "ecosystem": "npm",
+      "name": "react-router"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 6.0.0, < 6.30.2",
+    "fixed": "6.30.2",
+    "ghsa": "GHSA-9jcx-v3wj-wh4m",
+    "summary": "React Router has unexpected external redirect via untrusted paths",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/269"
+  },
+  {
+    "number": 268,
+    "package": {
+      "ecosystem": "npm",
+      "name": "qs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 6.14.1",
+    "fixed": "6.14.1",
+    "ghsa": "GHSA-6rw7-vpxm-498p",
+    "summary": "qs's arrayLimit bypass in its bracket notation allows DoS via memory exhaustion",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/268"
+  },
+  {
+    "number": 259,
+    "package": {
+      "ecosystem": "npm",
+      "name": "glob"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 10.2.0, < 10.5.0",
+    "fixed": "10.5.0",
+    "ghsa": "GHSA-5j98-mcp5-4vw2",
+    "summary": "glob CLI: Command injection via -c/--cmd executes matches with shell:true",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/259"
+  },
+  {
+    "number": 256,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 3.14.2",
+    "fixed": "3.14.2",
+    "ghsa": "GHSA-mh29-5h37-fv8m",
+    "summary": "js-yaml has prototype pollution in merge (<<)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/256"
+  },
+  {
+    "number": 255,
+    "package": {
+      "ecosystem": "npm",
+      "name": "js-yaml"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 4.0.0, < 4.1.1",
+    "fixed": "4.1.1",
+    "ghsa": "GHSA-mh29-5h37-fv8m",
+    "summary": "js-yaml has prototype pollution in merge (<<)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/255"
+  },
+  {
+    "number": 244,
+    "package": {
+      "ecosystem": "npm",
+      "name": "min-document"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "<= 2.19.0",
+    "fixed": "2.19.1",
+    "ghsa": "GHSA-rx8g-88g5-qh64",
+    "summary": "min-document vulnerable to prototype pollution",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/244"
+  },
+  {
+    "number": 243,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar-fs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.4",
+    "fixed": "2.1.4",
+    "ghsa": "GHSA-vj76-c3g6-qr5v",
+    "summary": "tar-fs has a symlink validation bypass if destination directory is predictable with a specific tarball",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/243"
+  },
+  {
+    "number": 237,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 0.30.0",
+    "fixed": "0.30.0",
+    "ghsa": "GHSA-jr5f-v2jv-69x6",
+    "summary": "axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/237"
+  },
+  {
+    "number": 236,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@babel/runtime"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 7.26.10",
+    "fixed": "7.26.10",
+    "ghsa": "GHSA-968p-4wvh-cqc8",
+    "summary": "Babel has inefficient RegExp complexity in generated code with .replace when transpiling named capturing groups",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/236"
+  },
+  {
+    "number": 234,
+    "package": {
+      "ecosystem": "npm",
+      "name": "sha.js"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "critical",
+    "range": "<= 2.4.11",
+    "fixed": "2.4.12",
+    "ghsa": "GHSA-95m3-7q98-8xr5",
+    "summary": "sha.js is missing type checks leading to hash rewind and passing on crafted data",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/234"
+  },
+  {
+    "number": 233,
+    "package": {
+      "ecosystem": "npm",
+      "name": "cipher-base"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "critical",
+    "range": "<= 1.0.4",
+    "fixed": "1.0.5",
+    "ghsa": "GHSA-cpq7-6gpm-g9rc",
+    "summary": "cipher-base is missing type checks, leading to hash rewind and passing on crafted data",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/233"
+  },
+  {
+    "number": 232,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tmp"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "<= 0.2.3",
+    "fixed": "0.2.4",
+    "ghsa": "GHSA-52f5-9888-hmc6",
+    "summary": "tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/232"
+  },
+  {
+    "number": 231,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 1.0.0, <= 1.1.11",
+    "fixed": "1.1.12",
+    "ghsa": "GHSA-v6h2-p8h4-qcjw",
+    "summary": "brace-expansion Regular Expression Denial of Service vulnerability",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/231"
+  },
+  {
+    "number": 229,
+    "package": {
+      "ecosystem": "npm",
+      "name": "form-data"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": "< 2.5.4",
+    "fixed": "2.5.4",
+    "ghsa": "GHSA-fjxv-7rqg-78g4",
+    "summary": "form-data uses unsafe random function in form-data for choosing boundary",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/229"
+  },
+  {
+    "number": 228,
+    "package": {
+      "ecosystem": "npm",
+      "name": "form-data"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 3.0.0, < 3.0.4",
+    "fixed": "3.0.4",
+    "ghsa": "GHSA-fjxv-7rqg-78g4",
+    "summary": "form-data uses unsafe random function in form-data for choosing boundary",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/228"
+  },
+  {
+    "number": 227,
+    "package": {
+      "ecosystem": "npm",
+      "name": "on-headers"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 1.1.0",
+    "fixed": "1.1.0",
+    "ghsa": "GHSA-76c9-3jph-rj3q",
+    "summary": "on-headers is vulnerable to http response header manipulation",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/227"
+  },
+  {
+    "number": 218,
+    "package": {
+      "ecosystem": "npm",
+      "name": "brace-expansion"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 2.0.0, <= 2.0.1",
+    "fixed": "2.0.2",
+    "ghsa": "GHSA-v6h2-p8h4-qcjw",
+    "summary": "brace-expansion Regular Expression Denial of Service vulnerability",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/218"
+  },
+  {
+    "number": 212,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar-fs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.3",
+    "fixed": "2.1.3",
+    "ghsa": "GHSA-8cj5-5rvv-wf4v",
+    "summary": "tar-fs can extract outside the specified dir with a specific tarball",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/212"
+  },
+  {
+    "number": 211,
+    "package": {
+      "ecosystem": "npm",
+      "name": "base-x"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 3.0.10",
+    "fixed": "3.0.11",
+    "ghsa": "GHSA-xq7p-g2vc-g82p",
+    "summary": "Homograph attack allows Unicode lookalike characters to bypass validation.",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/211"
+  },
+  {
+    "number": 204,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar-fs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.1.2",
+    "fixed": "2.1.2",
+    "ghsa": "GHSA-pq67-2wwv-3xjx",
+    "summary": "tar-fs Vulnerable to Link Following and Path Traversal via Extracting a Crafted tar File",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/204"
+  },
+  {
+    "number": 202,
+    "package": {
+      "ecosystem": "npm",
+      "name": "prismjs"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 1.30.0",
+    "fixed": "1.30.0",
+    "ghsa": "GHSA-x7hr-w5r2-h6wg",
+    "summary": "PrismJS DOM Clobbering vulnerability",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/202"
+  },
+  {
+    "number": 198,
+    "package": {
+      "ecosystem": "npm",
+      "name": "serialize-javascript"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 6.0.0, < 6.0.2",
+    "fixed": "6.0.2",
+    "ghsa": "GHSA-76p7-773f-r4q5",
+    "summary": "Cross-site Scripting (XSS) in serialize-javascript",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/198"
+  },
+  {
+    "number": 197,
+    "package": {
+      "ecosystem": "npm",
+      "name": "elliptic"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "critical",
+    "range": "<= 6.6.0",
+    "fixed": "6.6.1",
+    "ghsa": "GHSA-vjh7-7g9h-fjfh",
+    "summary": "Elliptic's private key extraction in ECDSA upon signing a malformed input (e.g. a string)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/197"
+  },
+  {
+    "number": 195,
+    "package": {
+      "ecosystem": "npm",
+      "name": "store2"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 2.14.4",
+    "fixed": "2.14.4",
+    "ghsa": "GHSA-w5hq-hm5m-4548",
+    "summary": "Cross Site Scripting vulnerability in store2",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/195"
+  },
+  {
+    "number": 194,
+    "package": {
+      "ecosystem": "npm",
+      "name": "nanoid"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 3.3.8",
+    "fixed": "3.3.8",
+    "ghsa": "GHSA-mwcw-c2x4-8c55",
+    "summary": "Predictable results in nanoid generation when given non-integer values",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/194"
+  },
+  {
+    "number": 191,
+    "package": {
+      "ecosystem": "npm",
+      "name": "cross-spawn"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 7.0.0, < 7.0.5",
+    "fixed": "7.0.5",
+    "ghsa": "GHSA-3xgq-45jj-v275",
+    "summary": "Regular Expression Denial of Service (ReDoS) in cross-spawn",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/191"
+  },
+  {
+    "number": 189,
+    "package": {
+      "ecosystem": "npm",
+      "name": "elliptic"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": "< 6.6.0",
+    "fixed": "6.6.0",
+    "ghsa": "GHSA-fc9h-whq2-v747",
+    "summary": "Valid ECDSA signatures erroneously rejected in Elliptic",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/189"
+  },
+  {
+    "number": 186,
+    "package": {
+      "ecosystem": "npm",
+      "name": "markdown-to-jsx"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 7.4.0",
+    "fixed": "7.4.0",
+    "ghsa": "GHSA-4wx3-54gh-9fr9",
+    "summary": "Cross site scripting in markdown-to-jsx",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/186"
+  },
+  {
+    "number": 185,
+    "package": {
+      "ecosystem": "npm",
+      "name": "cookie"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 0.7.0",
+    "fixed": "0.7.0",
+    "ghsa": "GHSA-pxg6-pf52-xh8x",
+    "summary": "cookie accepts cookie name, path, and domain with out of bounds characters",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/185"
+  },
+  {
+    "number": 184,
+    "package": {
+      "ecosystem": "npm",
+      "name": "elliptic"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": "< 6.5.6",
+    "fixed": "6.5.6",
+    "ghsa": "GHSA-434g-2637-qmqr",
+    "summary": "Elliptic's verify function omits uniqueness validation",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/184"
+  },
+  {
+    "number": 183,
+    "package": {
+      "ecosystem": "npm",
+      "name": "send"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 0.19.0",
+    "fixed": "0.19.0",
+    "ghsa": "GHSA-m6fv-jmcg-4jfg",
+    "summary": "send vulnerable to template injection that can lead to XSS",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/183"
+  },
+  {
+    "number": 182,
+    "package": {
+      "ecosystem": "npm",
+      "name": "serve-static"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 1.16.0",
+    "fixed": "1.16.0",
+    "ghsa": "GHSA-cm22-4g7w-348p",
+    "summary": "serve-static vulnerable to template injection that can lead to XSS",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/182"
+  },
+  {
+    "number": 181,
+    "package": {
+      "ecosystem": "npm",
+      "name": "express"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "low",
+    "range": "< 4.20.0",
+    "fixed": "4.20.0",
+    "ghsa": "GHSA-qw6h-vgh9-j6wx",
+    "summary": "express vulnerable to XSS via response.redirect()",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/181"
+  },
+  {
+    "number": 180,
+    "package": {
+      "ecosystem": "npm",
+      "name": "body-parser"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 1.20.3",
+    "fixed": "1.20.3",
+    "ghsa": "GHSA-qwcr-r2fm-qrc7",
+    "summary": "body-parser vulnerable to denial of service when url encoding is enabled",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/180"
+  },
+  {
+    "number": 178,
+    "package": {
+      "ecosystem": "npm",
+      "name": "path-to-regexp"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 0.2.0, < 1.9.0",
+    "fixed": "1.9.0",
+    "ghsa": "GHSA-9wv6-86v2-598j",
+    "summary": "path-to-regexp outputs backtracking regular expressions",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/178"
+  },
+  {
+    "number": 176,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 5.0.0-alpha.0, < 5.94.0",
+    "fixed": "5.94.0",
+    "ghsa": "GHSA-4vvj-4cpr-p986",
+    "summary": "Webpack's AutoPublicPathRuntimeModule has a DOM Clobbering Gadget that leads to XSS",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/176"
+  },
+  {
+    "number": 173,
+    "package": {
+      "ecosystem": "npm",
+      "name": "elliptic"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 2.0.0, <= 6.5.6",
+    "fixed": "6.5.7",
+    "ghsa": "GHSA-977x-g7h5-7qgw",
+    "summary": "Elliptic's ECDSA missing check for whether leading bit of r and s is zero",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/173"
+  },
+  {
+    "number": 172,
+    "package": {
+      "ecosystem": "npm",
+      "name": "elliptic"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 5.2.1, <= 6.5.6",
+    "fixed": "6.5.7",
+    "ghsa": "GHSA-49q7-c7j4-3p7m",
+    "summary": "Elliptic allows BER-encoded signatures",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/172"
+  },
+  {
+    "number": 171,
+    "package": {
+      "ecosystem": "npm",
+      "name": "elliptic"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 4.0.0, <= 6.5.6",
+    "fixed": "6.5.7",
+    "ghsa": "GHSA-f7q4-pwc6-w24p",
+    "summary": "Elliptic's EDDSA missing signature length check",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/171"
+  },
+  {
+    "number": 167,
+    "package": {
+      "ecosystem": "npm",
+      "name": "braces"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 3.0.3",
+    "fixed": "3.0.3",
+    "ghsa": "GHSA-grv7-fg5c-xmjg",
+    "summary": "Uncontrolled resource consumption in braces",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/167"
+  },
+  {
+    "number": 166,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ip"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "<= 2.0.1",
+    "fixed": null,
+    "ghsa": "GHSA-2p57-rm9w-gvfp",
+    "summary": "ip SSRF improper categorization in isPublic",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/166"
+  },
+  {
+    "number": 165,
+    "package": {
+      "ecosystem": "npm",
+      "name": "lodash.template"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 4.5.0",
+    "fixed": null,
+    "ghsa": "GHSA-35jh-r3h4-6jhm",
+    "summary": "Command Injection in lodash",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/165"
+  },
+  {
+    "number": 164,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tar"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 6.2.1",
+    "fixed": "6.2.1",
+    "ghsa": "GHSA-f5x3-32g6-xq36",
+    "summary": "Denial of service while parsing a tar file due to lack of folders count validation",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/164"
+  },
+  {
+    "number": 163,
+    "package": {
+      "ecosystem": "npm",
+      "name": "express"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 4.19.2",
+    "fixed": "4.19.2",
+    "ghsa": "GHSA-rv95-896h-c2vc",
+    "summary": "Express.js Open Redirect in malformed URLs",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/163"
+  },
+  {
+    "number": 162,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack-dev-middleware"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "<= 5.3.3",
+    "fixed": "5.3.4",
+    "ghsa": "GHSA-wr3j-pwj9-hqq6",
+    "summary": "Path traversal in webpack-dev-middleware",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/162"
+  },
+  {
+    "number": 161,
+    "package": {
+      "ecosystem": "npm",
+      "name": "follow-redirects"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 1.15.5",
+    "fixed": "1.15.6",
+    "ghsa": "GHSA-cxjh-pqwp-8mfp",
+    "summary": "follow-redirects' Proxy-Authorization header kept across hosts",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/161"
+  },
+  {
+    "number": 160,
+    "package": {
+      "ecosystem": "npm",
+      "name": "es5-ext"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 0.10.0, < 0.10.63",
+    "fixed": "0.10.63",
+    "ghsa": "GHSA-4gmj-3p3h-gm8h",
+    "summary": "es5-ext vulnerable to Regular Expression Denial of Service in `function#copy` and `function#toStringTokens`",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/160"
+  },
+  {
+    "number": 159,
+    "package": {
+      "ecosystem": "npm",
+      "name": "axios"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 0.8.1, < 0.28.0",
+    "fixed": "0.28.0",
+    "ghsa": "GHSA-wf5p-g6vw-rhxx",
+    "summary": "Axios Cross-Site Request Forgery Vulnerability",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/159"
+  },
+  {
+    "number": 158,
+    "package": {
+      "ecosystem": "npm",
+      "name": "ip"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": "< 1.1.9",
+    "fixed": "1.1.9",
+    "ghsa": "GHSA-78xj-cgh5-2h22",
+    "summary": "NPM IP package incorrectly identifies some private IP addresses as public",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/158"
+  },
+  {
+    "number": 153,
+    "package": {
+      "ecosystem": "npm",
+      "name": "follow-redirects"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 1.15.4",
+    "fixed": "1.15.4",
+    "ghsa": "GHSA-jchw-25xp-jwwc",
+    "summary": "Follow Redirects improperly handles URLs in the url.parse() function",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/153"
+  },
+  {
+    "number": 150,
+    "package": {
+      "ecosystem": "npm",
+      "name": "browserify-sign"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": ">= 2.6.0, <= 4.2.1",
+    "fixed": "4.2.2",
+    "ghsa": "GHSA-x9w5-v3q2-3rhw",
+    "summary": "browserify-sign upper bound check issue in `dsaVerify` leads to a signature forgery attack",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/150"
+  },
+  {
+    "number": 148,
+    "package": {
+      "ecosystem": "npm",
+      "name": "@babel/traverse"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": "< 7.23.2",
+    "fixed": "7.23.2",
+    "ghsa": "GHSA-67hx-6x53-jw92",
+    "summary": "Babel vulnerable to arbitrary code execution when compiling specifically crafted malicious code",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/148"
+  },
+  {
+    "number": 146,
+    "package": {
+      "ecosystem": "npm",
+      "name": "postcss"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 8.4.31",
+    "fixed": "8.4.31",
+    "ghsa": "GHSA-7fh5-64p2-3v2j",
+    "summary": "PostCSS line return parsing error",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/146"
+  },
+  {
+    "number": 145,
+    "package": {
+      "ecosystem": "npm",
+      "name": "debug"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "low",
+    "range": ">= 4.0.0, < 4.3.1",
+    "fixed": "4.3.1",
+    "ghsa": "GHSA-gxpj-cx7g-858c",
+    "summary": "Regular Expression Denial of Service in debug",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/145"
+  },
+  {
+    "number": 140,
+    "package": {
+      "ecosystem": "npm",
+      "name": "word-wrap"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "medium",
+    "range": "< 1.2.4",
+    "fixed": "1.2.4",
+    "ghsa": "GHSA-j8xg-fqg3-53r7",
+    "summary": "word-wrap vulnerable to Regular Expression Denial of Service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/140"
+  },
+  {
+    "number": 136,
+    "package": {
+      "ecosystem": "npm",
+      "name": "tough-cookie"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 4.1.3",
+    "fixed": "4.1.3",
+    "ghsa": "GHSA-72xf-g2v4-qvf3",
+    "summary": "tough-cookie Prototype Pollution vulnerability",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/136"
+  },
+  {
+    "number": 130,
+    "package": {
+      "ecosystem": "npm",
+      "name": "request"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "<= 2.88.2",
+    "fixed": null,
+    "ghsa": "GHSA-p8p7-x288-28g6",
+    "summary": "Server-Side Request Forgery in Request",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/130"
+  },
+  {
+    "number": 129,
+    "package": {
+      "ecosystem": "npm",
+      "name": "webpack"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 5.0.0, < 5.76.0",
+    "fixed": "5.76.0",
+    "ghsa": "GHSA-hc6q-2mpp-qw7j",
+    "summary": "Cross-realm object access in Webpack 5",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/129"
+  },
+  {
+    "number": 125,
+    "package": {
+      "ecosystem": "npm",
+      "name": "http-cache-semantics"
+    },
+    "manifest": "yarn.lock",
+    "scope": "runtime",
+    "severity": "high",
+    "range": "< 4.1.1",
+    "fixed": "4.1.1",
+    "ghsa": "GHSA-rc47-6667-2j5j",
+    "summary": "http-cache-semantics vulnerable to Regular Expression Denial of Service",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/125"
+  },
+  {
+    "number": 123,
+    "package": {
+      "ecosystem": "npm",
+      "name": "json5"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": ">= 2.0.0, < 2.2.2",
+    "fixed": "2.2.2",
+    "ghsa": "GHSA-9c47-m6qq-7p4h",
+    "summary": "Prototype Pollution in JSON5 via Parse Method",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/123"
+  },
+  {
+    "number": 122,
+    "package": {
+      "ecosystem": "npm",
+      "name": "json5"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 1.0.2",
+    "fixed": "1.0.2",
+    "ghsa": "GHSA-9c47-m6qq-7p4h",
+    "summary": "Prototype Pollution in JSON5 via Parse Method",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/122"
+  },
+  {
+    "number": 120,
+    "package": {
+      "ecosystem": "npm",
+      "name": "decode-uri-component"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "high",
+    "range": "< 0.2.1",
+    "fixed": "0.2.1",
+    "ghsa": "GHSA-w573-4hg7-7wgq",
+    "summary": "decode-uri-component vulnerable to Denial of Service (DoS)",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/120"
+  },
+  {
+    "number": 114,
+    "package": {
+      "ecosystem": "npm",
+      "name": "deep-object-diff"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": ">= 1.1.6, < 1.1.9",
+    "fixed": "1.1.9",
+    "ghsa": "GHSA-653v-rqx9-j85p",
+    "summary": "deep-object-diff vulnerable to Prototype Pollution",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/114"
+  },
+  {
+    "number": 112,
+    "package": {
+      "ecosystem": "npm",
+      "name": "loader-utils"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": "< 1.4.1",
+    "fixed": "1.4.1",
+    "ghsa": "GHSA-76p3-8jx3-jpfq",
+    "summary": "Prototype pollution in webpack loader-utils",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/112"
+  },
+  {
+    "number": 110,
+    "package": {
+      "ecosystem": "npm",
+      "name": "loader-utils"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "critical",
+    "range": ">= 2.0.0, < 2.0.3",
+    "fixed": "2.0.3",
+    "ghsa": "GHSA-76p3-8jx3-jpfq",
+    "summary": "Prototype pollution in webpack loader-utils",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/110"
+  },
+  {
+    "number": 105,
+    "package": {
+      "ecosystem": "npm",
+      "name": "got"
+    },
+    "manifest": "yarn.lock",
+    "scope": "development",
+    "severity": "medium",
+    "range": "< 11.8.5",
+    "fixed": "11.8.5",
+    "ghsa": "GHSA-pfrx-2q88-qq97",
+    "summary": "Got allows a redirect to a UNIX socket",
+    "url": "https://github.com/input-output-hk/daedalus/security/dependabot/105"
+  }
+]

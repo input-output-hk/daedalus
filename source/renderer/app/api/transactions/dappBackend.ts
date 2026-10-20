@@ -291,8 +291,9 @@ const number =
   (maximum = Number.MAX_SAFE_INTEGER): Validator =>
   (value, path) => {
     if (
+      typeof value !== 'number' ||
       !Number.isSafeInteger(value) ||
-      (value as number) < 0 ||
+      value < 0 ||
       value > maximum
     )
       fail(path);

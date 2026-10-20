@@ -1,0 +1,31 @@
+diff --git a/node_modules/usb/binding.gyp b/node_modules/usb/binding.gyp
+index db98bb8..c9e0936 100644
+--- a/node_modules/usb/binding.gyp
++++ b/node_modules/usb/binding.gyp
+@@ -32,7 +32,7 @@
+         'src/thread_name.cc'
+       ],
+       'cflags_cc': [
+-        '-std=c++14'
++        '-std=c++17'
+       ],
+       'defines': [
+         '_FILE_OFFSET_BITS=64',
+@@ -60,7 +60,7 @@
+           ['OS=="mac"', {
+             'xcode_settings': {
+               'OTHER_CFLAGS': [
+-                '-std=c++1y',
++                '-std=c++17',
+                 '-stdlib=libc++',
+                 '-arch x86_64',
+                 '-arch arm64'
+@@ -117,7 +117,7 @@
+             },
+             'msvs_settings': {
+               'VCCLCompilerTool': {
+-                'AdditionalOptions': [ '/EHsc' ]
++                'AdditionalOptions': [ '/EHsc', '/std:c++17' ]
+               }
+             }
+           }

@@ -606,7 +606,7 @@ const hasPoolOperatorPath = (exact: HardwareExactTransaction): boolean => {
     const signer = exactSigner(exact, cborBytes(source, operator));
     return Boolean(
       signer &&
-        exact.witnesses.requestedDeviceKeyHashes.includes(signer.keyHash)
+      exact.witnesses.requestedDeviceKeyHashes.includes(signer.keyHash)
     );
   });
 };

@@ -1,0 +1,3338 @@
+[
+  {
+    "number": 675,
+    "ghsa": "GHSA-p8wg-vrv2-v86f",
+    "package": "handlebars",
+    "range": ">= 3.0.0, <= 4.7.9",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 674,
+    "ghsa": "GHSA-xw65-4hp5-5hc7",
+    "package": "handlebars",
+    "range": ">= 4.0.0, <= 4.7.9",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 673,
+    "ghsa": "GHSA-8r5x-fm3f-whwj",
+    "package": "handlebars",
+    "range": ">= 4.0.0, <= 4.7.9",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 671,
+    "ghsa": "GHSA-477h-4r7f-fvrx",
+    "package": "pbkdf2",
+    "range": "<= 3.1.6",
+    "versions": [
+      "3.1.7"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 670,
+    "ghsa": "GHSA-hp3w-g68c-fv3c",
+    "package": "sprintf-js",
+    "range": "<= 1.1.3",
+    "versions": [
+      "1.1.3"
+    ],
+    "affected": [
+      "1.1.3"
+    ],
+    "status": "source-patched",
+    "patch": "patches/sprintf-js+1.1.3.patch",
+    "regression": "tests/common/unit/dependency-security.spec.ts"
+  },
+  {
+    "number": 669,
+    "ghsa": "GHSA-68fv-2mgg-jv7q",
+    "package": "source-map-js",
+    "range": ">= 1.0.0, < 1.2.2",
+    "versions": [
+      "1.2.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 668,
+    "ghsa": "GHSA-jqcg-44mw-7w3h",
+    "package": "proxy-addr",
+    "range": ">= 1.1.0, < 2.0.8",
+    "versions": [
+      "2.0.8"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 667,
+    "ghsa": "GHSA-wr44-6hxh-3jwq",
+    "package": "joi",
+    "range": "< 17.13.8",
+    "versions": [
+      "18.3.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 666,
+    "ghsa": "GHSA-vc2v-76pw-4v95",
+    "package": "compression",
+    "range": "< 1.8.2",
+    "versions": [
+      "1.8.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 665,
+    "ghsa": "GHSA-rj75-hqrm-r3gf",
+    "package": "postcss-selector-parser",
+    "range": "< 7.1.6",
+    "versions": [
+      "7.1.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 664,
+    "ghsa": "GHSA-g2v6-rqmx-r4w6",
+    "package": "@vue/server-renderer",
+    "range": "< 3.5.42",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 660,
+    "ghsa": "GHSA-ch52-4w7c-c8xp",
+    "package": "http-cache-semantics",
+    "range": "<= 4.2.0",
+    "versions": [
+      "4.3.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 658,
+    "ghsa": "GHSA-86w9-cpqp-85rv",
+    "package": "node-forge",
+    "range": "<= 1.4.0",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 657,
+    "ghsa": "GHSA-j8rh-479h-cp32",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 656,
+    "ghsa": "GHSA-4hqw-qxg8-jxx2",
+    "package": "axios",
+    "range": ">= 1.12.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 655,
+    "ghsa": "GHSA-m8m8-qj5v-23w3",
+    "package": "axios",
+    "range": ">= 1.15.2, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 654,
+    "ghsa": "GHSA-44g4-m2mj-wpvx",
+    "package": "axios",
+    "range": ">= 1.15.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 653,
+    "ghsa": "GHSA-vh66-26gq-q6x8",
+    "package": "axios",
+    "range": ">= 1.7.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 652,
+    "ghsa": "GHSA-9fr6-4gfg-395g",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 651,
+    "ghsa": "GHSA-mghh-pgcx-3jjj",
+    "package": "axios",
+    "range": ">= 1.15.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 650,
+    "ghsa": "GHSA-x97p-jq2g-jp4f",
+    "package": "axios",
+    "range": ">= 1.15.1, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 649,
+    "ghsa": "GHSA-3pq3-5fj3-cg6v",
+    "package": "axios",
+    "range": ">= 1.13.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 648,
+    "ghsa": "GHSA-542g-h47m-68v8",
+    "package": "axios",
+    "range": ">= 1.13.0, < 1.20.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 646,
+    "ghsa": "GHSA-q2hr-2g5m-vwhr",
+    "package": "brace-expansion",
+    "range": "< 1.1.21",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 645,
+    "ghsa": "GHSA-qhr7-859c-m2p7",
+    "package": "brace-expansion",
+    "range": "< 1.1.20",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 644,
+    "ghsa": "GHSA-6j4f-fj2g-mc7p",
+    "package": "brace-expansion",
+    "range": "< 1.1.19",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 643,
+    "ghsa": "GHSA-r53p-7pc4-xj5r",
+    "package": "undici",
+    "range": "< 6.28.1",
+    "versions": [
+      "6.29.1",
+      "7.30.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 640,
+    "ghsa": "GHSA-hq2x-r82h-9wj4",
+    "package": "electron",
+    "range": "< 41.10.4",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 639,
+    "ghsa": "GHSA-gr2m-v5gq-v685",
+    "package": "electron",
+    "range": "< 41.10.6",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 638,
+    "ghsa": "GHSA-j84w-jfhq-vhvj",
+    "package": "electron",
+    "range": "< 41.10.6",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 637,
+    "ghsa": "GHSA-9qh4-3jw8-366w",
+    "package": "electron",
+    "range": "< 41.10.6",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 636,
+    "ghsa": "GHSA-g84c-rxfj-3j2c",
+    "package": "webpack-dev-middleware",
+    "range": "< 7.4.5",
+    "versions": [
+      "7.4.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 635,
+    "ghsa": "GHSA-q2hr-2g5m-vwhr",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, < 2.1.7",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 634,
+    "ghsa": "GHSA-qhr7-859c-m2p7",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, < 2.1.6",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 633,
+    "ghsa": "GHSA-6j4f-fj2g-mc7p",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, < 2.1.5",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 632,
+    "ghsa": "GHSA-4p3w-j4w9-5jqw",
+    "package": "moment",
+    "range": ">= 2.29.2, < 2.31.0",
+    "versions": [
+      "2.31.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 630,
+    "ghsa": "GHSA-j6r3-76f7-8jcv",
+    "package": "ip-address",
+    "range": "<= 10.7.0",
+    "versions": [
+      "10.7.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 629,
+    "ghsa": "GHSA-h3mg-xc3c-68pw",
+    "package": "ip-address",
+    "range": "<= 10.7.0",
+    "versions": [
+      "10.7.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 628,
+    "ghsa": "GHSA-qw65-cvwx-89v3",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, < 3.1.7",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 627,
+    "ghsa": "GHSA-vv43-5jgx-7qv8",
+    "package": "electron",
+    "range": ">= 40.0.0-alpha.1, < 41.10.5",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 624,
+    "ghsa": "GHSA-rpw4-54j3-4h4q",
+    "package": "ip-address",
+    "range": "<= 10.5.0",
+    "versions": [
+      "10.7.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 623,
+    "ghsa": "GHSA-v56q-mh7h-f735",
+    "package": "immutable",
+    "range": ">= 4.0.0-rc.1, < 4.3.9",
+    "versions": [
+      "5.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 622,
+    "ghsa": "GHSA-w5vr-8v7q-w6rv",
+    "package": "baseline-browser-mapping",
+    "range": ">= 2.0.0, < 2.11.0",
+    "versions": [
+      "2.11.30"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 621,
+    "ghsa": "GHSA-6w3j-5fw6-r9vr",
+    "package": "joi",
+    "range": ">= 17.2.0, < 17.13.6",
+    "versions": [
+      "18.3.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 620,
+    "ghsa": "GHSA-gg4h-3hg2-grpc",
+    "package": "joi",
+    "range": ">= 16.0.0, < 17.13.5",
+    "versions": [
+      "18.3.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 619,
+    "ghsa": "GHSA-2883-xcg3-v3hh",
+    "package": "js-yaml",
+    "range": ">= 3.0.0, < 3.15.2",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 618,
+    "ghsa": "GHSA-2883-xcg3-v3hh",
+    "package": "js-yaml",
+    "range": ">= 4.0.0, < 4.3.2",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 617,
+    "ghsa": "GHSA-7pqw-9j4j-h8q3",
+    "package": "extract-zip",
+    "range": "<= 2.0.1",
+    "versions": [
+      "2.0.1"
+    ],
+    "affected": [
+      "2.0.1"
+    ],
+    "status": "source-patched",
+    "patch": "patches/extract-zip+2.0.1.patch",
+    "regression": "tests/common/unit/dependency-security.spec.ts"
+  },
+  {
+    "number": 615,
+    "ghsa": "GHSA-xwg4-73v4-xw9w",
+    "package": "nanoid",
+    "range": "< 3.3.12",
+    "versions": [
+      "3.3.18",
+      "3.3.20"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 614,
+    "ghsa": "GHSA-73wf-gq98-2v4g",
+    "package": "browserslist",
+    "range": "<= 4.28.6",
+    "versions": [
+      "4.29.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 612,
+    "ghsa": "GHSA-xvcm-6775-5m9r",
+    "package": "immutable",
+    "range": ">= 4.0.0-beta.1, < 4.3.9",
+    "versions": [
+      "5.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 611,
+    "ghsa": "GHSA-82x6-q7mm-w9cf",
+    "package": "toml",
+    "range": "< 4.2.0",
+    "versions": [
+      "4.2.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 610,
+    "ghsa": "GHSA-v5mp-jgw5-2x6j",
+    "package": "toml",
+    "range": "< 4.1.2",
+    "versions": [
+      "4.2.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 609,
+    "ghsa": "GHSA-jqff-g426-hqxp",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, < 3.1.6",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 608,
+    "ghsa": "GHSA-f65p-4m7j-42xc",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, < 3.1.6",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 607,
+    "ghsa": "GHSA-qxc2-j82w-r537",
+    "package": "@faker-js/faker",
+    "range": "<= 10.4.0",
+    "versions": [
+      "10.6.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 605,
+    "ghsa": "GHSA-x5fp-wj9c-mxmx",
+    "package": "qs",
+    "range": ">= 6.14.2, <= 6.15.3",
+    "versions": [
+      "6.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 604,
+    "ghsa": "GHSA-4mjr-xmp4-gh2g",
+    "package": "qs",
+    "range": ">= 2.2.5, < 6.16.0",
+    "versions": [
+      "6.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 603,
+    "ghsa": "GHSA-w9m9-85wc-3x92",
+    "package": "postcss-selector-parser",
+    "range": ">= 6.1.0, < 6.1.3",
+    "versions": [
+      "7.1.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 602,
+    "ghsa": "GHSA-vcc3-ghjq-m6fr",
+    "package": "decode-uri-component",
+    "range": "<= 0.4.2",
+    "versions": [
+      "0.5.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 601,
+    "ghsa": "GHSA-w4pp-8pjf-rmxw",
+    "package": "pacote",
+    "range": ">= 11.2.7, < 21.5.1",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 599,
+    "ghsa": "GHSA-2v37-7h3g-55p8",
+    "package": "nanoid",
+    "range": "< 3.3.18",
+    "versions": [
+      "3.3.18",
+      "3.3.20"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 598,
+    "ghsa": "GHSA-jmr9-qjv8-65gv",
+    "package": "extract-zip",
+    "range": "<= 2.0.1",
+    "versions": [
+      "2.0.1"
+    ],
+    "affected": [
+      "2.0.1"
+    ],
+    "status": "source-patched",
+    "patch": "patches/extract-zip+2.0.1.patch",
+    "regression": "tests/common/unit/dependency-security.spec.ts"
+  },
+  {
+    "number": 597,
+    "ghsa": "GHSA-v39h-62p7-jpjc",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, <= 3.1.1",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 596,
+    "ghsa": "GHSA-q3j6-qgpj-74h6",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, <= 3.1.0",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 593,
+    "ghsa": "GHSA-28wg-ghj8-5hjv",
+    "package": "nanoid",
+    "range": "< 3.3.16",
+    "versions": [
+      "3.3.18",
+      "3.3.20"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 590,
+    "ghsa": "GHSA-5p4m-2wfm-xmqj",
+    "package": "js-yaml",
+    "range": ">= 4.0.0, < 4.3.1",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 589,
+    "ghsa": "GHSA-5p4m-2wfm-xmqj",
+    "package": "js-yaml",
+    "range": ">= 3.0.0, < 3.15.1",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 588,
+    "ghsa": "GHSA-9f4c-93c8-jc8g",
+    "package": "electron",
+    "range": ">= 40.0.0-alpha.1, < 41.10.3",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 586,
+    "ghsa": "GHSA-r4w5-6pfg-jxp5",
+    "package": "electron",
+    "range": ">= 41.0.0-alpha.1, < 41.9.1",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 584,
+    "ghsa": "GHSA-v3j7-r9gq-3gjw",
+    "package": "electron",
+    "range": ">= 41.0.0-alpha.1, < 41.4.0",
+    "versions": [
+      "42.11.14"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 582,
+    "ghsa": "GHSA-m8rv-5g2x-5cg5",
+    "package": "undici",
+    "range": "< 6.28.0",
+    "versions": [
+      "6.29.1",
+      "7.30.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 581,
+    "ghsa": "GHSA-v3r7-h72x-cjcm",
+    "package": "undici",
+    "range": "< 6.28.0",
+    "versions": [
+      "6.29.1",
+      "7.30.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 580,
+    "ghsa": "GHSA-8xcm-r25x-g524",
+    "package": "undici",
+    "range": "< 6.28.0",
+    "versions": [
+      "6.29.1",
+      "7.30.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 579,
+    "ghsa": "GHSA-7p8r-x3mc-p8w7",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, < 3.1.5",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 578,
+    "ghsa": "GHSA-fxqj-rqcc-2cmp",
+    "package": "postcss",
+    "range": "<= 8.5.22",
+    "versions": [
+      "8.5.23",
+      "8.5.31"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 577,
+    "ghsa": "GHSA-mwp4-54f8-5fhr",
+    "package": "ip-address",
+    "range": "<= 10.3.0",
+    "versions": [
+      "10.7.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 576,
+    "ghsa": "GHSA-rgw5-rvv9-x895",
+    "package": "brace-expansion",
+    "range": "< 1.1.18",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 575,
+    "ghsa": "GHSA-rgw5-rvv9-x895",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, < 2.1.4",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 574,
+    "ghsa": "GHSA-mh99-v99m-4gvg",
+    "package": "brace-expansion",
+    "range": "< 1.1.17",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 573,
+    "ghsa": "GHSA-mh99-v99m-4gvg",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, < 2.1.3",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 572,
+    "ghsa": "GHSA-36jr-mh4h-2g58",
+    "package": "d3-color",
+    "range": ">= 1.0.2, < 3.1.0",
+    "versions": [
+      "3.1.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 569,
+    "ghsa": "GHSA-r28c-9q8g-f849",
+    "package": "postcss",
+    "range": "<= 8.5.17",
+    "versions": [
+      "8.5.23",
+      "8.5.31"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 568,
+    "ghsa": "GHSA-6g55-p6wh-862q",
+    "package": "postcss",
+    "range": "<= 8.5.11",
+    "versions": [
+      "8.5.23",
+      "8.5.31"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 566,
+    "ghsa": "GHSA-r292-9mhp-454m",
+    "package": "tar",
+    "range": "<= 7.5.20",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 564,
+    "ghsa": "GHSA-wrjc-x8rr-h8h6",
+    "package": "react-router",
+    "range": ">= 6.0.0, < 7.18.0",
+    "versions": [
+      "5.2.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 561,
+    "ghsa": "GHSA-v2hh-gcrm-f6hx",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, <= 3.1.3",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 558,
+    "ghsa": "GHSA-4c8g-83qw-93j6",
+    "package": "fast-uri",
+    "range": ">= 3.0.0, < 3.1.3",
+    "versions": [
+      "3.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 551,
+    "ghsa": "GHSA-gcfj-64vw-6mp9",
+    "package": "axios",
+    "range": ">= 1.15.2, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 550,
+    "ghsa": "GHSA-hcpx-6fm6-wx23",
+    "package": "axios",
+    "range": ">= 1.15.1, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 549,
+    "ghsa": "GHSA-7q8q-rj6j-mhjq",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 548,
+    "ghsa": "GHSA-7q8q-rj6j-mhjq",
+    "package": "axios",
+    "range": ">= 0.8.0, < 0.33.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 547,
+    "ghsa": "GHSA-mwf2-3pr3-8698",
+    "package": "axios",
+    "range": ">= 1.13.0, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 546,
+    "ghsa": "GHSA-jqh4-m9w3-8hp9",
+    "package": "axios",
+    "range": ">= 1.7.0, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 545,
+    "ghsa": "GHSA-mmx7-hfxf-jppx",
+    "package": "axios",
+    "range": "< 0.33.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 544,
+    "ghsa": "GHSA-mmx7-hfxf-jppx",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 543,
+    "ghsa": "GHSA-f4gw-2p7v-4548",
+    "package": "axios",
+    "range": ">= 1.15.0, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 542,
+    "ghsa": "GHSA-f5vj-f2hx-8m93",
+    "package": "webpack-dev-server",
+    "range": "<= 5.2.5",
+    "versions": [
+      "5.2.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 541,
+    "ghsa": "GHSA-m28w-2pqf-7qgj",
+    "package": "webpack-dev-server",
+    "range": "<= 5.2.5",
+    "versions": [
+      "5.2.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 540,
+    "ghsa": "GHSA-395f-4hp3-45gv",
+    "package": "shell-quote",
+    "range": "<= 1.8.4",
+    "versions": [
+      "1.12.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 539,
+    "ghsa": "GHSA-42h9-826w-cgv3",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 538,
+    "ghsa": "GHSA-pmv8-rq9r-6j72",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 537,
+    "ghsa": "GHSA-w8wr-v893-vjvp",
+    "package": "tar",
+    "range": "<= 7.5.17",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 536,
+    "ghsa": "GHSA-23hp-3jrh-7fpw",
+    "package": "tar",
+    "range": "<= 7.5.18",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 535,
+    "ghsa": "GHSA-8x88-c5mf-7j5w",
+    "package": "tar",
+    "range": "<= 7.5.17",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 534,
+    "ghsa": "GHSA-gvwx-54wh-qm9j",
+    "package": "tar",
+    "range": "<= 7.5.16",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 533,
+    "ghsa": "GHSA-52cp-r559-cp3m",
+    "package": "js-yaml",
+    "range": ">= 3.0.0, < 3.15.0",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 532,
+    "ghsa": "GHSA-52cp-r559-cp3m",
+    "package": "js-yaml",
+    "range": ">= 4.0.0, < 4.3.0",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 531,
+    "ghsa": "GHSA-3jxr-9vmj-r5cp",
+    "package": "brace-expansion",
+    "range": "< 1.1.16",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 530,
+    "ghsa": "GHSA-3jxr-9vmj-r5cp",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, < 2.1.2",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 529,
+    "ghsa": "GHSA-xj6q-8x83-jv6g",
+    "package": "axios",
+    "range": ">= 1.15.2, < 1.18.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 527,
+    "ghsa": "GHSA-xv26-6w52-cph6",
+    "package": "websocket-driver",
+    "range": "< 0.7.5",
+    "versions": [
+      "0.7.5"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 526,
+    "ghsa": "GHSA-pjwm-pj3p-43mv",
+    "package": "axios",
+    "range": ">= 1.15.0, < 1.16.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 525,
+    "ghsa": "GHSA-52v5-jr5w-gjxr",
+    "package": "sigstore",
+    "range": "<= 4.1.0",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 524,
+    "ghsa": "GHSA-h67p-54hq-rp68",
+    "package": "js-yaml",
+    "range": "< 3.15.0",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 523,
+    "ghsa": "GHSA-h67p-54hq-rp68",
+    "package": "js-yaml",
+    "range": ">= 4.0.0, <= 4.1.1",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 522,
+    "ghsa": "GHSA-mx8g-39q3-5c79",
+    "package": "webpack-dev-server",
+    "range": "< 5.2.5",
+    "versions": [
+      "5.2.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 520,
+    "ghsa": "GHSA-64mm-vxmg-q3vj",
+    "package": "http-proxy-middleware",
+    "range": ">= 0.16.0, < 2.0.10",
+    "versions": [
+      "2.0.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 519,
+    "ghsa": "GHSA-4x5r-pxfx-6jf8",
+    "package": "@babel/core",
+    "range": "<= 7.29.0",
+    "versions": [
+      "7.29.6",
+      "7.29.7"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 518,
+    "ghsa": "GHSA-g8m3-5g58-fq7m",
+    "package": "undici",
+    "range": "< 6.27.0",
+    "versions": [
+      "6.29.1",
+      "7.30.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 517,
+    "ghsa": "GHSA-35p6-xmwp-9g52",
+    "package": "undici",
+    "range": "< 6.27.0",
+    "versions": [
+      "6.29.1",
+      "7.30.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 516,
+    "ghsa": "GHSA-p88m-4jfj-68fv",
+    "package": "undici",
+    "range": "< 6.27.0",
+    "versions": [
+      "6.29.1",
+      "7.30.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 514,
+    "ghsa": "GHSA-96hv-2xvq-fx4p",
+    "package": "ws",
+    "range": ">= 8.0.0, < 8.21.0",
+    "versions": [
+      "8.21.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 512,
+    "ghsa": "GHSA-hmw2-7cc7-3qxx",
+    "package": "form-data",
+    "range": ">= 4.0.0, < 4.0.6",
+    "versions": [
+      "3.0.5",
+      "4.0.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 510,
+    "ghsa": "GHSA-v6wh-96g9-6wx3",
+    "package": "launch-editor",
+    "range": "<= 2.14.0",
+    "versions": [
+      "2.14.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 509,
+    "ghsa": "GHSA-wcpc-wj8m-hjx6",
+    "package": "protobufjs",
+    "range": "<= 7.6.0",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 508,
+    "ghsa": "GHSA-f38q-mgvj-vph7",
+    "package": "protobufjs",
+    "range": "<= 7.6.2",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 507,
+    "ghsa": "GHSA-9h5v-pfqq-x599",
+    "package": "ua-parser-js",
+    "range": ">= 2.0.1, < 2.0.10",
+    "versions": [
+      "0.7.41",
+      "1.0.41",
+      "2.0.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 506,
+    "ghsa": "GHSA-hmw2-7cc7-3qxx",
+    "package": "form-data",
+    "range": "< 2.5.6",
+    "versions": [
+      "3.0.5",
+      "4.0.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 505,
+    "ghsa": "GHSA-hmw2-7cc7-3qxx",
+    "package": "form-data",
+    "range": ">= 3.0.0, < 3.0.5",
+    "versions": [
+      "3.0.5",
+      "4.0.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 503,
+    "ghsa": "GHSA-vmf3-w455-68vh",
+    "package": "tar",
+    "range": "<= 7.5.15",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 500,
+    "ghsa": "GHSA-35jp-ww65-95wh",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.16.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 498,
+    "ghsa": "GHSA-898c-q2cr-xwhg",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.16.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 495,
+    "ghsa": "GHSA-w7jw-789q-3m8p",
+    "package": "shell-quote",
+    "range": ">= 1.1.0, <= 1.8.3",
+    "versions": [
+      "1.12.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 492,
+    "ghsa": "GHSA-pjwm-pj3p-43mv",
+    "package": "axios",
+    "range": "<= 0.31.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 491,
+    "ghsa": "GHSA-3g43-6gmg-66jw",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.2",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 489,
+    "ghsa": "GHSA-3g43-6gmg-66jw",
+    "package": "axios",
+    "range": ">= 0.19.0, < 0.31.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 488,
+    "ghsa": "GHSA-p92q-9vqr-4j8v",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.16.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 486,
+    "ghsa": "GHSA-hfxv-24rg-xrqf",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.16.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 484,
+    "ghsa": "GHSA-j5f8-grm9-p9fc",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.16.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 482,
+    "ghsa": "GHSA-p92q-9vqr-4j8v",
+    "package": "axios",
+    "range": "<= 0.31.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 481,
+    "ghsa": "GHSA-j5f8-grm9-p9fc",
+    "package": "axios",
+    "range": "<= 0.31.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 479,
+    "ghsa": "GHSA-777c-7fjr-54vf",
+    "package": "axios",
+    "range": ">= 1.7.0, < 1.16.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 477,
+    "ghsa": "GHSA-898c-q2cr-xwhg",
+    "package": "axios",
+    "range": "<= 0.31.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 475,
+    "ghsa": "GHSA-654m-c8p4-x5fp",
+    "package": "axios",
+    "range": "= 1.15.2",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 474,
+    "ghsa": "GHSA-58qx-3vcg-4xpx",
+    "package": "ws",
+    "range": ">= 8.0.0, < 8.20.1",
+    "versions": [
+      "8.21.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 472,
+    "ghsa": "GHSA-jggg-4jg4-v7c6",
+    "package": "protobufjs",
+    "range": "<= 7.5.7",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 470,
+    "ghsa": "GHSA-ph9p-34f9-6g65",
+    "package": "tmp",
+    "range": "< 0.2.6",
+    "versions": [
+      "0.2.7"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 469,
+    "ghsa": "GHSA-q8mj-m7cp-5q26",
+    "package": "qs",
+    "range": ">= 6.11.1, <= 6.15.1",
+    "versions": [
+      "6.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 468,
+    "ghsa": "GHSA-qj8w-gfj5-8c6v",
+    "package": "serialize-javascript",
+    "range": ">= 5.0.0, < 7.0.5",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 467,
+    "ghsa": "GHSA-w5hq-g745-h8pq",
+    "package": "uuid",
+    "range": "< 11.1.1",
+    "versions": [
+      "11.1.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 465,
+    "ghsa": "GHSA-vpq2-c234-7xj6",
+    "package": "@tootallnate/once",
+    "range": "< 2.0.1",
+    "versions": [
+      "2.0.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 464,
+    "ghsa": "GHSA-79cf-xcqc-c78w",
+    "package": "webpack-dev-server",
+    "range": "<= 5.2.3",
+    "versions": [
+      "5.2.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 454,
+    "ghsa": "GHSA-445q-vr5w-6q77",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 453,
+    "ghsa": "GHSA-m7pr-hjqh-92cm",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 449,
+    "ghsa": "GHSA-pf86-5x62-jrwf",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 448,
+    "ghsa": "GHSA-6chq-wfr3-2hj9",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 447,
+    "ghsa": "GHSA-xx6v-rp6x-q39c",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 446,
+    "ghsa": "GHSA-w9j2-pvgh-6h63",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 445,
+    "ghsa": "GHSA-pmwg-cvhr-8vh7",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 444,
+    "ghsa": "GHSA-3w6x-2g7m-8v23",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.2",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 443,
+    "ghsa": "GHSA-q8qp-cvcw-x6jj",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.2",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 442,
+    "ghsa": "GHSA-xhjh-pmcv-23jw",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.1",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 441,
+    "ghsa": "GHSA-3p68-rc4w-qgx5",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 440,
+    "ghsa": "GHSA-fvcv-3m26-pcqx",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.15.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 439,
+    "ghsa": "GHSA-43fc-jf86-j433",
+    "package": "axios",
+    "range": ">= 1.0.0, <= 1.13.4",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 437,
+    "ghsa": "GHSA-jr5f-v2jv-69x6",
+    "package": "axios",
+    "range": ">= 1.0.0, < 1.8.2",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 436,
+    "ghsa": "GHSA-66ff-xgx4-vchm",
+    "package": "protobufjs",
+    "range": "<= 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 435,
+    "ghsa": "GHSA-2pr8-phx7-x9h3",
+    "package": "protobufjs",
+    "range": "<= 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 434,
+    "ghsa": "GHSA-685m-2w69-288q",
+    "package": "protobufjs",
+    "range": "<= 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 433,
+    "ghsa": "GHSA-fx83-v9x8-x52w",
+    "package": "protobufjs",
+    "range": "<= 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 432,
+    "ghsa": "GHSA-75px-5xx7-5xc7",
+    "package": "protobufjs",
+    "range": "<= 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 431,
+    "ghsa": "GHSA-jvwf-75h9-cwgg",
+    "package": "protobufjs",
+    "range": "<= 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 430,
+    "ghsa": "GHSA-q6x5-8v7m-xcrf",
+    "package": "protobufjs",
+    "range": "<= 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 429,
+    "ghsa": "GHSA-q6x5-8v7m-xcrf",
+    "package": "@protobufjs/utf8",
+    "range": "<= 1.1.0",
+    "versions": [
+      "1.1.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 428,
+    "ghsa": "GHSA-fv7c-fp4j-7gwp",
+    "package": "@babel/plugin-transform-modules-systemjs",
+    "range": ">= 7.12.0, <= 7.29.3",
+    "versions": [
+      "7.29.8"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 427,
+    "ghsa": "GHSA-v2v4-37r5-5v8g",
+    "package": "ip-address",
+    "range": "<= 10.1.0",
+    "versions": [
+      "10.7.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 426,
+    "ghsa": "GHSA-m7pr-hjqh-92cm",
+    "package": "axios",
+    "range": "<= 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 420,
+    "ghsa": "GHSA-w9j2-pvgh-6h63",
+    "package": "axios",
+    "range": "<= 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 418,
+    "ghsa": "GHSA-pf86-5x62-jrwf",
+    "package": "axios",
+    "range": "<= 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 416,
+    "ghsa": "GHSA-xx6v-rp6x-q39c",
+    "package": "axios",
+    "range": "<= 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 414,
+    "ghsa": "GHSA-6chq-wfr3-2hj9",
+    "package": "axios",
+    "range": "<= 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 412,
+    "ghsa": "GHSA-xhjh-pmcv-23jw",
+    "package": "axios",
+    "range": "<= 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 410,
+    "ghsa": "GHSA-pmwg-cvhr-8vh7",
+    "package": "axios",
+    "range": "<= 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 406,
+    "ghsa": "GHSA-qx2v-qp2m-jg93",
+    "package": "postcss",
+    "range": "< 8.5.10",
+    "versions": [
+      "8.5.23",
+      "8.5.31"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 401,
+    "ghsa": "GHSA-xq3m-2v4x-88gg",
+    "package": "protobufjs",
+    "range": "< 7.5.5",
+    "versions": [
+      "7.6.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 400,
+    "ghsa": "GHSA-3p68-rc4w-qgx5",
+    "package": "axios",
+    "range": "< 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 398,
+    "ghsa": "GHSA-fvcv-3m26-pcqx",
+    "package": "axios",
+    "range": "< 0.31.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 396,
+    "ghsa": "GHSA-r4q5-vmmm-2653",
+    "package": "follow-redirects",
+    "range": "<= 1.15.11",
+    "versions": [
+      "1.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 357,
+    "ghsa": "GHSA-ccgf-5rwj-j3hv",
+    "package": "telejson",
+    "range": "< 6.0.0",
+    "versions": [
+      "7.2.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 348,
+    "ghsa": "GHSA-r5fr-rjxr-66jc",
+    "package": "lodash.template",
+    "range": ">= 4.0.0, < 4.18.0",
+    "versions": [
+      "4.18.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 347,
+    "ghsa": "GHSA-7rx3-28cr-v5wh",
+    "package": "handlebars",
+    "range": ">= 4.6.0, <= 4.7.8",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 346,
+    "ghsa": "GHSA-442j-39wm-28r2",
+    "package": "handlebars",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 339,
+    "ghsa": "GHSA-3mfm-83xf-c92r",
+    "package": "handlebars",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 338,
+    "ghsa": "GHSA-xjpj-3mr7-gcpf",
+    "package": "handlebars",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 337,
+    "ghsa": "GHSA-2w6w-674q-4c4q",
+    "package": "handlebars",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 336,
+    "ghsa": "GHSA-xhpv-hc6g-r9c6",
+    "package": "handlebars",
+    "range": ">= 4.0.0, <= 4.7.8",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 334,
+    "ghsa": "GHSA-f886-m6hf-6m8v",
+    "package": "brace-expansion",
+    "range": "< 1.1.13",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 333,
+    "ghsa": "GHSA-f886-m6hf-6m8v",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, < 2.0.3",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 332,
+    "ghsa": "GHSA-2qvq-rjwj-gvw9",
+    "package": "handlebars",
+    "range": ">= 4.0.0, < 4.7.9",
+    "versions": [
+      "4.7.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 326,
+    "ghsa": "GHSA-3v7f-55p6-f55p",
+    "package": "picomatch",
+    "range": "< 2.3.2",
+    "versions": [
+      "2.3.2",
+      "4.0.7"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 323,
+    "ghsa": "GHSA-rf6f-7fwh-wjgh",
+    "package": "flatted",
+    "range": "<= 3.4.1",
+    "versions": [
+      "3.4.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 320,
+    "ghsa": "GHSA-9ppj-qmqm-q256",
+    "package": "tar",
+    "range": "<= 7.5.10",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 319,
+    "ghsa": "GHSA-wf6x-7x77-mvgw",
+    "package": "immutable",
+    "range": ">= 4.0.0-rc.1, < 4.3.8",
+    "versions": [
+      "5.1.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 318,
+    "ghsa": "GHSA-qffp-2rhf-9h96",
+    "package": "tar",
+    "range": "<= 7.5.9",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 315,
+    "ghsa": "GHSA-5c6j-r48x-rmvq",
+    "package": "serialize-javascript",
+    "range": "<= 7.0.2",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 314,
+    "ghsa": "GHSA-23c5-xmqv-rm74",
+    "package": "minimatch",
+    "range": ">= 9.0.0, < 9.0.7",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 313,
+    "ghsa": "GHSA-7r86-cg39-jmmj",
+    "package": "minimatch",
+    "range": ">= 9.0.0, < 9.0.7",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 312,
+    "ghsa": "GHSA-7r86-cg39-jmmj",
+    "package": "minimatch",
+    "range": "< 3.1.3",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 311,
+    "ghsa": "GHSA-23c5-xmqv-rm74",
+    "package": "minimatch",
+    "range": "< 3.1.4",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 310,
+    "ghsa": "GHSA-7r86-cg39-jmmj",
+    "package": "minimatch",
+    "range": ">= 5.0.0, < 5.1.8",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 309,
+    "ghsa": "GHSA-23c5-xmqv-rm74",
+    "package": "minimatch",
+    "range": ">= 5.0.0, < 5.1.8",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 308,
+    "ghsa": "GHSA-3ppc-4f35-3m26",
+    "package": "minimatch",
+    "range": ">= 9.0.0, < 9.0.6",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 307,
+    "ghsa": "GHSA-3ppc-4f35-3m26",
+    "package": "minimatch",
+    "range": "< 3.1.3",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 306,
+    "ghsa": "GHSA-3ppc-4f35-3m26",
+    "package": "minimatch",
+    "range": ">= 5.0.0, < 5.1.7",
+    "versions": [
+      "10.2.6",
+      "3.1.5",
+      "5.1.9",
+      "9.0.9"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 305,
+    "ghsa": "GHSA-378v-28hj-76wf",
+    "package": "bn.js",
+    "range": "< 4.12.3",
+    "versions": [
+      "4.12.5",
+      "5.2.5"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 304,
+    "ghsa": "GHSA-378v-28hj-76wf",
+    "package": "bn.js",
+    "range": ">= 5.0.0, < 5.2.3",
+    "versions": [
+      "4.12.5",
+      "5.2.5"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 303,
+    "ghsa": "GHSA-2g4f-4pwh-qvx6",
+    "package": "ajv",
+    "range": ">= 7.0.0-alpha.0, < 8.18.0",
+    "versions": [
+      "6.15.0",
+      "8.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 300,
+    "ghsa": "GHSA-43fc-jf86-j433",
+    "package": "axios",
+    "range": "<= 0.30.2",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 297,
+    "ghsa": "GHSA-83g3-92jg-28cx",
+    "package": "tar",
+    "range": "< 7.5.8",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 293,
+    "ghsa": "GHSA-w7fw-mjwx-w883",
+    "package": "qs",
+    "range": ">= 6.7.0, <= 6.14.1",
+    "versions": [
+      "6.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 289,
+    "ghsa": "GHSA-8fgc-7cc6-rx7x",
+    "package": "webpack",
+    "range": ">= 5.49.0, <= 5.104.0",
+    "versions": [
+      "5.112.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 287,
+    "ghsa": "GHSA-38r7-794h-5758",
+    "package": "webpack",
+    "range": ">= 5.49.0, < 5.104.0",
+    "versions": [
+      "5.112.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 280,
+    "ghsa": "GHSA-34x7-hfp2-rc4v",
+    "package": "tar",
+    "range": "< 7.5.7",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 275,
+    "ghsa": "GHSA-r6q2-hw4h-h46w",
+    "package": "tar",
+    "range": "<= 7.5.3",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 273,
+    "ghsa": "GHSA-73rr-hh4g-fpgx",
+    "package": "diff",
+    "range": ">= 5.0.0, < 5.2.2",
+    "versions": [
+      "4.0.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 272,
+    "ghsa": "GHSA-8qq5-rm4j-mr97",
+    "package": "tar",
+    "range": "<= 7.5.2",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 270,
+    "ghsa": "GHSA-848j-6mx2-7j84",
+    "package": "elliptic",
+    "range": "<= 6.6.1",
+    "versions": [
+      "6.6.1"
+    ],
+    "affected": [
+      "6.6.1"
+    ],
+    "status": "source-patched",
+    "patch": "patches/elliptic+6.6.1.patch",
+    "regression": "tests/common/unit/dependency-security.spec.ts"
+  },
+  {
+    "number": 269,
+    "ghsa": "GHSA-9jcx-v3wj-wh4m",
+    "package": "react-router",
+    "range": ">= 6.0.0, < 6.30.2",
+    "versions": [
+      "5.2.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 268,
+    "ghsa": "GHSA-6rw7-vpxm-498p",
+    "package": "qs",
+    "range": "< 6.14.1",
+    "versions": [
+      "6.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 259,
+    "ghsa": "GHSA-5j98-mcp5-4vw2",
+    "package": "glob",
+    "range": ">= 10.2.0, < 10.5.0",
+    "versions": [
+      "7.1.6",
+      "10.5.0",
+      "7.2.3"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 256,
+    "ghsa": "GHSA-mh29-5h37-fv8m",
+    "package": "js-yaml",
+    "range": "< 3.14.2",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 255,
+    "ghsa": "GHSA-mh29-5h37-fv8m",
+    "package": "js-yaml",
+    "range": ">= 4.0.0, < 4.1.1",
+    "versions": [
+      "3.15.2",
+      "4.3.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 244,
+    "ghsa": "GHSA-rx8g-88g5-qh64",
+    "package": "min-document",
+    "range": "<= 2.19.0",
+    "versions": [
+      "2.19.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 243,
+    "ghsa": "GHSA-vj76-c3g6-qr5v",
+    "package": "tar-fs",
+    "range": ">= 2.0.0, < 2.1.4",
+    "versions": [
+      "2.1.5"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 237,
+    "ghsa": "GHSA-jr5f-v2jv-69x6",
+    "package": "axios",
+    "range": "< 0.30.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 236,
+    "ghsa": "GHSA-968p-4wvh-cqc8",
+    "package": "@babel/runtime",
+    "range": "< 7.26.10",
+    "versions": [
+      "7.29.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 234,
+    "ghsa": "GHSA-95m3-7q98-8xr5",
+    "package": "sha.js",
+    "range": "<= 2.4.11",
+    "versions": [
+      "2.4.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 233,
+    "ghsa": "GHSA-cpq7-6gpm-g9rc",
+    "package": "cipher-base",
+    "range": "<= 1.0.4",
+    "versions": [
+      "1.0.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 232,
+    "ghsa": "GHSA-52f5-9888-hmc6",
+    "package": "tmp",
+    "range": "<= 0.2.3",
+    "versions": [
+      "0.2.7"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 231,
+    "ghsa": "GHSA-v6h2-p8h4-qcjw",
+    "package": "brace-expansion",
+    "range": ">= 1.0.0, <= 1.1.11",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 229,
+    "ghsa": "GHSA-fjxv-7rqg-78g4",
+    "package": "form-data",
+    "range": "< 2.5.4",
+    "versions": [
+      "3.0.5",
+      "4.0.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 228,
+    "ghsa": "GHSA-fjxv-7rqg-78g4",
+    "package": "form-data",
+    "range": ">= 3.0.0, < 3.0.4",
+    "versions": [
+      "3.0.5",
+      "4.0.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 227,
+    "ghsa": "GHSA-76c9-3jph-rj3q",
+    "package": "on-headers",
+    "range": "< 1.1.0",
+    "versions": [
+      "1.1.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 218,
+    "ghsa": "GHSA-v6h2-p8h4-qcjw",
+    "package": "brace-expansion",
+    "range": ">= 2.0.0, <= 2.0.1",
+    "versions": [
+      "1.1.21",
+      "2.1.7",
+      "5.0.12"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 212,
+    "ghsa": "GHSA-8cj5-5rvv-wf4v",
+    "package": "tar-fs",
+    "range": ">= 2.0.0, < 2.1.3",
+    "versions": [
+      "2.1.5"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 211,
+    "ghsa": "GHSA-xq7p-g2vc-g82p",
+    "package": "base-x",
+    "range": "<= 3.0.10",
+    "versions": [
+      "3.0.11",
+      "5.0.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 204,
+    "ghsa": "GHSA-pq67-2wwv-3xjx",
+    "package": "tar-fs",
+    "range": ">= 2.0.0, < 2.1.2",
+    "versions": [
+      "2.1.5"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 202,
+    "ghsa": "GHSA-x7hr-w5r2-h6wg",
+    "package": "prismjs",
+    "range": "< 1.30.0",
+    "versions": [
+      "1.30.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 198,
+    "ghsa": "GHSA-76p7-773f-r4q5",
+    "package": "serialize-javascript",
+    "range": ">= 6.0.0, < 6.0.2",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 197,
+    "ghsa": "GHSA-vjh7-7g9h-fjfh",
+    "package": "elliptic",
+    "range": "<= 6.6.0",
+    "versions": [
+      "6.6.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 195,
+    "ghsa": "GHSA-w5hq-hm5m-4548",
+    "package": "store2",
+    "range": "< 2.14.4",
+    "versions": [
+      "2.14.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 194,
+    "ghsa": "GHSA-mwcw-c2x4-8c55",
+    "package": "nanoid",
+    "range": "< 3.3.8",
+    "versions": [
+      "3.3.18",
+      "3.3.20"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 191,
+    "ghsa": "GHSA-3xgq-45jj-v275",
+    "package": "cross-spawn",
+    "range": ">= 7.0.0, < 7.0.5",
+    "versions": [
+      "7.0.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 189,
+    "ghsa": "GHSA-fc9h-whq2-v747",
+    "package": "elliptic",
+    "range": "< 6.6.0",
+    "versions": [
+      "6.6.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 186,
+    "ghsa": "GHSA-4wx3-54gh-9fr9",
+    "package": "markdown-to-jsx",
+    "range": "< 7.4.0",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 185,
+    "ghsa": "GHSA-pxg6-pf52-xh8x",
+    "package": "cookie",
+    "range": "< 0.7.0",
+    "versions": [
+      "0.7.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 184,
+    "ghsa": "GHSA-434g-2637-qmqr",
+    "package": "elliptic",
+    "range": "< 6.5.6",
+    "versions": [
+      "6.6.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 183,
+    "ghsa": "GHSA-m6fv-jmcg-4jfg",
+    "package": "send",
+    "range": "< 0.19.0",
+    "versions": [
+      "0.19.2"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 182,
+    "ghsa": "GHSA-cm22-4g7w-348p",
+    "package": "serve-static",
+    "range": "< 1.16.0",
+    "versions": [
+      "1.16.3"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 181,
+    "ghsa": "GHSA-qw6h-vgh9-j6wx",
+    "package": "express",
+    "range": "< 4.20.0",
+    "versions": [
+      "4.22.3"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 180,
+    "ghsa": "GHSA-qwcr-r2fm-qrc7",
+    "package": "body-parser",
+    "range": "< 1.20.3",
+    "versions": [
+      "1.20.8"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 178,
+    "ghsa": "GHSA-9wv6-86v2-598j",
+    "package": "path-to-regexp",
+    "range": ">= 0.2.0, < 1.9.0",
+    "versions": [
+      "1.9.0",
+      "0.1.13"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 176,
+    "ghsa": "GHSA-4vvj-4cpr-p986",
+    "package": "webpack",
+    "range": ">= 5.0.0-alpha.0, < 5.94.0",
+    "versions": [
+      "5.112.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 173,
+    "ghsa": "GHSA-977x-g7h5-7qgw",
+    "package": "elliptic",
+    "range": ">= 2.0.0, <= 6.5.6",
+    "versions": [
+      "6.6.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 172,
+    "ghsa": "GHSA-49q7-c7j4-3p7m",
+    "package": "elliptic",
+    "range": ">= 5.2.1, <= 6.5.6",
+    "versions": [
+      "6.6.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 171,
+    "ghsa": "GHSA-f7q4-pwc6-w24p",
+    "package": "elliptic",
+    "range": ">= 4.0.0, <= 6.5.6",
+    "versions": [
+      "6.6.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 167,
+    "ghsa": "GHSA-grv7-fg5c-xmjg",
+    "package": "braces",
+    "range": "< 3.0.3",
+    "versions": [
+      "3.0.3"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 166,
+    "ghsa": "GHSA-2p57-rm9w-gvfp",
+    "package": "ip",
+    "range": "<= 2.0.1",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 165,
+    "ghsa": "GHSA-35jh-r3h4-6jhm",
+    "package": "lodash.template",
+    "range": "<= 4.5.0",
+    "versions": [
+      "4.18.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 164,
+    "ghsa": "GHSA-f5x3-32g6-xq36",
+    "package": "tar",
+    "range": "< 6.2.1",
+    "versions": [
+      "7.5.22"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 163,
+    "ghsa": "GHSA-rv95-896h-c2vc",
+    "package": "express",
+    "range": "< 4.19.2",
+    "versions": [
+      "4.22.3"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 162,
+    "ghsa": "GHSA-wr3j-pwj9-hqq6",
+    "package": "webpack-dev-middleware",
+    "range": "<= 5.3.3",
+    "versions": [
+      "7.4.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 161,
+    "ghsa": "GHSA-cxjh-pqwp-8mfp",
+    "package": "follow-redirects",
+    "range": "<= 1.15.5",
+    "versions": [
+      "1.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 160,
+    "ghsa": "GHSA-4gmj-3p3h-gm8h",
+    "package": "es5-ext",
+    "range": ">= 0.10.0, < 0.10.63",
+    "versions": [
+      "0.10.64"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 159,
+    "ghsa": "GHSA-wf5p-g6vw-rhxx",
+    "package": "axios",
+    "range": ">= 0.8.1, < 0.28.0",
+    "versions": [
+      "1.20.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 158,
+    "ghsa": "GHSA-78xj-cgh5-2h22",
+    "package": "ip",
+    "range": "< 1.1.9",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 153,
+    "ghsa": "GHSA-jchw-25xp-jwwc",
+    "package": "follow-redirects",
+    "range": "< 1.15.4",
+    "versions": [
+      "1.16.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 150,
+    "ghsa": "GHSA-x9w5-v3q2-3rhw",
+    "package": "browserify-sign",
+    "range": ">= 2.6.0, <= 4.2.1",
+    "versions": [
+      "4.2.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 148,
+    "ghsa": "GHSA-67hx-6x53-jw92",
+    "package": "@babel/traverse",
+    "range": "< 7.23.2",
+    "versions": [
+      "7.29.10"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 146,
+    "ghsa": "GHSA-7fh5-64p2-3v2j",
+    "package": "postcss",
+    "range": "< 8.4.31",
+    "versions": [
+      "8.5.23",
+      "8.5.31"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 145,
+    "ghsa": "GHSA-gxpj-cx7g-858c",
+    "package": "debug",
+    "range": ">= 4.0.0, < 4.3.1",
+    "versions": [
+      "2.6.9",
+      "4.4.3",
+      "4.3.1",
+      "3.2.7"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 140,
+    "ghsa": "GHSA-j8xg-fqg3-53r7",
+    "package": "word-wrap",
+    "range": "< 1.2.4",
+    "versions": [
+      "1.2.5"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 136,
+    "ghsa": "GHSA-72xf-g2v4-qvf3",
+    "package": "tough-cookie",
+    "range": "< 4.1.3",
+    "versions": [
+      "4.1.4"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 130,
+    "ghsa": "GHSA-p8p7-x288-28g6",
+    "package": "request",
+    "range": "<= 2.88.2",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 129,
+    "ghsa": "GHSA-hc6q-2mpp-qw7j",
+    "package": "webpack",
+    "range": ">= 5.0.0, < 5.76.0",
+    "versions": [
+      "5.112.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 125,
+    "ghsa": "GHSA-rc47-6667-2j5j",
+    "package": "http-cache-semantics",
+    "range": "< 4.1.1",
+    "versions": [
+      "4.3.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 123,
+    "ghsa": "GHSA-9c47-m6qq-7p4h",
+    "package": "json5",
+    "range": ">= 2.0.0, < 2.2.2",
+    "versions": [
+      "1.0.2",
+      "2.2.3"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 122,
+    "ghsa": "GHSA-9c47-m6qq-7p4h",
+    "package": "json5",
+    "range": "< 1.0.2",
+    "versions": [
+      "1.0.2",
+      "2.2.3"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 120,
+    "ghsa": "GHSA-w573-4hg7-7wgq",
+    "package": "decode-uri-component",
+    "range": "< 0.2.1",
+    "versions": [
+      "0.5.0"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 114,
+    "ghsa": "GHSA-653v-rqx9-j85p",
+    "package": "deep-object-diff",
+    "range": ">= 1.1.6, < 1.1.9",
+    "versions": [],
+    "affected": [],
+    "status": "removed"
+  },
+  {
+    "number": 112,
+    "ghsa": "GHSA-76p3-8jx3-jpfq",
+    "package": "loader-utils",
+    "range": "< 1.4.1",
+    "versions": [
+      "1.4.2",
+      "2.0.4",
+      "3.3.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 110,
+    "ghsa": "GHSA-76p3-8jx3-jpfq",
+    "package": "loader-utils",
+    "range": ">= 2.0.0, < 2.0.3",
+    "versions": [
+      "1.4.2",
+      "2.0.4",
+      "3.3.1"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  },
+  {
+    "number": 105,
+    "ghsa": "GHSA-pfrx-2q88-qq97",
+    "package": "got",
+    "range": "< 11.8.5",
+    "versions": [
+      "11.8.6"
+    ],
+    "affected": [],
+    "status": "version-fixed"
+  }
+]

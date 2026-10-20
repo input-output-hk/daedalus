@@ -23,6 +23,7 @@
       # Enable prettier for JS/TS/JSON/SCSS formatting
       programs.prettier = {
         enable = true;
+        package = pkgs.prettier;
         # Use the settings from .prettierrc
         settings = {
           trailingComma = "es5";

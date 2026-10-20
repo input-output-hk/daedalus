@@ -24,6 +24,7 @@ import Wallet, { HwDeviceStatuses, WalletUnits } from '../domains/Wallet';
 import { GenericApiError } from '../api/common/errors';
 import WalletAddress from '../domains/WalletAddress';
 import { toJS } from '../../../common/utils/helper';
+import { isLedgerUserRejection } from '../../../common/utils/ledgerErrors';
 import {
   SHELLEY_PURPOSE_INDEX,
   ADA_COIN_TYPE,
@@ -2388,7 +2389,8 @@ export default class HardwareWalletsStore extends Store {
        * e.name === DisconnectedDevice // Ledger
        */
       const isCancelled =
-        error.statusCode === 28169 || error.code === 'Failure_ActionCancelled';
+        isLedgerUserRejection(error) ||
+        error.code === 'Failure_ActionCancelled';
       const isAborted =
         error.name === 'DisconnectedDevice' ||
         error.error === 'device disconnected during action';
@@ -2593,7 +2595,8 @@ export default class HardwareWalletsStore extends Store {
        * e.error === 'device disconnected during action' // Trezor
        */
       const isCancelled =
-        error.statusCode === 28169 || error.code === 'Failure_ActionCancelled';
+        isLedgerUserRejection(error) ||
+        error.code === 'Failure_ActionCancelled';
       const isAborted =
         error.name === 'DisconnectedDevice' ||
         error.error === 'device disconnected during action';

@@ -123,7 +123,7 @@ function StakePoolsTableComponent({
   });
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
+    useTable<StakePool>(
       {
         columns,
         data: sortedStakePoolList,

@@ -1,5 +1,5 @@
 import hash from 'hash.js';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import JSONBigInt from 'json-bigint';
 import moment from 'moment';
 import { get } from 'lodash';
@@ -201,7 +201,7 @@ export const generateTransaction = (
   metadata: TransactionMetadata = EXAMPLE_METADATA
 ) =>
   new WalletTransaction({
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     title: '',
     type,
     amount: amount.plus(fee),
@@ -220,17 +220,17 @@ export const generateTransaction = (
         : [
             hasUnresolvedIncomeAddresses
               ? ''
-              : faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+              : faker.string.alphanumeric(Math.round(Math.random() * 10) + 100),
           ],
       to: [
-        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
-        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+        faker.string.alphanumeric(Math.round(Math.random() * 10) + 100),
+        faker.string.alphanumeric(Math.round(Math.random() * 10) + 100),
       ],
       withdrawals: noWithdrawals
         ? []
         : [
-            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
-            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+            faker.string.alphanumeric(Math.round(Math.random() * 10) + 100),
+            faker.string.alphanumeric(Math.round(Math.random() * 10) + 100),
           ],
     },
     metadata,
@@ -239,7 +239,7 @@ export const generateRandomTransaction = (index: number) =>
   generateTransaction(
     TransactionTypes.INCOME,
     moment().subtract(index, 'days').toDate(),
-    new BigNumber(faker.datatype.number(5))
+    new BigNumber(faker.number.int(5))
   );
 export const generateMultipleTransactions = (
   amount: number

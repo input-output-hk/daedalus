@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-polymorph/lib/themes/simple/SimpleOptions.scss b/node_modules/react-polymorph/lib/themes/simple/SimpleOptions.scss
+index d5909e4..b0e4cfc 100644
+--- a/node_modules/react-polymorph/lib/themes/simple/SimpleOptions.scss
++++ b/node_modules/react-polymorph/lib/themes/simple/SimpleOptions.scss
+@@ -232,7 +232,8 @@ $options-arrow-height: var(--rp-options-arrow-height, $options-arrow-size) !defa
+ 
+ // BEGIN SPECIAL STATES ---------- //
+ 
+-@if calc(#{$options-arrow} == true) {
++// The old calc(...) condition was always truthy. Keep these positioning rules.
++@if true {
+   .openUpward {
+     &.options {
+       top: inherit;

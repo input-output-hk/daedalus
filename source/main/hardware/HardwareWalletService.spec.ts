@@ -1147,7 +1147,10 @@ describe('HardwareWalletService', () => {
       close: jest.fn(() => Promise.resolve()),
     } as unknown as TransportNodeHid;
     const getVersion = jest.fn(() =>
-      Promise.resolve({ version: { major: 7, minor: 3, patch: 1 } })
+      Promise.resolve({
+        version: { major: 7, minor: 3, patch: 1 },
+        compatibility: { isCompatible: true },
+      })
     );
     const dependencies: LedgerServiceDependencies = {
       open: jest.fn(() => Promise.resolve(transport)),
