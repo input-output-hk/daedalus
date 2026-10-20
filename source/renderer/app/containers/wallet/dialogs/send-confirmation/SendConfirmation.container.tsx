@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useCallback, useState } from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useCallback,
+  useState,
+  useRef,
+} from 'react';
 import { inject, observer } from 'mobx-react';
 import compose from 'lodash/fp/compose';
 import { getNonZeroAssetTokens } from '../../../../utils/assets';
@@ -46,6 +52,12 @@ export function Containter({
   }
 
   const [areTermsAccepted, setAreTermsAccepted] = useState(false);
+  const ownsHardwareTransaction = useRef(false);
+  const cancelHardwareTransaction = useCallback(() => {
+    if (!ownsHardwareTransaction.current) return;
+    ownsHardwareTransaction.current = false;
+    resetHardwareWalletTransaction({ cancelDeviceAction: true });
+  }, [resetHardwareWalletTransaction]);
   const assetTokens = useMemo(
     () => getNonZeroAssetTokens(activeWallet.assets.total, getAsset),
     [activeWallet.assets.total, getAsset]
@@ -60,11 +72,19 @@ export function Containter({
     : sendMoneyRequest.error;
   useEffect(() => {
     if (isHardwareWallet && !isFlight) {
+      ownsHardwareTransaction.current = true;
       initiateTransaction({
         walletId: activeWallet.id,
       });
     }
-  }, [activeWallet.id, isFlight, isHardwareWallet, initiateTransaction]);
+    return cancelHardwareTransaction;
+  }, [
+    activeWallet.id,
+    isFlight,
+    isHardwareWallet,
+    initiateTransaction,
+    cancelHardwareTransaction,
+  ]);
 
   const onSubmitCb = useCallback(
     (values: SubmitPayload) => {
@@ -82,6 +102,7 @@ export function Containter({
       setAreTermsAccepted(areTermsAccepted);
 
       if (isHardwareWallet) {
+        ownsHardwareTransaction.current = true;
         initiateTransaction({
           walletId: activeWallet.id,
         });
@@ -91,17 +112,15 @@ export function Containter({
   );
 
   const onCancel = useCallback(() => {
+    cancelHardwareTransaction();
     closeActiveDialog.trigger();
     sendMoneyRequest.reset();
-    resetHardwareWalletTransaction({
-      cancelDeviceAction: true,
-    });
     if (global.cip30Enabled && isCollateralPreparation)
       collateral.cancelPreparation();
   }, [
     sendMoneyRequest,
     closeActiveDialog,
-    resetHardwareWalletTransaction,
+    cancelHardwareTransaction,
     isCollateralPreparation,
     collateral,
   ]);

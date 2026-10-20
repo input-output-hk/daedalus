@@ -29,6 +29,15 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     stakePoolQuitFee: null,
   };
   _isMounted = false;
+  _ownsHardwareTransaction = false;
+
+  cancelHardwareTransaction = () => {
+    if (!this._ownsHardwareTransaction) return;
+    this._ownsHardwareTransaction = false;
+    this.props.stores.hardwareWallets._resetTransaction({
+      cancelDeviceAction: true,
+    });
+  };
 
   componentDidMount() {
     this._isMounted = true;
@@ -42,6 +51,7 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    this.cancelHardwareTransaction();
   }
 
   get selectedWalletId() {
@@ -72,9 +82,10 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
   async _handleCalculateTransactionFee() {
     const { staking, wallets, hardwareWallets } = this.props.stores;
     const { calculateDelegationFee } = staking;
+    const walletId = this.selectedWalletId;
     const selectedWallet = find(
       wallets.allWallets,
-      (wallet) => wallet.id === this.selectedWalletId
+      (wallet) => wallet.id === walletId
     );
     if (!selectedWallet) return;
     const { lastDelegatedStakePoolId, delegatedStakePoolId } = selectedWallet;
@@ -82,8 +93,9 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     let stakePoolQuitFee;
 
     if (selectedWallet.isHardwareWallet) {
+      this._ownsHardwareTransaction = true;
       const coinsSelection = await hardwareWallets.selectDelegationCoins({
-        walletId: this.selectedWalletId,
+        walletId,
         poolId,
         delegationAction: DELEGATION_ACTIONS.QUIT,
       });
@@ -93,13 +105,13 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
         depositsReclaimed,
         fee,
       };
-      if (!this._isMounted) return;
+      if (!this._isMounted || !this._ownsHardwareTransaction) return;
       hardwareWallets.initiateTransaction({
-        walletId: this.selectedWalletId,
+        walletId,
       });
     } else {
       stakePoolQuitFee = await calculateDelegationFee({
-        walletId: this.selectedWalletId,
+        walletId,
       });
 
       // @TODO Remove this when api returns depositsReclaimed value
@@ -186,7 +198,7 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
           quitStakePoolRequest.reset();
-          hardwareWallets._resetTransaction({ cancelDeviceAction: true });
+          this.cancelHardwareTransaction();
           actions.wallets.setUndelegateWalletSubmissionSuccess.trigger({
             result: false,
           });

@@ -435,25 +435,50 @@ export default class VotingStore extends Store {
     }
   };
 
-  prepareVotingData = async ({ walletId }: { walletId: string }) => {
+  prepareVotingData = async ({
+    walletId,
+    isCurrent,
+  }: {
+    walletId: string;
+    isCurrent?: () => boolean;
+  }) => {
+    const assertCurrent = () => {
+      if (isCurrent && !isCurrent())
+        throw new Error('Voting registration cancelled.');
+    };
+    assertCurrent();
+    // A cancelled wallet's request must not be reused by a newer registration.
+    if (isCurrent) {
+      runInAction(() => {
+        this.getWalletPublicKeyRequest = new Request(
+          this.api.ada.getWalletPublicKey
+        );
+      });
+    }
+    const publicKeyRequest = this.getWalletPublicKeyRequest;
     try {
       const address = global.cip30Enabled
         ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
         : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
+      assertCurrent();
       const addressHex = await this._getHexFromBech32(address.id);
-      await this._generateVotingRegistrationKey();
+      assertCurrent();
+      await this._generateVotingRegistrationKey(isCurrent);
+      assertCurrent();
       if (!this.votingRegistrationKey)
         throw new Error('Failed to generate voting registration key.');
       const votingKey = formattedArrayBufferToHexString(
         this.votingRegistrationKey.public().bytes()
       );
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-      const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
+      const stakeKeyBech32 = await publicKeyRequest.execute({
         walletId,
         role: 'mutable_account',
         index: '0',
       });
+      assertCurrent();
       const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
+      assertCurrent();
       const { absoluteSlotNumber } = this.stores.networkStatus;
       const metadata = {
         [61284]: {
@@ -707,8 +732,9 @@ export default class VotingStore extends Store {
       Object.values(FundPhase).find((phase) => phaseValidation[phase](now)) ||
       null;
   };
-  _generateVotingRegistrationKey = async () => {
+  _generateVotingRegistrationKey = async (isCurrent = () => true) => {
     const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;
+    if (!isCurrent()) throw new Error('Voting registration cancelled.');
 
     this._setVotingRegistrationKey(extendedPrivateKey.generate());
   };

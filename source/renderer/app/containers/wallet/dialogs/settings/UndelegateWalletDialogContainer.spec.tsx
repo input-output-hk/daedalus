@@ -132,16 +132,14 @@ describe('upstream undelegation confirmation', () => {
     });
   });
 
-  it('cancels and resets hardware state without submitting', async () => {
+  it('cancels software confirmation without resetting unrelated hardware work', async () => {
     const fixture = createFixture();
     await waitFor(() =>
       expect(fixture.calculateDelegationFee).toHaveBeenCalled()
     );
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(fixture.close).toHaveBeenCalledTimes(1);
-    expect(fixture.resetHardware).toHaveBeenCalledWith({
-      cancelDeviceAction: true,
-    });
+    expect(fixture.resetHardware).not.toHaveBeenCalled();
     expect(fixture.trigger).not.toHaveBeenCalled();
   });
 });

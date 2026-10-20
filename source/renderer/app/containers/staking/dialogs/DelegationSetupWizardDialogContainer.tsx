@@ -55,6 +55,15 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
   _isMounted = false;
+  _ownsHardwareTransaction = false;
+
+  cancelHardwareTransaction = () => {
+    if (!this._ownsHardwareTransaction) return;
+    this._ownsHardwareTransaction = false;
+    this.props.stores.hardwareWallets._resetTransaction({
+      cancelDeviceAction: true,
+    });
+  };
 
   componentDidMount() {
     this._isMounted = true;
@@ -62,6 +71,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    this.cancelHardwareTransaction();
   }
 
   handleIsWalletAcceptable = (
@@ -105,9 +115,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
     stores.staking.joinStakePoolRequest.reset();
     actions.dialogs.closeActiveDialog.trigger();
 
-    stores.hardwareWallets._resetTransaction({
-      cancelDeviceAction: true,
-    });
+    this.cancelHardwareTransaction();
   };
   handleContinue = () => {
     const { activeStep } = this.state;
@@ -117,9 +125,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   };
   onBack = () => {
     const { activeStep } = this.state;
-    this.props.stores.hardwareWallets._resetTransaction({
-      cancelDeviceAction: true,
-    });
+    this.cancelHardwareTransaction();
     this.props.stores.staking.joinStakePoolRequest.reset();
     this.setState({
       activeStep: activeStep - 1,
@@ -161,6 +167,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
     const { selectedWalletId } = this.state;
     const wallet = wallets.getWalletById(selectedWalletId);
     if (!wallet) return;
+    if (wallet.isHardwareWallet) this._ownsHardwareTransaction = true;
     const stakePoolJoinFee = wallet.isHardwareWallet
       ? await hardwareWallets.selectDelegationCoins({
           walletId: selectedWalletId,
@@ -170,6 +177,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
       : await staking.calculateDelegationFee({ walletId: selectedWalletId });
     if (
       !this._isMounted ||
+      (wallet.isHardwareWallet && !this._ownsHardwareTransaction) ||
       this.state.activeStep !== 3 ||
       this.state.selectedWalletId !== selectedWalletId ||
       this.state.selectedPoolId !== poolId

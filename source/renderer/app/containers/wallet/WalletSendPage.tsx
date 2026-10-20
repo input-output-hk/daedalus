@@ -9,7 +9,7 @@ import {
 import WalletSendForm, {
   FormData,
 } from '../../components/wallet/WalletSendForm';
-import { WalletSendConfirmationDialogContainer } from './dialogs/send-confirmation/SendConfirmation.container';
+import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/SendConfirmation.view';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import Asset from '../../domains/Asset';
@@ -22,14 +22,19 @@ import {
 import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 type Props = InjectedProps & WithAnalyticsTrackerProps;
+type State = {
+  confirmationDialogData: Omit<FormData, 'coinSelection'> | null;
+};
 
 @inject('stores', 'actions')
 @observer
-class WalletSendPage extends Component<Props> {
+class WalletSendPage extends Component<Props, State> {
   static defaultProps = {
     actions: null,
     stores: null,
   };
+
+  state: State = { confirmationDialogData: null };
 
   calculateTransactionFee = async (params: {
     walletId: string;
@@ -80,20 +85,9 @@ class WalletSendPage extends Component<Props> {
       if (isHardwareWallet) {
         this.props.stores.hardwareWallets.updateTxSignRequest(coinSelection);
       }
+      this.setState({ confirmationDialogData: data });
       this.props.actions.dialogs.open.trigger({
-        dialog: WalletSendConfirmationDialogContainer,
-        props: {
-          amount: data.amount.toFixed(),
-          selectedAssets: data.selectedAssets,
-          assetsAmounts: data.assetsAmounts,
-          receiver: data.receiver,
-          totalAmount: data.totalAmount,
-          transactionFee: data.transactionFee.toFixed(),
-          hwDeviceStatus: this.props.stores.hardwareWallets.hwDeviceStatus,
-          isHardwareWallet,
-          formattedTotalAmount: data.totalAmount.toFixed(),
-          onExternalLinkClick: this.props.stores.app.openExternalLink,
-        },
+        dialog: WalletSendConfirmationDialogView,
       });
       return;
     }
@@ -204,6 +198,8 @@ class WalletSendPage extends Component<Props> {
         isLoadingAssets={isLoadingAssets}
         isDialogOpen={uiDialogs.isOpen}
         isRestoreActive={wallet.isRestoring}
+        isHardwareWallet={isHardwareWallet}
+        hwDeviceStatus={hwDeviceStatus}
         onSubmit={(data: FormData) =>
           this.submit(isHardwareWallet, wallet.id, data)
         }
@@ -215,6 +211,7 @@ class WalletSendPage extends Component<Props> {
         onTokenPickerDialogOpen={this.openTokenPickerDialog}
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
         analyticsTracker={this.props.analyticsTracker}
+        confirmationDialogData={this.state.confirmationDialogData}
         initialReceiver={
           isCollateralPreparation ? preparationAddress : undefined
         }

@@ -30,6 +30,8 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 import AssetInput from './send-form/AssetInput';
+import { WalletSendConfirmationDialogContainer } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container';
+import { WalletSendConfirmationDialogView } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
@@ -1259,6 +1261,9 @@ class WalletSendForm extends Component<Props, State> {
       tokenFavorites,
       walletName,
       onTokenPickerDialogClose,
+      confirmationDialogData,
+      isHardwareWallet,
+      hwDeviceStatus,
     } = this.props;
     const adaAmountField = form.$('adaAmount');
     let fees = '0';
@@ -1347,6 +1352,27 @@ class WalletSendForm extends Component<Props, State> {
             </div>
           </BorderedBox>
         )}
+        {isDialogOpen(WalletSendConfirmationDialogView) &&
+          confirmationDialogData && (
+            <WalletSendConfirmationDialogContainer
+              receiver={confirmationDialogData.receiver}
+              selectedAssets={confirmationDialogData.selectedAssets}
+              assetsAmounts={confirmationDialogData.assetsAmounts}
+              amount={confirmationDialogData.amount.toFormat(
+                currencyMaxFractionalDigits
+              )}
+              totalAmount={confirmationDialogData.totalAmount}
+              transactionFee={confirmationDialogData.transactionFee.toFormat(
+                currencyMaxFractionalDigits
+              )}
+              hwDeviceStatus={hwDeviceStatus}
+              isHardwareWallet={isHardwareWallet}
+              onExternalLinkClick={onExternalLinkClick}
+              formattedTotalAmount={confirmationDialogData.totalAmount.toFormat(
+                currencyMaxFractionalDigits
+              )}
+            />
+          )}
         {isDialogOpen(WalletTokenPicker) && (
           <WalletTokenPicker
             assets={assets}

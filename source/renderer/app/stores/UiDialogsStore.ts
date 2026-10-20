@@ -7,7 +7,7 @@ import DelegationSetupWizardDialog from '../components/staking/delegation-setup-
 import { EventCategories } from '../analytics';
 
 export default class UiDialogsStore extends Store {
-  @observable
+  @observable.ref
   activeDialog: ReactNode | null = null;
   @observable
   secondsSinceActiveDialogIsOpen = 0;
