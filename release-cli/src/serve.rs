@@ -104,8 +104,11 @@ pub async fn serve(
             eprintln!("Warning: linux repo generation failed: {e}");
             false
         });
-    let signed_repos =
-        gpg_user.is_some() && has_repos && repo_tmp.join("apt/dists/stable/Release.gpg").exists();
+    let signed_repos = gpg_user.is_some()
+        && has_repos
+        && (repo_tmp.join("apt/dists/stable/Release.gpg").exists()
+            || repo_tmp.join("yum/repodata/repomd.xml.asc").exists()
+            || repo_tmp.join("arch/daedalus.db.sig").exists());
 
     let state = Arc::new(AppState {
         version_json_bytes,
@@ -170,7 +173,7 @@ pub async fn serve(
             println!(
                 "YUM:  baseurl={base}/yum  gpgcheck=1  gpgkey={base}/yum/daedalus-release.gpg"
             );
-            println!("Arch: Server = {base}/arch  SigLevel = Required DatabaseOptional");
+            println!("Arch: Server = {base}/arch  SigLevel = Required");
         } else {
             println!("=== Linux repos (unsigned — local testing only) ===");
             println!("  APT  : {base}/apt");
