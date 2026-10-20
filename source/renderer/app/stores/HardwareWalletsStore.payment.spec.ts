@@ -1325,10 +1325,10 @@ describe('HardwareWalletsStore upstream payment lifetime', () => {
     expect(release).not.toHaveBeenCalled();
     const submitted = deferred<{ id: string }>();
     submit.mockReturnValueOnce(submitted.promise);
-    store.signedTx = 'signed-upstream-transaction';
+    store.signedTx = '84a0a0f5f6';
     const sending = store._sendMoney();
     expect(submit).toHaveBeenCalledWith({
-      signedTransactionBlob: 'signed-upstream-transaction',
+      signedTransactionBlob: Buffer.from('84a0a0f5f6', 'hex'),
     });
     await store._resetTransaction({ cancelDeviceAction: false });
     expect(release).not.toHaveBeenCalled();

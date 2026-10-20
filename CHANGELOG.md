@@ -6,8 +6,10 @@
 
 - Keep ordinary mainnet and selfnode on upstream wallet contracts and native Send, staking, governance, and hardware confirmation flows; activate CIP-30 behavior only in preprod, preview, and mainnet-flight packages.
 - Restore the Send form's confirmation-dialog mount and captured payment details, fixing the unresponsive Send button on mainnet software and hardware wallets and on Byron wallets; keep Ledger verification status live until approval or cancellation.
+- Decode verified Ledger/Trezor transaction hex into binary bytes before upstream submission, fixing a generic Send error after successful device approval.
 - Preserve dialog component identity so retained class-based dialogs, including undelegation, mount correctly without changing their feature gates.
 - Cancel owned hardware preparation when Send or staking confirmations unmount and when Catalyst registration is cancelled, restarted, or returned to wallet selection; ignore stale registration results without releasing an already-submitting transaction's wallet lease.
+- Bind Catalyst hardware cancellation to its store-owned operation and wallet lease, so cancelling address, metadata, or fee preparation cannot abort another native payment or reset an unrelated dApp signer; retain submission locks until the backend responds.
 - Hold the shared wallet transaction lease through authoritative preparation, consent, retries, signing, and submission; reconstruct hardware payments after acquiring it instead of signing fee-preview bytes.
 - Preserve collateral preparation tracking across Apps-to-Send navigation with wallet/network-bound operation authority, adopting only the exact confirmed output and invalidating stale document operations.
 - Preserve success-only DRep favorites when delegation uses unified transaction approval, and retain watchdog-managed shutdown and installer handling alongside authenticated dApp IPC.

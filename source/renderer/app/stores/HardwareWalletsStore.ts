@@ -21,6 +21,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type { WalletSendLease } from './TransactionsStore';
 import Wallet, { HwDeviceStatuses, WalletUnits } from '../domains/Wallet';
+import { GenericApiError } from '../api/common/errors';
 import WalletAddress from '../domains/WalletAddress';
 import { toJS } from '../../../common/utils/helper';
 import {
@@ -300,10 +301,20 @@ interface CardanoAdaAppPoller {
   isRunning: () => boolean;
 }
 
+type VotingTransactionOwner = Readonly<{
+  cancel: () => void;
+  invalidate: () => void;
+}>;
+
 export default class HardwareWalletsStore extends Store {
   private walletSendLease?: WalletSendLease;
   private transactionGeneration = 0;
   private nativePaymentOwner?: AbortController;
+  private votingTransactionOwner?: VotingTransactionOwner;
+  private exactSigners = new Set<{
+    owner?: VotingTransactionOwner;
+    vendor: DeviceType;
+  }>();
   private signedExactPayment?: Readonly<{
     walletId: string;
     signedTransaction: string;
@@ -734,7 +745,8 @@ export default class HardwareWalletsStore extends Store {
 
   private signExactTransaction = async (
     walletId: string,
-    preparation: HardwareTransactionPreparation
+    preparation: HardwareTransactionPreparation,
+    owner?: VotingTransactionOwner
   ) => {
     if (!global.cip30Enabled)
       throw new Error('Exact hardware transaction is unavailable');
@@ -768,14 +780,20 @@ export default class HardwareWalletsStore extends Store {
     )
       throw new Error('Hardware wallet is not connected');
 
-    return signExactHardwareTransactionChannel.request({
-      walletId,
-      vendor: connection.device.deviceType,
-      ...(connection.device.deviceType === DeviceTypes.LEDGER
-        ? { ledgerPath: path }
-        : {}),
-      exact: preparation.exact,
-    });
+    const signer = { owner, vendor: connection.device.deviceType };
+    this.exactSigners.add(signer);
+    try {
+      return await signExactHardwareTransactionChannel.request({
+        walletId,
+        vendor: connection.device.deviceType,
+        ...(connection.device.deviceType === DeviceTypes.LEDGER
+          ? { ledgerPath: path }
+          : {}),
+        exact: preparation.exact,
+      });
+    } finally {
+      this.exactSigners.delete(signer);
+    }
   };
 
   useCardanoAppInterval = (
@@ -966,7 +984,11 @@ export default class HardwareWalletsStore extends Store {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
     const { signedTransactionCbor: signedTransaction } =
-      await this.signExactTransaction(walletId, preparation);
+      await this.signExactTransaction(
+        walletId,
+        preparation,
+        this.votingTransactionOwner
+      );
     if (generation !== this.transactionGeneration) return;
     this.signedExactPayment = Object.freeze({
       walletId,
@@ -1325,7 +1347,7 @@ export default class HardwareWalletsStore extends Store {
       this.setTransactionPendingState(true);
       try {
         transaction = await (this.sendMoneyRequest.execute({
-          signedTransactionBlob: this.signedTx,
+          signedTransactionBlob: Buffer.from(this.signedTx, 'hex'),
         }) as unknown as Promise<CreateExternalTransactionResponse>);
       } catch (error) {
         this.setTransactionPendingState(false);
@@ -1504,6 +1526,15 @@ export default class HardwareWalletsStore extends Store {
     isCollateralPreparation = false,
     payment?: Readonly<{ address: string; amount: string }>
   ) => {
+    this.votingTransactionOwner?.cancel();
+    this.setTxSignRequest(coinSelection, isCollateralPreparation, payment);
+  };
+
+  private setTxSignRequest = (
+    coinSelection: CoinSelectionsResponse,
+    isCollateralPreparation = false,
+    payment?: Readonly<{ address: string; amount: string }>
+  ) => {
     if (!global.cip30Enabled) {
       runInAction('HardwareWalletsStore:: set payment request', () => {
         this.txSignRequest = {
@@ -1531,6 +1562,7 @@ export default class HardwareWalletsStore extends Store {
   selectDelegationCoins = async (
     params: CoinSelectionsDelegationRequestType
   ) => {
+    this.votingTransactionOwner?.cancel();
     const { walletId, poolId, delegationAction } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
@@ -3690,6 +3722,77 @@ export default class HardwareWalletsStore extends Store {
       throw error;
     }
   };
+  createVotingTransaction = () => {
+    let cancelled = false;
+    const owner: VotingTransactionOwner = {
+      invalidate: () => {
+        cancelled = true;
+      },
+      cancel: () => {
+        cancelled = true;
+        if (this.votingTransactionOwner !== owner) return;
+        // Trezor cancellation is device-global, unlike the wallet send lock.
+        let cancelDeviceAction = true;
+        for (const signer of this.exactSigners) {
+          if (signer.vendor === DeviceTypes.TREZOR && signer.owner !== owner) {
+            cancelDeviceAction = false;
+            break;
+          }
+        }
+        this._resetTransaction({ cancelDeviceAction });
+      },
+    };
+    return {
+      cancel: owner.cancel,
+      initiate: async ({
+        walletId,
+        coinSelection,
+        votingData,
+      }: {
+        walletId: string;
+        coinSelection: CoinSelectionsResponse;
+        votingData: VotingDataType;
+      }): Promise<void> => {
+        if (cancelled) return;
+        const lease =
+          await this.stores.transactions.acquireWalletSendLock(walletId);
+        if (cancelled) {
+          lease.release();
+          return;
+        }
+        // Acquiring a wallet lock does not confer ownership of another
+        // wallet's native approval or the shared legacy device workflow.
+        if (
+          this.walletSendLease ||
+          this.nativePaymentOwner ||
+          this.isTransactionInitiated ||
+          this.exactSigners.size > 0
+        ) {
+          lease.release();
+          throw new GenericApiError();
+        }
+        this.walletSendLease = lease;
+        this.votingTransactionOwner = owner;
+        try {
+          let selection = coinSelection;
+          if (!global.cip30Enabled) {
+            const { paymentRequest } = selection;
+            if (!paymentRequest || paymentRequest.walletId !== walletId)
+              throw new Error('Hardware payment request does not match wallet');
+            selection = await this.selectCoins(paymentRequest);
+            if (cancelled) return;
+          }
+          this.setTxSignRequest(selection);
+          await this.initiateTransaction({ walletId, votingData });
+        } catch (error) {
+          if (cancelled) return;
+          owner.cancel();
+          throw error;
+        }
+      },
+    };
+  };
+
   initiateTransaction = async (params: {
     walletId: string | null | undefined;
     votingData?: VotingDataType;
@@ -4304,6 +4407,8 @@ export default class HardwareWalletsStore extends Store {
     );
   };
   _resetTxSignRequestData = () => {
+    this.votingTransactionOwner?.invalidate();
+    this.votingTransactionOwner = undefined;
     this.transactionGeneration += 1;
     this.nativePaymentOwner?.abort();
     this.nativePaymentOwner = undefined;

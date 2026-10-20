@@ -401,7 +401,7 @@ it.each(['quit', 'join'] as const)(
     const submission = deferred<{ id: string }>();
     fixture.submit.mockImplementation(() => submission.promise);
     runInAction(() => {
-      fixture.hardwareWallets.signedTx = 'signed-transaction';
+      fixture.hardwareWallets.signedTx = '84a0a0f5f6';
     });
     const sending = fixture.hardwareWallets._sendMoney({
       selectedWalletId: 'wallet',

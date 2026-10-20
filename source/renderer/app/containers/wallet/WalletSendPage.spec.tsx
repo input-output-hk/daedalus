@@ -312,7 +312,7 @@ it('keeps an authorized hardware submission locked after its Send page unmounts 
   await clickSend();
   await waitFor(() => expect(transport).toHaveBeenCalledTimes(1));
   act(() => {
-    fixture.hardwareWallets.signedTx = 'fixture-signed-transaction';
+    fixture.hardwareWallets.signedTx = '84a0a0f5f6';
     fixture.hardwareWallets.hwDeviceStatus =
       HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
   });
@@ -323,7 +323,7 @@ it('keeps an authorized hardware submission locked after its Send page unmounts 
   );
   await waitFor(() =>
     expect(fixture.submitExternal).toHaveBeenCalledWith({
-      signedTransactionBlob: 'fixture-signed-transaction',
+      signedTransactionBlob: Buffer.from('84a0a0f5f6', 'hex'),
     })
   );
   let entered = false;

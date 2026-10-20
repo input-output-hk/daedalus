@@ -14,6 +14,8 @@ import ConfirmationDialog from '../../../components/voting/voting-registration-w
 import { FormattedHTMLMessageWithLink } from '../../../components/widgets/FormattedHTMLMessageWithLink';
 import { formattedAmountToLovelace } from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import type HardwareWalletsStore from '../../../stores/HardwareWalletsStore';
+import type { CoinSelectionsResponse } from '../../../api/transactions/types';
 
 const messages = defineMessages({
   votingRegistrationStep1Label: {
@@ -66,16 +68,15 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
   _isMounted = false;
   _preparationGeneration = 0;
-  _ownsHardwarePreparation = false;
+  _hardwarePreparation?: ReturnType<
+    HardwareWalletsStore['createVotingTransaction']
+  >;
 
   cancelPreparation = () => {
     this._preparationGeneration++;
-    if (this._ownsHardwarePreparation) {
-      this._ownsHardwarePreparation = false;
-      this.props.stores.hardwareWallets._resetTransaction({
-        cancelDeviceAction: true,
-      });
-    }
+    const preparation = this._hardwarePreparation;
+    this._hardwarePreparation = undefined;
+    preparation?.cancel();
   };
 
   componentDidMount() {
@@ -259,8 +260,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
     const { calculateTransactionFee } = transactions;
     const { getAutomaticReceivingAddress, getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;
-    const { selectCoins, initiateTransaction, updateTxSignRequest } =
-      hardwareWallets;
+    const { selectCoins, createVotingTransaction } = hardwareWallets;
     const { prepareVotingData } = voting;
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
@@ -273,13 +273,17 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
     try {
       const selectedWallet = getWalletById(walletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
-      if (isHardwareWallet) this._ownsHardwarePreparation = true;
+      const hardwarePreparation = isHardwareWallet
+        ? createVotingTransaction()
+        : undefined;
+      this._hardwarePreparation = hardwarePreparation;
       const address = global.cip30Enabled
         ? await getAutomaticReceivingAddress(walletId)
         : (await getAddressesByWalletId(walletId))[0];
       if (!isCurrent()) return;
       let fee;
       let votingData;
+      let coinSelection: CoinSelectionsResponse;
 
       if (isHardwareWallet) {
         votingData = await prepareVotingData({
@@ -287,7 +291,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
           isCurrent,
         });
         if (!isCurrent()) return;
-        const coinSelection = await selectCoins({
+        coinSelection = await selectCoins({
           walletId,
           address: address.id,
           amount,
@@ -295,7 +299,6 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
         });
         if (!isCurrent()) return;
 
-        updateTxSignRequest(coinSelection);
         fee = coinSelection.fee;
       } else {
         ({ fee } = await calculateTransactionFee({
@@ -313,9 +316,10 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
         });
       }
 
-      if (isHardwareWallet) {
-        await initiateTransaction({
+      if (hardwarePreparation) {
+        await hardwarePreparation.initiate({
           walletId,
+          coinSelection,
           votingData,
         });
       }
