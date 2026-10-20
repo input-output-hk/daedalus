@@ -4,6 +4,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import { getDappCatalogPresentation } from '../../../../common/config/dappCatalog';
 import DappCatalog from '../../components/dapp/DappCatalog';
 import CollateralPanel from '../../components/dapp/collateral/CollateralPanel';
+import { COLLATERAL_POLL_INTERVAL } from '../../config/timingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 export const dappCatalogMessages = defineMessages({
@@ -70,6 +71,7 @@ export default class DappCatalogPage extends Component<Props> {
     global.isFlight
   );
   private collateralContext?: string;
+  private collateralRefreshInterval?: number;
 
   componentDidMount(): void {
     this.refreshCollateral();
@@ -79,6 +81,10 @@ export default class DappCatalogPage extends Component<Props> {
     this.refreshCollateral();
   }
 
+  componentWillUnmount(): void {
+    window.clearInterval(this.collateralRefreshInterval);
+  }
+
   private refreshCollateral = (): void => {
     if (!global.cip30Enabled) return;
     const { collateral, networkStatus, wallets } = this.props.stores!;
@@ -86,10 +92,21 @@ export default class DappCatalogPage extends Component<Props> {
     const context = `${walletId ?? ''}:${networkStatus.isConnected}:${
       networkStatus.isSynced
     }`;
-    if (context === this.collateralContext) return;
-    this.collateralContext = context;
-    if (walletId && networkStatus.isConnected && networkStatus.isSynced)
-      collateral.refresh();
+    const walletReady =
+      !!walletId && networkStatus.isConnected && networkStatus.isSynced;
+    if (context !== this.collateralContext) {
+      this.collateralContext = context;
+      if (walletReady) collateral.refresh();
+    }
+
+    if (!walletReady || collateral.state !== 'preparing') {
+      window.clearInterval(this.collateralRefreshInterval);
+      this.collateralRefreshInterval = undefined;
+    } else if (this.collateralRefreshInterval === undefined) {
+      this.collateralRefreshInterval = window.setInterval(() => {
+        if (!collateral.isLoading) collateral.refresh();
+      }, COLLATERAL_POLL_INTERVAL);
+    }
   };
 
   launch = (id: string): void => {

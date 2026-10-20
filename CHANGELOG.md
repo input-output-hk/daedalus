@@ -12,6 +12,7 @@
 - Bind Catalyst hardware cancellation to its store-owned operation and wallet lease, so cancelling address, metadata, or fee preparation cannot abort another native payment or reset an unrelated dApp signer; retain submission locks until the backend responds.
 - Hold the shared wallet transaction lease through authoritative preparation, consent, retries, signing, and submission; reconstruct hardware payments after acquiring it instead of signing fee-preview bytes.
 - Preserve collateral preparation tracking across Apps-to-Send navigation with wallet/network-bound operation authority, adopting only the exact confirmed output and invalidating stale document operations.
+- Refresh pending collateral preparation while Apps stays open, adopting the confirmed output and clearing the preparation notice without requiring navigation; stop polling after completion or leaving Apps.
 - Preserve success-only DRep favorites when delegation uses unified transaction approval, and retain watchdog-managed shutdown and installer handling alongside authenticated dApp IPC.
 - Restore the runtime configuration path passed by the watchdog to Electron on launch and restart, fixing startup failure before the Daedalus window appears.
 
