@@ -701,7 +701,7 @@ async fn publish_apt(
         // Upload package
         let s3_key = format!("apt/{pool_path}");
         println!("    → {s3_key}");
-        s3.upload_bytes(
+        s3.upload_repo_bytes(
             &s3_key,
             &std::fs::read(&pkg.path)?,
             "application/octet-stream",
@@ -713,7 +713,7 @@ async fn publish_apt(
         let sig_path = pkg.path.with_file_name(format!("{}.asc", pkg.filename));
         if sig_path.exists() {
             let sig_key = format!("{s3_key}.asc");
-            s3.upload_bytes(&sig_key, &std::fs::read(&sig_path)?, "text/plain", None)
+            s3.upload_repo_bytes(&sig_key, &std::fs::read(&sig_path)?, "text/plain", None)
                 .await?;
         }
     }
@@ -738,35 +738,35 @@ async fn publish_apt(
         .context("clearsigning apt/dists/stable/InRelease")?;
 
     // ── Upload ────────────────────────────────────────────────────────────────
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "apt/dists/stable/main/binary-amd64/Packages",
         packages_bytes,
         "text/plain",
         Some("no-store"),
     )
     .await?;
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "apt/dists/stable/main/binary-amd64/Packages.gz",
         &packages_gz,
         "application/gzip",
         Some("no-store"),
     )
     .await?;
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "apt/dists/stable/Release",
         release_bytes,
         "text/plain",
         Some("no-store"),
     )
     .await?;
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "apt/dists/stable/Release.gpg",
         &release_gpg,
         "text/plain",
         Some("no-store"),
     )
     .await?;
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "apt/dists/stable/InRelease",
         &in_release,
         "text/plain",
@@ -777,7 +777,7 @@ async fn publish_apt(
     // ── Public key ────────────────────────────────────────────────────────────
     println!("  Uploading public key…");
     let pubkey = sign::export_public_key(gpg_user)?;
-    s3.upload_bytes("apt/daedalus-release.gpg", &pubkey, "text/plain", None)
+    s3.upload_repo_bytes("apt/daedalus-release.gpg", &pubkey, "text/plain", None)
         .await?;
 
     println!();
@@ -977,7 +977,7 @@ async fn publish_yum(
         // Upload package
         let s3_key = format!("yum/packages/{}", pkg.filename);
         println!("    → {s3_key}");
-        s3.upload_bytes(
+        s3.upload_repo_bytes(
             &s3_key,
             &std::fs::read(&pkg.path)?,
             "application/octet-stream",
@@ -988,7 +988,7 @@ async fn publish_yum(
         // Upload .asc if present
         let sig_path = pkg.path.with_file_name(format!("{}.asc", pkg.filename));
         if sig_path.exists() {
-            s3.upload_bytes(
+            s3.upload_repo_bytes(
                 &format!("{s3_key}.asc"),
                 &std::fs::read(&sig_path)?,
                 "text/plain",
@@ -1026,21 +1026,21 @@ async fn publish_yum(
         sign::sign_data(repomd_bytes, gpg_user).context("signing yum/repodata/repomd.xml")?;
 
     // ── Upload ────────────────────────────────────────────────────────────────
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "yum/repodata/primary.xml.gz",
         &primary_gz,
         "application/gzip",
         Some("no-store"),
     )
     .await?;
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "yum/repodata/repomd.xml",
         repomd_bytes,
         "application/xml",
         Some("no-store"),
     )
     .await?;
-    s3.upload_bytes(
+    s3.upload_repo_bytes(
         "yum/repodata/repomd.xml.asc",
         &repomd_asc,
         "text/plain",
@@ -1051,7 +1051,7 @@ async fn publish_yum(
     // ── Public key ────────────────────────────────────────────────────────────
     println!("  Uploading public key…");
     let pubkey = sign::export_public_key(gpg_user)?;
-    s3.upload_bytes("yum/daedalus-release.gpg", &pubkey, "text/plain", None)
+    s3.upload_repo_bytes("yum/daedalus-release.gpg", &pubkey, "text/plain", None)
         .await?;
 
     println!();
@@ -1086,7 +1086,7 @@ async fn publish_arch(
         } else {
             "application/octet-stream"
         };
-        s3.upload_bytes(
+        s3.upload_repo_bytes(
             &format!("arch/{name}"),
             &std::fs::read(repo.path(name))?,
             content_type,
