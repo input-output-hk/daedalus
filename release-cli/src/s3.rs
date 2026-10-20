@@ -12,9 +12,46 @@
 use anyhow::{Context, Result};
 use aws_config::BehaviorVersion;
 use aws_credential_types::Credentials;
-use aws_sdk_s3::{Client, primitives::ByteStream, types::ObjectCannedAcl};
+use aws_sdk_s3::{
+    Client,
+    operation::head_object::HeadObjectOutput,
+    primitives::ByteStream,
+    types::{MetadataDirective, ObjectCannedAcl},
+};
 use bytes::Bytes;
+use sha2::{Digest, Sha256};
 use std::path::Path;
+
+fn repo_content_matches(head: &HeadObjectOutput, bytes: &[u8], sha256: &str) -> bool {
+    if head.content_length().and_then(|n| usize::try_from(n).ok()) != Some(bytes.len()) {
+        return false;
+    }
+    if let Some(checksum) = head.metadata().and_then(|metadata| metadata.get("sha256")) {
+        return checksum == sha256;
+    }
+    // Older single-PUT uploads often have an MD5 ETag. An opaque or multipart
+    // ETag is not proof of equality; upload once to establish SHA-256 metadata.
+    let Some(etag) = head.e_tag() else {
+        return false;
+    };
+    let etag = etag.trim_matches('"');
+    etag.len() == 32
+        && etag.bytes().all(|byte| byte.is_ascii_hexdigit())
+        && etag.eq_ignore_ascii_case(&hex::encode(md5::Md5::digest(bytes)))
+}
+
+fn copy_source(bucket: &str, key: &str) -> String {
+    use std::fmt::Write;
+    let mut encoded = String::new();
+    for byte in format!("{bucket}/{key}").bytes() {
+        if byte.is_ascii_alphanumeric() || b"/-_.~".contains(&byte) {
+            encoded.push(char::from(byte));
+        } else {
+            write!(&mut encoded, "%{byte:02X}").expect("writing into a String");
+        }
+    }
+    encoded
+}
 
 pub struct S3Client {
     client: Client,
@@ -202,6 +239,74 @@ impl S3Client {
         Ok(())
     }
 
+    /// Upload repository bytes only when the remote content differs. Use HEAD
+    /// rather than downloading packages, and refresh matching objects' headers
+    /// with a conditional server-side copy when necessary.
+    pub async fn upload_repo_bytes(
+        &self,
+        key: &str,
+        bytes: &[u8],
+        content_type: &str,
+        cache_control: Option<&str>,
+    ) -> Result<()> {
+        let prefixed = self.prefixed_key(key);
+        let sha256 = hex::encode(Sha256::digest(bytes));
+        let remote = self
+            .client
+            .head_object()
+            .bucket(&self.bucket)
+            .key(&prefixed)
+            .send()
+            .await;
+        match remote {
+            Ok(head) if repo_content_matches(&head, bytes, &sha256) => {
+                let has_sha256 =
+                    head.metadata().and_then(|metadata| metadata.get("sha256")) == Some(&sha256);
+                if has_sha256
+                    && head.content_type() == Some(content_type)
+                    && head.cache_control() == cache_control
+                {
+                    println!("  [skip] {prefixed} (size and SHA-256 match)");
+                    return Ok(());
+                }
+                if let Some(etag) = head.e_tag() {
+                    println!("  [metadata] {prefixed} (contents match; server-side copy)");
+                    let mut metadata = head.metadata().cloned().unwrap_or_default();
+                    metadata.insert("sha256".to_owned(), sha256);
+                    let mut req = self
+                        .client
+                        .copy_object()
+                        .bucket(&self.bucket)
+                        .key(&prefixed)
+                        .copy_source(copy_source(&self.bucket, &prefixed))
+                        .copy_source_if_match(etag)
+                        .metadata_directive(MetadataDirective::Replace)
+                        .set_metadata(Some(metadata))
+                        .content_type(content_type)
+                        .set_cache_control(cache_control.map(str::to_owned))
+                        .set_content_encoding(head.content_encoding().map(str::to_owned))
+                        .set_content_disposition(head.content_disposition().map(str::to_owned))
+                        .set_content_language(head.content_language().map(str::to_owned));
+                    if self.use_acl {
+                        req = req.acl(ObjectCannedAcl::PublicRead);
+                    }
+                    req.send()
+                        .await
+                        .with_context(|| format!("S3 metadata refresh {prefixed}"))?;
+                    return Ok(());
+                }
+            }
+            Ok(_) => {}
+            Err(e)
+                if e.as_service_error()
+                    .map(|e| e.is_not_found())
+                    .unwrap_or(false) => {}
+            Err(e) => return Err(anyhow::anyhow!("S3 HeadObject {prefixed}: {e}")),
+        }
+        self.put_bytes(key, bytes, content_type, cache_control, Some(&sha256))
+            .await
+    }
+
     /// Upload arbitrary bytes under `key` (prefixed).
     /// Pass `cache_control = Some("no-store")` to prevent CDN caching.
     pub async fn upload_bytes(
@@ -210,6 +315,18 @@ impl S3Client {
         bytes: &[u8],
         content_type: &str,
         cache_control: Option<&str>,
+    ) -> Result<()> {
+        self.put_bytes(key, bytes, content_type, cache_control, None)
+            .await
+    }
+
+    async fn put_bytes(
+        &self,
+        key: &str,
+        bytes: &[u8],
+        content_type: &str,
+        cache_control: Option<&str>,
+        sha256: Option<&str>,
     ) -> Result<()> {
         let prefixed = self.prefixed_key(key);
         println!("  [upload] {prefixed}");
@@ -225,6 +342,9 @@ impl S3Client {
         }
         if let Some(cc) = cache_control {
             req = req.cache_control(cc);
+        }
+        if let Some(checksum) = sha256 {
+            req = req.metadata("sha256", checksum);
         }
         req.send()
             .await
@@ -251,5 +371,355 @@ impl S3Client {
             .with_context(|| format!("S3 PutObject {key}"))?;
 
         Ok(self.cdn_url("daedalus-latest-version.json"))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::{
+        Router,
+        body::Body,
+        extract::State,
+        http::{Request, Response, StatusCode},
+    };
+    use std::{
+        collections::HashMap,
+        sync::{Arc, Mutex},
+    };
+
+    #[derive(Clone)]
+    struct Object {
+        bytes: Vec<u8>,
+        etag: String,
+        metadata: HashMap<String, String>,
+        content_type: String,
+        cache_control: Option<String>,
+    }
+
+    impl Object {
+        fn new(bytes: &[u8], sha256: bool) -> Self {
+            let mut metadata = HashMap::new();
+            if sha256 {
+                metadata.insert("sha256".to_owned(), hex::encode(Sha256::digest(bytes)));
+            }
+            Self {
+                bytes: bytes.to_vec(),
+                etag: format!("\"{}\"", hex::encode(md5::Md5::digest(bytes))),
+                metadata,
+                content_type: "application/octet-stream".to_owned(),
+                cache_control: Some("no-store".to_owned()),
+            }
+        }
+    }
+
+    #[derive(Default)]
+    struct Store {
+        object: Option<Object>,
+        requests: Vec<(String, String, axum::http::HeaderMap, usize)>,
+        head_forbidden: bool,
+        copy_conflict: bool,
+    }
+
+    struct Fixture {
+        client: S3Client,
+        state: Arc<Mutex<Store>>,
+        server: tokio::task::JoinHandle<()>,
+    }
+
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            self.server.abort();
+        }
+    }
+
+    impl Fixture {
+        async fn new(object: Option<Object>) -> Self {
+            let state = Arc::new(Mutex::new(Store {
+                object,
+                ..Store::default()
+            }));
+            let app = Router::new().fallback(handle).with_state(state.clone());
+            let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+            let address = listener.local_addr().unwrap();
+            let server = tokio::spawn(async move {
+                axum::serve(listener, app).await.unwrap();
+            });
+            let config = aws_sdk_s3::config::Builder::new()
+                .behavior_version(BehaviorVersion::latest())
+                .region(aws_sdk_s3::config::Region::new("us-east-1"))
+                .credentials_provider(Credentials::new("test", "test", None, None, "fixture"))
+                .endpoint_url(format!("http://{address}"))
+                .force_path_style(true)
+                .request_checksum_calculation(
+                    aws_sdk_s3::config::RequestChecksumCalculation::WhenRequired,
+                )
+                .build();
+            let client = S3Client {
+                client: Client::from_conf(config),
+                bucket: "test-bucket".to_owned(),
+                key_prefix: "prefix".to_owned(),
+                bucket_url: "unused.invalid".to_owned(),
+                use_acl: false,
+            };
+            Self {
+                client,
+                state,
+                server,
+            }
+        }
+
+        async fn upload(&self, bytes: &[u8]) -> Result<()> {
+            self.client
+                .upload_repo_bytes(
+                    "arch/package.pkg.tar.zst",
+                    bytes,
+                    "application/octet-stream",
+                    Some("no-store"),
+                )
+                .await
+        }
+
+        fn methods(&self) -> Vec<String> {
+            self.state
+                .lock()
+                .unwrap()
+                .requests
+                .iter()
+                .map(|r| r.0.clone())
+                .collect()
+        }
+    }
+
+    async fn handle(
+        State(state): State<Arc<Mutex<Store>>>,
+        request: Request<Body>,
+    ) -> Response<Body> {
+        let (parts, body) = request.into_parts();
+        let body = axum::body::to_bytes(body, 1024 * 1024).await.unwrap();
+        let mut store = state.lock().unwrap();
+        store.requests.push((
+            parts.method.to_string(),
+            parts.uri.path().to_owned(),
+            parts.headers.clone(),
+            body.len(),
+        ));
+        if parts.method == "HEAD" {
+            if store.head_forbidden {
+                return Response::builder()
+                    .status(StatusCode::FORBIDDEN)
+                    .body(Body::empty())
+                    .unwrap();
+            }
+            let Some(object) = &store.object else {
+                return Response::builder()
+                    .status(StatusCode::NOT_FOUND)
+                    .body(Body::empty())
+                    .unwrap();
+            };
+            let mut response = Response::builder()
+                .header("content-length", object.bytes.len())
+                .header("content-type", &object.content_type)
+                .header("etag", &object.etag);
+            if let Some(cache) = &object.cache_control {
+                response = response.header("cache-control", cache);
+            }
+            for (key, value) in &object.metadata {
+                response = response.header(format!("x-amz-meta-{key}"), value);
+            }
+            return response.body(Body::empty()).unwrap();
+        }
+        assert_eq!(parts.method, "PUT");
+        let copying = parts.headers.contains_key("x-amz-copy-source");
+        if copying && store.copy_conflict {
+            return Response::builder()
+                .status(StatusCode::PRECONDITION_FAILED)
+                .body(Body::from("<Error><Code>PreconditionFailed</Code></Error>"))
+                .unwrap();
+        }
+        let bytes = if copying {
+            let object = store.object.as_ref().unwrap();
+            assert_eq!(
+                parts.headers.get("x-amz-copy-source-if-match").unwrap(),
+                object.etag.as_str()
+            );
+            assert_eq!(
+                parts.headers.get("x-amz-metadata-directive").unwrap(),
+                "REPLACE"
+            );
+            assert!(body.is_empty());
+            object.bytes.clone()
+        } else {
+            body.to_vec()
+        };
+        let mut object = Object::new(&bytes, false);
+        object.metadata = parts
+            .headers
+            .iter()
+            .filter_map(|(name, value)| {
+                name.as_str()
+                    .strip_prefix("x-amz-meta-")
+                    .map(|name| (name.to_owned(), value.to_str().unwrap().to_owned()))
+            })
+            .collect();
+        object.content_type = parts
+            .headers
+            .get("content-type")
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned();
+        object.cache_control = parts
+            .headers
+            .get("cache-control")
+            .map(|h| h.to_str().unwrap().to_owned());
+        let etag = object.etag.clone();
+        store.object = Some(object);
+        if copying {
+            Response::builder()
+                .header("content-type", "application/xml")
+                .body(Body::from(format!(
+                    "<CopyObjectResult><ETag>{etag}</ETag></CopyObjectResult>"
+                )))
+                .unwrap()
+        } else {
+            Response::builder()
+                .header("etag", etag)
+                .body(Body::empty())
+                .unwrap()
+        }
+    }
+
+    #[tokio::test]
+    async fn new_upload_records_checksum_and_second_run_only_heads() {
+        let fixture = Fixture::new(None).await;
+        fixture.upload(b"package").await.unwrap();
+        fixture.upload(b"package").await.unwrap();
+        assert_eq!(fixture.methods(), ["HEAD", "PUT", "HEAD"]);
+        let store = fixture.state.lock().unwrap();
+        assert!(
+            store
+                .requests
+                .iter()
+                .all(|request| request.1 == "/test-bucket/prefix/arch/package.pkg.tar.zst")
+        );
+        assert!(
+            store
+                .requests
+                .iter()
+                .all(|request| !request.2.contains_key("x-amz-acl"))
+        );
+        let object = store.object.as_ref().unwrap();
+        assert_eq!(object.bytes, b"package");
+        assert_eq!(
+            object.metadata["sha256"],
+            hex::encode(Sha256::digest(b"package"))
+        );
+    }
+
+    #[tokio::test]
+    async fn changed_content_is_uploaded_even_when_size_matches() {
+        let fixture = Fixture::new(Some(Object::new(b"old", true))).await;
+        fixture.upload(b"new").await.unwrap();
+        assert_eq!(fixture.methods(), ["HEAD", "PUT"]);
+        assert_eq!(
+            fixture.state.lock().unwrap().object.as_ref().unwrap().bytes,
+            b"new"
+        );
+    }
+
+    #[tokio::test]
+    async fn legacy_md5_match_upgrades_metadata_without_uploading_bytes() {
+        let mut object = Object::new(b"package", false);
+        object
+            .metadata
+            .insert("keep".to_owned(), "existing".to_owned());
+        let fixture = Fixture::new(Some(object)).await;
+        fixture.upload(b"package").await.unwrap();
+        fixture.upload(b"package").await.unwrap();
+        assert_eq!(fixture.methods(), ["HEAD", "PUT", "HEAD"]);
+        let store = fixture.state.lock().unwrap();
+        assert_eq!(store.requests[1].3, 0);
+        assert_eq!(
+            store.requests[1].2["x-amz-copy-source"],
+            "test-bucket/prefix/arch/package.pkg.tar.zst"
+        );
+        assert_eq!(store.object.as_ref().unwrap().metadata["keep"], "existing");
+    }
+
+    #[tokio::test]
+    async fn matching_content_refreshes_headers_with_server_side_copy() {
+        let mut object = Object::new(b"package", true);
+        object.cache_control = None;
+        object.content_type = "text/plain".to_owned();
+        let mut fixture = Fixture::new(Some(object)).await;
+        fixture.client.use_acl = true;
+        fixture.upload(b"package").await.unwrap();
+        let store = fixture.state.lock().unwrap();
+        assert_eq!(store.requests[1].3, 0);
+        assert_eq!(store.requests[1].2["x-amz-acl"], "public-read");
+        let object = store.object.as_ref().unwrap();
+        assert_eq!(object.cache_control.as_deref(), Some("no-store"));
+        assert_eq!(object.content_type, "application/octet-stream");
+    }
+
+    #[tokio::test]
+    async fn ambiguous_etag_or_wrong_sha256_does_not_skip_upload() {
+        for (etag, sha256) in [
+            ("\"multipart-2\"", None),
+            ("opaque", None),
+            ("\"321c3cf486ed509164edec1e1981fec8\"", Some("wrong")),
+        ] {
+            let mut object = Object::new(b"package", false);
+            if sha256.is_none() {
+                object.etag = etag.to_owned();
+            }
+            if let Some(checksum) = sha256 {
+                object
+                    .metadata
+                    .insert("sha256".to_owned(), checksum.to_owned());
+            }
+            let fixture = Fixture::new(Some(object)).await;
+            fixture.upload(b"package").await.unwrap();
+            let store = fixture.state.lock().unwrap();
+            assert!(!store.requests[1].2.contains_key("x-amz-copy-source"));
+            assert_eq!(store.requests[1].3, b"package".len());
+        }
+    }
+
+    #[tokio::test]
+    async fn head_errors_and_copy_conflicts_abort_without_uploading_body() {
+        let fixture = Fixture::new(None).await;
+        fixture.state.lock().unwrap().head_forbidden = true;
+        assert!(fixture.upload(b"package").await.is_err());
+        assert_eq!(fixture.methods(), ["HEAD"]);
+        let fixture = Fixture::new(Some(Object::new(b"package", false))).await;
+        fixture.state.lock().unwrap().copy_conflict = true;
+        assert!(fixture.upload(b"package").await.is_err());
+        assert_eq!(fixture.methods(), ["HEAD", "PUT"]);
+        assert_eq!(fixture.state.lock().unwrap().requests[1].3, 0);
+    }
+
+    #[tokio::test]
+    async fn matching_checksum_with_inconsistent_length_does_not_skip() {
+        let mut object = Object::new(b"short", true);
+        object
+            .metadata
+            .insert("sha256".to_owned(), hex::encode(Sha256::digest(b"package")));
+        let fixture = Fixture::new(Some(object)).await;
+        fixture.upload(b"package").await.unwrap();
+        assert_eq!(fixture.methods(), ["HEAD", "PUT"]);
+        assert_eq!(
+            fixture.state.lock().unwrap().requests[1].3,
+            b"package".len()
+        );
+    }
+
+    #[test]
+    fn copy_source_encodes_keys_without_losing_prefix_separators() {
+        assert_eq!(
+            copy_source("bucket", "prefix/a b+%.sig"),
+            "bucket/prefix/a%20b%2B%25.sig"
+        );
     }
 }

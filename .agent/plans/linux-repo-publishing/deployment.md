@@ -26,7 +26,13 @@ repo-add, signs the final archives, and publishes actual contents at all aliases
 Missing package signatures are created with the deployment server's signing key.
 
 All package files and signatures are uploaded before repository metadata. Every
-Arch object receives no-store cache headers. Separate S3 writes are not atomic:
+Arch object receives no-store cache headers. Before each APT, YUM or Arch upload,
+the publisher checks object size and checksum using HEAD. Matching SHA-256
+metadata skips the upload; older single-part MD5 ETags can establish equality
+without downloading or re-uploading packages. Equal contents needing checksum
+metadata or header updates use a conditional server-side copy. Ambiguous ETags
+require one upload to establish SHA-256 metadata. Changed content is uploaded.
+Separate S3 writes are not atomic:
 no-store prevents new caching, but cannot purge previously cached responses or
 guarantee a cutover with no database/signature mismatch window. Strict atomic
 cutover requires coordination at the serving layer.
