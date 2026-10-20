@@ -1,3 +1,4 @@
+mod arch_repo;
 mod cli;
 mod fetch;
 mod hash;

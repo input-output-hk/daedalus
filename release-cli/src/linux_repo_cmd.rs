@@ -26,10 +26,15 @@
 //!
 //! arch/
 //!   <filename>.pkg.tar.zst
-//!   <filename>.pkg.tar.zst.asc                   (if present)
+//!   <filename>.pkg.tar.zst.sig                   (verified binary signature)
 //!   daedalus.db.tar.gz
 //!   daedalus.db.tar.gz.sig
 //!   daedalus.db              (duplicate of daedalus.db.tar.gz for pacman compat)
+//!   daedalus.db.sig
+//!   daedalus.files.tar.gz
+//!   daedalus.files.tar.gz.sig
+//!   daedalus.files
+//!   daedalus.files.sig
 //!   daedalus-release.gpg                         (public key)
 //! ```
 //!
@@ -39,6 +44,7 @@
 //! - `dpkg-deb`    — read control metadata from `.deb` packages
 //! - `rpm`         — read header metadata from `.rpm` packages
 //! - `bsdtar`      — extract `.PKGINFO` from `.pkg.tar.zst` archives
+//! - `repo-add`    — generate Arch package and file databases
 
 use anyhow::{Context, Result};
 use flate2::Compression;
@@ -49,6 +55,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use crate::arch_repo::{self, Signing};
 use crate::s3::S3Client;
 use crate::sign;
 
@@ -56,9 +63,9 @@ use crate::sign;
 
 /// Generate APT/YUM/Arch repo trees under `dest_dir` from packages in
 /// `installers_dir`.  Package files are symlinked rather than copied.
-/// Signing is attempted if `gpg_user` is Some or `GPG_USER` env is set;
-/// failures are silently skipped so the serve command still works without a
-/// configured GPG key (callers print unsigned-mode instructions in that case).
+/// Arch signing is required when `gpg_user` or `GPG_USER` is set; otherwise
+/// Arch repositories are explicitly unsigned for local development. APT/YUM
+/// retain their existing best-effort local signing behavior.
 ///
 /// Returns `true` if any Linux packages were found, `false` otherwise.
 pub fn write_linux_repos_to_dir(
@@ -215,45 +222,12 @@ fn write_arch_to_dir(
     gpg_user: Option<&str>,
     arch_dir: &Path,
 ) -> Result<()> {
-    std::fs::create_dir_all(arch_dir)?;
-    let mut db_entries: Vec<(String, String, String)> = Vec::new();
-
-    for pkg in pkgs {
-        let info = read_arch_pkginfo(&pkg.path)?;
-        let (sha256, csize) = sha256_file(&pkg.path)?;
-
-        link_into(&pkg.path, &arch_dir.join(&pkg.filename))?;
-
-        let sig_path = pkg.path.with_file_name(format!("{}.asc", pkg.filename));
-        let pgpsig_b64 = if sig_path.exists() {
-            let asc = std::fs::read(&sig_path)?;
-            link_into(&sig_path, &arch_dir.join(format!("{}.asc", pkg.filename)))?;
-            asc_to_base64(&asc)
-        } else {
-            None
-        };
-
-        db_entries.push(build_arch_db_entry_dir(
-            &info,
-            &pkg.filename,
-            csize,
-            &sha256,
-            pgpsig_b64.as_deref(),
-        ));
-    }
-
-    let db_gz = build_arch_db(&db_entries)?;
-    std::fs::write(arch_dir.join("daedalus.db.tar.gz"), &db_gz)?;
-    std::fs::write(arch_dir.join("daedalus.db"), &db_gz)?;
-
-    if let Ok(sig) = sign::sign_data(&db_gz, gpg_user) {
-        std::fs::write(arch_dir.join("daedalus.db.tar.gz.sig"), sig)?;
-    }
-    if let Ok(pubkey) = sign::export_public_key(gpg_user) {
-        std::fs::write(arch_dir.join("daedalus-release.gpg"), pubkey)?;
-    }
-
-    Ok(())
+    let packages: Vec<_> = pkgs
+        .iter()
+        .map(|pkg| (pkg.path.as_path(), pkg.filename.as_str()))
+        .collect();
+    let signing = gpg_user.map_or(Signing::Unsigned, Signing::Local);
+    arch_repo::prepare(&packages, signing)?.write_to(arch_dir)
 }
 
 // ── Public entry point ────────────────────────────────────────────────────────
@@ -411,7 +385,7 @@ pub async fn cmd_publish_linux_repos(opts: PublishLinuxReposOpts<'_>) -> Result<
         println!("Arch setup (add to /etc/pacman.conf):");
         println!("  [daedalus]");
         println!("  Server = https://{bucket_url}/arch");
-        println!("  SigLevel = Required DatabaseOptional");
+        println!("  SigLevel = Required");
     }
 
     Ok(())
@@ -1086,306 +1060,39 @@ async fn publish_yum(
 
 // ── Arch repository ───────────────────────────────────────────────────────────
 
-struct PkgInfo {
-    pkgname: String,
-    pkgver: String,
-    pkgdesc: String,
-    url: String,
-    builddate: u64,
-    packager: String,
-    size: u64,
-    arch: String,
-    license: String,
-    depends: Vec<String>,
-}
-
-fn read_arch_pkginfo(path: &Path) -> Result<PkgInfo> {
-    let path_str = path
-        .to_str()
-        .ok_or_else(|| anyhow::anyhow!("non-UTF-8 path"))?;
-
-    // bsdtar from libarchive handles .pkg.tar.zst natively.
-    let out = Command::new("bsdtar")
-        .args(["-xOf", path_str, ".PKGINFO"])
-        .output()
-        .context("running bsdtar (is libarchive/bsdtar in PATH?)")?;
-
-    if !out.status.success() {
-        anyhow::bail!(
-            "bsdtar exited {}: {}",
-            out.status,
-            String::from_utf8_lossy(&out.stderr)
-        );
-    }
-
-    let text = String::from_utf8(out.stdout).context("bsdtar output is not UTF-8")?;
-
-    let mut info = PkgInfo {
-        pkgname: String::new(),
-        pkgver: String::new(),
-        pkgdesc: String::new(),
-        url: String::new(),
-        builddate: 0,
-        packager: String::new(),
-        size: 0,
-        arch: String::new(),
-        license: String::new(),
-        depends: Vec::new(),
-    };
-
-    for line in text.lines() {
-        if let Some(rest) = line.strip_prefix("# ") {
-            // comment lines like "# Generated by makepkg..."
-            let _ = rest;
-            continue;
-        }
-        if let Some((key, val)) = line.split_once(" = ") {
-            match key.trim() {
-                "pkgname" => info.pkgname = val.trim().to_string(),
-                "pkgver" => info.pkgver = val.trim().to_string(),
-                "pkgdesc" => info.pkgdesc = val.trim().to_string(),
-                "url" => info.url = val.trim().to_string(),
-                "builddate" => {
-                    info.builddate = val.trim().parse().unwrap_or(0);
-                }
-                "packager" => info.packager = val.trim().to_string(),
-                "size" => {
-                    info.size = val.trim().parse().unwrap_or(0);
-                }
-                "arch" => info.arch = val.trim().to_string(),
-                "license" => info.license = val.trim().to_string(),
-                "depend" => info.depends.push(val.trim().to_string()),
-                _ => {}
-            }
-        }
-    }
-
-    if info.pkgname.is_empty() {
-        anyhow::bail!("pkgname not found in .PKGINFO of {}", path.display());
-    }
-
-    Ok(info)
-}
-
-fn build_arch_db_entry_dir(
-    info: &PkgInfo,
-    filename: &str,
-    csize: u64,
-    sha256: &str,
-    pgpsig_b64: Option<&str>,
-) -> (String, String, String) {
-    // Directory name in the tar: "<pkgname>-<pkgver>/"
-    let dir = format!("{}-{}", info.pkgname, info.pkgver);
-
-    let mut desc = format!(
-        "%FILENAME%\n{filename}\n\n\
-         %NAME%\n{name}\n\n\
-         %BASE%\n{name}\n\n\
-         %VERSION%\n{ver}\n\n\
-         %DESC%\n{desc}\n\n\
-         %CSIZE%\n{csize}\n\n\
-         %ISIZE%\n{isize}\n\n\
-         %SHA256SUM%\n{sha256}\n\n\
-         %URL%\n{url}\n\n\
-         %LICENSE%\n{license}\n\n\
-         %ARCH%\n{arch}\n\n\
-         %BUILDDATE%\n{builddate}\n\n\
-         %PACKAGER%\n{packager}\n\n",
-        name = info.pkgname,
-        ver = info.pkgver,
-        desc = info.pkgdesc,
-        isize = info.size,
-        url = info.url,
-        license = info.license,
-        arch = info.arch,
-        builddate = info.builddate,
-        packager = info.packager,
-    );
-    if let Some(sig) = pgpsig_b64 {
-        desc.push_str(&format!("%PGPSIG%\n{sig}\n\n"));
-    }
-
-    let mut depends = String::new();
-    if !info.depends.is_empty() {
-        depends.push_str("%DEPENDS%\n");
-        for dep in &info.depends {
-            depends.push_str(dep);
-            depends.push('\n');
-        }
-        depends.push('\n');
-    }
-
-    (dir, desc, depends)
-}
-
-fn build_arch_db(entries: &[(String, String, String)]) -> Result<Vec<u8>> {
-    // Build a gzip-compressed tar with <pkgname-pkgver>/desc and
-    // <pkgname-pkgver>/depends entries.
-    let mut archive = tar::Builder::new(GzEncoder::new(Vec::new(), Compression::default()));
-
-    let mtime = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap_or_default()
-        .as_secs();
-
-    for (dir, desc, depends) in entries {
-        // Directory entry
-        let dir_path = format!("{dir}/");
-        let mut hdr = tar::Header::new_gnu();
-        hdr.set_entry_type(tar::EntryType::Directory);
-        hdr.set_path(&dir_path)?;
-        hdr.set_size(0);
-        hdr.set_uid(0);
-        hdr.set_gid(0);
-        hdr.set_mode(0o755);
-        hdr.set_mtime(mtime);
-        hdr.set_cksum();
-        archive.append(&hdr, std::io::empty())?;
-
-        // desc file
-        let desc_bytes = desc.as_bytes();
-        let mut hdr = tar::Header::new_gnu();
-        hdr.set_path(format!("{dir}/desc"))?;
-        hdr.set_size(desc_bytes.len() as u64);
-        hdr.set_uid(0);
-        hdr.set_gid(0);
-        hdr.set_mode(0o644);
-        hdr.set_mtime(mtime);
-        hdr.set_cksum();
-        archive.append(&hdr, desc_bytes)?;
-
-        // depends file (may be empty)
-        if !depends.is_empty() {
-            let dep_bytes = depends.as_bytes();
-            let mut hdr = tar::Header::new_gnu();
-            hdr.set_path(format!("{dir}/depends"))?;
-            hdr.set_size(dep_bytes.len() as u64);
-            hdr.set_uid(0);
-            hdr.set_gid(0);
-            hdr.set_mode(0o644);
-            hdr.set_mtime(mtime);
-            hdr.set_cksum();
-            archive.append(&hdr, dep_bytes)?;
-        }
-    }
-
-    let gz = archive.into_inner()?.finish()?;
-    Ok(gz)
-}
-
-fn asc_to_base64(asc: &[u8]) -> Option<String> {
-    // Strip PGP armor headers/footers, returning just the base64 body.
-    let text = std::str::from_utf8(asc).ok()?;
-    let mut in_body = false;
-    let mut base64 = String::new();
-    for line in text.lines() {
-        if line.starts_with("-----BEGIN PGP SIGNATURE") {
-            in_body = false; // skip header line
-            continue;
-        }
-        if line.starts_with("-----END PGP SIGNATURE") {
-            break;
-        }
-        if in_body && !line.is_empty() {
-            // The CRC24 armor checksum appears as "=xxxx" — skip it; it's not
-            // part of the binary signature data.
-            if !line.starts_with('=') {
-                base64.push_str(line);
-            }
-        }
-        if !in_body && line.is_empty() {
-            in_body = true; // blank line separates armor headers from base64 body
-        }
-    }
-    if base64.is_empty() {
-        None
-    } else {
-        Some(base64)
-    }
-}
-
 async fn publish_arch(
     s3: &S3Client,
     pkgs: &[&LinuxPackage],
     gpg_user: Option<&str>,
-    now_ts: u64,
+    _now_ts: u64,
 ) -> Result<()> {
-    let _ = now_ts;
     println!("=== Arch repository ===");
+    let packages: Vec<_> = pkgs
+        .iter()
+        .map(|pkg| (pkg.path.as_path(), pkg.filename.as_str()))
+        .collect();
+    let repo = arch_repo::prepare(&packages, Signing::Iohk(gpg_user))?;
 
-    let mut db_entries: Vec<(String, String, String)> = Vec::new();
-
-    for pkg in pkgs {
-        print!("  [Arch] {} … ", pkg.filename);
-        let info = read_arch_pkginfo(&pkg.path)?;
-        let (sha256, csize) = sha256_file(&pkg.path)?;
-        println!("{} {}", info.pkgname, info.pkgver);
-
-        // Upload package
-        let s3_key = format!("arch/{}", pkg.filename);
-        println!("    → {s3_key}");
+    // All signatures have been verified before the first upload. Retain older
+    // packages for clients holding previous databases. The public aliases hold
+    // actual bytes, never an object-store representation of a symlink.
+    // Separate S3 writes are not atomic: use atomic deployment-side generation
+    // routing or a maintenance window when a zero-mismatch cutover is required.
+    for name in repo.packages.iter().chain(&repo.metadata) {
+        let content_type = if name.ends_with(".sig") {
+            "application/pgp-signature"
+        } else if name.ends_with(".gpg") {
+            "application/pgp-keys"
+        } else {
+            "application/octet-stream"
+        };
         s3.upload_bytes(
-            &s3_key,
-            &std::fs::read(&pkg.path)?,
-            "application/octet-stream",
-            None,
+            &format!("arch/{name}"),
+            &std::fs::read(repo.path(name))?,
+            content_type,
+            Some(arch_repo::NO_CACHE),
         )
         .await?;
-
-        // Upload .asc if present; extract base64 body for the DB entry.
-        let sig_path = pkg.path.with_file_name(format!("{}.asc", pkg.filename));
-        let pgpsig_b64 = if sig_path.exists() {
-            let asc = std::fs::read(&sig_path)?;
-            s3.upload_bytes(&format!("{s3_key}.asc"), &asc, "text/plain", None)
-                .await?;
-            asc_to_base64(&asc)
-        } else {
-            None
-        };
-
-        let entry =
-            build_arch_db_entry_dir(&info, &pkg.filename, csize, &sha256, pgpsig_b64.as_deref());
-        db_entries.push(entry);
     }
-
-    // ── Build daedalus.db.tar.gz ──────────────────────────────────────────────
-    println!("  Generating daedalus.db.tar.gz…");
-    let db_gz = build_arch_db(&db_entries)?;
-
-    // ── Sign ──────────────────────────────────────────────────────────────────
-    println!("  Signing daedalus.db.tar.gz.sig…");
-    let db_sig = sign::sign_data(&db_gz, gpg_user).context("signing arch/daedalus.db.tar.gz")?;
-
-    // ── Upload ────────────────────────────────────────────────────────────────
-    s3.upload_bytes(
-        "arch/daedalus.db.tar.gz",
-        &db_gz,
-        "application/gzip",
-        Some("no-store"),
-    )
-    .await?;
-    s3.upload_bytes(
-        "arch/daedalus.db.tar.gz.sig",
-        &db_sig,
-        "text/plain",
-        Some("no-store"),
-    )
-    .await?;
-    // pacman looks for <repo>.db as a symlink or copy; upload at both keys.
-    s3.upload_bytes(
-        "arch/daedalus.db",
-        &db_gz,
-        "application/gzip",
-        Some("no-store"),
-    )
-    .await?;
-
-    // ── Public key ────────────────────────────────────────────────────────────
-    println!("  Uploading public key…");
-    let pubkey = sign::export_public_key(gpg_user)?;
-    s3.upload_bytes("arch/daedalus-release.gpg", &pubkey, "text/plain", None)
-        .await?;
-
-    println!();
     Ok(())
 }
