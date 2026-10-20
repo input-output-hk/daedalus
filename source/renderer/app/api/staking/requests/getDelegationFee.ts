@@ -14,10 +14,12 @@ export const getDelegationFee = async (
       path: `/v2/wallets/${walletId}/delegation-fees`,
       ...config,
     },
-    {
-      preferred_collateral: JSON.stringify(
-        (await walletInputSelectionChannel.request({ walletId }))
-          .preferred_collateral
-      ),
-    }
+    global.cip30Enabled
+      ? {
+          preferred_collateral: JSON.stringify(
+            (await walletInputSelectionChannel.request({ walletId }))
+              .preferred_collateral
+          ),
+        }
+      : {}
   );

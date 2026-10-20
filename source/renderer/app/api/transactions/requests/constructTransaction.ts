@@ -17,5 +17,10 @@ export const constructTransaction = async (
       ...config,
     },
     {},
-    { ...data, ...(await walletInputSelectionChannel.request({ walletId })) }
+    global.cip30Enabled
+      ? {
+          ...data,
+          ...(await walletInputSelectionChannel.request({ walletId })),
+        }
+      : data
   );

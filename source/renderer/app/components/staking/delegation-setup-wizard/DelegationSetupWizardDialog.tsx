@@ -6,6 +6,10 @@ import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDial
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
+import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
+import LocalizableError from '../../../i18n/LocalizableError';
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 
@@ -33,6 +37,12 @@ type Props = {
   currentLocale: string;
   getStakePoolById: (...args: Array<any>) => any;
   onThumbPoolSelect: (...args: Array<any>) => any;
+  onConfirm: (password: string, isHardwareWallet: boolean) => void;
+  stakePoolJoinFee: DelegationCalculateFeeResponse | null | undefined;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
+  hwDeviceStatus: HwDeviceStatus;
+  isTrezor: boolean;
 };
 
 const getOversaturationPercentage = (
@@ -56,6 +66,18 @@ const getOversaturationPercentage = (
 
 @observer
 class DelegationSetupWizardDialog extends Component<Props> {
+  componentDidUpdate(prevProps: Props) {
+    if (
+      !global.cip30Enabled &&
+      this.props.activeStep === 3 &&
+      prevProps.isSubmitting &&
+      !this.props.isSubmitting &&
+      !this.props.error
+    ) {
+      this.props.onContinue();
+    }
+  }
+
   render() {
     const {
       activeStep,
@@ -81,6 +103,12 @@ class DelegationSetupWizardDialog extends Component<Props> {
       currentLocale,
       maxDelegationFunds,
       onThumbPoolSelect,
+      onConfirm,
+      stakePoolJoinFee,
+      isSubmitting,
+      error,
+      hwDeviceStatus,
+      isTrezor,
     } = this.props;
     const selectedWalletId = get(selectedWallet, 'id', null);
     const oversaturationPercentage = getOversaturationPercentage(
@@ -139,6 +167,25 @@ class DelegationSetupWizardDialog extends Component<Props> {
         break;
 
       case 3:
+        if (!global.cip30Enabled) {
+          content = (
+            <DelegationStepsConfirmationDialog
+              transactionFee={stakePoolJoinFee}
+              selectedPool={selectedPool}
+              selectedWallet={selectedWallet}
+              stepsList={stepsList}
+              onClose={onClose}
+              onConfirm={onConfirm}
+              onBack={onBack}
+              isSubmitting={isSubmitting}
+              error={error}
+              hwDeviceStatus={hwDeviceStatus}
+              onExternalLinkClick={onOpenExternalLink}
+              isTrezor={isTrezor}
+              oversaturationPercentage={oversaturationPercentage}
+            />
+          );
+        }
         break;
 
       case 4:

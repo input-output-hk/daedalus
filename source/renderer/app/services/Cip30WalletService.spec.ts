@@ -12,7 +12,20 @@ import * as transactionContext from '../../../common/cardano/transactionContext'
 import { prepareHardwareTransaction } from '../utils/hardwareWalletTransaction';
 import { prepareHardwareMessage } from '../utils/hardwareWalletMessage';
 import { Cip30WalletService } from './Cip30WalletService';
+import { bindCip30WalletRenderer } from '../ipc/cip30Wallet';
 
+import TransactionsStore from '../stores/TransactionsStore';
+import type { WalletSendLease } from '../stores/TransactionsStore';
+import type { ActionsMap } from '../actions';
+import type { AnalyticsTracker } from '../analytics';
+
+const deferred = <T>() => {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((complete) => {
+    resolve = complete;
+  });
+  return { promise, resolve };
+};
 jest.mock('../ipc/cip30Wallet', () => ({
   bindCip30WalletRenderer: jest.fn(() => jest.fn()),
 }));
@@ -39,6 +52,14 @@ const network = {
   networkId: 0 as const,
   networkMagic: 42,
   genesisHash: '11'.repeat(32),
+};
+const lockId = '11111111-1111-4111-8111-111111111111';
+const lockRequest = {
+  operation: 'acquire-transaction-lock' as const,
+  lockId,
+  walletId: 'wallet',
+  network,
+  sourceRevision: '22'.repeat(20),
 };
 const request = (
   operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state'
@@ -81,6 +102,7 @@ const transactionContextRequest = {
 };
 const signTransactionsRequest = {
   operation: 'sign-transactions' as const,
+  lockId,
   approvalRequestId: 'approval',
 
   walletId: 'wallet',
@@ -132,6 +154,7 @@ const hardwareMessage = {
 } as unknown as HardwareMessageRequest;
 const submitTransactionRequest = {
   operation: 'submit-transaction' as const,
+  lockId,
   walletId: 'wallet',
   network,
   sourceRevision: '22'.repeat(20),
@@ -208,8 +231,9 @@ const create = () => {
       collateral: [{ id: '99'.repeat(32), index: 1 }],
     },
   ]);
-  const withWalletSendLock = jest.fn(
-    async (_walletId: string, work: () => Promise<unknown>) => work()
+  const release = jest.fn();
+  const acquireWalletSendLock = jest.fn<Promise<WalletSendLease>, [string]>(
+    async (walletId) => ({ walletId, release })
   );
   const stakeAddresses = { wallet: 'stake-address' };
   const api = {
@@ -251,7 +275,7 @@ const create = () => {
       stakeAddresses,
       _getStakeAddress: jest.fn(async () => undefined),
     },
-    transactions: { withWalletSendLock },
+    transactions: { acquireWalletSendLock },
   } as unknown as StoresMap;
   return {
     service: new Cip30WalletService(api, stores),
@@ -263,7 +287,8 @@ const create = () => {
     getAccountPublicKey,
     submitDappTransaction,
     getDappCollateralHistory,
-    withWalletSendLock,
+    acquireWalletSendLock,
+    release,
     getDappTransactionCapability,
     signDappTransaction,
     refreshDappConnectorCapability,
@@ -284,6 +309,170 @@ const create = () => {
 };
 
 describe('Cip30WalletService', () => {
+  beforeEach(() => {
+    global.cip30Enabled = true;
+    jest.clearAllMocks();
+  });
+  it('requires acquired identity and rejects duplicate and mismatched leases', async () => {
+    const fixture = create();
+    await expect(
+      fixture.service.receive(signTransactionsRequest)
+    ).resolves.toMatchObject({ status: 'rejected' });
+    await expect(
+      fixture.service.receive(submitTransactionRequest)
+    ).resolves.toMatchObject({ status: 'rejected' });
+    expect(fixture.signDappTransactions).not.toHaveBeenCalled();
+    expect(fixture.submitDappTransaction).not.toHaveBeenCalled();
+    await expect(fixture.service.receive(lockRequest)).resolves.toMatchObject({
+      status: 'fulfilled',
+    });
+    await expect(fixture.service.receive(lockRequest)).resolves.toMatchObject({
+      status: 'rejected',
+    });
+    for (const changed of [
+      { walletId: 'other' },
+      { sourceRevision: '33'.repeat(20) },
+      { network: { ...network, genesisHash: '33'.repeat(32) } },
+    ]) {
+      await expect(
+        fixture.service.receive({ ...submitTransactionRequest, ...changed })
+      ).resolves.toMatchObject({ status: 'rejected' });
+      await expect(
+        fixture.service.receive({
+          ...lockRequest,
+          ...changed,
+          operation: 'release-transaction-lock',
+        })
+      ).resolves.toMatchObject({ status: 'rejected' });
+    }
+    fixture.setWallet(null);
+    await expect(
+      fixture.service.receive({
+        ...lockRequest,
+        operation: 'release-transaction-lock',
+      })
+    ).resolves.toMatchObject({ status: 'fulfilled' });
+    await expect(
+      fixture.service.receive({
+        ...lockRequest,
+        operation: 'release-transaction-lock',
+      })
+    ).resolves.toMatchObject({ status: 'fulfilled' });
+    expect(fixture.release).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(['route', 'dispose', 'release'] as const)(
+    'cancels a queued acquisition on %s without blocking the next real queue lease',
+    async (reason) => {
+      const fixture = create();
+      const queue = new TransactionsStore(
+        { ada: {} } as unknown as Api,
+        {} as ActionsMap,
+        {} as AnalyticsTracker
+      );
+      const blocker = await queue.acquireWalletSendLock('wallet');
+      fixture.acquireWalletSendLock.mockImplementation(
+        queue.acquireWalletSendLock
+      );
+      const pending = fixture.service.receive(lockRequest);
+      if (reason === 'route') fixture.setWallet(null);
+      if (reason === 'dispose') fixture.service.teardown();
+      if (reason === 'release')
+        await fixture.service.receive({
+          ...lockRequest,
+          operation: 'release-transaction-lock',
+        });
+      blocker.release();
+      await expect(pending).resolves.toMatchObject({ status: 'rejected' });
+      const release = await queue.acquireWalletSendLock('wallet');
+      release.release();
+      expect(fixture.submitDappTransaction).not.toHaveBeenCalled();
+      expect(fixture.signDappTransactions).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each(['release', 'dispose'] as const)(
+    'keeps the real lease until authorized backend submission settles after %s',
+    async (reason) => {
+      const fixture = create();
+      const queue = new TransactionsStore(
+        { ada: {} } as unknown as Api,
+        {} as ActionsMap,
+        {} as AnalyticsTracker
+      );
+      fixture.acquireWalletSendLock.mockImplementation(
+        queue.acquireWalletSendLock
+      );
+      await fixture.service.receive(lockRequest);
+      const submitting = deferred<{
+        revision: 1;
+        transaction_id: string;
+        status: 'submitted';
+      }>();
+      fixture.submitDappTransaction.mockImplementationOnce(
+        () => submitting.promise
+      );
+      const work = fixture.service.receive(submitTransactionRequest);
+      fixture.setWallet(null);
+      if (reason === 'dispose') fixture.service.teardown();
+      else
+        await fixture.service.receive({
+          ...lockRequest,
+          operation: 'release-transaction-lock',
+        });
+      const next = jest.fn(async () => undefined);
+      const waiting = queue.withWalletSendLock('wallet', next);
+      await Promise.resolve();
+      expect(next).not.toHaveBeenCalled();
+      await expect(
+        fixture.service.receive(submitTransactionRequest)
+      ).resolves.toMatchObject({ status: 'rejected' });
+      submitting.resolve({
+        revision: 1,
+        transaction_id: '77'.repeat(32),
+        status: 'submitted',
+      });
+      await expect(work).resolves.toMatchObject({ status: 'fulfilled' });
+      await waiting;
+      expect(next).toHaveBeenCalledTimes(1);
+    }
+  );
+
+  it('refuses direct privileged requests without binding or accessing backend/device when disabled', async () => {
+    global.cip30Enabled = false;
+    const fixture = create();
+    fixture.service.setup();
+    for (const operation of [
+      request('capabilities'),
+      request('context'),
+      request('addresses'),
+      accountPublicKeyRequest,
+      signDataRequest,
+      signTransactionsRequest,
+      {
+        ...request('context'),
+        operation: 'submit-transaction' as const,
+        lockId,
+        transaction: '84a0a0f5f6',
+      },
+    ]) {
+      await expect(fixture.service.receive(operation)).resolves.toEqual({
+        status: 'rejected',
+        reason: 'unavailable',
+      });
+    }
+    expect(bindCip30WalletRenderer).not.toHaveBeenCalled();
+    expect(fixture.getDappCapabilities).not.toHaveBeenCalled();
+    expect(fixture.getDappTransactionContext).not.toHaveBeenCalled();
+    expect(fixture.getAddresses).not.toHaveBeenCalled();
+    expect(fixture.getAccountPublicKey).not.toHaveBeenCalled();
+    expect(fixture.signDappData).not.toHaveBeenCalled();
+    expect(fixture.signDappTransactions).not.toHaveBeenCalled();
+    expect(fixture.submitDappTransaction).not.toHaveBeenCalled();
+    expect(fixture.acquireWalletSendLock).not.toHaveBeenCalled();
+    expect(fixture.signDappTransaction).not.toHaveBeenCalled();
+    fixture.service.teardown();
+  });
   it('returns only history that consumes the requested preferred input', async () => {
     const fixture = create();
     await expect(
@@ -577,6 +766,7 @@ describe('Cip30WalletService', () => {
 
   it('forwards exact transaction context and software witness requests', async () => {
     const fixture = create();
+    await fixture.service.receive(lockRequest);
     await expect(
       fixture.service.receive(transactionContextRequest)
     ).resolves.toEqual({
@@ -626,6 +816,7 @@ describe('Cip30WalletService', () => {
 
   it('maps transaction witness errors', async () => {
     const fixture = create();
+    await fixture.service.receive(lockRequest);
     for (const [code, reason] of [
       ['dapp_tx_proof_generation', 'tx-proof-generation'],
       ['dapp_deprecated_certificate', 'deprecated-certificate'],
@@ -642,6 +833,7 @@ describe('Cip30WalletService', () => {
 
   it('signs reviewed hardware context without a passphrase or backend fallback', async () => {
     const fixture = create();
+    await fixture.service.receive(lockRequest);
     fixture.setWallet({
       id: 'wallet',
       name: 'Hardware',
@@ -649,6 +841,7 @@ describe('Cip30WalletService', () => {
     });
     const hardwareRequest = {
       operation: 'sign-transactions' as const,
+      lockId,
       approvalRequestId: 'approval',
       walletId: 'wallet',
       network,
@@ -693,6 +886,7 @@ describe('Cip30WalletService', () => {
 
   it('rejects disabled hardware preparation before device work', async () => {
     const fixture = create();
+    await fixture.service.receive(lockRequest);
     fixture.setWallet({
       id: 'wallet',
       name: 'Hardware',
@@ -728,6 +922,7 @@ describe('Cip30WalletService', () => {
 
   it('maps hardware device failures to proof generation', async () => {
     const fixture = create();
+    await fixture.service.receive(lockRequest);
     fixture.setWallet({
       id: 'wallet',
       name: 'Hardware',
@@ -748,6 +943,7 @@ describe('Cip30WalletService', () => {
 
   it('submits exact approved bytes under the wallet lock after route loss', async () => {
     const fixture = create();
+    await fixture.service.receive(lockRequest);
     fixture.setWallet(null);
     fixture.setReady(false);
     await expect(
@@ -761,10 +957,7 @@ describe('Cip30WalletService', () => {
         status: 'submitted',
       },
     });
-    expect(fixture.withWalletSendLock).toHaveBeenCalledWith(
-      'wallet',
-      expect.any(Function)
-    );
+    expect(fixture.acquireWalletSendLock).toHaveBeenCalledWith('wallet');
     expect(fixture.submitDappTransaction).toHaveBeenCalledWith({
       walletId: 'wallet',
       request: {
@@ -781,6 +974,7 @@ describe('Cip30WalletService', () => {
 
   it('maps fixed submission failures after authorization', async () => {
     const fixture = create();
+    await fixture.service.receive(lockRequest);
     for (const [code, reason] of [
       ['dapp_submission_failed', 'tx-send-failure'],
       ['dapp_account_changed', 'tx-send-failure'],

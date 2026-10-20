@@ -1,5 +1,10 @@
 import WalletsStore from './WalletsStore';
 import type Wallet from '../domains/Wallet';
+import type { Api } from '../api';
+import type { ActionsMap } from '../actions';
+import type { StoresMap } from './index';
+import type { AnalyticsTracker } from '../analytics';
+import { WalletSyncStateStatuses } from '../domains/Wallet';
 
 const wallet = (id: string) =>
   ({
@@ -30,6 +35,23 @@ const createStore = (wallets: Wallet[], currentRoute: string) => {
 };
 
 describe('WalletsStore dApp routes', () => {
+  const originalCapability = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
+  });
+
+  it('exposes no dApp wallet authority outside pilot packages', () => {
+    global.cip30Enabled = false;
+    const active = wallet('wallet-a');
+    const { store } = createStore([active], '/wallets/wallet-a/summary');
+    store.active = active;
+    expect(store.eligibleDappWallets).toEqual([]);
+    expect(store.activeDappWallet).toBeNull();
+  });
+
   it('does not retarget a direct invalid dApp hash', () => {
     const { store } = createStore([wallet('wallet-a')], '/apps/missing');
 
@@ -76,5 +98,57 @@ describe('WalletsStore dApp routes', () => {
     store.active = null;
 
     expect(store.activeDappWallet).toBeNull();
+  });
+
+  it('refreshes and removes an upstream wallet without connection services', async () => {
+    global.cip30Enabled = false;
+    const upstreamWallet = Object.assign(wallet('wallet-a'), {
+      syncState: { status: WalletSyncStateStatuses.READY },
+    });
+    let backendWallets = [upstreamWallet];
+    // Only backend and unrelated UI effects are replaced; refresh/delete requests run normally.
+    const api = {
+      ada: {
+        getWallets: async () => backendWallets,
+        deleteWallet: async () => {
+          backendWallets = [];
+          return true;
+        },
+      },
+    } as unknown as Api;
+    const trigger = jest.fn();
+    const actions = {
+      walletsLocal: {
+        refreshWalletsLocalData: { trigger },
+        unsetWalletLocalData: { trigger },
+      },
+      wallets: { refreshWalletsDataSuccess: { trigger } },
+      router: { goToRoute: { trigger } },
+      dialogs: { closeActiveDialog: { trigger } },
+    } as unknown as ActionsMap;
+    const analytics = { sendEvent: jest.fn() } as unknown as AnalyticsTracker;
+    const store = new WalletsStore(api, actions, analytics);
+    // Deliberately omit dapp: disabled packages cannot depend on its IPC lifecycle.
+    const stores = {
+      networkStatus: { isConnected: true },
+      addresses: {
+        _getAddressesAllRequest: jest.fn(),
+        _refreshAddresses: jest.fn(),
+      },
+      transactions: {
+        _getTransactionsRecentRequest: jest.fn(),
+        _getTransactionsAllRequest: jest.fn(),
+        _getWithdrawalsRequest: jest.fn(),
+        _refreshTransactionData: jest.fn(),
+      },
+      hardwareWallets: { _unsetHardwareWalletLocalData: jest.fn() },
+    } as unknown as StoresMap;
+    store.configure(stores);
+    await store.refreshWalletsData();
+    expect(store.all.map(({ id }) => id)).toEqual(['wallet-a']);
+    await store._deleteWallet({ walletId: 'wallet-a', isLegacy: false });
+    expect(store.all).toEqual([]);
+    expect(store.isDeleting).toBe(false);
+    expect(store.active).toBeNull();
   });
 });

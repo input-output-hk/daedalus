@@ -8,6 +8,8 @@ import type { Api } from '../api';
 import type { ActionsMap } from '../actions';
 import type { AnalyticsTracker } from '../analytics';
 import WalletApprovalStore from './WalletApprovalStore';
+import { bindWalletApprovalRenderer } from '../ipc/walletApproval';
+import NativeTransactionService from '../services/NativeTransactionService';
 
 jest.mock('../ipc/walletApproval', () => ({
   bindWalletApprovalRenderer: jest.fn(() => jest.fn()),
@@ -103,6 +105,32 @@ const nativeRequest = {
 };
 
 describe('WalletApprovalStore', () => {
+  beforeEach(() => {
+    global.cip30Enabled = true;
+    jest.clearAllMocks();
+  });
+
+  it('does not initialize approval or wait for a decision when disabled', async () => {
+    global.cip30Enabled = false;
+    const store = createStore();
+    store.setup();
+    await expect(store.receive({ type: 'present', request })).resolves.toEqual({
+      requestId: request.requestId,
+      approved: false,
+    });
+    expect(bindWalletApprovalRenderer).not.toHaveBeenCalled();
+    expect(() => store.nativeTransactions).toThrow('unavailable');
+    expect(store.current).toBeNull();
+    store.teardown();
+  });
+
+  it('initializes native exact approval independently of launcher availability', () => {
+    const store = createStore();
+    store.setup();
+    expect(store.nativeTransactions).toBeInstanceOf(NativeTransactionService);
+    expect(bindWalletApprovalRenderer).toHaveBeenCalledTimes(1);
+    store.teardown();
+  });
   it('correlates approval by main-issued ID and restores trusted focus', async () => {
     const store = createStore();
     const origin = document.createElement('button');

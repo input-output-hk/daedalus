@@ -36,6 +36,45 @@ const transaction = (overrides: Partial<Transaction> = {}): Transaction => ({
 });
 
 describe('transaction history conversion', () => {
+  const originalCapability = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
+  });
+
+  it('preserves upstream pending, confirmed and expired amounts and assets', () => {
+    global.cip30Enabled = false;
+    expect(_conditionToTxState('pending')).toBe('pending');
+    expect(_conditionToTxState('in_ledger')).toBe('in_ledger');
+    expect(_conditionToTxState('expired')).toBe('expired');
+    expect(_conditionToTxState('unexpected')).toBe('in_ledger');
+    const converted = _createTransactionFromServerData(
+      transaction({
+        status: 'expired',
+        outputs: [
+          {
+            address: 'target-address',
+            amount: { quantity: 1000000, unit: WalletUnits.LOVELACE },
+            assets: [
+              { policy_id: 'cd'.repeat(28), asset_name: '41', quantity: 7 },
+            ],
+          },
+        ],
+      })
+    );
+    expect(converted.state).toBe('expired');
+    expect(converted.amount.toString()).toBe('-1');
+    expect(converted.fee.toString()).toBe('0.2');
+    expect(converted.assets[0]).toMatchObject({
+      policyId: 'cd'.repeat(28),
+      assetName: '41',
+      address: 'target-address',
+    });
+    expect(converted.assets[0].quantity.toString()).toBe('7');
+  });
+
   it('keeps backend states honest and carries certificate/pure-ADA evidence', () => {
     expect(_conditionToTxState('expired')).toBe('expired');
     expect(_conditionToTxState('failed')).toBe('failed');

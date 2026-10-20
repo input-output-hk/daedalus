@@ -740,7 +740,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
     return (
       <div
         className={classNames(styles.component, {
-          [styles.dappBrowserAvailable]: this.props.diagnosticsAvailable,
+          [styles.dappBrowserAvailable]:
+            global.cip30Enabled && this.props.diagnosticsAvailable,
         })}
       >
         <DialogCloseButton
@@ -1045,7 +1046,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 onStartMithrilPartialSync={onStartMithrilPartialSync}
               />
             </div>
-            {this.props.diagnosticsAvailable && (
+            {global.cip30Enabled && this.props.diagnosticsAvailable && (
               <form className={styles.dappBrowser} onSubmit={this.launchDapp}>
                 {getSectionRow('dappBrowser')}
                 <p className={styles.dappBrowserWarning}>

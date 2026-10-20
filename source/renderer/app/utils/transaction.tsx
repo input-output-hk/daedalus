@@ -26,7 +26,9 @@ export const generateFilterOptions = (
     .filter(({ date }) => !!date)
     .map(({ date }) => (date ? date.getTime() : 0));
   const amounts = transactions
-    .filter(({ amountIsKnown }) => amountIsKnown !== false)
+    .filter(
+      ({ amountIsKnown }) => !global.cip30Enabled || amountIsKnown !== false
+    )
     .map(({ amount }) => amount.absoluteValue());
   const dateRange = DateRangeTypes.CUSTOM;
   const fromDate =
@@ -73,7 +75,11 @@ export const isTransactionAmountInFilterRange = (
   toAmount: string,
   transaction: WalletTransaction
 ) => {
-  if (transaction.amountIsKnown === false && (fromAmount || toAmount))
+  if (
+    global.cip30Enabled &&
+    transaction.amountIsKnown === false &&
+    (fromAmount || toAmount)
+  )
     return false;
   const { amount } = transaction;
   const min =

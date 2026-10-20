@@ -36,12 +36,14 @@ function SettingsMenu({ intl, onItemClick, isActiveItem, isFlight }: Props) {
           active={isActiveItem(ROUTES.SETTINGS.WALLETS)}
           className="wallets"
         />
-        <SettingsMenuItem
-          label={intl.formatMessage(messages.dappConnections)}
-          onClick={() => onItemClick(ROUTES.SETTINGS.DAPP_CONNECTIONS)}
-          active={isActiveItem(ROUTES.SETTINGS.DAPP_CONNECTIONS)}
-          className="dappConnections"
-        />
+        {global.cip30Enabled && (
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.dappConnections)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.DAPP_CONNECTIONS)}
+            active={isActiveItem(ROUTES.SETTINGS.DAPP_CONNECTIONS)}
+            className="dappConnections"
+          />
+        )}
         <SettingsMenuItem
           label={intl.formatMessage(messages.stakePools)}
           onClick={() => onItemClick(ROUTES.SETTINGS.STAKE_POOLS)}

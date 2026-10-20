@@ -341,6 +341,7 @@ describe('CIP-30 wallet executor contract', () => {
     const signRequest = {
       ...request,
       operation: 'sign-transactions' as const,
+      lockId: '11111111-1111-4111-8111-111111111111',
       approvalRequestId: 'approval',
       context: { revision: 1, outputs: [] },
       transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
@@ -350,6 +351,7 @@ describe('CIP-30 wallet executor contract', () => {
     const hardwareSignRequest = {
       ...request,
       operation: 'sign-transactions' as const,
+      lockId: '11111111-1111-4111-8111-111111111111',
       approvalRequestId: 'approval',
       context: { revision: 1, outputs: [] },
       transactions: [{ cbor: '84a0a0f5f6', partialSign: true }],
@@ -383,6 +385,8 @@ describe('CIP-30 wallet executor contract', () => {
       operation: 'sign-transactions',
     });
     for (const value of [
+      { ...signRequest, lockId: undefined },
+      { ...signRequest, lockId: 'malformed' },
       { ...signRequest, passphrase: '' },
       { ...signRequest, passphrase: undefined },
       { ...signRequest, transactions: [] },
@@ -412,10 +416,59 @@ describe('CIP-30 wallet executor contract', () => {
     ).toThrow('Invalid CIP-30 transaction witnesses');
   });
 
+  it.each(['acquire-transaction-lock', 'release-transaction-lock'] as const)(
+    'validates exact %s identity and echoed token',
+    (operation) => {
+      const lease = {
+        ...request,
+        operation,
+        lockId: '11111111-1111-4111-8111-111111111111',
+      };
+      expect(parseCip30WalletRequest(lease)).toEqual(lease);
+      expect(
+        parseCip30WalletResponse(lease, {
+          status: 'fulfilled',
+          operation,
+          value: { lockId: lease.lockId },
+        })
+      ).toEqual({
+        status: 'fulfilled',
+        operation,
+        value: { lockId: lease.lockId },
+      });
+      for (const invalid of [
+        { ...lease, lockId: undefined },
+        { ...lease, lockId: 'not-a-uuid' },
+        { ...lease, unexpected: true },
+        Object.defineProperty({ ...lease }, 'lockId', {
+          get: () => lease.lockId,
+          enumerable: true,
+        }),
+      ])
+        expect(() => parseCip30WalletRequest(invalid)).toThrow();
+      expect(() =>
+        parseCip30WalletResponse(lease, {
+          status: 'fulfilled',
+          operation,
+          value: { lockId: '22222222-2222-4222-8222-222222222222' },
+        })
+      ).toThrow();
+      for (const transactionOperation of [
+        'sign-transactions',
+        'submit-transaction',
+      ]) {
+        expect(() =>
+          parseCip30WalletRequest({ ...lease, operation: transactionOperation })
+        ).toThrow();
+      }
+    }
+  );
+
   it('accepts only exact single-transaction submission contracts', () => {
     const submitRequest = {
       ...request,
       operation: 'submit-transaction' as const,
+      lockId: '11111111-1111-4111-8111-111111111111',
       transaction: '84a0a0f5f6',
     };
     expect(parseCip30WalletRequest(submitRequest)).toEqual(submitRequest);
@@ -433,6 +486,12 @@ describe('CIP-30 wallet executor contract', () => {
       status: 'fulfilled',
       operation: 'submit-transaction',
     });
+    expect(() =>
+      parseCip30WalletRequest({ ...submitRequest, lockId: undefined })
+    ).toThrow('Invalid CIP-30 wallet request');
+    expect(() =>
+      parseCip30WalletRequest({ ...submitRequest, lockId: 'malformed' })
+    ).toThrow('Invalid CIP-30 wallet request');
     expect(() =>
       parseCip30WalletRequest({ ...submitRequest, transaction: 'A0' })
     ).toThrow('Invalid CIP-30 wallet request');

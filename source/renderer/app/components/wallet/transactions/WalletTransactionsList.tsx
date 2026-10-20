@@ -127,6 +127,7 @@ class WalletTransactionsList extends Component<Props, State> {
   revealSelectedTransaction = () => {
     const { selectedTransactionId, transactions } = this.props;
     if (
+      !global.cip30Enabled ||
       !selectedTransactionId ||
       this.revealedSelectedTransactionId === selectedTransactionId
     ) {

@@ -28,13 +28,28 @@ export type CollateralPreferenceRecord = Readonly<{
 export type CollateralPreference = CollateralPreferenceRecord &
   Readonly<{ state: CollateralState }>;
 
+export type CollateralPreparationOperation = Readonly<{
+  operationId: string;
+  walletId: string;
+  networkGenesis: string;
+}>;
+
 export type CollateralSnapshot = Readonly<{
   corrupt: boolean;
   preference: CollateralPreference;
+  preparation?: CollateralPreparationOperation;
 }>;
 
 export type CollateralRendererRequest =
   | Readonly<{
-      type: 'snapshot' | 'prepare' | 'cancel-preparation' | 'clear' | 'repair';
+      type: 'snapshot' | 'prepare' | 'clear' | 'repair';
     }>
-  | Readonly<{ type: 'track-preparation'; transactionId: string }>;
+  | Readonly<{
+      type: 'track-preparation';
+      preparation: CollateralPreparationOperation;
+      transactionId: string;
+    }>
+  | Readonly<{
+      type: 'cancel-preparation';
+      preparation: CollateralPreparationOperation;
+    }>;

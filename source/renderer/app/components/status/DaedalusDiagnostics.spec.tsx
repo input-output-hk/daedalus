@@ -83,7 +83,22 @@ const renderComponent = (overrides = {}) =>
   );
 
 describe('DaedalusDiagnostics', () => {
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
   afterEach(cleanup);
+
+  it('retains ordinary diagnostics without dApp launch or console controls when disabled', () => {
+    global.cip30Enabled = false;
+    renderComponent();
+    expect(screen.getByText('Test CPU')).toBeInTheDocument();
+    expect(screen.queryByLabelText('DApp URL')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('checkbox', {
+        name: 'Capture dApp console warnings and errors',
+      })
+    ).not.toBeInTheDocument();
+  });
 
   it('labels and launches an arbitrary URL as untrusted with the selected wallet', async () => {
     const onLaunchDapp = jest.fn(() => Promise.resolve());

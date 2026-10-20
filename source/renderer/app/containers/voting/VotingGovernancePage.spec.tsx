@@ -29,6 +29,9 @@ import VotingGovernancePage from './VotingGovernancePage';
 import DRepDirectoryPage from '../governance/DRepDirectoryPage';
 import DRepDetailPage from '../governance/DRepDetailPage';
 
+beforeEach(() => {
+  global.cip30Enabled = true;
+});
 // jsdom's Uint8Array constructor lives in a different realm than Node's
 // Buffer, so the SDK's bech32 encoder rejects Buffer payloads; point the
 // suite's global at Node's realm (decode paths are unaffected).
@@ -155,7 +158,11 @@ const buildStores = ({
       openExternalLink: jest.fn(),
     },
     governance,
-    hardwareWallets: {},
+    hardwareWallets: {
+      checkIsTrezorByWalletId: jest.fn(() => false),
+      _resetTransaction: jest.fn(),
+      hwDeviceStatus: 'ready',
+    },
     networkStatus: {
       isNodeInSync: true,
       isSynced: true,
@@ -164,6 +171,10 @@ const buildStores = ({
     },
     staking: { getStakePoolById: jest.fn(), stakePools: [] },
     voting: {
+      initializeVPDelegationTx: jest.fn(async () => ({
+        success: true as const,
+        fees: new BigNumber('0.18'),
+      })),
       delegateVotes: jest.fn<
         ReturnType<VotingStore['delegateVotes']>,
         Parameters<VotingStore['delegateVotes']>
@@ -613,5 +624,60 @@ describe('Current-vote enrichment in the delegation form', () => {
     expect(logged).not.toContain('drep_script');
     expect(logged).not.toContain('abstain');
     expect(logged).not.toContain('no_confidence');
+  });
+});
+
+describe('upstream governance confirmation workflow', () => {
+  beforeEach(() => {
+    global.cip30Enabled = false;
+  });
+  afterEach(cleanup);
+
+  it.each([VALID_DREP_ID, 'abstain', 'no_confidence'])(
+    'prepares %s, collects the password, and favorites only successful DRep submission',
+    async (chosenOption) => {
+      const { stores, actions } = renderDelegationForm(chosenOption);
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+      await screen.findByRole('button', { name: 'Confirm' });
+      expect(stores.voting.initializeVPDelegationTx).toHaveBeenCalledWith({
+        chosenOption,
+        wallet: softwareWallet,
+      });
+      expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
+      expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+      fireEvent.change(document.querySelector('input[type="password"]'), {
+        target: { value: 'upstream-password' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+      await waitFor(() =>
+        expect(stores.voting.delegateVotes).toHaveBeenCalledWith({
+          chosenOption,
+          passphrase: 'upstream-password',
+          wallet: softwareWallet,
+        })
+      );
+      await waitFor(() =>
+        expect(actions.router.goToRoute.trigger).toHaveBeenCalled()
+      );
+      expect(stores.governance.toggleFavorite.mock.calls).toEqual(
+        chosenOption === VALID_DREP_ID ? [[chosenOption]] : []
+      );
+    }
+  );
+
+  it('closes confirmation without submitting or saving the candidate', async () => {
+    const { stores } = renderDelegationForm(VALID_DREP_ID);
+    fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await screen.findByRole('button', { name: 'Confirm' });
+    const dialog = screen
+      .getByRole('button', { name: 'Confirm' })
+      .closest('[role="dialog"]');
+    const cancels = screen.getAllByRole('button', { name: 'Cancel' });
+    fireEvent.click(
+      cancels.find((button) => dialog?.contains(button)) ||
+        cancels[cancels.length - 1]
+    );
+    expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
+    expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
   });
 });

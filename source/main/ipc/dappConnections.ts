@@ -4,7 +4,11 @@ import {
   DappConnectionsMainResponse,
   DappConnectionsRendererRequest,
 } from '../../common/ipc/api';
-import { getDappConnectionService } from '../cip30/Cip30Broker';
+import {
+  getCollateralService,
+  getDappConnectionService,
+} from '../cip30/Cip30Broker';
+import { dappRuntimeConfig } from '../config';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 
 const channel = new MainIpcChannel<
@@ -83,6 +87,8 @@ export const parseDappConnectionsRequest = (
 
 export const handleDappConnectionRequests = (): void => {
   channel.onRequest(async (unknownRequest) => {
+    if (!dappRuntimeConfig.cip30Enabled)
+      throw new Error('CIP-30 is unavailable');
     const request = parseDappConnectionsRequest(unknownRequest);
     const service = getDappConnectionService();
     switch (request.type) {
@@ -95,8 +101,10 @@ export const handleDappConnectionRequests = (): void => {
       case 'revoke-scope':
         return service.revokeScope(request.identity, request.scope);
       case 'remove-wallet':
+        getCollateralService().removeWallet(request.walletId);
         return service.removeWallet(request.walletId);
       case 'prune-wallets':
+        getCollateralService().pruneWallets(request.walletIds);
         return service.pruneWallets(request.walletIds);
       case 'repair':
         return service.repair();

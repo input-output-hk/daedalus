@@ -689,9 +689,47 @@ export class Cip30Broker {
     return Object.freeze({ resolved, signingContext });
   }
 
+  private async withTransactionLock<T>(
+    binding: Cip30BrokerBinding,
+    work: (lockId: string) => Promise<T>
+  ): Promise<T> {
+    const lockId = randomUUID();
+    const identity = {
+      lockId,
+      walletId: binding.authority.walletId,
+      network: binding.authority.network,
+      sourceRevision: this.options.sourceRevision,
+    };
+    try {
+      const response = await this.options.executeWallet({
+        operation: 'acquire-transaction-lock',
+        ...identity,
+      });
+      if (response.status === 'rejected') {
+        if (response.reason === 'account-change') throw accountChange();
+        throw internal();
+      }
+      if (
+        response.operation !== 'acquire-transaction-lock' ||
+        response.value.lockId !== lockId
+      )
+        throw internal();
+      this.assertCurrent(binding);
+      return await work(lockId);
+    } finally {
+      await this.options
+        .executeWallet({
+          operation: 'release-transaction-lock',
+          ...identity,
+        })
+        .catch(() => undefined);
+    }
+  }
+
   private async signTxs(
     request: DappCip30GatewayRequest<'api.cip103.signTxs'>,
-    binding: Cip30BrokerBinding
+    binding: Cip30BrokerBinding,
+    lockId: string
   ) {
     const batch = preflightCip103Sign(
       request.args[0],
@@ -780,6 +818,7 @@ export class Cip30Broker {
         try {
           return await signCip103WalletBatch(this.options.executeWallet, {
             walletId: binding.authority.walletId,
+            lockId,
             approvalRequestId: approval.requestId,
             walletKind: evidence.walletKind,
             network: binding.authority.network,
@@ -809,7 +848,8 @@ export class Cip30Broker {
 
   private async submitTxs(
     request: DappCip30GatewayRequest<'api.cip103.submitTxs'>,
-    binding: Cip30BrokerBinding
+    binding: Cip30BrokerBinding,
+    lockId: string
   ) {
     const batch = preflightCip103Submit(
       request.args[0],
@@ -871,6 +911,7 @@ export class Cip30Broker {
               approval.reportProgress('submitting', index);
               const response = await this.options.executeWallet({
                 operation: 'submit-transaction',
+                lockId,
                 walletId: binding.authority.walletId,
                 network: binding.authority.network,
                 sourceRevision: this.options.sourceRevision,
@@ -917,7 +958,8 @@ export class Cip30Broker {
 
   private async signTx(
     request: DappCip30GatewayRequest<'api.signTx'>,
-    binding: Cip30BrokerBinding
+    binding: Cip30BrokerBinding,
+    lockId: string
   ) {
     const [cbor, partialSign = false] = request.args;
     try {
@@ -1025,6 +1067,7 @@ export class Cip30Broker {
         );
         const response = await this.options.executeWallet({
           operation: 'sign-transactions',
+          lockId,
           approvalRequestId: approval.requestId,
           walletId: binding.authority.walletId,
           network: binding.authority.network,
@@ -1076,6 +1119,7 @@ export class Cip30Broker {
             ).toString('hex');
             const submission = await this.options.executeWallet({
               operation: 'submit-transaction',
+              lockId,
               walletId: binding.authority.walletId,
               network: binding.authority.network,
               sourceRevision: this.options.sourceRevision,
@@ -1115,7 +1159,8 @@ export class Cip30Broker {
 
   private async submitTx(
     request: DappCip30GatewayRequest<'api.submitTx'>,
-    binding: Cip30BrokerBinding
+    binding: Cip30BrokerBinding,
+    lockId: string
   ) {
     const [cbor] = request.args;
     let local;
@@ -1204,6 +1249,7 @@ export class Cip30Broker {
         try {
           response = await this.options.executeWallet({
             operation: 'submit-transaction',
+            lockId,
             walletId: binding.authority.walletId,
             network: binding.authority.network,
             sourceRevision: this.options.sourceRevision,
@@ -1399,19 +1445,31 @@ export class Cip30Broker {
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (request.method === 'api.cip103.submitTxs') {
-        const result = await this.submitTxs(request, binding);
+        const transactionRequest = request;
+        const result = await this.withTransactionLock(binding, (lockId) =>
+          this.submitTxs(transactionRequest, binding, lockId)
+        );
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (request.method === 'api.cip103.signTxs') {
-        const result = await this.signTxs(request, binding);
+        const transactionRequest = request;
+        const result = await this.withTransactionLock(binding, (lockId) =>
+          this.signTxs(transactionRequest, binding, lockId)
+        );
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (request.method === 'api.submitTx') {
-        const result = await this.submitTx(request, binding);
+        const transactionRequest = request;
+        const result = await this.withTransactionLock(binding, (lockId) =>
+          this.submitTx(transactionRequest, binding, lockId)
+        );
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (request.method === 'api.signTx') {
-        const result = await this.signTx(request, binding);
+        const transactionRequest = request;
+        const result = await this.withTransactionLock(binding, (lockId) =>
+          this.signTx(transactionRequest, binding, lockId)
+        );
         return createDappCip30FulfilledEnvelope(request.method, result);
       }
       if (
@@ -1506,13 +1564,6 @@ const readNetwork = (): Cip30WalletNetwork => {
   );
 };
 
-const registry = new ExtensionRegistry();
-const capabilities = new CapabilityService(registry);
-const sessions = new SessionStore({
-  allowHttpLoopback: environment.isDev,
-});
-const negotiator = new Negotiator(registry, capabilities);
-const dispatcher = new Dispatcher(capabilities, sessions);
 let broker: Cip30Broker | undefined;
 let registered = false;
 let connectionService: DappConnectionService | undefined;
@@ -1530,6 +1581,21 @@ export const getCollateralService = (): CollateralService => {
 
 export const handleCip30BrokerRequests = (): void => {
   if (registered) return;
+  if (!dappRuntimeConfig.cip30Enabled) {
+    ipcMain.handle(DAPP_CIP30_GATEWAY_CHANNEL, async () => ({
+      status: 'rejected',
+      rejection: refusal(),
+    }));
+    registered = true;
+    return;
+  }
+  const registry = new ExtensionRegistry();
+  const capabilities = new CapabilityService(registry);
+  const sessions = new SessionStore({
+    allowHttpLoopback: environment.isDev,
+  });
+  const negotiator = new Negotiator(registry, capabilities);
+  const dispatcher = new Dispatcher(capabilities, sessions);
   const network = readNetwork();
   collateralService = new CollateralService(
     new CollateralPreferenceStore(

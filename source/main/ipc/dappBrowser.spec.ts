@@ -10,6 +10,8 @@ import {
 jest.mock('../config', () => ({
   dappLaunchPolicy: { allows: () => false },
   dappRuntimeConfig: {
+    cip30Enabled: true,
+    dappSandboxPackageCluster: 'preprod',
     dappNetwork: { cluster: 'preprod', genesisHash: 'genesis' },
   },
   isFlight: false,

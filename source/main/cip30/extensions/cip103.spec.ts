@@ -81,6 +81,7 @@ const signingRequest = (
   requiredKeyHashes?: readonly (readonly string[])[]
 ): Cip103WalletSigningRequest => ({
   walletId: 'wallet',
+  lockId: '11111111-1111-4111-8111-111111111111',
   approvalRequestId: 'approval',
   walletKind: 'shelley-software',
   network,
@@ -158,6 +159,7 @@ describe('CIP-103 software batch signing', () => {
     expect(executeWallet).toHaveBeenCalledTimes(1);
     expect(executeWallet).toHaveBeenCalledWith({
       operation: 'sign-transactions',
+      lockId: '11111111-1111-4111-8111-111111111111',
       approvalRequestId: 'approval',
       walletId: 'wallet',
       network,

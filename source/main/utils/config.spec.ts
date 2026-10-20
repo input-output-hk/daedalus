@@ -7,6 +7,7 @@ jest.mock('fs', () => ({ readFileSync: jest.fn() }));
 const hash = 'a'.repeat(64);
 const config = {
   cardanoWalletSourceRevision: 'd408e4f29e46dc34454b160b3994ee9974b5cde2',
+  cip30Enabled: true,
   dappBrowserPolicy: {
     revision: 1,
     globalEnabled: true,
@@ -131,3 +132,71 @@ it.each([
       .cardanoWalletSourceRevision
   ).toBe(cardanoWalletSourceRevision);
 });
+
+it.each([
+  ['mainnet', false, 'mainnet'],
+  ['selfnode', false, 'selfnode'],
+  ['preprod', true, 'preprod'],
+  ['preview', true, 'preview'],
+  ['mainnet-flight', true, 'mainnet'],
+])(
+  'requires the package capability for %s independently of launcher availability',
+  (dappSandboxPackageCluster, cip30Enabled, cluster) => {
+    (readFileSync as jest.Mock).mockReturnValue(
+      JSON.stringify({
+        ...config,
+        cip30Enabled,
+        dappSandboxPackageCluster,
+        dappBrowserPolicy: {
+          ...config.dappBrowserPolicy,
+          globalEnabled: false,
+        },
+        dappNetwork: { ...config.dappNetwork, cluster },
+      })
+    );
+
+    const result = readDappRuntimeConfig('/config/daedalus-config.json');
+
+    expect(result.cip30Enabled).toBe(cip30Enabled);
+    expect(result.dappSandboxPackageCluster).toBe(dappSandboxPackageCluster);
+    expect(result.dappNetwork.cluster).toBe(cluster);
+    expect(Object.isFrozen(result)).toBe(true);
+  }
+);
+
+it.each([undefined, null, 0, 1, '', 'true', 'false', [], {}])(
+  'rejects missing or malformed CIP-30 capability %p',
+  (cip30Enabled) => {
+    (readFileSync as jest.Mock).mockReturnValue(
+      JSON.stringify({ ...config, cip30Enabled })
+    );
+
+    expect(() => readDappRuntimeConfig('/config/daedalus-config.json')).toThrow(
+      'Invalid Daedalus configuration'
+    );
+  }
+);
+
+it.each([
+  ['mainnet', true, 'mainnet'],
+  ['selfnode', true, 'selfnode'],
+  ['preprod', false, 'preprod'],
+  ['preview', false, 'preview'],
+  ['mainnet-flight', false, 'mainnet'],
+])(
+  'rejects a contradictory CIP-30 capability for %s',
+  (dappSandboxPackageCluster, cip30Enabled, cluster) => {
+    (readFileSync as jest.Mock).mockReturnValue(
+      JSON.stringify({
+        ...config,
+        cip30Enabled,
+        dappSandboxPackageCluster,
+        dappNetwork: { ...config.dappNetwork, cluster },
+      })
+    );
+
+    expect(() => readDappRuntimeConfig('/config/daedalus-config.json')).toThrow(
+      'Invalid Daedalus configuration'
+    );
+  }
+);

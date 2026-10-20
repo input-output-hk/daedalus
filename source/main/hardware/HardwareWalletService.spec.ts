@@ -83,6 +83,10 @@ jest.mock('@trezor/connect', () => ({
   UI_EVENT: 'ui-event',
 }));
 jest.mock('../config', () => ({
+  dappRuntimeConfig: {
+    cip30Enabled: true,
+    dappSandboxPackageCluster: 'preprod',
+  },
   dappLaunchPolicy: {
     hardwareConnectorEnabled: jest.fn(() => true),
   },
@@ -160,6 +164,45 @@ const withResolvers = <T>() =>
   ).withResolvers<T>();
 
 describe('HardwareWalletService', () => {
+  it('rejects all exact signing on nonpilot packages before inspecting proofs or using devices', async () => {
+    const config = jest.requireMock('../config').dappRuntimeConfig;
+    config.cip30Enabled = false;
+    config.dappSandboxPackageCluster = 'mainnet';
+    try {
+      const service = new HardwareWalletService();
+      const { channels, handlers } = createChannels();
+      await service.register(channels);
+      const ledger = jest.spyOn(service, 'signExactLedgerTransaction');
+      const trezor = jest.spyOn(service, 'signExactTrezorTransaction');
+      const ledgerMessage = jest.spyOn(service, 'signLedgerMessage');
+      const trezorMessage = jest.spyOn(service, 'signTrezorMessage');
+      for (const vendor of ['ledger', 'trezor']) {
+        await expect(
+          handlers.get('signExactHardwareTransactionChannel')!({
+            vendor,
+            exact: { capability: { rowId: `${vendor}-native` } },
+          })
+        ).rejects.toThrow('Hardware exact transaction is not enabled');
+        await expect(
+          handlers.get('signExactHardwareMessageChannel')!({ vendor })
+        ).rejects.toThrow('Hardware connector is not enabled');
+      }
+      expect(ledger).not.toHaveBeenCalled();
+      expect(trezor).not.toHaveBeenCalled();
+      expect(ledgerMessage).not.toHaveBeenCalled();
+      expect(trezorMessage).not.toHaveBeenCalled();
+      expect(handlers.has('verifyHardwareTransactionChannel')).toBe(true);
+      const legacyTrezor = { inputs: [], outputs: [] };
+      await handlers.get('signTransactionTrezorChannel')!(legacyTrezor);
+      expect(TrezorConnect.cardanoSignTransaction).toHaveBeenCalledWith(
+        legacyTrezor
+      );
+    } finally {
+      config.cip30Enabled = true;
+      config.dappSandboxPackageCluster = 'preprod';
+      jest.restoreAllMocks();
+    }
+  });
   it('owns detection, transport cancellation, and late-result suppression', async () => {
     let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
     const unsubscribe = jest.fn();

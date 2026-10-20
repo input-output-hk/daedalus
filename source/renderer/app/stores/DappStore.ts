@@ -35,6 +35,7 @@ export default class DappStore extends Store {
   @computed
   get ready(): boolean {
     return (
+      global.cip30Enabled &&
       this.catalogAvailable &&
       !!this.stores.wallets.activeDappWallet &&
       this.stores.networkStatus.isSynced
@@ -44,6 +45,7 @@ export default class DappStore extends Store {
   @computed
   get diagnosticsReady(): boolean {
     return (
+      global.cip30Enabled &&
       this.diagnosticsAvailable &&
       this.stores.wallets.eligibleDappWallets.length > 0 &&
       this.stores.networkStatus.isSynced
@@ -51,6 +53,7 @@ export default class DappStore extends Store {
   }
 
   setup(): void {
+    if (!global.cip30Enabled) return;
     const generation = ++this.generation;
     this.unbind = bindDappBrowserState((isOpen) => {
       if (generation === this.generation)
@@ -151,11 +154,13 @@ export default class DappStore extends Store {
 
   @action.bound
   setConsoleCaptureEnabled(enabled: boolean): void {
-    this.consoleCaptureEnabled = this.consoleCaptureAvailable && enabled;
+    this.consoleCaptureEnabled =
+      global.cip30Enabled && this.consoleCaptureAvailable && enabled;
   }
 
   @action.bound
   async close(): Promise<void> {
+    if (!global.cip30Enabled) return;
     const generation = this.generation;
     await closeDappBrowserChannel.request(undefined);
     if (generation === this.generation) this.guestOpen = false;
@@ -221,6 +226,7 @@ export default class DappStore extends Store {
   private async manageConnections(
     request: DappConnectionsRendererRequest
   ): Promise<boolean> {
+    if (!global.cip30Enabled) return false;
     const requestGeneration = ++this.connectionRequestGeneration;
     runInAction('DappStore::startConnectionAction', () => {
       this.isManagingConnections = true;

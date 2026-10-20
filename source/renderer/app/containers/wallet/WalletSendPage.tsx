@@ -76,7 +76,10 @@ class WalletSendPage extends Component<Props> {
   ) => {
     const wallet = this.props.stores.wallets.getWalletById(walletId);
     if (!wallet) throw new Error('Wallet required before sending.');
-    if (wallet.isLegacy) {
+    if (wallet.isLegacy || !global.cip30Enabled) {
+      if (isHardwareWallet) {
+        this.props.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+      }
       this.props.actions.dialogs.open.trigger({
         dialog: WalletSendConfirmationDialogContainer,
         props: {
@@ -106,7 +109,7 @@ class WalletSendPage extends Component<Props> {
     if (isHardwareWallet) {
       this.props.stores.hardwareWallets.updateTxSignRequest(
         coinSelection,
-        this.props.stores.collateral.preparationFormActive,
+        !!data.isCollateralPreparation,
         { address: data.receiver, amount }
       );
       this.props.actions.hardwareWallets.sendMoney.trigger();
@@ -170,7 +173,10 @@ class WalletSendPage extends Component<Props> {
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
-    const isCollateralPreparation = collateral.preparationFormActive;
+    const isCollateralPreparation =
+      global.cip30Enabled &&
+      collateral.preparationFormActive &&
+      collateral.preparation?.walletId === wallet.id;
     const preparationAddress = singleAddressMode
       ? addresses.active?.id
       : (addresses.active?.id ?? addresses.all[0]?.id);

@@ -30,8 +30,35 @@ const outpointMatches = (
       transactionId === input.id && index === input.index
   );
 
+type TransactionLease = {
+  identity: Cip30WalletRequest;
+  release?: () => void;
+  releaseRequested: boolean;
+  inFlight: number;
+};
+
 export class Cip30WalletService {
   private unbind?: () => void;
+  private disposed = false;
+  private readonly transactionLeases = new Map<string, TransactionLease>();
+
+  private matchesLease(lease: TransactionLease, request: Cip30WalletRequest) {
+    const captured = lease.identity;
+    return (
+      captured.walletId === request.walletId &&
+      captured.sourceRevision === request.sourceRevision &&
+      captured.network.networkId === request.network.networkId &&
+      captured.network.networkMagic === request.network.networkMagic &&
+      captured.network.genesisHash === request.network.genesisHash
+    );
+  }
+
+  private releaseLease(lockId: string, lease: TransactionLease): void {
+    if (lease.releaseRequested && lease.release && lease.inFlight === 0) {
+      lease.release();
+      this.transactionLeases.delete(lockId);
+    }
+  }
 
   constructor(
     private readonly api: Api,
@@ -39,10 +66,17 @@ export class Cip30WalletService {
   ) {}
 
   setup(): void {
+    if (!global.cip30Enabled) return;
+    this.disposed = false;
     this.unbind = bindCip30WalletRenderer(this.receive);
   }
 
   teardown(): void {
+    this.disposed = true;
+    this.transactionLeases.forEach((lease, lockId) => {
+      lease.releaseRequested = true;
+      this.releaseLease(lockId, lease);
+    });
     this.unbind?.();
     this.unbind = undefined;
   }
@@ -114,6 +148,71 @@ export class Cip30WalletService {
   receive = async (
     request: Cip30WalletRequest
   ): Promise<Cip30WalletResponse> => {
+    if (!global.cip30Enabled)
+      return Object.freeze({ status: 'rejected', reason: 'unavailable' });
+    if (request.operation === 'release-transaction-lock') {
+      const lease = this.transactionLeases.get(request.lockId);
+      if (lease && !this.matchesLease(lease, request))
+        return Object.freeze({ status: 'rejected', reason: 'account-change' });
+      if (lease) {
+        lease.releaseRequested = true;
+        this.releaseLease(request.lockId, lease);
+      }
+      return Object.freeze({
+        status: 'fulfilled',
+        operation: request.operation,
+        value: Object.freeze({ lockId: request.lockId }),
+      });
+    }
+    if (this.disposed)
+      return Object.freeze({ status: 'rejected', reason: 'unavailable' });
+    if (request.operation === 'acquire-transaction-lock') {
+      if (!this.ready(request)) return this.rejection(request, 'unavailable');
+      if (this.transactionLeases.has(request.lockId))
+        return Object.freeze({ status: 'rejected', reason: 'internal' });
+      const lease: TransactionLease = {
+        identity: Object.freeze({
+          ...request,
+          network: Object.freeze({ ...request.network }),
+        }),
+        releaseRequested: false,
+        inFlight: 0,
+      };
+      this.transactionLeases.set(request.lockId, lease);
+      try {
+        const acquired = await this.stores.transactions.acquireWalletSendLock(
+          request.walletId
+        );
+        lease.release = acquired.release;
+        if (this.disposed || lease.releaseRequested || !this.ready(request)) {
+          lease.releaseRequested = true;
+          this.releaseLease(request.lockId, lease);
+          return this.rejection(request, 'unavailable');
+        }
+        return Object.freeze({
+          status: 'fulfilled',
+          operation: request.operation,
+          value: Object.freeze({ lockId: request.lockId }),
+        });
+      } catch {
+        this.transactionLeases.delete(request.lockId);
+        return this.rejection(request, 'internal');
+      }
+    }
+    const transactionLease =
+      request.operation === 'sign-transactions' ||
+      request.operation === 'submit-transaction'
+        ? this.transactionLeases.get(request.lockId)
+        : undefined;
+    if (
+      (request.operation === 'sign-transactions' ||
+        request.operation === 'submit-transaction') &&
+      (!transactionLease ||
+        !transactionLease.release ||
+        transactionLease.releaseRequested ||
+        !this.matchesLease(transactionLease, request))
+    )
+      return Object.freeze({ status: 'rejected', reason: 'unavailable' });
     if (
       request.operation !== 'submit-transaction' &&
       !this.currentWallet(request)
@@ -122,20 +221,17 @@ export class Cip30WalletService {
     if (request.operation !== 'submit-transaction' && !this.ready(request))
       return Object.freeze({ status: 'rejected', reason: 'unavailable' });
 
+    if (transactionLease) transactionLease.inFlight += 1;
     try {
       if (request.operation === 'submit-transaction') {
-        const submission = await this.stores.transactions.withWalletSendLock(
-          request.walletId,
-          () =>
-            this.api.ada.submitDappTransaction({
-              walletId: request.walletId,
-              request: {
-                revision: 1,
-                network: backendNetwork(request.network),
-                transaction: request.transaction,
-              },
-            })
-        );
+        const submission = await this.api.ada.submitDappTransaction({
+          walletId: request.walletId,
+          request: {
+            revision: 1,
+            network: backendNetwork(request.network),
+            transaction: request.transaction,
+          },
+        });
         return Object.freeze({
           status: 'fulfilled',
           operation: 'submit-transaction',
@@ -548,6 +644,15 @@ export class Cip30WalletService {
         return Object.freeze({ status: 'rejected', reason: 'internal' });
       }
       return this.rejection(request, 'internal');
+    } finally {
+      if (
+        transactionLease &&
+        (request.operation === 'sign-transactions' ||
+          request.operation === 'submit-transaction')
+      ) {
+        transactionLease.inFlight -= 1;
+        this.releaseLease(request.lockId, transactionLease);
+      }
     }
   };
 }

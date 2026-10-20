@@ -17,6 +17,8 @@ export const quitStakePool = async (
     {},
     {
       passphrase,
-      ...(await walletInputSelectionChannel.request({ walletId })),
+      ...(global.cip30Enabled
+        ? await walletInputSelectionChannel.request({ walletId })
+        : {}),
     }
   );

@@ -4,6 +4,9 @@
 
 ### Fixes
 
+- Keep ordinary mainnet and selfnode on upstream wallet contracts and native Send, staking, governance, and hardware confirmation flows; activate CIP-30 behavior only in preprod, preview, and mainnet-flight packages.
+- Hold the shared wallet transaction lease through authoritative preparation, consent, retries, signing, and submission; reconstruct hardware payments after acquiring it instead of signing fee-preview bytes.
+- Preserve collateral preparation tracking across Apps-to-Send navigation with wallet/network-bound operation authority, adopting only the exact confirmed output and invalidating stale document operations.
 - Preserve success-only DRep favorites when delegation uses unified transaction approval, and retain watchdog-managed shutdown and installer handling alongside authenticated dApp IPC.
 - Restore the runtime configuration path passed by the watchdog to Electron on launch and restart, fixing startup failure before the Daedalus window appears.
 

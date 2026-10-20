@@ -110,8 +110,6 @@ export default class SidebarStore extends Store {
     const {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'isFlight' does not exist on type 'typeof... Remove this comment to see the full error message
       isFlight,
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'environment' does not exist on type 'typ... Remove this comment to see the full error message
-      environment: { isDev, isMainnet },
     } = global;
     const { CATEGORIES_BY_NAME: categories, CATEGORIES_LIST: list } =
       sidebarConfig;
@@ -120,7 +118,7 @@ export default class SidebarStore extends Store {
       boolean | ((...args: Array<any>) => any)
     > = {
       [categories.WALLETS.name]: true,
-      [categories.APPS.name]: !isMainnet || isFlight,
+      [categories.APPS.name]: global.cip30Enabled,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
       [categories.STAKING.name]: true,

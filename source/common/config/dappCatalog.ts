@@ -134,7 +134,7 @@ export const dappCatalog = defineDappCatalog([
 ]);
 
 export const getDappCatalog = (
-  network: Network,
+  network: Network | 'selfnode',
   isFlight: boolean,
   catalog: readonly DappCatalogEntry[] = dappCatalog
 ): readonly DappCatalogEntry[] => {

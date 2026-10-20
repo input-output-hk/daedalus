@@ -266,17 +266,7 @@ export const setDappBrokerLifecycleRevoker = (
   onDappBrokerLifecycleRevoked = revoke;
 };
 
-const browserController = new DappBrowserController(
-  new DappBrowserManager((reason, guestWebContentsId, isOpen) => {
-    onDappConsentLifecycleRevoked(reason, guestWebContentsId);
-    onDappBrokerLifecycleRevoked(guestWebContentsId);
-    publishDappBrowserState(isOpen);
-  }),
-  dappRuntimeConfig.dappNetwork.genesisHash,
-  dappLaunchPolicy,
-  dappCatalog,
-  (isOpen) => publishDappBrowserState(isOpen)
-);
+let browserController: DappBrowserController | undefined;
 const openChannel = new MainIpcChannel<
   DappBrowserOpenRendererRequest,
   DappBrowserOpenMainResponse
@@ -301,16 +291,42 @@ publishDappBrowserState = (isOpen) =>
 let registered = false;
 
 export const handleDappBrowserRequests = (window: BrowserWindow): void => {
-  browserController.observeWindow(window);
+  if (dappRuntimeConfig.cip30Enabled && !browserController) {
+    browserController = new DappBrowserController(
+      new DappBrowserManager((reason, guestWebContentsId, isOpen) => {
+        onDappConsentLifecycleRevoked(reason, guestWebContentsId);
+        onDappBrokerLifecycleRevoked(guestWebContentsId);
+        publishDappBrowserState(isOpen);
+      }),
+      dappRuntimeConfig.dappNetwork.genesisHash,
+      dappLaunchPolicy,
+      dappCatalog,
+      (isOpen) => publishDappBrowserState(isOpen)
+    );
+  }
+  browserController?.observeWindow(window);
   if (registered) return;
   registered = true;
-  openChannel.onRequest((request) => browserController.open(request));
-  closeChannel.onRequest(() => browserController.close());
-  statusChannel.onRequest(async () => browserController.status);
+  openChannel.onRequest(async (request) => {
+    if (!dappRuntimeConfig.cip30Enabled || !browserController)
+      throw new Error('CIP-30 is unavailable');
+    return browserController.open(request);
+  });
+  closeChannel.onRequest(async () => {
+    if (!dappRuntimeConfig.cip30Enabled || !browserController)
+      throw new Error('CIP-30 is unavailable');
+    return browserController.close();
+  });
+  statusChannel.onRequest(async () => {
+    if (!dappRuntimeConfig.cip30Enabled || !browserController)
+      throw new Error('CIP-30 is unavailable');
+    return browserController.status;
+  });
 };
 
-export const closeDappBrowser = (): Promise<void> => browserController.close();
+export const closeDappBrowser = (): Promise<void> =>
+  browserController?.close() ?? Promise.resolve();
 export const authenticateDappGuest = (event: IpcMainInvokeEvent) =>
-  browserController.authenticate(event);
+  browserController?.authenticate(event) ?? null;
 export const getCurrentDappRouteLease = (): DappRouteLease | null =>
-  browserController.routeLease.current;
+  browserController?.routeLease.current ?? null;

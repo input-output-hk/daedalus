@@ -4,6 +4,7 @@ import {
   derivePublic,
 } from 'cardano-crypto.js';
 import { blake2b } from 'blakejs';
+import BigNumber from 'bignumber.js';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import {
   deriveXpubChannel,
@@ -19,10 +20,54 @@ import * as hardwareWalletTransaction from '../utils/hardwareWalletTransaction';
 import Action from '../actions/lib/Action';
 
 import HardwareWalletsStore from './HardwareWalletsStore';
-import { HwDeviceStatuses } from '../domains/Wallet';
+import { HwDeviceStatuses, WalletUnits } from '../domains/Wallet';
 import type { Api } from '../api';
 import type { ActionsMap } from '../actions';
 import type { AnalyticsTracker } from '../analytics';
+import type { StoresMap } from './index';
+import type {
+  CoinSelectionsPaymentRequestType,
+  CoinSelectionsResponse,
+  ConstructTransactionData,
+} from '../api/transactions/types';
+import type { NativeTransactionOperation } from '../services/NativeTransactionService';
+import type { DappNetwork } from '../api/transactions/dappBackend';
+import type {
+  HardwareTransactionCapability,
+  HardwareTransactionPreparation,
+} from '../../../common/types/hardware-wallets.types';
+import type { TransactionContextSnapshot } from '../../../common/cardano/transactionContext';
+
+const constructionData: ConstructTransactionData['data'] = {
+  encoding: 'base16',
+  payments: [
+    {
+      address: 'addr1receiver',
+      amount: { quantity: 5_000_000, unit: WalletUnits.LOVELACE },
+    },
+  ],
+  withdrawal: 'self',
+  metadata: null,
+};
+const network: DappNetwork = {
+  network_id: 0,
+  network_magic: 1,
+  genesis_hash: '00'.repeat(32),
+};
+
+type ExactPaymentHelpers = {
+  prepareExactPayment: (
+    walletId: string,
+    data: ConstructTransactionData['data']
+  ) => Promise<unknown>;
+  submitExactPayment: (
+    walletId: string,
+    signed: string,
+    network: DappNetwork,
+    collateral: boolean
+  ) => Promise<unknown>;
+  signExactPayment: (walletId: string) => Promise<void>;
+};
 
 jest.mock('../../../common/cardano/transactionContext', () => ({
   ...(jest.requireActual(
@@ -57,6 +102,203 @@ const coinSelection = {
 };
 
 describe('HardwareWalletsStore payment construction', () => {
+  const originalCip30Enabled = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+  afterEach(() => {
+    global.cip30Enabled = originalCip30Enabled;
+  });
+  it('reviews and signs fresh locked selection Y, never preview X or a mutated draft', async () => {
+    const preview = {
+      ...coinSelection,
+      deposits: new BigNumber(0),
+      depositsReclaimed: new BigNumber(0),
+    };
+    const authoritative = { ...preview, outputs: [] };
+    const construct = jest
+      .fn()
+      .mockResolvedValueOnce({
+        transaction: 'preview-X',
+        coinSelection: preview,
+      })
+      .mockResolvedValueOnce({
+        transaction: 'authoritative-Y',
+        coinSelection: authoritative,
+      });
+    const submit = jest.fn().mockResolvedValue({
+      status: 'submitted',
+      transaction_id: 'ab'.repeat(32),
+    });
+    const store = new HardwareWalletsStore(
+      {
+        ada: {
+          constructTransaction: construct,
+          getDappTransactionContext: jest.fn(),
+          submitDappTransaction: submit,
+        },
+        localStorage: {},
+      } as unknown as Api,
+      {} as ActionsMap,
+      { sendEvent: jest.fn() } as unknown as AnalyticsTracker
+    );
+    const ready = {
+      status: 'ready',
+      exact: {
+        capability: {
+          vendor: 'ledger',
+          productEnabled: true,
+          physicalCertified: true,
+        },
+      },
+    } as unknown as Extract<
+      HardwareTransactionPreparation,
+      { status: 'ready' }
+    >;
+    jest
+      .spyOn(transactionContext, 'reconcileTransactionContext')
+      .mockReturnValue({} as TransactionContextSnapshot);
+    jest
+      .spyOn(hardwareWalletTransaction, 'prepareHardwareTransaction')
+      .mockReturnValue(ready);
+    const bindChange = jest
+      .spyOn(hardwareWalletTransaction, 'bindPaymentChange')
+      .mockImplementation(async (exact) => exact);
+    const signer = jest
+      .spyOn(
+        store as unknown as {
+          signExactTransaction: (
+            walletId: string,
+            preparation: HardwareTransactionPreparation
+          ) => Promise<{ signedTransactionCbor: string }>;
+        },
+        'signExactTransaction'
+      )
+      .mockImplementation(async (_walletId, preparation) => {
+        expect(preparation).toEqual(ready);
+        store.txSignRequest = {
+          coinSelection: preview as unknown as CoinSelectionsResponse,
+          exactPayment: {
+            unsignedTransaction: 'mutated',
+            constructionData,
+            isCollateralPreparation: true,
+          },
+        };
+        store.stores.networkStatus.genesisBlockHash = 'ff'.repeat(32);
+        return { signedTransactionCbor: 'signed-Y' };
+      });
+    let reviewed: NativeTransactionOperation | undefined;
+    store.stores = {
+      wallets: {
+        active: { id: 'wallet' },
+        getWalletById: () => ({ id: 'wallet' }),
+        refreshWalletsData: jest.fn(),
+      },
+      networkStatus: { genesisBlockHash: network.genesis_hash },
+      walletApproval: {
+        nativeTransactions: {
+          run: async (operation: NativeTransactionOperation) => {
+            reviewed = operation;
+            const prepared = await operation.prepare();
+            expect(prepared.items[0]).toEqual(
+              expect.objectContaining({ cbor: 'authoritative-Y' })
+            );
+            return operation.execute(
+              prepared,
+              undefined,
+              operation.ownerSignal,
+              async () => undefined
+            );
+          },
+        },
+      },
+    } as unknown as StoresMap;
+    jest
+      .spyOn(
+        store as unknown as {
+          getNativeTransactionCapability: () => HardwareTransactionCapability;
+        },
+        'getNativeTransactionCapability'
+      )
+      .mockReturnValue(ready.exact.capability);
+    const metadata = { 61284: { map: [] } } as unknown as NonNullable<
+      ConstructTransactionData['data']['metadata']
+    >;
+    store.updateTxSignRequest(
+      await store.selectCoins({
+        walletId: 'wallet',
+        address: 'addr1receiver',
+        amount: 5_000_000,
+        metadata,
+      })
+    );
+    await store._sendMoney();
+    clearInterval(store.checkTransactionTimeInterval);
+    expect(reviewed).toBeDefined();
+    expect(construct).toHaveBeenCalledTimes(2);
+    expect(construct.mock.calls[1][0].data).toEqual(
+      construct.mock.calls[0][0].data
+    );
+    expect(construct.mock.calls[1][0].data.metadata).toEqual(metadata);
+    expect(signer).toHaveBeenCalledTimes(1);
+    expect(bindChange).toHaveBeenCalledWith(
+      ready.exact,
+      authoritative.outputs,
+      expect.any(String)
+    );
+    expect(bindChange.mock.calls[0][1]).toBe(authoritative.outputs);
+    expect(bindChange.mock.calls[0][1]).not.toBe(preview.outputs);
+    expect(submit).toHaveBeenCalledWith({
+      walletId: 'wallet',
+      request: {
+        revision: 1,
+        network: expect.objectContaining({
+          genesis_hash: network.genesis_hash,
+        }),
+        transaction: 'signed-Y',
+      },
+    });
+    jest.restoreAllMocks();
+  });
+
+  it('does not construct or sign after reset while an initiated exact payment waits for its lease', async () => {
+    let acquire!: (lease: { release: () => void }) => void;
+    const release = jest.fn();
+    const construct = jest.fn();
+    const store = new HardwareWalletsStore(
+      {
+        ada: { constructTransaction: construct },
+        localStorage: {},
+      } as unknown as Api,
+      {} as ActionsMap,
+      {} as AnalyticsTracker
+    );
+    store.stores = {
+      transactions: {
+        acquireWalletSendLock: () =>
+          new Promise<{ release: () => void }>((resolve) => {
+            acquire = resolve;
+          }),
+      },
+    } as unknown as StoresMap;
+    store.txSignRequest = {
+      coinSelection: coinSelection as unknown as CoinSelectionsResponse,
+      exactPayment: {
+        unsignedTransaction: 'preview-X',
+        constructionData,
+        isCollateralPreparation: false,
+      },
+    };
+    const signing = (store as unknown as ExactPaymentHelpers).signExactPayment(
+      'wallet'
+    );
+    store._resetTxSignRequestData();
+    acquire({ release });
+    await signing;
+    expect(construct).not.toHaveBeenCalled();
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
   it('waits for address display and keeps late device outcomes out of the next operation', async () => {
     const request = jest.fn();
     const store = new HardwareWalletsStore(
@@ -151,15 +393,33 @@ describe('HardwareWalletsStore payment construction', () => {
       status: 'submitted',
       transaction_id: transactionId,
     });
-    await expect((store as any).submitExactPayment('wallet')).resolves.toEqual({
+    await expect(
+      (store as unknown as ExactPaymentHelpers).submitExactPayment(
+        'wallet',
+        'signed',
+        network,
+        false
+      )
+    ).resolves.toEqual({
       status: 'submitted',
       transactionIds: [transactionId],
+    });
+    expect(submit).toHaveBeenLastCalledWith({
+      walletId: 'wallet',
+      request: { revision: 1, network, transaction: 'signed' },
     });
     submit.mockResolvedValue({
       status: 'outcome_unknown',
       transaction_id: transactionId,
     });
-    await expect((store as any).submitExactPayment('wallet')).resolves.toEqual({
+    await expect(
+      (store as unknown as ExactPaymentHelpers).submitExactPayment(
+        'wallet',
+        'signed',
+        network,
+        false
+      )
+    ).resolves.toEqual({
       status: 'submission-unknown',
       transactionIds: [transactionId],
     });
@@ -167,7 +427,14 @@ describe('HardwareWalletsStore payment construction', () => {
       status: 'rejected',
       transaction_id: transactionId,
     });
-    await expect((store as any).submitExactPayment('wallet')).resolves.toEqual({
+    await expect(
+      (store as unknown as ExactPaymentHelpers).submitExactPayment(
+        'wallet',
+        'signed',
+        network,
+        false
+      )
+    ).resolves.toEqual({
       status: 'rejected',
       errorCode: 'rejected',
     });
@@ -227,6 +494,7 @@ describe('HardwareWalletsStore payment construction', () => {
     expect(store.txSignRequest.exactPayment).toEqual({
       unsignedTransaction: '84a0a0f5f6',
       isCollateralPreparation: true,
+      constructionData,
     });
     expect(acquireWalletSendLock).not.toHaveBeenCalled();
   });
@@ -235,7 +503,13 @@ describe('HardwareWalletsStore payment construction', () => {
     const request = jest.fn().mockResolvedValue({});
     const store = new HardwareWalletsStore(
       {
-        ada: { getDappTransactionContext: request },
+        ada: {
+          getDappTransactionContext: request,
+          constructTransaction: jest.fn().mockResolvedValue({
+            transaction: 'authoritative',
+            coinSelection,
+          }),
+        },
         localStorage: {
           getHardwareWalletsLocalData: request,
           setHardwareWalletLocalData: request,
@@ -267,6 +541,7 @@ describe('HardwareWalletsStore payment construction', () => {
       coinSelection: coinSelection as any,
       exactPayment: {
         unsignedTransaction: '84a0a0f5f6',
+        constructionData,
         isCollateralPreparation: false,
       },
     };
@@ -287,7 +562,12 @@ describe('HardwareWalletsStore payment construction', () => {
       .spyOn(hardwareWalletTransaction, 'bindPaymentChange')
       .mockImplementation(async (exact) => exact);
 
-    await expect((store as any).prepareExactPayment('wallet')).resolves.toEqual(
+    await expect(
+      (store as unknown as ExactPaymentHelpers).prepareExactPayment(
+        'wallet',
+        constructionData
+      )
+    ).resolves.toEqual(
       expect.objectContaining({
         preparation: expect.objectContaining({
           status: 'ready',
@@ -505,6 +785,7 @@ describe('HardwareWalletsStore payment construction', () => {
       coinSelection: coinSelection as any,
       exactPayment: {
         unsignedTransaction: '84a0a0f5f6',
+        constructionData,
         isCollateralPreparation: false,
       },
     };
@@ -862,6 +1143,7 @@ describe('HardwareWalletsStore payment construction', () => {
       expect(exportKey).not.toHaveBeenCalled();
     }
     expect(displayAddress).toHaveBeenCalledTimes(1);
+    store.isWalletPairingInitiated = true;
     await store._identifyAndHandleAssociatedWallet({ path: 'device-path' });
     expect(exportKey).toHaveBeenCalledTimes(1);
     expect(pairedImport).toHaveBeenCalled();
@@ -895,12 +1177,268 @@ describe('HardwareWalletsStore payment construction', () => {
     } as any;
     store.txSignRequest = {
       coinSelection: coinSelection as any,
-      exactPayment: { unsignedTransaction: '84a0a0f5f6' } as any,
+      exactPayment: {
+        unsignedTransaction: '84a0a0f5f6',
+        constructionData,
+        isCollateralPreparation: false,
+      },
     };
     store.setTransactionPendingState(true);
     const send = new Action();
     send.listen(store._sendMoney);
     await send.trigger();
     expect(store.isTransactionPending).toBe(false);
+  });
+});
+
+describe('HardwareWalletsStore upstream payment lifetime', () => {
+  const originalCip30Enabled = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = false;
+  });
+  afterEach(() => {
+    global.cip30Enabled = originalCip30Enabled;
+    jest.restoreAllMocks();
+    jest.useRealTimers();
+  });
+
+  const deferred = <T>() => {
+    let resolve!: (value: T) => void;
+    const promise = new Promise<T>((complete) => {
+      resolve = complete;
+    });
+    return { promise, resolve };
+  };
+  const selection = (fee: number): CoinSelectionsResponse => ({
+    ...coinSelection,
+    fee: new BigNumber(fee),
+    deposits: new BigNumber(0),
+    depositsReclaimed: new BigNumber(0),
+  });
+  const payment: CoinSelectionsPaymentRequestType = {
+    walletId: 'wallet',
+    address: 'receiver',
+    amount: 5_000_000,
+    assets: [{ policy_id: 'policy', asset_name: 'asset', quantity: 2 }],
+    metadata: {
+      61284: { map: [{ k: { int: 1 }, v: { bytes: 'ab' } }] },
+      61285: { map: [] },
+    },
+  };
+  const fixture = () => {
+    const select = jest.fn().mockResolvedValue(selection(1));
+    const construct = jest.fn();
+    const context = jest.fn();
+    const submitDapp = jest.fn();
+    const submit = jest.fn().mockResolvedValue({ id: 'transaction' });
+    const release = jest.fn();
+    const acquire = jest.fn().mockResolvedValue({ release });
+    const store = new HardwareWalletsStore(
+      {
+        ada: {
+          selectCoins: select,
+          constructTransaction: construct,
+          getDappTransactionContext: context,
+          submitDappTransaction: submitDapp,
+          createExternalTransaction: submit,
+        },
+        localStorage: {},
+      } as unknown as Api,
+      {} as ActionsMap,
+      { sendEvent: jest.fn() } as unknown as AnalyticsTracker
+    );
+    store.stores = {
+      wallets: {
+        active: { id: 'wallet' },
+        getWalletById: () => ({
+          amount: new BigNumber(10),
+          availableAmount: new BigNumber(8),
+          reward: new BigNumber(1),
+        }),
+        refreshWalletsData: jest.fn(),
+      },
+      transactions: { acquireWalletSendLock: acquire },
+    } as unknown as StoresMap;
+    const device = jest
+      .spyOn(
+        store as unknown as {
+          initiateDeviceTransaction: (
+            params: { walletId: string | null | undefined },
+            generation: number
+          ) => Promise<void>;
+        },
+        'initiateDeviceTransaction'
+      )
+      .mockResolvedValue(undefined);
+    return {
+      store,
+      select,
+      construct,
+      context,
+      submitDapp,
+      submit,
+      release,
+      acquire,
+      device,
+    };
+  };
+
+  it('keeps previews lease-free and captures upstream payment/assets/Catalyst metadata', async () => {
+    const { store, select, construct, context, acquire } = fixture();
+    const preview = await store.selectCoins(payment);
+    store.updateTxSignRequest(preview);
+    expect(acquire).not.toHaveBeenCalled();
+    expect(construct).not.toHaveBeenCalled();
+    expect(context).not.toHaveBeenCalled();
+    expect(select).toHaveBeenCalledWith({
+      walletId: 'wallet',
+      walletBalance: new BigNumber(10),
+      availableBalance: new BigNumber(9),
+      rewardsBalance: new BigNumber(1),
+      payments: {
+        address: payment.address,
+        amount: payment.amount,
+        assets: payment.assets,
+      },
+      metadata: payment.metadata,
+    });
+    expect(preview.paymentRequest).toEqual(payment);
+    expect(store.txSignRequest).toEqual({
+      coinSelection: preview,
+      paymentRequest: payment,
+    });
+    expect(store.txSignRequest.exactPayment).toBeUndefined();
+  });
+
+  it('reselects under the lease and retains it through external submission, including reset', async () => {
+    const { store, select, acquire, release, device, submit, submitDapp } =
+      fixture();
+    store.updateTxSignRequest(await store.selectCoins(payment));
+    select.mockImplementationOnce(() => {
+      expect(acquire).toHaveBeenCalledTimes(1);
+      expect(release).not.toHaveBeenCalled();
+      return Promise.resolve(selection(2));
+    });
+    await store.initiateTransaction({ walletId: 'wallet' });
+    expect(store.txSignRequest.coinSelection.fee).toEqual(new BigNumber(2));
+    expect(device).toHaveBeenCalledTimes(1);
+    expect(release).not.toHaveBeenCalled();
+    const submitted = deferred<{ id: string }>();
+    submit.mockReturnValueOnce(submitted.promise);
+    store.signedTx = 'signed-upstream-transaction';
+    const sending = store._sendMoney();
+    expect(submit).toHaveBeenCalledWith({
+      signedTransactionBlob: 'signed-upstream-transaction',
+    });
+    await store._resetTransaction({ cancelDeviceAction: false });
+    expect(release).not.toHaveBeenCalled();
+    submitted.resolve({ id: 'transaction' });
+    await sending;
+    expect(release).toHaveBeenCalledTimes(1);
+    expect(submitDapp).not.toHaveBeenCalled();
+    clearInterval(store.checkTransactionTimeInterval);
+  });
+
+  it('releases late lock acquisition after reset without selecting or touching a newer draft', async () => {
+    const { store, select, acquire, release, device } = fixture();
+    store.updateTxSignRequest(await store.selectCoins(payment));
+    const lock = deferred<{ release: () => void }>();
+    acquire.mockReturnValueOnce(lock.promise);
+    const initiating = store.initiateTransaction({ walletId: 'wallet' });
+    await store._resetTransaction({ cancelDeviceAction: false });
+    const next = { ...selection(3), paymentRequest: payment };
+    store.updateTxSignRequest(next);
+    lock.resolve({ release });
+    await initiating;
+    expect(select).toHaveBeenCalledTimes(1);
+    expect(device).not.toHaveBeenCalled();
+    expect(store.txSignRequest.coinSelection.fee).toEqual(new BigNumber(3));
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores authoritative selection returning after reset without overwriting a newer draft', async () => {
+    const { store, select, release, device } = fixture();
+    store.updateTxSignRequest(await store.selectCoins(payment));
+    const selected = deferred<CoinSelectionsResponse>();
+    const selectionStarted = deferred<void>();
+    select.mockImplementationOnce(() => {
+      selectionStarted.resolve();
+      return selected.promise;
+    });
+    const initiating = store.initiateTransaction({ walletId: 'wallet' });
+    await selectionStarted.promise;
+    await store._resetTransaction({ cancelDeviceAction: false });
+    store.updateTxSignRequest({ ...selection(3), paymentRequest: payment });
+    selected.resolve(selection(2));
+    await initiating;
+    expect(device).not.toHaveBeenCalled();
+    expect(store.txSignRequest.coinSelection.fee).toEqual(new BigNumber(3));
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it('retains the delegation selection lease without reselecting or reacquiring on initiation', async () => {
+    const { store, select, acquire, release, device } = fixture();
+    await store.selectDelegationCoins({
+      walletId: 'wallet',
+      poolId: 'pool',
+      delegationAction: 'join',
+    });
+    await store.initiateTransaction({ walletId: 'wallet' });
+    expect(select).toHaveBeenCalledTimes(1);
+    expect(acquire).toHaveBeenCalledTimes(1);
+    expect(device).toHaveBeenCalledTimes(1);
+    expect(release).not.toHaveBeenCalled();
+    await store._resetTransaction({ cancelDeviceAction: false });
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects a queued delegation selection cancelled before lock acquisition', async () => {
+    const { store, acquire, release, select, device } = fixture();
+    const lock = deferred<{ release: () => void }>();
+    acquire.mockReturnValueOnce(lock.promise);
+    const selected = store.selectDelegationCoins({
+      walletId: 'wallet',
+      poolId: 'pool',
+      delegationAction: 'quit',
+    });
+    await store._resetTransaction({ cancelDeviceAction: false });
+    lock.resolve({ release });
+    await expect(selected).rejects.toThrow('Hardware transaction cancelled');
+    expect(select).not.toHaveBeenCalled();
+    expect(device).not.toHaveBeenCalled();
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+
+  it('releases the lease on device setup failure and does not submit', async () => {
+    const { store, release, device, submit } = fixture();
+    store.updateTxSignRequest(await store.selectCoins(payment));
+    device.mockRejectedValueOnce(new Error('Device rejected'));
+    await expect(
+      store.initiateTransaction({ walletId: 'wallet' })
+    ).rejects.toThrow('Device rejected');
+    expect(release).toHaveBeenCalledTimes(1);
+    expect(submit).not.toHaveBeenCalled();
+  });
+
+  it('rejects direct exact helpers before any backend or device operation', async () => {
+    const { store, construct, context, submitDapp, device } = fixture();
+    const exact = store as unknown as ExactPaymentHelpers;
+    await expect(
+      exact.prepareExactPayment('wallet', constructionData)
+    ).rejects.toThrow('Exact hardware transaction is unavailable');
+    await expect(
+      exact.submitExactPayment('wallet', 'signed', network, false)
+    ).rejects.toThrow('Exact hardware transaction is unavailable');
+    await expect(
+      store.signDappTransaction('wallet', {
+        status: 'empty',
+      } as unknown as Parameters<
+        HardwareWalletsStore['signDappTransaction']
+      >[1])
+    ).rejects.toThrow('Exact hardware transaction is unavailable');
+    expect(construct).not.toHaveBeenCalled();
+    expect(context).not.toHaveBeenCalled();
+    expect(submitDapp).not.toHaveBeenCalled();
+    expect(device).not.toHaveBeenCalled();
   });
 });

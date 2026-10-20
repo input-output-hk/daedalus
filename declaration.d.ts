@@ -66,6 +66,7 @@ declare global {
   var https: Https;
   var legacyStateDir: string;
   var isFlight: boolean;
+  var cip30Enabled: boolean;
   var ipcRenderer: Pick<
     IpcRenderer,
     'on' | 'once' | 'send' | 'removeListener' | 'removeAllListeners'

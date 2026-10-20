@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
+import BigNumber from 'bignumber.js';
 import { governanceSharedMessages } from '../../governance/_shared/governanceSharedMessages';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
@@ -23,6 +24,19 @@ import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
+  initiateTransaction?: (params: {
+    chosenOption: string;
+    wallet: Wallet;
+  }) => Promise<
+    | { success: true; fees: BigNumber }
+    | { success: false; errorCode: InitializeVPDelegationTxError }
+  >;
+  renderConfirmationDialog?: (params: {
+    chosenOption: string;
+    fees: BigNumber;
+    onClose: () => void;
+    selectedWallet: Wallet;
+  }) => React.ReactElement;
   submitTransaction: (params: {
     chosenOption: string;
     wallet: Wallet;
@@ -48,7 +62,13 @@ type Props = {
 };
 
 type State = {
-  status: 'form' | 'form-with-error' | 'form-submitted' | 'form-initiating-tx';
+  status:
+    | 'form'
+    | 'form-with-error'
+    | 'form-submitted'
+    | 'form-initiating-tx'
+    | 'confirmation';
+  fees?: BigNumber;
   selectedWalletId: string | null;
   txInitError?: InitializeVPDelegationTxError;
 };
@@ -72,6 +92,8 @@ const SAME_VOTE_HINT_ID = 'votingPowerDelegationSameVoteHint';
 function VotingPowerDelegation({
   getStakePoolById,
   submitTransaction,
+  initiateTransaction,
+  renderConfirmationDialog,
   initialFormState,
   intl,
   onBrowseDRepsClick,
@@ -83,6 +105,13 @@ function VotingPowerDelegation({
   wallets,
   stakePools,
 }: Props) {
+  const mounted = useRef(true);
+  useEffect(
+    () => () => {
+      mounted.current = false;
+    },
+    []
+  );
   // A Byron wallet has no stake credential, so no delegation certificate can
   // be built for it and no amount of choosing a DRep would produce one. The
   // wallets overview already leaves them out; offering them here let someone
@@ -199,6 +228,25 @@ function VotingPowerDelegation({
       )
         return;
       setState({ ...state, status: 'form-initiating-tx' });
+      if (!global.cip30Enabled) {
+        if (!initiateTransaction)
+          throw new Error('Governance preparation unavailable');
+        const result = await initiateTransaction({
+          chosenOption: selectedDRepId,
+          wallet: selectedWallet,
+        });
+        if (!mounted.current) return;
+        if (result.success === true) {
+          setState({ ...state, fees: result.fees, status: 'confirmation' });
+        } else {
+          setState({
+            ...state,
+            txInitError: result.errorCode,
+            status: 'form-with-error',
+          });
+        }
+        return;
+      }
       const result = await submitTransaction({
         chosenOption: selectedDRepId,
         wallet: selectedWallet,
@@ -379,6 +427,17 @@ function VotingPowerDelegation({
           )}
         </BorderedBox>
       </div>
+      {state.status === 'confirmation' &&
+        selectedWallet &&
+        selectedDRepId &&
+        state.fees &&
+        renderConfirmationDialog &&
+        renderConfirmationDialog({
+          chosenOption: selectedDRepId,
+          fees: state.fees,
+          selectedWallet,
+          onClose: () => setState({ ...state, status: 'form' }),
+        })}
     </>
   );
 }

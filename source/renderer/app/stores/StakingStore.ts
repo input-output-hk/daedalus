@@ -28,6 +28,7 @@ import type {
   QuitStakePoolRequest,
   PoolMetadataSource,
 } from '../api/staking/types';
+import type { Transaction } from '../api/transactions/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -153,12 +154,12 @@ export default class StakingStore extends Store {
 
   // REQUESTS
   @observable
-  joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
+  joinStakePoolRequest: Request<Transaction> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.joinStakePool
   );
   @observable
-  quitStakePoolRequest: Request<QuitStakePoolRequest> = new Request(
+  quitStakePoolRequest: Request<Transaction> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.quitStakePool
   );
@@ -369,7 +370,17 @@ export default class StakingStore extends Store {
     try {
       let joinTransaction;
 
-      if (isHardwareWallet) {
+      if (!global.cip30Enabled) {
+        joinTransaction = isHardwareWallet
+          ? await this.stores.hardwareWallets._sendMoney({
+              isDelegationTransaction: true,
+              selectedWalletId: walletId,
+            })
+          : await this.stores.transactions.withWalletSendLock(
+              walletId,
+              () => this.joinStakePoolRequest.execute(request).promise
+            );
+      } else if (isHardwareWallet) {
         joinTransaction =
           await this.stores.hardwareWallets.submitConstructedNativeTransaction({
             walletId,
@@ -432,7 +443,17 @@ export default class StakingStore extends Store {
     try {
       let quitTransaction;
 
-      if (isHardwareWallet) {
+      if (!global.cip30Enabled) {
+        quitTransaction = isHardwareWallet
+          ? await this.stores.hardwareWallets._sendMoney({
+              isDelegationTransaction: true,
+              selectedWalletId: walletId,
+            })
+          : await this.stores.transactions.withWalletSendLock(
+              walletId,
+              () => this.quitStakePoolRequest.execute(request).promise
+            );
+      } else if (isHardwareWallet) {
         quitTransaction =
           await this.stores.hardwareWallets.submitConstructedNativeTransaction({
             walletId,
@@ -886,8 +907,9 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const address =
-        await this.stores.addresses.getAutomaticReceivingAddress(walletId);
+      const address = global.cip30Enabled
+        ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
+        : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: this.redeemWallet,
@@ -938,8 +960,9 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const address =
-        await this.stores.addresses.getAutomaticReceivingAddress(walletId);
+      const address = global.cip30Enabled
+        ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
+        : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
         {

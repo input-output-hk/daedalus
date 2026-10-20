@@ -23,6 +23,8 @@ type WalletSendLock = <T>(
 ) => Promise<T>;
 
 export default class NativeTransactionService {
+  private disposed = false;
+
   constructor(
     private readonly withWalletSendLock: WalletSendLock,
     private readonly approval = new NativeTransactionApprovalService(),
@@ -35,24 +37,22 @@ export default class NativeTransactionService {
   async run(
     operation: NativeTransactionOperation
   ): Promise<NativeApprovalResult> {
-    const prepared = await this.withWalletSendLock(
-      operation.walletId,
-      operation.prepare
-    );
-    if (
-      prepared.walletId !== operation.walletId ||
-      operation.ownerSignal.aborted
-    )
-      return Object.freeze({ status: 'rejected', errorCode: 'cancelled' });
-    return this.approval.request(
-      prepared,
-      (passphrase, signal, markSubmitting, requestId) =>
-        this.withWalletSendLock(operation.walletId, () => {
-          if (signal.aborted)
-            return Promise.resolve({
-              status: 'rejected' as const,
-              errorCode: 'cancelled',
-            });
+    const cancelled = () =>
+      Object.freeze({ status: 'rejected' as const, errorCode: 'cancelled' });
+    if (this.disposed || operation.ownerSignal.aborted) return cancelled();
+    return this.withWalletSendLock(operation.walletId, async () => {
+      if (this.disposed || operation.ownerSignal.aborted) return cancelled();
+      const prepared = await operation.prepare();
+      if (
+        this.disposed ||
+        operation.ownerSignal.aborted ||
+        prepared.walletId !== operation.walletId
+      )
+        return cancelled();
+      return this.approval.request(
+        prepared,
+        (passphrase, signal, markSubmitting, requestId) => {
+          if (signal.aborted) return Promise.resolve(cancelled());
           this.onExecute?.(requestId, operation.payment);
           return operation.execute(
             prepared,
@@ -60,12 +60,14 @@ export default class NativeTransactionService {
             signal,
             markSubmitting
           );
-        }),
-      operation.ownerSignal
-    );
+        },
+        operation.ownerSignal
+      );
+    });
   }
 
   dispose(): void {
+    this.disposed = true;
     this.approval.dispose();
   }
 }

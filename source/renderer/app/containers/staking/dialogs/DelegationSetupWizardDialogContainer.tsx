@@ -8,9 +8,11 @@ import DelegationSetupWizardDialog from '../../../components/staking/delegation-
 import {
   MIN_DELEGATION_FUNDS,
   RECENT_STAKE_POOLS_COUNT,
+  DELEGATION_ACTIONS,
 } from '../../../config/stakingConfig';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import StakePool from '../../../domains/StakePool';
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 
 const messages = defineMessages({
   delegationSetupStep1Label: {
@@ -33,6 +35,7 @@ type State = {
   activeStep: number;
   selectedWalletId: string;
   selectedPoolId: string;
+  stakePoolJoinFee: DelegationCalculateFeeResponse | null;
 };
 type Props = InjectedDialogContainerProps;
 
@@ -90,6 +93,7 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
     activeStep: 0,
     selectedWalletId: this.selectedWalletId,
     selectedPoolId: this.selectedPoolId,
+    stakePoolJoinFee: null,
   };
   STEPS_LIST = [
     this.context.intl.formatMessage(messages.delegationSetupStep1Label),
@@ -113,6 +117,9 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
   };
   onBack = () => {
     const { activeStep } = this.state;
+    this.props.stores.hardwareWallets._resetTransaction({
+      cancelDeviceAction: true,
+    });
     this.props.stores.staking.joinStakePoolRequest.reset();
     this.setState({
       activeStep: activeStep - 1,
@@ -135,11 +142,62 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
       selectedPoolId: poolId,
     });
   };
+  handleConfirm = (
+    spendingPassword: string | null | undefined,
+    isHardwareWallet: boolean
+  ) => {
+    const { selectedPoolId, selectedWalletId } = this.state;
+    this.props.stores.staking.joinStakePoolRequest.reset();
+    this.props.actions.staking.joinStakePool.trigger({
+      stakePoolId: selectedPoolId,
+      walletId: selectedWalletId,
+      passphrase: spendingPassword,
+      isHardwareWallet,
+    });
+  };
+
+  async _handleCalculateTransactionFee(poolId: string) {
+    const { staking, hardwareWallets, wallets } = this.props.stores;
+    const { selectedWalletId } = this.state;
+    const wallet = wallets.getWalletById(selectedWalletId);
+    if (!wallet) return;
+    const stakePoolJoinFee = wallet.isHardwareWallet
+      ? await hardwareWallets.selectDelegationCoins({
+          walletId: selectedWalletId,
+          poolId,
+          delegationAction: DELEGATION_ACTIONS.JOIN,
+        })
+      : await staking.calculateDelegationFee({ walletId: selectedWalletId });
+    if (
+      !this._isMounted ||
+      this.state.activeStep !== 3 ||
+      this.state.selectedWalletId !== selectedWalletId ||
+      this.state.selectedPoolId !== poolId
+    )
+      return;
+    if (stakePoolJoinFee) this.setState({ stakePoolJoinFee });
+    if (wallet.isHardwareWallet) {
+      hardwareWallets.initiateTransaction({ walletId: selectedWalletId });
+    }
+  }
+
   handleSelectPool = async (pool: StakePool) => {
     const { selectedWalletId } = this.state;
     const wallet = this.props.stores.wallets.getWalletById(selectedWalletId);
     if (!wallet) return;
-    this.setState({ selectedPoolId: pool.id, activeStep: 3 });
+    this.setState({
+      selectedPoolId: pool.id,
+      activeStep: 3,
+      stakePoolJoinFee: null,
+    });
+    if (!global.cip30Enabled) {
+      try {
+        await this._handleCalculateTransactionFee(pool.id);
+      } catch {
+        // Request errors remain available to the confirmation for retry/cancel.
+      }
+      return;
+    }
     try {
       await this.props.stores.staking._joinStakePool({
         stakePoolId: pool.id,
@@ -199,6 +257,25 @@ class DelegationSetupWizardDialogContainer extends Component<Props, State> {
         onBack={this.onBack}
         onLearnMoreClick={this.handleLearnMoreClick}
         getStakePoolById={getStakePoolById}
+        stakePoolJoinFee={this.state.stakePoolJoinFee}
+        onConfirm={this.handleConfirm}
+        isSubmitting={
+          staking.joinStakePoolRequest.isExecuting ||
+          this.props.stores.hardwareWallets.sendMoneyRequest.isExecuting ||
+          staking.isDelegationTransactionPending
+        }
+        error={
+          staking.joinStakePoolRequest.error ||
+          this.props.stores.hardwareWallets.sendMoneyRequest.error ||
+          this.props.stores.hardwareWallets.selectCoinsRequest.error
+        }
+        hwDeviceStatus={this.props.stores.hardwareWallets.hwDeviceStatus}
+        isTrezor={
+          !!selectedWallet &&
+          this.props.stores.hardwareWallets.checkIsTrezorByWalletId(
+            selectedWallet.id
+          )
+        }
       />
     );
   }

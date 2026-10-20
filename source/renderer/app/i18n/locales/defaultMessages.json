@@ -6002,6 +6002,71 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Confirm Delegation",
+        "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.title"
+      },
+      {
+        "defaultMessage": "!!!STEP {currentStep} OF {totalSteps}",
+        "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel"
+      },
+      {
+        "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.",
+        "description": "Description on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.description"
+      },
+      {
+        "defaultMessage": "!!!Stake pool ID",
+        "description": "Stake pool ID label on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel"
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel"
+      },
+      {
+        "defaultMessage": "!!!Deposit",
+        "description": "Deposit label on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.depositLabel"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Placeholder for \"spending password\"",
+        "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for \"spending password\"",
+        "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel"
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel"
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel"
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"confirmation\" dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees"
+      },
+      {
+        "defaultMessage": "!!!Calculating deposit",
+        "description": "\"Calculating deposit\" message in the \"confirmation\" dialog.",
+        "id": "staking.delegationSetup.confirmation.step.dialog.calculatingDeposit"
+      }
+    ],
+    "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Delegate wallet",
         "description": "Title \"Delegation Setup\" on the delegation setup \"intro\" dialog.",
         "id": "staking.delegationSetup.intro.step.dialog.title"
@@ -6872,11 +6937,6 @@
         "id": "voting.governance.selectWalletPlaceholder"
       },
       {
-        "defaultMessage": "!!!Something went wrong with this transaction. Please try again in a few minutes.",
-        "description": "Shown when a delegation transaction fails to build or to submit",
-        "id": "voting.governance.transactionError.generic"
-      },
-      {
         "defaultMessage": "!!!This wallet already delegates to this choice. Please change delegation in order to proceed.",
         "description": "Shown when the wallet is already delegated to the chosen option",
         "id": "voting.governance.initializeTxError.sameVote"
@@ -6893,6 +6953,26 @@
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Something went wrong with this transaction. Please try again in a few minutes.",
+        "description": "Shown when a delegation transaction fails to build or to submit",
+        "id": "voting.governance.transactionError.generic"
+      },
+      {
+        "defaultMessage": "!!!Confirm Transaction",
+        "description": "Title of the voting power delegation confirmation dialog",
+        "id": "voting.governance.confirmationDialog.title"
+      },
+      {
+        "defaultMessage": "!!!Delegation certificate",
+        "description": "Heading above the delegation this transaction will record",
+        "id": "voting.governance.confirmationDialog.delegationCertificate"
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegationConfirmationDialog.messages.ts"
   },
   {
     "descriptors": [
@@ -8332,6 +8412,76 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Undelegate",
+        "description": "Title for the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.title"
+      },
+      {
+        "defaultMessage": "!!!Undelegate",
+        "description": "Label for the \"Undelegate\" button in the undelegate wallet dialog.",
+        "id": "wallet.settings.undelegate.dialog.confirmButtonLabel"
+      },
+      {
+        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
+        "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.descriptionWithTicker"
+      },
+      {
+        "defaultMessage": "!!!<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
+        "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.descriptionWithUnknownTicker"
+      },
+      {
+        "defaultMessage": "!!!unknown",
+        "description": "unknown stake pool label in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.unknownStakePoolLabel"
+      },
+      {
+        "defaultMessage": "!!!I understand that I am not supporting the Cardano network when my stake is undelegated.",
+        "description": "Notice to confirm if the user understands unsupporting Cardano network after undelegation",
+        "id": "wallet.settings.undelegate.dialog.confirmUnsupportNotice"
+      },
+      {
+        "defaultMessage": "!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.",
+        "description": "Notice to confirm if the user understands non-earning rewards after undelegation",
+        "id": "wallet.settings.undelegate.dialog.confirmIneligibleNotice"
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.feesLabel"
+      },
+      {
+        "defaultMessage": "!!!Deposits reclaimed",
+        "description": "Deposits reclaimed label in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.depositLabel"
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Spending password label in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.spendingPasswordLabel"
+      },
+      {
+        "defaultMessage": "!!!Type your spending password here",
+        "description": "Spending password placeholder in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.spendingPasswordPlaceholder"
+      },
+      {
+        "defaultMessage": "!!!Incorrect spending password.",
+        "description": "Label for password error in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.passwordError"
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"Undelegate wallet\" dialog.",
+        "id": "wallet.settings.undelegate.dialog.calculatingFees"
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet undelegated",
         "description": "Title for the \"Undelegate Result\" dialog.",
         "id": "wallet.settings.undelegate.result.dialog.title"
@@ -8765,6 +8915,11 @@
         "defaultMessage": "!!!Remove expired transaction",
         "description": "Label for removing a transaction that expired before confirmation",
         "id": "wallet.transaction.failed.removeTransactionButton"
+      },
+      {
+        "defaultMessage": "!!!Remove failed transaction",
+        "description": "Label for removing an expired upstream transaction.",
+        "id": "wallet.transaction.upstream.removeTransactionButton"
       }
     ],
     "path": "source/renderer/app/components/wallet/transactions/CancelTransactionButton.tsx"
@@ -9095,6 +9250,51 @@
         "defaultMessage": "!!!Submission status unknown",
         "description": "Transaction state used when Daedalus cannot determine whether submission reached the network.",
         "id": "wallet.transaction.state.submissionUnknown"
+      },
+      {
+        "defaultMessage": "!!!{typeOfTransaction} transaction",
+        "description": "Transaction type shown for {currency} transactions.",
+        "id": "wallet.transaction.type"
+      },
+      {
+        "defaultMessage": "!!!Transaction confirmed",
+        "description": "Upstream transaction state \"confirmed\".",
+        "id": "wallet.transaction.upstream.state.confirmed"
+      },
+      {
+        "defaultMessage": "!!!Transaction pending",
+        "description": "Upstream transaction state \"pending\".",
+        "id": "wallet.transaction.upstream.state.pending"
+      },
+      {
+        "defaultMessage": "!!!Transaction failed",
+        "description": "Upstream expired transaction state.",
+        "id": "wallet.transaction.upstream.state.failed"
+      },
+      {
+        "defaultMessage": "!!!Confirmed",
+        "description": "Transaction state \"confirmed\".",
+        "id": "wallet.transaction.state.confirmedHeading"
+      },
+      {
+        "defaultMessage": "!!!Pending",
+        "description": "Transaction state \"pending\".",
+        "id": "wallet.transaction.state.pendingHeading"
+      },
+      {
+        "defaultMessage": "!!!Failed",
+        "description": "Transaction state \"failed\".",
+        "id": "wallet.transaction.state.failedHeading"
+      },
+      {
+        "defaultMessage": "!!!This transaction was submitted to the Cardano network, but it expired, so it failed. Transactions on the Cardano network have a ‘time to live’ attribute, which passed before the network processed the transaction. Please, remove it to release the funds (UTXOs) used by this transaction to use those funds in another transaction.",
+        "description": "Note to cancel an upstream transaction that has expired.",
+        "id": "wallet.transaction.upstream.cancelFailedTxnNote"
+      },
+      {
+        "defaultMessage": "!!!Why should I cancel failed transactions?",
+        "description": "Link to support article for removing an expired transaction.",
+        "id": "wallet.transaction.upstream.cancelFailedTxnSupportArticle"
       }
     ],
     "path": "source/renderer/app/components/wallet/transactions/Transaction.tsx"

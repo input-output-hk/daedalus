@@ -44,8 +44,13 @@ const withDelegation = (delegation: unknown): AdaWallet =>
   }) as unknown as AdaWallet;
 
 describe('_createWalletFromServerData voting mapping', () => {
+  const originalCapability = global.cip30Enabled;
   beforeEach(() => {
+    global.cip30Enabled = true;
     mockedWarn.mockClear();
+  });
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
   });
 
   it('requires and preserves the Shelley single-address mode field', () => {

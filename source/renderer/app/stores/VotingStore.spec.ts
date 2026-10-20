@@ -21,6 +21,9 @@ import { daedalusTheme } from '../themes/daedalus';
 import { themeOverrides } from '../themes/overrides';
 import VotingPowerDelegation from '../components/voting/voting-governance/VotingPowerDelegation';
 
+beforeEach(() => {
+  global.cip30Enabled = true;
+});
 jest.mock('../components/widgets/forms/WalletsDropdown', () => {
   return function WalletsDropdownMock() {
     return null;
@@ -258,5 +261,89 @@ describe('same-vote server error in the delegation form', () => {
     expect(submitTransaction).toHaveBeenCalledWith(
       expect.objectContaining({ chosenOption: CIP129_KEY })
     );
+  });
+});
+
+describe('upstream governance store dispatch', () => {
+  beforeEach(() => {
+    global.cip30Enabled = false;
+  });
+
+  it.each([CIP129_KEY, 'abstain', 'no_confidence'])(
+    'submits %s with the collected password while holding the wallet lock',
+    async (chosenOption) => {
+      let locked = false;
+      const delegateVotes = jest.fn(async () => {
+        expect(locked).toBe(true);
+        return { id: 'upstream-transaction' };
+      });
+      const api = { ada: { delegateVotes } };
+      const store = new VotingStore(
+        api as unknown as Api,
+        {} as ActionsMap,
+        noopAnalyticsTracker
+      );
+      const withWalletSendLock = jest.fn(
+        async (_walletId: string, work: () => Promise<unknown>) => {
+          locked = true;
+          try {
+            return await work();
+          } finally {
+            locked = false;
+          }
+        }
+      );
+      store.configure({
+        transactions: { withWalletSendLock },
+      } as unknown as Parameters<VotingStore['configure']>[0]);
+      await expect(
+        store.delegateVotes({
+          chosenOption,
+          wallet: softwareWallet,
+          passphrase: 'real-password',
+        })
+      ).resolves.toEqual({ success: true });
+      expect(delegateVotes).toHaveBeenCalledWith({
+        dRepId: chosenOption,
+        walletId: softwareWallet.id,
+        passphrase: 'real-password',
+      });
+      expect(locked).toBe(false);
+    }
+  );
+
+  it('uses legacy certificate selection and hardware submission without exact approval', async () => {
+    const hardwareWallets = buildHardwareWallets();
+    const { store } = buildStore(hardwareWallets);
+    await expect(
+      store.initializeVPDelegationTx({
+        chosenOption: CIP129_KEY,
+        wallet: hwWallet,
+      })
+    ).resolves.toEqual({ success: true, fees: new BigNumber('0.180989') });
+    expect(hardwareWallets.updateTxSignRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        certificates: [
+          {
+            certificateType: 'cast_vote',
+            rewardAccountPath: REWARD_ACCOUNT_PATH,
+            vote: CIP129_KEY,
+          },
+        ],
+      })
+    );
+    await expect(
+      store.delegateVotes({
+        chosenOption: CIP129_KEY,
+        wallet: hwWallet,
+      })
+    ).resolves.toEqual({ success: true });
+    expect(hardwareWallets._sendMoney).toHaveBeenCalledWith({
+      selectedWalletId: hwWallet.id,
+      isDelegationTransaction: true,
+    });
+    expect(
+      hardwareWallets.submitConstructedNativeTransaction
+    ).not.toHaveBeenCalled();
   });
 });

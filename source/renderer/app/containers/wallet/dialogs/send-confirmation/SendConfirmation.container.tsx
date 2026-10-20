@@ -96,7 +96,8 @@ export function Containter({
     resetHardwareWalletTransaction({
       cancelDeviceAction: true,
     });
-    if (isCollateralPreparation) collateral.cancelPreparation();
+    if (global.cip30Enabled && isCollateralPreparation)
+      collateral.cancelPreparation();
   }, [
     sendMoneyRequest,
     closeActiveDialog,
@@ -123,8 +124,10 @@ export function Containter({
       isFlight={isFlight}
       isSubmitting={isSubmitting}
       isHardwareWallet={isHardwareWallet}
-      isCollateralPreparation={isCollateralPreparation}
-      spendsPreferredCollateral={spendsPreferredCollateral}
+      isCollateralPreparation={global.cip30Enabled && isCollateralPreparation}
+      spendsPreferredCollateral={
+        global.cip30Enabled && spendsPreferredCollateral
+      }
       isTrezor={checkIsTrezorByWalletId(activeWallet.id)}
       onCancel={onCancel}
       onSubmitCb={onSubmitCb}

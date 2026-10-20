@@ -1,9 +1,11 @@
 /** @jest-environment node */
 import { nativeApprovalBindingDigest } from '../../../common/transactions/nativePlan';
 import NativeTransactionApprovalService from './NativeTransactionApprovalService';
+import type { WalletTransactionApprovalMainResponse } from '../../../common/ipc/api';
 import {
   bindNativeTransactionExecutor,
   requestNativeTransactionApproval,
+  cancelNativeTransactionApproval,
 } from '../ipc/nativeTransactionApproval';
 
 jest.mock('../ipc/nativeTransactionApproval', () => ({
@@ -126,4 +128,110 @@ test('preserves explicit signing failures without mistaking a lost submission re
   } finally {
     service.dispose();
   }
+});
+
+test('disposal cancels pending main approval and retains executor binding until its response settles', async () => {
+  const request = requestNativeTransactionApproval as jest.MockedFunction<
+    typeof requestNativeTransactionApproval
+  >;
+  let finish!: (value: WalletTransactionApprovalMainResponse) => void;
+  request.mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      })
+  );
+  const unbind = jest.fn();
+  (bindNativeTransactionExecutor as jest.Mock).mockReturnValueOnce(unbind);
+  const service = new NativeTransactionApprovalService();
+  const pending = service.request(
+    prepared,
+    async () => ({ status: 'submitted', transactionIds: [] }),
+    new AbortController().signal
+  );
+  const attemptId = request.mock.calls[0][0];
+  service.dispose();
+  expect(cancelNativeTransactionApproval).toHaveBeenCalledWith(attemptId);
+  expect(unbind).not.toHaveBeenCalled();
+  finish({
+    status: 'accepted',
+    bindingDigest: nativeApprovalBindingDigest(prepared),
+    result: { status: 'rejected', errorCode: 'cancelled' },
+  });
+  await expect(pending).resolves.toEqual({
+    status: 'rejected',
+    errorCode: 'cancelled',
+  });
+  expect(unbind).toHaveBeenCalledTimes(1);
+  await expect(
+    service.request(
+      prepared,
+      async () => ({ status: 'submitted', transactionIds: [] }),
+      new AbortController().signal
+    )
+  ).resolves.toEqual({ status: 'rejected', errorCode: 'cancelled' });
+  expect(request).toHaveBeenCalledTimes(1);
+});
+
+test('disposal cannot release an already authorized submission before the backend result', async () => {
+  const request = requestNativeTransactionApproval as jest.MockedFunction<
+    typeof requestNativeTransactionApproval
+  >;
+  let finishSubmission!: () => void;
+  const submission = new Promise<void>((resolve) => {
+    finishSubmission = resolve;
+  });
+  let reportSubmitting!: () => void;
+  const submitting = new Promise<void>((resolve) => {
+    reportSubmitting = resolve;
+  });
+  const unbind = jest.fn();
+  (bindNativeTransactionExecutor as jest.Mock).mockReturnValueOnce(unbind);
+  request.mockImplementation(async (attemptId) => {
+    const bind = bindNativeTransactionExecutor as jest.MockedFunction<
+      typeof bindNativeTransactionExecutor
+    >;
+    const execute = bind.mock.calls[0][0];
+    return {
+      status: 'accepted',
+      bindingDigest: nativeApprovalBindingDigest(prepared),
+      result: await execute({
+        type: 'execute',
+        attemptId,
+        requestId: 'submitting',
+        bindingDigest: nativeApprovalBindingDigest(prepared),
+      }),
+    };
+  });
+  const service = new NativeTransactionApprovalService();
+  let settled = false;
+  const pending = service
+    .request(
+      prepared,
+      async (_password, _signal, markSubmitting) => {
+        await markSubmitting();
+        reportSubmitting();
+        await submission;
+        return { status: 'submitted', transactionIds: ['actual-result'] };
+      },
+      new AbortController().signal
+    )
+    .then((result) => {
+      settled = true;
+      return result;
+    });
+  await submitting;
+  service.dispose();
+  await Promise.resolve();
+  expect(settled).toBe(false);
+  expect(unbind).not.toHaveBeenCalled();
+  expect(cancelNativeTransactionApproval).toHaveBeenCalledWith(
+    request.mock.calls[0][0]
+  );
+  finishSubmission();
+  await expect(pending).resolves.toEqual({
+    status: 'submitted',
+    transactionIds: ['actual-result'],
+  });
+  expect(unbind).toHaveBeenCalledTimes(1);
 });

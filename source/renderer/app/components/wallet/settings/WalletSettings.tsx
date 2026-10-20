@@ -376,7 +376,7 @@ class WalletSettings extends Component<Props, State> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>
 
-        {!isLegacy && (
+        {global.cip30Enabled && !isLegacy && (
           <BorderedBox className={styles.singleAddressModeBox}>
             <div className={styles.title}>
               {intl.formatMessage(messages.singleAddressModeLabel)}

@@ -66,6 +66,7 @@ import type {
 } from './transactions/dappBackend';
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
+import { delegateVotes } from './voting/requests/delegateVotes';
 import { getCatalystFund } from './voting/requests/getCatalystFund';
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -241,6 +242,7 @@ import type {
   CreateVotingRegistrationRequest,
   CreateWalletSignatureRequest,
   CatalystFund,
+  DelegateVotesParams,
 } from './voting/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import { TlsCertificateNotValidError } from './nodes/errors';
@@ -347,9 +349,17 @@ const parseCoinSelectionResponse = ({
   const depositsReturned = map(response.deposits_returned, (deposit) =>
     deposit.quantity.toString()
   );
-  const depositsReclaimed = depositsReturned.length
-    ? BigNumber.sum.apply(null, depositsReturned)
-    : new BigNumber(0);
+  let depositsReclaimed: BigNumber;
+  if (global.cip30Enabled) {
+    depositsReclaimed = depositsReturned.length
+      ? BigNumber.sum.apply(null, depositsReturned)
+      : new BigNumber(0);
+  } else {
+    depositsReclaimed =
+      delegation?.delegationAction === DELEGATION_ACTIONS.QUIT
+        ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
+        : new BigNumber(0);
+  }
   const withdrawalsArray = map(response.withdrawals, (withdrawal) =>
     withdrawal.amount.quantity.toString()
   );
@@ -2987,6 +2997,14 @@ export default class AdaApi {
     }
   };
 
+  delegateVotes = async (params: DelegateVotesParams): Promise<Transaction> => {
+    try {
+      return await delegateVotes(this.config, params);
+    } catch (error) {
+      throw new ApiError(error).result();
+    }
+  };
+
   createVotingRegistrationTransaction = async (
     request: CreateVotingRegistrationRequest
   ): Promise<WalletTransaction> => {
@@ -3212,7 +3230,11 @@ export const _createWalletFromServerData = action(
       discovery,
       isHardwareWallet = false,
     } = wallet;
-    if (!isLegacy && typeof singleAddressMode !== 'boolean')
+    if (
+      global.cip30Enabled &&
+      !isLegacy &&
+      typeof singleAddressMode !== 'boolean'
+    )
       throw new ApiError({
         code: 'wallet_internal_error',
         message:
@@ -3317,7 +3339,8 @@ export const _createWalletFromServerData = action(
     return new Wallet({
       id,
       addressPoolGap,
-      singleAddressMode: isLegacy ? false : singleAddressMode,
+      singleAddressMode:
+        global.cip30Enabled && !isLegacy ? singleAddressMode === true : false,
       name,
       amount: walletTotalAmount,
       availableAmount: walletAvailableAmount,
@@ -3354,6 +3377,11 @@ const _createAddressFromServerData = action(
 );
 
 export const _conditionToTxState = (condition: string) => {
+  if (!global.cip30Enabled) {
+    if (condition === 'pending') return TransactionStates.PENDING;
+    if (condition === 'expired') return TransactionStates.EXPIRED;
+    return TransactionStates.OK;
+  }
   switch (condition) {
     case 'pending':
       return TransactionStates.PENDING;

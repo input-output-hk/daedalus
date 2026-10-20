@@ -30,7 +30,13 @@ import { consentCoordinator } from './walletApproval';
 import { handleNativeTransactionApprovalRequests } from './nativeTransactionApproval';
 
 jest.mock('../utils/logging', () => ({ logger: { error: jest.fn() } }));
-jest.mock('../config', () => ({ isFlight: false }));
+jest.mock('../config', () => ({
+  isFlight: false,
+  dappRuntimeConfig: {
+    cip30Enabled: true,
+    dappSandboxPackageCluster: 'preprod',
+  },
+}));
 jest.mock('electron', () => ({
   ipcMain: new (require('events').EventEmitter)(),
 }));
@@ -73,6 +79,40 @@ const createRendererEndpoint = () => {
   >(WALLET_APPROVAL_RENDER_CHANNEL);
   return { endpoint, renderer, webContents };
 };
+
+it('settles disabled native requests over trusted IPC without presenting consent', async () => {
+  const config = jest.requireMock('../config').dappRuntimeConfig;
+  config.cip30Enabled = false;
+  config.dappSandboxPackageCluster = 'mainnet';
+  try {
+    const { endpoint, renderer, webContents } = createRendererEndpoint();
+    const present = jest.fn();
+    endpoint.onRequest(present, renderer);
+    handleNativeTransactionApprovalRequests();
+    const client = new IpcChannel<
+      WalletTransactionApprovalMainResponse,
+      WalletTransactionApprovalRendererRequest
+    >(WALLET_TRANSACTION_APPROVAL_CHANNEL);
+    await expect(
+      client.request(
+        { type: 'cancel-native', attemptId: 'disabled-attempt' },
+        {
+          send: (name, envelope) =>
+            ipcMain.emit(
+              name,
+              { sender: webContents },
+              deserialize(serialize(envelope))
+            ),
+        },
+        renderer
+      )
+    ).rejects.toThrow('CIP-30 is unavailable');
+    expect(present).not.toHaveBeenCalled();
+  } finally {
+    config.cip30Enabled = true;
+    config.dappSandboxPackageCluster = 'preprod';
+  }
+}, 1000);
 
 it('presents consent and dismisses it after a renderer refusal without executing the operation', async () => {
   const { endpoint, renderer } = createRendererEndpoint();

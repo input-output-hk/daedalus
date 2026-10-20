@@ -129,11 +129,17 @@ class WalletConnectDialog extends Component<Props, State> {
     const deviceModel = get(transportDevice, 'deviceModel');
     const isLedger = deviceType === DeviceTypes.LEDGER;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
-    const isReadyToPair = hwDeviceStatus === HwDeviceStatuses.READY;
+    const isReadyToPair =
+      global.cip30Enabled && hwDeviceStatus === HwDeviceStatuses.READY;
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
     const cancelAction = {
       disabled: isSubmitting,
-      label: intl.formatMessage(messages.cancelButton),
+      label:
+        !global.cip30Enabled && isSubmitting ? (
+          <LoadingSpinner />
+        ) : (
+          intl.formatMessage(messages.cancelButton)
+        ),
       primary: false,
       onClick: onClose,
     };

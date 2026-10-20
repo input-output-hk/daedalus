@@ -70,6 +70,14 @@ describe('TransactionsStore wallet send coordinator', () => {
 });
 
 describe('TransactionsStore durable submissions', () => {
+  const originalCapability = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
+  });
+
   const transactionId = 'ab'.repeat(32);
   const walletId = 'wallet-a';
   const display = {
@@ -103,6 +111,14 @@ describe('TransactionsStore durable submissions', () => {
   ) => {
     const confirmed = jest.fn();
     const deleteTransaction = jest.fn().mockResolvedValue(undefined);
+    const readReceipts = jest.fn(
+      async (id: string) => saved[id] || { version: 1 as const, records: [] }
+    );
+    const writeReceipts = jest.fn(
+      async (id: string, data: SubmissionTransactionsData) => {
+        saved[id] = data;
+      }
+    );
     const recentRequest = new Request<GetTransactionsResponse>(getTransactions);
     const allRequest = new Request<GetTransactionsResponse>(getTransactions);
     const transactions = new TransactionsStore(
@@ -115,15 +131,8 @@ describe('TransactionsStore durable submissions', () => {
           getWithdrawals: jest.fn(),
         },
         localStorage: {
-          getSubmissionTransactions: jest.fn(
-            async (id: string) =>
-              saved[id] || { version: 1 as const, records: [] }
-          ),
-          setSubmissionTransactions: jest.fn(
-            async (id: string, data: SubmissionTransactionsData) => {
-              saved[id] = data;
-            }
-          ),
+          getSubmissionTransactions: readReceipts,
+          setSubmissionTransactions: writeReceipts,
         },
       } as never,
       {
@@ -161,6 +170,8 @@ describe('TransactionsStore durable submissions', () => {
     ];
     return {
       transactions,
+      readReceipts,
+      writeReceipts,
       confirmed,
       deleteTransaction,
       recentRequest,
@@ -195,6 +206,87 @@ describe('TransactionsStore durable submissions', () => {
       hasOnlyAda: true,
       ...overrides,
     });
+
+  it('leaves saved pilot receipts untouched and uses only backend history outside the pilot', async () => {
+    const saved: Record<string, SubmissionTransactionsData> = {};
+    const pilot = harness(saved);
+    await pilot.transactions.trackSubmission({
+      walletId,
+      transactionId,
+      state: 'submission-unknown',
+      display,
+      payment: { address: 'addr_test1', amount: '2000000' },
+    });
+    const persisted = JSON.stringify(saved);
+    global.cip30Enabled = false;
+    const backend = backendTransaction({
+      id: 'cd'.repeat(32),
+      state: 'expired',
+      amount: new BigNumber('-3.5'),
+    });
+    const outgoing = backendTransaction({
+      id: 'de'.repeat(32),
+      state: 'pending',
+    });
+    const incoming = backendTransaction({
+      id: 'ef'.repeat(32),
+      type: 'income',
+      amount: new BigNumber('4'),
+    });
+    const upstream = harness(
+      saved,
+      jest.fn().mockResolvedValue({
+        transactions: [backend, outgoing, incoming],
+        total: 3,
+      })
+    );
+    await upstream.transactions._refreshTransactionData();
+    await Promise.all([
+      upstream.recentRequest.promise,
+      upstream.allRequest.promise,
+    ]);
+    expect(upstream.transactions.all).toEqual([backend, outgoing, incoming]);
+    expect(upstream.transactions.recent).toEqual([backend, outgoing, incoming]);
+    expect(
+      upstream.transactions.getTransaction(walletId, transactionId)
+    ).toBeUndefined();
+    expect(upstream.transactions.getTransaction(walletId, backend.id)).toBe(
+      backend
+    );
+    expect(backend.isSelfTransfer).toBeUndefined();
+    expect(upstream.transactions.pendingTransactionsCount).toBe(1);
+    upstream.transactions._filterOptionsForWallets = {
+      [walletId]: {
+        incomingChecked: false,
+        outgoingChecked: true,
+        fromAmount: '3',
+        toAmount: '4',
+      },
+    };
+    expect(upstream.transactions.allFiltered).toEqual([backend]);
+    await upstream.transactions.trackSubmission({
+      walletId,
+      transactionId,
+      state: 'in_ledger',
+      display,
+    });
+    upstream.transactions.dismissReceipt(walletId, [transactionId]);
+    upstream.transactions.openTransaction(walletId, transactionId);
+    expect(upstream.transactions.selectedTransaction).toBeUndefined();
+    await upstream.transactions.deletePendingTransaction({
+      walletId,
+      transactionId: backend.id,
+    });
+    expect(upstream.deleteTransaction).toHaveBeenCalledWith({
+      walletId,
+      transactionId: backend.id,
+      isLegacy: false,
+    });
+    expect(upstream.readReceipts).not.toHaveBeenCalled();
+    expect(upstream.writeReceipts).not.toHaveBeenCalled();
+    expect(upstream.confirmed).not.toHaveBeenCalled();
+    expect(JSON.stringify(saved)).toBe(persisted);
+  });
 
   it('restores, merges and confirms one dismissed placeholder without guessing on errors', async () => {
     const saved: Record<string, SubmissionTransactionsData> = {};

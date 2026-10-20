@@ -109,12 +109,12 @@ function View({
       className={styles.root}
       closeButton={<DialogCloseButton />}
     >
-      {isCollateralPreparation && (
+      {global.cip30Enabled && isCollateralPreparation && (
         <div className={styles.warning}>
           <FormattedHTMLMessage {...collateralMessages.preparing} tagName="p" />
         </div>
       )}
-      {spendsPreferredCollateral && (
+      {global.cip30Enabled && spendsPreferredCollateral && (
         <div className={styles.warning} role="alert">
           <FormattedHTMLMessage
             {...collateralMessages.willBeSpent}

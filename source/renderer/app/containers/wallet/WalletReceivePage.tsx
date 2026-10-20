@@ -200,7 +200,9 @@ class WalletReceivePage extends Component<Props, State> {
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
-    const { hasPassword, isRandom, singleAddressMode } = activeWallet;
+    const { hasPassword, isRandom } = activeWallet;
+    const singleAddressMode =
+      global.cip30Enabled && activeWallet.singleAddressMode;
     let walletAddresses = addresses.all.slice().reverse();
     if (singleAddressMode)
       walletAddresses = addresses.active ? [addresses.active] : [];

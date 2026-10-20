@@ -80,6 +80,7 @@ export default class DappCatalogPage extends Component<Props> {
   }
 
   private refreshCollateral = (): void => {
+    if (!global.cip30Enabled) return;
     const { collateral, networkStatus, wallets } = this.props.stores!;
     const walletId = wallets.activeDappWallet?.id;
     const context = `${walletId ?? ''}:${networkStatus.isConnected}:${
@@ -101,6 +102,7 @@ export default class DappCatalogPage extends Component<Props> {
   };
 
   render() {
+    if (!global.cip30Enabled) return null;
     const { dapp, networkStatus, wallets } = this.props.stores!;
     const walletReady =
       !!wallets.activeDappWallet &&

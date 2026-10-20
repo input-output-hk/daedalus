@@ -115,7 +115,9 @@ class DelegationCenterPage extends Component<Props, State> {
           setListActive={this.handleSetListActive}
         />
         {uiDialogs.isOpen(UndelegateWalletDialogContainer) ? (
-          <UndelegateWalletDialogContainer />
+          <UndelegateWalletDialogContainer
+            onExternalLinkClick={app.openExternalLink}
+          />
         ) : null}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

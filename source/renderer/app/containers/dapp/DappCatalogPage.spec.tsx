@@ -35,6 +35,9 @@ jest.mock(
 );
 
 describe('DappCatalogPage', () => {
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
   const originalNetwork = global.environment.network;
   const originalIsFlight = global.isFlight;
 

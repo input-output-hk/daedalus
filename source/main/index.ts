@@ -76,7 +76,8 @@ if (isBlankScreenFixActive) {
   // in DevTools JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
-installDappTransportRestrictions(app.commandLine);
+if (dappRuntimeConfig.cip30Enabled)
+  installDappTransportRestrictions(app.commandLine);
 
 // Chromium sizes windows in device-independent pixels, so the minimum content
 // size set in `createMainWindow` is multiplied by the device scale factor that
@@ -183,15 +184,17 @@ const onAppReady = async () => {
     () => restoreSavedWindowBounds(screen, requestElectronStore)
   );
   saveWindowBoundsOnSizeAndPositionChange(mainWindow, requestElectronStore);
-  startDappSandboxAvailabilityCheck({
-    isDevelopment: isDev,
-    cluster: dappRuntimeConfig.dappSandboxPackageCluster,
-  }).then((result) => {
-    logger.info('dApp sandbox availability check completed', {
-      status: result.status,
-      reason: result.status === 'unavailable' ? result.reason : undefined,
+  if (dappRuntimeConfig.cip30Enabled) {
+    startDappSandboxAvailabilityCheck({
+      isDevelopment: isDev,
+      cluster: dappRuntimeConfig.dappSandboxPackageCluster,
+    }).then((result) => {
+      logger.info('dApp sandbox availability check completed', {
+        status: result.status,
+        reason: result.status === 'unavailable' ? result.reason : undefined,
+      });
     });
-  });
+  }
   let rtsEnabled = containsRTSFlags(getRtsFlagsSettings(network) || []);
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'unknown' is not assignable to pa... Remove this comment to see the full error message
   buildAppMenus(mainWindow, userLocale, {

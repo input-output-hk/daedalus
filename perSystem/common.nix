@@ -100,12 +100,14 @@
         cip30 = mkBackend inputs.cardano-wallet-cip30;
       };
 
+      cip30PackageClusters = ["preprod" "preview" "mainnet-flight"];
+
       walletBackendForCluster = cluster:
         if !(builtins.elem cluster sourceLib.installerClusters)
         then throw "Unsupported Daedalus wallet cluster: ${cluster}"
-        else if cluster == "mainnet"
-        then walletBackends.upstream
-        else walletBackends.cip30;
+        else if builtins.elem cluster cip30PackageClusters
+        then walletBackends.cip30
+        else walletBackends.upstream;
 
       nodeFlake =
         (flake-compat {
@@ -595,6 +597,7 @@
               inherit
                 (dappRuntimeConfig)
                 cardanoWalletSourceRevision
+                cip30Enabled
                 dappBrowserPolicy
                 dappSandboxPackageCluster
                 dappNetwork
@@ -871,19 +874,20 @@
             });
           dappRuntimeConfig = {
             cardanoWalletSourceRevision = (walletBackendForCluster cluster).sourceRevision;
+            cip30Enabled = builtins.elem cluster cip30PackageClusters;
             dappBrowserPolicy = {
               revision = 1;
-              globalEnabled = network != "mainnet";
-              preferredCatalogEnabled = network != "mainnet";
-              diagnosticsEnabled = network != "mainnet";
+              globalEnabled = dappRuntimeConfig.cip30Enabled;
+              preferredCatalogEnabled = dappRuntimeConfig.cip30Enabled;
+              diagnosticsEnabled = dappRuntimeConfig.cip30Enabled;
               cip104Revision =
-                if network != "mainnet"
+                if dappRuntimeConfig.cip30Enabled
                 then 1
                 else 0;
               cip142Revision = 0;
-              hardwareConnectorEnabled = true;
+              hardwareConnectorEnabled = dappRuntimeConfig.cip30Enabled;
             };
-            dappSandboxPackageCluster = network;
+            dappSandboxPackageCluster = cluster;
             dappNetwork = {
               cluster = daedalusConfig.cluster;
               genesisFile = "genesis.json";
@@ -916,6 +920,7 @@
           inherit
             (dappRuntimeConfig)
             cardanoWalletSourceRevision
+            cip30Enabled
             dappBrowserPolicy
             dappSandboxPackageCluster
             dappNetwork

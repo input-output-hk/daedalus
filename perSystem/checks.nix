@@ -64,6 +64,7 @@
           test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
           test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
           jq -e '.dappBrowserPolicy.globalEnabled == false and .dappSandboxPackageCluster == "mainnet" and .dappNetwork.cluster == "mainnet" and .dappNetwork.genesisFile == "genesis.json"' "$root/config/daedalus-config.json" >/dev/null
+          jq -e '.cip30Enabled == false and .dappBrowserPolicy.hardwareConnectorEnabled == false' "$root/config/daedalus-config.json" >/dev/null
           jq -e '.electron.exe | endswith("/libexec/daedalus-frontend")' "$root/config/daedalus-config.json" >/dev/null
           test "$(stat -c %a "$root/libexec/bundle-electron/lib/electron/chrome-sandbox")" = 755
           test "$(patchelf --print-interpreter "$root/libexec/bundle-electron/lib/electron/electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2
@@ -276,6 +277,7 @@
         test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
         test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
         jq -e '.dappBrowserPolicy.globalEnabled == false and .dappSandboxPackageCluster == "mainnet" and .dappNetwork.cluster == "mainnet" and .dappNetwork.genesisFile == "genesis.json"' "$root/config/daedalus-config.json" >/dev/null
+        jq -e '.cip30Enabled == false and .dappBrowserPolicy.hardwareConnectorEnabled == false' "$root/config/daedalus-config.json" >/dev/null
         jq -e '
           .packageFamily == "rpm"
           and .matrixRow == "fedora-43"
@@ -361,6 +363,7 @@
         test "$(jq -r '.electron.env.DAEDALUS_UPDATE_MODE' "$root/config/daedalus-config.json")" = system-package-disabled
         test "$(jq -r '.electron.env | has("DAEDALUS_UPDATE_RUNNER")' "$root/config/daedalus-config.json")" = false
         jq -e '.dappBrowserPolicy.globalEnabled == false and .dappSandboxPackageCluster == "mainnet" and .dappNetwork.cluster == "mainnet" and .dappNetwork.genesisFile == "genesis.json"' "$root/config/daedalus-config.json" >/dev/null
+        jq -e '.cip30Enabled == false and .dappBrowserPolicy.hardwareConnectorEnabled == false' "$root/config/daedalus-config.json" >/dev/null
         jq -e '
           .packageFamily == "arch"
           and .matrixRevision == "task-111-matrix-2026-09-02"
@@ -417,12 +420,19 @@
               cfg = (mkCommon target).mkDaedalusConfigs {
                 inherit cluster devShell;
               };
-              enabled = cluster != "mainnet";
+              enabled = builtins.elem cluster ["preprod" "preview" "mainnet-flight"];
               logicalCluster =
                 if cluster == "mainnet-flight"
                 then "mainnet"
                 else cluster;
             in
+              assert cfg.cip30Enabled == enabled;
+              assert cfg.cardanoWalletSourceRevision
+              == (
+                if enabled
+                then inputs.cardano-wallet-cip30.rev
+                else inputs.cardano-wallet.rev
+              );
               assert cfg.dappBrowserPolicy.globalEnabled == enabled;
               assert cfg.dappBrowserPolicy.preferredCatalogEnabled == enabled;
               assert cfg.dappBrowserPolicy.diagnosticsEnabled == enabled;
@@ -433,7 +443,7 @@
                 else 0
               );
               assert cfg.dappBrowserPolicy.cip142Revision == 0;
-              assert cfg.dappBrowserPolicy.hardwareConnectorEnabled;
+              assert cfg.dappBrowserPolicy.hardwareConnectorEnabled == enabled;
               assert cfg.dappNetwork.cluster == logicalCluster;
               assert cfg.dappNetwork.genesisFile == "genesis.json";
               assert cfg.dappSandboxPackageCluster == cluster;
@@ -443,25 +453,45 @@
           clusters)
         targets;
     in
-      pkgs.runCommand "dapp-launch-policy-contract" {
-        nativeBuildInputs = [pkgs.jq];
-      } ''
-        set -eu
-        for config_dir in ${lib.concatStringsSep " " configs}; do
-          config="$config_dir/daedalus-config.json"
-          jq -e '
-            (.dappBrowserPolicy.revision == 1)
-            and (.dappBrowserPolicy.cip142Revision == 0)
-            and (.dappBrowserPolicy.hardwareConnectorEnabled == true)
-            and (.dappSandboxPackageCluster | type == "string")
-            and (.cardanoWalletSourceRevision | test("^[0-9a-f]{40}$"))
-            and (.dappNetwork.cluster | type == "string")
-            and (.dappNetwork.genesisFile == "genesis.json")
-            and (.dappNetwork.genesisHash | test("^[0-9a-f]{64}$"))
-          ' "$config" >/dev/null
-        done
-        touch "$out"
-      '';
+      assert builtins.all
+      (cluster: let
+        result =
+          builtins.tryEval
+          ((mkCommon "x86_64-linux").mkDaedalusConfigs {
+            inherit cluster;
+          })
+          .cardanoWalletSourceRevision;
+      in
+        !result.success)
+      ["selfnode" "nightly"];
+        pkgs.runCommand "dapp-launch-policy-contract" {
+          nativeBuildInputs = [pkgs.jq];
+        } ''
+          set -eu
+          for config_dir in ${lib.concatStringsSep " " configs}; do
+            config="$config_dir/daedalus-config.json"
+            jq -e '
+              (.dappBrowserPolicy.revision == 1)
+              and (.dappBrowserPolicy.cip142Revision == 0)
+              and (.cip30Enabled | type == "boolean")
+              and (.cip30Enabled == (
+                .dappSandboxPackageCluster == "preprod"
+                or .dappSandboxPackageCluster == "preview"
+                or .dappSandboxPackageCluster == "mainnet-flight"
+              ))
+              and (.dappBrowserPolicy.globalEnabled == .cip30Enabled)
+              and (.dappBrowserPolicy.preferredCatalogEnabled == .cip30Enabled)
+              and (.dappBrowserPolicy.diagnosticsEnabled == .cip30Enabled)
+              and (.dappBrowserPolicy.hardwareConnectorEnabled == .cip30Enabled)
+              and (.dappSandboxPackageCluster | type == "string")
+              and (.cardanoWalletSourceRevision | test("^[0-9a-f]{40}$"))
+              and (.dappNetwork.cluster | type == "string")
+              and (.dappNetwork.genesisFile == "genesis.json")
+              and (.dappNetwork.genesisHash | test("^[0-9a-f]{64}$"))
+            ' "$config" >/dev/null
+          done
+          touch "$out"
+        '';
   in {
     checks =
       # The suites that execute the code under test run natively on each OS we

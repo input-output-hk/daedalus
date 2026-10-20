@@ -1,6 +1,14 @@
 import { parseDappConnectionsRequest } from './dappConnections';
 
+jest.mock('../config', () => ({
+  dappRuntimeConfig: {
+    cip30Enabled: true,
+    dappSandboxPackageCluster: 'preprod',
+  },
+}));
+
 jest.mock('../cip30/Cip30Broker', () => ({
+  getCollateralService: jest.fn(),
   getDappConnectionService: jest.fn(),
 }));
 jest.mock('./lib/MainIpcChannel', () => ({

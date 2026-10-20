@@ -75,7 +75,7 @@ import {
 } from '../ipc/hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
-import { dappLaunchPolicy } from '../config';
+import { dappLaunchPolicy, dappRuntimeConfig } from '../config';
 
 type LedgerConnection = {
   device: Device;
@@ -1586,6 +1586,8 @@ export class HardwareWalletService {
 
     signExactHardwareTransactionChannel.onRequest(
       async ({ vendor, ledgerPath, exact, walletId }) => {
+        if (!dappRuntimeConfig.cip30Enabled)
+          throw new Error('Hardware exact transaction is not enabled');
         const capability = exact.capability;
         const artifactId =
           vendor === 'ledger'
@@ -1628,6 +1630,8 @@ export class HardwareWalletService {
 
     signExactHardwareMessageChannel.onRequest(
       async ({ vendor, ledgerPath, capability, message }) => {
+        if (!dappRuntimeConfig.cip30Enabled)
+          throw new Error('Hardware connector is not enabled');
         const version =
           capability.vendor === 'ledger'
             ? capability.appVersion

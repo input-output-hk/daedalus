@@ -57,6 +57,24 @@ const create = () => {
 };
 
 describe('WalletSettingsStore single-address mode', () => {
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+
+  it('rejects a disabled-package mutation before locking or HTTP', async () => {
+    global.cip30Enabled = false;
+    const fixture = create();
+    await expect(
+      fixture.store._setSingleAddressMode({
+        walletId: fixture.walletA.id,
+        enabled: true,
+      })
+    ).rejects.toThrow('Single-address mode is unavailable');
+    expect(fixture.updateWallet).not.toHaveBeenCalled();
+    expect(fixture.withWalletSendLock).not.toHaveBeenCalled();
+    expect(fixture.walletA.singleAddressMode).toBe(false);
+  });
+
   it('updates only the dispatched wallet when the active wallet changes', async () => {
     const fixture = create();
     const response = deferred<typeof fixture.walletA>();

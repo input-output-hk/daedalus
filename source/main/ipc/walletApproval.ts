@@ -6,6 +6,7 @@ import type {
 } from '../../common/ipc/api';
 import { parseDappApprovalDecision } from '../../common/cip30/schemas';
 import { ConsentCoordinator } from '../cip30/ConsentCoordinator';
+import { dappRuntimeConfig } from '../config';
 import type { DappGuestRevocationReason } from '../dapp/DappBrowserManager';
 import { setDappConsentLifecycleRevoker } from './dappBrowser';
 import { MainIpcChannel } from './lib/MainIpcChannel';
@@ -73,6 +74,7 @@ export const consentCoordinator = new ConsentCoordinator({
 });
 
 export const handleWalletApprovalRequests = (window: BrowserWindow): void => {
+  if (!dappRuntimeConfig.cip30Enabled) return;
   setDappConsentLifecycleRevoker((reason, guestWebContentsId) =>
     consentCoordinator.cancel(
       (identity) =>

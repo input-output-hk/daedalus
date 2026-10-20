@@ -212,6 +212,10 @@ export default class WalletSettingsStore extends Store {
     walletId: string;
     enabled: boolean;
   }): Promise<void> => {
+    if (!global.cip30Enabled)
+      throw new Error(
+        'Single-address mode is unavailable for this package flavor'
+      );
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (
       !wallet ||

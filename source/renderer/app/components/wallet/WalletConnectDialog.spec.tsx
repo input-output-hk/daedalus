@@ -39,7 +39,14 @@ const renderDialog = (hwDeviceStatus: 'connecting' | 'ready') => {
 };
 
 describe('WalletConnectDialog', () => {
-  afterEach(cleanup);
+  const originalGate = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+  afterEach(() => {
+    cleanup();
+    global.cip30Enabled = originalGate;
+  });
 
   it('requires a valid wallet name before pairing a new device', () => {
     const onPairWallet = renderDialog('ready');
@@ -63,5 +70,16 @@ describe('WalletConnectDialog', () => {
     expect(
       screen.queryByRole('button', { name: 'Pair wallet' })
     ).not.toBeInTheDocument();
+  });
+
+  it('keeps the upstream connection dialog free of the pilot naming step', () => {
+    global.cip30Enabled = false;
+    const onPairWallet = renderDialog('ready');
+    expect(screen.queryByLabelText('Wallet name')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Pair wallet' })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeEnabled();
+    expect(onPairWallet).not.toHaveBeenCalled();
   });
 });

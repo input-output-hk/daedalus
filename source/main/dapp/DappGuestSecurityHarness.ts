@@ -103,7 +103,7 @@ const createWindow = (
 };
 
 const testPackagedPolicy = (config: HarnessRuntimeConfig): void => {
-  const expectedEnabled = config.dappSandboxPackageCluster !== 'mainnet';
+  const expectedEnabled = config.cip30Enabled;
   const packagedPolicy = new DappLaunchPolicy(config.dappBrowserPolicy);
   assert.deepStrictEqual(packagedPolicy.config, {
     revision: DAPP_POLICY_REVISION,
@@ -112,7 +112,7 @@ const testPackagedPolicy = (config: HarnessRuntimeConfig): void => {
     diagnosticsEnabled: expectedEnabled,
     cip104Revision: expectedEnabled ? 1 : 0,
     cip142Revision: 0,
-    hardwareConnectorEnabled: true,
+    hardwareConnectorEnabled: expectedEnabled,
   });
   const enabled = {
     revision: DAPP_POLICY_REVISION,

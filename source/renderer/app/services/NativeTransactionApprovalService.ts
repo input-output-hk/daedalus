@@ -102,15 +102,25 @@ const registerExecutor = (): void => {
   if (unbindExecutor) return;
   unbindExecutor = bindNativeTransactionExecutor(executeNativeTransaction);
 };
+const unregisterIdleExecutor = (): void => {
+  if (attempts.size !== 0) return;
+  unbindExecutor?.();
+  unbindExecutor = undefined;
+};
 
 export default class NativeTransactionApprovalService {
+  private disposed = false;
+  private readonly ownedAttempts = new Set<string>();
+
   async request(
     prepared: NativePreparedApproval,
     execute: Execute,
     ownerSignal: AbortSignal
   ): Promise<NativeApprovalResult> {
+    if (this.disposed)
+      return Object.freeze({ status: 'rejected', errorCode: 'cancelled' });
     registerExecutor();
-    while (!ownerSignal.aborted) {
+    while (!this.disposed && !ownerSignal.aborted) {
       const result = await this.requestAttempt(prepared, execute, ownerSignal);
       if (
         result.status !== 'rejected' ||
@@ -130,6 +140,7 @@ export default class NativeTransactionApprovalService {
     const abort = new AbortController();
     const attempt = { prepared, execute, abort };
     attempts.set(attemptId, attempt);
+    this.ownedAttempts.add(attemptId);
     const cancel = () => {
       abort.abort();
       cancelNativeTransactionApproval(attemptId).catch(() => undefined);
@@ -151,13 +162,17 @@ export default class NativeTransactionApprovalService {
       ownerSignal.removeEventListener('abort', cancel);
       abort.abort();
       attempts.delete(attemptId);
+      this.ownedAttempts.delete(attemptId);
+      if (this.disposed) unregisterIdleExecutor();
     }
   }
 
   dispose(): void {
-    attempts.forEach(({ abort }) => abort.abort());
-    attempts.clear();
-    unbindExecutor?.();
-    unbindExecutor = undefined;
+    this.disposed = true;
+    this.ownedAttempts.forEach((attemptId) => {
+      attempts.get(attemptId)?.abort.abort();
+      cancelNativeTransactionApproval(attemptId).catch(() => undefined);
+    });
+    unregisterIdleExecutor();
   }
 }

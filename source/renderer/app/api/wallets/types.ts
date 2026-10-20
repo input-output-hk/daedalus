@@ -32,7 +32,7 @@ export type Output = {
 export type AdaWallet = {
   id: string;
   address_pool_gap: number;
-  single_address_mode: boolean;
+  single_address_mode?: boolean;
   balance: {
     available: WalletBalance;
     total: WalletBalance;

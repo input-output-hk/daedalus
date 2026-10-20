@@ -11,6 +11,8 @@ export type Cip30WalletNetwork = Readonly<{
 }>;
 
 export type Cip30WalletOperation =
+  | 'acquire-transaction-lock'
+  | 'release-transaction-lock'
   | 'capabilities'
   | 'context'
   | 'transaction-context'
@@ -29,6 +31,10 @@ type Cip30WalletRequestIdentity = Readonly<{
 export type Cip30WalletRequest = Cip30WalletRequestIdentity &
   (
     | Readonly<{
+        operation: 'acquire-transaction-lock' | 'release-transaction-lock';
+        lockId: string;
+      }>
+    | Readonly<{
         operation: 'capabilities' | 'context' | 'addresses' | 'cip95-key-state';
       }>
     | Readonly<{
@@ -46,6 +52,7 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
       }>
     | Readonly<{
         operation: 'sign-transactions';
+        lockId: string;
         approvalRequestId: string;
         context: unknown;
         transactions: readonly Readonly<{
@@ -56,6 +63,7 @@ export type Cip30WalletRequest = Cip30WalletRequestIdentity &
       }>
     | Readonly<{
         operation: 'submit-transaction';
+        lockId: string;
         transaction: string;
       }>
     | Readonly<{
@@ -130,6 +138,11 @@ export type Cip30WalletSubmissionResponse = Readonly<{
 }>;
 
 export type Cip30WalletResponse =
+  | Readonly<{
+      status: 'fulfilled';
+      operation: 'acquire-transaction-lock' | 'release-transaction-lock';
+      value: Readonly<{ lockId: string }>;
+    }>
   | Readonly<{
       status: 'fulfilled';
       operation: 'capabilities';
@@ -359,13 +372,21 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     keys = [...keys, 'preferredInputs'];
   else if (operation === 'sign-transactions') {
     keys = [...keys, 'approvalRequestId', 'context', 'transactions'];
+    keys = [...keys, 'lockId'];
     if (Object.prototype.hasOwnProperty.call(value, 'passphrase'))
       keys = [...keys, 'passphrase'];
   } else if (operation === 'submit-transaction')
-    keys = [...keys, 'transaction'];
+    keys = [...keys, 'transaction', 'lockId'];
+  else if (
+    operation === 'acquire-transaction-lock' ||
+    operation === 'release-transaction-lock'
+  )
+    keys = [...keys, 'lockId'];
   if (
     !ownData(value, keys) ||
     ![
+      'acquire-transaction-lock',
+      'release-transaction-lock',
       'capabilities',
       'context',
       'transaction-context',
@@ -387,6 +408,25 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     network: parseNetwork(value.network),
     sourceRevision: value.sourceRevision,
   };
+  if (
+    operation === 'acquire-transaction-lock' ||
+    operation === 'release-transaction-lock' ||
+    operation === 'sign-transactions' ||
+    operation === 'submit-transaction'
+  ) {
+    if (
+      typeof value.lockId !== 'string' ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        value.lockId
+      )
+    )
+      throw new Error('Invalid CIP-30 wallet request');
+    if (
+      operation === 'acquire-transaction-lock' ||
+      operation === 'release-transaction-lock'
+    )
+      return Object.freeze({ ...identity, operation, lockId: value.lockId });
+  }
   if (operation === 'account-public-key') {
     const hasPassphrase = Object.prototype.hasOwnProperty.call(
       value,
@@ -468,6 +508,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     return Object.freeze({
       ...identity,
       operation,
+      lockId: value.lockId as string,
       approvalRequestId: value.approvalRequestId as string,
       context: JSON.parse(JSON.stringify(value.context)),
       transactions: Object.freeze(
@@ -487,6 +528,7 @@ export const parseCip30WalletRequest = (value: unknown): Cip30WalletRequest => {
     return Object.freeze({
       ...identity,
       operation,
+      lockId: value.lockId as string,
       transaction: value.transaction,
     });
   }
@@ -815,6 +857,21 @@ export const parseCip30WalletResponse = (
     value.operation !== request.operation
   )
     throw new Error('Invalid CIP-30 wallet response');
+  if (
+    request.operation === 'acquire-transaction-lock' ||
+    request.operation === 'release-transaction-lock'
+  ) {
+    if (
+      !ownData(value.value, ['lockId']) ||
+      value.value.lockId !== request.lockId
+    )
+      throw new Error('Invalid CIP-30 wallet response');
+    return Object.freeze({
+      status: 'fulfilled',
+      operation: request.operation,
+      value: Object.freeze({ lockId: request.lockId }),
+    });
+  }
   if (request.operation === 'capabilities')
     return Object.freeze({
       status: 'fulfilled',

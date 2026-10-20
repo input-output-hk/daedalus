@@ -1,5 +1,14 @@
 import { observable, action, runInAction, computed } from 'mobx';
-import { get, map, find, includes, last, sortBy, filter } from 'lodash';
+import {
+  get,
+  map,
+  find,
+  includes,
+  last,
+  sortBy,
+  filter,
+  cloneDeep,
+} from 'lodash';
 import semver from 'semver';
 import { blake2b } from 'blakejs';
 import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
@@ -101,8 +110,12 @@ import type {
   VotingDataType,
   ConstructTransactionData,
 } from '../api/transactions/types';
-import type { NativeTransactionAction } from '../../../common/transactions/nativePlan';
+import type {
+  NativeTransactionAction,
+  NativeApprovalResult,
+} from '../../../common/transactions/nativePlan';
 import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
+import type { TransactionContextSnapshot } from '../../../common/cardano/transactionContext';
 import {
   bindPaymentChange,
   prepareHardwareTransaction,
@@ -136,10 +149,20 @@ import {
   UnpairedHardwareWalletData,
 } from '../types/localDataTypes';
 
+type PreparedExactPayment = Readonly<{
+  unsignedTransaction: string;
+  coinSelection: Readonly<CoinSelectionsResponse>;
+  network: DappNetwork;
+  snapshot: TransactionContextSnapshot;
+  preparation: Extract<HardwareTransactionPreparation, { status: 'ready' }>;
+}>;
+
 export type TxSignRequestTypes = {
   coinSelection: CoinSelectionsResponse;
+  paymentRequest?: Readonly<CoinSelectionsPaymentRequestType>;
   exactPayment?: {
     unsignedTransaction: string;
+    constructionData: ConstructTransactionData['data'];
     isCollateralPreparation: boolean;
     signedTransaction?: string;
     payment?: Readonly<{ address: string; amount: string }>;
@@ -259,7 +282,7 @@ interface HandleAssociatedWalletArgs {
 
 interface CreateNewWalletForRecognizedPendingDeviceArgs {
   extendedPublicKey: HardwareWalletExtendedPublicKeyResponse;
-  walletName: string;
+  walletName?: string;
   path?: string;
 }
 
@@ -279,11 +302,28 @@ interface CardanoAdaAppPoller {
 
 export default class HardwareWalletsStore extends Store {
   private walletSendLease?: WalletSendLease;
+  private transactionGeneration = 0;
+  private nativePaymentOwner?: AbortController;
+  private signedExactPayment?: Readonly<{
+    walletId: string;
+    signedTransaction: string;
+    network: DappNetwork;
+    isCollateralPreparation: boolean;
+  }>;
 
-  private acquireWalletSendLease = async (walletId: string): Promise<void> => {
-    this.walletSendLease?.release();
-    this.walletSendLease =
+  private acquireWalletSendLease = async (
+    walletId: string,
+    generation = this.transactionGeneration
+  ): Promise<boolean> => {
+    if (this.walletSendLease) return generation === this.transactionGeneration;
+    const lease =
       await this.stores.transactions.acquireWalletSendLock(walletId);
+    if (generation !== this.transactionGeneration) {
+      lease.release();
+      return false;
+    }
+    this.walletSendLease = lease;
+    return true;
   };
 
   private releaseWalletSendLease = (): void => {
@@ -367,6 +407,8 @@ export default class HardwareWalletsStore extends Store {
   isAddressVerificationInitiated = false;
   @observable
   isWalletPairingInitiated = false;
+  private pairingGeneration = 0;
+  private creatingPairingGeneration: number | null = null;
   @observable
   unfinishedWalletAddressVerification: WalletAddress | null | undefined = null;
   @observable
@@ -638,6 +680,8 @@ export default class HardwareWalletsStore extends Store {
     message: HardwareMessageRequest,
     activation: HardwareConnectorActivation
   ) => {
+    if (!global.cip30Enabled)
+      throw new Error('Exact hardware transaction is unavailable');
     const current = this.getDappConnectorCapability(walletId);
     if (
       !current ||
@@ -681,6 +725,8 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
     preparation: HardwareTransactionPreparation
   ): Promise<string> => {
+    if (!global.cip30Enabled)
+      throw new Error('Exact hardware transaction is unavailable');
     if (preparation.status === 'empty') return 'a0';
     return (await this.signExactTransaction(walletId, preparation))
       .witnessSetCbor;
@@ -690,6 +736,8 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
     preparation: HardwareTransactionPreparation
   ) => {
+    if (!global.cip30Enabled)
+      throw new Error('Exact hardware transaction is unavailable');
     if (
       preparation.status !== 'ready' ||
       !preparation.exact.capability.physicalCertified ||
@@ -840,18 +888,25 @@ export default class HardwareWalletsStore extends Store {
     await this._refreshHardwareWalletsLocalData();
     await this._refreshHardwareWalletDevices();
   };
-  private prepareExactPayment = async (walletId: string) => {
-    const exactPayment = this.txSignRequest.exactPayment;
-    if (!exactPayment)
+  private prepareExactPayment = async (
+    walletId: string,
+    constructionData: ConstructTransactionData['data']
+  ): Promise<PreparedExactPayment> => {
+    if (!global.cip30Enabled || !constructionData)
       throw new Error('Exact hardware transaction is unavailable');
-    const network = this.dappNetwork();
+    const { transaction: unsignedTransaction, coinSelection } =
+      await this.api.ada.constructTransaction({
+        walletId,
+        data: constructionData,
+      });
+    const network = Object.freeze(this.dappNetwork());
     const snapshot = reconcileTransactionContext(
       await this.api.ada.getDappTransactionContext({
         walletId,
         request: {
           revision: 1,
           network,
-          transactions: [exactPayment.unsignedTransaction],
+          transactions: [unsignedTransaction],
         },
       }),
       {
@@ -861,7 +916,7 @@ export default class HardwareWalletsStore extends Store {
           networkMagic: network.network_magic,
           genesisHash: network.genesis_hash,
         },
-        transactions: [exactPayment.unsignedTransaction],
+        transactions: [unsignedTransaction],
       }
     );
     let preparation = prepareHardwareTransaction(
@@ -877,42 +932,81 @@ export default class HardwareWalletsStore extends Store {
       const key = connection?.extendedPublicKey;
       const exact = await bindPaymentChange(
         preparation.exact,
-        this.txSignRequest.coinSelection.outputs,
+        coinSelection.outputs,
         `${key?.publicKeyHex}${key?.chainCodeHex}`
       );
       preparation = { ...preparation, exact };
     }
-    return { exactPayment, snapshot, preparation };
+    return Object.freeze({
+      unsignedTransaction,
+      coinSelection: Object.freeze(coinSelection),
+      network,
+      snapshot,
+      preparation: Object.freeze(preparation),
+    });
   };
 
   private signExactPayment = async (walletId: string) => {
-    const { exactPayment, preparation } =
-      await this.prepareExactPayment(walletId);
+    const generation = this.transactionGeneration;
+    const exactPayment = this.txSignRequest.exactPayment;
+    if (!global.cip30Enabled || !exactPayment?.constructionData)
+      throw new Error('Exact hardware transaction is unavailable');
+    const constructionData = cloneDeep(exactPayment.constructionData);
+    const isCollateralPreparation = exactPayment.isCollateralPreparation;
+    if (
+      isCollateralPreparation &&
+      this.stores.collateral.preparation?.walletId !== walletId
+    )
+      throw new Error('Collateral preparation does not match wallet');
+    if (!(await this.acquireWalletSendLease(walletId, generation))) return;
+    const prepared = await this.prepareExactPayment(walletId, constructionData);
+    if (generation !== this.transactionGeneration) return;
+    const { preparation, network } = prepared;
     runInAction('HardwareWalletsStore:: verify exact transaction', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
     const { signedTransactionCbor: signedTransaction } =
       await this.signExactTransaction(walletId, preparation);
+    if (generation !== this.transactionGeneration) return;
+    this.signedExactPayment = Object.freeze({
+      walletId,
+      signedTransaction,
+      network,
+      isCollateralPreparation,
+    });
     runInAction('HardwareWalletsStore:: exact transaction verified', () => {
       this.txSignRequest = {
         ...this.txSignRequest,
-        exactPayment: { ...exactPayment, signedTransaction },
+        coinSelection: prepared.coinSelection,
+        exactPayment: {
+          ...exactPayment,
+          constructionData,
+          isCollateralPreparation,
+          unsignedTransaction: prepared.unsignedTransaction,
+          signedTransaction,
+        },
       };
       this.signedTx = signedTransaction;
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
     });
   };
 
-  private submitExactPayment = async (walletId: string) => {
-    const exactPayment = this.txSignRequest.exactPayment;
-    if (!exactPayment?.signedTransaction)
+  private submitExactPayment = async (
+    walletId: string,
+    signedTransaction: string,
+    network: DappNetwork,
+    isCollateralPreparation: boolean
+  ): Promise<NativeApprovalResult> => {
+    if (!global.cip30Enabled)
+      throw new Error('Exact hardware transaction is unavailable');
+    if (!signedTransaction)
       throw new Error('Exact hardware transaction is not signed');
     const submission = await this.api.ada.submitDappTransaction({
       walletId,
       request: {
         revision: 1,
-        network: this.dappNetwork(),
-        transaction: exactPayment.signedTransaction,
+        network,
+        transaction: signedTransaction,
       },
     });
     if (submission.status === 'rejected' || submission.status === 'expired')
@@ -925,8 +1019,11 @@ export default class HardwareWalletsStore extends Store {
         status: 'submission-unknown' as const,
         transactionIds: Object.freeze([submission.transaction_id]),
       });
-    if (exactPayment.isCollateralPreparation)
-      await this.stores.collateral.trackPreparation(submission.transaction_id);
+    if (isCollateralPreparation)
+      await this.stores.collateral.trackPreparation(
+        walletId,
+        submission.transaction_id
+      );
     return Object.freeze({
       status: 'submitted' as const,
       transactionIds: Object.freeze([submission.transaction_id]),
@@ -948,6 +1045,8 @@ export default class HardwareWalletsStore extends Store {
     data: ConstructTransactionData['data'];
     action: NativeTransactionAction;
   }): Promise<{ id: string }> => {
+    if (!global.cip30Enabled)
+      throw new Error('Exact hardware transaction is unavailable');
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Wallet required before preparing transaction');
@@ -1098,21 +1197,57 @@ export default class HardwareWalletsStore extends Store {
     }
     let transaction: CreateExternalTransactionResponse;
     const exactPayment = this.txSignRequest.exactPayment;
-    if (
+    const initiatedPayment = this.signedExactPayment;
+    if (initiatedPayment) {
+      if (initiatedPayment.walletId !== walletId || !this.walletSendLease)
+        throw new Error('Exact hardware transaction is unavailable');
+      const lease = this.walletSendLease;
+      this.walletSendLease = undefined;
+      this.signedExactPayment = undefined;
+      let result: NativeApprovalResult;
+      try {
+        result = await this.submitExactPayment(
+          walletId,
+          initiatedPayment.signedTransaction,
+          initiatedPayment.network,
+          initiatedPayment.isCollateralPreparation
+        );
+      } finally {
+        lease.release();
+      }
+      if (result.status !== 'submitted') {
+        this.setTransactionPendingState(false);
+        return;
+      }
+      transaction = { id: result.transactionIds[0] };
+    } else if (
       exactPayment &&
       !isDelegationTransaction &&
       !isVotingRegistrationTransaction
     ) {
+      if (!global.cip30Enabled || !exactPayment.constructionData)
+        throw new Error('Exact hardware transaction is unavailable');
       const owner = new AbortController();
-      let hardwarePreparation: HardwareTransactionPreparation | undefined;
+      this.nativePaymentOwner = owner;
+      let authoritativePayment: PreparedExactPayment | undefined;
+      const constructionData = cloneDeep(exactPayment.constructionData);
+      const isCollateralPreparation = exactPayment.isCollateralPreparation;
+      if (
+        isCollateralPreparation &&
+        this.stores.collateral.preparation?.walletId !== walletId
+      )
+        throw new Error('Collateral preparation does not match wallet');
       const result = await this.stores.walletApproval.nativeTransactions.run({
         walletId,
         ownerSignal: owner.signal,
         payment: exactPayment.payment,
         prepare: async () => {
-          const prepared = await this.prepareExactPayment(walletId);
-          hardwarePreparation = prepared.preparation;
-          const network = this.dappNetwork();
+          const prepared = await this.prepareExactPayment(
+            walletId,
+            constructionData
+          );
+          authoritativePayment = prepared;
+          const { network } = prepared;
           return Object.freeze({
             walletId,
             network: Object.freeze({
@@ -1120,20 +1255,20 @@ export default class HardwareWalletsStore extends Store {
               networkMagic: network.network_magic,
               genesisHash: network.genesis_hash,
             }),
-            action: exactPayment.isCollateralPreparation
+            action: isCollateralPreparation
               ? ('collateral-preparation' as const)
               : ('payment' as const),
             authorization: prepared.preparation.exact.capability.vendor,
             items: Object.freeze([
               Object.freeze({
                 kind: 'exact-cbor' as const,
-                cbor: exactPayment.unsignedTransaction,
+                cbor: prepared.unsignedTransaction,
                 transactionContext: prepared.snapshot,
                 selectionFacts: Object.freeze({
-                  deposits: this.txSignRequest.coinSelection.deposits
+                  deposits: prepared.coinSelection.deposits
                     .times(LOVELACES_PER_ADA)
                     .toFixed(0),
-                  refunds: this.txSignRequest.coinSelection.depositsReclaimed
+                  refunds: prepared.coinSelection.depositsReclaimed
                     .times(LOVELACES_PER_ADA)
                     .toFixed(0),
                 }),
@@ -1147,7 +1282,7 @@ export default class HardwareWalletsStore extends Store {
           });
         },
         execute: async (_prepared, _passphrase, signal, markSubmitting) => {
-          if (!hardwarePreparation)
+          if (!authoritativePayment)
             return Object.freeze({
               status: 'rejected' as const,
               errorCode: 'transaction_plan_changed',
@@ -1155,43 +1290,48 @@ export default class HardwareWalletsStore extends Store {
           this.setTransactionPendingState(true);
           const signed = await this.signExactTransaction(
             walletId,
-            hardwarePreparation
+            authoritativePayment.preparation
           );
           if (signal.aborted)
             return Object.freeze({
               status: 'rejected' as const,
               errorCode: 'cancelled',
             });
-          runInAction(
-            'HardwareWalletsStore:: retain approved signature',
-            () => {
-              this.txSignRequest = {
-                ...this.txSignRequest,
-                exactPayment: {
-                  ...exactPayment,
-                  signedTransaction: signed.signedTransactionCbor,
-                },
-              };
-            }
-          );
           await markSubmitting();
-          return this.submitExactPayment(walletId);
+          return this.submitExactPayment(
+            walletId,
+            signed.signedTransactionCbor,
+            authoritativePayment.network,
+            isCollateralPreparation
+          );
         },
       });
+      if (this.nativePaymentOwner === owner)
+        this.nativePaymentOwner = undefined;
       if (result.status !== 'submitted') {
         this.setTransactionPendingState(false);
         return;
       }
       transaction = { id: result.transactionIds[0] };
     } else {
-      if (!this.walletSendLease) await this.acquireWalletSendLease(walletId);
+      const generation = this.transactionGeneration;
+      if (
+        !this.walletSendLease &&
+        !(await this.acquireWalletSendLease(walletId, generation))
+      )
+        return;
+      const lease = this.walletSendLease;
+      this.walletSendLease = undefined;
       this.setTransactionPendingState(true);
       try {
         transaction = await (this.sendMoneyRequest.execute({
           signedTransactionBlob: this.signedTx,
         }) as unknown as Promise<CreateExternalTransactionResponse>);
+      } catch (error) {
+        this.setTransactionPendingState(false);
+        throw error;
       } finally {
-        this.releaseWalletSendLease();
+        lease?.release();
       }
     }
 
@@ -1300,31 +1440,54 @@ export default class HardwareWalletsStore extends Store {
     };
   };
 
-  // Exact construction is the only normal-payment hardware path.
-  selectCoins = async (params: CoinSelectionsPaymentRequestType) => {
+  selectCoins = async (
+    params: CoinSelectionsPaymentRequestType
+  ): Promise<CoinSelectionsResponse> => {
     const { walletId, address, amount, assets, metadata } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
+    if (!global.cip30Enabled) {
+      const { amount: totalAmount, availableAmount, reward } = wallet;
+      const paymentRequest = Object.freeze({
+        ...params,
+        ...(assets ? { assets: assets.map((asset) => ({ ...asset })) } : {}),
+      });
+      this.selectCoinsRequest.reset();
+      const coinSelection = await (this.selectCoinsRequest.execute({
+        walletId,
+        walletBalance: totalAmount,
+        availableBalance: availableAmount.plus(reward),
+        rewardsBalance: reward,
+        payments: { address, amount, assets: paymentRequest.assets },
+        metadata,
+      }) as unknown as Promise<CoinSelectionsResponse>);
+      return { ...coinSelection, paymentRequest };
+    }
 
     try {
+      const constructionData: ConstructTransactionData['data'] = {
+        encoding: 'base16',
+        payments: [
+          {
+            address,
+            amount: { quantity: amount, unit: WalletUnits.LOVELACE },
+            ...(assets ? { assets: cloneDeep(assets) } : {}),
+          },
+        ],
+        withdrawal: TransactionWithdrawal,
+        metadata: metadata ? cloneDeep(metadata) : null,
+      };
       const { transaction, coinSelection } =
         await this.api.ada.constructTransaction({
           walletId,
-          data: {
-            encoding: 'base16',
-            payments: [
-              {
-                address,
-                amount: { quantity: amount, unit: WalletUnits.LOVELACE },
-                assets,
-              },
-            ],
-            withdrawal: TransactionWithdrawal,
-            metadata: metadata || null,
-          },
+          data: constructionData,
         });
-      return { ...coinSelection, unsignedTransaction: transaction };
+      return {
+        ...coinSelection,
+        unsignedTransaction: transaction,
+        constructionData,
+      };
     } catch (e) {
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
@@ -1341,13 +1504,23 @@ export default class HardwareWalletsStore extends Store {
     isCollateralPreparation = false,
     payment?: Readonly<{ address: string; amount: string }>
   ) => {
+    if (!global.cip30Enabled) {
+      runInAction('HardwareWalletsStore:: set payment request', () => {
+        this.txSignRequest = {
+          coinSelection,
+          paymentRequest: coinSelection.paymentRequest,
+        };
+      });
+      return;
+    }
     runInAction('HardwareWalletsStore:: set exact payment request', () => {
-      if (!coinSelection.unsignedTransaction)
+      if (!coinSelection.unsignedTransaction || !coinSelection.constructionData)
         throw new Error('Exact hardware transaction is unavailable');
       this.txSignRequest = {
         coinSelection,
         exactPayment: {
           unsignedTransaction: coinSelection.unsignedTransaction,
+          constructionData: cloneDeep(coinSelection.constructionData),
           isCollateralPreparation,
           ...(payment ? { payment } : {}),
         },
@@ -1362,7 +1535,9 @@ export default class HardwareWalletsStore extends Store {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
-    await this.acquireWalletSendLease(walletId);
+    const generation = this.transactionGeneration;
+    if (!(await this.acquireWalletSendLease(walletId, generation)))
+      throw new Error('Hardware transaction cancelled');
     const { amount: totalAmount, availableAmount, reward } = wallet;
 
     try {
@@ -1377,6 +1552,8 @@ export default class HardwareWalletsStore extends Store {
           delegationAction,
         },
       });
+      if (generation !== this.transactionGeneration)
+        throw new Error('Hardware transaction cancelled');
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
           coinSelection,
@@ -1384,6 +1561,7 @@ export default class HardwareWalletsStore extends Store {
       });
       return coinSelection;
     } catch (e) {
+      if (generation !== this.transactionGeneration) throw e;
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
         () => {
@@ -2219,6 +2397,8 @@ export default class HardwareWalletsStore extends Store {
   @action
   initiateWalletPairing = () => {
     logger.debug('[HW-DEBUG] HWStore::initiateWalletPairing');
+    this.pairingGeneration += 1;
+    this.extendedPublicKey = null;
 
     this.isWalletPairingInitiated = true;
 
@@ -2227,6 +2407,8 @@ export default class HardwareWalletsStore extends Store {
 
   @action
   resetWalletPairing = async () => {
+    this.pairingGeneration += 1;
+    this.extendedPublicKey = null;
     this.stopCardanoAdaAppFetchPoller();
 
     this.isWalletPairingInitiated = false;
@@ -2335,6 +2517,7 @@ export default class HardwareWalletsStore extends Store {
     walletId?: string,
     address?: WalletAddress | null
   ): Promise<HardwareWalletExtendedPublicKeyResponse> => {
+    const generation = this.pairingGeneration;
     logger.debug('[HW-DEBUG] HWStore - extendedPublicKey', {
       forcedPath,
       walletId,
@@ -2365,6 +2548,7 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
       });
     } catch (error) {
+      if (generation !== this.pairingGeneration) throw error;
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('[HW-DEBUG] HWStore - Export key error');
 
@@ -2395,6 +2579,7 @@ export default class HardwareWalletsStore extends Store {
         if (isCancelled && isTrezor) {
           // Skip Trezor device-change events when rejected
           setTimeout(() => {
+            if (generation !== this.pairingGeneration) return;
             // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
             logger.debug('[HW-DEBUG] NOW RESET');
             this._resetInitiatedConnection({ isAborted });
@@ -2504,7 +2689,10 @@ export default class HardwareWalletsStore extends Store {
       this.isExportKeyAborted = false;
     });
     if (this.txSignRequest.exactPayment) {
+      const generation = this.transactionGeneration;
       this.signExactPayment(walletId).catch((error) => {
+        if (generation !== this.transactionGeneration) return;
+        this.releaseWalletSendLease();
         logger.error('[HW-DEBUG] HWStore:: exact transaction failed', {
           name: error?.name,
           message: error?.message,
@@ -2517,11 +2705,21 @@ export default class HardwareWalletsStore extends Store {
       return;
     }
 
-    if (isTrezor) {
-      this._signTransactionTrezor(walletId, deviceId);
-    } else {
-      this._signTransactionLedger(walletId, devicePath);
-    }
+    const generation = this.transactionGeneration;
+    const signing = isTrezor
+      ? this._signTransactionTrezor(walletId, deviceId)
+      : this._signTransactionLedger(walletId, devicePath);
+    signing.catch((error) => {
+      if (generation !== this.transactionGeneration) return;
+      this.releaseWalletSendLease();
+      runInAction('HardwareWalletsStore:: transaction signing failed', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      });
+      logger.error('[HW-DEBUG] HWStore:: transaction signing failed', {
+        name: error?.name,
+        message: error?.message,
+      });
+    });
   };
 
   @action
@@ -2709,12 +2907,19 @@ export default class HardwareWalletsStore extends Store {
     path,
     walletName,
   }: CreateNewWalletForRecognizedPendingDeviceArgs) => {
+    const generation = this.pairingGeneration;
+    if (
+      !this.isWalletPairingInitiated ||
+      this.creatingPairingGeneration === generation
+    )
+      return;
+    this.creatingPairingGeneration = generation;
     const { deviceType, deviceName, deviceModel } = this.transportDevice;
     const devicePath = path || this.transportDevice.path;
     const deviceId =
       extendedPublicKey.deviceId || this.transportDevice.deviceId;
 
-    // Software Wallet not recognized, create a new one with the user's name
+    // Upstream pairing retains the device's default wallet name.
     logger.debug('[HW-DEBUG] HWStore - Initiate HW create / restore', {
       transportDevice: toJS(this.transportDevice),
       device: {
@@ -2726,18 +2931,28 @@ export default class HardwareWalletsStore extends Store {
         firmwareVersion: null,
       },
     });
-    await this.actions.wallets.createHardwareWallet.trigger({
-      walletName,
-      extendedPublicKey,
-      device: {
-        deviceId,
-        deviceType,
-        deviceModel,
-        deviceName,
-        path: devicePath,
-        firmwareVersion: null,
-      },
-    });
+    try {
+      await this.actions.wallets.createHardwareWallet.trigger({
+        walletName:
+          global.cip30Enabled && walletName
+            ? walletName
+            : deviceName || 'Hardware Wallet',
+        extendedPublicKey,
+        device: {
+          deviceId,
+          deviceType,
+          deviceModel,
+          deviceName,
+          path: devicePath,
+          firmwareVersion: null,
+        },
+      });
+    } finally {
+      if (this.creatingPairingGeneration === generation) {
+        this.creatingPairingGeneration = null;
+      }
+    }
+    if (generation !== this.pairingGeneration) return;
     logger.debug('[HW-DEBUG] HWStore - HW created / restored');
     // Get all Pending devices with this path and delete
     const recognizedPendingDevice = find(
@@ -2758,6 +2973,7 @@ export default class HardwareWalletsStore extends Store {
       await this._unsetHardwareWalletDevice({
         deviceId: recognizedPendingDevice.id,
       });
+      if (generation !== this.pairingGeneration) return;
     }
 
     // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
@@ -2769,7 +2985,12 @@ export default class HardwareWalletsStore extends Store {
 
   @action
   createHardwareWallet = async (walletName: string) => {
-    if (!this.extendedPublicKey) {
+    if (
+      !global.cip30Enabled ||
+      !this.isWalletPairingInitiated ||
+      this.hwDeviceStatus !== HwDeviceStatuses.READY ||
+      !this.extendedPublicKey
+    ) {
       throw new Error('Can not create hardware wallet without a public key');
     }
 
@@ -2791,6 +3012,7 @@ export default class HardwareWalletsStore extends Store {
     address?: WalletAddress | null;
     isTrezor: boolean;
   }) => {
+    const generation = this.transactionGeneration;
     try {
       const connection = get(this.hardwareWalletsConnectionData, walletId);
       const key = connection?.extendedPublicKey;
@@ -2843,6 +3065,7 @@ export default class HardwareWalletsStore extends Store {
         walletId,
         data: { disconnected: false, device: { ...connection.device, path } },
       });
+      if (!address && generation !== this.transactionGeneration) return;
       if (address) {
         if (!this.isAddressVerificationInitiated) return;
         this._proceedWithAddressVerificationAfterConnectingDevice({
@@ -2860,6 +3083,8 @@ export default class HardwareWalletsStore extends Store {
         });
       }
     } catch (error) {
+      if (!address && generation !== this.transactionGeneration) return;
+      if (!address) this.releaseWalletSendLease();
       runInAction('HardwareWalletsStore:: paired operation failed', () => {
         this.hwDeviceStatus = address
           ? HwDeviceStatuses.VERIFYING_ADDRESS_FAILED
@@ -2883,16 +3108,20 @@ export default class HardwareWalletsStore extends Store {
       });
       return;
     }
+    const generation = this.pairingGeneration;
+    if (!this.isWalletPairingInitiated) return;
     try {
       const extendedPublicKey = await this._requestExtendedPublicKey(
         path,
         expectedWalletId,
         address
       );
+      if (generation !== this.pairingGeneration) return;
       const associatedWallet =
         await this._findAssociatedWalletByExtendedPublicKey({
           extendedPublicKey,
         });
+      if (generation !== this.pairingGeneration) return;
 
       if (associatedWallet) {
         await this._storeWalletDataInLocalStorageAndHandleTransactionOrAddressVerificationOrRouting(
@@ -2919,6 +3148,11 @@ export default class HardwareWalletsStore extends Store {
           this._discardConnectedDeviceAndReInitiateTransaction({
             walletId: expectedWalletId,
           });
+        } else if (!global.cip30Enabled) {
+          await this._createNewWalletForRecognizedPendingDevice({
+            extendedPublicKey,
+            path,
+          });
         } else {
           runInAction('HardwareWalletsStore:: wait for wallet name', () => {
             this.extendedPublicKey = extendedPublicKey;
@@ -2927,6 +3161,7 @@ export default class HardwareWalletsStore extends Store {
         }
       }
     } catch (e) {
+      if (generation !== this.pairingGeneration) return;
       await this.resetWalletPairing();
       throw e;
     }
@@ -2938,6 +3173,7 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
     deviceId?: string | null | undefined
   ) => {
+    const generation = this.transactionGeneration;
     const { coinSelection } = this.txSignRequest;
     runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
@@ -3077,6 +3313,7 @@ export default class HardwareWalletsStore extends Store {
     const ttl = this._getTtl();
 
     try {
+      if (generation !== this.transactionGeneration) return;
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: trezorInputs,
         outputs: trezorOutputs,
@@ -3143,12 +3380,15 @@ export default class HardwareWalletsStore extends Store {
         await getTxCBOR(txBody, new Map(), txAuxiliaryData),
         serializedTx || (await getTxCBOR(txBody, txWitnesses, txAuxiliaryData))
       );
+      if (generation !== this.transactionGeneration) return;
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         this.signedTx = signedTx;
         this.activeDevicePath = null;
       });
     } catch (error) {
+      if (generation !== this.transactionGeneration) return;
+      this.releaseWalletSendLease();
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
         () => {
@@ -3265,6 +3505,7 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
     devicePath: string | null | undefined
   ) => {
+    const generation = this.transactionGeneration;
     runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
@@ -3365,6 +3606,7 @@ export default class HardwareWalletsStore extends Store {
       : null;
 
     try {
+      if (generation !== this.transactionGeneration) return;
       const signedTransaction = await signTransactionLedgerChannel.request({
         inputs: ledgerInputs,
         outputs: ledgerOutputs,
@@ -3429,12 +3671,15 @@ export default class HardwareWalletsStore extends Store {
         await getTxCBOR(txBody, new Map(), txAuxiliaryData),
         await getTxCBOR(txBody, txWitnesses, txAuxiliaryData)
       );
+      if (generation !== this.transactionGeneration) return;
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         this.signedTx = signedTx;
         this.activeDevicePath = null;
       });
     } catch (error) {
+      if (generation !== this.transactionGeneration) return;
+      this.releaseWalletSendLease();
       logger.info('[HW-DEBUG] HWStore:: sign Transaction Ledger', { error });
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
@@ -3449,6 +3694,35 @@ export default class HardwareWalletsStore extends Store {
     walletId: string | null | undefined;
     votingData?: VotingDataType;
   }) => {
+    const { walletId } = params;
+    const generation = this.transactionGeneration;
+    try {
+      if (!global.cip30Enabled && walletId && !this.walletSendLease) {
+        const paymentRequest = this.txSignRequest.paymentRequest;
+        if (!paymentRequest)
+          throw new Error('Hardware payment request is unavailable');
+        if (paymentRequest.walletId !== walletId)
+          throw new Error('Hardware payment wallet changed');
+        if (!(await this.acquireWalletSendLease(walletId, generation))) return;
+        const coinSelection = await this.selectCoins(paymentRequest);
+        if (generation !== this.transactionGeneration) return;
+        this.updateTxSignRequest(coinSelection);
+      }
+      await this.initiateDeviceTransaction(params, generation);
+    } catch (error) {
+      if (generation !== this.transactionGeneration) return;
+      this.releaseWalletSendLease();
+      throw error;
+    }
+  };
+
+  private initiateDeviceTransaction = async (
+    params: {
+      walletId: string | null | undefined;
+      votingData?: VotingDataType;
+    },
+    generation: number
+  ) => {
     const { walletId, votingData } = params;
     runInAction('HardwareWalletsStore:: Initiate Transaction', () => {
       this.isTransactionInitiated = true;
@@ -3506,6 +3780,7 @@ export default class HardwareWalletsStore extends Store {
             isTrezor: false,
           });
         }
+        if (generation !== this.transactionGeneration) return;
 
         if (!transportDevice) {
           // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
@@ -3515,6 +3790,7 @@ export default class HardwareWalletsStore extends Store {
 
         devicePath = transportDevice.path;
       } catch (e) {
+        if (generation !== this.transactionGeneration) return;
         logger.debug(
           '[HW-DEBUG] HWStore - initiateTransaction - OPEN TRANSPORT - ERROR'
         );
@@ -3539,6 +3815,7 @@ export default class HardwareWalletsStore extends Store {
         id,
       });
       const transportDevice = await this.establishHardwareWalletConnection();
+      if (generation !== this.transactionGeneration) return;
 
       if (transportDevice) {
         logger.debug('[HW-DEBUG] HWStore - Set transport device 4', {
@@ -3579,6 +3856,7 @@ export default class HardwareWalletsStore extends Store {
       | null
       | undefined
   ) => {
+    this._resetTxSignRequestData();
     if (isHardwareWalletSupportEnabled) {
       // @ts-ignore ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       logger.debug('[HW-DEBUG] RESET TX');
@@ -3948,6 +4226,7 @@ export default class HardwareWalletsStore extends Store {
       | null
       | undefined
   ) => {
+    this.pairingGeneration += 1;
     const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
 
     if (cancelDeviceAction) {
@@ -4025,6 +4304,11 @@ export default class HardwareWalletsStore extends Store {
     );
   };
   _resetTxSignRequestData = () => {
+    this.transactionGeneration += 1;
+    this.nativePaymentOwner?.abort();
+    this.nativePaymentOwner = undefined;
+    this.signedExactPayment = undefined;
+    this.releaseWalletSendLease();
     this.selectCoinsRequest.reset();
     // @ts-ignore ts-migrate(2741) FIXME: Property 'coinSelection' is missing in type '{}' b... Remove this comment to see the full error message
     this.txSignRequest = {};

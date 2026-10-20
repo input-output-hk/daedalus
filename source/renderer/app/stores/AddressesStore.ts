@@ -105,7 +105,7 @@ export default class AddressesStore extends Store {
 
     const addresses = this._getAddressesAllRequest(wallet.id).result;
     if (!addresses) return null;
-    if (!wallet.isLegacy && wallet.singleAddressMode)
+    if (global.cip30Enabled && !wallet.isLegacy && wallet.singleAddressMode)
       return getFirstReceivingAddress(addresses) || null;
 
     // If address generated and not used, set as active address
@@ -230,7 +230,7 @@ export default class AddressesStore extends Store {
       isLegacy: wallet.isLegacy,
     });
     const address =
-      !wallet.isLegacy && wallet.singleAddressMode
+      global.cip30Enabled && !wallet.isLegacy && wallet.singleAddressMode
         ? getFirstReceivingAddress(addresses)
         : addresses[0];
     if (!address)

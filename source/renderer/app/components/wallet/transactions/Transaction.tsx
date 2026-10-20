@@ -264,6 +264,54 @@ const stateTranslations = defineMessages({
       'Transaction state used when Daedalus cannot determine whether submission reached the network.',
   },
 });
+const upstreamMessages = defineMessages({
+  type: {
+    id: 'wallet.transaction.type',
+    defaultMessage: '!!!{typeOfTransaction} transaction',
+    description: 'Transaction type shown for {currency} transactions.',
+  },
+  confirmed: {
+    id: 'wallet.transaction.upstream.state.confirmed',
+    defaultMessage: '!!!Transaction confirmed',
+    description: 'Upstream transaction state "confirmed".',
+  },
+  pending: {
+    id: 'wallet.transaction.upstream.state.pending',
+    defaultMessage: '!!!Transaction pending',
+    description: 'Upstream transaction state "pending".',
+  },
+  failed: {
+    id: 'wallet.transaction.upstream.state.failed',
+    defaultMessage: '!!!Transaction failed',
+    description: 'Upstream expired transaction state.',
+  },
+  confirmedHeading: {
+    id: 'wallet.transaction.state.confirmedHeading',
+    defaultMessage: '!!!Confirmed',
+    description: 'Transaction state "confirmed".',
+  },
+  pendingHeading: {
+    id: 'wallet.transaction.state.pendingHeading',
+    defaultMessage: '!!!Pending',
+    description: 'Transaction state "pending".',
+  },
+  failedHeading: {
+    id: 'wallet.transaction.state.failedHeading',
+    defaultMessage: '!!!Failed',
+    description: 'Transaction state "failed".',
+  },
+  cancelFailedTxnNote: {
+    id: 'wallet.transaction.upstream.cancelFailedTxnNote',
+    defaultMessage:
+      '!!!This transaction was submitted to the Cardano network, but it expired, so it failed. Transactions on the Cardano network have a ‘time to live’ attribute, which passed before the network processed the transaction. Please, remove it to release the funds (UTXOs) used by this transaction to use those funds in another transaction.',
+    description: 'Note to cancel an upstream transaction that has expired.',
+  },
+  cancelFailedTxnSupportArticle: {
+    id: 'wallet.transaction.upstream.cancelFailedTxnSupportArticle',
+    defaultMessage: '!!!Why should I cancel failed transactions?',
+    description: 'Link to support article for removing an expired transaction.',
+  },
+});
 type Props = {
   data: WalletTransaction;
   deletePendingTransaction: (...args: Array<any>) => any;
@@ -386,13 +434,17 @@ export default class Transaction extends Component<Props, State> {
 
     if (overPendingTimeLimit || state === TransactionStates.EXPIRED) {
       const isPending = state === TransactionStates.PENDING;
+      const expiredNote = global.cip30Enabled
+        ? messages.cancelExpiredTxnNote
+        : upstreamMessages.cancelFailedTxnNote;
+      const expiredArticle = global.cip30Enabled
+        ? messages.cancelExpiredTxnSupportArticle
+        : upstreamMessages.cancelFailedTxnSupportArticle;
       return (
         <Fragment>
           <div className={styles.pendingTxnNote}>
             {intl.formatMessage(
-              isPending
-                ? messages.cancelPendingTxnNote
-                : messages.cancelExpiredTxnNote
+              isPending ? messages.cancelPendingTxnNote : expiredNote
             )}
             <Link
               className={styles.articleLink}
@@ -400,7 +452,7 @@ export default class Transaction extends Component<Props, State> {
               label={intl.formatMessage(
                 isPending
                   ? messages.cancelPendingTxnSupportArticle
-                  : messages.cancelExpiredTxnSupportArticle
+                  : expiredArticle
               )}
               underlineOnHover
               skin={LinkSkin}
@@ -430,13 +482,23 @@ export default class Transaction extends Component<Props, State> {
       [TransactionStates.PENDING]: this.hasExceededPendingTimeLimit()
         ? styles.pendingWarningLabel
         : styles.pendingLabel,
-      [TransactionStates.EXPIRED]: styles.expiredLabel,
+      [TransactionStates.EXPIRED]: global.cip30Enabled
+        ? styles.expiredLabel
+        : styles.failedLabel,
       [TransactionStates.FAILED]: styles.failedLabel,
       [TransactionStates.SUBMISSION_UNKNOWN]: styles.submissionUnknownLabel,
     };
+    let stateMessage = stateTranslations[state];
+    if (!global.cip30Enabled) {
+      stateMessage = upstreamMessages.confirmed;
+      if (state === TransactionStates.PENDING)
+        stateMessage = upstreamMessages.pending;
+      else if (state === TransactionStates.EXPIRED)
+        stateMessage = upstreamMessages.failed;
+    }
     return (
       <div className={stateStyles[state]} role="status">
-        {intl.formatMessage(stateTranslations[state])}
+        {intl.formatMessage(stateMessage)}
       </div>
     );
   };
@@ -542,12 +604,14 @@ export default class Transaction extends Component<Props, State> {
     const transactionsType = this.hasAssets
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.adaUnit);
-    const hasTransferAmount = data.transferAmount != null;
+    const hasTransferAmount =
+      global.cip30Enabled && data.transferAmount != null;
     const displayedAmount = hasTransferAmount
       ? data.transferAmount
       : data.amount;
     const isAmountKnown =
-      data.amountIsKnown !== false && displayedAmount != null;
+      (!global.cip30Enabled || data.amountIsKnown !== false) &&
+      displayedAmount != null;
     let amountSign = '';
     if (
       !hasTransferAmount &&
@@ -571,7 +635,7 @@ export default class Transaction extends Component<Props, State> {
     };
 
     const getTitle = (txType: TransactionType): string => {
-      if (data.isSelfTransfer === true) {
+      if (global.cip30Enabled && data.isSelfTransfer === true) {
         return intl.formatMessage(messages.selfTransfer);
       }
 
@@ -588,6 +652,12 @@ export default class Transaction extends Component<Props, State> {
           });
       }
     };
+
+    let upstreamHeading = upstreamMessages.confirmedHeading;
+    if (state === TransactionStates.PENDING)
+      upstreamHeading = upstreamMessages.pendingHeading;
+    else if (state === TransactionStates.EXPIRED)
+      upstreamHeading = upstreamMessages.failedHeading;
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
     const assetsSeparatorStyles = classNames([
@@ -623,35 +693,56 @@ export default class Transaction extends Component<Props, State> {
             <div className={styles.togglerContent}>
               <div className={styles.header}>
                 <div className={styles.title}>{getTitle(data.type)}</div>
-                <div className={styles.amount}>
-                  <span className={styles.amountLabel}>
-                    {intl.formatMessage(
-                      hasTransferAmount
-                        ? messages.amountTransferred
-                        : messages.netWalletChange
-                    )}
-                  </span>
-                  <span className={styles.amountValue}>
-                    {isAmountKnown ? (
-                      <>
-                        {amountSign}
-                        <DiscreetWalletAmount
-                          amount={displayedAmount}
-                          withCurrency={false}
-                        />
-                        <span>
-                          {intl.formatMessage(globalMessages.adaUnit)}
-                        </span>
-                      </>
-                    ) : (
-                      intl.formatMessage(messages.amountUnavailable)
-                    )}
-                  </span>
-                </div>
+                {global.cip30Enabled && (
+                  <div className={styles.amount}>
+                    <span className={styles.amountLabel}>
+                      {intl.formatMessage(
+                        hasTransferAmount
+                          ? messages.amountTransferred
+                          : messages.netWalletChange
+                      )}
+                    </span>
+                    <span className={styles.amountValue}>
+                      {isAmountKnown ? (
+                        <>
+                          {amountSign}
+                          <DiscreetWalletAmount
+                            amount={displayedAmount}
+                            withCurrency={false}
+                          />
+                          <span>
+                            {intl.formatMessage(globalMessages.adaUnit)}
+                          </span>
+                        </>
+                      ) : (
+                        intl.formatMessage(messages.amountUnavailable)
+                      )}
+                    </span>
+                  </div>
+                )}
+                {!global.cip30Enabled && data.amount && (
+                  <div className={styles.amount}>
+                    <DiscreetWalletAmount
+                      amount={data.amount}
+                      withCurrency={false}
+                    />
+                    <span>{intl.formatMessage(globalMessages.adaUnit)}</span>
+                  </div>
+                )}
               </div>
 
               <div className={styles.details}>
                 <div className={styles.type}>
+                  {!global.cip30Enabled && (
+                    <>
+                      {intl.formatMessage(upstreamMessages.type, {
+                        typeOfTransaction: this.hasAssets
+                          ? intl.formatMessage(upstreamHeading)
+                          : intl.formatMessage(globalMessages.adaUnit),
+                      })}
+                      ,{' '}
+                    </>
+                  )}
                   {moment(data.date)
                     .locale(intl.locale)
                     .format(currentTimeFormat)}

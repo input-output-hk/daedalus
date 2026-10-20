@@ -21,7 +21,7 @@ import type {
   NativeApprovalResult,
   NativePreparedApproval,
 } from '../../common/transactions/nativePlan';
-import { isFlight } from '../config';
+import { dappRuntimeConfig, isFlight } from '../config';
 import { consentCoordinator } from './walletApproval';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -225,6 +225,8 @@ const requestNative = async (
 
 export const handleNativeTransactionApprovalRequests = (): void => {
   channel.onRequest(async (value, event) => {
+    if (!dappRuntimeConfig.cip30Enabled)
+      throw new Error('CIP-30 is unavailable');
     if (!event) throw new Error('Missing wallet approval sender');
     if (!value || typeof value !== 'object' || !('type' in value))
       throw new Error('Invalid wallet approval control request');

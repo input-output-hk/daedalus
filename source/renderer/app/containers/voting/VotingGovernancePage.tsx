@@ -7,6 +7,8 @@ import VotingPowerDelegation from '../../components/voting/voting-governance/Vot
 import { ROUTES } from '../../routes-config';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import type { VoteType } from '../../components/voting/voting-governance/types';
+import VotingPowerDelegationConfirmationDialog from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
+import { normalizeDRepIdentity } from '../../utils/governance/normalizeDRepIdentity';
 
 type Props = InjectedProps & RouteComponentProps;
 
@@ -17,6 +19,14 @@ class VotingGovernancePage extends Component<Props> {
     actions: null,
     stores: null,
   };
+  private preparingHardwareGovernance = false;
+
+  componentWillUnmount() {
+    const { hardwareWallets } = this.props.stores;
+    if (!global.cip30Enabled && this.preparingHardwareGovernance) {
+      hardwareWallets._resetTransaction();
+    }
+  }
 
   // Back to where the flow starts, not back one step: the previous screen is
   // the directory, and returning there would offer the same choice again to
@@ -42,8 +52,15 @@ class VotingGovernancePage extends Component<Props> {
   };
 
   render() {
-    const { wallets, staking, app, voting, networkStatus, governance } =
-      this.props.stores;
+    const {
+      wallets,
+      staking,
+      app,
+      voting,
+      hardwareWallets,
+      networkStatus,
+      governance,
+    } = this.props.stores;
     const { openExternalLink } = app;
     const { isSynced, syncPercentage } = networkStatus;
 
@@ -65,6 +82,10 @@ class VotingGovernancePage extends Component<Props> {
       <VotingPowerDelegation
         onExternalLinkClick={openExternalLink}
         submitTransaction={voting.delegateVotes}
+        initiateTransaction={(params) => {
+          this.preparingHardwareGovernance = params.wallet.isHardwareWallet;
+          return voting.initializeVPDelegationTx(params);
+        }}
         initialFormState={initialFormState}
         onBrowseDRepsClick={this.handleBrowseDRepsClick}
         onCancel={this.handleCancel}
@@ -82,6 +103,72 @@ class VotingGovernancePage extends Component<Props> {
             route: ROUTES.WALLETS.SUMMARY,
             params: { id },
           });
+        }}
+        renderConfirmationDialog={({
+          chosenOption,
+          fees,
+          onClose,
+          selectedWallet,
+        }) => {
+          const isSentinel =
+            chosenOption === 'abstain' || chosenOption === 'no_confidence';
+          let verifiedName = null;
+          if (
+            !isSentinel &&
+            chosenOption === initialFormState?.selectedDRepId &&
+            initialFormState.selectedDRepVerifiedName &&
+            initialFormState.selectedDRepAnchorUrl
+          ) {
+            try {
+              verifiedName = {
+                host: new URL(initialFormState.selectedDRepAnchorUrl).host,
+                name: initialFormState.selectedDRepVerifiedName,
+              };
+            } catch {
+              // An invalid source cannot establish verified-name provenance.
+            }
+          }
+          return (
+            <VotingPowerDelegationConfirmationDialog
+              chosenOption={chosenOption}
+              drepIdentity={
+                isSentinel ? null : normalizeDRepIdentity(chosenOption)
+              }
+              fees={fees}
+              hwDeviceStatus={hardwareWallets.hwDeviceStatus}
+              isTrezor={hardwareWallets.checkIsTrezorByWalletId(
+                selectedWallet.id
+              )}
+              onClose={() => {
+                if (selectedWallet.isHardwareWallet)
+                  hardwareWallets._resetTransaction();
+                onClose();
+              }}
+              onExternalLinkClick={openExternalLink}
+              onSubmit={async (passphrase) => {
+                const result = await voting.delegateVotes({
+                  chosenOption,
+                  passphrase,
+                  wallet: selectedWallet,
+                });
+                if (
+                  result.success &&
+                  !isSentinel &&
+                  !governance.favoriteDRepIds.has(chosenOption)
+                )
+                  governance.toggleFavorite(chosenOption);
+                return result;
+              }}
+              redirectToWallet={(id) => {
+                this.props.actions.router.goToRoute.trigger({
+                  route: ROUTES.WALLETS.SUMMARY,
+                  params: { id },
+                });
+              }}
+              selectedWallet={selectedWallet}
+              verifiedName={verifiedName}
+            />
+          );
         }}
       />
     );

@@ -124,7 +124,7 @@ const statusMessages: Record<
 > = {
   pending: messages.valueStatusPending,
   in_ledger: messages.valueStatusConfirmed,
-  expired: messages.valueStatusFailed,
+  expired: messages.valueStatusExpired,
   failed: messages.valueStatusFailed,
   'submission-unknown': messages.valueStatusUnknown,
 };
@@ -200,13 +200,16 @@ const transactionsCsvGenerator = async ({
         type === TransactionTypes.EXPEND
           ? intl.formatMessage(messages.valueTypeSent)
           : intl.formatMessage(messages.valueTypeReceived);
-      const valueTotal =
-        amountIsKnown === false ? '' : formattedWalletAmount(amount, false);
+      const amountIsUnavailable =
+        global.cip30Enabled && amountIsKnown === false;
+      const valueTotal = amountIsUnavailable
+        ? ''
+        : formattedWalletAmount(amount, false);
       let valueSentAmount = '';
       let valueDepositAmount = '';
       let valueTransactionFee = '';
 
-      if (type === TransactionTypes.EXPEND && amountIsKnown !== false) {
+      if (type === TransactionTypes.EXPEND && !amountIsUnavailable) {
         const amountWithoutFees = -amount.minus(-fee);
         // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'number' is not assignable to par... Remove this comment to see the full error message
         valueSentAmount = formattedWalletAmount(amountWithoutFees, false);
@@ -228,14 +231,11 @@ const transactionsCsvGenerator = async ({
         })
         .join(', ');
       const valueDateTime = date ? date.toISOString() : '';
-      const statusMessages = {
-        pending: messages.valueStatusPending,
-        in_ledger: messages.valueStatusConfirmed,
-        expired: messages.valueStatusExpired,
-        failed: messages.valueStatusFailed,
-        'submission-unknown': messages.valueStatusUnknown,
-      };
-      const valueStatus = intl.formatMessage(statusMessages[state]);
+      const valueStatus = intl.formatMessage(
+        !global.cip30Enabled && state === 'expired'
+          ? messages.valueStatusFailed
+          : statusMessages[state]
+      );
       const valueAddressesFrom = !includes(addresses.from, null)
         ? addresses.from.join(', ')
         : ' ';

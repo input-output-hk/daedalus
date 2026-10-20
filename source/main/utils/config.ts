@@ -6,12 +6,14 @@ const PACKAGE_CLUSTERS = [
   'mainnet-flight',
   'preprod',
   'preview',
+  'selfnode',
 ] as const;
 type DappPackageCluster = (typeof PACKAGE_CLUSTERS)[number];
 type DappNetworkCluster = Exclude<DappPackageCluster, 'mainnet-flight'>;
 
 export type DappRuntimeConfig = Readonly<{
   cardanoWalletSourceRevision: string;
+  cip30Enabled: boolean;
   dappBrowserPolicy: unknown;
   dappSandboxPackageCluster: DappPackageCluster;
   dappNetwork: Readonly<{
@@ -23,6 +25,7 @@ export type DappRuntimeConfig = Readonly<{
 
 type RawDappRuntimeConfig = Partial<{
   cardanoWalletSourceRevision: unknown;
+  cip30Enabled: unknown;
   dappBrowserPolicy: unknown;
   dappSandboxPackageCluster: unknown;
   dappNetwork: unknown;
@@ -55,6 +58,16 @@ export const readDappRuntimeConfig = (
     )
       throw new Error('invalid identity');
     const trustedPackageCluster = packageCluster as DappPackageCluster;
+    const cip30Enabled = config.cip30Enabled;
+    const expectedCip30Enabled =
+      trustedPackageCluster === 'preprod' ||
+      trustedPackageCluster === 'preview' ||
+      trustedPackageCluster === 'mainnet-flight';
+    if (
+      typeof cip30Enabled !== 'boolean' ||
+      cip30Enabled !== expectedCip30Enabled
+    )
+      throw new Error('invalid CIP-30 capability');
     const networkIdentity = network as Partial<{
       cluster: unknown;
       genesisFile: unknown;
@@ -75,6 +88,7 @@ export const readDappRuntimeConfig = (
 
     return Object.freeze({
       cardanoWalletSourceRevision: sourceRevision,
+      cip30Enabled,
       dappBrowserPolicy: config.dappBrowserPolicy,
       dappSandboxPackageCluster: trustedPackageCluster,
       dappNetwork: Object.freeze({

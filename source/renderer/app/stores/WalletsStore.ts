@@ -686,7 +686,8 @@ export default class WalletsStore extends Store {
       walletId: params.walletId,
       isLegacy: params.isLegacy || false,
     });
-    await this.stores.dapp.removeWalletConnections(params.walletId);
+    if (global.cip30Enabled)
+      await this.stores.dapp.removeWalletConnections(params.walletId);
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
@@ -816,6 +817,8 @@ export default class WalletsStore extends Store {
     data: ConstructTransactionData['data'];
     action: NativeTransactionAction;
   }): Promise<{ id: string }> => {
+    if (!global.cip30Enabled)
+      throw new Error('Exact native transactions are unavailable');
     const wallet = this.getWalletById(walletId);
     if (!wallet)
       throw new Error('Wallet required before preparing transaction');
@@ -964,9 +967,12 @@ export default class WalletsStore extends Store {
         : null;
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
+    if (isCollateralPreparation && !global.cip30Enabled)
+      throw new Error('Collateral preparation is unavailable');
     if (
       isCollateralPreparation &&
-      (amount !== '5000000' ||
+      (this.stores.collateral.preparation?.walletId !== wallet.id ||
+        amount !== '5000000' ||
         !!formattedAssets?.length ||
         !this.stores.addresses.all.some(({ id }) => id === receiver))
     )
@@ -977,16 +983,20 @@ export default class WalletsStore extends Store {
      * a localized error created in app/api/api.ts
      */
     let transaction: { id: string } | undefined;
-    if (wallet.isLegacy) {
-      transaction = await this.sendMoneyRequest.execute({
-        address: receiver,
-        amount: parseInt(amount, 10),
-        passphrase: passphrase || '',
-        walletId: wallet.id,
-        isLegacy: true,
-        assets: formattedAssets,
-        hasAssetsRemainingAfterTransaction,
-      }).promise;
+    if (wallet.isLegacy || !global.cip30Enabled) {
+      transaction = await this.stores.transactions.withWalletSendLock(
+        wallet.id,
+        () =>
+          this.sendMoneyRequest.execute({
+            address: receiver,
+            amount: parseInt(amount, 10),
+            passphrase: passphrase || '',
+            walletId: wallet.id,
+            isLegacy: wallet.isLegacy,
+            assets: formattedAssets,
+            hasAssetsRemainingAfterTransaction,
+          }).promise
+      );
     } else {
       transaction = await this.submitConstructedNativeTransaction({
         walletId: wallet.id,
@@ -1009,7 +1019,7 @@ export default class WalletsStore extends Store {
     }
     if (isCollateralPreparation) {
       if (!transaction) throw new Error('Collateral preparation was not sent');
-      await this.stores.collateral.trackPreparation(transaction.id);
+      await this.stores.collateral.trackPreparation(wallet.id, transaction.id);
     }
     // The following code will not be executed if the request above fails
     this.analytics.sendEvent(
@@ -1066,7 +1076,9 @@ export default class WalletsStore extends Store {
     const targetWallet = this.getWalletById(transferFundsTargetWalletId);
     if (!targetWallet) throw new Error('Transfer target wallet required');
     const targetWalletAddresses =
-      !targetWallet.isLegacy && targetWallet.singleAddressMode
+      global.cip30Enabled &&
+      !targetWallet.isLegacy &&
+      targetWallet.singleAddressMode
         ? [
             await this.stores.addresses.getAutomaticReceivingAddress(
               transferFundsTargetWalletId
@@ -1211,6 +1223,7 @@ export default class WalletsStore extends Store {
 
   @computed
   get eligibleDappWallets(): Array<Wallet> {
+    if (!global.cip30Enabled) return [];
     return this.allWallets.filter(
       (wallet) => !wallet.isRestoring && !wallet.isNotResponding
     );
@@ -1332,7 +1345,8 @@ export default class WalletsStore extends Store {
     const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
-    const dappRoute = matchRoute(ROUTES.APPS.PAGE, currentRoute);
+    const dappRoute =
+      global.cip30Enabled && matchRoute(ROUTES.APPS.PAGE, currentRoute);
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
       if (isWalletAddPage || !hasAnyWalletLoaded)
@@ -1435,9 +1449,10 @@ export default class WalletsStore extends Store {
       }
 
       if (!result) return;
-      await this.stores.dapp.pruneWalletConnections(
-        result.map((wallet: Wallet) => wallet.id)
-      );
+      if (global.cip30Enabled)
+        await this.stores.dapp.pruneWalletConnections(
+          result.map((wallet: Wallet) => wallet.id)
+        );
       const walletIds = result
         .filter(
           ({ syncState }: Wallet) =>

@@ -244,6 +244,8 @@ export type CoinSelectionsResponse = {
   fee: BigNumber;
   metadata: string | null | undefined;
   unsignedTransaction?: string;
+  constructionData?: ConstructTransactionData['data'];
+  paymentRequest?: Readonly<CoinSelectionsPaymentRequestType>;
 };
 export type CreateExternalTransactionRequest = {
   signedTransactionBlob: Buffer;

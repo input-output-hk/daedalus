@@ -154,8 +154,11 @@ export const setUpStores = action(
       if (stores) store.configure(stores);
     });
     executeOnEveryStore((store) => store.initialize());
-    cip30WalletService = new Cip30WalletService(api, stores);
-    cip30WalletService.setup();
+    cip30WalletService = undefined;
+    if (global.cip30Enabled) {
+      cip30WalletService = new Cip30WalletService(api, stores);
+      cip30WalletService.setup();
+    }
     return stores;
   }
 );

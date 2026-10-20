@@ -91,7 +91,7 @@ class App extends Component<{
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
                 ]}
-                {walletApproval.current && (
+                {global.cip30Enabled && walletApproval.current && (
                   <WalletApprovalContainer
                     key={walletApproval.current.requestId}
                     assetDetails={stores.assets.details}

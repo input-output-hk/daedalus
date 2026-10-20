@@ -188,7 +188,11 @@ class WalletSettingsPage extends Component<Props> {
           icoPublicKeyQRCodeDialogContainer={
             <PublicKeyQRCodeDialogContainer isICO />
           }
-          undelegateWalletDialogContainer={<UndelegateWalletDialogContainer />}
+          undelegateWalletDialogContainer={
+            <UndelegateWalletDialogContainer
+              onExternalLinkClick={app.openExternalLink}
+            />
+          }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           unpairWalletDialogContainer={<UnpairWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}

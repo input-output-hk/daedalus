@@ -2,6 +2,7 @@ import DappStore from './DappStore';
 import {
   bindDappBrowserState,
   dappBrowserStatusChannel,
+  closeDappBrowserChannel,
   openDappBrowserChannel,
 } from '../ipc/dappBrowser';
 import { dappConnectionsChannel } from '../ipc/dappConnections';
@@ -36,7 +37,38 @@ const createStore = () => {
 };
 
 describe('DappStore', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    global.cip30Enabled = true;
+  });
+
+  it('does not subscribe or issue pilot IPC when disabled', async () => {
+    global.cip30Enabled = false;
+    const { store } = createStore();
+    store.setup();
+    store.catalogAvailable = true;
+    store.diagnosticsAvailable = true;
+    store.consoleCaptureAvailable = true;
+    await store.launch('catalog', 'Catalog');
+    await store.launchDiagnostics('https://example.test', 'wallet-a', 'App');
+    await store.close();
+    await expect(store.refreshConnections()).resolves.toBe(false);
+    await expect(store.repairConnections()).resolves.toBe(false);
+    await expect(store.removeWalletConnections('wallet-a')).resolves.toBe(
+      false
+    );
+    await store.pruneWalletConnections(['wallet-a']);
+    store.setConsoleCaptureEnabled(true);
+    store.teardown();
+    expect(store.ready).toBe(false);
+    expect(store.diagnosticsReady).toBe(false);
+    expect(store.consoleCaptureEnabled).toBe(false);
+    expect(bindState).not.toHaveBeenCalled();
+    expect(statusRequest).not.toHaveBeenCalled();
+    expect(openRequest).not.toHaveBeenCalled();
+    expect(closeDappBrowserChannel.request).not.toHaveBeenCalled();
+    expect(connectionsRequest).not.toHaveBeenCalled();
+  });
 
   it('ignores status replies and state events from a retired lifecycle', async () => {
     let resolveStatus!: (value: any) => void;

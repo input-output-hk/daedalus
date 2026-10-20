@@ -6,6 +6,7 @@ import cbor from 'cbor';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { ipcMain } from 'electron';
 import type { IpcMainInvokeEvent } from 'electron';
 import type {
   Cip30WalletRequest,
@@ -24,7 +25,13 @@ import { parseConwayTransactionEnvelope } from '../../common/cardano/transaction
 import * as transactionContext from '../../common/cardano/transactionContext';
 
 import { CapabilityService } from './CapabilityService';
-import { Cip30Broker, parseConfiguredNetwork } from './Cip30Broker';
+import {
+  Cip30Broker,
+  getCollateralService,
+  getDappConnectionService,
+  handleCip30BrokerRequests,
+  parseConfiguredNetwork,
+} from './Cip30Broker';
 import type { Cip30BrokerOptions } from './Cip30Broker';
 import { Dispatcher } from './Dispatcher';
 import { ExtensionRegistry } from './ExtensionRegistry';
@@ -34,9 +41,30 @@ import { SessionStore } from './SessionStore';
 import type { DappGuestAuthority } from '../dapp/DappBrowserManager';
 import type { DappRouteLease } from '../dapp/DappRouteLease';
 import type { ConsentRequest } from './ConsentCoordinator';
+import { ConsentCoordinator } from './ConsentCoordinator';
+import TransactionsStore from '../../renderer/app/stores/TransactionsStore';
+import NativeTransactionService from '../../renderer/app/services/NativeTransactionService';
+import NativeTransactionApprovalService from '../../renderer/app/services/NativeTransactionApprovalService';
+import { Cip30WalletService } from '../../renderer/app/services/Cip30WalletService';
+import type { Api } from '../../renderer/app/api';
+import type { StoresMap } from '../../renderer/app/stores';
+import type { ActionsMap } from '../../renderer/app/actions';
+import type { AnalyticsTracker } from '../../renderer/app/analytics';
+import type { NativeApprovalResult } from '../../common/transactions/nativePlan';
+
+const deferred = <T>() => {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((complete) => {
+    resolve = complete;
+  });
+  return { promise, resolve };
+};
 
 jest.mock('electron', () => ({
   ipcMain: { handle: jest.fn() },
+}));
+jest.mock('../../renderer/app/api/utils/request', () => ({
+  request: jest.fn(),
 }));
 jest.mock('../utils/logging', () => ({
   logger: {
@@ -66,6 +94,7 @@ jest.mock('../config', () => {
     }),
     dappRuntimeConfig: {
       cardanoWalletSourceRevision: 'd408e4f29e46dc34454b160b3994ee9974b5cde2',
+      cip30Enabled: true,
       dappSandboxPackageCluster: 'preprod',
       dappNetwork: {
         cluster: 'testnet',
@@ -378,6 +407,15 @@ const create = () => {
     Promise<Cip30WalletResponse>,
     [Cip30WalletRequest]
   >(async (walletRequest) => {
+    if (
+      walletRequest.operation === 'acquire-transaction-lock' ||
+      walletRequest.operation === 'release-transaction-lock'
+    )
+      return {
+        status: 'fulfilled',
+        operation: walletRequest.operation,
+        value: { lockId: walletRequest.lockId },
+      };
     if (walletRequest.operation === 'sign-data')
       return signatureFailure
         ? {
@@ -581,6 +619,255 @@ describe('Cip30Broker', () => {
     fixture.cleanup();
   });
 
+  it('releases a failed acquisition without entering transaction context or consent', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
+    fixture.executeWallet.mockRejectedValueOnce(new Error('transport'));
+    await expect(
+      fixture.broker.handle(
+        event,
+        request('api.submitTx', [transactionSignature.cbor])
+      )
+    ).resolves.toMatchObject({ status: 'rejected' });
+    expect(
+      fixture.executeWallet.mock.calls.map(([value]) => value.operation)
+    ).toEqual(['acquire-transaction-lock', 'release-transaction-lock']);
+    expect(fixture.consent.request).not.toHaveBeenCalled();
+    fixture.cleanup();
+  });
+
+  it('rechecks guest authority after a queued acquisition and releases without preparing', async () => {
+    const fixture = create();
+    await fixture.broker.handle(event, request('provider.enable'));
+    fixture.executeWallet.mockClear();
+    (fixture.consent.request as jest.Mock).mockClear();
+    const acquisition = deferred<Cip30WalletResponse>();
+    let acquiredRequest:
+      | Extract<
+          Cip30WalletRequest,
+          { operation: 'acquire-transaction-lock' | 'release-transaction-lock' }
+        >
+      | undefined;
+    fixture.executeWallet.mockImplementationOnce(async (value) => {
+      if (value.operation === 'acquire-transaction-lock')
+        acquiredRequest = value;
+      return acquisition.promise;
+    });
+    const work = fixture.broker.handle(
+      event,
+      request('api.submitTx', [transactionSignature.cbor])
+    );
+    fixture.setGuestCurrent(false);
+    if (!acquiredRequest) throw new Error('Expected acquisition');
+    acquisition.resolve({
+      status: 'fulfilled',
+      operation: 'acquire-transaction-lock',
+      value: { lockId: acquiredRequest.lockId },
+    });
+    await expect(work).resolves.toMatchObject({ status: 'rejected' });
+    expect(
+      fixture.executeWallet.mock.calls.map(([value]) => value.operation)
+    ).toEqual(['acquire-transaction-lock', 'release-transaction-lock']);
+    expect(fixture.consent.request).not.toHaveBeenCalled();
+    fixture.cleanup();
+  });
+
+  it.each([
+    ['dapp', false],
+    ['native', false],
+    ['dapp', true],
+    ['native', true],
+  ] as const)(
+    'serializes %s-first native/dApp consent with the shared queue (batch %s)',
+    async (first, batch) => {
+      global.cip30Enabled = true;
+      const fixture = create();
+      await fixture.broker.handle(
+        event,
+        request('provider.enable', [{ extensions: [{ cip: 103 }] }])
+      );
+      const queue = new TransactionsStore(
+        { ada: {} } as unknown as Api,
+        {} as ActionsMap,
+        {} as AnalyticsTracker
+      );
+      const firstPresented = deferred<string>();
+      const nextPresented = deferred<string>();
+      let presentations = 0;
+      const coordinator = new ConsentCoordinator({
+        present: async (presentation) => {
+          presentations += 1;
+          (presentations === 1 ? firstPresented : nextPresented).resolve(
+            presentation.requestId
+          );
+        },
+        progress: async () => undefined,
+        terminal: async () => undefined,
+      });
+      let backendState = 0;
+      const observations: Array<{ caller: string; state: number }> = [];
+      const submitted: NativeApprovalResult = {
+        status: 'submitted',
+        transactionIds: ['77'.repeat(32)],
+      };
+      const prepared = {
+        walletId: lease.walletId,
+        network,
+        action: 'payment' as const,
+        authorization: 'software' as const,
+        items: [],
+        context: { walletName: 'Wallet', networkName: 'Testnet' },
+      };
+      const approval = {
+        request: async (
+          _prepared: typeof prepared,
+          execute: Parameters<NativeTransactionApprovalService['request']>[1]
+        ) =>
+          coordinator.request({
+            identity: {
+              kind: 'native',
+              trustedWebContentsId: 1,
+              attemptId: 'native',
+              walletId: lease.walletId,
+              networkGenesis: network.genesisHash,
+            },
+            presentation: {
+              kind: 'native-transaction',
+              attemptId: 'native',
+              walletName: 'Wallet',
+              networkName: 'Testnet',
+              action: 'payment',
+              authorization: { kind: 'software' },
+              collection: 'single',
+              acknowledgements: [],
+              items: [],
+            },
+            payload: {},
+            declined: {
+              type: 'native-transaction-error',
+              value: { code: 'cancelled', info: 'Cancelled' },
+            },
+            execute: async (_payload, signal, passphrase, context) =>
+              execute(
+                passphrase,
+                signal,
+                async () => undefined,
+                context.requestId
+              ),
+          }),
+        dispose: () => undefined,
+      } as unknown as NativeTransactionApprovalService;
+      const native = new NativeTransactionService(
+        queue.withWalletSendLock,
+        approval
+      );
+      const renderer = new Cip30WalletService(
+        {
+          ada: {
+            submitDappTransaction: async ({
+              request: submission,
+            }: {
+              request: { transaction: string };
+            }) => {
+              backendState += 1;
+              return {
+                revision: 1,
+                transaction_id: parseConwayTransactionEnvelope(
+                  Buffer.from(submission.transaction, 'hex')
+                ).transactionId,
+                status: 'submitted',
+              };
+            },
+          },
+        } as unknown as Api,
+        {
+          transactions: queue,
+          wallets: { activeDappWallet: { id: lease.walletId } },
+          networkStatus: { isConnected: true, isSynced: true },
+        } as unknown as StoresMap
+      );
+      const executeWallet = jest.fn(
+        async (
+          walletRequest: Cip30WalletRequest
+        ): Promise<Cip30WalletResponse> => {
+          if (
+            walletRequest.operation === 'acquire-transaction-lock' ||
+            walletRequest.operation === 'release-transaction-lock' ||
+            walletRequest.operation === 'submit-transaction'
+          )
+            return renderer.receive(walletRequest);
+          if (walletRequest.operation === 'transaction-context')
+            observations.push({ caller: 'dapp', state: backendState });
+          return fixture.executeWallet(walletRequest);
+        }
+      );
+      const broker = new Cip30Broker({
+        ...fixture.options,
+        executeWallet,
+        consent: coordinator,
+      });
+      const runNative = () =>
+        native.run({
+          walletId: lease.walletId,
+          ownerSignal: new AbortController().signal,
+          prepare: async () => {
+            observations.push({ caller: 'native', state: backendState });
+            return prepared;
+          },
+          execute: async () => {
+            backendState += 1;
+            return submitted;
+          },
+        });
+      const transactions = batch
+        ? [cip103Transaction(1), cip103Transaction(2)]
+        : [transactionSignature.cbor];
+      const runDapp = () =>
+        broker.handle(
+          event,
+          batch
+            ? request('api.cip103.submitTxs', [transactions])
+            : request('api.submitTx', transactions)
+        );
+      try {
+        const initial = first === 'native' ? runNative() : runDapp();
+        const firstId = await firstPresented.promise;
+        const following = first === 'native' ? runDapp() : runNative();
+        await Promise.resolve();
+        expect(presentations).toBe(1);
+        expect(observations.every(({ state }) => state === 0)).toBe(true);
+        coordinator.decide(firstId, true, 'secret');
+        await initial;
+        coordinator.decide(await nextPresented.promise, true, 'secret');
+        await following;
+        expect(backendState).toBe(batch ? 3 : 2);
+        expect(observations).toContainEqual({
+          caller: first === 'native' ? 'dapp' : 'native',
+          state: first === 'dapp' && batch ? 2 : 1,
+        });
+        const acquires = executeWallet.mock.calls.filter(
+          ([value]) => value.operation === 'acquire-transaction-lock'
+        );
+        const releases = executeWallet.mock.calls.filter(
+          ([value]) => value.operation === 'release-transaction-lock'
+        );
+        expect(acquires).toHaveLength(1);
+        expect(releases).toHaveLength(1);
+        expect(releases[0][0]).toMatchObject({
+          lockId:
+            'lockId' in acquires[0][0] ? acquires[0][0].lockId : undefined,
+        });
+      } finally {
+        coordinator.cancel();
+        renderer.teardown();
+        native.dispose();
+        fixture.cleanup();
+      }
+    }
+  );
+
   it('uses correlated consent once, persists the grant, and replaces live sessions', async () => {
     const fixture = create();
     const enable = request('provider.enable', [
@@ -748,7 +1035,13 @@ describe('Cip30Broker', () => {
           value: { code: -1, info: 'Invalid request' },
         },
       });
-    expect(fixture.executeWallet).not.toHaveBeenCalled();
+    expect(
+      fixture.executeWallet.mock.calls.filter(
+        ([value]) =>
+          value.operation !== 'acquire-transaction-lock' &&
+          value.operation !== 'release-transaction-lock'
+      )
+    ).toEqual([]);
 
     fixture.setFailedSubmissionIndexes([1]);
     const firstId = parseConwayTransactionEnvelope(
@@ -1155,7 +1448,13 @@ describe('Cip30Broker', () => {
         value: { code: -1, info: 'Invalid request' },
       },
     });
-    expect(fixture.executeWallet).not.toHaveBeenCalled();
+    expect(
+      fixture.executeWallet.mock.calls.filter(
+        ([value]) =>
+          value.operation !== 'acquire-transaction-lock' &&
+          value.operation !== 'release-transaction-lock'
+      )
+    ).toEqual([]);
     fixture.cleanup();
   });
 
@@ -1344,7 +1643,13 @@ describe('Cip30Broker', () => {
         value: { code: -1, info: 'Invalid request' },
       },
     });
-    expect(fixture.executeWallet).not.toHaveBeenCalled();
+    expect(
+      fixture.executeWallet.mock.calls.filter(
+        ([value]) =>
+          value.operation !== 'acquire-transaction-lock' &&
+          value.operation !== 'release-transaction-lock'
+      )
+    ).toEqual([]);
     fixture.cleanup();
   });
 
@@ -1842,5 +2147,43 @@ describe('Cip30Broker', () => {
     expect(() =>
       parseConfiguredNetwork({}, 'testnet', network.genesisHash)
     ).toThrow('Invalid configured network identity');
+  });
+});
+
+describe('nonpilot broker startup', () => {
+  it('refuses gateway requests without reading backend genesis or persisted pilot state', async () => {
+    const config = jest.requireMock('../config').dappRuntimeConfig;
+    config.cip30Enabled = false;
+    config.dappSandboxPackageCluster = 'mainnet';
+    const read = jest.spyOn(fs, 'readFileSync');
+    const write = jest.spyOn(fs, 'writeFileSync');
+    try {
+      handleCip30BrokerRequests();
+      expect(read).not.toHaveBeenCalled();
+      expect(write).not.toHaveBeenCalled();
+      expect(() => getCollateralService()).toThrow(
+        'CIP-30 broker is not initialized'
+      );
+      expect(() => getDappConnectionService()).toThrow(
+        'CIP-30 broker is not initialized'
+      );
+      const handler = (ipcMain.handle as jest.Mock).mock.calls[0][1];
+      await expect(handler({}, { method: 'provider.enable' })).resolves.toEqual(
+        {
+          status: 'rejected',
+          rejection: expect.any(Object),
+        }
+      );
+      expect(
+        jest.requireMock('../ipc/cip30Wallet').executeCip30WalletRequest
+      ).not.toHaveBeenCalled();
+      expect(read).not.toHaveBeenCalled();
+      expect(write).not.toHaveBeenCalled();
+    } finally {
+      read.mockRestore();
+      write.mockRestore();
+      config.cip30Enabled = true;
+      config.dappSandboxPackageCluster = 'preprod';
+    }
   });
 });

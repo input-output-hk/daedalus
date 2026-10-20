@@ -186,7 +186,7 @@ export default class TransactionsStore extends Store {
     transactionActions.filterTransactions.listen(this._updateFilterOptions);
     // transactionActions.loadMoreTransactions.listen(this._increaseSearchLimit);
     transactionActions.requestCSVFile.listen(this._requestCSVFile);
-    this._loadKnownWalletSubmissions();
+    if (global.cip30Enabled) this._loadKnownWalletSubmissions();
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
@@ -335,6 +335,7 @@ export default class TransactionsStore extends Store {
     display,
     payment,
   }: TrackSubmissionRequest): Promise<void> => {
+    if (!global.cip30Enabled) return;
     if (
       !/^[A-Za-z0-9_-]{1,128}$/u.test(walletId) ||
       !/^[0-9a-f]{64}$/u.test(transactionId)
@@ -451,6 +452,7 @@ export default class TransactionsStore extends Store {
     walletId: string,
     transactionIds: readonly string[]
   ): void => {
+    if (!global.cip30Enabled) return;
     const ids = new Set(transactionIds);
     const confirmedIds = new Set(
       transactionIds.filter(
@@ -483,6 +485,7 @@ export default class TransactionsStore extends Store {
 
   @action
   openTransaction = (walletId: string, transactionId: string): void => {
+    if (!global.cip30Enabled) return;
     this._filterOptionsForWallets[walletId] = {
       ...emptyTransactionFilterOptions,
     };
@@ -500,6 +503,7 @@ export default class TransactionsStore extends Store {
       for (const wallet of wallets) {
         this._ensureSubmissionsLoaded(wallet.id);
         const reconcile = (request: Request<GetTransactionsResponse>) => {
+          if (!global.cip30Enabled) return;
           request.promise
             ?.then(() =>
               this._reconcileSubmissions(wallet.id, [
@@ -584,6 +588,10 @@ export default class TransactionsStore extends Store {
       transactionId,
       isLegacy,
     });
+    if (!global.cip30Enabled) {
+      this.stores.wallets.refreshWalletsData();
+      return;
+    }
     await this._ensureSubmissionsLoaded(walletId);
     const records = this.submissionsByWallet[walletId] || [];
     const next = records.filter(
@@ -705,6 +713,7 @@ export default class TransactionsStore extends Store {
     walletId: string,
     record: SubmissionTransactionRecord
   ): void => {
+    if (!global.cip30Enabled) return;
     const previous = this._submissionRecord(walletId, record.transactionId);
     let nextRecord = record;
     if (
@@ -778,6 +787,7 @@ export default class TransactionsStore extends Store {
     walletId: string,
     backendTransactions: WalletTransaction[]
   ): WalletTransaction[] => {
+    if (!global.cip30Enabled) return backendTransactions;
     const walletAddresses =
       this.stores.addresses._getAddressesAllRequest(walletId).result;
     const ownedAddresses = new Set(
@@ -861,6 +871,7 @@ export default class TransactionsStore extends Store {
     walletId: string,
     transactions: WalletTransaction[]
   ): Promise<void> => {
+    if (!global.cip30Enabled) return;
     await this._ensureSubmissionsLoaded(walletId);
     const backendById = new Map<string, WalletTransaction>();
     transactions.forEach((transaction) => {
@@ -896,6 +907,7 @@ export default class TransactionsStore extends Store {
 
   @action
   private _ensureSubmissionsLoaded = (walletId: string): Promise<void> => {
+    if (!global.cip30Enabled) return Promise.resolve();
     const existing = this.submissionLoads.get(walletId);
     if (existing) return existing;
     const load = this.api.localStorage
@@ -926,12 +938,14 @@ export default class TransactionsStore extends Store {
   };
 
   private _loadKnownWalletSubmissions = async (): Promise<void> => {
+    if (!global.cip30Enabled) return;
     await Promise.all(
       this.stores.wallets.all.map(({ id }) => this._ensureSubmissionsLoaded(id))
     );
   };
 
   private _persistSubmissions = (walletId: string): Promise<void> => {
+    if (!global.cip30Enabled) return Promise.resolve();
     const previous = this.submissionWrites.get(walletId) || Promise.resolve();
     const next = previous
       .catch(() => undefined)

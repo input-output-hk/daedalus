@@ -347,7 +347,9 @@ describe('Governance sanitization — filterLogData', () => {
 });
 
 describe('Governance sanitization — call boundaries', () => {
+  const originalCapability = global.cip30Enabled;
   afterEach(() => {
+    global.cip30Enabled = originalCapability;
     jest.restoreAllMocks();
   });
 
@@ -383,6 +385,7 @@ describe('Governance sanitization — call boundaries', () => {
   });
 
   it('sends only the sanitized drepOption analytics field for governance votes', async () => {
+    global.cip30Enabled = true;
     const analytics = {
       disableTracking: jest.fn(),
       enableTracking: jest.fn(),
@@ -423,6 +426,7 @@ describe('Governance sanitization — call boundaries', () => {
   });
 
   it('keeps DRep IDs and sentinel literals out of logger payloads when HW vote submission fails', async () => {
+    global.cip30Enabled = true;
     const errorSpy = jest
       .spyOn(rendererLogger, 'error')
       .mockImplementation(() => undefined);
@@ -458,6 +462,7 @@ describe('Governance sanitization — call boundaries', () => {
   });
 
   it('sends only the sanitized vote-kind analytics field for HW governance votes', async () => {
+    global.cip30Enabled = true;
     const analytics = {
       disableTracking: jest.fn(),
       enableTracking: jest.fn(),
@@ -494,6 +499,7 @@ describe('Governance sanitization — call boundaries', () => {
   });
 
   it('reduces a sentinel delegation to the vote kind in the analytics payload', async () => {
+    global.cip30Enabled = true;
     const analytics = {
       disableTracking: jest.fn(),
       enableTracking: jest.fn(),

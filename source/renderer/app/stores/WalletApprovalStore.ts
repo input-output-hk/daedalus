@@ -23,7 +23,13 @@ export default class WalletApprovalStore extends Store {
   @observable activeItemIndex: number | undefined;
   @observable submissionAuthorized = false;
   @observable cancelling = false;
-  nativeTransactions: NativeTransactionService;
+  private nativeTransactionService?: NativeTransactionService;
+
+  get nativeTransactions(): NativeTransactionService {
+    if (!global.cip30Enabled || !this.nativeTransactionService)
+      throw new Error('Native transaction approval is unavailable');
+    return this.nativeTransactionService;
+  }
 
   private focusedElement: HTMLElement | null = null;
   private resolveDecision?: (
@@ -35,7 +41,8 @@ export default class WalletApprovalStore extends Store {
   private payment: NativeTransactionOperation['payment'];
 
   setup(): void {
-    this.nativeTransactions = new NativeTransactionService(
+    if (!global.cip30Enabled) return;
+    this.nativeTransactionService = new NativeTransactionService(
       this.stores.transactions.withWalletSendLock,
       undefined,
       this.capturePayment
@@ -44,7 +51,8 @@ export default class WalletApprovalStore extends Store {
   }
 
   teardown(): void {
-    this.nativeTransactions?.dispose();
+    this.nativeTransactionService?.dispose();
+    this.nativeTransactionService = undefined;
     this.unbind?.();
     this.unbind = undefined;
     this.clear();
@@ -55,6 +63,12 @@ export default class WalletApprovalStore extends Store {
   receive(
     message: WalletApprovalRenderMainRequest
   ): Promise<WalletApprovalRenderRendererResponse> {
+    if (!global.cip30Enabled)
+      return Promise.resolve(
+        message.type === 'present'
+          ? { requestId: message.request.requestId, approved: false }
+          : undefined
+      );
     switch (message.type) {
       case 'present':
         if (this.current) this.clear();
@@ -143,6 +157,7 @@ export default class WalletApprovalStore extends Store {
   }
   @action.bound
   dismissResult(): void {
+    if (!global.cip30Enabled) return;
     if (!this.result || !this.current) return;
     const { walletId, kind } = this.current;
     if (this.isSubmissionRequest)
@@ -156,6 +171,7 @@ export default class WalletApprovalStore extends Store {
 
   @action.bound
   viewTransaction(transactionId: string): void {
+    if (!global.cip30Enabled) return;
     if (
       !this.current ||
       !this.isSubmissionRequest ||
@@ -284,6 +300,7 @@ export default class WalletApprovalStore extends Store {
   }
   @action.bound
   async cancel(): Promise<void> {
+    if (!global.cip30Enabled) return;
     const current = this.current;
     if (
       current?.kind !== 'native-transaction' ||
@@ -302,6 +319,7 @@ export default class WalletApprovalStore extends Store {
   }
 
   private decide(approved: boolean, passphrase?: string, submit = false): void {
+    if (!global.cip30Enabled) return;
     if (!this.current || this.deciding || !this.resolveDecision) return;
     this.deciding = true;
     const resolve = this.resolveDecision;
