@@ -1,0 +1,44 @@
+{
+  "feature": "Arch required signatures",
+  "tasks": [
+    {
+      "id": "T001",
+      "description": "Specify acceptance criteria and publication constraints",
+      "status": "complete"
+    },
+    {
+      "id": "T002",
+      "description": "Implement verified staged Arch package and database artifacts in Rust",
+      "status": "complete",
+      "depends_on": [
+        "T001"
+      ]
+    },
+    {
+      "id": "T003",
+      "description": "Integrate disk and S3 publication, aliases, Nix tools and required signature instructions",
+      "status": "complete",
+      "depends_on": [
+        "T002"
+      ]
+    },
+    {
+      "id": "T004",
+      "description": "Run meaningful GPG, repo-add and isolated pacman regression checks through Nix",
+      "status": "complete",
+      "notes": "15 active tests and Clippy pass. Privileged pacman integration remains optional server/client acceptance validation.",
+      "depends_on": [
+        "T003"
+      ]
+    },
+    {
+      "id": "T005",
+      "description": "Document deployment-server rerun and clean Arch acceptance validation",
+      "status": "complete",
+      "notes": "Code-only scope confirmed. Server rerun and post-deployment client validation documented in deployment.md; no further live changes.",
+      "depends_on": [
+        "T004"
+      ]
+    }
+  ]
+}

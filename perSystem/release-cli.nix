@@ -38,6 +38,7 @@
           ./../release-cli/Cargo.toml
           ./../release-cli/Cargo.lock
           ./../release-cli/src
+          ./../release-cli/tests
         ];
       };
       commonArgs = {
@@ -45,6 +46,7 @@
         strictDeps = true;
         pname = "drt";
         version = "0.1.0";
+        nativeCheckInputs = [pkgs.gnupg pkgs.pacman pkgs.libarchive];
       };
       cargoArtifacts = craneLib.buildDepsOnly commonArgs;
     in {
@@ -83,6 +85,7 @@
               pkgs.dpkg # dpkg-deb --field  (DEB control metadata)
               pkgs.rpm # rpm --qf          (RPM header metadata)
               pkgs.libarchive # bsdtar            (Arch .PKGINFO extraction)
+              pkgs.pacman # repo-add + signed Arch client validation
               pkgs.minio # local S3-compatible server for testing
               pkgs.minio-client # mc — bucket setup / verification
             ];

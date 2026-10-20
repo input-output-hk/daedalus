@@ -57,6 +57,7 @@
           pkgs.dpkg
           pkgs.rpm
           pkgs.libarchive
+          pkgs.pacman
         ];
         inherit shellHook;
       };
