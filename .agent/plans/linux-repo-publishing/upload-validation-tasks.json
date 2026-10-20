@@ -1,0 +1,35 @@
+{
+  "feature": "Skip unchanged Linux repository uploads",
+  "tasks": [
+    {
+      "id": "T001",
+      "description": "Specify checksum checks and legacy upload handling",
+      "status": "complete"
+    },
+    {
+      "id": "T002",
+      "description": "Implement repository-specific HEAD validation and metadata refresh",
+      "status": "complete",
+      "depends_on": [
+        "T001"
+      ]
+    },
+    {
+      "id": "T003",
+      "description": "Integrate APT, YUM and Arch publishers",
+      "status": "complete",
+      "depends_on": [
+        "T002"
+      ]
+    },
+    {
+      "id": "T004",
+      "description": "Exercise SDK requests with local S3 fixture and run Rust checks",
+      "status": "complete",
+      "depends_on": [
+        "T003"
+      ]
+    }
+  ],
+  "validation": "23 tests passed; 1 optional privileged pacman test ignored. Clippy --all-targets -- --deny warnings and treefmt passed. S3 requests tested only against an in-process localhost fixture; no live deployment actions."
+}
