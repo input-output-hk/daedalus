@@ -191,8 +191,8 @@ pub struct MithrilConfig {
     #[serde(default = "default_rename_retry_secs")]
     pub rename_retry_secs: u64,
     /// How long, in seconds, a download may go without its progress growing
-    /// before the watchdog checks whether the aggregator can be reached. 0
-    /// turns the check off.
+    /// before the watchdog asks mithril-client whether it can reach the
+    /// aggregator. 0 turns the check off.
     #[serde(default = "default_download_stall_secs")]
     pub download_stall_secs: u64,
     /// How often, in seconds, that check is repeated while the download

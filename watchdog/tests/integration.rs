@@ -243,7 +243,7 @@ struct Cfg<'a> {
     wallet_crash_window: Option<(u32, u64)>,
     startup_silence_secs: Option<u64>,
     with_mithril: bool,
-    mithril_stall: Option<(u64, u64, String)>,
+    mithril_stall: Option<(u64, u64)>,
     mithril_bin: Option<&'a str>,
     converter_bin: Option<&'a str>,
 }
@@ -326,11 +326,11 @@ impl<'a> Cfg<'a> {
         self
     }
 
-    /// Mithril with a download stall noticed after `stall_secs`, rechecked
-    /// every `recheck_secs`, and the aggregator at `aggregator_url`.
-    fn mithril_stall(mut self, stall_secs: u64, recheck_secs: u64, aggregator_url: String) -> Self {
+    /// Mithril with a download stall noticed after `stall_secs` and
+    /// rechecked every `recheck_secs`.
+    fn mithril_stall(mut self, stall_secs: u64, recheck_secs: u64) -> Self {
         self.with_mithril = true;
-        self.mithril_stall = Some((stall_secs, recheck_secs, aggregator_url));
+        self.mithril_stall = Some((stall_secs, recheck_secs));
         self
     }
 
@@ -405,10 +405,9 @@ impl<'a> Cfg<'a> {
                 // fails at once instead of trying again for a minute.
                 "rename_retry_secs": 0
             });
-            if let Some((stall_secs, recheck_secs, aggregator_url)) = self.mithril_stall {
+            if let Some((stall_secs, recheck_secs)) = self.mithril_stall {
                 cfg["mithril"]["download_stall_secs"] = json!(stall_secs);
                 cfg["mithril"]["network_recheck_secs"] = json!(recheck_secs);
-                cfg["mithril"]["aggregator_url"] = json!(aggregator_url);
             }
         }
 
@@ -1115,23 +1114,25 @@ fn chain_damage_signatures_are_read_from_their_own_process() {
 
 // ── Tests: Mithril download waiting for the network ──────────────────────────
 
-/// A download that stalls while the aggregator cannot be reached is reported
-/// as waiting for the network, and the wait ends when it goes on. The client
-/// is left running, and the install finishes.
+/// A download that stalls while mithril-client cannot reach the aggregator
+/// is reported as waiting for the network, and the wait ends when it goes
+/// on. The client is left running, and the install finishes.
 #[test]
 fn mithril_download_waits_for_the_network() {
     let dir = TempDir::new("mithril-network-wait");
-    // A port that was open and is closed again refuses at once.
-    let closed = TcpListener::bind("127.0.0.1:0")
-        .unwrap()
-        .local_addr()
-        .unwrap()
-        .port();
+    // The mock client is offline while its download stalls, so its snapshot
+    // query fails then.
+    let offline = dir.path().join("offline");
     let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
-        .mithril_stall(1, 1, format!("http://127.0.0.1:{closed}"))
+        .mithril_stall(1, 1)
         .build();
-    let (mut child, mut stdin, rx) =
-        spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_DOWNLOAD_STALL_MS", "4000")]);
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_MITHRIL_DOWNLOAD_STALL_MS", "4000"),
+            ("MOCK_MITHRIL_OFFLINE_FILE", offline.to_str().unwrap()),
+        ],
+    );
 
     let status = expect(&rx, "chain_status");
     assert_eq!(status["has_chain"], false);
@@ -1159,15 +1160,14 @@ fn mithril_download_waits_for_the_network() {
     let _ = child.wait();
 }
 
-/// A download that stalls while the aggregator can be reached is not
-/// reported as waiting for the network.
+/// A download that stalls while mithril-client can reach the aggregator is
+/// not reported as waiting for the network, whatever a direct connection
+/// would find: the configured aggregator URL here accepts no connections.
 #[test]
 fn mithril_download_stall_with_a_reachable_aggregator_reports_nothing() {
     let dir = TempDir::new("mithril-network-reachable");
-    let aggregator = TcpListener::bind("127.0.0.1:0").unwrap();
-    let port = aggregator.local_addr().unwrap().port();
     let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
-        .mithril_stall(1, 1, format!("http://127.0.0.1:{port}"))
+        .mithril_stall(1, 1)
         .build();
     let (mut child, mut stdin, rx) =
         spawn_watchdog_with_env(&cfg, &[("MOCK_MITHRIL_DOWNLOAD_STALL_MS", "3000")]);
@@ -1183,7 +1183,6 @@ fn mithril_download_stall_with_a_reachable_aggregator_reports_nothing() {
             break;
         }
     }
-    drop(aggregator);
 
     stop(&mut stdin);
     expect(&rx, "stopped");

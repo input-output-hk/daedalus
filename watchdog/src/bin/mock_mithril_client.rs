@@ -28,6 +28,11 @@
 // progress line, with the same counts, for n milliseconds before it goes on,
 // like a client whose download waits for the network.
 //
+// With MOCK_MITHRIL_OFFLINE_FILE=<path>, "download" creates that file while
+// it stalls and removes it when it goes on, and "snapshot show" fails while
+// the file exists, like a client that cannot reach the aggregator while the
+// network is gone.
+//
 // The snapshot's immutable_file_number is set very high (999_999) so the
 // behind-ness probe always concludes that a sync is needed when force=false.
 
@@ -47,7 +52,16 @@ fn main() {
     let is_show = args.iter().any(|a| a == "show");
     let is_download = args.iter().any(|a| a == "download");
 
+    let offline_file = env::var("MOCK_MITHRIL_OFFLINE_FILE").ok();
+
     if is_show {
+        if offline_file
+            .as_deref()
+            .is_some_and(|f| Path::new(f).exists())
+        {
+            eprintln!("mock-mithril-client: network unavailable");
+            std::process::exit(1);
+        }
         if env::var("MOCK_MITHRIL_PROBE_FAIL").as_deref() == Ok("1") {
             eprintln!("mock-mithril-client: aggregator unreachable");
             std::process::exit(1);
@@ -91,10 +105,16 @@ fn main() {
             println!("{line}");
             sleep(Duration::from_millis(20));
             if i == 2 && stall_ms > 0 {
+                if let Some(ref file) = offline_file {
+                    fs::write(file, b"").unwrap();
+                }
                 let until = std::time::Instant::now() + Duration::from_millis(stall_ms);
                 while std::time::Instant::now() < until {
                     println!("{line}");
                     sleep(Duration::from_millis(100));
+                }
+                if let Some(ref file) = offline_file {
+                    let _ = fs::remove_file(file);
                 }
             }
         }

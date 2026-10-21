@@ -351,9 +351,10 @@ pub(crate) async fn probe(cfg: &MithrilConfig) -> Result<(Option<u64>, u64)> {
     Ok((local_highest, certified))
 }
 
-/// The highest local chunk, the certified chunk and, when the aggregator
-/// states it, the size of the snapshot's database once unpacked.
-async fn probe_snapshot(cfg: &MithrilConfig) -> Result<(Option<u64>, u64, Option<u64>)> {
+/// `mithril-client cardano-db snapshot show latest` against the configured
+/// aggregator. It reaches the aggregator as the download does, through the
+/// proxy settings of the environment and the system.
+fn snapshot_show_command(cfg: &MithrilConfig) -> Command {
     let mut cmd = Command::new(&cfg.mithril_bin);
     cmd.args([
         "--origin-tag",
@@ -366,7 +367,13 @@ async fn probe_snapshot(cfg: &MithrilConfig) -> Result<(Option<u64>, u64, Option
     ])
     .env("AGGREGATOR_ENDPOINT", &cfg.aggregator_url);
     tether_to_watchdog(&mut cmd);
-    let output = cmd.output().await?;
+    cmd
+}
+
+/// The highest local chunk, the certified chunk and, when the aggregator
+/// states it, the size of the snapshot's database once unpacked.
+async fn probe_snapshot(cfg: &MithrilConfig) -> Result<(Option<u64>, u64, Option<u64>)> {
+    let output = snapshot_show_command(cfg).output().await?;
     if !output.status.success() {
         anyhow::bail!(
             "mithril-client snapshot show failed: {}",
@@ -446,9 +453,9 @@ enum ProcResult {
     Stopped,
 }
 
-/// Longest a check of whether the aggregator can be reached may take, name
-/// resolution and connection together.
-const AGGREGATOR_CHECK_TIMEOUT: Duration = Duration::from_secs(5);
+/// Longest a check of whether the aggregator can be reached may take before
+/// mithril-client is stopped and the aggregator counts as not reached.
+const AGGREGATOR_CHECK_TIMEOUT: Duration = Duration::from_secs(15);
 
 /// How often the download watch looks at the download, at most.
 const DOWNLOAD_WATCH_TICK_MAX: Duration = Duration::from_secs(5);
@@ -578,53 +585,30 @@ fn report_network_wait(change: Option<bool>, stall_after: Duration, aggregator: 
     }
 }
 
-/// The host and port of the aggregator at `url`, an http or https URL, or
-/// None for a URL this does not read.
-fn aggregator_address(url: &str) -> Option<(String, u16)> {
-    let (scheme, rest) = url.split_once("://")?;
-    let default_port = match scheme.to_ascii_lowercase().as_str() {
-        "https" => 443,
-        "http" => 80,
-        _ => return None,
+/// Whether mithril-client reaches the aggregator, asked with the same
+/// command as the probe before a download. mithril-client downloads through
+/// the proxy that the environment or the system sets, which a direct
+/// connection from the watchdog would bypass, so only mithril-client can
+/// tell whether the download's route to the network works. A client still
+/// running after `limit`, as one waiting on name resolution can be, is
+/// stopped, and the aggregator counts as not reached.
+async fn aggregator_reachable(cfg: &MithrilConfig, limit: Duration) -> bool {
+    let mut cmd = snapshot_show_command(cfg);
+    cmd.stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .kill_on_drop(true);
+    let Ok(mut child) = cmd.spawn() else {
+        return false;
     };
-    let authority = rest.split(['/', '?', '#']).next()?;
-    let authority = authority
-        .rsplit_once('@')
-        .map_or(authority, |(_, host)| host);
-    let (host, port) = match authority.strip_prefix('[') {
-        Some(bracketed) => {
-            let (host, after) = bracketed.split_once(']')?;
-            let port = match after {
-                "" => default_port,
-                port => port.strip_prefix(':')?.parse().ok()?,
-            };
-            (host, port)
+    match tokio::time::timeout(limit, child.wait()).await {
+        Ok(status) => status.is_ok_and(|s| s.success()),
+        Err(_) => {
+            let _ = child.start_kill();
+            let _ = child.wait().await;
+            false
         }
-        None => match authority.rsplit_once(':') {
-            Some((host, port)) => (host, port.parse().ok()?),
-            None => (authority, default_port),
-        },
-    };
-    (!host.is_empty()).then(|| (host.to_string(), port))
-}
-
-/// Whether a TCP connection to `host` and `port` opens, with the name
-/// resolution and the connection bounded together by
-/// AGGREGATOR_CHECK_TIMEOUT.
-async fn aggregator_reachable(host: &str, port: u16) -> bool {
-    tokio::time::timeout(AGGREGATOR_CHECK_TIMEOUT, async {
-        let Ok(addresses) = tokio::net::lookup_host((host, port)).await else {
-            return false;
-        };
-        for address in addresses {
-            if tokio::net::TcpStream::connect(address).await.is_ok() {
-                return true;
-            }
-        }
-        false
-    })
-    .await
-    .unwrap_or(false)
+    }
 }
 
 async fn run_download(
@@ -742,18 +726,11 @@ async fn run_download(
         }
     };
 
-    // A download that stalls while the aggregator cannot be reached is
-    // reported as waiting for the network. mithril-client is left running:
-    // it continues by itself when the network returns.
-    let aggregator = aggregator_address(&cfg.aggregator_url);
-    if aggregator.is_none() {
-        warn!(
-            "cannot read a host and port from the aggregator URL {}; a stalled download is not checked",
-            cfg.aggregator_url
-        );
-    }
+    // A download that stalls while mithril-client cannot reach the
+    // aggregator is reported as waiting for the network. The download is
+    // left running: it continues by itself when the network returns.
     let stall_after = Duration::from_secs(cfg.download_stall_secs);
-    let watch_stalls = aggregator.is_some() && !stall_after.is_zero();
+    let watch_stalls = !stall_after.is_zero();
     let mut watch = DownloadWatch::new(
         stall_after,
         Duration::from_secs(cfg.network_recheck_secs),
@@ -762,9 +739,10 @@ async fn run_download(
     let mut watch_ticks = tokio::time::interval(watch.tick());
     watch_ticks.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
     let (reach_tx, mut reach_rx) = mpsc::channel::<bool>(4);
-    let aggregator_label = aggregator
-        .as_ref()
-        .map_or_else(String::new, |(host, port)| format!("{host}:{port}"));
+    // One check at a time: a check that outlasts the recheck interval is not
+    // joined by another.
+    let mut checking = false;
+    let aggregator_label = cfg.aggregator_url.clone();
     let watch_progress = |watch: &mut DownloadWatch, ev: &Event| {
         if let Event::MithrilProgress {
             files_downloaded,
@@ -806,16 +784,19 @@ async fn run_download(
                 emit(&ev);
             }
             _ = watch_ticks.tick(), if watch_stalls => {
-                if watch.check_due(Instant::now()) {
-                    if let Some((host, port)) = aggregator.clone() {
-                        let tx = reach_tx.clone();
-                        tokio::spawn(async move {
-                            let _ = tx.send(aggregator_reachable(&host, port).await).await;
-                        });
-                    }
+                if !checking && watch.check_due(Instant::now()) {
+                    checking = true;
+                    let tx = reach_tx.clone();
+                    let check_cfg = cfg.clone();
+                    tokio::spawn(async move {
+                        let reachable =
+                            aggregator_reachable(&check_cfg, AGGREGATOR_CHECK_TIMEOUT).await;
+                        let _ = tx.send(reachable).await;
+                    });
                 }
             }
             Some(reachable) = reach_rx.recv() => {
+                checking = false;
                 let change = watch.on_check(reachable, Instant::now());
                 report_network_wait(change, stall_after, &aggregator_label);
             }
@@ -2433,7 +2414,7 @@ mod tests {
     }
 
     mod network_wait {
-        use super::super::{DownloadWatch, aggregator_address, aggregator_reachable};
+        use super::super::DownloadWatch;
         use std::time::{Duration, Instant};
 
         const STALL: Duration = Duration::from_secs(60);
@@ -2548,50 +2529,88 @@ mod tests {
                 Duration::from_millis(250)
             );
         }
+    }
 
-        #[test]
-        fn reads_the_host_and_port_of_the_aggregator() {
-            let read = |url: &str| aggregator_address(url);
-            assert_eq!(
-                read("https://aggregator.release-preprod.api.mithril.network/aggregator"),
-                Some((
-                    "aggregator.release-preprod.api.mithril.network".to_string(),
-                    443
-                ))
-            );
-            assert_eq!(
-                read("http://localhost:8080"),
-                Some(("localhost".to_string(), 8080))
-            );
-            assert_eq!(
-                read("HTTP://user:pass@example.org?x=1"),
-                Some(("example.org".to_string(), 80))
-            );
-            assert_eq!(
-                read("https://[::1]:9443/a"),
-                Some(("::1".to_string(), 9443))
-            );
-            assert_eq!(read("https://[::1]/a"), Some(("::1".to_string(), 443)));
-            for odd in [
-                "u",
-                "ftp://example.org",
-                "https://",
-                "https://host:port",
-                "https://[::1",
-            ] {
-                assert_eq!(read(odd), None, "{odd}");
+    /// The check of the aggregator, run with a stand-in for mithril-client.
+    #[cfg(unix)]
+    mod network_check {
+        use super::super::aggregator_reachable;
+        use crate::config::MithrilConfig;
+        use std::os::unix::fs::PermissionsExt;
+        use std::path::PathBuf;
+        use std::time::{Duration, Instant};
+
+        struct TempDir(PathBuf);
+
+        impl Drop for TempDir {
+            fn drop(&mut self) {
+                let _ = std::fs::remove_dir_all(&self.0);
             }
         }
 
+        /// A configuration whose mithril-client is a script running `body`,
+        /// in a directory removed when the returned guard is dropped.
+        fn client(label: &str, body: &str) -> (TempDir, MithrilConfig) {
+            let dir = std::env::temp_dir().join(format!(
+                "wdg-network-check-{label}-{}-{}",
+                std::process::id(),
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap()
+                    .subsec_nanos()
+            ));
+            std::fs::create_dir_all(&dir).unwrap();
+            let script = dir.join("mithril-client");
+            std::fs::write(&script, format!("#!/bin/sh\n{body}\n")).unwrap();
+            std::fs::set_permissions(&script, std::fs::Permissions::from_mode(0o755)).unwrap();
+            let cfg = serde_json::from_value(serde_json::json!({
+                "mithril_bin": script.to_str().unwrap(),
+                "snapshot_converter_bin": "c",
+                "converter_config": "cfg",
+                "aggregator_url": "https://aggregator.example",
+                "genesis_vkey": "g",
+                "state_dir": dir.to_str().unwrap(),
+                "chain_path": dir.join("chain").to_str().unwrap(),
+            }))
+            .unwrap();
+            (TempDir(dir), cfg)
+        }
+
         #[tokio::test]
-        async fn reaches_an_open_port_and_not_a_closed_one() {
-            let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
-            let port = listener.local_addr().unwrap().port();
-            assert!(aggregator_reachable("127.0.0.1", port).await);
-            drop(listener);
+        async fn the_aggregator_is_reached_when_the_snapshot_query_succeeds() {
+            let (_dir, cfg) = client(
+                "ok",
+                r#"[ "$AGGREGATOR_ENDPOINT" = https://aggregator.example ] && [ "$7" = latest ]"#,
+            );
+            assert!(aggregator_reachable(&cfg, Duration::from_secs(10)).await);
+        }
+
+        #[tokio::test]
+        async fn the_aggregator_is_not_reached_when_the_snapshot_query_fails() {
+            let (_dir, cfg) = client("fail", "exit 1");
+            assert!(!aggregator_reachable(&cfg, Duration::from_secs(10)).await);
+        }
+
+        #[tokio::test]
+        async fn a_client_still_running_at_the_limit_is_stopped_and_not_reached() {
+            let (dir, cfg) = client("hang", r#"echo $$ > "$(dirname "$0")/pid"; exec sleep 30"#);
             let started = Instant::now();
-            assert!(!aggregator_reachable("127.0.0.1", port).await);
+            assert!(!aggregator_reachable(&cfg, Duration::from_millis(500)).await);
             assert!(started.elapsed() < Duration::from_secs(5));
+            let pid = std::fs::read_to_string(dir.0.join("pid")).unwrap();
+            let alive = std::process::Command::new("kill")
+                .args(["-0", pid.trim()])
+                .status()
+                .unwrap()
+                .success();
+            assert!(!alive, "the client is still running");
+        }
+
+        #[tokio::test]
+        async fn a_client_that_cannot_start_does_not_reach_the_aggregator() {
+            let (dir, mut cfg) = client("missing", "exit 0");
+            cfg.mithril_bin = dir.0.join("absent").to_str().unwrap().to_string();
+            assert!(!aggregator_reachable(&cfg, Duration::from_secs(10)).await);
         }
     }
 
