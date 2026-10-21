@@ -45,20 +45,32 @@
   // widget, whose colors are set for the main app background rather than the
   // Mithril card. These rules give them the card's text and button colors.
   > h2 {
-    --rp-link-color: var(--theme-mithril-button-secondary-text-color);
     color: var(--theme-mithril-body-text-color);
     font-family: var(--font-medium);
     font-size: 14px;
     margin: 0;
   }
 
-  // The toggle is a react-polymorph Link. The widget sets its font with
-  // !important, so its size can only be matched to the header the same way.
-  > h2 > span {
-    font-size: 14px !important;
+  // The toggle is a button, drawn as a small secondary action of the card.
+  // The global reset removes the focus outline of every button, so the
+  // toggle draws its own for keyboard focus.
+  > h2 > button {
+    background-color: transparent;
+    border: 1px solid var(--theme-mithril-button-secondary-border-color);
+    color: var(--theme-mithril-button-secondary-text-color);
+    font-size: 12px;
+    letter-spacing: normal;
+    padding: 3px 10px;
+    text-transform: none;
 
     &:hover {
+      border-color: var(--theme-mithril-button-secondary-border-color-hover);
       color: var(--theme-mithril-button-secondary-text-color-hover);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--theme-mithril-button-secondary-text-color);
+      outline-offset: 2px;
     }
   }
 }

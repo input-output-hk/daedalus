@@ -39,6 +39,21 @@ const renderView = (
 describe('MithrilErrorView', () => {
   afterEach(cleanup);
 
+  it('opens and closes the technical details with a button in their header', () => {
+    renderView({ code: 'WIPE_FAILED', message: 'detail from the watchdog' });
+    const header = screen.getByRole('heading', { name: /Technical details/ });
+    expect(header).toHaveTextContent(/^Technical detailsView$/);
+    expect(screen.queryByText('detail from the watchdog')).toBeNull();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Technical details: View' })
+    );
+    expect(screen.getByText('detail from the watchdog')).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Technical details: Hide' })
+    );
+    expect(screen.queryByText('detail from the watchdog')).toBeNull();
+  });
+
   it('says the old blockchain data was removed after a failed rebuild', () => {
     renderView(
       { code: 'DOWNLOAD_FAILED', stage: 'download', message: 'x' },

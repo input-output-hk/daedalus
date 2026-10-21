@@ -39,6 +39,16 @@ const makeBackend = (overrides = {}) => ({
   ...overrides,
 });
 
+// The labels of the actions the error view offers, by accessible name. The
+// technical details toggle, named View in every render below, is a button in
+// the section header and not one of them.
+const DETAILS_TOGGLE = 'View';
+const offeredActions = () =>
+  screen
+    .queryAllByRole('button')
+    .map((button) => button.textContent)
+    .filter((name) => name !== DETAILS_TOGGLE);
+
 const renderContainer = (
   backend: ReturnType<typeof makeBackend>,
   intlMessages: Record<string, string> = {}
@@ -50,7 +60,10 @@ const renderContainer = (
       variables={SimpleDefaults}
       themeOverrides={themeOverrides}
     >
-      <IntlProvider locale="en-US" messages={intlMessages}>
+      <IntlProvider
+        locale="en-US"
+        messages={{ [globalMessages.view.id]: DETAILS_TOGGLE, ...intlMessages }}
+      >
         <Provider
           stores={{ backend, app: { openExternalLink: jest.fn() } }}
           actions={{}}
@@ -305,7 +318,7 @@ describe('MithrilSyncContainer after an install did not finish', () => {
     );
     expect(screen.getByText('Unfinished; retry.')).toBeInTheDocument();
     expect(screen.queryByText('Removed; retry.')).toBeNull();
-    expect(screen.getAllByRole('button')).toHaveLength(1);
+    expect(offeredActions()).toEqual(['Retry']);
   });
 });
 
@@ -329,7 +342,7 @@ describe('MithrilSyncContainer after an install failed', () => {
   it('offers only Retry after a partial sync failed to install', () => {
     const backend = installFailed();
     renderContainer(backend, copy);
-    expect(screen.getAllByRole('button')).toHaveLength(1);
+    expect(offeredActions()).toEqual(['Retry']);
     expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
     expect(screen.queryByText('Removed; retry.')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
@@ -345,7 +358,7 @@ describe('MithrilSyncContainer after an install failed', () => {
     expect(screen.getByText('Removed; retry.')).toBeInTheDocument();
     expect(screen.queryByText('Removed; retry or choose.')).toBeNull();
     expect(screen.queryByText('Choose how to sync')).toBeNull();
-    expect(screen.getAllByRole('button')).toHaveLength(1);
+    expect(offeredActions()).toEqual(['Retry']);
   });
 
   it('offers only Retry for a later error while the watchdog still waits for an install', () => {
@@ -354,7 +367,7 @@ describe('MithrilSyncContainer after an install failed', () => {
       copy
     );
     expect(screen.queryByText('Skip to blockchain sync')).toBeNull();
-    expect(screen.getAllByRole('button')).toHaveLength(1);
+    expect(offeredActions()).toEqual(['Retry']);
   });
 });
 

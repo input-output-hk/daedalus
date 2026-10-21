@@ -201,7 +201,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           <CollapsibleSection
             header={intl.formatMessage(messages.errorDetailsHeader)}
             headerFontStyle="light"
-            expandButtonStyle="link"
+            expandButtonStyle="button"
           >
             <div className={styles.detailsBody}>
               {error?.code && (
