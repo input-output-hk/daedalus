@@ -4,7 +4,7 @@
     "created": "2026-10-16",
     "updated": "2026-10-21",
     "version": "1.1.0",
-    "totalTasks": 28,
+    "totalTasks": 29,
     "prdReference": ".agent/plans/chain-db-repair/chain-db-repair-prd.md",
     "description": "Detect a hole in the local chain database from node and wallet log signatures, offer a safe Mithril rebuild that keeps wallets, and, if a spike proves it, repair only the damaged chunks first.",
     "sourceFiles": [
@@ -477,6 +477,30 @@
             "Integration: a node that leaves a line unterminated emits node_silent once, and node_output_resumed when the line completes.",
             "Jest: WatchdogManager state, BackendStore prompt visibility per silence, and NodeSilencePrompt actions."
           ]
+        },
+        {
+          "id": "task-029",
+          "title": "Make the Mithril error view's hint and details readable",
+          "description": "Set the error hint as body text, close the gap between the hint and the technical details, and give the details header and its toggle the Mithril card's colors on every theme. Styles only: no message, role or markup changes.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-012"
+          ],
+          "targetPaths": [
+            "source/renderer/app/components/loading/mithril/MithrilErrorView.scss"
+          ],
+          "implementationNotes": [
+            "The hint was 13px with the body's line-height of 1, under a title with the same line-height, so it read as a caption pressed against the title.",
+            "CollapsibleSection colors its header with --theme-main-body-messages-color and its link with --rp-link-color, both set for the main app background: on the light-blue Mithril card they measure 1.95:1 and 2.49:1.",
+            "The header uses --theme-mithril-body-text-color and the toggle takes --theme-mithril-button-secondary-text-color through --rp-link-color, which measure at least 5.76:1 and 8.18:1 against the card on every theme.",
+            "The widget's link toggle is a span with aria-hidden and no tab stop, followed by a literal full stop. Its button mode renders a button instead, which MithrilSyncContainer specs would count among the view's buttons, so the toggle stays a link here."
+          ],
+          "testCases": [
+            "Existing Jest specs for MithrilErrorView and MithrilSyncContainer open the details through the toggle's text and count the view's buttons.",
+            "Storybook: the error stories on the light-blue, dark-blue, cardano and white themes, collapsed and expanded, and in ja-JP."
+          ]
         }
       ]
     },
@@ -740,8 +764,8 @@
   ],
   "summary": {
     "totalPhases": 7,
-    "totalTasks": 28,
-    "estimatedTotalHours": 118.0,
+    "totalTasks": 29,
+    "estimatedTotalHours": 119.5,
     "criticalPath": [
       "task-001",
       "task-009",
