@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --ignore-scripts
 
+      - name: Apply dependency patches
+        run: yarn patch-package --error-on-fail
+
       # Coverage is on by default and roughly doubles the runtime without
       # adding signal here — the question is which assertions hold on Windows,
       # not which lines they touch.

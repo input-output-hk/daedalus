@@ -2,8 +2,11 @@
   description = "The open source wallet for ada, built to grow with the Cardano blockchain";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs.flake = true;
+    # Retain the legacy Yarn v1 cache tooling while using current runtime packages.
+    yarn2nix-moretea.url = "github:nixos/nixpkgs/a4bf06618f0b5ee50f14ed8f0da77d34ecc19160";
+    yarn2nix-moretea.flake = false;
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
     crane.url = "github:ipetkov/crane";

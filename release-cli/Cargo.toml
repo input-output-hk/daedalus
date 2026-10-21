@@ -27,7 +27,9 @@ hex = "0.4"
 
 # S3
 aws-config = { version = "1", features = ["behavior-version-latest"] }
-aws-sdk-s3 = "1"
+# Keep the modern default HTTPS client; the legacy `rustls` feature also pulls
+# the obsolete Rustls 0.21/WebPKI 0.101 connector into the release tool.
+aws-sdk-s3 = { version = "1", default-features = false, features = ["sigv4a", "http-1x", "default-https-client", "rt-tokio"] }
 bytes = "1"
 
 # HTTP (fetch-installers)

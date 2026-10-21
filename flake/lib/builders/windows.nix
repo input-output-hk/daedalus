@@ -68,14 +68,14 @@
       windowsSources = {
         electron = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-win32-x64.zip";
-          hash = "sha256-VEfFDRlsIifjlnFuqWmGnB5bqhK2r3+zP3WuiXpoU6o=";
+          hash = "sha256-FyQ3G710BA8n4riN2Vk2GrviFS8AAn5yrx54Z7Zcd64=";
         };
 
         # XXX: normally, node-gyp would download it only for Windows
         node-lib = pkgs.fetchurl {
           name = "node.lib-${electronVersion}";
           url = "https://electronjs.org/headers/v${electronVersion}/win-x64/node.lib";
-          hash = "sha256-pKM7AL77T8wPNW+YEuRjdi9VosOM6S2QnAm/h40mPaQ=";
+          hash = "sha256-eQr3KxZFlBjVYtwHiscfZXrESgGrgRFdLLlVXnyXA8k=";
         };
       };
 
@@ -106,6 +106,21 @@
         hash = "sha256-YPLMeYE+UzxxP0qbkBzv3RBDvyGR5I4d7v2n8dI3+fY=";
       }) {inherit (pkgs) system;};
 
+      # libgsf 1.14.59 treats malloc(0) returning NULL as an OOM when
+      # reading empty MSI streams. Keep the stream length at zero while
+      # allocating a nonempty backing buffer; retain msitools' full tests.
+      msiTools = pkgs.msitools.override {
+        libgsf = pkgs.libgsf.overrideAttrs (old: {
+          postPatch =
+            (old.postPatch or "")
+            + ''
+              substituteInPlace gsf/gsf-infile-msole.c \
+                --replace-fail 'g_try_new (guint8, child->stream.buf_size)' \
+                  'g_try_new (guint8, MAX (1, child->stream.buf_size))'
+            '';
+        });
+      };
+
       msvc-wine = pkgs.stdenv.mkDerivation {
         name = "msvc-wine";
         src = pkgs.fetchFromGitHub {
@@ -120,7 +135,7 @@
         configurePhase = ":";
         buildPhase = ":";
         installPhase = ''
-          sed -r 's,msiextract,${pkgs.msitools}/bin/\0,g' -i vsdownload.py
+          sed -r 's,msiextract,${msiTools}/bin/\0,g' -i vsdownload.py
           mkdir -p $out/libexec
           cp -r . $out/libexec/.
         '';
@@ -301,9 +316,11 @@
             export WINEPATH="$(winepath -w ${native.nodejs});$(winepath -w ${native.python})"
 
             ${mkSection "Removing all symlinks to /nix/store (mostly python3)"}
-            find node_modules -type l >all-symlinks.lst
-            paste all-symlinks.lst <(xargs <all-symlinks.lst readlink) | grep -F /nix/store | cut -f1 | xargs rm -v
-            rm all-symlinks.lst
+            while IFS= read -r -d ''' symlink; do
+              case "$(readlink "$symlink")" in
+                /nix/store/*) rm -v "$symlink" ;;
+              esac
+            done < <(find node_modules -type l -print0)
 
             ${mkSection "Patching node_modules"}
             # Point electron-rebuild to the correct Node (Electron) headers location:
@@ -709,6 +726,9 @@
           BUILD_COUNTER = sourceLib.buildCounter;
           NODE_ENV = "production";
           BUILDTYPE = "Release";
+          # Modern Wine exposes wine for both PE architectures; rcedit's
+          # wrapper otherwise assumes the removed wine64 command exists.
+          WINE_BINARY = "${wine64}/bin/wine";
           configurePhase =
             setupCacheAndGypDirs
             + ''

@@ -31,7 +31,7 @@ const hash = (value: Buffer): string =>
   Buffer.from(blake2b(value, undefined, 32)).toString('hex');
 const mutateByte = (source: Buffer, index: number): Buffer => {
   const mutated = Buffer.from(source);
-  mutated[index] ^= 1 << index % 8;
+  mutated[index] ^= 1 << (index % 8);
   return mutated;
 };
 const transaction = (

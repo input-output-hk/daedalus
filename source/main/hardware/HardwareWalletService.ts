@@ -74,6 +74,7 @@ import {
   DeviceModel,
 } from '../ipc/hardwareWallets/ledger/deviceDetection/types';
 import { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
+import { runLedgerOperation } from '../ipc/hardwareWallets/ledger/ledgerOperation';
 import { initTrezorConnect, reinitTrezorConnect } from '../trezor/connection';
 import { dappLaunchPolicy, dappRuntimeConfig } from '../config';
 
@@ -1362,11 +1363,16 @@ export class HardwareWalletService {
         }
 
         logger.info('[HW-DEBUG] GET CARDANO APP');
-        const { version } = await this.withLedgerOperation(path, (connection) =>
-          connection.getVersion()
+        const { version, compatibility } = await this.withLedgerOperation(
+          path,
+          (connection) =>
+            runLedgerOperation('getVersion', () => connection.getVersion())
         );
 
-        logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion');
+        logger.info('[HW-DEBUG] getCardanoAdaAppChannel:: appVersion', {
+          version,
+          isCompatible: compatibility.isCompatible,
+        });
         const { minor, major, patch } = version;
         return {
           minor: String(minor),
@@ -1515,10 +1521,13 @@ export class HardwareWalletService {
         if (!devicePath) throw new Error('Ledger device not connected');
         logger.info('[HW-DEBUG] EXPORT KEY');
         return this.withLedgerOperation(devicePath, async (connection) => {
-          const extendedPublicKey = await connection.getExtendedPublicKey({
-            path: str_to_path(path),
-          });
-          const deviceSerial = await connection.getSerial();
+          const extendedPublicKey = await runLedgerOperation(
+            'getExtendedPublicKey',
+            () => connection.getExtendedPublicKey({ path: str_to_path(path) })
+          );
+          const deviceSerial = await runLedgerOperation('getSerial', () =>
+            connection.getSerial()
+          );
           return {
             publicKeyHex: extendedPublicKey.publicKeyHex,
             chainCodeHex: extendedPublicKey.chainCodeHex,

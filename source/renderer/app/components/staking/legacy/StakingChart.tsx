@@ -4,17 +4,9 @@ import { BarChart, Bar, YAxis, XAxis, Cell, ReferenceLine } from 'recharts';
 import StakingChartTooltip from './StakingChartTooltip';
 import styles from './StakingChart.scss';
 
-class CustomReferenceLine extends ReferenceLine {
-  getEndPoints(isX, isY) {
-    const endPoints = super.getEndPoints(isX, isY);
-    const end = endPoints[0];
-    const start = endPoints[1];
-    end.y += 10;
-    end.x -= 7;
-    start.x = end.x;
-    return endPoints;
-  }
-}
+const renderReferenceLine = ({ x1, y1, y2, ...lineProps }) => (
+  <line {...lineProps} x1={x1 - 7} y1={y1 + 10} x2={x1 - 7} y2={y2} />
+);
 
 type Props = {
   width: number;
@@ -94,8 +86,11 @@ class StakingChart extends Component<Props, State> {
             ticks={ticks.slice()}
             domain={['dataMin', 'dataMax + 10']}
           />
-          {/* @ts-ignore ts-migrate(2607) FIXME: JSX element class does not support attributes beca... Remove this comment to see the full error message */}
-          <CustomReferenceLine x={refLineSlot} stroke="#5e6066" />
+          <ReferenceLine
+            x={refLineSlot}
+            stroke="#5e6066"
+            shape={renderReferenceLine}
+          />
           <Bar
             dataKey="numberOfTransactions"
             onMouseEnter={(barData) =>

@@ -161,33 +161,33 @@ type Props = {
   isNodeSyncing?: boolean;
 };
 type TipParamValue = true | false | null | string;
-const STATUS_CLASSNAMES: Record<string, any> = {
-  [CardanoNodeStates.STARTING]: 'unloaded',
-  [CardanoNodeStates.RUNNING]: 'on',
-  [CardanoNodeStates.EXITING]: 'unloaded',
-  [CardanoNodeStates.STOPPING]: 'unloaded',
-  [CardanoNodeStates.STOPPED]: 'unloaded',
-  [CardanoNodeStates.UPDATING]: 'unloaded',
-  [CardanoNodeStates.UPDATED]: 'unloaded',
-  [CardanoNodeStates.CRASHED]: 'off',
-  [CardanoNodeStates.ERRORED]: 'off',
-  [CardanoNodeStates.UNRECOVERABLE]: 'off',
-  true: 'on',
-  false: 'off',
-  undefined: 'unloaded',
-};
-const NODE_STATE_MESSAGES = {
-  [CardanoNodeStates.RUNNING]: messages.nodeIsRunning,
-  [CardanoNodeStates.STARTING]: messages.nodeIsStarting,
-  [CardanoNodeStates.EXITING]: messages.nodeIsExiting,
-  [CardanoNodeStates.STOPPING]: messages.nodeIsStopping,
-  [CardanoNodeStates.STOPPED]: messages.nodeHasStopped,
-  [CardanoNodeStates.UPDATING]: messages.nodeIsUpdating,
-  [CardanoNodeStates.UPDATED]: messages.nodeHasBeenUpdated,
-  [CardanoNodeStates.CRASHED]: messages.nodeHasCrashed,
-  [CardanoNodeStates.ERRORED]: messages.nodeHasErrored,
-  [CardanoNodeStates.UNRECOVERABLE]: messages.nodeIsUnrecoverable,
-};
+const STATUS_CLASSNAMES: Record<string, any> = Object.fromEntries([
+  [CardanoNodeStates.STARTING, 'unloaded'],
+  [CardanoNodeStates.RUNNING, 'on'],
+  [CardanoNodeStates.EXITING, 'unloaded'],
+  [CardanoNodeStates.STOPPING, 'unloaded'],
+  [CardanoNodeStates.STOPPED, 'unloaded'],
+  [CardanoNodeStates.UPDATING, 'unloaded'],
+  [CardanoNodeStates.UPDATED, 'unloaded'],
+  [CardanoNodeStates.CRASHED, 'off'],
+  [CardanoNodeStates.ERRORED, 'off'],
+  [CardanoNodeStates.UNRECOVERABLE, 'off'],
+  ['true', 'on'],
+  ['false', 'off'],
+  ['undefined', 'unloaded'],
+]);
+const NODE_STATE_MESSAGES = Object.fromEntries([
+  [CardanoNodeStates.RUNNING, messages.nodeIsRunning],
+  [CardanoNodeStates.STARTING, messages.nodeIsStarting],
+  [CardanoNodeStates.EXITING, messages.nodeIsExiting],
+  [CardanoNodeStates.STOPPING, messages.nodeIsStopping],
+  [CardanoNodeStates.STOPPED, messages.nodeHasStopped],
+  [CardanoNodeStates.UPDATING, messages.nodeIsUpdating],
+  [CardanoNodeStates.UPDATED, messages.nodeHasBeenUpdated],
+  [CardanoNodeStates.CRASHED, messages.nodeHasCrashed],
+  [CardanoNodeStates.ERRORED, messages.nodeHasErrored],
+  [CardanoNodeStates.UNRECOVERABLE, messages.nodeIsUnrecoverable],
+]);
 const VARIABLE_VALUES = {
   true: 'On',
   false: 'Off',

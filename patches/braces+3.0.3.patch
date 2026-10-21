@@ -1,0 +1,89 @@
+diff --git a/node_modules/braces/lib/compile.js b/node_modules/braces/lib/compile.js
+index dce69be..4ffb2e2 100644
+--- a/node_modules/braces/lib/compile.js
++++ b/node_modules/braces/lib/compile.js
+@@ -4,7 +4,8 @@ const fill = require('fill-range');
+ const utils = require('./utils');
+ 
+ const compile = (ast, options = {}) => {
+-  const walk = (node, parent = {}) => {
++  const walk = (node, parent = {}, depth = 0) => {
++    if (depth > 128) throw new SyntaxError('Brace nesting exceeds 128 levels');
+     const invalidBlock = utils.isInvalidBrace(parent);
+     const invalidNode = node.invalid === true && options.escapeInvalid === true;
+     const invalid = invalidBlock === true || invalidNode === true;
+@@ -47,7 +48,7 @@ const compile = (ast, options = {}) => {
+ 
+     if (node.nodes) {
+       for (const child of node.nodes) {
+-        output += walk(child, node);
++        output += walk(child, node, depth + 1);
+       }
+     }
+ 
+diff --git a/node_modules/braces/lib/expand.js b/node_modules/braces/lib/expand.js
+index 35b2c41..c796a23 100644
+--- a/node_modules/braces/lib/expand.js
++++ b/node_modules/braces/lib/expand.js
+@@ -33,7 +33,8 @@ const append = (queue = '', stash = '', enclose = false) => {
+ const expand = (ast, options = {}) => {
+   const rangeLimit = options.rangeLimit === undefined ? 1000 : options.rangeLimit;
+ 
+-  const walk = (node, parent = {}) => {
++  const walk = (node, parent = {}, depth = 0) => {
++    if (depth > 128) throw new SyntaxError('Brace nesting exceeds 128 levels');
+     node.queue = [];
+ 
+     let p = parent;
+@@ -100,7 +101,7 @@ const expand = (ast, options = {}) => {
+       }
+ 
+       if (child.nodes) {
+-        walk(child, node);
++        walk(child, node, depth + 1);
+       }
+     }
+ 
+diff --git a/node_modules/braces/lib/parse.js b/node_modules/braces/lib/parse.js
+index 3a6988e..7b2a2b7 100644
+--- a/node_modules/braces/lib/parse.js
++++ b/node_modules/braces/lib/parse.js
+@@ -144,6 +144,7 @@ const parse = (input, options = {}) => {
+ 
+     if (value === CHAR_LEFT_PARENTHESES) {
+       block = push({ type: 'paren', nodes: [] });
++      if (stack.length >= 128) throw new SyntaxError('Brace nesting exceeds 128 levels');
+       stack.push(block);
+       push({ type: 'text', value });
+       continue;
+@@ -210,6 +211,7 @@ const parse = (input, options = {}) => {
+       };
+ 
+       block = push(brace);
++      if (stack.length >= 128) throw new SyntaxError('Brace nesting exceeds 128 levels');
+       stack.push(block);
+       push({ type: 'open', value });
+       continue;
+diff --git a/node_modules/braces/lib/stringify.js b/node_modules/braces/lib/stringify.js
+index 8bcf872..259f59c 100644
+--- a/node_modules/braces/lib/stringify.js
++++ b/node_modules/braces/lib/stringify.js
+@@ -3,7 +3,8 @@
+ const utils = require('./utils');
+ 
+ module.exports = (ast, options = {}) => {
+-  const stringify = (node, parent = {}) => {
++  const stringify = (node, parent = {}, depth = 0) => {
++    if (depth > 128) throw new SyntaxError('Brace nesting exceeds 128 levels');
+     const invalidBlock = options.escapeInvalid && utils.isInvalidBrace(parent);
+     const invalidNode = node.invalid === true && options.escapeInvalid === true;
+     let output = '';
+@@ -21,7 +22,7 @@ module.exports = (ast, options = {}) => {
+ 
+     if (node.nodes) {
+       for (const child of node.nodes) {
+-        output += stringify(child);
++        output += stringify(child, {}, depth + 1);
+       }
+     }
+     return output;

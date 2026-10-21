@@ -2,7 +2,7 @@
  * It generates stake pool dummy json content
  * Command to run: yarn ts-node source/renderer/app/config/generateStakePoolFakeData.ts
  */
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import fs from 'fs';
 import path from 'path';
 import BigNumber from 'bignumber.js';
@@ -11,26 +11,26 @@ function generateStakePoolsFakeData() {
   const stakePools = [];
 
   for (let i = 1; i <= 300; i++) {
-    const relativeStake = faker.datatype.number(100);
-    const cost = new BigNumber(faker.datatype.number(100));
+    const relativeStake = faker.number.int(100);
+    const cost = new BigNumber(faker.number.int(100));
     const createdAt = faker.date.recent();
     const description = faker.lorem.words();
     const homepage = faker.internet.url();
-    const id = faker.random.alphaNumeric(64);
+    const id = faker.string.alphanumeric(64);
     const isCharity = faker.datatype.boolean();
-    const name = faker.name.findName();
-    const performance = faker.datatype.number(100);
-    const pledge = new BigNumber(faker.datatype.number(100));
-    const producedBlocks = faker.datatype.number(10000000);
-    const profitMargin = faker.datatype.number(100);
+    const name = faker.person.fullName();
+    const performance = faker.number.int(100);
+    const pledge = new BigNumber(faker.number.int(100));
+    const producedBlocks = faker.number.int(10000000);
+    const profitMargin = faker.number.int(100);
     const ranking = i;
     const retiring = null;
-    const saturation = faker.datatype.number({
+    const saturation = faker.number.float({
       min: 0,
       max: 120,
-      precision: 0.01,
+      fractionDigits: 2,
     });
-    const ticker = faker.helpers.replaceSymbols('????');
+    const ticker = faker.string.alpha({ length: 4, casing: 'upper' });
     stakePools.push({
       relativeStake,
       cost,

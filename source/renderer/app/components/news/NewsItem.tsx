@@ -139,7 +139,6 @@ class NewsItem extends Component<Props, State> {
           >
             <div className={styles.newsItemContentContainer}>
               <ReactMarkdown
-                escapeHtml={false}
                 source={newsItem.content}
                 disallowedTypes={[
                   'image',

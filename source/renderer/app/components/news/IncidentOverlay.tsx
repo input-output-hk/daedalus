@@ -78,7 +78,7 @@ class IncidentOverlay extends Component<Props> {
           role="presentation"
           onClick={this.contentClickHandler.bind(this)}
         >
-          <ReactMarkdown escapeHtml={false} source={content} />
+          <ReactMarkdown source={content} />
         </div>
         {this.renderAction(action)}
       </div>

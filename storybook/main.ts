@@ -2,8 +2,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-  core: {
-    builder: 'webpack5',
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {},
+  },
+  features: {
+    storyStoreV7: false,
   },
   stories: ['../storybook/stories/index.ts'],
   addons: [
@@ -40,9 +44,12 @@ module.exports = {
       syncWebAssembly: true,
     };
     config.resolve = {
+      ...config.resolve,
       extensions: ['.ts', '.tsx', '.js', '.json'],
       fallback: {
+        ...config.resolve.fallback,
         process: require.resolve('process/browser'),
+        querystring: require.resolve('querystring-es3'),
         path: require.resolve('path-browserify'),
         crypto: require.resolve('crypto-browserify'),
         stream: require.resolve('stream-browserify'),

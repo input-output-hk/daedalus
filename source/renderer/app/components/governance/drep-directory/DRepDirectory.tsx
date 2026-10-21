@@ -742,7 +742,6 @@ function DRepDirectory({
                       label={intl.formatMessage(messages.reroll)}
                       onClick={onReroll}
                       disabled={
-                        refreshState === GovernanceRefreshState.Loading ||
                         refreshState === GovernanceRefreshState.Refreshing
                       }
                       skin={ButtonSkin}

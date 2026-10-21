@@ -25,6 +25,9 @@
         inherit name;
         src = srcWithoutNix;
         nativeBuildInputs = [yarn nodejs];
+        env = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+          LD_LIBRARY_PATH = lib.makeLibraryPath [pkgs.systemd];
+        };
         configurePhase = ''
           export HOME=$(realpath $NIX_BUILD_TOP/home)
           mkdir -p $HOME

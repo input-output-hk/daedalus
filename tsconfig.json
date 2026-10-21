@@ -12,7 +12,7 @@
 
     /* Language and Environment */
     "target": "es2019",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "lib": ["dom"],                                      /* Specify a set of bundled library declaration files that describe the target runtime environment. */
+    "lib": ["dom", "es2019"],                            /* Include the built-ins available at the configured ES2019 target. */
     "jsx": "react",                                      /* Specify what JSX code is generated. */
     "experimentalDecorators": true,                      /* Enable experimental support for TC39 stage 2 draft decorators. */
     "emitDecoratorMetadata": true,                       /* Emit design-type metadata for decorated declarations in source files. */

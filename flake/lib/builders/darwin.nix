@@ -83,12 +83,14 @@
                 # Remove prebuilt *.node files that need Electron-ABI-specific compilation.
                 find . -type f -name '*.node' \
                   -not -path '*/@swc*/*' \
+                  -not -path '*/@formatjs/cli-native-*/*' \
                   -not -path '*/node-hid/prebuilds/*' \
                   -not -path '*/usb/prebuilds/*' \
                   -not -path '*/blake-hash/prebuilds/*' \
                   -exec rm -vf {} ';'
 
                 patchShebangs . >/dev/null  # a real lot of paths to patch, no need to litter logs
+                yarn patch-package --error-on-fail
 
                 ${builtins.path {path = inputs.self + "/scripts/darwin-no-x-compile.sh";}}
 
@@ -588,16 +590,16 @@
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
           hash =
             if archSuffix == "x64"
-            then "sha256-8UrnxIVRobAl7/ttTJIb0F8vW4xQ1y83EIFXJvKUzlY="
-            else "sha256-ZZukJTyhTwvY501aLaLW2j5z5EwCCdLDtebKZaxAVYo=";
+            then "sha256-PFCdPC9Zz+I1uB4mw6SQy17QfEm4ivEQqEz+1WY9tik="
+            else "sha256-FYVjRnk+Tn8/IgComEczebUe2hp66lXGsaMm1YdQutQ=";
         };
 
         electronChromedriver = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
           hash =
             if archSuffix == "x64"
-            then "sha256-xn5q0Yxf306LZ0ZaHE+/sSEUU6Su3QAttT5GzOV0CxI="
-            else "sha256-G2HMXybKnTKfFQJpfcPh8A/ZK1k/axaIrOvTMnmFTRs=";
+            then "sha256-dKLjg0mNrfqHCLskA0halQ0lWfcdrlvWwuF6NZyOaiY="
+            else "sha256-32AKMYgC6B1wcvg0Btc/KWLRbx2XMfVfRMBwwwwYzRg=";
         };
       };
 

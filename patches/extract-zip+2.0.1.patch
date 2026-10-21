@@ -1,0 +1,105 @@
+diff --git a/node_modules/extract-zip/index.js b/node_modules/extract-zip/index.js
+index 23384ea..8136e1b 100644
+--- a/node_modules/extract-zip/index.js
++++ b/node_modules/extract-zip/index.js
+@@ -1,6 +1,6 @@
+ const debug = require('debug')('extract-zip')
+ // eslint-disable-next-line node/no-unsupported-features/node-builtins
+-const { createWriteStream, promises: fs } = require('fs')
++const { createWriteStream, constants, promises: fs } = require('fs')
+ const getStream = require('get-stream')
+ const path = require('path')
+ const { promisify } = require('util')
+@@ -16,6 +16,37 @@ class Extractor {
+     this.opts = opts
+   }
+ 
++  async assertInside (target) {
++    // Resolve each existing symlink component, including dangling chains, before
++    // creating directories or links. Permit forward references within the root.
++    let resolved = path.resolve(target)
++    for (let hops = 0; hops < 40; hops++) {
++      const relative = path.relative(this.opts.dir, resolved)
++      if (path.isAbsolute(relative) || relative.split(path.sep).includes('..')) {
++        throw new Error('Out of bound symlink target: ' + target)
++      }
++      const parts = relative.split(path.sep).filter(Boolean)
++      let current = this.opts.dir
++      let follow = false
++      for (let i = 0; i < parts.length; i++) {
++        const candidate = path.join(current, parts[i])
++        const stat = await fs.lstat(candidate).catch(err => {
++          if (err.code !== 'ENOENT') throw err
++        })
++        if (!stat) return
++        if (stat.isSymbolicLink()) {
++          const link = await fs.readlink(candidate)
++          resolved = path.resolve(current, link, ...parts.slice(i + 1))
++          follow = true
++          break
++        }
++        current = candidate
++      }
++      if (!follow) return
++    }
++    throw new Error('Too many symlinks in extraction target: ' + target)
++  }
++
+   async extract () {
+     debug('opening', this.zipPath, 'with opts', this.opts)
+ 
+@@ -53,6 +84,7 @@ class Extractor {
+         const destDir = path.dirname(path.join(this.opts.dir, entry.fileName))
+ 
+         try {
++          await this.assertInside(destDir)
+           await fs.mkdir(destDir, { recursive: true })
+ 
+           const canonicalDestDir = await fs.realpath(destDir)
+@@ -86,6 +118,13 @@ class Extractor {
+     }
+ 
+     const dest = path.join(this.opts.dir, entry.fileName)
++    // Never follow a final-component symlink planted by an earlier entry.
++    const existing = await fs.lstat(dest).catch(err => {
++      if (err.code !== 'ENOENT') throw err
++    })
++    if (existing && existing.isSymbolicLink()) {
++      throw new Error('Refusing to overwrite symlink: ' + entry.fileName)
++    }
+ 
+     // convert external file attr int into a fs stat mode int
+     const mode = (entry.externalFileAttributes >> 16) & 0xFFFF
+@@ -126,10 +165,11 @@ class Extractor {
+ 
+     if (symlink) {
+       const link = await getStream(readStream)
++      await this.assertInside(path.resolve(path.dirname(dest), link))
+       debug('creating symlink', link, dest)
+       await fs.symlink(link, dest)
+     } else {
+-      await pipeline(readStream, createWriteStream(dest, { mode: procMode }))
++      await pipeline(readStream, createWriteStream(dest, { mode: procMode, flags: constants.O_WRONLY | constants.O_CREAT | constants.O_TRUNC | (constants.O_NOFOLLOW || 0) }))
+     }
+   }
+ 
+@@ -160,7 +200,7 @@ class Extractor {
+   }
+ }
+ 
+-module.exports = async function (zipPath, opts) {
++async function extract (zipPath, opts) {
+   debug('creating target directory', opts.dir)
+ 
+   if (!path.isAbsolute(opts.dir)) {
+@@ -171,3 +211,10 @@ module.exports = async function (zipPath, opts) {
+   opts.dir = await fs.realpath(opts.dir)
+   return new Extractor(zipPath, opts).extract()
+ }
++
++// Preserve the callback API used by legacy Puppeteer consumers.
++module.exports = function (zipPath, opts, callback) {
++  const result = extract(zipPath, opts)
++  if (typeof callback === 'function') result.then(() => callback(), callback)
++  return result
++}

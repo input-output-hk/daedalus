@@ -79,9 +79,10 @@ const isResponseEnvelope = (value: any): value is ResponseEnvelope<any> =>
   typeof value.isOk === 'boolean' &&
   Object.prototype.hasOwnProperty.call(value, 'response');
 
-export class IpcChannel<Incoming, Outgoing>
-  implements Channel<Incoming, Outgoing>
-{
+export class IpcChannel<Incoming, Outgoing> implements Channel<
+  Incoming,
+  Outgoing
+> {
   static _instances = {};
 
   _broadcastChannel: string;

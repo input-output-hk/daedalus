@@ -451,9 +451,9 @@ const sameFilesystemEvidence = (
 const validRootIdentity = (evidence?: FilesystemEvidence): boolean =>
   Boolean(
     evidence &&
-      evidence.isDirectory === true &&
-      /^\d+$/.test(evidence.device) &&
-      /^[1-9]\d*$/.test(evidence.inode)
+    evidence.isDirectory === true &&
+    /^\d+$/.test(evidence.device) &&
+    /^[1-9]\d*$/.test(evidence.inode)
   );
 
 const hasRestrictedSharedRoot = (
@@ -472,30 +472,30 @@ const hasRestrictedSharedRoot = (
         Boolean(mainEvidence.namespaces[namespace]) &&
         Boolean(rendererEvidence.namespaces[namespace])
     ) &&
-      rendererEvidence.namespaces.user !== mainEvidence.namespaces.user &&
-      rendererEvidence.namespaces.net !== mainEvidence.namespaces.net &&
-      /^0+$/.test(rendererEvidence.status.CapPrm || '') &&
-      /^0+$/.test(rendererEvidence.status.CapInh || '') &&
-      mainUid &&
-      mainGid &&
-      uid &&
-      gid &&
-      uid.length === 1 &&
-      gid.length === 1 &&
-      uid[0][2] === 1 &&
-      gid[0][2] === 1 &&
-      !sameIdMap(uid, mainUid) &&
-      !sameIdMap(gid, mainGid) &&
-      validRootIdentity(mainRoot) &&
-      validRootIdentity(root) &&
-      mainRoot &&
-      root &&
-      (root.device !== mainRoot.device || root.inode !== mainRoot.inode) &&
-      root.filesystemType === '40864' &&
-      root.isDirectory &&
-      root.chromiumFdinfoRoot &&
-      root.cwdMatchesRoot &&
-      (root.empty || root.deadProcRoot)
+    rendererEvidence.namespaces.user !== mainEvidence.namespaces.user &&
+    rendererEvidence.namespaces.net !== mainEvidence.namespaces.net &&
+    /^0+$/.test(rendererEvidence.status.CapPrm || '') &&
+    /^0+$/.test(rendererEvidence.status.CapInh || '') &&
+    mainUid &&
+    mainGid &&
+    uid &&
+    gid &&
+    uid.length === 1 &&
+    gid.length === 1 &&
+    uid[0][2] === 1 &&
+    gid[0][2] === 1 &&
+    !sameIdMap(uid, mainUid) &&
+    !sameIdMap(gid, mainGid) &&
+    validRootIdentity(mainRoot) &&
+    validRootIdentity(root) &&
+    mainRoot &&
+    root &&
+    (root.device !== mainRoot.device || root.inode !== mainRoot.inode) &&
+    root.filesystemType === '40864' &&
+    root.isDirectory &&
+    root.chromiumFdinfoRoot &&
+    root.cwdMatchesRoot &&
+    (root.empty || root.deadProcRoot)
   );
 };
 

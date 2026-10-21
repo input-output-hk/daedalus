@@ -7,16 +7,6 @@
     lib,
     ...
   }: let
-    basePkgs = inputs.nixpkgs.legacyPackages.${system};
-    packageJson = builtins.fromJSON (builtins.readFile ../package.json);
-    electron = basePkgs.callPackage (inputs.nixpkgs + "/pkgs/development/tools/electron/binary/generic.nix") {} packageJson.dependencies.electron {
-      x86_64-linux = "sha256-onKR1QKxYXD+SdFL6raMTZoQQBklAOFkOpqwsRJ08HU=";
-      x86_64-darwin = "sha256-8UrnxIVRobAl7/ttTJIb0F8vW4xQ1y83EIFXJvKUzlY=";
-      aarch64-darwin = "sha256-ZZukJTyhTwvY501aLaLW2j5z5EwCCdLDtebKZaxAVYo=";
-      headers = "1nvq3xvz38xr64r1z7xa6wdmf6zykdsbl7angmy7bvr5rw4pi897";
-    };
-    extendedPkgs = basePkgs.extend (_final: _prev: {inherit electron;});
-
     # ---------------------------------------------------------------------------
     # Inlined source-lib.nix
     # ---------------------------------------------------------------------------
@@ -956,7 +946,7 @@
                 pkgs.lib.hasInfix "bypass-xcodebuild" patch
                 || pkgs.lib.hasInfix "bypass-darwin-xcrun" patch
               ))
-            drv.patches;
+            (drv.patches or []);
           });
 
       yarn = (pkgs.yarn.override {inherit nodejs;}).overrideAttrs (drv: {
@@ -967,7 +957,7 @@
           '';
       });
 
-      yarn2nix = import "${inputs.nixpkgs}/pkgs/development/tools/yarn2nix-moretea" {
+      yarn2nix = import "${inputs.yarn2nix-moretea}/pkgs/development/tools/yarn2nix-moretea" {
         inherit pkgs;
         inherit nodejs yarn;
         allowAliases = true;
@@ -976,7 +966,7 @@
       srcLockfiles = pkgs.lib.cleanSourceWith {
         src = inputs.self;
         name = "daedalus-lockfiles";
-        filter = name: _type: let b = baseNameOf (toString name); in (b == "package.json" || b == "yarn.lock");
+        filter = name: _type: let b = baseNameOf (toString name); in (b == "package.json" || b == "yarn.lock" || b == "patches" || pkgs.lib.hasInfix "/patches/" (toString name));
       };
 
       srcWithoutNix = pkgs.lib.cleanSourceWith {
@@ -1017,7 +1007,14 @@
       nodegypInstallVersion =
         (pkgs.lib.importJSON "${nodejs}/lib/node_modules/npm/node_modules/node-gyp/package.json").installVersion;
 
+      nodeGyp = pkgs.writeShellScriptBin "node-gyp" ''
+        exec ${nodejs}/bin/node ${nodejs}/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js "$@"
+      '';
+
       setupCacheAndGypDirs = ''
+        # Dependency install scripts invoke node-gyp directly through PATH.
+        export PATH=${nodeGyp}/bin:$PATH
+
         # XXX: `HOME` (for various caches) cannot be under our source root, that confuses `electron-packager`:
         export HOME=$(realpath $NIX_BUILD_TOP/home)
         mkdir -p $HOME
@@ -1031,7 +1028,7 @@
         export npm_config_build_from_source=true
         ( echo 'buildFromSource=true' ; echo 'compile=true' ; ) >$HOME/.prebuild-installrc
 
-        # Skip electron binary download in install scripts (we use the pinned pkgs.electron instead):
+        # Skip electron binary download in install scripts (we use the selected Electron package instead):
         export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 
         ${pkgs.lib.concatMapStringsSep "\n" (cacheDir: ''
@@ -1074,14 +1071,16 @@
 
       electronVersion = originalPackageJson.dependencies.electron;
       electronChromedriverVersion = electronVersion;
+      electron = assert pkgs.electron_42.version == electronVersion;
+        pkgs.electron_42;
 
       commonSources = let
         electronHeadersTarball = pkgs.runCommand "electron-headers-${electronVersion}.tar.gz" {
           nativeBuildInputs = [pkgs.gnutar];
-        } "tar czf $out -C ${pkgs.electron.headers} .";
+        } "tar czf $out -C ${electron.headers} .";
       in {
         electronHeaders = pkgs.runCommandLocal "electron-headers" {src = electronHeadersTarball;} ''
-          cp -r ${pkgs.electron.headers}/. $out
+          cp -r ${electron.headers}/. $out
           chmod -R +w $out
           echo ${toString nodegypInstallVersion} >$out/installVersion
         '';
@@ -1089,7 +1088,7 @@
         electronShaSums = pkgs.fetchurl {
           name = "electronShaSums-${electronVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-          hash = "sha256-qnbxSwPj5VU+5sN1J8RJ61TiXq34m4yUTKiUuA5r4ro=";
+          hash = "sha256-fX4rsnocCWpGoGFO53n/WQEKHqBt1K2bCNN7tI8bw88=";
         };
 
         electronCacheHash =
@@ -1099,7 +1098,7 @@
         electronChromedriverShaSums = pkgs.fetchurl {
           name = "electronChromedriverShaSums-${electronChromedriverVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-          hash = "sha256-qnbxSwPj5VU+5sN1J8RJ61TiXq34m4yUTKiUuA5r4ro=";
+          hash = "sha256-fX4rsnocCWpGoGFO53n/WQEKHqBt1K2bCNN7tI8bw88=";
         };
 
         electronChromedriverCacheHash =
@@ -1161,6 +1160,7 @@
         setupCacheAndGypDirs
         temporaryNodeModulesPatches
         electronVersion
+        electron
         electronChromedriverVersion
         commonSources
         patchElectronRebuild
@@ -1169,7 +1169,6 @@
 
     common = mkCommon system;
   in {
-    _module.args.pkgs = extendedPkgs;
     _module.args.mkCommon = mkCommon;
     _module.args.common = common;
   };

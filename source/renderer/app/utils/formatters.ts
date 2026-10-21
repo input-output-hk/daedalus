@@ -52,8 +52,7 @@ export const formattedWalletCurrencyAmount = (
   }`;
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
-  metadata?: AssetMetadata | null | undefined,
-  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
+  metadata: AssetMetadata | null | undefined,
   decimals: number | null | undefined,
   isShort?: boolean
 ): string => {
@@ -206,8 +205,7 @@ export type FormattedDownloadData = {
   progress: number;
 };
 export const formattedDownloadData = (
-  downloadData?: DownloadData | null | undefined,
-  // @ts-ignore ts-migrate(1016) FIXME: A required parameter cannot follow an optional par... Remove this comment to see the full error message
+  downloadData: DownloadData | null | undefined,
   userLocale: Locale
 ): FormattedDownloadData => {
   let timeLeft = '';

@@ -164,7 +164,7 @@ export const useCreateColumns = ({
           const cost = new BigNumber(value);
           const costValue = formattedWalletAmount(cost, false, false);
 
-          return costValue;
+          return <>{costValue}</>;
         },
       },
       {
@@ -180,7 +180,7 @@ export const useCreateColumns = ({
         ),
         accessor: 'profitMargin',
         Cell: ({ value }) => {
-          return `${toFixedUserFormat(value, 2)}%`;
+          return <>{`${toFixedUserFormat(value, 2)}%`}</>;
         },
       },
       {
@@ -198,7 +198,7 @@ export const useCreateColumns = ({
         ),
         accessor: 'producedBlocks',
         Cell: ({ value }) => {
-          return toFixedUserFormat(value, 0);
+          return <>{toFixedUserFormat(value, 0)}</>;
         },
       },
       {
@@ -219,7 +219,7 @@ export const useCreateColumns = ({
           const stakePool = row.original;
           const memberRewards = new BigNumber(stakePool.potentialRewards);
           const potentialRewards = formattedWalletAmount(memberRewards);
-          return potentialRewards;
+          return <>{potentialRewards}</>;
         },
       },
       {
@@ -238,7 +238,7 @@ export const useCreateColumns = ({
           const stakePool = row.original;
           const pledge = new BigNumber(stakePool.pledge);
           const pledgeValue = formattedWalletAmount(pledge, false, false);
-          return pledgeValue;
+          return <>{pledgeValue}</>;
         },
       },
       {
