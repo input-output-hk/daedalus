@@ -99,6 +99,8 @@ export default class BackendStore extends Store {
   // Counts the silences reported; Keep waiting hides the prompt until the
   // next one
   @observable nodeSilenceEpisode = 0;
+  // The silence whose prompt the user dismissed. Main keeps it as well, so
+  // the poll restores it after a reload of the window.
   @observable _dismissedSilenceEpisode = 0;
   @observable nodeSocketWaitMs: number | null = null;
   @observable walletReadyWaitMs: number | null = null;
@@ -229,6 +231,11 @@ export default class BackendStore extends Store {
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
         this.nodeSilentSecs = state.nodeSilentSecs ?? null;
         this.nodeSilenceEpisode = state.nodeSilenceEpisode ?? 0;
+        // A dismissal not yet reported back by main stays in effect
+        this._dismissedSilenceEpisode = Math.max(
+          this._dismissedSilenceEpisode,
+          state.dismissedSilenceEpisode ?? 0
+        );
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;
         this.walletReadyWaitMs = state.walletReadyWaitMs;
         this.nodeForceKilled = state.nodeForceKilled;
@@ -571,15 +578,23 @@ export default class BackendStore extends Store {
   // "Restart Cardano node" on the silence prompt
   @action
   restartSilentNode = () => {
-    this._dismissedSilenceEpisode = this.nodeSilenceEpisode;
+    this._dismissSilence();
     this._restartNode();
   };
 
   // "Keep waiting" on the silence prompt: hidden until the next silence
   @action
   keepWaitingForNode = () => {
-    this._dismissedSilenceEpisode = this.nodeSilenceEpisode;
+    this._dismissSilence();
   };
+
+  // Hides the prompt for the current silence at once, and has main record
+  // it, so a reload of the window does not show it again
+  _dismissSilence() {
+    const episode = this.nodeSilenceEpisode;
+    this._dismissedSilenceEpisode = episode;
+    mithrilCommandChannel.send({ cmd: 'dismiss_node_silence', episode });
+  }
 
   _restartWallet = () => {
     mithrilCommandChannel.send({ cmd: 'restart_wallet' });

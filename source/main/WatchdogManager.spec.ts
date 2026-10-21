@@ -295,6 +295,25 @@ describe('WatchdogManager startup silence', () => {
   });
 });
 
+describe('WatchdogManager dismissed silence prompt', () => {
+  it('records the dismissed silence and sends nothing to the watchdog', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    const { socket } = manager as any;
+    emit({ event: 'node_silent', silent_secs: 300 });
+    expect(manager.getState().dismissedSilenceEpisode).toBe(0);
+    manager.sendCommand({ cmd: 'dismiss_node_silence', episode: 1 });
+    expect(manager.getState().dismissedSilenceEpisode).toBe(1);
+    expect(socket.write).not.toHaveBeenCalled();
+  });
+
+  it('keeps the latest dismissal when an earlier one arrives after it', () => {
+    const { manager } = makeManagerWithSocket();
+    manager.sendCommand({ cmd: 'dismiss_node_silence', episode: 2 });
+    manager.sendCommand({ cmd: 'dismiss_node_silence', episode: 1 });
+    expect(manager.getState().dismissedSilenceEpisode).toBe(2);
+  });
+});
+
 describe('WatchdogManager Mithril download waiting for the network', () => {
   const waiting = { event: 'mithril_waiting_for_network', waiting: true };
 

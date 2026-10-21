@@ -375,16 +375,60 @@ describe('BackendStore startup silence', () => {
     expect(store.showNodeSilencePrompt).toBe(false);
     (store as any).nodeSilenceEpisode = 2;
     expect(store.showNodeSilencePrompt).toBe(true);
-    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+    expect((mithrilCommandChannel.send as jest.Mock).mock.calls).toEqual([
+      [{ cmd: 'dismiss_node_silence', episode: 1 }],
+    ]);
   });
 
   it('sends restart_node from restartSilentNode and hides the prompt', () => {
     const store = silentStore();
     store.restartSilentNode();
-    expect(mithrilCommandChannel.send).toHaveBeenCalledTimes(1);
-    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
-      cmd: 'restart_node',
+    expect((mithrilCommandChannel.send as jest.Mock).mock.calls).toEqual([
+      [{ cmd: 'dismiss_node_silence', episode: 1 }],
+      [{ cmd: 'restart_node' }],
+    ]);
+    expect(store.showNodeSilencePrompt).toBe(false);
+  });
+
+  const polledSilence = (dismissedSilenceEpisode: number | undefined) => ({
+    hasChain: true,
+    mithrilPhase: null,
+    walletPort: null,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+    nodeSilentSecs: 300,
+    nodeSilenceEpisode: 1,
+    dismissedSilenceEpisode,
+  });
+
+  it('keeps a prompt dismissed before a reload of the window hidden', async () => {
+    // A new store stands for the renderer after a reload; main still holds
+    // the silence and the dismissal.
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polledSilence(1)
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('node-starting');
+    expect(store.showNodeSilencePrompt).toBe(false);
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      ...polledSilence(1),
+      nodeSilenceEpisode: 2,
     });
+    await store._pollBackendStatus();
+    expect(store.showNodeSilencePrompt).toBe(true);
+  });
+
+  it('keeps a prompt dismissed in this window hidden until main reports the dismissal', async () => {
+    const store = silentStore();
+    store.keepWaitingForNode();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polledSilence(undefined)
+    );
+    await store._pollBackendStatus();
     expect(store.showNodeSilencePrompt).toBe(false);
   });
 

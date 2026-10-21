@@ -114,6 +114,7 @@ export default (window: BrowserWindow) => {
         nodeUnrecoverable: false,
         nodeSilentSecs: null,
         nodeSilenceEpisode: 0,
+        dismissedSilenceEpisode: 0,
         requestedRestart: null,
       }
     )

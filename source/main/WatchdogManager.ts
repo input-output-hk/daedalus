@@ -107,6 +107,9 @@ export interface WatchdogState {
   // Counts the silences reported, so a prompt dismissed for one shows again
   // for the next
   nodeSilenceEpisode: number;
+  // The silence whose prompt the user dismissed; kept here, not in the
+  // renderer, so a reload of the window does not show that prompt again
+  dismissedSilenceEpisode: number;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
 }
@@ -203,6 +206,7 @@ class WatchdogManager {
       nodeUnrecoverable: false,
       nodeSilentSecs: null,
       nodeSilenceEpisode: 0,
+      dismissedSilenceEpisode: 0,
       requestedRestart: null,
     };
   }
@@ -285,6 +289,7 @@ class WatchdogManager {
   // ---------------------------------------------------------------------------
 
   sendCommand(cmd: object): void {
+    if (this._keepCommand(cmd)) return;
     const line = JSON.stringify(cmd) + '\n';
     if (this.socket) {
       if (!this.socket.writable) {
@@ -309,6 +314,21 @@ class WatchdogManager {
     process.stdout.write(line);
     this._noteRequestedRestart(cmd);
     this._noteMithrilCommand(cmd);
+  }
+
+  // Commands that main answers itself and does not send to the watchdog.
+  // The prompt the user dismissed is recorded here, beside the silence count,
+  // so the renderer reads it back after a reload of the window.
+  private _keepCommand(cmd: object): boolean {
+    const { cmd: name, episode } = cmd as { cmd?: string; episode?: unknown };
+    if (name !== 'dismiss_node_silence') return false;
+    if (typeof episode === 'number') {
+      this.state.dismissedSilenceEpisode = Math.max(
+        this.state.dismissedSilenceEpisode,
+        episode
+      );
+    }
+    return true;
   }
 
   // A new Mithril run or a node start ends the error of the previous run, so
