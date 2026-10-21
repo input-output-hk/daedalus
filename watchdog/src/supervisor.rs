@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -11,7 +12,7 @@ use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::net::TcpStream;
 use tokio::process::{Child, ChildStdin, Command};
 use tokio::sync::{mpsc, oneshot, watch};
-use tokio::time::{Duration, Instant, interval_at, sleep, timeout};
+use tokio::time::{Duration, Instant, MissedTickBehavior, interval, interval_at, sleep, timeout};
 use tracing::{info, warn};
 
 #[cfg(unix)]
@@ -709,12 +710,90 @@ const MAX_LOG_LINE_BYTES: u64 = 1024 * 1024;
 /// would otherwise reach the detector only when the node exits.
 const PARTIAL_LINE_WAIT: Duration = Duration::from_millis(500);
 
+/// Bytes a child has written so far, counted as they arrive, for the startup
+/// silence watch. Shared by the stdout and stderr readers of one process.
+type OutputCount = Arc<AtomicU64>;
+
+/// How often the startup silence watch looks at the node's output, at most.
+const SILENCE_TICK_MAX: Duration = Duration::from_secs(5);
+
+/// Ticks of the silence watch that may pass without one arriving before the
+/// gap is taken for the machine sleeping: 30 s at the default tick.
+const SILENCE_TICKS_BEFORE_SLEEP: u32 = 6;
+
+/// A change in a starting node's output that the silence watch reports.
+#[derive(Debug, PartialEq, Eq)]
+enum Silence {
+    /// No byte has arrived for the limit.
+    Began,
+    /// Output arrived after a reported silence, which lasted this long.
+    Ended(Duration),
+}
+
+/// Watches a starting node's output for a silence of `limit`, reported once
+/// until output arrives again. The watch runs on the watchdog's own timer: a
+/// tick that arrives long after the one before, by the monotonic or the wall
+/// clock, means the machine slept, and the silence is counted again from
+/// then rather than reported. A clock that does not advance while the
+/// machine sleeps does not count the sleep either.
+struct SilenceWatch {
+    limit: Duration,
+    tick: Duration,
+    output: u64,
+    quiet_since: Instant,
+    last_tick: (Instant, SystemTime),
+    reported: bool,
+}
+
+impl SilenceWatch {
+    fn new(limit: Duration, now: Instant, wall: SystemTime) -> Self {
+        SilenceWatch {
+            limit,
+            tick: (limit / 60).clamp(Duration::from_millis(50), SILENCE_TICK_MAX),
+            output: 0,
+            quiet_since: now,
+            last_tick: (now, wall),
+            reported: false,
+        }
+    }
+
+    /// The longest gap between two ticks that the watchdog's timer makes
+    /// while the machine is awake.
+    fn max_gap(&self) -> Duration {
+        (self.tick * SILENCE_TICKS_BEFORE_SLEEP).max(Duration::from_secs(1))
+    }
+
+    /// Looks at the output count `output` at a tick of the timer.
+    fn on_tick(&mut self, now: Instant, wall: SystemTime, output: u64) -> Option<Silence> {
+        let (last, last_wall) = std::mem::replace(&mut self.last_tick, (now, wall));
+        let gap = now
+            .saturating_duration_since(last)
+            .max(wall.duration_since(last_wall).unwrap_or(Duration::MAX));
+        if output != self.output {
+            self.output = output;
+            let quiet = now.saturating_duration_since(self.quiet_since);
+            self.quiet_since = now;
+            return std::mem::take(&mut self.reported).then_some(Silence::Ended(quiet));
+        }
+        if gap > self.max_gap() {
+            self.quiet_since = now;
+            return None;
+        }
+        if !self.reported && now.saturating_duration_since(self.quiet_since) >= self.limit {
+            self.reported = true;
+            return Some(Silence::Began);
+        }
+        None
+    }
+}
+
 /// Copy a child's output pipe into `log`, feeding startup and sync-progress
 /// parsers when `parse_sync_progress` is set, and every line to `damage` when
 /// one is given. A line the child leaves unterminated for PARTIAL_LINE_WAIT is
 /// also shown to `damage` as it stands; the bytes stay in the buffer, so the
 /// line is still logged once, whole, when its newline or the end of the
-/// output arrives. Output is decoded lossily, so
+/// output arrives. Every byte is added to `output` when one is given, a
+/// partial line's within PARTIAL_LINE_WAIT. Output is decoded lossily, so
 /// bytes that are not valid UTF-8 (a Windows user name in the active code page,
 /// for instance) are logged with replacement characters and reading continues:
 /// stopping would close the pipe and make the child's next write fail.
@@ -724,7 +803,13 @@ async fn pipe_to_log(
     parse_sync_progress: bool,
     startup_tx: Option<mpsc::UnboundedSender<&'static str>>,
     damage: Option<SharedDetector>,
+    output: Option<OutputCount>,
 ) {
+    let count = |bytes: usize| {
+        if let Some(ref output) = output {
+            output.fetch_add(bytes as u64, Ordering::Relaxed);
+        }
+    };
     let mut buf = BufReader::new(reader);
     let mut raw: Vec<u8> = Vec::new();
     loop {
@@ -739,6 +824,7 @@ async fn pipe_to_log(
             match timeout(PARTIAL_LINE_WAIT, next).await {
                 Ok(read) => break read,
                 Err(_) if raw.len() > partial_seen => {
+                    count(raw.len() - partial_seen);
                     partial_seen = raw.len();
                     if let Some(ref detector) = damage {
                         let line = String::from_utf8_lossy(&raw);
@@ -762,6 +848,7 @@ async fn pipe_to_log(
             // End of output, with nothing left over from an unterminated line.
             Ok(_) if raw.is_empty() => break,
             Ok(_) => {
+                count(raw.len() - partial_seen);
                 let line = String::from_utf8_lossy(&raw);
                 if parse_sync_progress {
                     if let Some((kind, progress)) = try_parse_block_sync(&line) {
@@ -1736,8 +1823,10 @@ async fn run_node_wallet(
     // loop can gate wallet startup on chainDbReady.
     let (startup_tx, mut startup_rx) = mpsc::unbounded_channel::<&'static str>();
 
-    // One detector per node process, shared by both output streams.
+    // One detector and one output count per node process, shared by both
+    // output streams.
     let node_damage: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::node()));
+    let node_output: OutputCount = Arc::new(AtomicU64::new(0));
 
     // Forward node logs
     tokio::spawn(pipe_to_log(
@@ -1746,6 +1835,7 @@ async fn run_node_wallet(
         true,
         Some(startup_tx.clone()),
         Some(Arc::clone(&node_damage)),
+        Some(Arc::clone(&node_output)),
     ));
     tokio::spawn(pipe_to_log(
         node_proc.stderr.take().unwrap(),
@@ -1753,6 +1843,7 @@ async fn run_node_wallet(
         true,
         Some(startup_tx),
         Some(node_damage),
+        Some(Arc::clone(&node_output)),
     ));
 
     // Watch node for exit. The kill channel lets us force-kill via start_kill()
@@ -1807,8 +1898,29 @@ async fn run_node_wallet(
     // signal across platforms.
     let mut startup_state = NodeStartupState::Init;
 
+    // A node that writes nothing for startup_silence_secs while it starts is
+    // reported once per silence, so the user can restart it.
+    let silence_limit = Duration::from_secs(config.node.startup_silence_secs);
+    let mut silence = SilenceWatch::new(silence_limit, Instant::now(), SystemTime::now());
+    let mut silence_ticks = interval(silence.tick);
+    silence_ticks.set_missed_tick_behavior(MissedTickBehavior::Delay);
+
     'node_starting: loop {
         tokio::select! {
+            _ = silence_ticks.tick(), if !silence_limit.is_zero() => {
+                let output = node_output.load(Ordering::Relaxed);
+                match silence.on_tick(Instant::now(), SystemTime::now(), output) {
+                    Some(Silence::Began) => {
+                        warn!("node: no output for {} s while starting", silence_limit.as_secs());
+                        emit(&Event::NodeSilent { silent_secs: silence_limit.as_secs() });
+                    }
+                    Some(Silence::Ended(quiet)) => {
+                        info!("node: output resumed after {} s without output", quiet.as_secs());
+                        emit(&Event::NodeOutputResumed);
+                    }
+                    None => {}
+                }
+            }
             Some(phase) = startup_rx.recv() => {
                 startup_state = match (&startup_state, phase) {
                     (NodeStartupState::Init,             "openingChainDb")    => NodeStartupState::OpeningChainDb,
@@ -2144,6 +2256,7 @@ async fn run_node_wallet(
             false,
             None,
             Some(Arc::clone(&wallet_damage)),
+            None,
         ));
         tokio::spawn(pipe_to_log(
             wallet.stderr.take().unwrap(),
@@ -2151,6 +2264,7 @@ async fn run_node_wallet(
             false,
             None,
             Some(wallet_damage),
+            None,
         ));
 
         let wallet_wait_start = unix_ms();
@@ -2554,7 +2668,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("out.log");
         let log = open_log(path.to_str().unwrap());
-        pipe_to_log(std::io::Cursor::new(input), log, false, None, None).await;
+        pipe_to_log(std::io::Cursor::new(input), log, false, None, None, None).await;
         let out = std::fs::read(&path).unwrap();
         let _ = std::fs::remove_dir_all(&dir);
         out
@@ -2592,6 +2706,7 @@ before we could open ledgerdb";
             false,
             None,
             Some(Arc::clone(&detector)),
+            None,
         ));
 
         child_end.write_all(LINE.as_bytes()).await.unwrap();
@@ -2615,6 +2730,168 @@ before we could open ledgerdb";
         let expected = input.clone();
         let out = piped_log("overlong", input).await;
         assert_eq!(out, expected);
+    }
+
+    #[tokio::test]
+    async fn pipe_to_log_counts_partial_lines_as_output() {
+        use tokio::io::AsyncWriteExt;
+        let dir = std::env::temp_dir().join(format!("wdg-unit-count-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("out.log");
+        let output: OutputCount = Arc::new(AtomicU64::new(0));
+        let (mut child_end, our_end) = tokio::io::duplex(1024);
+        let reader = tokio::spawn(pipe_to_log(
+            our_end,
+            open_log(path.to_str().unwrap()),
+            false,
+            None,
+            None,
+            Some(Arc::clone(&output)),
+        ));
+
+        child_end.write_all(b"abc").await.unwrap();
+        sleep(PARTIAL_LINE_WAIT * 3).await;
+        assert_eq!(output.load(Ordering::Relaxed), 3);
+
+        child_end.write_all(b"de\n").await.unwrap();
+        drop(child_end);
+        reader.await.unwrap();
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(output.load(Ordering::Relaxed), 6);
+    }
+
+    // ── SilenceWatch ──────────────────────────────────────────────────────────
+
+    /// A clock for a silence watch: monotonic and wall time, moved together
+    /// unless a test moves one alone.
+    struct Clock {
+        now: Instant,
+        wall: SystemTime,
+    }
+
+    impl Clock {
+        fn new() -> Self {
+            Clock {
+                now: Instant::now(),
+                wall: UNIX_EPOCH + Duration::from_secs(1_800_000_000),
+            }
+        }
+
+        fn advance(&mut self, secs: u64) {
+            self.now += Duration::from_secs(secs);
+            self.wall += Duration::from_secs(secs);
+        }
+    }
+
+    /// Ticks `watch` every 5 s for `secs` seconds with an unchanged
+    /// `output`, and returns how many seconds in each report came.
+    fn tick_quietly(
+        watch: &mut SilenceWatch,
+        clock: &mut Clock,
+        secs: u64,
+        output: u64,
+    ) -> Vec<(u64, Silence)> {
+        let mut reports = Vec::new();
+        for t in (5..=secs).step_by(5) {
+            clock.advance(5);
+            if let Some(report) = watch.on_tick(clock.now, clock.wall, output) {
+                reports.push((t, report));
+            }
+        }
+        reports
+    }
+
+    #[test]
+    fn silence_is_reported_once_at_the_limit() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 900, 0),
+            vec![(300, Silence::Began)]
+        );
+    }
+
+    #[test]
+    fn output_keeps_a_silence_from_being_reported() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        for t in 1..=180u64 {
+            clock.advance(5);
+            assert_eq!(watch.on_tick(clock.now, clock.wall, t), None, "tick {t}");
+        }
+    }
+
+    #[test]
+    fn output_ends_a_silence_and_a_new_one_is_reported() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 310, 0),
+            vec![(300, Silence::Began)]
+        );
+        clock.advance(5);
+        assert_eq!(
+            watch.on_tick(clock.now, clock.wall, 1),
+            Some(Silence::Ended(Duration::from_secs(315)))
+        );
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 600, 1),
+            vec![(300, Silence::Began)]
+        );
+    }
+
+    #[test]
+    fn output_without_a_reported_silence_reports_nothing() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert!(tick_quietly(&mut watch, &mut clock, 200, 0).is_empty());
+        clock.advance(5);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 7), None);
+    }
+
+    #[test]
+    fn a_late_tick_restarts_the_count_as_after_sleep() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert!(tick_quietly(&mut watch, &mut clock, 200, 0).is_empty());
+        // The machine slept for an hour, and the monotonic clock counted it.
+        clock.advance(3600);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 0), None);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 600, 0),
+            vec![(300, Silence::Began)]
+        );
+    }
+
+    #[test]
+    fn a_wall_clock_gap_restarts_the_count_as_after_sleep() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert!(tick_quietly(&mut watch, &mut clock, 200, 0).is_empty());
+        // The monotonic clock stopped while the machine slept; the wall
+        // clock did not.
+        clock.now += Duration::from_secs(5);
+        clock.wall += Duration::from_secs(3600);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 0), None);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 600, 0),
+            vec![(300, Silence::Began)]
+        );
+        // A wall clock set back counts as a gap too.
+        clock.now += Duration::from_secs(5);
+        clock.wall -= Duration::from_secs(60);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 0), None);
+    }
+
+    #[test]
+    fn the_tick_follows_the_limit() {
+        let start = (Instant::now(), SystemTime::now());
+        let watch = SilenceWatch::new(Duration::from_secs(300), start.0, start.1);
+        assert_eq!(watch.tick, Duration::from_secs(5));
+        assert_eq!(watch.max_gap(), Duration::from_secs(30));
+        let watch = SilenceWatch::new(Duration::from_secs(1), start.0, start.1);
+        assert_eq!(watch.tick, Duration::from_millis(50));
+        assert_eq!(watch.max_gap(), Duration::from_secs(1));
     }
 
     // ── HeldRequests ──────────────────────────────────────────────────────────

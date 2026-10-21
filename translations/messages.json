@@ -4947,6 +4947,31 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Cardano node is not reporting progress",
+        "description": "Title of the prompt on the loading screen when Cardano node has written no output for several minutes while it starts",
+        "id": "loading.nodeSilence.title"
+      },
+      {
+        "defaultMessage": "!!!Cardano node has reported nothing for {minutes, plural, one {# minute} other {# minutes}} while starting. It may still be working. If it is stuck, restarting it can help.",
+        "description": "Body of the prompt on the loading screen when Cardano node has written no output for the given number of minutes while it starts",
+        "id": "loading.nodeSilence.body"
+      },
+      {
+        "defaultMessage": "!!!Restart Cardano node",
+        "description": "Button on the prompt about Cardano node writing no output while it starts, which restarts Cardano node",
+        "id": "loading.nodeSilence.restart"
+      },
+      {
+        "defaultMessage": "!!!Keep waiting",
+        "description": "Button on the prompt about Cardano node writing no output while it starts, which hides the prompt until Cardano node is silent again",
+        "id": "loading.nodeSilence.keepWaiting"
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/NodeSilencePrompt.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Having trouble connecting to network?",
         "description": "Report connecting issue text on the loading screen.",
         "id": "loading.screen.reportIssue.connecting.text"

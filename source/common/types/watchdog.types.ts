@@ -64,6 +64,12 @@ export interface WatchdogState {
   backendStopProgress: BackendStopProgress | null;
   // cardano-node crashed too often; the watchdog waits for a retry
   nodeUnrecoverable: boolean;
+  // Seconds cardano-node has written no output while starting, once the
+  // watchdog reports the silence; null while the node writes
+  nodeSilentSecs: number | null;
+  // Counts the silences reported, so a prompt dismissed for one shows again
+  // for the next
+  nodeSilenceEpisode: number;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
 }

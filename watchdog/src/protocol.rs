@@ -283,6 +283,14 @@ pub enum Event {
         last_good_slot: Option<u64>,
         node_held: bool,
     },
+    /// cardano-node has written nothing on either output stream for
+    /// `silent_secs` while it starts, before `chainDbReady`. Emitted once per
+    /// silence; output that arrives after it emits `node_output_resumed`.
+    NodeSilent {
+        silent_secs: u64,
+    },
+    /// cardano-node wrote output again after a `node_silent`.
+    NodeOutputResumed,
     /// The update installer requested with `install_update` was started.
     UpdateInstallerLaunched {
         pid: u32,
@@ -881,6 +889,14 @@ mod tests {
             });
             assert_eq!(j["kind"], expected);
         }
+    }
+
+    #[test]
+    fn node_silence_events() {
+        let line = serde_json::to_string(&Event::NodeSilent { silent_secs: 300 }).unwrap();
+        assert_eq!(line, r#"{"event":"node_silent","silent_secs":300}"#);
+        let line = serde_json::to_string(&Event::NodeOutputResumed).unwrap();
+        assert_eq!(line, r#"{"event":"node_output_resumed"}"#);
     }
 
     #[test]

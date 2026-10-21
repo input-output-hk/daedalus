@@ -111,6 +111,8 @@ export default (window: BrowserWindow) => {
         shutdownRequested: false,
         backendStopProgress: null,
         nodeUnrecoverable: false,
+        nodeSilentSecs: null,
+        nodeSilenceEpisode: 0,
         requestedRestart: null,
       }
     )

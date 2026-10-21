@@ -97,6 +97,12 @@ export interface WatchdogState {
 
   // cardano-node crashed too often; the watchdog waits for a retry
   nodeUnrecoverable: boolean;
+  // Seconds cardano-node has written no output while starting, once the
+  // watchdog reports the silence; null while the node writes
+  nodeSilentSecs: number | null;
+  // Counts the silences reported, so a prompt dismissed for one shows again
+  // for the next
+  nodeSilenceEpisode: number;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
 }
@@ -190,6 +196,8 @@ class WatchdogManager {
       shutdownRequested: false,
       backendStopProgress: null,
       nodeUnrecoverable: false,
+      nodeSilentSecs: null,
+      nodeSilenceEpisode: 0,
       requestedRestart: null,
     };
   }
@@ -460,6 +468,7 @@ class WatchdogManager {
         s.nodeUnrecoverable = false;
         s.walletUnrecoverable = false;
         s.requestedRestart = null;
+        s.nodeSilentSecs = null;
         // The new node reports its own damage from its own output.
         s.chainDamage = null;
         s.nodeHeld = false;
@@ -478,10 +487,21 @@ class WatchdogManager {
 
       case 'node_socket_ready':
         s.nodeSocketWaitMs = event.waited_ms as number;
+        s.nodeSilentSecs = null;
         break;
 
       case 'node_startup_status':
         s.nodeStartupPhase = event.phase as string;
+        s.nodeSilentSecs = null;
+        break;
+
+      case 'node_silent':
+        s.nodeSilentSecs = event.silent_secs as number;
+        s.nodeSilenceEpisode += 1;
+        break;
+
+      case 'node_output_resumed':
+        s.nodeSilentSecs = null;
         break;
 
       case 'node_block_sync_progress': {
@@ -539,11 +559,13 @@ class WatchdogManager {
       case 'node_unrecoverable':
         s.nodeUnrecoverable = true;
         s.requestedRestart = null;
+        s.nodeSilentSecs = null;
         this._nodeRunning = false;
         break;
 
       case 'node_exited':
       case 'node_shutdown_ms':
+        s.nodeSilentSecs = null;
         this._nodeRunning = false;
         break;
 
@@ -630,6 +652,7 @@ class WatchdogManager {
         this._watchdogStopped = true;
         this._nodeRunning = false;
         s.requestedRestart = null;
+        s.nodeSilentSecs = null;
         if (this._installRequested && this._installResult === null) {
           // The installer starts next; wait for the watchdog's report on it.
           if (this._finishStop) {

@@ -450,7 +450,7 @@
           "id": "task-027",
           "title": "Prompt when the node is silent while it starts",
           "description": "Emit node_silent once per silence when the node writes nothing on either output stream for 300 s before chainDbReady, and node_output_resumed when output returns. The loading screen offers Restart Cardano node and Keep waiting.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 5.0,
           "dependencies": [

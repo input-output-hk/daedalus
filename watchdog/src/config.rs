@@ -51,6 +51,11 @@ pub struct NodeConfig {
     /// Length of the window `max_crashes_in_window` is counted over.
     #[serde(default = "default_crash_window_secs")]
     pub crash_window_secs: u64,
+    /// Seconds the node may write nothing on either output stream while it
+    /// starts, before `chainDbReady`, until the watchdog reports the silence
+    /// with `node_silent`. 0 turns the report off.
+    #[serde(default = "default_startup_silence_secs")]
+    pub startup_silence_secs: u64,
     /// Network magic of the cluster, which cardano-node writes to a new
     /// database's `protocolMagicId` file and requires of an existing one.
     /// Set by `WatchdogConfig::set_network_magic`; None when it is unknown.
@@ -109,6 +114,14 @@ impl WatchdogConfig {
             + Duration::from_secs(self.node.stop_timeout_secs)
             + BACKEND_STOP_MARGIN
     }
+}
+
+/// How long a starting node may write nothing before the user is told and
+/// offered a restart.
+pub const DEFAULT_STARTUP_SILENCE_SECS: u64 = 300;
+
+fn default_startup_silence_secs() -> u64 {
+    DEFAULT_STARTUP_SILENCE_SECS
 }
 
 fn default_node_stop_timeout_secs() -> u64 {
@@ -452,6 +465,24 @@ mod tests {
             c.backend_stop_limit(),
             Duration::from_secs(130) + BACKEND_STOP_MARGIN
         );
+    }
+
+    #[test]
+    fn startup_silence_defaults_to_five_minutes() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert_eq!(c.node.startup_silence_secs, DEFAULT_STARTUP_SILENCE_SECS);
+        assert_eq!(DEFAULT_STARTUP_SILENCE_SECS, 300);
+    }
+
+    #[test]
+    fn explicit_startup_silence_overrides_default() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s",
+                     "startup_silence_secs":2},
+            "wallet": {"exe":"w","args":[],"state_dir":"/"}
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        assert_eq!(c.node.startup_silence_secs, 2);
     }
 
     #[test]

@@ -20,13 +20,16 @@ function computeShowMithrilPrompt({
   mithrilSignificantlyBehind,
   loadingPhase,
   isInLongReplay,
+  showSilencePrompt = false,
 }: {
   mithrilPromptDismissed: boolean;
   mithrilSignificantlyBehind: object | null;
   loadingPhase: LoadingPhase;
   isInLongReplay: boolean;
+  showSilencePrompt?: boolean;
 }): boolean {
   return (
+    !showSilencePrompt &&
     !mithrilPromptDismissed &&
     (mithrilSignificantlyBehind !== null ||
       (loadingPhase === 'node-starting' && isInLongReplay))
@@ -110,6 +113,18 @@ describe('showMithrilPrompt (Bug 1 fix)', () => {
         mithrilSignificantlyBehind: null,
         loadingPhase: 'ready',
         isInLongReplay: true,
+      })
+    ).toBe(false);
+  });
+
+  it('hides while the startup silence prompt shows', () => {
+    expect(
+      computeShowMithrilPrompt({
+        mithrilPromptDismissed: false,
+        mithrilSignificantlyBehind: behind,
+        loadingPhase: 'node-starting',
+        isInLongReplay: true,
+        showSilencePrompt: true,
       })
     ).toBe(false);
   });

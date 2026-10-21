@@ -241,6 +241,7 @@ struct Cfg<'a> {
     wallet_stop_timeout_secs: Option<u64>,
     node_crash_window: Option<(u32, u64)>,
     wallet_crash_window: Option<(u32, u64)>,
+    startup_silence_secs: Option<u64>,
     with_mithril: bool,
     mithril_bin: Option<&'a str>,
     converter_bin: Option<&'a str>,
@@ -266,6 +267,7 @@ impl<'a> Cfg<'a> {
             wallet_stop_timeout_secs: None,
             node_crash_window: None,
             wallet_crash_window: None,
+            startup_silence_secs: None,
             with_mithril: false,
             mithril_bin: None,
             converter_bin: None,
@@ -309,6 +311,11 @@ impl<'a> Cfg<'a> {
 
     fn wallet_crash_window(mut self, max: u32, secs: u64) -> Self {
         self.wallet_crash_window = Some((max, secs));
+        self
+    }
+
+    fn startup_silence_secs(mut self, secs: u64) -> Self {
+        self.startup_silence_secs = Some(secs);
         self
     }
 
@@ -358,6 +365,9 @@ impl<'a> Cfg<'a> {
         }
         if let Some(secs) = self.wallet_stop_timeout_secs {
             cfg["wallet"]["stop_timeout_secs"] = json!(secs);
+        }
+        if let Some(secs) = self.startup_silence_secs {
+            cfg["node"]["startup_silence_secs"] = json!(secs);
         }
         if let Some((max, secs)) = self.node_crash_window {
             cfg["node"]["max_crashes_in_window"] = json!(max);
@@ -1086,6 +1096,52 @@ fn chain_damage_signatures_are_read_from_their_own_process() {
         ],
     );
     assert!(events.is_empty(), "{events:?}");
+}
+
+// ── Tests: startup silence ───────────────────────────────────────────────────
+
+/// A node that writes nothing while it starts is reported once per silence,
+/// output that arrives afterwards ends the silence, and a later silence is
+/// reported again. restart_node restarts a node that has not reached
+/// chainDbReady.
+#[test]
+fn startup_silence_is_reported_once_and_ends_with_output() {
+    let dir = TempDir::new("startup-silence");
+    dir.populate_chain();
+    let cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).startup_silence_secs(1);
+    let finish = PathBuf::from(format!("{}.finish", cfg.socket_path.display()));
+    let (cfg, _port) = cfg.build();
+    let line = dir.path().join("partial-line.txt");
+    std::fs::write(&line, "Replaying ledger from snapshot\n").unwrap();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[("MOCK_NODE_UNTERMINATED_LINE", line.to_str().unwrap())],
+    );
+
+    expect(&rx, "node_started");
+    let silent = expect(&rx, "node_silent");
+    assert_eq!(silent["silent_secs"], 1);
+    expect_none_of(&rx, &["node_silent", "node_output_resumed"], 1500);
+
+    std::fs::write(&finish, b"").unwrap();
+    expect(&rx, "node_output_resumed");
+    expect(&rx, "node_silent");
+
+    let log =
+        std::fs::read_to_string(dir.path().join("logs").join("watchdog.log")).unwrap_or_default();
+    assert!(
+        log.contains("node: no output for 1 s while starting"),
+        "{log}"
+    );
+
+    send(&mut stdin, json!({"cmd": "restart_node"}));
+    expect(&rx, "node_shutdown_ms");
+    expect(&rx, "node_started");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
 }
 
 // ── Tests: ledger snapshot check before a node start ─────────────────────────

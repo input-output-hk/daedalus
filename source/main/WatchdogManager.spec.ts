@@ -256,6 +256,45 @@ describe('WatchdogManager node held for chain damage', () => {
   });
 });
 
+describe('WatchdogManager startup silence', () => {
+  const silent = { event: 'node_silent', silent_secs: 300 };
+
+  it('records a silence and counts it', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().nodeSilentSecs).toBeNull();
+    expect(manager.getState().nodeSilenceEpisode).toBe(0);
+    emit(silent);
+    expect(manager.getState().nodeSilentSecs).toBe(300);
+    expect(manager.getState().nodeSilenceEpisode).toBe(1);
+  });
+
+  it('ends the silence when output resumes, and counts the next one', () => {
+    const { manager, emit } = makeManager();
+    emit(silent);
+    emit({ event: 'node_output_resumed' });
+    expect(manager.getState().nodeSilentSecs).toBeNull();
+    emit(silent);
+    expect(manager.getState().nodeSilentSecs).toBe(300);
+    expect(manager.getState().nodeSilenceEpisode).toBe(2);
+  });
+
+  it.each([
+    { event: 'node_started', pid: 2, started_at_unix_ms: 0 },
+    { event: 'node_exited', code: 1, signal: null },
+    { event: 'node_shutdown_ms', ms: 200, force_killed: false },
+    { event: 'node_startup_status', phase: 'openedLedgerDb' },
+    { event: 'node_socket_ready', waited_ms: 1000 },
+    { event: 'node_unrecoverable', crashes: 5 },
+    { event: 'stopped' },
+  ])('ends the silence on $event', (event) => {
+    const { manager, emit } = makeManager();
+    emit(silent);
+    emit(event);
+    expect(manager.getState().nodeSilentSecs).toBeNull();
+    expect(manager.getState().nodeSilenceEpisode).toBe(1);
+  });
+});
+
 describe('WatchdogManager rebuild state', () => {
   it('records whether a mithril_error came from a rebuild', () => {
     const { manager, emit } = makeManager();

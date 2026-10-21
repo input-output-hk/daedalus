@@ -90,6 +90,13 @@ export default class BackendStore extends Store {
   @observable nodeHeld = false;
   @observable walletUnrecoverable = false;
   @observable nodeUnrecoverable = false;
+  // Seconds the starting node has written no output, once the watchdog
+  // reports the silence; null while it writes
+  @observable nodeSilentSecs: number | null = null;
+  // Counts the silences reported; Keep waiting hides the prompt until the
+  // next one
+  @observable nodeSilenceEpisode = 0;
+  @observable _dismissedSilenceEpisode = 0;
   @observable nodeSocketWaitMs: number | null = null;
   @observable walletReadyWaitMs: number | null = null;
   @observable nodeForceKilled = false;
@@ -216,6 +223,8 @@ export default class BackendStore extends Store {
         this.nodeHeld = state.nodeHeld ?? false;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
+        this.nodeSilentSecs = state.nodeSilentSecs ?? null;
+        this.nodeSilenceEpisode = state.nodeSilenceEpisode ?? 0;
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;
         this.walletReadyWaitMs = state.walletReadyWaitMs;
         this.nodeForceKilled = state.nodeForceKilled;
@@ -326,6 +335,17 @@ export default class BackendStore extends Store {
   @computed
   get mithrilPromptDismissed(): boolean {
     return this._mithrilPromptDismissed;
+  }
+
+  // The node has written nothing for a while as it starts, and the user has
+  // not chosen to keep waiting through this silence
+  @computed
+  get showNodeSilencePrompt(): boolean {
+    return (
+      this.nodeSilentSecs !== null &&
+      this.nodeSilenceEpisode !== this._dismissedSilenceEpisode &&
+      this.loadingPhase === 'node-starting'
+    );
   }
 
   // The Mithril error is one the user can resolve by choosing another
@@ -542,6 +562,19 @@ export default class BackendStore extends Store {
 
   _restartNode = () => {
     mithrilCommandChannel.send({ cmd: 'restart_node' });
+  };
+
+  // "Restart Cardano node" on the silence prompt
+  @action
+  restartSilentNode = () => {
+    this._dismissedSilenceEpisode = this.nodeSilenceEpisode;
+    this._restartNode();
+  };
+
+  // "Keep waiting" on the silence prompt: hidden until the next silence
+  @action
+  keepWaitingForNode = () => {
+    this._dismissedSilenceEpisode = this.nodeSilenceEpisode;
   };
 
   _restartWallet = () => {

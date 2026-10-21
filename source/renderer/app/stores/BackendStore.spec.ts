@@ -338,6 +338,74 @@ describe('BackendStore chain damage found before the node started', () => {
   });
 });
 
+describe('BackendStore startup silence', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  const silentStore = () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).nodeSilentSecs = 300;
+    (store as any).nodeSilenceEpisode = 1;
+    return store;
+  };
+
+  it('shows the silence prompt while the node starts and is silent', () => {
+    const store = silentStore();
+    expect(store.loadingPhase).toBe('node-starting');
+    expect(store.showNodeSilencePrompt).toBe(true);
+  });
+
+  it('shows no silence prompt without a silence or outside the node start', () => {
+    const store = silentStore();
+    (store as any).nodeSilentSecs = null;
+    expect(store.showNodeSilencePrompt).toBe(false);
+    (store as any).nodeSilentSecs = 300;
+    (store as any).walletPort = 8090;
+    expect(store.showNodeSilencePrompt).toBe(false);
+    (store as any).walletPort = null;
+    (store as any).isStopping = true;
+    expect(store.showNodeSilencePrompt).toBe(false);
+  });
+
+  it('hides the prompt after keepWaitingForNode until the next silence', () => {
+    const store = silentStore();
+    store.keepWaitingForNode();
+    expect(store.showNodeSilencePrompt).toBe(false);
+    (store as any).nodeSilenceEpisode = 2;
+    expect(store.showNodeSilencePrompt).toBe(true);
+    expect(mithrilCommandChannel.send).not.toHaveBeenCalled();
+  });
+
+  it('sends restart_node from restartSilentNode and hides the prompt', () => {
+    const store = silentStore();
+    store.restartSilentNode();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledTimes(1);
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'restart_node',
+    });
+    expect(store.showNodeSilencePrompt).toBe(false);
+  });
+
+  it('copies the silence from the poll', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: true,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      nodeSilentSecs: 300,
+      nodeSilenceEpisode: 3,
+    });
+    await store._pollBackendStatus();
+    expect(store.nodeSilentSecs).toBe(300);
+    expect(store.nodeSilenceEpisode).toBe(3);
+  });
+});
+
 describe('BackendStore.retryMithril', () => {
   beforeEach(() => {
     (mithrilCommandChannel.send as jest.Mock).mockClear();
