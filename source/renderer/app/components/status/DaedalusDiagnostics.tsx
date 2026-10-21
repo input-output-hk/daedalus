@@ -538,6 +538,9 @@ type Props = {
     localName: string
   ) => Promise<void>;
   chainDamage: ChainDamage | null;
+  // The watchdog found chain damage before starting the node and does not
+  // start it; a node restart runs that check again
+  isNodeHeld: boolean;
   onRebuildChain: () => void;
 };
 type State = {
@@ -599,6 +602,16 @@ class DaedalusDiagnostics extends Component<Props, State> {
       (cardanoNodeState !== prevCardanoNodeState &&
         includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)) ||
       nodeBackUp
+    ) {
+      this.setState({ isNodeRestarting: false }); // eslint-disable-line
+    }
+
+    // A restart of a held node ends when the watchdog has checked the chain
+    // again: it either starts the node, which the phase change above catches,
+    // or reports the damage again and keeps holding the node.
+    if (
+      this.props.isNodeHeld &&
+      this.props.chainDamage?.detectedAt !== prevProps.chainDamage?.detectedAt
     ) {
       this.setState({ isNodeRestarting: false }); // eslint-disable-line
     }
@@ -699,6 +712,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       mithrilBehindByEpochs,
       onStartMithrilPartialSync,
       chainDamage,
+      isNodeHeld,
       onRebuildChain,
     } = this.props;
     const {
@@ -996,6 +1010,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
                     style={{ float: 'none' }}
                     onClick={() => this.restartNode()}
                     disabled={
+                      !isNodeHeld &&
                       !includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
                     }
                   >

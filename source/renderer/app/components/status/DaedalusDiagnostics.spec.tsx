@@ -6,6 +6,7 @@ import translations from '../../i18n/locales/en-US.json';
 import type { ChainDamage } from '../../../../common/types/watchdog.types';
 import DaedalusDiagnostics from './DaedalusDiagnostics';
 
+// PopOver takes its skin from a theme provider; its trigger is enough here.
 jest.mock('react-polymorph/lib/components/PopOver', () => ({
   PopOver: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -75,6 +76,7 @@ const defaultProps = {
   onConsoleCaptureChange: jest.fn(),
   onLaunchDapp: jest.fn(() => Promise.resolve()),
   chainDamage: null,
+  isNodeHeld: false,
   onRebuildChain: jest.fn(),
 };
 
@@ -227,5 +229,82 @@ describe('DaedalusDiagnostics copied text', () => {
     expect(diagnosticsText(damage)).toContain(
       `Blockchain data: Damage detected at slot 200102375 (${time})`
     );
+  });
+});
+
+describe('DaedalusDiagnostics node restart', () => {
+  afterEach(cleanup);
+
+  const renderDiagnostics = (overrides = {}) => {
+    const onRestartNode = { trigger: jest.fn() };
+    const view = (extra = {}) => (
+      <IntlProvider locale="en-US" messages={translations}>
+        <DaedalusDiagnostics
+          {...props(damage)}
+          onRestartNode={onRestartNode}
+          onRestartWallet={{ trigger: jest.fn() }}
+          onOpenStateDirectory={jest.fn()}
+          onOpenExternalLink={jest.fn()}
+          onClose={jest.fn()}
+          onCopyStateDirectoryPath={jest.fn()}
+          onForceCheckNetworkClock={jest.fn()}
+          onStartMithrilPartialSync={jest.fn()}
+          onRebuildChain={jest.fn()}
+          isMithrilPartialSyncWorking={false}
+          isMithrilSignificantlyBehind={false}
+          isMithrilProbeFailed={false}
+          isMithrilAtOrPastSnapshot={false}
+          diagnosticsWallets={[]}
+          defaultDiagnosticsWalletId=""
+          diagnosticsAvailable={false}
+          diagnosticsReady={false}
+          isDappLaunching={false}
+          consoleCaptureAvailable={false}
+          consoleCaptureEnabled={false}
+          onConsoleCaptureChange={jest.fn()}
+          onLaunchDapp={jest.fn()}
+          {...overrides}
+          {...extra}
+        />
+      </IntlProvider>
+    );
+    const { rerender } = render(view());
+    return {
+      onRestartNode,
+      rerender: (extra: Record<string, unknown>) => rerender(view(extra)),
+    };
+  };
+  const restartButton = () =>
+    screen.getByRole('button', { name: /Cardano node/ });
+
+  it('offers the node restart while the watchdog holds the node', () => {
+    const { onRestartNode } = renderDiagnostics({
+      cardanoNodeState: 'chain-damaged',
+      isNodeHeld: true,
+    });
+    expect(restartButton()).toBeEnabled();
+    fireEvent.click(restartButton());
+    expect(onRestartNode.trigger).toHaveBeenCalledTimes(1);
+    expect(restartButton()).toHaveTextContent('Restarting Cardano node...');
+  });
+
+  it('offers no node restart on the damaged data screen while a node runs', () => {
+    renderDiagnostics({ cardanoNodeState: 'chain-damaged', isNodeHeld: false });
+    expect(restartButton()).toBeDisabled();
+  });
+
+  it('ends the restart of a held node when the check reports the damage again', () => {
+    const { rerender } = renderDiagnostics({
+      cardanoNodeState: 'chain-damaged',
+      isNodeHeld: true,
+    });
+    fireEvent.click(restartButton());
+    rerender({ chainDamage: damage });
+    expect(restartButton()).toHaveTextContent('Restarting Cardano node...');
+    rerender({
+      chainDamage: { ...damage, detectedAt: '2026-10-16T12:05:00.000Z' },
+    });
+    expect(restartButton()).toHaveTextContent('Restart Cardano node');
+    expect(restartButton()).toBeEnabled();
   });
 });

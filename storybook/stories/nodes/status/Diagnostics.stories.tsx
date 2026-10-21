@@ -97,6 +97,7 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
     action('onLaunchDapp')({ url, walletId, localName });
   },
   chainDamage: null,
+  isNodeHeld: false,
   onRebuildChain: action('onRebuildChain'),
 };
 

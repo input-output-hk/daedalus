@@ -185,6 +185,7 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           onConsoleCaptureChange={this.handleConsoleCaptureChange}
           onLaunchDapp={this.handleLaunchDapp}
           chainDamage={backend.lastChainDamage}
+          isNodeHeld={backend.nodeHeld}
           onRebuildChain={backend.rebuildChain}
         />
       </ReactModal>
