@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "runtime": {
+    "node": "v24.16.0"
+  },
+  "sdk": {
+    "name": "@cardano-sdk/core",
+    "version": "0.47.0",
+    "gitHead": "8fb86af308d2045d71b0c18d78abaf0336902983",
+    "tarball": "https://registry.npmjs.org/@cardano-sdk/core/-/core-0.47.0.tgz",
+    "shasum": "795716681420d08e939567bf635df06fd0c8da3b",
+    "integrity": "sha512-UANc6oY8Emjf5ID+Qk6XKxujPfrdxu0rDNDNy+jYJGMYh/kyUrLzOK8Ge4ydblqKQwohRXmMKagFusad3yHoDg==",
+    "dependencyLockSha256": "4856d1faeb85ff6e6cb90df2a100003bb0017e1f175f7ebd77498f0a4365e9d4",
+    "moduleRoot": "isolated-candidate"
+  },
+  "cases": [
+    {
+      "id": "babbage-map-outputs",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "duplicate-fee-scalar-key",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "indefinite-root-envelope",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "rejected",
+      "preservedExact": null,
+      "toCbor": null,
+      "toCore": null,
+      "representedFields": [],
+      "errorClass": "CborInvalidOperationException"
+    },
+    {
+      "id": "ledger-alonzo-historical-span-only",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "auxiliaryDataHash",
+        "certificates",
+        "collaterals",
+        "fee",
+        "inputs",
+        "mint",
+        "networkId",
+        "outputs",
+        "requiredExtraSignatures",
+        "scriptIntegrityHash",
+        "update",
+        "validityInterval",
+        "withdrawals"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "ledger-conway-positive",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "trailing-root-byte",
+      "strictExpected": "reject",
+      "measuredFullConsumption": false,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "unknown-body-key",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "untagged-body-sets",
+      "strictExpected": "accept",
+      "measuredFullConsumption": true,
+      "parse": "accepted",
+      "preservedExact": true,
+      "toCbor": "exact",
+      "toCore": "accepted",
+      "representedFields": [
+        "collateralReturn",
+        "collaterals",
+        "fee",
+        "inputs",
+        "outputs",
+        "scriptIntegrityHash",
+        "totalCollateral"
+      ],
+      "errorClass": null
+    },
+    {
+      "id": "wrong-input-set-tag",
+      "strictExpected": "reject",
+      "measuredFullConsumption": true,
+      "parse": "rejected",
+      "preservedExact": null,
+      "toCbor": null,
+      "toCore": null,
+      "representedFields": [],
+      "errorClass": "CborInvalidOperationException"
+    }
+  ],
+  "summary": {
+    "accepted": 7,
+    "rejected": 2,
+    "strictRejectsAcceptedBySdk": 4
+  }
+}

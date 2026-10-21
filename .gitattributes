@@ -3,3 +3,11 @@
 tests/mocks/governance/anchor-cip119-sample.json binary
 tests/mocks/governance/anchor-cip119-sample.hash binary
 tests/mocks/governance/anchor-malformed.txt       binary
+
+# Hardware capability evidence binds raw checkout bytes to frozen hashes.
+yarn.lock text eol=lf
+source/common/hardware/fixtures/capability-matrix/*.json text eol=lf
+hardware-wallet-tests/capability-matrix/*.json text eol=lf
+source/common/cip30/contracts/fixtures/cip8-cip95-fixture.json text eol=lf
+source/common/cip30/contracts/fixtures/wire-fixtures.json text eol=lf
+source/common/cardano/fixtures/exact-cbor/conway-regression.json text eol=lf

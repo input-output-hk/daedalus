@@ -43,12 +43,12 @@ import type {
   CheckFileExistsMainResponse,
   CheckFileExistsRendererRequest,
 } from '../../common/ipc/api';
+import { currentWindowSender } from './lib/currentWindowSender';
 
 localStorage.setAllPaused();
 
 const requestDownload = async (
-  downloadRequestPayload: DownloadRendererRequest,
-  window: BrowserWindow
+  downloadRequestPayload: DownloadRendererRequest
 ): Promise<any> => {
   const {
     fileUrl,
@@ -86,7 +86,7 @@ const requestDownload = async (
 
   const eventActions = await getEventActions(
     info,
-    window,
+    currentWindowSender.sender,
     requestDownloadChannel
   );
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ fileName: string; method?: "GE... Remove this comment to see the full error message
@@ -131,8 +131,7 @@ const requestDownload = async (
 };
 
 const requestResumeDownload = async (
-  resumeDownloadRequestPayload: ResumeDownloadRendererRequest,
-  window: BrowserWindow
+  resumeDownloadRequestPayload: ResumeDownloadRendererRequest
 ): Promise<any> => {
   const downloadLocalData = await getDownloadLocalData(
     resumeDownloadRequestPayload
@@ -178,7 +177,7 @@ const requestResumeDownload = async (
   }
 
   // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ override: boolean; id: string;... Remove this comment to see the full error message
-  return requestDownload({ ...requestDownloadPayload, override: true }, window);
+  return requestDownload({ ...requestDownloadPayload, override: true });
 };
 
 const deleteDownloadedFile = async ({
@@ -264,14 +263,14 @@ MainIpcChannel<
 const checkFileExistsChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<CheckFileExistsRendererRequest, CheckFileExistsMainResponse> =
   new MainIpcChannel(CHECK_FILE_EXISTS);
-export const downloadManagerChannel = (window: BrowserWindow) => {
+export const downloadManagerChannel = (_window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>
-      requestDownload(downloadRequestPayload, window)
+      requestDownload(downloadRequestPayload)
   );
   requestResumeDownloadChannel.onRequest(
     (resumeDownloadRequestPayload: ResumeDownloadRendererRequest) =>
-      requestResumeDownload(resumeDownloadRequestPayload, window)
+      requestResumeDownload(resumeDownloadRequestPayload)
   );
   deleteDownloadedFileChannel.onRequest(deleteDownloadedFile);
   getDownloadLocalDataChannel.onRequest(getDownloadLocalData);

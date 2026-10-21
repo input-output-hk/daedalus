@@ -6,4 +6,8 @@ export default class TransactionsActions {
   loadMoreTransactions: Action<any> = new Action();
   requestCSVFile: Action<any> = new Action();
   requestCSVFileSuccess: Action<any> = new Action();
+  transactionConfirmed: Action<{
+    walletId: string;
+    transactionId: string;
+  }> = new Action();
 }

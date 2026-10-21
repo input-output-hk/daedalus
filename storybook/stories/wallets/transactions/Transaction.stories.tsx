@@ -107,6 +107,54 @@ const transactionTokens = [
   },
 ];
 
+const feedbackTransactions = [
+  {
+    id: 'submitted-self-transfer',
+    state: TransactionStates.PENDING,
+    transferAmount: new BigNumber(12),
+    amount: new BigNumber('-0.17'),
+    isSelfTransfer: true,
+    amountIsKnown: true,
+  },
+  {
+    id: 'confirmed-self-transfer',
+    state: TransactionStates.OK,
+    transferAmount: new BigNumber(12),
+    amount: new BigNumber('-0.17'),
+    isSelfTransfer: true,
+    amountIsKnown: true,
+  },
+  {
+    id: 'unknown-submission',
+    state: TransactionStates.SUBMISSION_UNKNOWN,
+    amount: new BigNumber(0),
+    isSelfTransfer: false,
+    amountIsKnown: false,
+  },
+].map(
+  (feedback) =>
+    new WalletTransaction({
+      ...feedback,
+      confirmations: 0,
+      slotNumber: null,
+      epochNumber: null,
+      title: '',
+      type: TransactionTypes.EXPEND,
+      fee: new BigNumber('0.17'),
+      deposit: new BigNumber(0),
+      assets: [],
+      date: new Date('2026-09-09T12:00:00.000Z'),
+      description: '',
+      addresses: {
+        from: ['addr_test1selfsender'],
+        to: ['addr_test1selfreceiver'],
+        withdrawals: [],
+      },
+      metadata: null,
+      hasCertificates: false,
+    })
+);
+
 /* eslint-disable consistent-return */
 storiesOf('Wallets / Transactions', module)
   .addDecorator(withKnobs)
@@ -210,4 +258,33 @@ storiesOf('Wallets / Transactions', module)
         onCopyAssetParam={action('onCopyAssetParam')}
       />
     );
-  });
+  })
+  .add('Submitted, confirmed, and unknown outcomes', () => (
+    <div>
+      {feedbackTransactions.map((transaction) => (
+        <Transaction
+          key={transaction.id}
+          data={transaction}
+          state={transaction.state}
+          isExpanded={false}
+          isRestoreActive={false}
+          isLastInList={false}
+          isShowingMetadata={false}
+          isDeletingTransaction={false}
+          hasAssetsEnabled
+          isLoadingAssets={false}
+          currentTimeFormat="hh:mm:ss A"
+          walletId="feedback-wallet"
+          assetTokens={[]}
+          onShowMetadata={action('onShowMetadata')}
+          getUrlByType={action('getUrlByType')}
+          deletePendingTransaction={action('deletePendingTransaction')}
+          formattedWalletAmount={action('formattedWalletAmount')}
+          onDetailsToggled={action('onDetailsToggled')}
+          onOpenExternalLink={action('onOpenExternalLink')}
+          isInternalAddress={(address) => address.startsWith('addr_test1self')}
+          onCopyAssetParam={action('onCopyAssetParam')}
+        />
+      ))}
+    </div>
+  ));

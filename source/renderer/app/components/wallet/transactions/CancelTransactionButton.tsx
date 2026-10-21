@@ -12,8 +12,14 @@ const messages = defineMessages({
   },
   removeLabel: {
     id: 'wallet.transaction.failed.removeTransactionButton',
+    defaultMessage: '!!!Remove expired transaction',
+    description:
+      'Label for removing a transaction that expired before confirmation',
+  },
+  upstreamRemoveLabel: {
+    id: 'wallet.transaction.upstream.removeTransactionButton',
     defaultMessage: '!!!Remove failed transaction',
-    description: 'Label for the remove failed transaction button',
+    description: 'Label for removing an expired upstream transaction.',
   },
 });
 type Props = {
@@ -27,7 +33,11 @@ export default class CancelTransactionButton extends Component<Props> {
 
   render() {
     const { onClick, state } = this.props;
-    const label = this.context.intl.formatMessage(messages[`${state}Label`]);
+    const label = this.context.intl.formatMessage(
+      !global.cip30Enabled && state === 'remove'
+        ? messages.upstreamRemoveLabel
+        : messages[`${state}Label`]
+    );
     return (
       <Button
         className="attention"

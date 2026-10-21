@@ -1,6 +1,7 @@
 {
   "id": "1111111111111111111111111111111111111111",
   "address_pool_gap": 20,
+  "single_address_mode": true,
   "name": "cv1 fixture voting drep",
   "balance": {
     "available": {

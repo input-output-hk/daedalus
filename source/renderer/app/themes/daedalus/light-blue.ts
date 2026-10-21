@@ -171,9 +171,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-connecting-description-color': 'rgba(250, 251, 252, 0.7)',
     '--theme-connecting-sync-progress-color': '#fafbfc',
   },
-  dapps: {
-    '--theme-dapp-transaction-request-fees-text-color': '#ea4c5b',
-  },
   dataMigration: {
     '--theme-data-migration-layer-background-color': '#243E62',
     '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
@@ -1247,6 +1244,14 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   walletSettings: {
     '--theme-wallet-settings-section-separator-color': '#5e60661a',
+  },
+  transactionApproval: {
+    '--theme-transaction-review-outgoing-color': '#ffffff',
+    '--theme-transaction-review-outgoing-background': '#ea4c5b14',
+    '--theme-transaction-review-incoming-color': '#48d47f',
+    '--theme-transaction-review-incoming-background': '#2dc06c14',
+    '--theme-transaction-review-warning-color': '#ffb532',
+    '--theme-transaction-review-warning-background': '#f2a21814',
   },
 };
 

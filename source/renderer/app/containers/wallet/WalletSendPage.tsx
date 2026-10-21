@@ -4,10 +4,10 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
+  LOVELACES_PER_ADA,
 } from '../../config/numbersConfig';
 import WalletSendForm, {
   FormData,
-  ConfirmationDialogData,
 } from '../../components/wallet/WalletSendForm';
 import { WalletSendConfirmationDialogView } from './dialogs/send-confirmation/SendConfirmation.view';
 import WalletTokenPicker from '../../components/wallet/tokens/wallet-token-picker/WalletTokenPicker';
@@ -23,7 +23,7 @@ import { CoinSelectionsResponse } from '../../api/transactions/types';
 
 type Props = InjectedProps & WithAnalyticsTrackerProps;
 type State = {
-  confirmationDialogData: ConfirmationDialogData;
+  confirmationDialogData: Omit<FormData, 'coinSelection'> | null;
 };
 
 @inject('stores', 'actions')
@@ -34,9 +34,7 @@ class WalletSendPage extends Component<Props, State> {
     stores: null,
   };
 
-  state: State = {
-    confirmationDialogData: null,
-  };
+  state: State = { confirmationDialogData: null };
 
   calculateTransactionFee = async (params: {
     walletId: string;
@@ -81,23 +79,44 @@ class WalletSendPage extends Component<Props, State> {
     walletId: string,
     { coinSelection, ...data }: FormData
   ) => {
-    const { isFlight } = global;
-
-    if (isHardwareWallet) {
-      this.props.stores.hardwareWallets.updateTxSignRequest(coinSelection);
-    }
-
-    this.props.actions.dialogs.open.trigger({
-      dialog: WalletSendConfirmationDialogView,
-    });
-
-    if (isHardwareWallet && !isFlight) {
-      this.props.stores.hardwareWallets.initiateTransaction({
-        walletId,
+    const wallet = this.props.stores.wallets.getWalletById(walletId);
+    if (!wallet) throw new Error('Wallet required before sending.');
+    if (wallet.isLegacy || !global.cip30Enabled) {
+      if (isHardwareWallet) {
+        this.props.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+      }
+      this.setState({ confirmationDialogData: data });
+      this.props.actions.dialogs.open.trigger({
+        dialog: WalletSendConfirmationDialogView,
       });
+      return;
     }
-
-    this.setState({ confirmationDialogData: { ...data } });
+    const amount = data.amount.times(LOVELACES_PER_ADA).toFixed(0);
+    const hasAssetsRemainingAfterTransaction = data.selectedAssets.length
+      ? !(
+          data.selectedAssets.length === wallet.assets.total.length &&
+          data.selectedAssets.every(({ quantity }, index) =>
+            quantity.isEqualTo(data.assetsAmounts[index])
+          )
+        )
+      : wallet.assets.total.length > 0;
+    if (isHardwareWallet) {
+      this.props.stores.hardwareWallets.updateTxSignRequest(
+        coinSelection,
+        !!data.isCollateralPreparation,
+        { address: data.receiver, amount }
+      );
+      this.props.actions.hardwareWallets.sendMoney.trigger();
+      return;
+    }
+    this.props.actions.wallets.sendMoney.trigger({
+      receiver: data.receiver,
+      amount,
+      assets: data.selectedAssets,
+      assetsAmounts: data.assetsAmounts,
+      hasAssetsRemainingAfterTransaction,
+      isCollateralPreparation: data.isCollateralPreparation,
+    });
   };
 
   openTokenPickerDialog = () => {
@@ -126,6 +145,8 @@ class WalletSendPage extends Component<Props, State> {
       profile,
       hardwareWallets,
       assets: assetsStore,
+      addresses,
+      collateral,
     } = stores;
     const { isValidAddress, isAddressFromSameWallet } = wallets;
     const { validateAmount, validateAssetAmount } = transactions;
@@ -139,13 +160,20 @@ class WalletSendPage extends Component<Props, State> {
     // Guard against potential null values
     const wallet = wallets.active;
     if (!wallet) throw new Error('Active wallet required for WalletSendPage.');
-    const { isHardwareWallet, name: walletName } = wallet;
+    const { isHardwareWallet, name: walletName, singleAddressMode } = wallet;
     const walletTokens = wallet.assets.total;
     const assetTokens = getNonZeroAssetTokens(walletTokens, getAsset);
     const totalRawAssets = wallet.assets.total.length;
     const totalAssets = assetTokens.length;
     const hasRawAssets = wallet.assets.total.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+    const isCollateralPreparation =
+      global.cip30Enabled &&
+      collateral.preparationFormActive &&
+      collateral.preparation?.walletId === wallet.id;
+    const preparationAddress = singleAddressMode
+      ? addresses.active?.id
+      : (addresses.active?.id ?? addresses.all[0]?.id);
     return (
       <WalletSendForm
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
@@ -164,9 +192,9 @@ class WalletSendPage extends Component<Props, State> {
         validateAmount={validateAmount}
         validateAssetAmount={validateAssetAmount}
         addressValidator={isValidAddress}
-        assets={assetTokens}
-        hasAssets={hasAssetsEnabled && hasRawAssets}
-        selectedAsset={selectedAsset}
+        assets={isCollateralPreparation ? [] : assetTokens}
+        hasAssets={!isCollateralPreparation && hasAssetsEnabled && hasRawAssets}
+        selectedAsset={isCollateralPreparation ? null : selectedAsset}
         isLoadingAssets={isLoadingAssets}
         isDialogOpen={uiDialogs.isOpen}
         isRestoreActive={wallet.isRestoring}
@@ -184,6 +212,11 @@ class WalletSendPage extends Component<Props, State> {
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
         analyticsTracker={this.props.analyticsTracker}
         confirmationDialogData={this.state.confirmationDialogData}
+        initialReceiver={
+          isCollateralPreparation ? preparationAddress : undefined
+        }
+        initialAmount={isCollateralPreparation ? '5' : undefined}
+        isCollateralPreparation={isCollateralPreparation}
       />
     );
   }

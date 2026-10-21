@@ -1,6 +1,10 @@
 import log from 'electron-log-daedalus';
 import { environment } from '../environment';
-import { formatContext } from '../../common/utils/logging';
+import {
+  filterLogData,
+  formatContext,
+  redactLogText,
+} from '../../common/utils/logging';
 import type {
   FormatMessageContextParams,
   Logger,
@@ -23,18 +27,24 @@ const environmentData = {
   version,
 };
 
-const logToLevel =
-  (level: string) =>
-  (message: string, data: Record<string, any> | null | undefined) =>
-    log[level](formatContext({ ...messageContext, level }), {
-      message,
-      data: toJS(data),
-      environmentData,
-    });
+const logToLevel = (level: string) => (message: string, data?: object | null) =>
+  log[level](formatContext({ ...messageContext, level }), {
+    message: redactLogText(message),
+    data: data ? filterLogData(toJS(data)) : data,
+    environmentData,
+  });
 
 export const logger: Logger = {
   debug: logToLevel('debug'),
   info: logToLevel('info'),
   error: logToLevel('error'),
   warn: logToLevel('warn'),
+};
+
+export const logDappConsole = (message: string): void => {
+  log.debug(formatContext({ ...messageContext, level: 'debug' }), {
+    message,
+    data: null,
+    environmentData,
+  });
 };

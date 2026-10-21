@@ -24,10 +24,22 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
   handleStartMithrilPartialSync = async () => {
     this.props.stores.backend.startMithrilForce();
   };
+  handleCopyStateDirectoryPath = () =>
+    this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
+  handleLaunchDapp = async (
+    url: string,
+    walletId: string,
+    localName: string
+  ): Promise<void> => {
+    await this.props.stores.dapp.launchDiagnostics(url, walletId, localName);
+    this.props.actions.app.closeDaedalusDiagnosticsDialog.trigger();
+  };
+  handleConsoleCaptureChange = (enabled: boolean): void =>
+    this.props.stores.dapp.setConsoleCaptureEnabled(enabled);
   render() {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
-    const { app, networkStatus, backend } = stores;
+    const { app, dapp, networkStatus, backend, wallets } = stores;
     const { openExternalLink } = app;
     const {
       isNodeResponding,
@@ -156,6 +168,22 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           isMithrilAtOrPastSnapshot={false}
           mithrilBehindByEpochs={behindByEpochs}
           onStartMithrilPartialSync={this.handleStartMithrilPartialSync}
+          onCopyStateDirectoryPath={this.handleCopyStateDirectoryPath}
+          diagnosticsWallets={wallets.eligibleDappWallets.map(
+            ({ id, name }) => ({ id, name })
+          )}
+          defaultDiagnosticsWalletId={
+            wallets.activeDappWallet?.id ||
+            wallets.eligibleDappWallets[0]?.id ||
+            ''
+          }
+          diagnosticsAvailable={dapp.diagnosticsAvailable}
+          diagnosticsReady={dapp.diagnosticsReady}
+          isDappLaunching={dapp.isLaunching}
+          consoleCaptureAvailable={dapp.consoleCaptureAvailable}
+          consoleCaptureEnabled={dapp.consoleCaptureEnabled}
+          onConsoleCaptureChange={this.handleConsoleCaptureChange}
+          onLaunchDapp={this.handleLaunchDapp}
         />
       </ReactModal>
     );

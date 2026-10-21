@@ -144,6 +144,7 @@ const buildWallet = ({
     ...rest,
     isLegacy,
     addressPoolGap: 20,
+    singleAddressMode: !isLegacy,
     amount: new BigNumber(lovelace).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(lovelace).dividedBy(LOVELACES_PER_ADA),
     reward: new BigNumber(0),

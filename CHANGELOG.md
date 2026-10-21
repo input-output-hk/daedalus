@@ -2,6 +2,20 @@
 
 ## vNext
 
+### Fixes
+
+- Keep ordinary mainnet and selfnode on upstream wallet contracts and native Send, staking, governance, and hardware confirmation flows; activate CIP-30 behavior only in preprod, preview, and mainnet-flight packages.
+- Restore the Send form's confirmation-dialog mount and captured payment details, fixing the unresponsive Send button on mainnet software and hardware wallets and on Byron wallets; keep Ledger verification status live until approval or cancellation.
+- Decode verified Ledger/Trezor transaction hex into binary bytes before upstream submission, fixing a generic Send error after successful device approval.
+- Preserve dialog component identity so retained class-based dialogs, including undelegation, mount correctly without changing their feature gates.
+- Cancel owned hardware preparation when Send or staking confirmations unmount and when Catalyst registration is cancelled, restarted, or returned to wallet selection; ignore stale registration results without releasing an already-submitting transaction's wallet lease.
+- Bind Catalyst hardware cancellation to its store-owned operation and wallet lease, so cancelling address, metadata, or fee preparation cannot abort another native payment or reset an unrelated dApp signer; retain submission locks until the backend responds.
+- Hold the shared wallet transaction lease through authoritative preparation, consent, retries, signing, and submission; reconstruct hardware payments after acquiring it instead of signing fee-preview bytes.
+- Preserve collateral preparation tracking across Apps-to-Send navigation with wallet/network-bound operation authority, adopting only the exact confirmed output and invalidating stale document operations.
+- Refresh pending collateral preparation while Apps stays open, adopting the confirmed output and clearing the preparation notice without requiring navigation; stop polling after completion or leaving Apps.
+- Preserve success-only DRep favorites when delegation uses unified transaction approval, and retain watchdog-managed shutdown and installer handling alongside authenticated dApp IPC.
+- Restore the runtime configuration path passed by the watchdog to Electron on launch and restart, fixing startup failure before the Daedalus window appears.
+
 ## 11.5.0
 
 ### Features
@@ -52,7 +66,23 @@
 
 ## 11.4.0
 
+### Features
+
+- Rebases the CIP-30 dApp browser onto the watchdog-parent release packaging. Packaged dApp policy, sandbox identity, and network genesis now come from the installed `daedalus-config.json`; mainnet remains launch-disabled, while Flight, preprod, and preview have launch enabled by generated policy, subject to installed sandbox validation.
+
+- Linux dApp containment accepts either a separate mount namespace or kernel-observed Chromium procfs-fdinfo confinement with separate PID/user/network namespaces, zero capabilities and single-ID mappings. Missing or changing confinement evidence still refuses launch.
+
 ### Fixes
+
+- dApp catalog: display a localized, privacy-safe launch failure instead of leaving a rejected catalog click unhandled; retry and lifecycle teardown clear the failure. Diagnostics retains its existing error handling.
+
+- Restore dApp launching on Chromium's shared-mount namespace sandbox: inspect the restricted root and cwd through metadata-only `O_PATH` descriptors, distinguishing a dead helper's non-traversable procfs root from ordinary read errors. Startup and live validation recheck complete, stable evidence; the independent probe applies the same requirements.
+
+- Window lifecycle: cancel delayed bounds saves on closure and never read bounds from a destroyed window, preventing a main-process exception when closing dApp windows.
+
+- Linux DEB: replace the inherited Electron wrapper symlink before writing the regular installed wrapper, matching RPM/Arch packaging and the independent sandbox probe's file-integrity contract.
+
+- Linux: match each `.deb`, `.rpm`, Arch, and NixOS Daedalus window to its cluster's desktop launcher and icon; include the launcher and icon in the NixOS package.
 
 - Correct transaction CSV exports to label expired transactions as failed instead of confirmed ([PR #3399](https://github.com/input-output-hk/daedalus/pull/3399)).
 
@@ -66,7 +96,13 @@
 
 ### Chores
 
-- Bump `cardano-node` to 11.1.2 and `cardano-wallet` to v2026-09-16.
+- Pin `cardano-node` to 11.1.3 (`938cba990357ae7c4b7f95c8f75dd9d31174bbeb`) for mainnet, Flight, preprod, and preview on Linux, Windows, and both macOS architectures; keep `cardano-cli` and `snapshot-converter` from the same node package set. Select the wallet by build cluster for installers, development shells, and displayed backend versions: stable `mainnet` uses `cardano-foundation/cardano-wallet` `v2026-10-07` (`f293d922f1930714aca7ede3cbb5ebf3fb710af6`); `mainnet-flight`, `preprod`, and `preview` use `se7en-labs-inc/cardano-wallet` `cip30-alpha1` (`d408e4f29e46dc34454b160b3994ee9974b5cde2`). These are locked snapshots, not startup or build-time release lookups.
+
+- Require the selected full lowercase wallet commit in installed `daedalus-config.json` as `cardanoWalletSourceRevision`; use it for CIP-30 capability validation and collateral requests. Mainnet dApp launch remains disabled. Any mainnet database previously used with the fork requires a backed-up disposable compatibility exercise before rollout.
+
+- Release verification: all four Linux payloads contain node 11.1.3 and their selected wallet commits. Fresh-state mainnet, Flight, preprod, and preview smoke runs returned network information with advancing node tips; the prior preprod `ShelleyGenesis` startup decoding failure was not observed with node 11.1.3. This does not establish fully synced or later-era compatibility. Native macOS payload verification still requires Darwin builders.
+
+- Windows: correct the Electron 41.10.6 x64 ZIP and `node.lib` hashes against the publisher's checksums. All four staged payloads build; their generated configs parse successfully, and actual node/wallet executables run under Wine with matching revisions (node 11.1.3, upstream wallet on mainnet, CIP-30 fork on Flight/preprod/preview). This verifies staged payload provenance, not native Windows integration, signing, or installed-host certification.
 
 - Windows: updated bundled mcfgthread DLL names from v1 to v2 (`libmcfgthread-2.dll`, `libmcfgthread-minimal-2.dll`) following a toolchain upgrade in the upstream node build.
 
@@ -88,6 +124,14 @@
 
 ### Fixes
 
+- Native transactions: retain submission, failure, cancellation, and uncertain-outcome feedback until dismissed, including transaction IDs. Distinguish explicit hardware-wallet refusal from other failures, and prevent late address-verification results from affecting a later operation.
+
+- Collateral: preserve preferred collateral during native payment/delegation selection and fee estimation, with fallback when ordinary inputs cannot balance the request. Keep CIP-30 inventory complete with collateral last, and accept valid spending/collateral input overlap.
+
+- dApp connector: derive pinned Plutus language views from authenticated protocol parameters, allowing valid script-data commitments (including Liqwid transactions) to complete review while rejecting missing cost models and commitment mismatches.
+
+- Ledger dApp connection: recover a live, previously recorded USB path when the paired device path is stale, and update the canonical path after checking the Cardano app version. Connection approval and signing safeguards remain required.
+
 - Chain-storage: resolved relative symlink targets to absolute paths; report a read-only directory as not-writable and an unresolvable link as not-found; verify created links on all platforms; never leave a broken created link; fixed cross-device move fallback; report a looping path as not found; do not block directory validation on the free-space probe; roll back a failed migration even if the journal cannot be written.
 
 - Explorer: updated links to the current `explorer.cardano.org` layout; removed dead testnet and staging explorer endpoints.
@@ -103,6 +147,12 @@
 - Bump `cardano-wallet` to v2026-08-21.
 
 ## 11.2.0
+
+### Features
+
+- Linux: releases now ship only fixed-path `.deb` and `.rpm` system packages; the portable `.bin` and its automatic update path are retired. Legacy users receive manual migration announcements, and package-manager installation/upgrades preserve `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus` wallet state.
+
+- dApp connector: CIP-30/CIP-8, CIP-95, and CIP-103 are active; proposed CIP-142 is package-policy gated, while proposed CIP-104 is terminal-disabled and omitted because no interoperable encoding vector exists.
 
 ### Fixes
 

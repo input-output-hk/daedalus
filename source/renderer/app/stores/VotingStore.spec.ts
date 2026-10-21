@@ -21,6 +21,9 @@ import { daedalusTheme } from '../themes/daedalus';
 import { themeOverrides } from '../themes/overrides';
 import VotingPowerDelegation from '../components/voting/voting-governance/VotingPowerDelegation';
 
+beforeEach(() => {
+  global.cip30Enabled = true;
+});
 jest.mock('../components/widgets/forms/WalletsDropdown', () => {
   return function WalletsDropdownMock() {
     return null;
@@ -116,6 +119,7 @@ const buildHardwareWallets = (overrides: Record<string, unknown> = {}) => ({
   updateTxSignRequest: jest.fn(),
   initiateTransaction: jest.fn(async () => undefined),
   _sendMoney: jest.fn(async () => undefined),
+  submitConstructedNativeTransaction: jest.fn(async () => ({ id: 'tx-1' })),
   sendMoneyRequest: { isExecuting: false },
   isTransactionPending: false,
   ...overrides,
@@ -146,158 +150,25 @@ describe('VotingStore hardware-wallet delegation branches', () => {
     jest.useRealTimers();
   });
 
-  describe('initializeVPDelegationTx', () => {
-    it('hands the signing layer a cast_vote certificate carrying chosenOption verbatim', async () => {
-      const hardwareWallets = buildHardwareWallets();
-      const { store } = buildStore(hardwareWallets);
-
-      const result = await store.initializeVPDelegationTx({
-        chosenOption: CIP129_KEY,
-        wallet: hwWallet,
-      });
-
-      expect(result).toEqual({ success: true, fees: expect.any(BigNumber) });
-      expect(hardwareWallets.updateTxSignRequest).toHaveBeenCalledTimes(1);
-      const [coinSelection] = hardwareWallets.updateTxSignRequest.mock.calls[0];
-      expect(coinSelection.certificates).toEqual([
-        {
-          certificateType: 'cast_vote',
-          rewardAccountPath: REWARD_ACCOUNT_PATH,
-          vote: CIP129_KEY,
-        },
-      ]);
-      // Byte-equality: the exact chosenOption string reaches the device-bound
-      // certificate untouched.
-      expect(coinSelection.certificates[0].vote).toBe(CIP129_KEY);
-      expect(hardwareWallets.initiateTransaction).toHaveBeenCalledWith(
-        expect.objectContaining({ walletId: hwWallet.id })
-      );
-      expect(
-        hardwareWallets.updateTxSignRequest.mock.invocationCallOrder[0]
-      ).toBeLessThan(
-        hardwareWallets.initiateTransaction.mock.invocationCallOrder[0]
-      );
-    });
-
-    it('prepends register_reward_account when the coin selection requires it', async () => {
-      const hardwareWallets = buildHardwareWallets({
-        selectDelegationCoins: jest.fn(async () => ({
-          certificates: [{ certificateType: 'register_reward_account' }],
-          fee: new BigNumber('0.2'),
-        })),
-      });
-      const { store } = buildStore(hardwareWallets);
-
-      await store.initializeVPDelegationTx({
-        chosenOption: CIP129_KEY,
-        wallet: hwWallet,
-      });
-
-      const [coinSelection] = hardwareWallets.updateTxSignRequest.mock.calls[0];
-      expect(coinSelection.certificates).toEqual([
-        {
-          certificateType: 'register_reward_account',
-          rewardAccountPath: REWARD_ACCOUNT_PATH,
-        },
-        {
-          certificateType: 'cast_vote',
-          rewardAccountPath: REWARD_ACCOUNT_PATH,
-          vote: CIP129_KEY,
-        },
-      ]);
-    });
-
-    it('leaves the hardware signing seams untouched for software wallets', async () => {
-      const hardwareWallets = buildHardwareWallets();
-      const { store } = buildStore(hardwareWallets);
-
-      const result = await store.initializeVPDelegationTx({
-        chosenOption: CIP129_KEY,
-        wallet: softwareWallet,
-      });
-
-      expect(result).toEqual({ success: true, fees: expect.any(BigNumber) });
-      expect(hardwareWallets.updateTxSignRequest).not.toHaveBeenCalled();
-      expect(hardwareWallets.initiateTransaction).not.toHaveBeenCalled();
-    });
-
-    it('returns a generic error code when the device is not connected', async () => {
-      const hardwareWallets = buildHardwareWallets({
-        initiateTransaction: jest.fn(() => {
-          throw new Error('Wallet not paired or Device not connected');
-        }),
-      });
-      const { store } = buildStore(hardwareWallets);
-
-      const result = await store.initializeVPDelegationTx({
-        chosenOption: CIP129_KEY,
-        wallet: hwWallet,
-      });
-
-      expect(result).toEqual({ success: false, errorCode: 'generic' });
-      expect(logger.error).toHaveBeenCalledWith(
-        'VotingStore: error while initializing VP delegation TX with HW',
-        expect.objectContaining({ errorCode: 'generic' })
-      );
-    });
-
-    it('surfaces the same_vote server error without logging the vote target', async () => {
-      const hardwareWallets = buildHardwareWallets({
-        selectDelegationCoins: jest.fn(async () => {
-          throw new ApiError({ code: 'same_vote' } as any);
-        }),
-      });
-      const { store } = buildStore(hardwareWallets);
-
-      const result = await store.initializeVPDelegationTx({
-        chosenOption: CIP129_KEY,
-        wallet: softwareWallet,
-      });
-
-      expect(expectedInitializeVPDelegationTxErrors).toContain('same_vote');
-      expect(result).toEqual({ success: false, errorCode: 'same_vote' });
-      expect(logger.error).toHaveBeenCalledWith(
-        'VotingStore: error while initializing VP delegation TX with HW',
-        expect.objectContaining({ errorCode: 'same_vote' })
-      );
-
-      // Re-spying returns the mock the outer beforeEach installed, so the
-      // recorded calls are the ones asserted above.
-      const errorSpy = jest.spyOn(logger, 'error');
-      expect(JSON.stringify(errorSpy.mock.calls)).not.toContain(CIP129_KEY);
-    });
-  });
-
   describe('delegateVotes', () => {
-    it('submits through the HW path and never invokes the software delegateVotes request', async () => {
-      jest.useFakeTimers();
-      const hardwareWallets = buildHardwareWallets({
-        sendMoneyRequest: { isExecuting: true },
+    it('submits the frozen vote through the hardware native approval path', async () => {
+      const hardwareWallets = buildHardwareWallets();
+      const { analytics, store } = buildStore(hardwareWallets);
+
+      await expect(
+        store.delegateVotes({
+          chosenOption: CIP129_KEY,
+          passphrase: '',
+          wallet: hwWallet,
+        })
+      ).resolves.toEqual({ success: true });
+      expect(
+        hardwareWallets.submitConstructedNativeTransaction
+      ).toHaveBeenCalledWith({
+        walletId: hwWallet.id,
+        action: 'drep-delegation',
+        data: { encoding: 'base16', vote: CIP129_KEY },
       });
-      const { analytics, api, store } = buildStore(hardwareWallets);
-      const executeSpy = jest.spyOn(store.delegateVotesRequest, 'execute');
-
-      const resultPromise = store.delegateVotes({
-        chosenOption: CIP129_KEY,
-        passphrase: '',
-        wallet: hwWallet,
-      });
-
-      // Flush microtasks so _sendMoney resolves and the 2s polling timer arms.
-      await Promise.resolve();
-      await Promise.resolve();
-      await Promise.resolve();
-      jest.advanceTimersByTime(2000);
-      hardwareWallets.sendMoneyRequest.isExecuting = false;
-      jest.advanceTimersByTime(2000);
-
-      const result = await resultPromise;
-      expect(result).toEqual({ success: true });
-      expect(hardwareWallets._sendMoney).toHaveBeenCalledWith(
-        expect.objectContaining({ selectedWalletId: hwWallet.id })
-      );
-      expect(executeSpy).not.toHaveBeenCalled();
-      expect(api.ada.delegateVotes).not.toHaveBeenCalled();
       expect(analytics.sendEvent).toHaveBeenCalledWith(
         EventCategories.VOTING,
         'Casted governance vote',
@@ -307,7 +178,7 @@ describe('VotingStore hardware-wallet delegation branches', () => {
 
     it('returns a generic error code and sends no analytics when HW submission fails', async () => {
       const hardwareWallets = buildHardwareWallets({
-        _sendMoney: jest.fn(async () => {
+        submitConstructedNativeTransaction: jest.fn(async () => {
           throw new Error('signing rejected on device');
         }),
       });
@@ -342,7 +213,7 @@ describe('same-vote server error in the delegation form', () => {
       isHardwareWallet: false,
       name: 'Form Wallet',
     } as any;
-    const initiateTransaction = jest.fn(async () => ({
+    const submitTransaction = jest.fn(async () => ({
       errorCode: 'same_vote' as const,
       success: false as const,
     }));
@@ -366,10 +237,11 @@ describe('same-vote server error in the delegation form', () => {
               selectedWalletId: wallet.id,
               voteType: 'drep',
             },
-            initiateTransaction,
+            submitTransaction,
             onBrowseDRepsClick: jest.fn(),
             onExternalLinkClick: jest.fn(),
-            renderConfirmationDialog: () => null,
+            onCancel: jest.fn(),
+            onSuccess: jest.fn(),
             stakePools: [],
             wallets: [wallet],
           })
@@ -386,8 +258,92 @@ describe('same-vote server error in the delegation form', () => {
         'This wallet already delegates to this choice. Please change delegation in order to proceed.'
       )
     ).toBeInTheDocument();
-    expect(initiateTransaction).toHaveBeenCalledWith(
+    expect(submitTransaction).toHaveBeenCalledWith(
       expect.objectContaining({ chosenOption: CIP129_KEY })
     );
+  });
+});
+
+describe('upstream governance store dispatch', () => {
+  beforeEach(() => {
+    global.cip30Enabled = false;
+  });
+
+  it.each([CIP129_KEY, 'abstain', 'no_confidence'])(
+    'submits %s with the collected password while holding the wallet lock',
+    async (chosenOption) => {
+      let locked = false;
+      const delegateVotes = jest.fn(async () => {
+        expect(locked).toBe(true);
+        return { id: 'upstream-transaction' };
+      });
+      const api = { ada: { delegateVotes } };
+      const store = new VotingStore(
+        api as unknown as Api,
+        {} as ActionsMap,
+        noopAnalyticsTracker
+      );
+      const withWalletSendLock = jest.fn(
+        async (_walletId: string, work: () => Promise<unknown>) => {
+          locked = true;
+          try {
+            return await work();
+          } finally {
+            locked = false;
+          }
+        }
+      );
+      store.configure({
+        transactions: { withWalletSendLock },
+      } as unknown as Parameters<VotingStore['configure']>[0]);
+      await expect(
+        store.delegateVotes({
+          chosenOption,
+          wallet: softwareWallet,
+          passphrase: 'real-password',
+        })
+      ).resolves.toEqual({ success: true });
+      expect(delegateVotes).toHaveBeenCalledWith({
+        dRepId: chosenOption,
+        walletId: softwareWallet.id,
+        passphrase: 'real-password',
+      });
+      expect(locked).toBe(false);
+    }
+  );
+
+  it('uses legacy certificate selection and hardware submission without exact approval', async () => {
+    const hardwareWallets = buildHardwareWallets();
+    const { store } = buildStore(hardwareWallets);
+    await expect(
+      store.initializeVPDelegationTx({
+        chosenOption: CIP129_KEY,
+        wallet: hwWallet,
+      })
+    ).resolves.toEqual({ success: true, fees: new BigNumber('0.180989') });
+    expect(hardwareWallets.updateTxSignRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        certificates: [
+          {
+            certificateType: 'cast_vote',
+            rewardAccountPath: REWARD_ACCOUNT_PATH,
+            vote: CIP129_KEY,
+          },
+        ],
+      })
+    );
+    await expect(
+      store.delegateVotes({
+        chosenOption: CIP129_KEY,
+        wallet: hwWallet,
+      })
+    ).resolves.toEqual({ success: true });
+    expect(hardwareWallets._sendMoney).toHaveBeenCalledWith({
+      selectedWalletId: hwWallet.id,
+      isDelegationTransaction: true,
+    });
+    expect(
+      hardwareWallets.submitConstructedNativeTransaction
+    ).not.toHaveBeenCalled();
   });
 });

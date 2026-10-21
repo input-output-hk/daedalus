@@ -10,6 +10,8 @@ import LocalizableError from '../../../../i18n/LocalizableError';
 type CommonProps = {
   amount: string;
   isHardwareWallet: boolean;
+  isCollateralPreparation?: boolean;
+  spendsPreferredCollateral?: boolean;
   selectedAssets: Array<AssetToken>;
   assetsAmounts: Array<string>;
   formattedTotalAmount: string;
@@ -57,7 +59,6 @@ export type DialogContentWithAssets = Pick<
   'isHardwareWallet' | 'selectedAssets' | 'assetsAmounts' | 'onCopyAssetParam'
 > &
   DialogContentWithoutAssets;
-
 export type UseForm = Pick<
   ViewProps,
   | 'intl'
@@ -68,6 +69,7 @@ export type UseForm = Pick<
   | 'selectedAssets'
   | 'assetsAmounts'
   | 'isHardwareWallet'
+  | 'isCollateralPreparation'
   | 'onSubmitCb'
 >;
 

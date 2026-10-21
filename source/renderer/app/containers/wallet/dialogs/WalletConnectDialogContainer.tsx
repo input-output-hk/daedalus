@@ -35,6 +35,7 @@ class WalletConnectDialogContainer extends Component<Props> {
         hwDeviceStatus={hwDeviceStatus}
         transportDevice={transportDevice}
         onExternalLinkClick={app.openExternalLink}
+        onPairWallet={hardwareWallets.createHardwareWallet}
       />
     );
   }

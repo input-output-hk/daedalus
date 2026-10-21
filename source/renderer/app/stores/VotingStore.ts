@@ -22,6 +22,7 @@ import { i18nContext } from '../utils/i18nContext';
 import type { PathRoleIdentityType } from '../utils/hardwareWalletUtils';
 import type {
   GetTransactionRequest,
+  Transaction,
   VotingMetadataType,
 } from '../api/transactions/types';
 import type { CatalystFund } from '../api/voting/types';
@@ -163,7 +164,7 @@ export default class VotingStore extends Store {
     this.api.ada.createWalletSignature
   );
   @observable
-  delegateVotesRequest: Request<Buffer> = new Request(
+  delegateVotesRequest: Request<Transaction> = new Request(
     this.api.ada.delegateVotes
   );
   @observable
@@ -285,147 +286,137 @@ export default class VotingStore extends Store {
     chosenOption: string;
     wallet: Wallet;
   }) => {
-    let poolId: string;
-
-    if (wallet.isDelegating) {
-      const { lastDelegatedStakePoolId, delegatedStakePoolId } = wallet;
-      const currentPoolId = lastDelegatedStakePoolId || delegatedStakePoolId;
-      poolId = this.stores.staking.stakePools.find(
-        (stakePool) => stakePool.id !== currentPoolId
-      ).id;
-    } else {
-      const [{ id }] = this.stores.staking.stakePools;
-      poolId = id;
-    }
-
+    if (global.cip30Enabled)
+      throw new Error('Upstream governance preparation is unavailable');
     try {
-      let coinSelection =
-        await this.stores.hardwareWallets.selectDelegationCoins({
-          walletId: wallet.id,
-          delegationAction: 'join',
-          poolId,
-        });
-
+      const currentPoolId =
+        wallet.lastDelegatedStakePoolId || wallet.delegatedStakePoolId;
+      const pool = this.stores.staking.stakePools.find(
+        (candidate) => !wallet.isDelegating || candidate.id !== currentPoolId
+      );
+      if (!pool)
+        throw new Error('Stake pool required for governance selection');
+      const coinSelection = wallet.isHardwareWallet
+        ? await this.stores.hardwareWallets.selectDelegationCoins({
+            walletId: wallet.id,
+            delegationAction: 'join',
+            poolId: pool.id,
+          })
+        : await this.api.ada.selectCoins({
+            walletId: wallet.id,
+            walletBalance: wallet.amount,
+            availableBalance: wallet.availableAmount.plus(wallet.reward),
+            rewardsBalance: wallet.reward,
+            delegation: {
+              walletId: wallet.id,
+              poolId: pool.id,
+              delegationAction: 'join',
+            },
+          });
       if (wallet.isHardwareWallet) {
-        let certificates: object[] = [
+        const certificates = [
+          ...coinSelection.certificates.filter(
+            (certificate) =>
+              certificate.certificateType === 'register_reward_account'
+          ),
           {
             certificateType: 'cast_vote',
             rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
             vote: chosenOption,
           },
         ];
-
-        const walletNeedsRegisteringRewardAccount =
-          coinSelection.certificates.some(
-            (c) => c.certificateType === 'register_reward_account'
-          );
-        if (walletNeedsRegisteringRewardAccount) {
-          certificates = [
-            {
-              certificateType: 'register_reward_account',
-              rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
-            },
-            ...certificates,
-          ];
-        }
-
-        coinSelection = {
+        this.stores.hardwareWallets.updateTxSignRequest({
           ...coinSelection,
           certificates,
-        };
-
-        this.stores.hardwareWallets.updateTxSignRequest(coinSelection);
+        });
         this.stores.hardwareWallets.initiateTransaction({
           walletId: wallet.id,
         });
       }
-
-      return {
-        success: true,
-        fees: coinSelection.fee,
-      };
+      return { success: true as const, fees: coinSelection.fee };
     } catch (error) {
-      const errorCode = parseApiCode(
-        expectedInitializeVPDelegationTxErrors,
-        error
-      );
-      // Device and API error messages can embed the vote target; log only the
-      // derived code so no DRep id or sentinel ever reaches the log file.
-      logger.error(
-        'VotingStore: error while initializing VP delegation TX with HW',
-        {
-          errorCode,
-        }
-      );
       return {
-        success: false,
-        errorCode,
+        success: false as const,
+        errorCode: parseApiCode(expectedInitializeVPDelegationTxErrors, error),
       };
     }
   };
 
   delegateVotes = async ({
     chosenOption,
-    passphrase,
     wallet,
+    passphrase,
   }: {
     chosenOption: string;
-    passphrase: string;
+    passphrase?: string;
     wallet: Wallet;
   }) => {
-    if (wallet.isHardwareWallet) {
+    if (!global.cip30Enabled) {
       try {
-        await this.stores.hardwareWallets._sendMoney({
-          selectedWalletId: wallet.id,
-        });
-
-        await new Promise<void>((resolve) => {
-          const wait = () => {
-            setTimeout(() => {
-              const { sendMoneyRequest, isTransactionPending } =
-                this.stores.hardwareWallets;
-              if (sendMoneyRequest.isExecuting || isTransactionPending) {
-                wait();
-                return;
-              }
-
-              resolve();
-            }, 2000);
-          };
-
-          wait();
-        });
-
+        if (wallet.isHardwareWallet) {
+          await this.stores.hardwareWallets._sendMoney({
+            selectedWalletId: wallet.id,
+            isDelegationTransaction: true,
+          });
+        } else {
+          if (!passphrase) throw new Error('Spending password required');
+          this.delegateVotesRequest.reset();
+          await this.stores.transactions.withWalletSendLock(
+            wallet.id,
+            () =>
+              this.delegateVotesRequest.execute({
+                dRepId: chosenOption,
+                passphrase,
+                walletId: wallet.id,
+              }).promise
+          );
+        }
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
-          this._getVoteKind(chosenOption) // 'drep' | 'abstain' | 'no_confidence'
+          this._getVoteKind(chosenOption)
         );
-
+        return { success: true as const };
+      } catch (error) {
         return {
-          success: true,
-        };
-      } catch {
-        const errorCode: GenericErrorCode = 'generic';
-        // Device and API error messages can embed the vote target; log only the
-        // derived code so no DRep id or sentinel ever reaches the log file.
-        logger.error('VotingStore: error while delegating vote with HW', {
-          errorCode,
-        });
-        return {
-          success: false,
-          errorCode,
+          success: false as const,
+          errorCode: parseApiCode(expectedDelegateVotesErrors, error),
         };
       }
     }
-
-    this.delegateVotesRequest.reset();
+    if (wallet.isHardwareWallet) {
+      try {
+        await this.stores.hardwareWallets.submitConstructedNativeTransaction({
+          walletId: wallet.id,
+          action: 'drep-delegation',
+          data: {
+            encoding: 'base16',
+            vote: chosenOption,
+          },
+        });
+        this.analytics.sendEvent(
+          EventCategories.VOTING,
+          'Casted governance vote',
+          this._getVoteKind(chosenOption)
+        );
+        return { success: true as const };
+      } catch {
+        const errorCode: GenericErrorCode = 'generic';
+        logger.error('VotingStore: error while delegating vote with HW', {
+          errorCode,
+        });
+        return { success: false as const, errorCode };
+      }
+    }
     try {
-      await this.delegateVotesRequest.execute({
-        dRepId: chosenOption,
-        passphrase,
+      await this.stores.wallets.submitConstructedNativeTransaction({
         walletId: wallet.id,
-      }).promise;
+        action: 'drep-delegation',
+        data: {
+          encoding: 'base16',
+          vote: chosenOption,
+        },
+      });
 
       this.analytics.sendEvent(
         EventCategories.VOTING,
@@ -434,34 +425,60 @@ export default class VotingStore extends Store {
       );
 
       return {
-        success: true,
+        success: true as const,
       };
     } catch (error) {
       return {
-        success: false,
+        success: false as const,
         errorCode: parseApiCode(expectedDelegateVotesErrors, error),
       };
     }
   };
 
-  prepareVotingData = async ({ walletId }: { walletId: string }) => {
+  prepareVotingData = async ({
+    walletId,
+    isCurrent,
+  }: {
+    walletId: string;
+    isCurrent?: () => boolean;
+  }) => {
+    const assertCurrent = () => {
+      if (isCurrent && !isCurrent())
+        throw new Error('Voting registration cancelled.');
+    };
+    assertCurrent();
+    // A cancelled wallet's request must not be reused by a newer registration.
+    if (isCurrent) {
+      runInAction(() => {
+        this.getWalletPublicKeyRequest = new Request(
+          this.api.ada.getWalletPublicKey
+        );
+      });
+    }
+    const publicKeyRequest = this.getWalletPublicKeyRequest;
     try {
-      const [address] =
-        await this.stores.addresses.getAddressesByWalletId(walletId);
+      const address = global.cip30Enabled
+        ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
+        : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
+      assertCurrent();
       const addressHex = await this._getHexFromBech32(address.id);
-      await this._generateVotingRegistrationKey();
+      assertCurrent();
+      await this._generateVotingRegistrationKey(isCurrent);
+      assertCurrent();
       if (!this.votingRegistrationKey)
         throw new Error('Failed to generate voting registration key.');
       const votingKey = formattedArrayBufferToHexString(
         this.votingRegistrationKey.public().bytes()
       );
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-      const stakeKeyBech32 = await this.getWalletPublicKeyRequest.execute({
+      const stakeKeyBech32 = await publicKeyRequest.execute({
         walletId,
         role: 'mutable_account',
         index: '0',
       });
+      assertCurrent();
       const stakeKey = await this._getHexFromBech32(stakeKeyBech32);
+      assertCurrent();
       const { absoluteSlotNumber } = this.stores.networkStatus;
       const metadata = {
         [61284]: {
@@ -541,8 +558,9 @@ export default class VotingStore extends Store {
       throw new Error(
         'Selected wallet required before send voting registration.'
       );
-    const [address] =
-      await this.stores.addresses.getAddressesByWalletId(walletId);
+    const address = global.cip30Enabled
+      ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
+      : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
     const selectedWallet = this.stores.wallets.getWalletById(walletId);
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
     const { absoluteSlotNumber } = this.stores.networkStatus;
@@ -714,8 +732,9 @@ export default class VotingStore extends Store {
       Object.values(FundPhase).find((phase) => phaseValidation[phase](now)) ||
       null;
   };
-  _generateVotingRegistrationKey = async () => {
+  _generateVotingRegistrationKey = async (isCurrent = () => true) => {
     const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;
+    if (!isCurrent()) throw new Error('Voting registration cancelled.');
 
     this._setVotingRegistrationKey(extendedPrivateKey.generate());
   };

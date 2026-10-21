@@ -11,6 +11,11 @@ import './staking/Staking.stories';
 import './staking/CountdownParty.stories';
 // dApps
 import './dapps/TransactionRequest.stories';
+import './dapps/DappDataSignApproval.stories';
+import './dapps/DappConsentDialog.stories';
+import './dapps/DappCatalog.stories';
+import './dapps/DappConnectionsSettings.stories';
+import './dapps/CollateralPanel.stories';
 // Voting
 import './voting/Voting.stories';
 import './governance/DRepDirectory.stories';
@@ -36,6 +41,7 @@ import './notifications/Notifications.stories';
 // Common
 import './common/Widgets.stories';
 import './common/ItemsDropdown.stories';
+import './common/TransactionApprovalDialog.stories';
 // Discreet Mode
 import '../../source/renderer/app/features/discreet-mode/ui/discreet-toggle/DiscreetModeToggle.story';
 import '../../source/renderer/app/features/discreet-mode/ui/DiscreetValue.story';

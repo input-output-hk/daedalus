@@ -1,0 +1,131 @@
+# Task-902 interoperability pilot evidence
+
+## Liqwid mainnet — 2026-09-08
+
+Operator-reported successful end-to-end tests using the packaged Daedalus mainnet dApp pilot and a Ledger Flex:
+
+| Flow | Result | Transaction ID |
+|---|---|---|
+| Deposit | Successful | `a0fe9a932fd0380dec3d8850960e61ed6dea1427519418f4850a6fa01021b44a` |
+| Withdrawal | Successful | `95914affa53386d068c04e28da4c686f00bfb58f85947c58479a857e1b1a2e09` |
+
+These results cover Liqwid transaction approval, Ledger signing, submission, and confirmed operator-observed completion. They are pilot evidence, not completion of task-902: the remaining preferred-dApp, hardware, collateral, and policy acceptance criteria remain pending.
+
+A subsequent native 5 ADA self-transfer failed before any Ledger prompt. The investigation and fix are tracked with this pilot evidence because it occurred in the same installed mainnet candidate session; it is not counted as a successful interoperability result.
+
+### Native self-transfer failures
+
+The first session recorded three pre-device failures as `Uncaught (in promise) Error: user_declined` with no subsequent Ledger signing activity. Stale renderer approval state was the initial hypothesis, and `WalletApprovalStore.receive` was changed to retire an old presentation before accepting a new one. That change did not resolve the reported failure; the parser-level reproduction below identifies the pre-presentation blocker.
+
+After that correction, build 86985 reached native payment preparation and failed with `Hardware exact transaction is not enabled`. `prepareExactPayment` incorrectly requested dApp connector capability, which is intentionally disabled without dApp certification, instead of the already-defined native transaction capability used by other native hardware flows. Native payments now use native capability evidence; dApp signing remains certification-gated.
+
+Build 86986 again failed immediately after Send with `user_declined` at `2026-09-08T21:14:04.767Z` (`/tmp/daedalus-liqwid.log`, line 251). The operator reported the Ledger unlocked in the Cardano app at Send time. Earlier device-lock messages were from address verification, not evidence of a signing refusal.
+
+Confirmed root cause: `source/common/ipc/walletApproval.ts` validated only dApp presentation kinds and fields. Every native transaction presentation was rejected by `parseWalletApprovalRender` before reaching `WalletApprovalStore`; `ConsentCoordinator.advance` mapped the presentation exception to the caller's `user_declined` failure. Native presentation validation now accepts the existing native contract, reuses the exact-review/display validators and shared action enumeration, and validates native-plan digests. It does not bypass consent, permit malformed messages, change transaction bytes, or alter Ledger connection behavior.
+
+Verification: the main-to-renderer IPC regression failed before this parser change and passed afterward; it keeps native Ledger approval pending until an explicit decision. A separate smoke run exercised the real renderer IPC binding, parser, and store without Jest mocks, including explicit rejection, terminal cleanup, and malformed-message rejection. The physical self-transfer remains unverified until the corrected package is retested; no device signing or submission occurred during these checks.
+
+Build 86987 opened the native approval dialog, but the operator's screenshot showed approval disabled with `missing authenticated resolved input`. The displayed input amount was available because review display reads `transactionContext.outputs`; the main-process native presenter separately decoded the transaction without `transactionContext.commitmentContexts`, losing the resolved-input evidence already verified during preparation. The presenter now selects the commitment context matching the exact transaction CBOR and supplies it to the decoder. Mismatched transaction bytes are rejected; absent input proof still produces an unapprovable review.
+
+The screenshot's `+2.380701 ADA` wallet change is consistent with a self-transfer: the `2.555266 ADA` reward withdrawal less the `0.174565 ADA` fee increases spendable wallet funds by `2.380701 ADA`. Both the `5 ADA` payment and `407.460984 ADA` change output remain in the wallet.
+
+Verification: a main-process native-request regression reproduced the missing-input refusal before the context fix and passed afterward, preserving exact CBOR and the reported amounts while rejecting missing or mismatched evidence. All 78 tests in the ten affected suites and TypeScript checking passed. An isolated Electron 41.10.6 smoke exercised the real renderer native request, trusted main-process IPC, presenter, and renderer review parser across Electron serialization: matching evidence enabled approval; missing evidence and mismatched bytes remained blocked; device execution count was zero. The smoke explicitly declined consent and did not sign or submit. Physical Ledger Flex self-transfer remains pending operator retest of the corrected package.
+
+On 2026-09-09, the operator reported that build 86988 closed approval immediately after “Continue on device” and returned to the send form. `/tmp/daedalus-liqwid.log:253` records `Uncaught (in promise) Error: failed` at `14:58:42.693510`. The installed renderer location maps to the native `_sendMoney` rejection, after the execution service has reduced the original exception to `failed`; the log does not identify the original exception. Earlier locked-device entries belong to address verification, not this signing attempt.
+
+Two pre-device blockers were reproduced independently. The native send entry bypassed the old confirmation dialog's connection refresh, leaving startup-disconnected or stale-path Ledger pairing state rejected by `signExactTransaction`. Native Ledger signing now reuses the existing app-version/path refresh before checking the live connection, without requiring dApp certification or exporting keys. Separately, the main exact-signing handler required the dApp allow-list even for the existing `ledger-native`/`trezor-native` capability rows. Those rows now use native admission; other rows still require the dApp allow-list. Known vendor, artifact, static/product gates, exact-body mapping, paired-account signer checks, and signature verification remain enforced.
+
+Verification: both regressions failed before the changes and passed afterward; 97 tests in 14 affected suites, TypeScript, and formatting checks passed. Targeted ESLint still reports 20 errors in unchanged import/declaration code and 220 warnings. An isolated Electron 41.10.6 smoke exercised the actual native payment path through context reconciliation, change binding, approval IPC/store, connection refresh, main hardware handler, real Ledger request mapping, signature verification, submission authorization, and terminal cleanup. The approval state remained present in `waiting-for-device` until the synthetic device response was released. Two generated test-key signatures were verified, exact transaction body bytes were preserved, and one synthetic submission sink call occurred; no public-key export, physical hardware use, or network submission occurred. This is not physical Ledger Flex self-transfer evidence; operator retest remains pending.
+
+### Approved native self-transfer outcome — 2026-09-09
+
+The operator approved the transaction on the Ledger Flex in build 86989, but the UI returned to the send form without success or failure feedback. The reported `/tmp/daedalus-liqwid.log:249` exception at `15:54:39.377153` was `Action rejected by user on device.`. The installed renderer location belongs to the earlier `showAddress` operation; `verifyAddress` launched that promise without awaiting it. The address dialog had already been closed at `15:54:29.754`, so the late exception was not evidence that native transaction signing had been refused.
+
+Read-only inspection of the pilot wallet database found transaction `0808b4395518edddd22d62c48d6ed294996fdc7b52013934238c412172b11d84` in `dapp_submission`, with `authorized = 1`, `status = 2` (`SubmittedE` in the pinned backend's `Cardano.Wallet.DB.Sqlite.Types`), and no rejection code. Offline decoding of its stored 434-byte envelope found a 5,000,000-lovelace output, 761,569,819-lovelace change, a 174,565-lovelace fee, and a 2,555,266-lovelace reward withdrawal. Both stored Ed25519 witnesses verified against the exact transaction body hash. The database had not recorded ledger acceptance before shutdown (latest checkpoint slot 197403023); this proves a signed, backend-recorded submission, not on-chain confirmation. Do not repeat the payment just to recover missing feedback.
+
+Address display is now awaited, its failure remains in address-verification state, and a captured reference invalidated by closing/replacing the operation prevents late responses from changing a newer operation. Native terminal IPC now carries validated outcomes. The approval dialog retains submitted, failed, cancelled, partial, or unknown results and transaction IDs until **Done**; the original execution settles without waiting for dismissal, while subsequent queued reviews cannot overwrite the result. Explicit device-refusal and proof-generation codes survive normalization, and errors after submission authorization or uncertain backend statuses do not claim definite failure or success.
+
+Verification included regressions run against frozen pre-fix source (both failed) and corrected source, plus an isolated Electron 41.10.6 UI smoke using the real trusted-renderer IPC binding, native approval service/coordinator/store, and rendered approval dialog. Submitted and failed results persisted; the next queued review waited for dismissal; explicit refusal, cancellation, unknown submission, and partial-result surfaces were exercised; Japanese failure copy and result-focus/contrast were visually checked. The smoke ended with cleared approval state, no unhandled renderer rejections, and zero real hardware or network submissions. Temporary runtime files and the copied public transaction envelope were removed.
+
+A final action-boundary regression also reproduced an unhandled `Transaction was not submitted` exception when the native result was actually submission-unknown. The native payment handler now clears pending state and returns after handled terminal outcomes instead of rejecting the send action's unobserved promise. The retained approval result owns this feedback.
+
+Final source checks passed: 125 tests in 17 affected suites, TypeScript, scoped Prettier, result-panel Stylelint, and i18n management. Targeted ESLint still reports 23 errors in existing review-rendering constructs and duplicate hardware-store imports; the new outcome branches are lint-clean.
+
+Replacement pilot build: `11.3.0+build86990.gitdirty-1` (`amd64`), file `daedalus-11.3.0-86990-mainnet-dapp-pilot-dirty-x86_64-linux.deb`. SHA-256: `c80cd7fb34d2e6b4c57a7fa9e98292b94aea6c1769dd564f5d10a30e602b2871`; checksum verification passed. Source-map contents for eight affected main/renderer modules matched the verified working-tree source, including the final payment-action correction. The temporary build-counter offset was restored after the build. Webpack completed with seven renderer warnings concerning browser-crypto exports and bundle sizes. Installation and a physical Ledger test of this replacement package were not performed.
+
+### Submission receipts and history feedback — 2026-09-09
+
+The operator subsequently confirmed successful 5 ADA self-transfers. This work addresses missing feedback; it does not repeat those payments.
+
+- Native and dApp transaction approvals retain their result until dismissed. Receipts distinguish signing-only, submitted/awaiting confirmation, confirmed, failed, expired, partially submitted, and unknown outcomes. Existing public CIP-30 return values are unchanged.
+- Main-issued presentations carry the originating wallet ID. **View transaction** opens that wallet's matching history entry, clears incompatible filters, and expands/reveals the transaction.
+- Submitted and uncertain transactions get immediate wallet-scoped history placeholders. Only transaction identity and display metadata are persisted, not signed CBOR, witnesses, or passphrases. Backend history reconciles placeholders without duplication; temporary lookup failures do not invent confirmation or expiry.
+- An open receipt follows history state. Dismissing an unconfirmed receipt enables one brief confirmation notification for that session, with a non-focus-stealing **View transaction** action; already-confirmed receipts do not trigger a later duplicate notification.
+- Every ADA and token history row displays a status. Verified native self-transfers retain the matched payment principal separately from network fee and net wallet change. A wallet-owned reward withdrawal does not turn a self-transfer into an incoming payment: the recorded 5 ADA example has a 0.174565 ADA fee and a positive 2.380701 ADA spendable-balance change. Older rows without verified principal metadata show net wallet change rather than reconstructing a payment amount from the fee.
+
+The current canonical receipt authority, exact persisted fields, retention, and privacy requirements are [Submission Recovery](../dapp-browser-cip30-prd.md#submission-recovery) and [Observability And Privacy](../dapp-browser-cip30-prd.md#observability-and-privacy). UI receipts cannot authorize, retry, replay, or prove confirmation; this cross-reference amends requirements, not the live observations recorded here.
+
+Verification: 99 tests passed across 16 focused suites, including receipt updates without another send action, durable reconciliation, dismissal/notification transitions, selected-history expansion, and the reward-withdrawal case. TypeScript passed. Browser checks covered submitted, confirmed, expired, failed, unknown, signing-only and partial receipts; English/Japanese copy; White, LightBlue and DarkCardano themes; and 1440×900, 1280×900, 1024×768 and 800×900 surfaces. All five rendered rows in the token-history fixture carried a status, and ordinary expansion was exercised. The White theme's existing trailing semicolon in its confirmed-badge colour was corrected after visual verification exposed the invisible badge.
+
+Live receipt transitions were verified in component/store tests; Storybook's state-control changes did not propagate during the browser check, so receipt states were also rendered through explicit story parameters. The legacy `themes:check:createTheme` command still references a missing `dist/scripts/check.js`; its actual `.ts` entrypoint runs but reports generator/template drift. No theme-generation changes were made.
+
+Scoped Prettier, ESLint (no errors), Stylelint, and i18n management checks passed. Existing translation completeness notices remain outside this change.
+
+No real hardware signing or network submission was performed. No installer was built or installed for this feedback change; the installed build remains 86989, and the previously produced 86990 package does not contain these later changes.
+
+Feedback installer built on the operator's subsequent request: `11.3.0+build86991.gitdirty-1` (`amd64`), available at `result-feedback-86991/daedalus-11.3.0-86991-mainnet-dapp-pilot-dirty-x86_64-linux.deb`. SHA-256: `b0e89b68e8ebf7308b4c250267587caaea5ee4f625cb9c91a8bdcd72ae2d1bd6`; checksum verification passed. The build used the verified source snapshot containing all 41 changed production source files; 35 affected main/renderer/style sources were additionally matched byte-for-byte against the extracted package's source maps. The packaged launcher retains mainnet, the enabled dApp pilot policy, and the separate pilot data directory. APT simulation proposes only the pilot upgrade from 86989 to 86991, with no new packages or removals. The temporary build-counter offset was restored immediately after freezing the derivation. Webpack completed with the same seven browser-crypto and bundle-size warnings. The installer was not installed, and no physical Ledger test or network submission was performed.
+
+### Done routes receipts to transaction history
+
+The operator reported another successful 5 ADA transfer and approved the receipt screen, requesting that **Done** open **Transactions** rather than expose the underlying Send screen. The shared receipt dismissal action now captures the originating wallet ID, completes the existing dismissal/notification bookkeeping, clears the receipt, and navigates to that wallet's Transactions route. This also covers retained outcomes without transaction IDs; automatic teardown and retryable outcomes still use their existing cleanup path.
+
+Verification: 25 tests passed across the approval-store, transaction-store, receipt-component and approval-container suites; TypeScript, scoped Prettier and ESLint passed. The retained dismissal regression now exercises the real wallet route builder, router action and MobX router from another wallet's Send route. A disposable browser surface used the actual receipt/container and stores with synthetic receipt data: DOM activation of **Done** opened the originating wallet's Transactions tab for submitted and failed receipts, while **View transaction** retained the selected transaction and produced only one history transition. Browser click helpers timed out despite the enabled button passing hit-testing, so these interaction checks used DOM activation followed by a rendered frame. The temporary story and registration were removed, and its browser tab and preview server were closed. No hardware signing or network submission was performed.
+
+Replacement installer: `11.3.0+build86992.gitdirty-1` (`amd64`), available at `result-feedback-86992/daedalus-11.3.0-86992-mainnet-dapp-pilot-dirty-x86_64-linux.deb`. SHA-256: `c243b54cb6b525c1b9cfda9914092ef14ea65d13cb4447dc826d7b5fd74e573f`; checksum verification passed. The packaged renderer source map contains the exact verified `WalletApprovalStore.ts` navigation change. APT simulation proposes only the pilot upgrade from 86991 to 86992, with no new packages or removals. The temporary build-counter offset was restored immediately after freezing the derivation. This replacement was not installed or physically Ledger-tested.
+
+## Task-901 bounded mainnet pilot closure — 2026-09-09
+
+The user explicitly replaced task-901's preprod/preview scope with the existing operator-directed Liqwid mainnet/Ledger pilot, then accepted existing live flows plus automated recovery evidence. This closes only the internal-pilot task. It does not authorize production activation: task-903-a still owns installed restart/restore, final-package physical retesting, exact rollout artifacts, and release change control.
+
+Existing live evidence covers the Liqwid deposit and withdrawal transaction IDs above, later successful native Ledger self-transfers, and the Ledger Flex 7.3.1 certification record in `hardware-wallet-tests/certification/task-901-ledger-flex-app7.json`. Focused conformance keeps software base/CIP-95 and ordered software/hardware CIP-103 paths green. The pilot policy keeps Diagnostics, CIP-104, and CIP-142 disabled.
+
+Two build-87031 packages were produced from the final runtime source:
+
+| Variant | SHA-256 | Extracted policy |
+|---|---|---|
+| Enabled pilot | `43bc4df670396e1d18813c192babede9909e189fee0e0310846a138dd3300d71` | global/preferred enabled; Ledger Flex row enabled; Diagnostics/CIP-104/CIP-142 disabled |
+| Kill switch | `0cedef3a44dad7325c277ac213b44ad330b7133e67586cb74359de6625b2dc91` | global/preferred disabled; no hardware rows; Diagnostics/CIP-104/CIP-142 disabled |
+
+Automated recovery execution passed 77 focused catalog, launcher-policy, extension, broker, CIP-103 submission, transaction-reconciliation, and hardware-matrix Jest tests plus 12 dApp Cucumber scenarios/50 steps. The route scenario initially exposed a stale `/wallets/:id/dapps` fixture after the product's `/apps/:id` cutover; the corrected fixture passed. The affected privileged-IPC run then exposed an unowned native execution request: `NATIVE_TRANSACTION_EXECUTE_CHANNEL` now uses the current trusted window and lifecycle-aware awaited response, and the manifest records all three wallet-approval render calls. Its 11 focused IPC/native-approval tests passed. TypeScript compilation and scoped formatting passed.
+
+The pilot delta is material relative to task-807: catalog/resource origins, pilot launcher variants and Ledger row, `/apps/:id` authority, native exact approval/signing/submission, and receipt/history reconciliation changed. A security review and an independent delta review found no critical/high issue in the inspected boundaries; the independent follow-up found no concern in the native IPC lifecycle correction. Per the user's accepted evidence boundary, installed enabled-to-disabled restart/restore, final-package physical Ledger/Liqwid retesting, hostile installed-package matrices, and release approval remain task-903-a gates rather than inferred passes.
+
+## Task-902 bounded interoperability closure — 2026-09-09
+
+The user explicitly accepted the existing task-901 Liqwid mainnet and Ledger Flex records plus focused automated collateral and fail-closed hardware coverage as sufficient for task-902. This bounded closure does not claim a Trezor or additional ecosystem-client pilot, final-package physical retesting, installed restart/restore, or production release approval; those remain unavailable or assigned to task-903-a/task-906.
+
+### Preferred dApp compatibility
+
+| dApp | Network | Entry and resource policy | API/extensions | Result |
+|---|---|---|---|---|
+| Liqwid Finance | Mainnet (`5f20df933584822601f9e3f8c024eb5eb252fe8cefb24d1317dc3d432e940ebb`) | `https://app.liqwid.finance/`; exact resource origins `https://key-value-storage.liqwid.finance`, `https://public.liqwid.finance`, and `https://v2.api.liqwid.finance` | Base CIP-30; no negotiated extensions | Deposit and withdrawal passed under the unchanged revision-2 catalog policy using the task-901 Ledger pilot |
+
+No additional preferred dApp exists in the catalog. The live transaction IDs, package identities, Ledger Flex 7.3.1 identity, and review disposition remain recorded above and in `hardware-wallet-tests/certification/task-901-ledger-flex-app7.json`. Lace, Yoroi, Eternl, Typhon, and Lucid remain explicitly unavailable in `tests/dapps/conformance/fixtures/client-adapters.json`; no result was promoted without reproducible evidence.
+
+### Hardware and collateral disposition
+
+- The selected Ledger Flex row retains its physically observed base transaction, CIP-8/CIP-95, ordered batch, rejection, and cancellation results. Unsupported exact representations remain pre-device failures with no released witness or COSE under the frozen capability matrix.
+- Trezor did not participate and remains unavailable for this pilot. It is absent from Liqwid's `supportedWalletKinds`; no product row or extension was enabled. Broader model/firmware coverage remains task-906.
+- Existing collateral behavior was accepted as the representative evidence boundary: explicit preparation requires the normal confirmed Send flow; preference adoption waits for confirmation; exact review warns without blocking when preferred collateral will be spent; and service reconciliation covers replacement/not-ready outcomes. No live Liqwid collateral result is claimed.
+- Review annotation (2026-10-20): this accepted automated evidence predates discovery of the Apps → Send route-integration gap. The task-507 correction now has six passing real route/service/parser/renderer integration cases plus an isolated Electron trusted-IPC smoke for pending/confirmed exact-outpoint adoption, same-document navigation, cancellation, and reload/crash invalidation. No additional live collateral or hardware run occurred.
+
+### Baseline delta and security disposition
+
+Task-902 introduces no source, dependency, package, catalog, origin, resource, protocol-policy, hardware-row, or security-boundary delta from the task-901/build-87031 baseline. The revision-2 Liqwid entry remains exact and requires no wildcard, insecure scheme, privileged IPC, WebRTC, WebTransport, QUIC, direct socket, or other global-policy relaxation. Task-901's material deltas and no-critical/high review disposition remain authoritative; task-903-a still owns final rollout change control and affected retesting.
+
+The 2026-10-20 package-isolation/upstream compatibility, full-lifetime wallet lease, and document-bound collateral-operation fixes are later material deltas, covered by task-903-a's existing post-pilot review scope. Task-903-a and task-906 remain pending; none of the signed task-807/task-901 artifact identities or recorded live observations above is regenerated or relabeled.
+
+### Verification
+
+- Seven focused Jest suites passed 54 tests covering the exact catalog/identity, transaction-review collateral warning, collateral lifecycle, collateral UI states, hardware capability matrix, and no-invocation hardware failures.
+- Focused Cucumber passed 7 scenarios and 30 steps covering frozen CIP-30/CIP-95/CIP-103 client contracts, unavailable-client honesty, proposed-extension gates, software connect/read/sign/submit, governance signing, and confirmation-gated collateral preparation.

@@ -25,6 +25,7 @@ import RTSFlagsRecommendationOverlayContainer from './containers/knownIssues/RTS
 import { MenuUpdater } from './containers/MenuUpdater';
 import { AnalyticsProvider } from './components/analytics';
 import { AnalyticsTracker } from './analytics';
+import WalletApprovalContainer from './containers/transactions/WalletApprovalContainer';
 
 @observer
 class App extends Component<{
@@ -40,7 +41,7 @@ class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app } = stores;
+    const { app, walletApproval } = stores;
     const { isActiveDialog, isSetupPage } = app;
     const locale = stores.profile.currentLocale;
     const { currentTheme } = stores.profile;
@@ -90,6 +91,26 @@ class App extends Component<{
                     <ToggleRTSFlagsDialogContainer key="toggleRTSFlagsDialog" />
                   ),
                 ]}
+                {global.cip30Enabled && walletApproval.current && (
+                  <WalletApprovalContainer
+                    key={walletApproval.current.requestId}
+                    assetDetails={stores.assets.details}
+                    request={walletApproval.current}
+                    result={walletApproval.result}
+                    receipts={walletApproval.receiptDetails}
+                    deciding={walletApproval.deciding}
+                    phase={walletApproval.phase}
+                    activeItemIndex={walletApproval.activeItemIndex}
+                    submissionAuthorized={walletApproval.submissionAuthorized}
+                    cancelling={walletApproval.cancelling}
+                    onApprove={walletApproval.approve}
+                    onSubmit={walletApproval.submit}
+                    onReject={walletApproval.reject}
+                    onCancel={walletApproval.cancel}
+                    onDismiss={walletApproval.dismissResult}
+                    onViewTransaction={walletApproval.viewTransaction}
+                  />
+                )}
                 <RTSFlagsRecommendationOverlayContainer />
                 <NotificationsContainer />
                 {canShowNews && [

@@ -93,6 +93,14 @@
           "source/renderer/app/config/newsfeed-files/**"
           "tests/paper-wallets/e2e/documents/**"
           "tests/wallets/e2e/documents/**"
+          # Match .prettierignore: retain reviewed byte-hashed/signed evidence.
+          "source/common/cardano/fixtures/exact-cbor/*.json"
+          "source/common/cip30/contracts/*.json"
+          "source/common/cip30/contracts/fixtures/*.json"
+          "source/common/hardware/fixtures/capability-matrix/*.json"
+          "hardware-wallet-tests/capability-matrix/*.json"
+          "hardware-wallet-tests/certification/**/*.json"
+          "tests/dapps/conformance/fixtures/*.json"
         ];
       };
     };

@@ -201,7 +201,11 @@ class WalletReceivePage extends Component<Props, State> {
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
     const { hasPassword, isRandom } = activeWallet;
-    const walletAddresses = addresses.all.slice().reverse();
+    const singleAddressMode =
+      global.cip30Enabled && activeWallet.singleAddressMode;
+    let walletAddresses = addresses.all.slice().reverse();
+    if (singleAddressMode)
+      walletAddresses = addresses.active ? [addresses.active] : [];
     const byronWalletAddress = addresses.active ? addresses.active.id : '';
     const isByronWalletAddressUsed = addresses.active
       ? addresses.active.used
@@ -230,6 +234,7 @@ class WalletReceivePage extends Component<Props, State> {
           ) : (
             <WalletReceiveSequential
               walletAddresses={walletAddresses}
+              singleAddressMode={singleAddressMode}
               // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
               isAddressValid={this.handleIsAddressValid}
               onShareAddress={this.handleShareAddress}

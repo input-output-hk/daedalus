@@ -3,10 +3,16 @@ import { get, find, findIndex, isEqual, includes } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
+import Wallet, {
+  WalletSyncStateStatuses,
+  WalletUnits,
+} from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
 import { WalletTransaction } from '../domains/WalletTransaction';
-import { MAX_ADA_WALLETS_COUNT } from '../config/numbersConfig';
+import {
+  MAX_ADA_WALLETS_COUNT,
+  LOVELACES_PER_ADA,
+} from '../config/numbersConfig';
 import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex, getScrambledInput } from '../utils/crypto';
 import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
@@ -52,6 +58,8 @@ import type {
   TransferFundsRequest,
 } from '../api/wallets/types';
 import type { QuitStakePoolRequest } from '../api/staking/types';
+import type { ConstructTransactionData } from '../api/transactions/types';
+import type { NativeTransactionAction } from '../../../common/transactions/nativePlan';
 import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
@@ -59,6 +67,9 @@ import type {
 import { NetworkMagics } from '../../../common/types/cardano-node.types';
 import { EventCategories } from '../analytics';
 import { getEventNameFromWallet } from '../analytics/utils/getEventNameFromWallet';
+import { getHardwareWalletsNetworkConfig } from '../config/hardwareWalletsConfig';
+import { reconcileTransactionContext } from '../../../common/cardano/transactionContext';
+import { verifySignedNativeTransaction } from '../../../common/transactions/nativeSigning';
 /* eslint-disable consistent-return */
 
 /**
@@ -675,6 +686,8 @@ export default class WalletsStore extends Store {
       walletId: params.walletId,
       isLegacy: params.isLegacy || false,
     });
+    if (global.cip30Enabled)
+      await this.stores.dapp.removeWalletConnections(params.walletId);
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
@@ -795,6 +808,132 @@ export default class WalletsStore extends Store {
       });
     }
   };
+  submitConstructedNativeTransaction = async ({
+    walletId,
+    data,
+    action: nativeAction,
+  }: {
+    walletId: string;
+    data: ConstructTransactionData['data'];
+    action: NativeTransactionAction;
+  }): Promise<{ id: string }> => {
+    if (!global.cip30Enabled)
+      throw new Error('Exact native transactions are unavailable');
+    const wallet = this.getWalletById(walletId);
+    if (!wallet)
+      throw new Error('Wallet required before preparing transaction');
+    const networkConfig = getHardwareWalletsNetworkConfig(
+      global.environment.network
+    );
+    const genesisHash = this.stores.networkStatus.genesisBlockHash;
+    if (!genesisHash || !/^[0-9a-f]{64}$/u.test(genesisHash))
+      throw new Error('Network genesis hash is unavailable');
+    const network = {
+      networkId: networkConfig.networkId as 0 | 1,
+      networkMagic: networkConfig.protocolMagic,
+      genesisHash,
+    };
+    const result = await this.stores.walletApproval.nativeTransactions.run({
+      walletId,
+      ownerSignal: new AbortController().signal,
+      payment:
+        nativeAction === 'payment' && data.payments?.length === 1
+          ? {
+              address: data.payments[0].address,
+              amount: new BigNumber(data.payments[0].amount.quantity).toFixed(
+                0
+              ),
+            }
+          : undefined,
+      prepare: async () => {
+        const constructed = await this.api.ada.constructTransaction({
+          walletId,
+          data,
+        });
+        const rawContext = await this.api.ada.getDappTransactionContext({
+          walletId,
+          request: {
+            revision: 1,
+            network: {
+              network_id: network.networkId,
+              network_magic: network.networkMagic,
+              genesis_hash: network.genesisHash,
+            },
+            transactions: [constructed.transaction],
+          },
+        });
+        const snapshot = reconcileTransactionContext(rawContext, {
+          walletId,
+          network,
+          transactions: [constructed.transaction],
+        });
+        return Object.freeze({
+          walletId,
+          network,
+          action: nativeAction,
+          authorization: 'software' as const,
+          items: Object.freeze([
+            Object.freeze({
+              kind: 'exact-cbor' as const,
+              cbor: constructed.transaction,
+              transactionContext: snapshot,
+              selectionFacts: Object.freeze({
+                deposits: constructed.coinSelection.deposits
+                  .times(LOVELACES_PER_ADA)
+                  .toFixed(0),
+                refunds: constructed.coinSelection.depositsReclaimed
+                  .times(LOVELACES_PER_ADA)
+                  .toFixed(0),
+              }),
+            }),
+          ]),
+          context: Object.freeze({
+            walletName: wallet.name,
+            networkName: global.environment.network,
+          }),
+        });
+      },
+      execute: async (prepared, passphrase, signal, markSubmitting) => {
+        const item = prepared.items[0];
+        if (item.kind !== 'exact-cbor')
+          return Object.freeze({
+            status: 'rejected' as const,
+            errorCode: 'transaction_plan_changed',
+          });
+        const signed = await this.api.ada.signTransaction({
+          walletId,
+          transaction: item.cbor,
+          passphrase: passphrase || '',
+        });
+        const transaction = verifySignedNativeTransaction(
+          item.cbor,
+          signed.transaction
+        );
+        if (signal.aborted)
+          return Object.freeze({
+            status: 'rejected' as const,
+            errorCode: 'cancelled',
+          });
+        await markSubmitting();
+        const submitted = await this.api.ada.submitTransaction({
+          walletId,
+          transaction,
+        });
+        return Object.freeze({
+          status: 'submitted' as const,
+          transactionIds: Object.freeze([submitted.id]),
+        });
+      },
+    });
+    if (result.status !== 'submitted')
+      throw new Error(
+        'errorCode' in result
+          ? result.errorCode
+          : 'Transaction was not submitted'
+      );
+    return { id: result.transactionIds[0] };
+  };
+
   _sendMoney = async ({
     receiver,
     amount,
@@ -802,13 +941,15 @@ export default class WalletsStore extends Store {
     assets,
     assetsAmounts: assetsAmountsStr,
     hasAssetsRemainingAfterTransaction,
+    isCollateralPreparation = false,
   }: {
     receiver: string;
     amount: string;
-    passphrase: string;
+    passphrase?: string;
     assets?: Array<AssetToken>;
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
+    isCollateralPreparation?: boolean;
   }) => {
     const assetsAmounts = assetsAmountsStr
       ? assetsAmountsStr.map((assetAmount) => new BigNumber(assetAmount))
@@ -826,21 +967,60 @@ export default class WalletsStore extends Store {
         : null;
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
+    if (isCollateralPreparation && !global.cip30Enabled)
+      throw new Error('Collateral preparation is unavailable');
+    if (
+      isCollateralPreparation &&
+      (this.stores.collateral.preparation?.walletId !== wallet.id ||
+        amount !== '5000000' ||
+        !!formattedAssets?.length ||
+        !this.stores.addresses.all.some(({ id }) => id === receiver))
+    )
+      throw new Error('Invalid collateral preparation transaction');
 
     /**
      * Do not try to catch the request error here, its intended to throw
      * a localized error created in app/api/api.ts
      */
-    // @ts-ignore
-    await this.sendMoneyRequest.execute({
-      address: receiver,
-      amount: parseInt(amount, 10),
-      passphrase,
-      walletId: wallet.id,
-      isLegacy: wallet.isLegacy,
-      assets: formattedAssets,
-      hasAssetsRemainingAfterTransaction,
-    });
+    let transaction: { id: string } | undefined;
+    if (wallet.isLegacy || !global.cip30Enabled) {
+      transaction = await this.stores.transactions.withWalletSendLock(
+        wallet.id,
+        () =>
+          this.sendMoneyRequest.execute({
+            address: receiver,
+            amount: parseInt(amount, 10),
+            passphrase: passphrase || '',
+            walletId: wallet.id,
+            isLegacy: wallet.isLegacy,
+            assets: formattedAssets,
+            hasAssetsRemainingAfterTransaction,
+          }).promise
+      );
+    } else {
+      transaction = await this.submitConstructedNativeTransaction({
+        walletId: wallet.id,
+        action: isCollateralPreparation ? 'collateral-preparation' : 'payment',
+        data: {
+          encoding: 'base16',
+          payments: [
+            {
+              address: receiver,
+              amount: {
+                quantity: new BigNumber(amount),
+                unit: WalletUnits.LOVELACE,
+              },
+              ...(formattedAssets?.length ? { assets: formattedAssets } : {}),
+            },
+          ],
+          withdrawal: 'self',
+        },
+      });
+    }
+    if (isCollateralPreparation) {
+      if (!transaction) throw new Error('Collateral preparation was not sent');
+      await this.stores.collateral.trackPreparation(wallet.id, transaction.id);
+    }
     // The following code will not be executed if the request above fails
     this.analytics.sendEvent(
       EventCategories.WALLETS,
@@ -893,12 +1073,23 @@ export default class WalletsStore extends Store {
     spendingPassword: string;
   }) => {
     const { transferFundsSourceWalletId, transferFundsTargetWalletId } = this;
-    const targetWalletAddresses = await this.getWalletAddressesRequest.execute({
-      walletId: transferFundsTargetWalletId,
-      queryParams: {
-        state: 'unused',
-      },
-    }).promise;
+    const targetWallet = this.getWalletById(transferFundsTargetWalletId);
+    if (!targetWallet) throw new Error('Transfer target wallet required');
+    const targetWalletAddresses =
+      global.cip30Enabled &&
+      !targetWallet.isLegacy &&
+      targetWallet.singleAddressMode
+        ? [
+            await this.stores.addresses.getAutomaticReceivingAddress(
+              transferFundsTargetWalletId
+            ),
+          ]
+        : await this.getWalletAddressesRequest.execute({
+            walletId: transferFundsTargetWalletId,
+            queryParams: {
+              state: 'unused',
+            },
+          }).promise;
     // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,
@@ -1031,6 +1222,22 @@ export default class WalletsStore extends Store {
   }
 
   @computed
+  get eligibleDappWallets(): Array<Wallet> {
+    if (!global.cip30Enabled) return [];
+    return this.allWallets.filter(
+      (wallet) => !wallet.isRestoring && !wallet.isNotResponding
+    );
+  }
+
+  @computed
+  get activeDappWallet(): Wallet | null {
+    const activeId = this.active?.id;
+    return (
+      this.eligibleDappWallets.find((wallet) => wallet.id === activeId) ?? null
+    );
+  }
+
+  @computed
   get isWalletRoute(): boolean {
     const { currentRoute } = this.stores.app;
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
@@ -1138,14 +1345,15 @@ export default class WalletsStore extends Store {
     const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
+    const dappRoute =
+      global.cip30Enabled && matchRoute(ROUTES.APPS.PAGE, currentRoute);
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
       if (isWalletAddPage || !hasAnyWalletLoaded)
         return this._unsetActiveWallet();
-      const match = matchRoute(
-        `${ROUTES.WALLETS.ROOT}/:id(*page)`,
-        currentRoute
-      );
+      const match =
+        dappRoute ||
+        matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
 
       if (match) {
         // We have a route for a specific wallet -> let's try to find it
@@ -1156,6 +1364,8 @@ export default class WalletsStore extends Store {
           this._setActiveWallet({
             walletId: walletForCurrentRoute.id,
           });
+        } else if (dappRoute) {
+          this._unsetActiveWallet();
         } else if (hasAnyWalletLoaded) {
           // There is no wallet with given id -> pick first wallet
           this._setActiveWallet({
@@ -1239,6 +1449,10 @@ export default class WalletsStore extends Store {
       }
 
       if (!result) return;
+      if (global.cip30Enabled)
+        await this.stores.dapp.pruneWalletConnections(
+          result.map((wallet: Wallet) => wallet.id)
+        );
       const walletIds = result
         .filter(
           ({ syncState }: Wallet) =>

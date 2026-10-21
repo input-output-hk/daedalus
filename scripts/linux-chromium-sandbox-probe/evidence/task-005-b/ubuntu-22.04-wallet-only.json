@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "result": "fail",
+  "matrix": null,
+  "host": null,
+  "versions": null,
+  "paths": null,
+  "files": null,
+  "directories": null,
+  "policy": null,
+  "main": null,
+  "renderer": null,
+  "assertions": null,
+  "failure": {
+    "category": "other",
+    "code": "wallet-only-matrix-row:apparmor-policy-proof-pending"
+  },
+  "diagnostics": {
+    "exitCode": 1,
+    "byteCount": 116,
+    "sha256": "f7de0a83282dbd483cbb873c22f458ba4bf205560216b549235c990810db2b91",
+    "category": "sandbox-init-failed",
+    "sanitizedExcerpt": "sandbox-probe-stage:electron-loaded\nsandbox-probe-failed:other:wallet-only-matrix-row:apparmor-policy-proof-pending\n",
+    "truncated": false,
+    "sanitized": true,
+    "rawHostDataExported": false,
+    "stderrSummaryRequired": false
+  }
+}

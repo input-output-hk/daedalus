@@ -7,6 +7,16 @@
     lib,
     ...
   }: let
+    basePkgs = inputs.nixpkgs.legacyPackages.${system};
+    packageJson = builtins.fromJSON (builtins.readFile ../package.json);
+    electron = basePkgs.callPackage (inputs.nixpkgs + "/pkgs/development/tools/electron/binary/generic.nix") {} packageJson.dependencies.electron {
+      x86_64-linux = "sha256-onKR1QKxYXD+SdFL6raMTZoQQBklAOFkOpqwsRJ08HU=";
+      x86_64-darwin = "sha256-8UrnxIVRobAl7/ttTJIb0F8vW4xQ1y83EIFXJvKUzlY=";
+      aarch64-darwin = "sha256-ZZukJTyhTwvY501aLaLW2j5z5EwCCdLDtebKZaxAVYo=";
+      headers = "1nvq3xvz38xr64r1z7xa6wdmf6zykdsbl7angmy7bvr5rw4pi897";
+    };
+    extendedPkgs = basePkgs.extend (_final: _prev: {inherit electron;});
+
     # ---------------------------------------------------------------------------
     # Inlined source-lib.nix
     # ---------------------------------------------------------------------------
@@ -70,25 +80,39 @@
 
       flake-compat = import inputs.flake-compat;
 
-      walletFlake =
-        (flake-compat {
-          src = inputs.cardano-wallet;
-        }).defaultNix;
+      walletBackends = let
+        mkBackend = input: rec {
+          flake = (flake-compat {src = input;}).defaultNix;
+          packages =
+            {
+              x86_64-windows = flake.packages.x86_64-linux.windowsPackages;
+              x86_64-linux = flake.packages.x86_64-linux.staticPackages;
+              x86_64-darwin = flake.packages.x86_64-darwin;
+              aarch64-darwin = flake.packages.aarch64-darwin;
+            }.${
+              targetSystem
+            };
+          sourceRevision = input.rev;
+          version = packages.cardano-wallet.version + "-" + builtins.substring 0 9 sourceRevision;
+        };
+      in {
+        upstream = mkBackend inputs.cardano-wallet;
+        cip30 = mkBackend inputs.cardano-wallet-cip30;
+      };
+
+      cip30PackageClusters = ["preprod" "preview" "mainnet-flight"];
+
+      walletBackendForCluster = cluster:
+        if !(builtins.elem cluster sourceLib.installerClusters)
+        then throw "Unsupported Daedalus wallet cluster: ${cluster}"
+        else if builtins.elem cluster cip30PackageClusters
+        then walletBackends.cip30
+        else walletBackends.upstream;
 
       nodeFlake =
         (flake-compat {
           src = inputs.cardano-node;
         }).defaultNix;
-
-      walletPackages =
-        {
-          x86_64-windows = walletFlake.packages.x86_64-linux.windowsPackages;
-          x86_64-linux = walletFlake.packages.x86_64-linux.staticPackages;
-          x86_64-darwin = walletFlake.packages.x86_64-darwin;
-          aarch64-darwin = walletFlake.packages.aarch64-darwin;
-        }.${
-          targetSystem
-        };
 
       nodePackages =
         {
@@ -183,9 +207,9 @@
             cargoExtraArgs = "--bin cardano-watchdog";
           };
 
-      inherit (walletFlake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
+      inherit (walletBackends.cip30.flake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
 
-      inherit (walletPackages) cardano-wallet cardano-address;
+      inherit (walletBackends.cip30.packages) cardano-address;
       inherit (nodePackages) cardano-node cardano-cli snapshot-converter;
       mithril-client = mithrilPackages.${targetSystem};
 
@@ -199,11 +223,19 @@
       # ---------------------------------------------------------------------------
       # Inlined cardano-bridge.nix as a function
       # ---------------------------------------------------------------------------
-      mkDaedalusBridge = {target ? targetSystem, ...}:
+      mkDaedalusBridge = {
+        cluster,
+        target ? targetSystem,
+        ...
+      }: let
+        backend = walletBackendForCluster cluster;
+        cardano-wallet = backend.packages.cardano-wallet;
+      in
         pkgs.runCommandCC "daedalus-cardano-bridge" {
           passthru = {
             node-version = cardano-node.passthru.identifier.version;
             wallet-version = cardano-wallet.version;
+            wallet-source-revision = backend.sourceRevision;
           };
         } ''
           mkdir -pv $out/bin
@@ -245,11 +277,11 @@
         '';
 
       daedalus-bridge =
-        pkgs.lib.genAttrs sourceLib.installerClusters (_cluster:
-          mkDaedalusBridge {});
+        pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
+          mkDaedalusBridge {inherit cluster;});
 
       cardanoNodeVersion = cardano-node.identifier.version + "-" + builtins.substring 0 9 nodeFlake.rev;
-      cardanoWalletVersion = daedalus-bridge.mainnet.wallet-version + "-" + builtins.substring 0 9 walletFlake.rev;
+      cardanoWalletVersion = cluster: (walletBackendForCluster cluster).version;
 
       # ---------------------------------------------------------------------------
       # Inlined daedalus-config.nix as a function
@@ -498,12 +530,14 @@
           nodeImplementation = "cardano";
         };
 
-        mkConfigFiles = nodeConfigFiles: daedalusConfig: installerConfig: let
+        mkConfigFiles = nodeConfigFiles: daedalusConfig: installerConfig: dappRuntimeConfig: let
           isLinux = os == "linux";
           isWindows = os == "windows";
 
           wStateDir =
-            if isLinux
+            if devShell
+            then "\${DAEDALUS_DEV_ROOT}/state-${network}"
+            else if isLinux
             then "\${DAEDALUS_DIR}/${network}"
             else dataDir;
 
@@ -516,28 +550,28 @@
           wWalletDbPath = "${wStateDir}${dirSep}wallets";
 
           wNodeBin =
-            if isLinux
+            if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/libexec/cardano-node"
             else mkBinPath "cardano-node";
           wWalletBin =
-            if isLinux
+            if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/libexec/cardano-wallet"
             else mkBinPath "cardano-wallet";
           wMithrilBin =
-            if isLinux
+            if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/libexec/mithril-client"
             else mkBinPath "mithril-client";
           wSnapshotConverterBin =
-            if isLinux
+            if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/libexec/snapshot-converter"
             else mkBinPath "snapshot-converter";
 
           wConfigYaml =
-            if isLinux
+            if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/config/config.yaml"
             else mkConfigPath nodeConfigFiles "config.yaml";
           wTopologyYaml =
-            if isLinux
+            if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/config/topology.yaml"
             else mkConfigPath nodeConfigFiles "topology.yaml";
           wByronGenesisPath = mkConfigPath nodeConfigFiles "genesis-byron.json";
@@ -547,16 +581,27 @@
             else ["--testnet" wByronGenesisPath];
 
           wElectronBin =
-            if isLinux
+            if devShell
+            then "electron"
+            else if isLinux
             then "\${ENTRYPOINT_DIR}/libexec/daedalus-frontend"
             else mkBinPath frontendBinPath;
 
-          wElectronArgs = [];
-
-          dappEnabled = daedalusConfig.cluster != "mainnet" && !daedalusConfig.isFlight;
+          wElectronArgs =
+            if devShell
+            then ["\${DAEDALUS_DEV_ROOT}"]
+            else [];
 
           daedalusConfigJson =
             {
+              inherit
+                (dappRuntimeConfig)
+                cardanoWalletSourceRevision
+                cip30Enabled
+                dappBrowserPolicy
+                dappSandboxPackageCluster
+                dappNetwork
+                ;
               node = {
                 exe = wNodeBin;
                 args = [
@@ -616,24 +661,10 @@
                   }
                   // lib.optionalAttrs (daedalusConfig ? smashUrl) {
                     DAEDALUS_SMASH_URL = daedalusConfig.smashUrl;
-                  }
-                  // {
-                    DAEDALUS_DAPP_BROWSER_POLICY = builtins.toJSON {
-                      revision = 1;
-                      globalEnabled = dappEnabled;
-                      preferredCatalogEnabled = dappEnabled;
-                      diagnosticsEnabled = dappEnabled;
-                      cip104Revision =
-                        if dappEnabled
-                        then 1
-                        else 0;
-                      cip142Revision = 0;
-                      hardwareConnectorEnabled = true;
-                    };
                   };
               };
             }
-            // (lib.optionalAttrs (!isLinux) {
+            // (lib.optionalAttrs (devShell || !isLinux) {
               pub_logs_dir = "${wStateDir}${dirSep}Logs${dirSep}pub";
               tls_dir = "${wStateDir}${dirSep}tls";
             })
@@ -841,6 +872,31 @@
               mithrilAncillaryVkey = mithrilNetworkCfgs.${network}.ancillaryVkey;
               mithrilConverterConfig = mkConfigPath nodeConfigFiles "config.yaml";
             });
+          dappRuntimeConfig = {
+            cardanoWalletSourceRevision = (walletBackendForCluster cluster).sourceRevision;
+            cip30Enabled = builtins.elem cluster cip30PackageClusters;
+            dappBrowserPolicy = {
+              revision = 1;
+              globalEnabled = dappRuntimeConfig.cip30Enabled;
+              preferredCatalogEnabled = dappRuntimeConfig.cip30Enabled;
+              diagnosticsEnabled = dappRuntimeConfig.cip30Enabled;
+              cip104Revision =
+                if dappRuntimeConfig.cip30Enabled
+                then 1
+                else 0;
+              cip142Revision = 0;
+              hardwareConnectorEnabled = dappRuntimeConfig.cip30Enabled;
+            };
+            dappSandboxPackageCluster = cluster;
+            dappNetwork = {
+              cluster = daedalusConfig.cluster;
+              genesisFile = "genesis.json";
+              genesisHash =
+                if envCfg.nodeConfig ? ByronGenesisHash
+                then envCfg.nodeConfig.ByronGenesisHash
+                else builtins.hashFile "sha256" envCfg.nodeConfig.ByronGenesisFile;
+            };
+          };
 
           installerConfig = {
             installDirectory =
@@ -861,7 +917,15 @@
           };
         in {
           inherit nodeConfigFiles daedalusConfig installerConfig;
-          configFiles = mkConfigFiles nodeConfigFiles daedalusConfig installerConfig;
+          inherit
+            (dappRuntimeConfig)
+            cardanoWalletSourceRevision
+            cip30Enabled
+            dappBrowserPolicy
+            dappSandboxPackageCluster
+            dappNetwork
+            ;
+          configFiles = mkConfigFiles nodeConfigFiles daedalusConfig installerConfig dappRuntimeConfig;
         };
       in
         mkConfigCardano;
@@ -967,7 +1031,7 @@
         export npm_config_build_from_source=true
         ( echo 'buildFromSource=true' ; echo 'compile=true' ; ) >$HOME/.prebuild-installrc
 
-        # Skip electron binary download in install scripts (we use pkgs.electron.unwrapped instead):
+        # Skip electron binary download in install scripts (we use the pinned pkgs.electron instead):
         export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 
         ${pkgs.lib.concatMapStringsSep "\n" (cacheDir: ''
@@ -1025,7 +1089,7 @@
         electronShaSums = pkgs.fetchurl {
           name = "electronShaSums-${electronVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-          hash = "sha256-+tI8kWgYS9VrI+DRiXkhN0Nt1CT3yAWxcw8N72XrUE8=";
+          hash = "sha256-qnbxSwPj5VU+5sN1J8RJ61TiXq34m4yUTKiUuA5r4ro=";
         };
 
         electronCacheHash =
@@ -1035,7 +1099,7 @@
         electronChromedriverShaSums = pkgs.fetchurl {
           name = "electronChromedriverShaSums-${electronChromedriverVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-          hash = "sha256-+tI8kWgYS9VrI+DRiXkhN0Nt1CT3yAWxcw8N72XrUE8=";
+          hash = "sha256-qnbxSwPj5VU+5sN1J8RJ61TiXq34m4yUTKiUuA5r4ro=";
         };
 
         electronChromedriverCacheHash =
@@ -1067,14 +1131,13 @@
         sourceLib
         flakeLock
         flake-compat
-        walletFlake
+        walletBackends
+        walletBackendForCluster
         nodeFlake
-        walletPackages
         nodePackages
         mithrilPackages
         cardano-watchdog
         cardanoLib
-        cardano-wallet
         cardano-address
         cardano-node
         cardano-cli
@@ -1106,6 +1169,7 @@
 
     common = mkCommon system;
   in {
+    _module.args.pkgs = extendedPkgs;
     _module.args.mkCommon = mkCommon;
     _module.args.common = common;
   };

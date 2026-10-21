@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -24,23 +24,28 @@ import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 
 type Props = {
   getStakePoolById: (...args: Array<any>) => any;
-  initiateTransaction: (params: {
+  initiateTransaction?: (params: {
     chosenOption: string;
     wallet: Wallet;
   }) => Promise<
     | { success: true; fees: BigNumber }
     | { success: false; errorCode: InitializeVPDelegationTxError }
   >;
-  intl: Intl;
-  onExternalLinkClick: (...args: Array<any>) => any;
-  stakePools: Array<StakePool>;
-  wallets: Array<Wallet>;
-  renderConfirmationDialog: (params: {
+  renderConfirmationDialog?: (params: {
     chosenOption: string;
     fees: BigNumber;
     onClose: () => void;
     selectedWallet: Wallet;
   }) => React.ReactElement;
+  submitTransaction: (params: {
+    chosenOption: string;
+    wallet: Wallet;
+  }) => Promise<{ success: true } | { success: false; errorCode: string }>;
+  intl: Intl;
+  onExternalLinkClick: (...args: Array<any>) => any;
+  stakePools: Array<StakePool>;
+  wallets: Array<Wallet>;
+  onSuccess: (walletId: string) => void;
   initialFormState?: {
     selectedWalletId?: string | null;
     selectedDRepId?: string;
@@ -63,8 +68,8 @@ type State = {
     | 'form-submitted'
     | 'form-initiating-tx'
     | 'confirmation';
-  selectedWalletId: string | null;
   fees?: BigNumber;
+  selectedWalletId: string | null;
   txInitError?: InitializeVPDelegationTxError;
 };
 
@@ -86,7 +91,9 @@ const SAME_VOTE_HINT_ID = 'votingPowerDelegationSameVoteHint';
 
 function VotingPowerDelegation({
   getStakePoolById,
+  submitTransaction,
   initiateTransaction,
+  renderConfirmationDialog,
   initialFormState,
   intl,
   onBrowseDRepsClick,
@@ -94,10 +101,17 @@ function VotingPowerDelegation({
   onCancel,
   onExternalLinkClick,
   onFetchDRep,
-  renderConfirmationDialog,
+  onSuccess,
   wallets,
   stakePools,
 }: Props) {
+  const mounted = useRef(true);
+  useEffect(
+    () => () => {
+      mounted.current = false;
+    },
+    []
+  );
   // A Byron wallet has no stake credential, so no delegation certificate can
   // be built for it and no amount of choosing a DRep would produce one. The
   // wallets overview already leaves them out; offering them here let someone
@@ -214,21 +228,52 @@ function VotingPowerDelegation({
       )
         return;
       setState({ ...state, status: 'form-initiating-tx' });
-      const result = await initiateTransaction({
+      if (!global.cip30Enabled) {
+        if (!initiateTransaction)
+          throw new Error('Governance preparation unavailable');
+        const result = await initiateTransaction({
+          chosenOption: selectedDRepId,
+          wallet: selectedWallet,
+        });
+        if (!mounted.current) return;
+        if (result.success === true) {
+          setState({ ...state, fees: result.fees, status: 'confirmation' });
+        } else {
+          setState({
+            ...state,
+            txInitError: result.errorCode,
+            status: 'form-with-error',
+          });
+        }
+        return;
+      }
+      const result = await submitTransaction({
         chosenOption: selectedDRepId,
         wallet: selectedWallet,
       });
       if (result.success === true) {
-        setState({ ...state, fees: result.fees, status: 'confirmation' });
+        if (selectedSentinel === null) onEnsureFavorited(selectedDRepId);
+        onSuccess(selectedWallet.id);
       } else {
         setState({
-          ...state,
-          txInitError: result.errorCode,
+          selectedWalletId: selectedWallet.id,
+          txInitError:
+            result.errorCode in mapOfTxErrorCodeToIntl
+              ? (result.errorCode as InitializeVPDelegationTxError)
+              : 'generic',
           status: 'form-with-error',
         });
       }
     })();
-  }, [initiateTransaction, state]);
+  }, [
+    onEnsureFavorited,
+    onSuccess,
+    selectedDRepId,
+    selectedSentinel,
+    selectedWallet,
+    state,
+    submitTransaction,
+  ]);
 
   const displayName =
     selectedDRepEntry?.verifiedName ??
@@ -385,13 +430,13 @@ function VotingPowerDelegation({
       {state.status === 'confirmation' &&
         selectedWallet &&
         selectedDRepId &&
+        state.fees &&
+        renderConfirmationDialog &&
         renderConfirmationDialog({
           chosenOption: selectedDRepId,
-          fees: state.fees!,
-          onClose: () => {
-            setState({ ...state, status: 'form' });
-          },
+          fees: state.fees,
           selectedWallet,
+          onClose: () => setState({ ...state, status: 'form' }),
         })}
     </>
   );

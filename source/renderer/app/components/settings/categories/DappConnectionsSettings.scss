@@ -1,0 +1,82 @@
+.root {
+  color: var(--theme-support-settings-text-color);
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 1.4;
+
+  h1,
+  h2 {
+    font-family: var(--font-medium);
+  }
+
+  h1 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 16px;
+    overflow-wrap: anywhere;
+  }
+
+  button {
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    color: inherit;
+    cursor: pointer;
+    padding: 8px 12px;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+  }
+}
+
+.explanation {
+  list-style: disc;
+  margin: 0 0 16px 20px;
+}
+
+.connections {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+}
+
+.connection {
+  border-top: 1px solid var(--theme-support-settings-text-color);
+  padding: 20px 0;
+
+  dl {
+    display: grid;
+    gap: 4px 16px;
+    grid-template-columns: max-content 1fr;
+    margin: 12px 0;
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.scope,
+.actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.actions {
+  justify-content: flex-end;
+}
+
+.corrupt,
+.status {
+  margin-top: 20px;
+}

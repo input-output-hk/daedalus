@@ -1,0 +1,537 @@
+import { generateKeyPairSync, sign } from 'crypto';
+import { blake2b } from 'blakejs';
+import cbor from 'cbor';
+
+import {
+  computeContextDigest,
+  ContextExpectation,
+  reconcileTransactionContext,
+  validateContextRecords,
+} from './transactionContext';
+
+const walletId = 'ab'.repeat(20);
+const genesisHash = '01'.repeat(32);
+const blockHash = '02'.repeat(32);
+const address = Buffer.from(`60${'aa'.repeat(28)}`, 'hex');
+const output = cbor.encodeCanonical([address, 1_000_000]).toString('hex');
+const protocolParameters = cbor
+  .encodeCanonical([...Array(20).fill(null), 100, 3])
+  .toString('hex');
+const u8 = (value: number) => Buffer.from([value]);
+const u32 = (value: number) => {
+  const result = Buffer.alloc(4);
+  result.writeUInt32BE(value);
+  return result;
+};
+const u64 = (value: bigint) => {
+  const result = Buffer.alloc(8);
+  result.writeBigUInt64BE(value);
+  return result;
+};
+const sized = (value: Buffer) => Buffer.concat([u32(value.length), value]);
+const vector = (values: Buffer[]) =>
+  Buffer.concat([u32(values.length), ...values.map(sized)]);
+const record = (tag: number, body: Buffer) =>
+  Buffer.concat([u8(tag), sized(body)]).toString('hex');
+const outpoint = (transactionId: string, index = 0) =>
+  Buffer.concat([Buffer.from(transactionId, 'hex'), u32(index)]);
+
+const makeTransaction = (
+  ids = ['11'.repeat(32), '22'.repeat(32), '33'.repeat(32)],
+  witnessSet: Map<number, unknown> = new Map()
+) => {
+  const body = new Map<number, unknown>([
+    [0, [[Buffer.from(ids[0], 'hex'), 0]]],
+    [1, [[address, 900_000]]],
+    [2, 100_000],
+    [13, [[Buffer.from(ids[1], 'hex'), 0]]],
+    [18, [[Buffer.from(ids[2], 'hex'), 0]]],
+  ]);
+  return {
+    body,
+    cbor: cbor.encodeCanonical([body, witnessSet, true, null]).toString('hex'),
+    inputs: [
+      { transactionId: ids[0], role: 'normal' },
+      { transactionId: ids[1], role: 'collateral' },
+      { transactionId: ids[2], role: 'reference' },
+    ],
+  };
+};
+
+const makeResponse = (
+  transaction: ReturnType<typeof makeTransaction>,
+  transactionOverride?: string,
+  protocolParametersCbor = '80',
+  requiredProofs: Array<{
+    transaction_index: number;
+    proof_kind: 'normal_input';
+    credential_kind: 'payment';
+    credential: string;
+    required: boolean;
+  }> = []
+) => {
+  const transactions = [transactionOverride || transaction.cbor];
+  const expectation: ContextExpectation = {
+    walletId,
+    network: { networkId: 0, networkMagic: 42, genesisHash },
+    transactions,
+  };
+  const outputs = transaction.inputs.map(({ transactionId, role }) => {
+    const input = cbor
+      .encodeCanonical([Buffer.from(transactionId, 'hex'), 0])
+      .toString('hex');
+    return {
+      outpoint: { transaction_id: transactionId, index: 0 },
+      transaction_input_cbor: input,
+      source_transaction_output_cbor: output,
+      canonical_transaction_output_cbor: output,
+      transaction_unspent_output_cbor: cbor
+        .encodeCanonical([
+          [Buffer.from(transactionId, 'hex'), 0],
+          cbor.decodeFirstSync(Buffer.from(output, 'hex')),
+        ])
+        .toString('hex'),
+      provenance: ['node'],
+      roles: [role],
+      wallet_member: true,
+      pending_state: 'none',
+    };
+  });
+  const records = outputs.map((item) =>
+    record(
+      1,
+      Buffer.concat([
+        outpoint(item.outpoint.transaction_id),
+        u8(4),
+        u8(
+          ({ normal: 1, collateral: 2, reference: 4 } as const)[item.roles[0]]
+        ),
+        u8(1),
+        u8(0),
+        sized(Buffer.from(output, 'hex')),
+      ])
+    )
+  );
+  records.push(
+    record(
+      3,
+      Buffer.concat([
+        sized(Buffer.from('conway')),
+        u8(0),
+        u32(42),
+        u32(9),
+        u32(0),
+        sized(Buffer.from(protocolParametersCbor, 'hex')),
+      ])
+    )
+  );
+  records.push(
+    ...requiredProofs.map((proof) =>
+      record(
+        6,
+        Buffer.concat([
+          u32(proof.transaction_index),
+          u8(1),
+          u8(1),
+          sized(Buffer.from(proof.credential, 'hex')),
+          u8(Number(proof.required)),
+        ])
+      )
+    )
+  );
+  records.sort();
+  const point = { kind: 'block' as const, slot: BigInt(42), blockHash };
+  const digest = computeContextDigest(
+    expectation,
+    point,
+    BigInt(7),
+    BigInt(9),
+    records
+  );
+  const payload = Buffer.concat([
+    u8(1),
+    Buffer.alloc(16, 0x44),
+    u32(1),
+    sized(Buffer.from(walletId)),
+    Buffer.from(genesisHash, 'hex'),
+    Buffer.from(digest, 'hex'),
+  ]);
+  return {
+    expectation,
+    response: {
+      revision: 1,
+      wallet_id: walletId,
+      network: { network_id: 0, network_magic: 42, genesis_hash: genesisHash },
+      chain_point: { kind: 'block', slot: '42', block_hash: blockHash },
+      wallet_generation: '7',
+      pending_generation: '9',
+      era: 'conway',
+      protocol_version: { major: 9, minor: 0 },
+      protocol_parameters_cbor: protocolParametersCbor,
+      volatile_delta: {
+        point: { kind: 'block', slot: '43', block_hash: '03'.repeat(32) },
+        node_transaction_inputs: [],
+      },
+      outputs,
+      pending_overlay: {
+        transactions: [],
+        spent_wallet_inputs: [],
+        produced_wallet_outputs: [],
+      },
+      ownership: [],
+      required_wallet_proofs: requiredProofs,
+      batch_overlay: { dependencies: [], conflicts: [] },
+      records,
+      context_digest: digest,
+      context_token: Buffer.concat([payload, Buffer.alloc(32, 0x55)]).toString(
+        'hex'
+      ),
+    },
+  };
+};
+
+test('reconciles all input roles into one immutable trusted snapshot', () => {
+  const fixture = makeResponse(
+    makeTransaction(),
+    undefined,
+    protocolParameters
+  );
+  const snapshot = reconcileTransactionContext(
+    fixture.response,
+    fixture.expectation
+  );
+  expect(snapshot.transactionsSemantic[0].review).toEqual({
+    complete: true,
+    signable: true,
+    requirements: [],
+  });
+  expect(snapshot.commitmentContexts[0].resolvedInputs).toHaveLength(3);
+  expect(snapshot.walletGeneration).toBe(BigInt(7));
+  expect(snapshot.maxCollateralInputs).toBe(3);
+  expect(Object.isFrozen(snapshot)).toBe(true);
+});
+
+test('refuses non-Conway context before binding it to an approval', () => {
+  const fixture = makeResponse(
+    makeTransaction(),
+    undefined,
+    protocolParameters
+  );
+  expect(() =>
+    reconcileTransactionContext(
+      { ...fixture.response, era: 'babbage' },
+      fixture.expectation
+    )
+  ).toThrow('unsupported context revision');
+});
+
+test('verifies script-data commitments against authenticated Plutus V1/V2/V3 cost models', () => {
+  const scripts = [Buffer.alloc(9, 1), Buffer.alloc(9, 2), Buffer.alloc(9, 3)];
+  const policies = scripts.map((script, language) =>
+    Buffer.from(
+      blake2b(Buffer.concat([u8(language + 1), script]), undefined, 28)
+    )
+  );
+  const redeemers = new Map(
+    [0, 1, 2].map((index) => [
+      [1, index],
+      [0, [1, 1]],
+    ])
+  );
+  const witnesses = new Map<number, unknown>([
+    [3, [scripts[0]]],
+    [6, [scripts[1]]],
+    [7, [scripts[2]]],
+    [5, redeemers],
+  ]);
+  const transaction = makeTransaction(undefined, witnesses);
+  transaction.body.set(
+    9,
+    new Map(policies.map((policy) => [policy, new Map([[Buffer.alloc(0), 1]])]))
+  );
+  // Ledger language views: V2/V3 definite lists, then V1's byte-string key
+  // and byte-string-wrapped indefinite list, in short-lexicographic key order.
+  const languageViews = Buffer.from(
+    'a3' +
+      '018500201a800000001b7fffffffffffffff3b7fffffffffffffff' +
+      '028500201a800000001b7fffffffffffffff3b7fffffffffffffff' +
+      '4100581b9f00201a800000001b7fffffffffffffff3b7fffffffffffffffff',
+    'hex'
+  );
+  transaction.body.set(
+    11,
+    Buffer.from(
+      blake2b(
+        Buffer.concat([cbor.encodeCanonical(redeemers), languageViews]),
+        undefined,
+        32
+      )
+    )
+  );
+  transaction.cbor = cbor
+    .encodeCanonical([transaction.body, witnesses, true, null])
+    .toString('hex');
+  const coefficients = [
+    0,
+    -1,
+    2147483648,
+    BigInt('9223372036854775807'),
+    BigInt('-9223372036854775808'),
+  ];
+  const models = new Map<number, unknown>(
+    [0, 1, 2].map((language) => [language, coefficients])
+  );
+  const fixtureFor = (costModels: Map<number, unknown>) =>
+    makeResponse(
+      transaction,
+      undefined,
+      cbor
+        .encodeOne(
+          [...Array(15).fill(null), costModels, ...Array(4).fill(null), 100, 3],
+          { canonical: true, collapseBigIntegers: true }
+        )
+        .toString('hex')
+    );
+  const fixture = fixtureFor(models);
+  expect(
+    reconcileTransactionContext(fixture.response, fixture.expectation)
+      .transactionsSemantic[0].review
+  ).toEqual({ complete: true, signable: true, requirements: [] });
+
+  const missingLanguage = new Map(models);
+  missingLanguage.delete(1);
+  for (const costModels of [
+    new Map(models).set(0, [1, ...coefficients.slice(1)]),
+    missingLanguage,
+    new Map(models).set(0, [1.5]),
+    new Map(models).set(0, [BigInt('9223372036854775808')]),
+  ]) {
+    const rejected = fixtureFor(costModels);
+    expect(() =>
+      reconcileTransactionContext(rejected.response, rejected.expectation)
+    ).toThrow();
+  }
+  expect(() =>
+    reconcileTransactionContext(
+      {
+        ...fixture.response,
+        protocol_parameters_cbor:
+          fixtureFor(missingLanguage).response.protocol_parameters_cbor,
+      },
+      fixture.expectation
+    )
+  ).toThrow();
+});
+
+test('reconciles an authenticated wallet snapshot without transaction review', () => {
+  const fixture = makeResponse(
+    makeTransaction(),
+    undefined,
+    protocolParameters
+  );
+  const expectation = { ...fixture.expectation, transactions: [] };
+  const records = fixture.response.records.filter(
+    (encoded) => !encoded.startsWith('01')
+  );
+  const point = { kind: 'block' as const, slot: BigInt(42), blockHash };
+  const digest = computeContextDigest(
+    expectation,
+    point,
+    BigInt(7),
+    BigInt(9),
+    records
+  );
+  const payload = Buffer.concat([
+    u8(1),
+    Buffer.alloc(16, 0x44),
+    u32(1),
+    sized(Buffer.from(walletId)),
+    Buffer.from(genesisHash, 'hex'),
+    Buffer.from(digest, 'hex'),
+  ]);
+  const snapshot = reconcileTransactionContext(
+    {
+      ...fixture.response,
+      outputs: [],
+      records,
+      context_digest: digest,
+      context_token: Buffer.concat([payload, Buffer.alloc(32, 0x55)]).toString(
+        'hex'
+      ),
+    },
+    expectation
+  );
+
+  expect(snapshot.transactions).toEqual([]);
+  expect(snapshot.pendingTransactions).toEqual([]);
+  expect(snapshot.maxCollateralInputs).toBe(3);
+});
+
+test('retains immutable transaction-indexed required proof rows', () => {
+  const proof = {
+    transaction_index: 0,
+    proof_kind: 'normal_input' as const,
+    credential_kind: 'payment' as const,
+    credential: 'aa'.repeat(28),
+    required: true,
+  };
+  const fixture = makeResponse(makeTransaction(), undefined, '80', [proof]);
+  const snapshot = reconcileTransactionContext(
+    fixture.response,
+    fixture.expectation
+  );
+  expect(snapshot.requiredProofs).toEqual([
+    {
+      transactionIndex: 0,
+      proofKind: 'normal_input',
+      credentialKind: 'payment',
+      credential: proof.credential,
+      required: true,
+    },
+  ]);
+  expect(Object.isFrozen(snapshot.requiredProofs)).toBe(true);
+  expect(Object.isFrozen(snapshot.requiredProofs[0])).toBe(true);
+});
+
+test('fails closed on identity, digest, token, record, and output mutations', () => {
+  const fixture = makeResponse(makeTransaction());
+  const mutations = [
+    { wallet_id: 'cd'.repeat(20) },
+    {
+      network: {
+        ...fixture.response.network,
+        genesis_hash: '09'.repeat(32),
+      },
+    },
+    { context_digest: '00'.repeat(32) },
+    {
+      context_token: `${fixture.response.context_token.slice(
+        0,
+        -66
+      )}${'00'.repeat(33)}`,
+    },
+    {
+      records: [
+        ...fixture.response.records,
+        fixture.response.records[0],
+      ].sort(),
+    },
+    {
+      outputs: fixture.response.outputs.map((item, index) =>
+        index ? item : { ...item, wallet_member: false }
+      ),
+    },
+  ];
+  mutations.forEach((mutation) =>
+    expect(() =>
+      reconcileTransactionContext(
+        { ...fixture.response, ...mutation },
+        fixture.expectation
+      )
+    ).toThrow()
+  );
+});
+
+test('validates every frozen context record tag and rejects malformed records', () => {
+  const credential = Buffer.alloc(28, 0xaa);
+  const records = [
+    record(
+      1,
+      Buffer.concat([
+        outpoint('11'.repeat(32)),
+        u8(4),
+        u8(1),
+        u8(1),
+        u8(0),
+        sized(Buffer.from(output, 'hex')),
+      ])
+    ),
+    record(2, Buffer.concat([u8(1), sized(credential), u8(0), u32(0), u32(0)])),
+    record(
+      3,
+      Buffer.concat([
+        sized(Buffer.from('conway')),
+        u8(0),
+        u32(42),
+        u32(9),
+        u32(0),
+        sized(Buffer.from('a0', 'hex')),
+      ])
+    ),
+    record(4, Buffer.concat([u8(2), sized(credential), u8(2)])),
+    record(
+      5,
+      Buffer.concat([
+        u8(3),
+        sized(credential),
+        u8(1),
+        u8(2),
+        u64(BigInt(500)),
+        u8(0),
+      ])
+    ),
+    record(6, Buffer.concat([u32(0), u8(1), u8(1), sized(credential), u8(1)])),
+    record(
+      7,
+      Buffer.concat([
+        Buffer.alloc(32, 0xbb),
+        u8(4),
+        sized(Buffer.from('84a0a0f5f6', 'hex')),
+        vector([outpoint('11'.repeat(32))]),
+        vector([]),
+        u8(0),
+      ])
+    ),
+  ].sort();
+  expect(() => validateContextRecords(records)).not.toThrow();
+  expect(() => validateContextRecords([record(8, Buffer.alloc(0))])).toThrow(
+    'unknown context record tag'
+  );
+  expect(() => validateContextRecords([records[0].slice(0, -2)])).toThrow();
+  expect(() => validateContextRecords([records[0], records[0]])).toThrow(
+    'duplicate context record'
+  );
+});
+
+test('verifies and labels existing witnesses against the exact body hash', () => {
+  const { publicKey, privateKey } = generateKeyPairSync('ed25519');
+  const rawPublicKey = publicKey
+    .export({ format: 'der', type: 'spki' })
+    .slice(-32);
+  const unsigned = makeTransaction();
+  const bodyHash = Buffer.from(
+    blake2b(cbor.encodeCanonical(unsigned.body), undefined, 32)
+  );
+  const signature = sign(null, bodyHash, privateKey);
+  const witness = cbor.encodeCanonical([rawPublicKey, signature]);
+  const signed = makeTransaction(
+    unsigned.inputs.map(({ transactionId }) => transactionId),
+    new Map([[0, [[rawPublicKey, signature]]]])
+  );
+  const fixture = makeResponse(signed);
+  const snapshot = reconcileTransactionContext(
+    fixture.response,
+    fixture.expectation
+  );
+  expect(snapshot.preExistingWitnesses).toEqual([
+    { transactionIndex: 0, kind: 'vkey', cbor: witness.toString('hex') },
+  ]);
+  expect(snapshot.outputs).toHaveLength(3);
+  expect(snapshot.outputs[0]).toMatchObject({
+    outpoint: { transactionId: signed.inputs[0].transactionId, index: 0 },
+    canonicalCbor: output,
+    walletMember: true,
+  });
+  expect(Object.isFrozen(snapshot.outputs)).toBe(true);
+
+  const invalidSignature = Buffer.from(signature);
+  invalidSignature[0] ^= 1;
+  const tampered = makeTransaction(
+    unsigned.inputs.map(({ transactionId }) => transactionId),
+    new Map([[0, [[rawPublicKey, invalidSignature]]]])
+  );
+  const badFixture = makeResponse(tampered);
+  expect(() =>
+    reconcileTransactionContext(badFixture.response, badFixture.expectation)
+  ).toThrow('invalid existing witness signature');
+});

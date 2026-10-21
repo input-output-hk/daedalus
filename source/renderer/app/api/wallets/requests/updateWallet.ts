@@ -7,12 +7,18 @@ export const updateWallet = (
   {
     walletId,
     name,
+    singleAddressMode,
   }: {
     walletId: string;
-    name: string;
+    name?: string;
+    singleAddressMode?: boolean;
   }
-): Promise<AdaWallet> =>
-  request(
+): Promise<AdaWallet> => {
+  if (!global.cip30Enabled && singleAddressMode !== undefined)
+    return Promise.reject(
+      new Error('Single-address mode is unavailable for this package flavor')
+    );
+  return request(
     {
       method: 'PUT',
       path: `/v2/wallets/${walletId}`,
@@ -20,6 +26,10 @@ export const updateWallet = (
     },
     {},
     {
-      name,
+      ...(name === undefined ? {} : { name }),
+      ...(singleAddressMode === undefined
+        ? {}
+        : { single_address_mode: singleAddressMode }),
     }
   );
+};

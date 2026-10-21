@@ -98,7 +98,7 @@ const myNewChannel = new MainIpcChannel<
 
 export default (): void => {
   myNewChannel.onReceive(async (request: MyNewChannelRequest) => {
-    logger.info('MyNewChannel received', { request });
+    logger.info('MyNewChannel received', { channel: MY_NEW_CHANNEL });
     
     try {
       // Process request
@@ -214,17 +214,26 @@ conversation.onRequest(async (request) => {
 conversation.send(mainRequest);
 ```
 
-### Broadcast (Main → All Renderers)
+### Main → Trusted Renderer Notification
 
 ```typescript
-// Main process
-import { BrowserWindow } from 'electron';
-
-const windows = BrowserWindow.getAllWindows();
-windows.forEach((window) => {
-  window.webContents.send(CHANNEL_NAME, data);
-});
+consumeIpcResponse(
+  channel.send(data, currentWindowSender.sender),
+  CHANNEL_NAME
+);
 ```
+
+The hostile dApp renderer has one exception to the trusted-renderer wrapper:
+`dapp-cip30-gateway`. Its sole raw `ipcMain.handle` owner is
+`source/main/cip30/Cip30Broker.ts`, and the IPC audit permits only that exact
+channel after broker authentication of the active guest top frame, canonical
+origin, document generation, and route lease. Never add another raw guest
+channel or route guest calls through `MainIpcChannel`, whose authority is the
+trusted main renderer.
+
+Broker-selected wallet work uses `DAPP_CIP30_WALLET_CHANNEL` in the opposite
+direction through `MainIpcChannel`: main sends an immutable request to the
+authenticated trusted renderer and independently validates its response.
 
 ---
 
@@ -290,6 +299,29 @@ windows.forEach((window) => {
 
 ## Best Practices
 
+### Authenticate The Trusted Renderer
+
+Main-side wrapper handlers authenticate the active trusted main `WebContents`,
+main frame, canonical document, and origin before invoking application code.
+Keep the Electron event available as the optional second handler argument when a
+handler needs already-authenticated context. Do not respond with a global window
+lookup or `event.sender.send`; the wrappers use `event.reply` so responses return
+to the originating frame.
+
+Wrapper requests are correlated and register their response listener before
+sending. Every production channel must remain in
+`source/main/ipc/privilegedIpcManifest.ts`. Do not bypass these guarantees with a
+raw `ipcMain`, scoped/frame/service-worker IPC, WebContents IPC event,
+`MessagePortMain`, direct renderer `send`/`invoke`/`postMessage`, shared
+uncorrelated response listener, or aliased equivalent. The symbol-aware audit
+uses empty production bypass allowlists.
+
+Every main-originated wrapper promise must be explicitly awaited or consumed.
+Long-lived producers resolve `currentWindowSender.sender` at send time, and
+expected navigation/destruction/replacement cancellation is settled without
+sensitive error logging. Never select a target with
+`BrowserWindow.getAllWindows()` or redirect a privileged response globally.
+
 ### Error Handling
 
 ```typescript
@@ -299,7 +331,7 @@ channel.onReceive(async (request) => {
     const result = await riskyOperation(request);
     return { success: true, data: result };
   } catch (error) {
-    logger.error('Channel error', { error, request });
+    logger.error('Channel error', { error, channel: CHANNEL_NAME });
     // Errors are serialized and sent to renderer
     throw error;
   }
@@ -316,17 +348,19 @@ try {
 
 ### Logging
 
-Always log IPC operations for debugging:
+Log only non-sensitive channel lifecycle metadata when debugging. Never log
+wallet data, transaction/message bytes, signatures, credentials, origins, full
+URLs, or arbitrary request/response payloads:
 
 ```typescript
 import { logger } from '../utils/logging';
 
 channel.onReceive(async (request) => {
-  logger.info('Channel received', { channel: CHANNEL_NAME, request });
+  logger.info('Channel received', { channel: CHANNEL_NAME });
   
   const response = await processRequest(request);
   
-  logger.info('Channel responding', { channel: CHANNEL_NAME, response });
+  logger.info('Channel responding', { channel: CHANNEL_NAME });
   return response;
 });
 ```
@@ -355,15 +389,11 @@ Keep IPC payloads small. For large data:
 
 ## Debugging IPC
 
-### Enable IPC Logging
+### Enable IPC Lifecycle Logging
 
 ```typescript
-// In development, log all IPC
-if (process.env.NODE_ENV === 'development') {
-  ipcMain.on('*', (event, ...args) => {
-    console.log('IPC:', event, args);
-  });
-}
+// Instrument named registrations without logging events or payload arguments.
+logger.debug('IPC handler registered', { channel: CHANNEL_NAME });
 ```
 
 ### Common Issues

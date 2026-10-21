@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 2,
+  "result": "pass",
+  "matrix": {
+    "revision": "task-108-matrix-2026-08-18",
+    "row": "fedora-43",
+    "packageFamily": "rpm",
+    "sandboxClass": "combined-unattributed",
+    "policy": "selinux",
+    "userns": {
+      "available": true,
+      "check": "unshare-Ur"
+    }
+  },
+  "host": {
+    "distributionId": "fedora",
+    "versionId": "43",
+    "architecture": "x86_64",
+    "kernel": "6.17.1-300.fc43.x86_64",
+    "sessionType": "x11"
+  },
+  "versions": {
+    "electron": "41.3.0",
+    "chrome": "146.0.7680.188"
+  },
+  "paths": {
+    "launcher": "<INSTALL_ROOT>/bin/daedalus",
+    "frontend": "<INSTALL_ROOT>/libexec/daedalus-frontend",
+    "wrapper": "<INSTALL_ROOT>/libexec/electron",
+    "electron": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+    "chromeSandbox": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/chrome-sandbox",
+    "identityManifest": "<INSTALL_ROOT>/share/daedalus-sandbox-identity.json",
+    "policyAsset": "<SELINUX_POLICY>"
+  },
+  "files": {
+    "launcher": {
+      "sha256": "1e0e3ebe66e2a8531347742a4598d9f66fb6364f3410ded6ed8928f47e42a37d",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "frontend": {
+      "sha256": "33b6a54ceeafba9cc6a554c3b422bf46e689f9bbac04451836843506ac3cbdb6",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "wrapper": {
+      "sha256": "136f93c6222d177c592d5684027cce7213aee9b7c9651cd75d15fab1bae9222b",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "electron": {
+      "sha256": "0b7262678c92a74aa22cbbf41b3e8f705fc5a4643cedb0b5a190d77f72e3db03",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "chromeSandbox": {
+      "sha256": "0abf5cce9b871567e55c1701c9efc64a3db2d8aac028d9ee5ad6b4c7a5e623da",
+      "mode": "4755",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "policyAsset": {
+      "sha256": "1b266384d6e400479a0482104848be9ff52ecb3a5f7517dacdf7bd08bed6da86",
+      "mode": "0644",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "identityManifest": {
+      "sha256": "be6f7b9d73acb4646f023c8c4ce16dbe6ad8185861152c9dcb0f6566b0ae8651",
+      "mode": "0644",
+      "owner": "root",
+      "group": "root",
+      "regularFile": true,
+      "symlink": false
+    },
+    "probe": {
+      "sha256": "1f0f9188a68acb4c5c3676fb1163dcb1d8b3139dc5caeb8e4022875b9a8d281f",
+      "mode": "0644",
+      "owner": "non-root",
+      "group": "non-root",
+      "regularFile": true,
+      "symlink": false
+    }
+  },
+  "directories": [
+    {
+      "path": "<INSTALL_ROOT>",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/bin",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron/lib",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    },
+    {
+      "path": "<INSTALL_ROOT>/share",
+      "mode": "0755",
+      "owner": "root",
+      "group": "root"
+    }
+  ],
+  "policy": {
+    "kind": "selinux",
+    "required": true,
+    "state": "enforcing",
+    "mainContext": {
+      "user": "unconfined_u",
+      "role": "unconfined_r",
+      "type": "unconfined_t",
+      "range": "s0-s0:c0.c1023"
+    },
+    "rendererContext": {
+      "user": "unconfined_u",
+      "role": "unconfined_r",
+      "type": "unconfined_t",
+      "range": "s0-s0:c0.c1023"
+    },
+    "electronFileContext": "system_u:object_r:bin_t:s0",
+    "helperFileContext": "system_u:object_r:chrome_sandbox_exec_t:s0",
+    "module": "daedalus_mainnet",
+    "rendererLabelMatches": true,
+    "electronFileContextMatches": true,
+    "helperFileContextMatches": true,
+    "effectiveFileContexts": true
+  },
+  "main": {
+    "pid": "<MAIN_PID>",
+    "pidRelationships": {
+      "pidMatchesObserved": true,
+      "parentIsMain": false
+    },
+    "argv": [
+      "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+      "<PROBE_ROOT>/main.cjs"
+    ],
+    "status": {
+      "NoNewPrivs": "0",
+      "Seccomp": "0",
+      "Seccomp_filters": "0",
+      "CapEff": "0000000000000000"
+    },
+    "namespaces": {
+      "user": {
+        "sameAsMain": true
+      },
+      "pid": {
+        "sameAsMain": true
+      },
+      "mnt": {
+        "sameAsMain": true
+      }
+    },
+    "maps": {
+      "uid": {
+        "sameAsMain": true,
+        "classification": "identity"
+      },
+      "gid": {
+        "sameAsMain": true,
+        "classification": "identity"
+      }
+    },
+    "securityLabel": null
+  },
+  "renderer": {
+    "pid": "<RENDERER_PID>",
+    "pidRelationships": {
+      "pidMatchesObserved": true,
+      "parentIsMain": false
+    },
+    "argv": [
+      "<INSTALL_ROOT>/libexec/bundle-electron/lib/electron/electron",
+      "--type=zygote"
+    ],
+    "status": {
+      "NoNewPrivs": "1",
+      "Seccomp": "2",
+      "Seccomp_filters": "1",
+      "CapEff": "0000000000000000"
+    },
+    "namespaces": {
+      "user": {
+        "sameAsMain": false
+      },
+      "pid": {
+        "sameAsMain": false
+      },
+      "mnt": {
+        "sameAsMain": true
+      }
+    },
+    "maps": {
+      "uid": {
+        "sameAsMain": false,
+        "classification": "identity"
+      },
+      "gid": {
+        "sameAsMain": false,
+        "classification": "identity"
+      }
+    },
+    "securityLabel": "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023"
+  },
+  "assertions": {
+    "noSandboxBypass": true,
+    "exactRendererPid": true,
+    "rendererInstanceStable": true,
+    "chromiumProcessTypeRecorded": true,
+    "noNewPrivs": true,
+    "seccomp": true,
+    "zeroEffectiveCapabilities": true,
+    "separatePidNamespace": true,
+    "mountNamespaceRecorded": true,
+    "separateUserNamespace": true,
+    "separateUserAndGroupMaps": true,
+    "helperContract": true,
+    "policyContract": true
+  },
+  "failure": null,
+  "diagnostics": {
+    "exitCode": 0,
+    "byteCount": 646,
+    "sha256": "70c47c934a37b46d0d7683820bfe57cab2feeb625ed5186a189c4d7674bccef7",
+    "category": "evidence-invalid",
+    "sanitizedExcerpt": "sandbox-probe-stage:electron-loaded\nsandbox-probe-stage:app-ready\nsandbox-probe-stage:session-created\nsandbox-probe-stage:window-created\nsandbox-probe-stage:renderer-loaded\nsandbox-probe-renderer-type:[\"--type=zygote\"]\nsandbox-probe-stage:renderer-verified\n",
+    "truncated": false,
+    "sanitized": true,
+    "rawHostDataExported": false,
+    "stderrSummaryRequired": false
+  }
+}

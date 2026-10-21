@@ -1,13 +1,17 @@
 import _ from 'lodash';
 import { bech32 } from 'bech32';
 import { str_to_path } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/utils/address';
-import { HexString } from '@cardano-foundation/ledgerjs-hw-app-cardano/dist/types/internal';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 // Types
 import type { CoinSelectionAssetsType } from '../api/transactions/types';
 import type { AddressType } from '../../../common/types/address-introspection.types';
+
+const decodeHex = (value: string): Buffer => {
+  if (!/^(?:[0-9a-fA-F]{2})+$/.test(value)) throw new Error('Invalid hex');
+  return Buffer.from(value, 'hex');
+};
 
 export type PathRoleIdentityType =
   | 'utxo_external'
@@ -208,7 +212,7 @@ export const CachedDeriveXpubFactory = (
         lastIndex,
         derivationScheme: derivationScheme.ed25519Mode,
       });
-      return utils.hex_to_buf(derivedXpub as HexString);
+      return decodeHex(derivedXpub);
     } catch (e) {
       throw e;
     }

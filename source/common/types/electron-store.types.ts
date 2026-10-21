@@ -1,3 +1,35 @@
+export type SubmissionTransactionState =
+  | 'pending'
+  | 'in_ledger'
+  | 'expired'
+  | 'failed'
+  | 'submission-unknown';
+export type SubmissionTransactionRecord = Readonly<{
+  transactionId: string;
+  state: SubmissionTransactionState;
+  createdAt: string;
+  amount: string;
+  fee: string;
+  transferAmount?: string;
+  isSelfTransfer?: boolean;
+  amountIsKnown: boolean;
+  hasCertificates: boolean;
+  type: 'expend' | 'income';
+  title: string;
+  toAddress?: string;
+  assets: readonly Readonly<{
+    policyId: string;
+    assetName: string;
+    quantity: string;
+  }>[];
+  dismissed: boolean;
+  notified: boolean;
+}>;
+export type SubmissionTransactionsData = Readonly<{
+  version: 1;
+  records: readonly SubmissionTransactionRecord[];
+}>;
+
 export type StorageType = 'get' | 'set' | 'delete' | 'reset';
 export type StorageKey =
   | 'ALONZO-INFO-WAS-OPEN'
@@ -9,11 +41,13 @@ export type StorageKey =
   | 'CURRENCY-SELECTED'
   | 'DATA-LAYER-MIGRATION-ACCEPTANCE'
   | 'DISCREET-MODE-ENABLED'
+  | 'DAPP-WINDOW-BOUNDS'
   | 'DOWNLOAD-MANAGER'
   | 'DREP-FAVORITES'
   | 'HARDWARE-WALLET-DEVICES'
   | 'LIST-VIEW-PREFERENCES'
   | 'HARDWARE-WALLETS'
+  | 'SUBMISSION-TRANSACTIONS'
   | 'READ-NEWS'
   | 'RESET'
   | 'SMASH-SERVER'

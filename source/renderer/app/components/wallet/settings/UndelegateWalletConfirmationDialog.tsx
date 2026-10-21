@@ -105,9 +105,9 @@ type Props = {
   selectedWallet: Wallet | null | undefined;
   stakePoolName: string | null | undefined;
   stakePoolTicker: string | null | undefined;
-  onConfirm: (...args: Array<any>) => any;
-  onCancel: (...args: Array<any>) => any;
-  onExternalLinkClick: (...args: Array<any>) => any;
+  onConfirm: (password: string, isHardwareWallet: boolean) => void;
+  onCancel: () => void;
+  onExternalLinkClick: (url: string) => void;
   isSubmitting: boolean;
   error: LocalizableError | null | undefined;
   fees: DelegationCalculateFeeResponse | null | undefined;

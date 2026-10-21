@@ -1,0 +1,1222 @@
+import { generateKeyPairSync, sign } from 'crypto';
+import { blake2b } from 'blakejs';
+import {
+  _seedToKeypairV2,
+  derivePrivate,
+  sign as signExtended,
+} from 'cardano-crypto.js';
+import type { BrowserWindow } from 'electron';
+import type AppAda from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import type TransportNodeHid from '@ledgerhq/hw-transport-node-hid-noevents';
+import TrezorConnect from '@trezor/connect';
+import cbor from 'cbor';
+import { requestElectronStore } from '../ipc/electronStoreConversation';
+import type { SignExactHardwareTransactionMainResponse } from '../../common/ipc/api';
+
+import type {
+  HardwareExactTransaction,
+  HardwareMessageRequest,
+} from '../../common/types/hardware-wallets.types';
+import { toExactTrezorSignTransactionRequest } from '../../common/hardware/trezorTransaction';
+import {
+  encodeCoseProtectedHeader,
+  encodeCoseSignatureStructure,
+} from '../../common/cardano/cose';
+import { decodeConwayTransaction } from '../../common/cardano/transaction';
+import { parseConwayTransactionEnvelope } from '../../common/cardano/transactionEnvelope';
+
+import type { HardwareWalletChannels } from '../ipc/createHardwareWalletIPCChannels';
+import type { DeviceDetectionPayload } from '../ipc/hardwareWallets/ledger/deviceDetection/deviceDetection';
+import { handleHardwareWalletRequests } from '../ipc/getHardwareWalletChannel';
+import {
+  HardwareWalletOperationCancelled,
+  HardwareWalletService,
+  LedgerServiceDependencies,
+} from './HardwareWalletService';
+
+jest.mock('../ipc/electronStoreConversation', () => ({
+  requestElectronStore: jest.fn(),
+}));
+const walletId = 'ab'.repeat(20);
+
+jest.mock('@ledgerhq/hw-transport-node-hid-noevents', () => ({
+  __esModule: true,
+  default: { open: jest.fn(), list: jest.fn() },
+  getDevices: jest.fn(),
+}));
+
+jest.mock('@cardano-foundation/ledgerjs-hw-app-cardano', () => ({
+  __esModule: true,
+  default: class {},
+  AddressType: {
+    BASE_PAYMENT_KEY_STAKE_KEY: 0,
+    BASE_PAYMENT_KEY_STAKE_SCRIPT: 2,
+    POINTER_KEY: 4,
+    ENTERPRISE_KEY: 6,
+    REWARD_KEY: 14,
+  },
+  MessageAddressFieldType: { ADDRESS: 'address', KEY_HASH: 'key_hash' },
+  utils: { bech32_encodeAddress: jest.fn(), buf_to_hex: jest.fn() },
+}));
+
+jest.mock('../../common/hardware/ledgerTransaction', () => ({
+  toExactLedgerSignTransactionRequest: jest.fn(() => ({ tx: {} })),
+}));
+jest.mock('../../common/hardware/trezorTransaction', () => ({
+  toExactTrezorSignTransactionRequest: jest.fn(() => ({})),
+}));
+
+jest.mock('@trezor/connect', () => ({
+  __esModule: true,
+  default: {
+    removeAllListeners: jest.fn(),
+    cancel: jest.fn(),
+    on: jest.fn(),
+    cardanoSignTransaction: jest.fn(),
+    cardanoSignMessage: jest.fn(),
+  },
+  DEVICE: { CONNECT: 'connect', DISCONNECT: 'disconnect', CHANGED: 'changed' },
+  DEVICE_EVENT: 'device-event',
+  TRANSPORT: { ERROR: 'transport-error' },
+  TRANSPORT_EVENT: 'transport-event',
+  UI: { REQUEST_PASSPHRASE: 'request-passphrase' },
+  UI_EVENT: 'ui-event',
+}));
+jest.mock('../config', () => ({
+  dappRuntimeConfig: {
+    cip30Enabled: true,
+    dappSandboxPackageCluster: 'preprod',
+  },
+  dappLaunchPolicy: {
+    hardwareConnectorEnabled: jest.fn(() => true),
+  },
+}));
+
+const channelNames: Array<keyof HardwareWalletChannels> = [
+  'getHardwareWalletTransportChannel',
+  'getExtendedPublicKeyChannel',
+  'getCardanoAdaAppChannel',
+  'getHardwareWalletConnectionChannel',
+  'signTransactionLedgerChannel',
+  'signTransactionTrezorChannel',
+  'signExactHardwareTransactionChannel',
+  'signExactHardwareMessageChannel',
+  'verifyHardwareTransactionChannel',
+  'resetTrezorActionChannel',
+  'handleInitTrezorConnectChannel',
+  'handleInitLedgerConnectChannel',
+  'deriveXpubChannel',
+  'deriveAddressChannel',
+  'showAddressChannel',
+  'waitForLedgerDevicesToConnectChannel',
+];
+
+const createChannels = () => {
+  const handlers = new Map<string, (value?: unknown) => Promise<unknown>>();
+  const send = jest.fn(() => Promise.resolve(undefined));
+  const channelMap: Partial<Record<keyof HardwareWalletChannels, unknown>> = {};
+  channelNames.forEach((name) => {
+    channelMap[name] = {
+      onRequest: (handler) => handlers.set(name, handler),
+      send,
+    };
+  });
+  const channels = channelMap as HardwareWalletChannels;
+  return { channels, handlers, send };
+};
+
+const detectedDevice = {
+  type: 'add',
+  descriptor: 'descriptor',
+  deviceModel: {
+    id: 'nanoS',
+    productName: 'Nano S',
+    productIdMM: 1,
+    legacyUsbProductId: 1,
+    usbOnly: true,
+    memorySize: 1,
+    blockSize: 1,
+  },
+  device: {
+    vendorId: 1,
+    productId: 1,
+    path: 'ledger-path',
+    release: 1,
+    interface: 1,
+    product: 'Ledger',
+  },
+} as DeviceDetectionPayload;
+
+const flush = async (): Promise<void> => {
+  await Promise.resolve();
+  await Promise.resolve();
+};
+
+const withResolvers = <T>() =>
+  (
+    Promise as unknown as {
+      withResolvers<U>(): {
+        promise: Promise<U>;
+        resolve: (value: U | PromiseLike<U>) => void;
+        reject: (reason?: unknown) => void;
+      };
+    }
+  ).withResolvers<T>();
+
+describe('HardwareWalletService', () => {
+  it('rejects all exact signing on nonpilot packages before inspecting proofs or using devices', async () => {
+    const config = jest.requireMock('../config').dappRuntimeConfig;
+    config.cip30Enabled = false;
+    config.dappSandboxPackageCluster = 'mainnet';
+    try {
+      const service = new HardwareWalletService();
+      const { channels, handlers } = createChannels();
+      await service.register(channels);
+      const ledger = jest.spyOn(service, 'signExactLedgerTransaction');
+      const trezor = jest.spyOn(service, 'signExactTrezorTransaction');
+      const ledgerMessage = jest.spyOn(service, 'signLedgerMessage');
+      const trezorMessage = jest.spyOn(service, 'signTrezorMessage');
+      for (const vendor of ['ledger', 'trezor']) {
+        await expect(
+          handlers.get('signExactHardwareTransactionChannel')!({
+            vendor,
+            exact: { capability: { rowId: `${vendor}-native` } },
+          })
+        ).rejects.toThrow('Hardware exact transaction is not enabled');
+        await expect(
+          handlers.get('signExactHardwareMessageChannel')!({ vendor })
+        ).rejects.toThrow('Hardware connector is not enabled');
+      }
+      expect(ledger).not.toHaveBeenCalled();
+      expect(trezor).not.toHaveBeenCalled();
+      expect(ledgerMessage).not.toHaveBeenCalled();
+      expect(trezorMessage).not.toHaveBeenCalled();
+      expect(handlers.has('verifyHardwareTransactionChannel')).toBe(true);
+      const legacyTrezor = { inputs: [], outputs: [] };
+      await handlers.get('signTransactionTrezorChannel')!(legacyTrezor);
+      expect(TrezorConnect.cardanoSignTransaction).toHaveBeenCalledWith(
+        legacyTrezor
+      );
+    } finally {
+      config.cip30Enabled = true;
+      config.dappSandboxPackageCluster = 'preprod';
+      jest.restoreAllMocks();
+    }
+  });
+  it('owns detection, transport cancellation, and late-result suppression', async () => {
+    let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
+    const unsubscribe = jest.fn();
+    const close = jest.fn(() => Promise.resolve());
+    const transport = { close } as unknown as TransportNodeHid;
+    const connection = {} as AppAda;
+    const dependencies: LedgerServiceDependencies = {
+      open: jest.fn(() => Promise.resolve(transport)),
+      list: jest.fn(() => Promise.resolve(['ledger-path'])),
+      getDevices: jest.fn(() => [detectedDevice.device]),
+      detect: jest.fn((add) => {
+        onAdd = add;
+        return unsubscribe;
+      }),
+      wait: jest.fn(() => Promise.resolve(detectedDevice)),
+      createApp: jest.fn(() => connection),
+    };
+    const service = new HardwareWalletService(dependencies);
+    const { channels, handlers, send } = createChannels();
+
+    await service.register(channels);
+    await handlers.get('handleInitLedgerConnectChannel')!();
+    await handlers.get('handleInitLedgerConnectChannel')!();
+    expect(dependencies.detect).toHaveBeenCalledTimes(1);
+
+    onAdd!(detectedDevice);
+    await flush();
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disconnected: false,
+        deviceType: 'ledger',
+        path: 'ledger-path',
+      }),
+      expect.anything()
+    );
+
+    let release: (value: string) => void = () => undefined;
+    const operation = service.withLedgerOperation(
+      'ledger-path',
+      () =>
+        new Promise<string>((resolve) => {
+          release = resolve;
+        })
+    );
+    await service.cancelLedgerOperation('ledger-path');
+    release('late');
+
+    await expect(operation).rejects.toBeInstanceOf(
+      HardwareWalletOperationCancelled
+    );
+    expect(close).toHaveBeenCalledTimes(1);
+
+    onAdd!(detectedDevice);
+    await flush();
+    let rejectLate: (error: Error) => void = () => undefined;
+    const failedOperation = service.withLedgerOperation(
+      'ledger-path',
+      () =>
+        new Promise<string>((_resolve, reject) => {
+          rejectLate = reject;
+        })
+    );
+    await service.cancelLedgerOperation('ledger-path');
+    rejectLate(new Error('late vendor error'));
+    await expect(failedOperation).rejects.toBeInstanceOf(
+      HardwareWalletOperationCancelled
+    );
+    expect(close).toHaveBeenCalledTimes(2);
+
+    await service.dispose();
+    await service.dispose();
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(TrezorConnect.cancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('routes enabled exact signing only to the matching hardware vendor', async () => {
+    const service = new HardwareWalletService();
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    const ledger = jest
+      .spyOn(service, 'signExactLedgerTransaction')
+      .mockResolvedValue('a0');
+    const trezor = jest
+      .spyOn(service, 'signExactTrezorTransaction')
+      .mockResolvedValue('a0');
+    const request = handlers.get('signExactHardwareTransactionChannel')!;
+    const transactionCbor = cbor.encodeCanonical([
+      new Map<number, unknown>([
+        [0, [[Buffer.alloc(32), 0]]],
+        [1, [[Buffer.concat([Buffer.from('60', 'hex'), Buffer.alloc(28)]), 1]]],
+        [2, 0],
+      ]),
+      new Map(),
+      true,
+      null,
+    ]);
+    const transaction = decodeConwayTransaction(
+      parseConwayTransactionEnvelope(transactionCbor)
+    );
+    const incomplete = {
+      transaction,
+      bodyHash: transaction.transactionId,
+      capability: {
+        vendor: 'ledger',
+        physicalCertified: true,
+        productEnabled: true,
+      },
+    } as unknown as HardwareExactTransaction;
+    await expect(
+      request({
+        vendor: 'ledger',
+        ledgerPath: 'ledger-path',
+        exact: incomplete,
+      })
+    ).rejects.toThrow('Hardware exact transaction is not enabled');
+    expect(ledger).not.toHaveBeenCalled();
+    const exact = {
+      ...incomplete,
+      capability: {
+        matrixRevision: 'task-006-matrix-2026-08-14',
+        artifactId: 'ledger-8.0.0-candidate',
+        rowId: 'ledger-signTx',
+        vendor: 'ledger',
+        staticallyRepresentable: true,
+        staticGatesPassed: true,
+        physicalCertified: true,
+        productEnabled: true,
+        familyDispositions: {},
+      },
+    } as unknown as HardwareExactTransaction;
+
+    await expect(
+      request({ vendor: 'ledger', ledgerPath: 'ledger-path', walletId, exact })
+    ).resolves.toEqual({
+      witnessSetCbor: 'a0',
+      signedTransactionCbor: transactionCbor.toString('hex'),
+    });
+    expect(ledger).toHaveBeenCalledWith(
+      'ledger-path',
+      expect.objectContaining({
+        bodyHash: transaction.transactionId,
+        transaction: expect.objectContaining({
+          transactionId: transaction.transactionId,
+        }),
+      }),
+      walletId
+    );
+    await expect(request({ vendor: 'ledger', exact })).rejects.toThrow(
+      'Ledger device not connected'
+    );
+    await expect(request({ vendor: 'trezor', exact })).rejects.toThrow(
+      'Hardware exact transaction is not enabled'
+    );
+
+    const trezorExact = {
+      ...exact,
+      capability: {
+        ...exact.capability,
+        artifactId: 'trezor-connect-9.7.2',
+        rowId: 'trezor-signTx',
+        vendor: 'trezor',
+      },
+    } as unknown as HardwareExactTransaction;
+    await expect(
+      request({ vendor: 'trezor', exact: trezorExact })
+    ).resolves.toEqual({
+      witnessSetCbor: 'a0',
+      signedTransactionCbor: transactionCbor.toString('hex'),
+    });
+    expect(trezor).toHaveBeenCalledWith(
+      expect.objectContaining({
+        bodyHash: transaction.transactionId,
+        transaction: expect.objectContaining({
+          transactionId: transaction.transactionId,
+        }),
+      })
+    );
+    await expect(
+      request({
+        vendor: 'trezor',
+        ledgerPath: 'ledger-path',
+        exact: trezorExact,
+      })
+    ).rejects.toThrow('Trezor must not receive a Ledger path');
+    await expect(
+      request({
+        vendor: 'ledger',
+        ledgerPath: 'ledger-path',
+        exact: {
+          ...exact,
+          capability: { ...exact.capability, productEnabled: false },
+        },
+      })
+    ).rejects.toThrow('Hardware exact transaction is not enabled');
+    for (const native of [exact, trezorExact]) {
+      const vendor = native.capability.vendor;
+      const nativeRequest = {
+        walletId,
+        vendor,
+        ...(vendor === 'ledger' ? { ledgerPath: 'ledger-path' } : {}),
+        exact: {
+          ...native,
+          capability: { ...native.capability, rowId: `${vendor}-native` },
+        },
+      };
+      await expect(request(nativeRequest)).resolves.toEqual({
+        witnessSetCbor: 'a0',
+        signedTransactionCbor: transactionCbor.toString('hex'),
+      });
+      await expect(
+        request({
+          ...nativeRequest,
+          exact: {
+            ...nativeRequest.exact,
+            capability: {
+              ...nativeRequest.exact.capability,
+              productEnabled: false,
+            },
+          },
+        })
+      ).rejects.toThrow('Hardware exact transaction is not enabled');
+    }
+    await expect(
+      request({
+        vendor: 'unknown',
+        exact: {
+          ...trezorExact,
+          capability: {
+            ...trezorExact.capability,
+            vendor: 'unknown',
+            rowId: 'unknown-native',
+          },
+        },
+      })
+    ).rejects.toThrow('Hardware exact transaction is not enabled');
+    expect(ledger).toHaveBeenCalledTimes(2);
+    expect(trezor).toHaveBeenCalledTimes(2);
+  });
+
+  it('rejects a disabled packaged connector before device invocation', async () => {
+    const service = new HardwareWalletService();
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    const ledger = jest.spyOn(service, 'signLedgerMessage');
+    const request = handlers.get('signExactHardwareMessageChannel')!;
+    await expect(
+      request({
+        vendor: 'ledger',
+        ledgerPath: 'ledger-path',
+        capability: {
+          matrixRevision: 'task-006-matrix-2026-08-14',
+          rowId: 'ledger:nanoSP:8.0.0:signData',
+          vendor: 'ledger',
+          model: 'nanoSP',
+          appVersion: '8.0.0',
+          certifiedExtensions: [95],
+          physicalCertified: true,
+          packagedEnabled: false,
+        },
+        message: {} as HardwareMessageRequest,
+      })
+    ).rejects.toThrow('Hardware connector is not enabled');
+    expect(ledger).not.toHaveBeenCalled();
+  });
+
+  it('releases only exact Ledger witnesses', async () => {
+    const account = await _seedToKeypairV2(
+      Buffer.alloc(16, 7),
+      Buffer.alloc(0)
+    );
+    const child = derivePrivate(derivePrivate(account, 0, 2), 0, 2);
+    const publicKey = child.subarray(64, 96);
+    const pairing = {
+      id: walletId,
+      device: { deviceType: 'ledger' },
+      extendedPublicKey: {
+        publicKeyHex: account.subarray(64, 96).toString('hex'),
+        chainCodeHex: account.subarray(96).toString('hex'),
+      },
+    };
+    (requestElectronStore as jest.Mock).mockReturnValue(pairing);
+    const keyHash = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
+      'hex'
+    );
+    const transaction = decodeConwayTransaction(
+      parseConwayTransactionEnvelope(
+        cbor.encodeCanonical([
+          new Map<number, unknown>([
+            [0, [[Buffer.alloc(32), 0]]],
+            [
+              1,
+              [
+                [
+                  Buffer.concat([
+                    Buffer.from([0x60]),
+                    Buffer.from(keyHash, 'hex'),
+                  ]),
+                  5_000_000,
+                ],
+              ],
+            ],
+            [2, 174_565],
+          ]),
+          new Map(),
+          true,
+          null,
+        ])
+      )
+    );
+    const bodyHash = transaction.transactionId;
+    const path = [0x8000073c, 0x80000717, 0x80000000, 0, 0];
+    const signature = signExtended(Buffer.from(bodyHash, 'hex'), child);
+    const validLedgerPayload = {
+      txHashHex: bodyHash,
+      witnesses: [
+        {
+          path,
+          witnessSignatureHex: signature.toString('hex'),
+        },
+      ],
+      auxiliaryDataSupplement: null,
+    };
+    const signTransaction = jest.fn(() => Promise.resolve(validLedgerPayload));
+    const getExtendedPublicKey = jest.fn(() =>
+      Promise.resolve({
+        publicKeyHex: publicKey.toString('hex'),
+        chainCodeHex: '00'.repeat(32),
+      })
+    );
+    const connection = {
+      signTransaction,
+      getExtendedPublicKey,
+    } as unknown as AppAda;
+    let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
+    const dependencies: LedgerServiceDependencies = {
+      open: jest.fn(() =>
+        Promise.resolve({
+          close: jest.fn(() => Promise.resolve()),
+        } as unknown as TransportNodeHid)
+      ),
+      list: jest.fn(() => Promise.resolve(['ledger-path'])),
+      getDevices: jest.fn(() => [detectedDevice.device]),
+      detect: jest.fn((add) => {
+        onAdd = add;
+        return jest.fn();
+      }),
+      wait: jest.fn(() => Promise.resolve(detectedDevice)),
+      createApp: jest.fn(() => connection),
+    };
+    const service = new HardwareWalletService(dependencies);
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    await handlers.get('handleInitLedgerConnectChannel')!();
+    onAdd!(detectedDevice);
+    await flush();
+    const exact = {
+      bodyHash,
+      transaction,
+      capability: {
+        matrixRevision: 'task-006-matrix-2026-08-14',
+        artifactId: 'ledger-8.0.0-candidate',
+        rowId: 'ledger-signTx',
+        vendor: 'ledger',
+        staticallyRepresentable: true,
+        staticGatesPassed: true,
+        physicalCertified: true,
+        productEnabled: true,
+      },
+      partialSign: false,
+      signers: [{ keyHash, path }],
+      witnesses: {
+        requiredKeyHashes: [keyHash],
+        preExistingKeyHashes: [],
+        requestedDeviceKeyHashes: [keyHash],
+        missingKeyHashes: [],
+        unexpectedKeyHashes: [],
+      },
+    } as unknown as HardwareExactTransaction;
+
+    await expect(
+      service.signExactLedgerTransaction('ledger-path', exact, walletId)
+    ).resolves.toMatch(/^a10081825820/u);
+    expect(signTransaction).toHaveBeenCalledTimes(1);
+    expect(getExtendedPublicKey).not.toHaveBeenCalled();
+    const result = (await handlers.get('signExactHardwareTransactionChannel')!({
+      walletId,
+      vendor: 'ledger',
+      ledgerPath: 'ledger-path',
+      exact,
+    })) as SignExactHardwareTransactionMainResponse;
+    const merged = parseConwayTransactionEnvelope(
+      Buffer.from(result.signedTransactionCbor, 'hex')
+    );
+    expect(merged.transactionId).toBe(bodyHash);
+    expect(
+      merged.cbor.subarray(merged.spans.body.start, merged.spans.body.end)
+    ).toEqual(
+      transaction.envelope.cbor.subarray(
+        transaction.envelope.spans.body.start,
+        transaction.envelope.spans.body.end
+      )
+    );
+    expect(result.witnessSetCbor).toMatch(/^a10081825820/u);
+    expect(getExtendedPublicKey).not.toHaveBeenCalled();
+    const verifyLegacy = handlers.get('verifyHardwareTransactionChannel')!;
+    const legacyRequest = {
+      walletId,
+      vendor: 'ledger',
+      unsignedTransaction: transaction.envelope.cbor.toString('hex'),
+      signedTransaction: result.signedTransactionCbor,
+      signerPaths: [path, path],
+    };
+    await expect(verifyLegacy(legacyRequest)).resolves.toBe(
+      result.signedTransactionCbor
+    );
+    const decoded = cbor.decodeFirstSync(
+      Buffer.from(result.signedTransactionCbor, 'hex')
+    );
+    const oldEnvelope = cbor
+      .encodeCanonical([decoded[0], decoded[1], decoded[3]])
+      .toString('hex');
+    (requestElectronStore as jest.Mock).mockReturnValueOnce({
+      ...pairing,
+      device: { deviceType: 'trezor' },
+    });
+    await expect(
+      verifyLegacy({
+        ...legacyRequest,
+        vendor: 'trezor',
+        signedTransaction: oldEnvelope,
+      })
+    ).resolves.toBe(oldEnvelope);
+    const anotherChild = derivePrivate(derivePrivate(account, 0, 2), 1, 2);
+    const wrongWalletWitness = [
+      anotherChild.subarray(64, 96),
+      signExtended(Buffer.from(bodyHash, 'hex'), anotherChild),
+    ];
+    for (const invalidWitnesses of [
+      [],
+      [
+        [publicKey, signature],
+        [publicKey, signature],
+      ],
+      [[publicKey, Buffer.alloc(64)]],
+      [wrongWalletWitness],
+    ]) {
+      const badTransaction = cbor
+        .encodeCanonical([
+          decoded[0],
+          new Map([[0, invalidWitnesses]]),
+          true,
+          decoded[3],
+        ])
+        .toString('hex');
+      await expect(
+        verifyLegacy({ ...legacyRequest, signedTransaction: badTransaction })
+      ).rejects.toThrow();
+    }
+    const differentBody = new Map(decoded[0]);
+    differentBody.set(2, 999999);
+    await expect(
+      verifyLegacy({
+        ...legacyRequest,
+        signedTransaction: cbor
+          .encodeCanonical([differentBody, decoded[1], true, decoded[3]])
+          .toString('hex'),
+      })
+    ).rejects.toThrow('different transaction');
+    await expect(
+      verifyLegacy({ ...legacyRequest, signerPaths: [] })
+    ).rejects.toThrow();
+    expect(getExtendedPublicKey).not.toHaveBeenCalled();
+    const signedCalls = signTransaction.mock.calls.length;
+    for (const invalidPairing of [
+      undefined,
+      { ...pairing, id: 'cd'.repeat(20) },
+    ]) {
+      (requestElectronStore as jest.Mock).mockReturnValueOnce(invalidPairing);
+      await expect(
+        service.signExactLedgerTransaction('ledger-path', exact, walletId)
+      ).rejects.toThrow();
+    }
+    for (const invalidPath of [
+      [0x8000073c, 0x80000717, 0x80000001, 0, 0],
+      [0x8000073c, 0x80000717, 0x80000000, 0, 0x80000000],
+    ]) {
+      await expect(
+        service.signExactLedgerTransaction(
+          'ledger-path',
+          {
+            ...exact,
+            signers: [{ ...exact.signers[0], path: invalidPath }],
+          },
+          walletId
+        )
+      ).rejects.toThrow();
+    }
+    expect(signTransaction).toHaveBeenCalledTimes(signedCalls);
+    expect(getExtendedPublicKey).not.toHaveBeenCalled();
+
+    for (const response of [
+      { txHashHex: '00'.repeat(32), witnesses: [] },
+      {
+        txHashHex: bodyHash,
+        witnesses: [
+          { path: [...path, 1], witnessSignatureHex: '00'.repeat(64) },
+        ],
+      },
+      { txHashHex: bodyHash, witnesses: [] },
+      {
+        txHashHex: bodyHash,
+        witnesses: [
+          ...validLedgerPayload.witnesses,
+          ...validLedgerPayload.witnesses,
+        ],
+      },
+    ]) {
+      signTransaction.mockResolvedValueOnce({
+        ...response,
+        auxiliaryDataSupplement: null,
+      });
+      await expect(
+        service.signExactLedgerTransaction('ledger-path', exact, walletId)
+      ).rejects.toThrow();
+    }
+
+    (requestElectronStore as jest.Mock).mockReturnValueOnce({
+      ...pairing,
+      extendedPublicKey: {
+        ...pairing.extendedPublicKey,
+        chainCodeHex: '00'.repeat(32),
+      },
+    });
+    await expect(
+      service.signExactLedgerTransaction('ledger-path', exact, walletId)
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
+
+    signTransaction.mockResolvedValueOnce({
+      txHashHex: bodyHash,
+      witnesses: [
+        {
+          path,
+          witnessSignatureHex: '00'.repeat(64),
+        },
+      ],
+      auxiliaryDataSupplement: null,
+    });
+    await expect(
+      service.signExactLedgerTransaction('ledger-path', exact, walletId)
+    ).rejects.toThrow();
+
+    signTransaction.mockRejectedValueOnce({ code: 0x6985 });
+    await expect(
+      service.signExactLedgerTransaction('ledger-path', exact, walletId)
+    ).rejects.toMatchObject({ code: 'TxSignError.UserDeclined' });
+    signTransaction.mockRejectedValueOnce({ code: 0x6b00 });
+    await expect(
+      service.signExactLedgerTransaction('ledger-path', exact, walletId)
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
+
+    const lateLedger = withResolvers<typeof validLedgerPayload>();
+    signTransaction.mockReturnValueOnce(lateLedger.promise);
+    const cancelledLedger = service.signExactLedgerTransaction(
+      'ledger-path',
+      exact,
+      walletId
+    );
+    await service.cancelLedgerOperation('ledger-path');
+    lateLedger.resolve(validLedgerPayload);
+    await expect(cancelledLedger).rejects.toMatchObject({
+      code: 'TxSignError.UserDeclined',
+    });
+  });
+
+  it('releases only verified exact Shelley witnesses from Trezor', async () => {
+    const keys = generateKeyPairSync('ed25519');
+    const publicKey = (
+      keys.publicKey.export({
+        format: 'der',
+        type: 'spki',
+      }) as Buffer
+    ).subarray(-32);
+    const keyHash = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
+      'hex'
+    );
+    const bodyHash = 'cd'.repeat(32);
+    const signature = sign(
+      null,
+      Buffer.from(bodyHash, 'hex'),
+      keys.privateKey
+    ).toString('hex');
+    const exact = {
+      bodyHash,
+      partialSign: false,
+      signers: [{ keyHash, path: [0x8000073c, 0x80000717, 0x80000000, 0, 0] }],
+      witnesses: {
+        requiredKeyHashes: [keyHash],
+        preExistingKeyHashes: [],
+        requestedDeviceKeyHashes: [keyHash],
+        missingKeyHashes: [],
+        unexpectedKeyHashes: [],
+      },
+    } as unknown as HardwareExactTransaction;
+    const signTransaction = TrezorConnect.cardanoSignTransaction as jest.Mock;
+    const validPayload = {
+      hash: bodyHash,
+      witnesses: [{ type: 1, pubKey: publicKey.toString('hex'), signature }],
+    };
+    signTransaction.mockResolvedValue({
+      success: true,
+      payload: validPayload,
+    });
+    const service = new HardwareWalletService();
+
+    await expect(service.signExactTrezorTransaction(exact)).resolves.toMatch(
+      /^a10081825820/u
+    );
+
+    for (const payload of [
+      { hash: '00'.repeat(32), witnesses: [] },
+      { hash: bodyHash, witnesses: [] },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 0, pubKey: publicKey.toString('hex'), signature }],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 1, pubKey: '00'.repeat(31), signature }],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 1, pubKey: '00'.repeat(32), signature }],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [
+          { type: 1, pubKey: publicKey.toString('hex'), signature },
+          { type: 1, pubKey: publicKey.toString('hex'), signature },
+        ],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [
+          {
+            type: 1,
+            pubKey: publicKey.toString('hex'),
+            signature: '00'.repeat(64),
+          },
+        ],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [
+          {
+            type: 1,
+            pubKey: publicKey.toString('hex'),
+            signature,
+            chainCode: '00'.repeat(32),
+          },
+        ],
+      },
+      {
+        hash: bodyHash,
+        witnesses: [{ type: 1, pubKey: publicKey.toString('hex'), signature }],
+        auxiliaryDataSupplement: {
+          type: 0,
+          auxiliaryDataHash: '00'.repeat(32),
+        },
+      },
+    ]) {
+      signTransaction.mockResolvedValueOnce({ success: true, payload });
+      await expect(service.signExactTrezorTransaction(exact)).rejects.toThrow();
+    }
+    signTransaction.mockResolvedValueOnce({ success: false, payload: {} });
+    await expect(service.signExactTrezorTransaction(exact)).rejects.toThrow();
+
+    (toExactTrezorSignTransactionRequest as jest.Mock).mockImplementationOnce(
+      () => {
+        throw new Error('preflight');
+      }
+    );
+    const calls = signTransaction.mock.calls.length;
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
+    expect(signTransaction).toHaveBeenCalledTimes(calls);
+
+    signTransaction.mockResolvedValueOnce({
+      success: false,
+      payload: {
+        code: 'Failure_ActionCancelled',
+        error: 'Action cancelled by user',
+      },
+    });
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.UserDeclined' });
+
+    signTransaction.mockResolvedValueOnce({
+      success: false,
+      payload: { code: 'Failure_ProcessError', error: 'Device unavailable' },
+    });
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'TxSignError.ProofGeneration' });
+
+    signTransaction.mockRejectedValueOnce(new Error('unexpected vendor error'));
+    await expect(
+      service.signExactTrezorTransaction(exact)
+    ).rejects.toMatchObject({ code: 'APIError.InternalError' });
+
+    const lateTransaction = withResolvers<unknown>();
+    signTransaction.mockReturnValueOnce(lateTransaction.promise);
+    const cancelledTransaction = service.signExactTrezorTransaction(exact);
+    service.cancelTrezorOperation();
+    lateTransaction.resolve({ success: true, payload: validPayload });
+    await expect(cancelledTransaction).rejects.toMatchObject({
+      code: 'TxSignError.UserDeclined',
+    });
+
+    const callsBeforeRestart = signTransaction.mock.calls.length;
+    expect(new HardwareWalletService()).toBeInstanceOf(HardwareWalletService);
+    await flush();
+    expect(signTransaction).toHaveBeenCalledTimes(callsBeforeRestart);
+  });
+
+  it('rebuilds verified CIP-8 from exact Ledger and Trezor message proofs', async () => {
+    const keys = generateKeyPairSync('ed25519');
+    const publicKey = (
+      keys.publicKey.export({
+        format: 'der',
+        type: 'spki',
+      }) as Buffer
+    ).subarray(-32);
+    const credential = Buffer.from(blake2b(publicKey, undefined, 28)).toString(
+      'hex'
+    );
+    const path = [0x8000073c, 0x80000717, 0x80000000, 3, 0];
+    const network = {
+      networkId: 1 as const,
+      networkMagic: 764824073,
+      genesisHash: '00'.repeat(32),
+    };
+    const request = (kind: 'address' | 'key_hash'): HardwareMessageRequest => ({
+      credentialKind: kind === 'address' ? 'payment' : 'drep',
+      credential,
+      protectedAddress: kind === 'address' ? `61${credential}` : credential,
+      payload: 'deadbeef',
+      path,
+      network,
+      address:
+        kind === 'address'
+          ? {
+              kind,
+              value: `61${credential}`,
+              addressType: 6,
+              paymentPath: path,
+            }
+          : { kind, value: credential },
+    });
+    const proof = (message: HardwareMessageRequest) => {
+      const protectedHeader = encodeCoseProtectedHeader(
+        Buffer.from(message.protectedAddress, 'hex')
+      );
+      return {
+        publicKey: publicKey.toString('hex'),
+        signature: sign(
+          null,
+          encodeCoseSignatureStructure(
+            protectedHeader,
+            Buffer.from(message.payload, 'hex')
+          ),
+          keys.privateKey
+        ).toString('hex'),
+      };
+    };
+    const signMessage = jest.fn();
+    const connection = { signMessage } as unknown as AppAda;
+    let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
+    const service = new HardwareWalletService({
+      open: jest.fn(() =>
+        Promise.resolve({
+          close: jest.fn(() => Promise.resolve()),
+        } as unknown as TransportNodeHid)
+      ),
+      list: jest.fn(() => Promise.resolve(['ledger-path'])),
+      getDevices: jest.fn(() => [detectedDevice.device]),
+      detect: jest.fn((add) => {
+        onAdd = add;
+        return jest.fn();
+      }),
+      wait: jest.fn(() => Promise.resolve(detectedDevice)),
+      createApp: jest.fn(() => connection),
+    });
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    await handlers.get('handleInitLedgerConnectChannel')!();
+    onAdd!(detectedDevice);
+    await flush();
+
+    const addressRequest = request('address');
+    const addressProof = proof(addressRequest);
+    signMessage.mockResolvedValueOnce({
+      signingPublicKeyHex: addressProof.publicKey,
+      signatureHex: addressProof.signature,
+      addressFieldHex: addressRequest.address.value,
+    });
+    await expect(
+      service.signLedgerMessage('ledger-path', addressRequest)
+    ).resolves.toMatchObject({ key: expect.stringMatching(/^a401/u) });
+    expect(signMessage).toHaveBeenLastCalledWith({
+      messageHex: 'deadbeef',
+      signingPath: path,
+      hashPayload: false,
+      preferHexDisplay: false,
+      addressFieldType: 'address',
+      address: {
+        type: 6,
+        params: { spendingPath: path },
+      },
+      network: { networkId: 1, protocolMagic: 764824073 },
+    });
+
+    const drepRequest = request('key_hash');
+    const drepProof = proof(drepRequest);
+    signMessage.mockResolvedValueOnce({
+      signingPublicKeyHex: drepProof.publicKey,
+      signatureHex: drepProof.signature,
+      addressFieldHex: credential,
+    });
+    const ledgerResult = await service.signLedgerMessage(
+      'ledger-path',
+      drepRequest
+    );
+    expect(signMessage).toHaveBeenLastCalledWith({
+      messageHex: 'deadbeef',
+      signingPath: path,
+      hashPayload: false,
+      preferHexDisplay: false,
+      addressFieldType: 'key_hash',
+    });
+
+    const trezorSignMessage = TrezorConnect.cardanoSignMessage as jest.Mock;
+    const trezorProofPayload = {
+      headers: {
+        protected: { 1: -8, address: credential },
+        unprotected: { hashed: false, version: 1 },
+      },
+      payload: drepRequest.payload,
+      signature: drepProof.signature,
+      pubKey: drepProof.publicKey,
+      coseSignature: 'poison',
+      coseKey: 'poison',
+    };
+    trezorSignMessage.mockResolvedValue({
+      success: true,
+      payload: trezorProofPayload,
+    });
+    await expect(service.signTrezorMessage(drepRequest)).resolves.toEqual(
+      ledgerResult
+    );
+    expect(trezorSignMessage).toHaveBeenCalledWith({
+      path,
+      payload: 'deadbeef',
+      preferHexDisplay: false,
+      networkId: 1,
+      protocolMagic: 764824073,
+    });
+
+    trezorSignMessage.mockResolvedValueOnce({
+      success: true,
+      payload: {
+        headers: {
+          protected: { 1: -8, address: credential },
+          unprotected: { hashed: false, version: 1 },
+        },
+        payload: drepRequest.payload,
+        signature: '00'.repeat(64),
+        pubKey: drepProof.publicKey,
+      },
+    });
+    await expect(service.signTrezorMessage(drepRequest)).rejects.toMatchObject({
+      code: 'DataSignError.ProofGeneration',
+    });
+
+    trezorSignMessage.mockResolvedValueOnce({
+      success: false,
+      payload: {
+        code: 'Failure_ActionCancelled',
+        error: 'Action cancelled by user',
+      },
+    });
+    await expect(service.signTrezorMessage(drepRequest)).rejects.toMatchObject({
+      code: 'DataSignError.UserDeclined',
+    });
+
+    const lateMessage = withResolvers<unknown>();
+    trezorSignMessage.mockReturnValueOnce(lateMessage.promise);
+    const disconnectedMessage = service.signTrezorMessage(drepRequest);
+    service.cancelTrezorOperation('device');
+    lateMessage.resolve({ success: true, payload: trezorProofPayload });
+    await expect(disconnectedMessage).rejects.toMatchObject({
+      code: 'DataSignError.ProofGeneration',
+    });
+  });
+
+  it('opens a Ledger already present before the renderer starts waiting', async () => {
+    const transport = {
+      close: jest.fn(() => Promise.resolve()),
+      deviceModel: detectedDevice.deviceModel,
+    } as unknown as TransportNodeHid;
+    const dependencies: LedgerServiceDependencies = {
+      open: jest.fn(() => Promise.resolve(transport)),
+      list: jest.fn(() => Promise.resolve(['ledger-path'])),
+      getDevices: jest.fn(() => [detectedDevice.device]),
+      detect: jest.fn(() => jest.fn()),
+      wait: jest.fn(),
+      createApp: jest.fn(() => ({}) as AppAda),
+    };
+    const service = new HardwareWalletService(dependencies);
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+
+    const result = await handlers.get('getHardwareWalletTransportChannel')!({
+      isTrezor: false,
+      devicePath: 'ledger-path',
+    });
+
+    expect(dependencies.open).toHaveBeenCalledWith('ledger-path');
+    expect(result).toEqual(
+      expect.objectContaining({
+        deviceType: 'ledger',
+        deviceModel: 'nanoS',
+        path: 'ledger-path',
+      })
+    );
+  });
+
+  it('reuses a detected Ledger when the stored path is stale', async () => {
+    let onAdd: ((payload: DeviceDetectionPayload) => void) | undefined;
+    const transport = {
+      close: jest.fn(() => Promise.resolve()),
+    } as unknown as TransportNodeHid;
+    const getVersion = jest.fn(() =>
+      Promise.resolve({ version: { major: 7, minor: 3, patch: 1 } })
+    );
+    const dependencies: LedgerServiceDependencies = {
+      open: jest.fn(() => Promise.resolve(transport)),
+      list: jest.fn(() => Promise.resolve(['ledger-path'])),
+      getDevices: jest.fn(() => [detectedDevice.device]),
+      detect: jest.fn((add) => {
+        onAdd = add;
+        return jest.fn();
+      }),
+      wait: jest.fn(),
+      createApp: jest.fn(() => ({ getVersion }) as unknown as AppAda),
+    };
+    const service = new HardwareWalletService(dependencies);
+    const { channels, handlers } = createChannels();
+    await service.register(channels);
+    await handlers.get('handleInitLedgerConnectChannel')!();
+    onAdd!(detectedDevice);
+    await flush();
+
+    const result = await handlers.get('getHardwareWalletTransportChannel')!({
+      isTrezor: false,
+      devicePath: 'stale-ledger-path',
+    });
+
+    expect(dependencies.open).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({
+      deviceId: null,
+      deviceType: 'ledger',
+      deviceModel: 'nanoS',
+      deviceName: 'Nano S',
+      path: 'ledger-path',
+    });
+    await expect(
+      handlers.get('getCardanoAdaAppChannel')!({
+        path: 'ledger-path',
+        product: null,
+      })
+    ).resolves.toEqual({
+      major: '7',
+      minor: '3',
+      patch: '1',
+      deviceId: '',
+    });
+    expect(getVersion).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps every legacy trusted channel behind one service registration', async () => {
+    const { channels, handlers } = createChannels();
+
+    const service = {
+      register: jest.fn(() => Promise.resolve()),
+    } as unknown as HardwareWalletService;
+
+    await handleHardwareWalletRequests({} as BrowserWindow, channels, service);
+    expect(service.register).toHaveBeenCalledWith(channels);
+
+    const realService = new HardwareWalletService({
+      open: jest.fn(),
+      list: jest.fn(),
+      getDevices: jest.fn(),
+      detect: jest.fn(() => jest.fn()),
+      wait: jest.fn(),
+      createApp: jest.fn(),
+    } as unknown as LedgerServiceDependencies);
+    await realService.register(channels);
+    expect([...handlers.keys()].sort()).toEqual(
+      channelNames
+        .filter((name) => name !== 'getHardwareWalletConnectionChannel')
+        .sort()
+    );
+  });
+});

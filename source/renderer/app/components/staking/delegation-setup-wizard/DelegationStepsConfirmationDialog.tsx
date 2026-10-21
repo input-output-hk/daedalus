@@ -34,9 +34,9 @@ const messages: Record<string, ReactIntlMessage> = {
   fieldIsRequired: globalMessages.fieldIsRequired,
 };
 type Props = {
-  onBack: (...args: Array<any>) => any;
-  onClose: (...args: Array<any>) => any;
-  onConfirm: (...args: Array<any>) => any;
+  onBack: () => void;
+  onClose: () => void;
+  onConfirm: (password: string, isHardwareWallet: boolean) => void;
   transactionFee: DelegationCalculateFeeResponse | null | undefined;
   selectedWallet: Wallet | null | undefined;
   selectedPool: StakePool | null | undefined;
@@ -44,7 +44,7 @@ type Props = {
   isSubmitting: boolean;
   hwDeviceStatus: HwDeviceStatus;
   error: LocalizableError | null | undefined;
-  onExternalLinkClick: (...args: Array<any>) => any;
+  onExternalLinkClick: (url: string) => void;
   isTrezor: boolean;
   oversaturationPercentage: number;
 };

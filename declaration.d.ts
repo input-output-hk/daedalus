@@ -2,6 +2,7 @@ import { IpcRenderer } from 'electron';
 import type { request as httpRequest } from 'http';
 import type { request as httpsRequest, globalAgent } from 'https';
 import { Environment } from './source/common/types/environment.types';
+import type { DaedalusProvider } from './source/common/ipc/dapp';
 
 declare module '*.svg' {
   const content: any;
@@ -50,8 +51,13 @@ export type EnumMap<
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      WALLET_COUNT: number;
+      WALLET_COUNT?: string;
     }
+  }
+  interface Window {
+    cardano: {
+      daedalus: DaedalusProvider;
+    };
   }
   /* eslint-disable no-var, vars-on-top */
   var daedalus: Daedalus;
@@ -60,6 +66,7 @@ declare global {
   var https: Https;
   var legacyStateDir: string;
   var isFlight: boolean;
+  var cip30Enabled: boolean;
   var ipcRenderer: Pick<
     IpcRenderer,
     'on' | 'once' | 'send' | 'removeListener' | 'removeAllListeners'

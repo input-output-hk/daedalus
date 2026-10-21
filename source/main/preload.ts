@@ -5,7 +5,13 @@ import { ipcRenderer } from 'electron';
 import electronLog from 'electron-log-daedalus';
 import EventEmitter from 'events';
 import { environment } from './environment';
-import { buildLabel, legacyStateDir, isFlight, smashUrl } from './config';
+import {
+  buildLabel,
+  dappRuntimeConfig,
+  legacyStateDir,
+  isFlight,
+  smashUrl,
+} from './config';
 
 const _process = process;
 // Increase maximum event listeners to avoid IPC channel stalling
@@ -13,6 +19,12 @@ const _process = process;
 EventEmitter.defaultMaxListeners = 100; // Default: 10
 
 process.once('loaded', () => {
+  Object.defineProperty(global, 'cip30Enabled', {
+    value: dappRuntimeConfig.cip30Enabled,
+    writable: false,
+    configurable: false,
+    enumerable: true,
+  });
   Object.assign(global, {
     environment,
     buildLabel,

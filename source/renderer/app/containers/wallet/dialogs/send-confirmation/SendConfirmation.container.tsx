@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useCallback,
+  useState,
+  useRef,
+} from 'react';
 import { inject, observer } from 'mobx-react';
 import compose from 'lodash/fp/compose';
 import { getNonZeroAssetTokens } from '../../../../utils/assets';
@@ -18,6 +24,8 @@ export function Containter({
   hwDeviceStatus,
   isHardwareWallet,
   formattedTotalAmount,
+  isCollateralPreparation,
+  spendsPreferredCollateral,
 }: Props) {
   const { isFlight } = global;
   const {
@@ -30,6 +38,7 @@ export function Containter({
       checkIsTrezorByWalletId,
       initiateTransaction,
     },
+    collateral,
   } = stores;
   const {
     assets: { onCopyAssetParam },
@@ -43,6 +52,12 @@ export function Containter({
   }
 
   const [areTermsAccepted, setAreTermsAccepted] = useState(false);
+  const ownsHardwareTransaction = useRef(false);
+  const cancelHardwareTransaction = useCallback(() => {
+    if (!ownsHardwareTransaction.current) return;
+    ownsHardwareTransaction.current = false;
+    resetHardwareWalletTransaction({ cancelDeviceAction: true });
+  }, [resetHardwareWalletTransaction]);
   const assetTokens = useMemo(
     () => getNonZeroAssetTokens(activeWallet.assets.total, getAsset),
     [activeWallet.assets.total, getAsset]
@@ -55,6 +70,21 @@ export function Containter({
   const error = isHardwareWallet
     ? sendMoneyExternalRequest.error
     : sendMoneyRequest.error;
+  useEffect(() => {
+    if (isHardwareWallet && !isFlight) {
+      ownsHardwareTransaction.current = true;
+      initiateTransaction({
+        walletId: activeWallet.id,
+      });
+    }
+    return cancelHardwareTransaction;
+  }, [
+    activeWallet.id,
+    isFlight,
+    isHardwareWallet,
+    initiateTransaction,
+    cancelHardwareTransaction,
+  ]);
 
   const onSubmitCb = useCallback(
     (values: SubmitPayload) => {
@@ -72,6 +102,7 @@ export function Containter({
       setAreTermsAccepted(areTermsAccepted);
 
       if (isHardwareWallet) {
+        ownsHardwareTransaction.current = true;
         initiateTransaction({
           walletId: activeWallet.id,
         });
@@ -81,12 +112,18 @@ export function Containter({
   );
 
   const onCancel = useCallback(() => {
+    cancelHardwareTransaction();
     closeActiveDialog.trigger();
     sendMoneyRequest.reset();
-    resetHardwareWalletTransaction({
-      cancelDeviceAction: true,
-    });
-  }, [sendMoneyRequest, closeActiveDialog, resetHardwareWalletTransaction]);
+    if (global.cip30Enabled && isCollateralPreparation)
+      collateral.cancelPreparation();
+  }, [
+    sendMoneyRequest,
+    closeActiveDialog,
+    cancelHardwareTransaction,
+    isCollateralPreparation,
+    collateral,
+  ]);
 
   return (
     <WalletSendConfirmationDialogView
@@ -106,6 +143,10 @@ export function Containter({
       isFlight={isFlight}
       isSubmitting={isSubmitting}
       isHardwareWallet={isHardwareWallet}
+      isCollateralPreparation={global.cip30Enabled && isCollateralPreparation}
+      spendsPreferredCollateral={
+        global.cip30Enabled && spendsPreferredCollateral
+      }
       isTrezor={checkIsTrezorByWalletId(activeWallet.id)}
       onCancel={onCancel}
       onSubmitCb={onSubmitCb}

@@ -80,7 +80,7 @@
             ++ (with pkgs; [pkg-config jq python3])
             ++ [pkgs.jq];
           buildInputs = with pkgs; [libusb1];
-          CARDANO_WALLET_VERSION = common.cardanoWalletVersion;
+          CARDANO_WALLET_VERSION = common.cardanoWalletVersion cluster;
           CARDANO_NODE_VERSION = common.cardanoNodeVersion;
           CI = "nix";
           NETWORK = common.daedalusConfigs.${cluster}.daedalusConfig.networkName;
@@ -99,6 +99,7 @@
           patchedPackageJson = pkgs.writeText "package.json" (builtins.toJSON (
             pkgs.lib.recursiveUpdate originalPackageJson {
               productName = common.daedalusConfigs.${cluster}.installerConfig.spacedName;
+              desktopName = "Daedalus-${cluster}.desktop";
               main = "dist/main/index.js";
             }
           ));
@@ -404,7 +405,7 @@
           genericName = "Crypto-Currency Wallet";
           categories = ["Application" "Network"];
           icon = "INSERT_ICON_PATH_HERE";
-          startupWMClass = common.daedalusConfigs.${cluster}.installerConfig.spacedName;
+          startupWMClass = "Daedalus-${cluster}";
         });
 
       selfExtractingArchive = genClusters (cluster: let
@@ -494,10 +495,10 @@
           cp -r ${tarball}/. $out/dat${tarball}/
         '');
 
-      # Use pkgs.electron.unwrapped (from nixpkgs) directly.
+      # The pinned binary Electron derivation exposes the runtime under libexec.
       electronBin = pkgs.runCommand "electron-${electronVersion}" {} ''
         mkdir -p $out/lib $out/bin
-        cp -r ${pkgs.electron.unwrapped}/libexec/electron $out/lib/
+        cp -r ${pkgs.electron}/libexec/electron $out/lib/
         ln -sf $out/lib/electron/electron $out/bin/electron
       '';
 

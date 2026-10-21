@@ -1,6 +1,7 @@
 {
   "id": "4444444444444444444444444444444444444444",
   "address_pool_gap": 20,
+  "single_address_mode": true,
   "name": "cv1 fixture voting no confidence",
   "balance": {
     "available": {

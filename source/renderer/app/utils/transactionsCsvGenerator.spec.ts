@@ -62,9 +62,14 @@ const params = {
 };
 
 describe('transactionsCsvGenerator', () => {
+  const originalCapability = global.cip30Enabled;
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
+  });
   beforeAll(() => addLocaleData(ja));
 
   beforeEach(() => {
+    global.cip30Enabled = true;
     saveDialog.mockResolvedValue({ canceled: false, filePath });
   });
 
@@ -72,16 +77,31 @@ describe('transactionsCsvGenerator', () => {
     {
       locale: 'en-US',
       messages: enTranslations,
+      cip30Enabled: true,
+      statuses: ['Pending', 'Confirmed', 'Expired'],
+    },
+    {
+      locale: 'ja-JP',
+      messages: jaTranslations,
+      cip30Enabled: true,
+      statuses: ['保留中', '承認済み', '有効期限切れ'],
+    },
+    {
+      locale: 'en-US',
+      messages: enTranslations,
+      cip30Enabled: false,
       statuses: ['Pending', 'Confirmed', 'Failed'],
     },
     {
       locale: 'ja-JP',
       messages: jaTranslations,
-      statuses: ['保留中', '承認済み', '失敗しました'],
+      cip30Enabled: false,
+      statuses: ['保留中', '承認済み', '失敗'],
     },
   ])(
     'exports transaction statuses in $locale',
-    async ({ locale, messages, statuses }) => {
+    async ({ locale, messages, statuses, cip30Enabled }) => {
+      global.cip30Enabled = cip30Enabled;
       const { intl } = new IntlProvider(
         { locale, messages },
         {}
@@ -115,6 +135,57 @@ describe('transactionsCsvGenerator', () => {
       ]);
     }
   );
+
+  it('exports upstream backend amounts, fees, deposits and external assets without receipt overlays', async () => {
+    global.cip30Enabled = false;
+    const tx = createTransaction('expired', date);
+    tx.amount = new BigNumber('-3.2');
+    tx.deposit = new BigNumber('2');
+    tx.transferAmount = new BigNumber('99');
+    tx.amountIsKnown = false;
+    tx.assets = [
+      {
+        policyId: 'policy',
+        assetName: '41',
+        uniqueId: 'policy41',
+        quantity: new BigNumber(7),
+        address: 'target-address',
+      },
+      {
+        policyId: 'policy',
+        assetName: '41',
+        uniqueId: 'policy41',
+        quantity: new BigNumber(9),
+        address: 'change-address',
+      },
+    ];
+    const { intl } = new IntlProvider(
+      { locale: 'en-US', messages: enTranslations },
+      {}
+    ).getChildContext();
+    await transactionsCsvGenerator({
+      ...params,
+      intl,
+      transactions: [tx],
+      getAsset: () => ({ fingerprint: 'asset1token', decimals: 0 }),
+      isInternalAddress: (address: string) => address === 'change-address',
+    });
+    const [columns, row] = generateCsv.mock.calls[0][0].fileContent;
+    const value = (key: keyof typeof enTranslations) =>
+      row[columns.indexOf(enTranslations[key])];
+    expect(value('wallet.transactions.csv.column.amount.total')).toBe(
+      '-3.200000'
+    );
+    expect(value('wallet.transactions.csv.column.amount.sent')).toBe(
+      '3.000000'
+    );
+    expect(value('wallet.transactions.csv.column.amount.deposit')).toBe(
+      '2.000000'
+    );
+    expect(value('wallet.transactions.csv.column.amount.fee')).toBe('0.200000');
+    expect(row.join(',')).toContain('7 (asset1token)');
+    expect(row.join(',')).not.toContain('9 (asset1token)');
+  });
 
   it('does not generate a CSV when the save dialog is canceled', async () => {
     saveDialog.mockResolvedValue({ canceled: true });

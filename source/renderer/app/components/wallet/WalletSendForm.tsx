@@ -30,8 +30,8 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { TRANSACTION_MIN_ADA_VALUE } from '../../config/walletsConfig';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 import AssetInput from './send-form/AssetInput';
-import { WalletSendConfirmationDialogView } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import { WalletSendConfirmationDialogContainer } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.container';
+import { WalletSendConfirmationDialogView } from '../../containers/wallet/dialogs/send-confirmation/SendConfirmation.view';
 import styles from './WalletSendForm.scss';
 import Asset from '../../domains/Asset';
 import type { HwDeviceStatus } from '../../domains/Wallet';
@@ -74,9 +74,9 @@ export interface FormData {
   totalAmount: BigNumber;
   transactionFee: BigNumber;
   adaAmount: number;
+  isCollateralPreparation?: boolean;
+  spendsPreferredCollateral?: boolean;
 }
-
-export type ConfirmationDialogData = Omit<FormData, 'coinSelection'>;
 
 type Props = {
   currencyMaxIntegerDigits: number;
@@ -101,8 +101,8 @@ type Props = {
   isLoadingAssets: boolean;
   isDialogOpen: (...args: Array<any>) => any;
   isRestoreActive: boolean;
-  isHardwareWallet: boolean;
-  hwDeviceStatus: HwDeviceStatus;
+  isHardwareWallet?: boolean;
+  hwDeviceStatus?: HwDeviceStatus;
   onSubmit: (data: FormData) => any;
   onUnsetActiveAsset: (...args: Array<any>) => any;
   onExternalLinkClick: (...args: Array<any>) => any;
@@ -113,7 +113,10 @@ type Props = {
   onTokenPickerDialogOpen: (...args: Array<any>) => any;
   onTokenPickerDialogClose: (...args: Array<any>) => any;
   analyticsTracker: AnalyticsTracker;
-  confirmationDialogData?: ConfirmationDialogData;
+  initialReceiver?: string;
+  initialAmount?: string;
+  isCollateralPreparation?: boolean;
+  confirmationDialogData?: Omit<FormData, 'coinSelection'>;
   validationDebounceWait?: number;
 };
 
@@ -209,6 +212,9 @@ class WalletSendForm extends Component<Props, State> {
         }
       });
     }
+    const { initialReceiver, initialAmount } = this.props;
+    if (initialReceiver) this.form.$('receiver').onChange(initialReceiver);
+    if (initialAmount) this.form.$('adaAmount').onChange(initialAmount);
   }
 
   componentWillUnmount() {
@@ -292,6 +298,7 @@ class WalletSendForm extends Component<Props, State> {
       totalAmount: adaAmount.plus(this.state.transactionFee),
       transactionFee: this.state.transactionFee,
       adaAmount: this.state.adaAmount,
+      isCollateralPreparation: !!this.props.isCollateralPreparation,
     });
   };
 
@@ -678,9 +685,12 @@ class WalletSendForm extends Component<Props, State> {
       }
     } catch (error) {
       if (this._isMounted && !requestToken.aborted) {
-        const errorHasLink = !!get(error, ['values', 'linkLabel']);
         let transactionFeeError;
-        let localizableError = error;
+        let localizableError =
+          error && typeof error.id === 'string'
+            ? error
+            : apiErrorMessages.walletInternalError;
+        const errorHasLink = !!get(localizableError, ['values', 'linkLabel']);
         let values;
         let nextState = {
           isCalculatingTransactionFee: false,
@@ -1245,8 +1255,6 @@ class WalletSendForm extends Component<Props, State> {
     const {
       assets,
       currencyMaxFractionalDigits,
-      hwDeviceStatus,
-      isHardwareWallet,
       isDialogOpen,
       isRestoreActive,
       onExternalLinkClick,
@@ -1254,6 +1262,8 @@ class WalletSendForm extends Component<Props, State> {
       walletName,
       onTokenPickerDialogClose,
       confirmationDialogData,
+      isHardwareWallet,
+      hwDeviceStatus,
     } = this.props;
     const adaAmountField = form.$('adaAmount');
     let fees = '0';
@@ -1343,26 +1353,26 @@ class WalletSendForm extends Component<Props, State> {
           </BorderedBox>
         )}
         {isDialogOpen(WalletSendConfirmationDialogView) &&
-        confirmationDialogData ? (
-          <WalletSendConfirmationDialogContainer
-            receiver={confirmationDialogData.receiver}
-            selectedAssets={confirmationDialogData.selectedAssets}
-            assetsAmounts={confirmationDialogData.assetsAmounts}
-            amount={confirmationDialogData.amount.toFormat(
-              currencyMaxFractionalDigits
-            )}
-            totalAmount={confirmationDialogData.totalAmount}
-            transactionFee={confirmationDialogData.transactionFee.toFormat(
-              currencyMaxFractionalDigits
-            )}
-            hwDeviceStatus={hwDeviceStatus}
-            isHardwareWallet={isHardwareWallet}
-            onExternalLinkClick={onExternalLinkClick}
-            formattedTotalAmount={confirmationDialogData.totalAmount.toFormat(
-              currencyMaxFractionalDigits
-            )}
-          />
-        ) : null}
+          confirmationDialogData && (
+            <WalletSendConfirmationDialogContainer
+              receiver={confirmationDialogData.receiver}
+              selectedAssets={confirmationDialogData.selectedAssets}
+              assetsAmounts={confirmationDialogData.assetsAmounts}
+              amount={confirmationDialogData.amount.toFormat(
+                currencyMaxFractionalDigits
+              )}
+              totalAmount={confirmationDialogData.totalAmount}
+              transactionFee={confirmationDialogData.transactionFee.toFormat(
+                currencyMaxFractionalDigits
+              )}
+              hwDeviceStatus={hwDeviceStatus}
+              isHardwareWallet={isHardwareWallet}
+              onExternalLinkClick={onExternalLinkClick}
+              formattedTotalAmount={confirmationDialogData.totalAmount.toFormat(
+                currencyMaxFractionalDigits
+              )}
+            />
+          )}
         {isDialogOpen(WalletTokenPicker) && (
           <WalletTokenPicker
             assets={assets}

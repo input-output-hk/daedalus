@@ -20,6 +20,7 @@ const buildWallet = (id: string, name: string, isLegacy: boolean): Wallet =>
     name,
     isLegacy,
     addressPoolGap: 20,
+    singleAddressMode: !isLegacy,
     amount: new BigNumber(100),
     availableAmount: new BigNumber(100),
     reward: new BigNumber(0),
@@ -64,14 +65,11 @@ const renderForm = (
                   : undefined
               }
               getStakePoolById={() => null}
-              initiateTransaction={async () => ({
-                success: true,
-                fees: new BigNumber(0),
-              })}
+              submitTransaction={async () => ({ success: true })}
               onBrowseDRepsClick={() => undefined}
               onCancel={onCancel}
               onExternalLinkClick={() => undefined}
-              renderConfirmationDialog={() => <div />}
+              onSuccess={() => undefined}
               stakePools={[]}
               wallets={wallets}
             />

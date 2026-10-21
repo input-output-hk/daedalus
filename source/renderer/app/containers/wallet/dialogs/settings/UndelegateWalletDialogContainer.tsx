@@ -12,7 +12,7 @@ import {
 } from '../../../../config/stakingConfig';
 
 type Props = InjectedProps & {
-  onExternalLinkClick: (...args: Array<any>) => any;
+  onExternalLinkClick: (url: string) => void;
 };
 type State = {
   stakePoolQuitFee: DelegationCalculateFeeResponse | null | undefined;
@@ -29,15 +29,29 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     stakePoolQuitFee: null,
   };
   _isMounted = false;
+  _ownsHardwareTransaction = false;
+
+  cancelHardwareTransaction = () => {
+    if (!this._ownsHardwareTransaction) return;
+    this._ownsHardwareTransaction = false;
+    this.props.stores.hardwareWallets._resetTransaction({
+      cancelDeviceAction: true,
+    });
+  };
 
   componentDidMount() {
     this._isMounted = true;
 
-    this._handleCalculateTransactionFee();
+    if (global.cip30Enabled) this.submit();
+    else
+      this._handleCalculateTransactionFee().catch(() => {
+        // Request errors are displayed by the confirmation dialog.
+      });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
+    this.cancelHardwareTransaction();
   }
 
   get selectedWalletId() {
@@ -48,20 +62,40 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     );
   }
 
+  submit = async () => {
+    const wallet = this.props.stores.wallets.getWalletById(
+      this.selectedWalletId
+    );
+    if (!wallet) return;
+    try {
+      await this.props.stores.wallets._undelegateWallet({
+        walletId: wallet.id,
+        passphrase: '',
+        isHardwareWallet: wallet.isHardwareWallet,
+      });
+    } catch {
+      if (this._isMounted)
+        this.props.actions.dialogs.closeActiveDialog.trigger();
+    }
+  };
+
   async _handleCalculateTransactionFee() {
     const { staking, wallets, hardwareWallets } = this.props.stores;
     const { calculateDelegationFee } = staking;
+    const walletId = this.selectedWalletId;
     const selectedWallet = find(
       wallets.allWallets,
-      (wallet) => wallet.id === this.selectedWalletId
+      (wallet) => wallet.id === walletId
     );
+    if (!selectedWallet) return;
     const { lastDelegatedStakePoolId, delegatedStakePoolId } = selectedWallet;
     const poolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
     let stakePoolQuitFee;
 
     if (selectedWallet.isHardwareWallet) {
+      this._ownsHardwareTransaction = true;
       const coinsSelection = await hardwareWallets.selectDelegationCoins({
-        walletId: this.selectedWalletId,
+        walletId,
         poolId,
         delegationAction: DELEGATION_ACTIONS.QUIT,
       });
@@ -71,12 +105,13 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
         depositsReclaimed,
         fee,
       };
+      if (!this._isMounted || !this._ownsHardwareTransaction) return;
       hardwareWallets.initiateTransaction({
-        walletId: this.selectedWalletId,
+        walletId,
       });
     } else {
       stakePoolQuitFee = await calculateDelegationFee({
-        walletId: this.selectedWalletId,
+        walletId,
       });
 
       // @TODO Remove this when api returns depositsReclaimed value
@@ -121,7 +156,9 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     const stakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
 
     if (
-      (!stakePoolId || !isDelegationTransactionPending) &&
+      (global.cip30Enabled ||
+        !stakePoolId ||
+        !isDelegationTransactionPending) &&
       undelegateWalletSubmissionSuccess &&
       !quitStakePoolRequest.error
     ) {
@@ -141,6 +178,8 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
       );
     }
 
+    if (global.cip30Enabled) return null;
+
     const delegatedStakePool = getStakePoolById(stakePoolId);
     const stakePoolName = get(delegatedStakePool, 'name', '');
     const stakePoolTicker = get(delegatedStakePool, 'ticker');
@@ -159,6 +198,7 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
           quitStakePoolRequest.reset();
+          this.cancelHardwareTransaction();
           actions.wallets.setUndelegateWalletSubmissionSuccess.trigger({
             result: false,
           });

@@ -121,11 +121,11 @@ If you get SSL error when running `nix develop` (SSL peer certificate or SSH rem
 
 **Notes:**
 
-If you get a chrome sandbox error when running Daedalus, you can disable the sandbox by setting the environment variable.
-
-```bash
-$ export ELECTRON_DISABLE_SANDBOX=true
-```
+Do not work around Chromium sandbox failures with
+`ELECTRON_DISABLE_SANDBOX`, `--no-sandbox`, or
+`--disable-setuid-sandbox`. Daedalus rejects sandbox-disabling configuration
+and never retries without the sandbox. Use a supported system package or
+diagnose the development host instead.
 
 **Notes:**
 - Cardano wallet process ID shown on the "Diagnostics" screen is faked and expected to match the Cardano node process ID.
@@ -281,17 +281,20 @@ So you have to exit any development instances before running tests!
 
 ## Packaging
 
-It is possible to build, and run just the Daedalus package, that would be bundled inside an installer, avoiding building of the installer.
+The reusable Daedalus application package can be built and run without creating a platform installer. Its release status is platform-specific.
 
-### Linux
+### Linux developer package
 
-Build:
+Build and run the wallet-only developer Nix package:
 
     nix build -L .#daedalus-mainnet
-
-Run:
-
     nix run -L .#daedalus-mainnet
+
+Cluster variants replace `mainnet` with `preprod`, `preview`, or `selfnode`.
+This Nix-store package is for development only: it is not a Linux release
+artifact, is not supported for production installation, and cannot enable the
+dApp guest. Only installed fixed-path `.deb`, `.rpm`, or `.pkg.tar.zst`
+packages can satisfy the Linux dApp package-identity and Chromium-sandbox gates.
 
 ### macOS (Intel, and Apple Silicon)
 
@@ -313,13 +316,129 @@ Platform-specific build commands facilitate building Daedalus installers the way
 
 These commands require [Nix](https://nixos.org/nix/), optionally configured with the IOHK binary cache (recommended, see above).
 
-### Linux/macOS
+### Linux
 
-Run this from a Linux machine:
+Linux releases ship only root-installable native `.deb`, `.rpm`, and
+`.pkg.tar.zst` packages. Build a format on Linux:
+
+    nix build -L .#deb-installer-mainnet
+    nix build -L .#rpm-installer-mainnet
+    nix build -L .#arch-installer-mainnet
+
+The results contain
+`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.deb`,
+`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.rpm`, and
+`daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.pkg.tar.zst`. Cluster
+variants replace `mainnet` with `preprod`, `preview`, or `selfnode`. There is no
+Linux `installer-<cluster>` output, so `nix build -L .#installer-mainnet` is not
+available on Linux. Portable `.bin`, AppImage, Flatpak, and Snap artifacts are
+not supported shipping channels.
+
+All three formats install under `/opt/daedalus/<cluster>` and provide the exact
+`/usr/bin/daedalus-<cluster>` launcher. They do not enable the dApp guest by
+themselves. The dApp sandbox prerequisite is supported only by installed system
+packages on Ubuntu 24.04/26.04, Debian 12/13, Fedora 43, Arch Linux installed
+from the 2026.09.01 ISO, and Omarchy 4.0.2 installed from its 2026.08.31 image.
+Later Arch or Omarchy snapshots and every other omitted distribution are
+wallet-only until separately certified. Sandbox-disabling configuration,
+package identity failure, or the local renderer canary failing also keeps dApp
+launch unavailable. There is no unsandboxed retry, and the remaining guest and
+release gates still apply.
+
+The `nixos-package-<cluster>` output also includes a cluster-specific desktop
+entry and icon for use through NixOS `environment.systemPackages`.
+
+#### Migrate a legacy portable installation
+
+New releases do not provide a replacement `.bin` or portable automatic update.
+Older portable clients receive an ordinary Linux release announcement linking
+to the release notes and these manual installation instructions; the
+announcement is not a `softwareUpdate` payload.
+
+Use these non-destructive steps separately for each installed cluster:
+
+1. Fully close Daedalus before installing or copying a backup. Record the
+   existing state directory without moving or deleting it:
+
+       state_root="${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus"
+       printf 'Daedalus state: %s\n' "$state_root"
+
+   Wallet and application state remains below that directory. If
+   `XDG_DATA_HOME` has a custom value, retain the exact value. An optional
+   offline backup must be taken only while Daedalus is stopped and to storage
+   with enough free space; it does not replace the original directory during
+   migration.
+2. Check the legacy desktop override:
+
+       desktop="$HOME/.local/share/applications/Daedalus-CLUSTER.desktop"
+       readlink -- "$desktop"
+
+   Replace `CLUSTER` with `mainnet`, `preprod`, `preview`, or `selfnode`. Only
+   if this is a symbolic link whose printed target is the old
+   `$HOME/.daedalus/<cluster>/` installation, move that symlink to an unused
+   backup name, for example:
+
+       mv -n -- "$desktop" "$desktop.legacy-portable"
+
+   Do not move a regular file or an unrelated link. This prevents a user
+   desktop entry from shadowing the package's
+   `/usr/share/applications/Daedalus-<cluster>.desktop`.
+3. Download the package for the same cluster from the official release
+   announcement. From its download directory, replace the uppercase filename
+   fields with the downloaded artifact's values and install exactly one
+   matching format:
+
+       sudo apt install ./daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.deb
+       sudo dnf install ./daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.rpm
+       sudo pacman -U ./daedalus-VERSION-BUILD-CLUSTER-REVISION-x86_64-linux.pkg.tar.zst
+
+   Use `apt` on Debian/Ubuntu, `dnf` on Fedora, or `pacman -U` on the exact
+   certified Arch/Omarchy snapshots. The Arch package aborts upgrades and
+   removal while its exact packaged Electron process is running. Installation
+   and package lifecycle scripts do not move, replace, or delete wallet state.
+4. First launch the system package by its exact cluster command, for example:
+
+       /usr/bin/daedalus-mainnet
+
+   For a custom data home, supply the same value used by the portable
+   installation:
+
+       XDG_DATA_HOME=/exact/custom/data-home /usr/bin/daedalus-mainnet
+
+   Configure that value consistently in the login/desktop environment before
+   later desktop launches. A different or missing value can make wallets
+   appear absent even though their data was not deleted.
+
+   On Linux desktops, the running window uses the cluster's installed launcher
+   icon. On Ubuntu, right-click it and select **Pin to Dash** to keep it there
+   after closing Daedalus.
+
+5. Confirm the expected wallets and application state before considering any
+   cleanup of the legacy executable. Keep both `$HOME/.daedalus` and
+   `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus` untouched during this check.
+   A stale
+   `${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus/<cluster>/namespaceHelper`
+   symlink can remain harmlessly until it is separately identified and
+   verified. This guide deliberately provides no broad removal command.
+
+#### Upgrade an installed Linux package
+
+Linux package upgrades are package-manager-mediated, not performed by
+Electron. Fully close Daedalus, download the newer package for the same cluster
+and format from the official release announcement, then run `sudo apt install
+./DOWNLOADED.deb`, `sudo dnf install ./DOWNLOADED.rpm`, or `sudo pacman -U
+./DOWNLOADED.pkg.tar.zst`. Roll back an Arch package with the same `pacman -U`
+command and the retained older package. Restart through the same
+`/usr/bin/daedalus-<cluster>` launcher with the same `XDG_DATA_HOME`. Leave the
+Daedalus state directory untouched throughout. Daedalus never executes
+downloaded Linux package bytes, invokes `sudo`, or mutates package-manager
+state.
+
+### macOS
+
+Run this from a macOS machine:
 
     nix build -L .#installer-mainnet
-
-The result can be found at `result/daedalus-*.bin`.
 
 ### Windows
 

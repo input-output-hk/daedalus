@@ -28,6 +28,7 @@ import type {
   QuitStakePoolRequest,
   PoolMetadataSource,
 } from '../api/staking/types';
+import type { Transaction } from '../api/transactions/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -153,12 +154,12 @@ export default class StakingStore extends Store {
 
   // REQUESTS
   @observable
-  joinStakePoolRequest: Request<JoinStakePoolRequest> = new Request(
+  joinStakePoolRequest: Request<Transaction> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.joinStakePool
   );
   @observable
-  quitStakePoolRequest: Request<QuitStakePoolRequest> = new Request(
+  quitStakePoolRequest: Request<Transaction> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.quitStakePool
   );
@@ -362,26 +363,50 @@ export default class StakingStore extends Store {
   };
   @action
   _joinStakePool = async (request: JoinStakePoolRequest) => {
-    const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
+    const { walletId, stakePoolId, isHardwareWallet } = request;
     // Set join transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
       let joinTransaction;
 
-      if (isHardwareWallet) {
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-        joinTransaction = await this.stores.hardwareWallets._sendMoney({
-          isDelegationTransaction: true,
-          selectedWalletId: walletId,
-        });
+      if (!global.cip30Enabled) {
+        joinTransaction = isHardwareWallet
+          ? await this.stores.hardwareWallets._sendMoney({
+              isDelegationTransaction: true,
+              selectedWalletId: walletId,
+            })
+          : await this.stores.transactions.withWalletSendLock(
+              walletId,
+              () => this.joinStakePoolRequest.execute(request).promise
+            );
+      } else if (isHardwareWallet) {
+        joinTransaction =
+          await this.stores.hardwareWallets.submitConstructedNativeTransaction({
+            walletId,
+            action: this.stores.wallets.getWalletById(walletId).isDelegating
+              ? 'redelegate'
+              : 'delegate',
+            data: {
+              encoding: 'base16',
+              delegations: [
+                { join: { pool: stakePoolId, stake_key_index: '0H' } },
+              ],
+            },
+          });
       } else {
-        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-        joinTransaction = await this.joinStakePoolRequest.execute({
-          walletId,
-          stakePoolId,
-          passphrase,
-        });
+        const wallet = this.stores.wallets.getWalletById(walletId);
+        joinTransaction =
+          await this.stores.wallets.submitConstructedNativeTransaction({
+            walletId,
+            action: wallet.isDelegating ? 'redelegate' : 'delegate',
+            data: {
+              encoding: 'base16',
+              delegations: [
+                { join: { pool: stakePoolId, stake_key_index: '0H' } },
+              ],
+            },
+          });
       }
 
       // Start interval to check transaction state every second
@@ -411,25 +436,45 @@ export default class StakingStore extends Store {
   };
   @action
   _quitStakePool = async (request: QuitStakePoolRequest) => {
-    const { walletId, passphrase, isHardwareWallet } = request;
+    const { walletId, isHardwareWallet } = request;
     // Set quit transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
       let quitTransaction;
 
-      if (isHardwareWallet) {
-        // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-        quitTransaction = await this.stores.hardwareWallets._sendMoney({
-          isDelegationTransaction: true,
-          selectedWalletId: walletId,
-        });
+      if (!global.cip30Enabled) {
+        quitTransaction = isHardwareWallet
+          ? await this.stores.hardwareWallets._sendMoney({
+              isDelegationTransaction: true,
+              selectedWalletId: walletId,
+            })
+          : await this.stores.transactions.withWalletSendLock(
+              walletId,
+              () => this.quitStakePoolRequest.execute(request).promise
+            );
+      } else if (isHardwareWallet) {
+        quitTransaction =
+          await this.stores.hardwareWallets.submitConstructedNativeTransaction({
+            walletId,
+            action: 'undelegate',
+            data: {
+              encoding: 'base16',
+              delegations: [{ quit: { stake_key_index: '0H' } }],
+              withdrawal: 'self',
+            },
+          });
       } else {
-        // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-        quitTransaction = await this.quitStakePoolRequest.execute({
-          walletId,
-          passphrase,
-        });
+        quitTransaction =
+          await this.stores.wallets.submitConstructedNativeTransaction({
+            walletId,
+            action: 'undelegate',
+            data: {
+              encoding: 'base16',
+              delegations: [{ quit: { stake_key_index: '0H' } }],
+              withdrawal: 'self',
+            },
+          });
       }
 
       // Start interval to check transaction state every second
@@ -862,8 +907,9 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const [address] =
-        await this.stores.addresses.getAddressesByWalletId(walletId);
+      const address = global.cip30Enabled
+        ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
+        : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: this.redeemWallet,
@@ -914,8 +960,9 @@ export default class StakingStore extends Store {
 
     try {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const [address] =
-        await this.stores.addresses.getAddressesByWalletId(walletId);
+      const address = global.cip30Enabled
+        ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
+        : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
       // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
       const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
         {

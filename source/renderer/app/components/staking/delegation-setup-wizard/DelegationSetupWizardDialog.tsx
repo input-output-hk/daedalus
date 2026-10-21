@@ -3,22 +3,21 @@ import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import DelegationStepsSuccessDialog from './DelegationStepsSuccessDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
-import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
 import DelegationStepsIntroDialog from './DelegationStepsIntroDialog';
 import DelegationStepsNotAvailableDialog from './DelegationStepsNotAvailableDialog';
 import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePoolDialog';
+import DelegationStepsConfirmationDialog from './DelegationStepsConfirmationDialog';
 import LocalizableError from '../../../i18n/LocalizableError';
-import StakePool from '../../../domains/StakePool';
-import Wallet from '../../../domains/Wallet';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
+import StakePool from '../../../domains/StakePool';
+import Wallet from '../../../domains/Wallet';
 
 type Props = {
   activeStep: number;
   isDisabled: boolean;
   onBack: (...args: Array<any>) => any;
   onClose: (...args: Array<any>) => any;
-  onConfirm: (...args: Array<any>) => any;
   onContinue: (...args: Array<any>) => any;
   onLearnMoreClick: (...args: Array<any>) => any;
   onSelectWallet: (...args: Array<any>) => any;
@@ -34,15 +33,16 @@ type Props = {
   currentTheme: string;
   selectedWallet: Wallet | null | undefined;
   selectedPool: StakePool | null | undefined;
-  stakePoolJoinFee: DelegationCalculateFeeResponse | null | undefined;
-  isSubmitting: boolean;
-  error: LocalizableError | null | undefined;
   futureEpochStartTime: string;
   currentLocale: string;
   getStakePoolById: (...args: Array<any>) => any;
+  onThumbPoolSelect: (...args: Array<any>) => any;
+  onConfirm: (password: string, isHardwareWallet: boolean) => void;
+  stakePoolJoinFee: DelegationCalculateFeeResponse | null | undefined;
+  isSubmitting: boolean;
+  error: LocalizableError | null | undefined;
   hwDeviceStatus: HwDeviceStatus;
   isTrezor: boolean;
-  onThumbPoolSelect: (...args: Array<any>) => any;
 };
 
 const getOversaturationPercentage = (
@@ -67,14 +67,14 @@ const getOversaturationPercentage = (
 @observer
 class DelegationSetupWizardDialog extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
-    // On confirm delegation step, wait for API stake pool "join" endpoint response
-    // and redirect to "Ta-Da" step
     if (
+      !global.cip30Enabled &&
+      this.props.activeStep === 3 &&
       prevProps.isSubmitting &&
       !this.props.isSubmitting &&
       !this.props.error
     ) {
-      prevProps.onContinue();
+      this.props.onContinue();
     }
   }
 
@@ -84,7 +84,6 @@ class DelegationSetupWizardDialog extends Component<Props> {
       isDisabled,
       onBack,
       onClose,
-      onConfirm,
       onContinue,
       onLearnMoreClick,
       onSelectWallet,
@@ -99,16 +98,17 @@ class DelegationSetupWizardDialog extends Component<Props> {
       selectedWallet,
       selectedPool,
       isWalletAcceptable,
-      stakePoolJoinFee,
+      getStakePoolById,
       futureEpochStartTime,
       currentLocale,
-      isSubmitting,
-      error,
-      getStakePoolById,
-      hwDeviceStatus,
-      isTrezor,
       maxDelegationFunds,
       onThumbPoolSelect,
+      onConfirm,
+      stakePoolJoinFee,
+      isSubmitting,
+      error,
+      hwDeviceStatus,
+      isTrezor,
     } = this.props;
     const selectedWalletId = get(selectedWallet, 'id', null);
     const oversaturationPercentage = getOversaturationPercentage(
@@ -167,23 +167,25 @@ class DelegationSetupWizardDialog extends Component<Props> {
         break;
 
       case 3:
-        content = (
-          <DelegationStepsConfirmationDialog
-            transactionFee={stakePoolJoinFee}
-            selectedPool={selectedPool}
-            selectedWallet={selectedWallet}
-            stepsList={stepsList}
-            onClose={onClose}
-            onConfirm={onConfirm}
-            onBack={onBack}
-            isSubmitting={isSubmitting}
-            error={error}
-            hwDeviceStatus={hwDeviceStatus}
-            onExternalLinkClick={onOpenExternalLink}
-            isTrezor={isTrezor}
-            oversaturationPercentage={oversaturationPercentage}
-          />
-        );
+        if (!global.cip30Enabled) {
+          content = (
+            <DelegationStepsConfirmationDialog
+              transactionFee={stakePoolJoinFee}
+              selectedPool={selectedPool}
+              selectedWallet={selectedWallet}
+              stepsList={stepsList}
+              onClose={onClose}
+              onConfirm={onConfirm}
+              onBack={onBack}
+              isSubmitting={isSubmitting}
+              error={error}
+              hwDeviceStatus={hwDeviceStatus}
+              onExternalLinkClick={onOpenExternalLink}
+              isTrezor={isTrezor}
+              oversaturationPercentage={oversaturationPercentage}
+            />
+          );
+        }
         break;
 
       case 4:

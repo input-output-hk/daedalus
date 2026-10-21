@@ -22,6 +22,8 @@ export const NETWORK_CLOCK_POLL_INTERVAL = 1000; // 1 second | unit: millisecond
 
 export const WALLET_UTXO_API_REQUEST_INTERVAL = 5 * 1000; // 5 seconds | unit: milliseconds
 
+export const COLLATERAL_POLL_INTERVAL = 5 * 1000; // 5 seconds | unit: milliseconds
+
 export const STAKE_POOL_TOOLTIP_HOVER_WAIT = 500; // 500 milliseconds | unit: milliseconds
 
 export const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION = 10; // unit: seconds

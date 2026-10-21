@@ -14,6 +14,8 @@ import ConfirmationDialog from '../../../components/voting/voting-registration-w
 import { FormattedHTMLMessageWithLink } from '../../../components/widgets/FormattedHTMLMessageWithLink';
 import { formattedAmountToLovelace } from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import type HardwareWalletsStore from '../../../stores/HardwareWalletsStore';
+import type { CoinSelectionsResponse } from '../../../api/transactions/types';
 
 const messages = defineMessages({
   votingRegistrationStep1Label: {
@@ -65,6 +67,17 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
   _isMounted = false;
+  _preparationGeneration = 0;
+  _hardwarePreparation?: ReturnType<
+    HardwareWalletsStore['createVotingTransaction']
+  >;
+
+  cancelPreparation = () => {
+    this._preparationGeneration++;
+    const preparation = this._hardwarePreparation;
+    this._hardwarePreparation = undefined;
+    preparation?.cancel();
+  };
 
   componentDidMount() {
     this._isMounted = true;
@@ -72,6 +85,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    this.cancelPreparation();
     this.props.actions.voting.resetRegistration.trigger();
   }
 
@@ -108,26 +122,31 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
     if (showConfirmationDialog) {
       this.props.actions.voting.showConfirmationDialog.trigger();
     } else {
+      this.cancelPreparation();
       this.props.actions.dialogs.closeActiveDialog.trigger();
     }
   };
   handleRestart = () => {
+    this.cancelPreparation();
     this.props.actions.voting.resetRegistration.trigger();
-    this.props.stores.hardwareWallets.sendMoneyRequest.reset();
   };
   handleContinue = () => {
     this.props.actions.voting.nextRegistrationStep.trigger();
   };
   handleBack = () => {
+    if (this.props.stores.voting.registrationStep === 2) {
+      this.cancelPreparation();
+    }
     this.props.actions.voting.previousRegistrationStep.trigger();
   };
   handleSelectWallet = (walletId: string) => {
+    this.cancelPreparation();
     this.setState({
       selectedWalletId: walletId,
     });
     this.props.actions.voting.selectWallet.trigger(walletId);
 
-    this._handleCalculateTransactionFee();
+    this._handleCalculateTransactionFee(walletId);
 
     this.handleContinue();
   };
@@ -223,23 +242,25 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
         {isConfirmationDialogOpen && (
           <ConfirmationDialog
             onConfirm={closeConfirmationDialog.trigger}
-            onCancel={() => {
-              this.props.actions.dialogs.closeActiveDialog.trigger();
-            }}
+            onCancel={() => this.handleClose()}
           />
         )}
       </>
     );
   }
 
-  async _handleCalculateTransactionFee() {
+  async _handleCalculateTransactionFee(walletId: string) {
+    const generation = this._preparationGeneration;
+    const isCurrent = () =>
+      this._isMounted &&
+      generation === this._preparationGeneration &&
+      this.selectedWalletId === walletId;
     const { transactions, addresses, app, wallets, hardwareWallets, voting } =
       this.props.stores;
     const { calculateTransactionFee } = transactions;
-    const { getAddressesByWalletId } = addresses;
+    const { getAutomaticReceivingAddress, getAddressesByWalletId } = addresses;
     const { getWalletById } = wallets;
-    const { selectCoins, initiateTransaction, updateTxSignRequest } =
-      hardwareWallets;
+    const { selectCoins, createVotingTransaction } = hardwareWallets;
     const { prepareVotingData } = voting;
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
@@ -250,32 +271,43 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
     });
 
     try {
-      const selectedWallet = getWalletById(this.selectedWalletId);
-      const [address] = await getAddressesByWalletId(this.selectedWalletId);
+      const selectedWallet = getWalletById(walletId);
       const isHardwareWallet = get(selectedWallet, 'isHardwareWallet', false);
+      const hardwarePreparation = isHardwareWallet
+        ? createVotingTransaction()
+        : undefined;
+      this._hardwarePreparation = hardwarePreparation;
+      const address = global.cip30Enabled
+        ? await getAutomaticReceivingAddress(walletId)
+        : (await getAddressesByWalletId(walletId))[0];
+      if (!isCurrent()) return;
       let fee;
       let votingData;
+      let coinSelection: CoinSelectionsResponse;
 
       if (isHardwareWallet) {
         votingData = await prepareVotingData({
-          walletId: this.selectedWalletId,
+          walletId,
+          isCurrent,
         });
-        const coinSelection = await selectCoins({
-          walletId: this.selectedWalletId,
+        if (!isCurrent()) return;
+        coinSelection = await selectCoins({
+          walletId,
           address: address.id,
           amount,
           metadata: votingData.metadata,
         });
+        if (!isCurrent()) return;
 
-        updateTxSignRequest(coinSelection);
         fee = coinSelection.fee;
       } else {
         ({ fee } = await calculateTransactionFee({
-          walletId: this.selectedWalletId,
+          walletId,
           address: address.id,
           amount,
         }));
       }
+      if (!isCurrent()) return;
 
       if (this._isMounted) {
         this.setState({
@@ -284,13 +316,15 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
         });
       }
 
-      if (isHardwareWallet) {
-        await initiateTransaction({
-          walletId: this.selectedWalletId,
+      if (hardwarePreparation) {
+        await hardwarePreparation.initiate({
+          walletId,
+          coinSelection,
           votingData,
         });
       }
     } catch (error) {
+      if (!isCurrent()) return;
       const errorHasLink = !!get(error, ['values', 'linkLabel']);
       const transactionFeeError = errorHasLink ? (
         <FormattedHTMLMessageWithLink

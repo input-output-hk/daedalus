@@ -70,6 +70,7 @@ type Props = {
   isInternalAddress: (...args: Array<any>) => any;
   onCopyAssetParam: (...args: Array<any>) => any;
   analyticsTracker: AnalyticsTracker;
+  selectedTransactionId?: string;
 };
 type State = {
   isPreloading: boolean;
@@ -105,6 +106,13 @@ class WalletTransactionsList extends Component<Props, State> {
     }, 0);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.selectedTransactionId !== this.props.selectedTransactionId) {
+      this.revealedSelectedTransactionId = undefined;
+    }
+    this.revealSelectedTransaction();
+  }
+
   componentWillUnmount() {
     this._isMounted = false;
   }
@@ -114,6 +122,28 @@ class WalletTransactionsList extends Component<Props, State> {
   virtualList: VirtualTransactionList | null | undefined;
   simpleList: SimpleTransactionList | null | undefined;
   loadingSpinner: LoadingSpinner | null | undefined;
+  revealedSelectedTransactionId: string | undefined;
+
+  revealSelectedTransaction = () => {
+    const { selectedTransactionId, transactions } = this.props;
+    if (
+      !global.cip30Enabled ||
+      !selectedTransactionId ||
+      this.revealedSelectedTransactionId === selectedTransactionId
+    ) {
+      return;
+    }
+    const transaction = transactions.find(
+      ({ id }) => id === selectedTransactionId
+    );
+    if (!transaction) return;
+
+    this.expandedTransactionIds.set(transaction.id, transaction);
+    const revealed = this.virtualList
+      ? this.virtualList.revealTransaction(transaction)
+      : this.simpleList?.revealTransaction(transaction.id);
+    if (revealed) this.revealedSelectedTransactionId = selectedTransactionId;
+  };
 
   groupTransactionsByDay(
     transactions: Array<WalletTransaction>
@@ -242,6 +272,9 @@ class WalletTransactionsList extends Component<Props, State> {
     const totalAssets = assetTokens.length;
     const hasRawAssets = tx.assets.length > 0;
     const isLoadingAssets = hasRawAssets && totalAssets < totalRawAssets;
+    if (this.expandedTransactionIds.has(tx.id)) {
+      this.expandedTransactionIds.set(tx.id, tx);
+    }
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction

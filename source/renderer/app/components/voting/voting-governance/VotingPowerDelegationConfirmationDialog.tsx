@@ -66,7 +66,7 @@ type VotingPowerDelegationConfirmationDialogProps = {
   intl: Intl;
   isTrezor: boolean;
   onClose: () => void;
-  onExternalLinkClick: (...args: Array<any>) => any;
+  onExternalLinkClick: (url: string) => void;
   onSubmit: (
     passphrase?: string
   ) => Promise<
