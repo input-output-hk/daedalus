@@ -2,9 +2,9 @@
   "metadata": {
     "title": "Chain Database Repair Tasks",
     "created": "2026-10-16",
-    "updated": "2026-10-17",
+    "updated": "2026-10-21",
     "version": "1.1.0",
-    "totalTasks": 25,
+    "totalTasks": 28,
     "prdReference": ".agent/plans/chain-db-repair/chain-db-repair-prd.md",
     "description": "Detect a hole in the local chain database from node and wallet log signatures, offer a safe Mithril rebuild that keeps wallets, and, if a spike proves it, repair only the damaged chunks first.",
     "sourceFiles": [
@@ -132,6 +132,44 @@
             "Signature 1 from three peers produces node_rejects_canonical_block; from one peer it does not.",
             "Signature 3 from the wallet mock produces wallet_chain_discontinuity."
           ]
+        },
+        {
+          "id": "task-026",
+          "title": "Check the ledger snapshot's block before each node start",
+          "description": "Before every node start, decide from the database files whether the node would stop on the missing ledger point (signature 2). When that is certain, report chain_damage with kind ledger_point_missing, the slot and node_held, and do not start the node. Anything unreadable or ambiguous starts the node as before.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 8.0,
+          "dependencies": [
+            "task-002",
+            "task-010"
+          ],
+          "targetPaths": [
+            "watchdog/src/ledger_point.rs",
+            "watchdog/src/config.rs",
+            "watchdog/src/supervisor.rs",
+            "watchdog/src/protocol.rs",
+            "source/main/WatchdogManager.ts",
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/renderer/app/containers/loading/ChainDamageContainer.tsx",
+            "source/renderer/app/components/loading/chain-damage/ChainDamageView.tsx"
+          ],
+          "implementationNotes": [
+            "cardano-node 11.1.3 holds the signature 2 error until it is asked to stop, so detection from output reports it only when the user quits.",
+            "Mirror ouroboros-consensus 4.2.1.0, which cardano-node 11.1.3 is built with: Storage.LedgerDB.API.initialize (tryNewestFirst, snapshotTooRecent), Storage.LedgerDB.Snapshots (snapshotFromPath, defaultListSnapshots), Storage.LedgerDB.V2.LSM.loadSnapshot, ImmutableDB.Impl.Validation.validateMostRecentChunk and ImmutableDB.Impl.Iterator.getSlotInfo.",
+            "The chunk size is ten times protocolConsts.k of the Byron genesis; the LedgerDB backend and LSMDatabasePath come from the node configuration.",
+            "Compare slots only: the hash of the snapshot's block is inside the encoded ledger state.",
+            "While the node is held, wait as after node_unrecoverable, and close a Mithril view that an install left open with mithril_status completed before the report.",
+            "While the node is held, the offer screen shows even after Not now and offers no Not now (PRD decision 26)."
+          ],
+          "testCases": [
+            "Unit tests on databases in temporary directories: block missing, block present, a snapshot past the tip, a snapshot in the tip's chunk, a suffixed name, no snapshots, a missing chunk file, an empty last chunk, snapshots the LSM backend skips, and each undecided case starting the node.",
+            "Integration: a held node emits chain_damage with node_held and no node_started, restart_node checks again, and a rebuild from the held state starts the node.",
+            "Jest: nodeHeld in WatchdogManager and BackendStore, and ChainDamageView without Not now."
+          ],
+          "acceptance": [
+            "A preprod chain whose ledger snapshot lies in the missing tail of chunk 6331 is refused; the same chain with chunk 6331 whole and a healthy preprod chain are not."
+          ]
         }
       ]
     },
@@ -229,6 +267,38 @@
           ],
           "testCases": [
             "WatchdogManager.spec: a mithril_error event with code PROBE_FAILED sets lastErrorCode."
+          ]
+        },
+        {
+          "id": "task-028",
+          "title": "Say when a Mithril download is waiting for the network",
+          "description": "While mithril-client downloads, note when its file count, byte count or step last grew. After 60 s without growth, check whether the aggregator can be reached, and again every 20 s while the download stays stalled. Emit mithril_waiting_for_network while it cannot be reached, and show on the progress view that downloading will continue when the network returns.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 6.0,
+          "dependencies": [
+            "task-005"
+          ],
+          "targetPaths": [
+            "watchdog/src/mithril.rs",
+            "watchdog/src/config.rs",
+            "watchdog/src/protocol.rs",
+            "source/main/WatchdogManager.ts",
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/renderer/app/containers/loading/MithrilSyncContainer.tsx",
+            "source/renderer/app/components/loading/mithril/MithrilProgressView.tsx"
+          ],
+          "implementationNotes": [
+            "mithril-client 0.13.9 reports no error and no progress while the network is unavailable and continues when it returns, so it is never stopped or timed out for a stall.",
+            "mithril-client 0.13.9 reports immutable files as files_downloaded and the ancillary archive as bytes_downloaded, one kind per line; track the highest of each on its own, since the other reads as 0 on each line.",
+            "Resolve the aggregator's host and connect to its port under one 5 s timeout; never wait on an unbounded lookup.",
+            "download_stall_secs and network_recheck_secs in the Mithril configuration, 60 and 20 by default, so tests use short durations.",
+            "Clear the wait on growth, on a check that reaches the aggregator, and when the download ends."
+          ],
+          "testCases": [
+            "Unit tests of the download watch with given times, and of reading the host and port from the aggregator URL.",
+            "Integration: a mock download that stalls with an unreachable aggregator emits waiting true, then false when it continues; with a reachable aggregator it emits nothing.",
+            "Jest: mithrilWaitingForNetwork in WatchdogManager and BackendStore, and the line on MithrilProgressView."
           ]
         }
       ]
@@ -375,6 +445,38 @@
           "implementationNotes": [
             "Follow storybook/stories/loading/mithril/*.stories.tsx: one .add() per state, StoryDecorator and LoadingOverlayStoryFrame."
           ]
+        },
+        {
+          "id": "task-027",
+          "title": "Prompt when the node is silent while it starts",
+          "description": "Emit node_silent once per silence when the node writes nothing on either output stream for 300 s before chainDbReady, and node_output_resumed when output returns. The loading screen offers Restart Cardano node and Keep waiting.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 5.0,
+          "dependencies": [
+            "task-026"
+          ],
+          "targetPaths": [
+            "watchdog/src/supervisor.rs",
+            "watchdog/src/protocol.rs",
+            "watchdog/src/config.rs",
+            "source/main/WatchdogManager.ts",
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/renderer/app/containers/loading/SyncingConnectingPage.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/NodeSilencePrompt.tsx"
+          ],
+          "implementationNotes": [
+            "Partial lines count as output: pipe_to_log notes bytes as they arrive.",
+            "startup_silence_secs in the node configuration, 300 by default, lets tests use a short limit.",
+            "A tick more than six intervals after the previous one, by the monotonic or the wall clock, restarts the silence count, because the machine slept.",
+            "restart_node is already handled before chainDbReady, in the node_starting loop of run_node_wallet.",
+            "The silence prompt takes the Mithril prompt's place while both apply (PRD decision 27)."
+          ],
+          "testCases": [
+            "Unit tests of the silence watch: one report per silence, a new silence after output, and a long gap between ticks restarting the count.",
+            "Integration: a node that leaves a line unterminated emits node_silent once, and node_output_resumed when the line completes.",
+            "Jest: WatchdogManager state, BackendStore prompt visibility per silence, and NodeSilencePrompt actions."
+          ]
         }
       ]
     },
@@ -428,7 +530,10 @@
             "task-007",
             "task-013",
             "task-014",
-            "task-015"
+            "task-015",
+            "task-026",
+            "task-027",
+            "task-028"
           ],
           "implementationNotes": [
             "nix build '.#checks.x86_64-linux.<name>' --no-link for watchdog-clippy, watchdog-test, jest, compile, lint, stylelint, i18n, storybook, treefmt and prettier-version-parity."
@@ -635,8 +740,8 @@
   ],
   "summary": {
     "totalPhases": 7,
-    "totalTasks": 25,
-    "estimatedTotalHours": 99.0,
+    "totalTasks": 28,
+    "estimatedTotalHours": 118.0,
     "criticalPath": [
       "task-001",
       "task-009",
@@ -657,12 +762,13 @@
       "watchdog/src/mithril.rs",
       "watchdog/src/supervisor.rs",
       "source/renderer/app/stores/BackendStore.ts",
-      "source/renderer/app/components/loading/chain-damage/ChainDamageView.tsx"
+      "source/renderer/app/components/loading/chain-damage/ChainDamageView.tsx",
+      "watchdog/src/ledger_point.rs"
     ],
     "riskAreas": [
       "The wipe deletes user data; a wrong target resolution on a junction or a user-picked folder deletes the wrong directory.",
       "Signature 1 depends on the node's free-text exception rendering, which a node upgrade can change; the field-line fixtures catch that at the next pin bump.",
-      "Signature 2 has not been reproduced on demand; detection rests on the field line.",
+      "The ledger snapshot check before a node start mirrors ouroboros-consensus 4.2.1.0; a wrong refusal keeps a healthy node from starting, so it refuses only when every step is certain, and it is re-read against consensus at each node pin bump.",
       "Whether the wallet resumes without a resync after a rebuild is unverified until task-017.",
       "Boundary scan timing on native Windows is unmeasured until task-019."
     ],

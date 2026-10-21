@@ -18,7 +18,7 @@ Four Windows mainnet installs on 11.5.0 reported this damage in support diagnost
 | Inside the hole | Startup never gets past opening the database | `Critical invariant violation ... that was in immutable db is gone before we could open ledgerdb` | C |
 | After the hole | The node syncs and a wallet stops syncing | `restoreBlocks: given chain isn't a valid continuation` from cardano-wallet | C |
 
-None of these reaches the user as an explanation. In the second case the watchdog logs no node exit and the loading screen waits at the VolatileDB phase until the user quits. One user retried for 3.8 days across several Mithril syncs and restarts. Their only remedy is deleting the chain folder by hand.
+None of these reaches the user as an explanation. In the second case cardano-node 11.1.3 logs `Replaying ledger from snapshot ...` and then writes nothing on either output stream until it is asked to stop. Only then does it write the error, within milliseconds of the request, and exit cleanly, so the loading screen waits until the user quits. The app keeps a detection only while it runs and clears it when a node starts (`chainDamage` in `source/main/WatchdogManager.ts`), so a detection made while quitting is lost and the next start waits again. One user retried for 3.8 days across several Mithril syncs and restarts. Their only remedy is deleting the chain folder by hand.
 
 The watchdog already has a full rebuild (`start_mithril` with `wipe_chain: true`), but nothing in the renderer sends it (`source/renderer/app/stores/BackendStore.ts:312-318`). It is also not safe to offer as written ([research/02](research/02-code-paths-at-11.5.0.md)):
 
@@ -31,6 +31,9 @@ The wallet databases are intact in all four installs. These users need the chain
 ## Goals
 
 - Recognize each of the three signatures from the node and wallet output the watchdog already pipes: on the first occurrence of the second and third, and on the third distinct peer for the first.
+- Recognize the second signature before the node starts as well, from the database files, and report it without starting the node, so the offer screen appears instead of a loading screen that waits (decision 24).
+- Tell the user when the node has written nothing for 5 minutes while it starts, and offer a restart (decision 25).
+- Say on the Mithril progress view when a download is waiting for the network (decision 28).
 - Show a full-screen explanation with a rebuild action. It takes precedence over every other loading screen except quitting and a running Mithril sync, including after the wallet is ready.
 - Make the rebuild safe to offer:
   - nothing is deleted until the aggregator answers;
@@ -44,7 +47,7 @@ The wallet databases are intact in all four installs. These users need the chain
 
 - Finding holes on installs that show no symptoms. The background scan in the 2026-09-29 decision is separate work. That work will use this plan's boundary scan as its detector once phase 6 has measured it (decision 12).
 - Corruption inside a chunk (`ChecksumMismatchError`, the #3409 class). The event carries a `kind`, so another kind can be added later, but no parser for it is written here.
-- Persisting a detection across restarts. Each node run detects from its own output, and the signatures appear within minutes of a start. A stored marker could outlive a manual fix. The one thing that persists is the record of a confirmed rebuild, or of an install, that has not finished (FR6), because by then the old chain is deleted or partly replaced.
+- Persisting a detection across restarts. Each node run detects the first and third signatures from its own output, within minutes of a start, and the check before each node start finds the second from the database files (decision 24). A stored marker could outlive a manual fix. The one thing that persists is the record of a confirmed rebuild, or of an install, that has not finished (FR6), because by then the old chain is deleted or partly replaced.
 - Changing the node's own validation after an unclean start. It already finds a hole and truncates the chain there, at a cost of hours.
 - Showing download size or duration. The probe reads only the certified chunk number (`watchdog/src/mithril.rs:40-47`), and there is no measured figure to show.
 
@@ -98,6 +101,21 @@ Plan decisions of 2026-10-17:
 22. A record beside a chain directory that has a `clean` marker means that the install or rebuild it describes left the database whole. Every rebuild and install deletes `clean` before it changes the database, and an install moves it in last. At startup such a record is removed, and the node starts as usual.
 23. The record names its kind, `rebuild` or `install`, so the renderer never says that old data was removed after an install that removed none, such as an interrupted first bootstrap. A record keeps the kind it was first written with until it is removed, so a rebuild that continues an unfinished install stays an install.
 
+Owner decisions of 2026-10-21:
+
+24. **2026-10-21.** Before every node start, the watchdog decides whether the node would stop on the second signature. When that is certain, it does not start the node and reports `chain_damage` with kind `ledger_point_missing` and the slot, so the offer screen appears. The node holds the error back until it is asked to stop, so detection from output comes only when the user quits, and the next start waits again. A refusal keeps a node from starting and leads to a full download, so the check fails open: anything it cannot read or does not recognize starts the node as before. The detection from output stays as a second path.
+25. **2026-10-21.** When the node writes nothing on either output stream for 5 minutes while it starts, before `chainDbReady`, the loading screen says so and offers to restart the node or keep waiting.
+
+Plan decisions that apply decisions 24 and 25, 2026-10-21:
+
+26. While the watchdog holds the node after the check, the offer screen shows even after an earlier Not now, and offers no Not now: no node runs behind it, so dismissing it would leave a loading screen that waits for nothing. Diagnostics stays open to the user, and a node restart from there runs the check again.
+27. When the silence prompt and the Mithril prompt on the loading screen both apply, the silence prompt shows. The Mithril prompt returns once the silence prompt is dismissed or cleared.
+
+Owner decisions of 2026-10-21 on the rebuild's download and confirmation:
+
+28. **2026-10-21.** The Mithril progress view says when a download is waiting for the network. mithril-client 0.13.9 reports no error and no progress while the network is unavailable, and continues the download by itself when the network returns. mithril-client is therefore left to resume on its own, with no timeout from the watchdog. The watchdog infers the wait from the download's progress counts, which stop growing, and a check that the aggregator cannot be reached.
+29. **2026-10-21.** The rebuild confirmation stays as it is.
+
 ## Requirements
 
 ### Functional Requirements
@@ -106,6 +124,7 @@ Detection (watchdog):
 
 - [ ] FR1. Emit `chain_damage` with kind `node_rejects_canonical_block` when one rejected slot has been reported by 3 distinct `remoteAddress` values in `ChainSync.Client.Exception` lines that contain `BadInputsUTxO`. Carry that slot.
 - [ ] FR2. Emit kind `ledger_point_missing` on the first node line that contains both `Critical invariant violation` and `that was in immutable db is gone before we could open ledgerdb`. Carry `blockPointSlot`.
+- [ ] FR2a. Before every node start, check whether the node would stop on the second signature, mirroring ouroboros-consensus 4.2.1.0, the version cardano-node 11.1.3 is built with. `watchdog/src/ledger_point.rs` names the modules and functions it mirrors. With a `clean` marker and no `--validate-db`, the node validates only its most recent chunks: from the highest-numbered `.chunk` file down, the first chunk whose first block matches the CRC32 in its secondary index holds the tip. Ledger snapshots are tried highest slot first. One whose chunk is past the tip's is skipped, one in the tip's chunk is left to the node, and one the LSM backend would not load is skipped: a file in place of the directory, a missing or invalid `meta`, another backend, a missing or unreadable `utxoSize`, or a `state` whose CRC32 differs from the checksum in `meta`. For the first snapshot that loads, the slot is looked up as the node looks it up, in the primary index of its chunk at relative slot `slot % chunk_slots + 1`. When that slot is empty and the secondary index agrees, the watchdog reports `chain_damage` with kind `ledger_point_missing`, the slot and `node_held: true`, writes the WARN line of FR4, and does not start the node. The chunk size is ten times `protocolConsts.k` of the Byron genesis that the node configuration names: 21600 slots on mainnet and preprod, 4320 on preview. The check compares slots, not hashes, because the block's hash is inside the encoded ledger state. It starts the node, and logs why, when anything is unreadable, unexpected or ambiguous: no `clean` marker, `--validate-db`, another LedgerDB backend, `.epoch` files, names that may read as numbers in another form, a tip chunk whose first block does not match its index, index files that are missing, malformed or disagree, a missing chunk file or LSM table snapshot, or a slot that an epoch boundary block may share. While the node is held, the watchdog waits as after `node_unrecoverable`: `restart_node`, `start_node` and `restart_wallet` run the check again, `start_mithril` runs the sync, settings changes are applied, and `stop` stops. A Mithril view that an install left open is closed with `mithril_status` `completed` before the report.
 - [ ] FR3. Emit kind `wallet_chain_discontinuity` on the first wallet line that contains `restoreBlocks: given chain isn't a valid continuation`. Carry the first slot after the gap and the wallet's last good slot.
 - [ ] FR4. Emit each kind at most once per node process (per wallet process for FR3), and write a `WARN` line to `watchdog.log` with the kind and slots.
 
@@ -119,14 +138,24 @@ Rebuild (watchdog):
 
 Offer screen (main and renderer):
 
-- [ ] FR9. `chainDamage` in the polled state: set by `chain_damage`, cleared by `node_started` and by `mithril_status` with phase `preparing`. `lastChainDamage` is set together with it but is not cleared by either, only by `mithril_status` `completed` with `rebuild: true`, whether the rebuild was asked for or forced. `rebuildPending` in the polled state is set from `chain_status.rebuild_pending` and by an `INSTALL_FAILED` with `rebuild: true`, and cleared by `node_started` and by a completed pipeline. `installPending` is set from `chain_status.install_pending` and by an `INSTALL_FAILED` with `rebuild: false`, and cleared the same way. An `INSTALL_FAILED` with `rebuild: true` while `installPending` is set leaves `installPending` set and does not set `rebuildPending`, as the record keeps its kind. `installRetryRequired` is set by `INSTALL_FAILED` and cleared by `node_started` and by `chain_status`. `lastErrorRebuild` is cleared by the next `start_mithril`, by `start_node` and by a completed pipeline. `start_node` also clears the Mithril phase, so the error view does not stay up while the node syncs. While `installRetryRequired` is set, `start_node` changes nothing, because the watchdog ignores it.
+- [ ] FR9. `chainDamage` in the polled state: set by `chain_damage`, cleared by `node_started` and by `mithril_status` with phase `preparing`. `lastChainDamage` is set together with it but is not cleared by either, only by `mithril_status` `completed` with `rebuild: true`, whether the rebuild was asked for or forced. `rebuildPending` in the polled state is set from `chain_status.rebuild_pending` and by an `INSTALL_FAILED` with `rebuild: true`, and cleared by `node_started` and by a completed pipeline. `installPending` is set from `chain_status.install_pending` and by an `INSTALL_FAILED` with `rebuild: false`, and cleared the same way. An `INSTALL_FAILED` with `rebuild: true` while `installPending` is set leaves `installPending` set and does not set `rebuildPending`, as the record keeps its kind. `installRetryRequired` is set by `INSTALL_FAILED` and cleared by `node_started` and by `chain_status`. `lastErrorRebuild` is cleared by the next `start_mithril`, by `start_node` and by a completed pipeline. `start_node` also clears the Mithril phase, so the error view does not stay up while the node syncs. While `installRetryRequired` is set, `start_node` changes nothing, because the watchdog ignores it. `nodeHeld` is set from the `node_held` of `chain_damage` and cleared by `node_started` and by `mithril_status` with phase `preparing`. A held report also ends a requested node restart, because the old node has stopped and the watchdog holds the new one.
 - [ ] FR10. A loading phase `chain-damaged` that takes precedence over everything except `stopping` and a running Mithril pipeline, `ready` and `error` included. The screen shows on every page, including staking, settings, voting, governance and profile, which otherwise render without waiting for the node.
 - [ ] FR11. Choice view: a symptom sentence for the kind, what the rebuild does, that wallets and funds are safe and no recovery phrase is needed, and a detail line with the kind and slot for support. Actions: Rebuild blockchain data, Not now.
 - [ ] FR12. Confirm view: what will be deleted and downloaded, and that the app is unusable until it finishes. Actions: Rebuild, Back. Rebuild sends `{ cmd: 'start_mithril', wipe_chain: true }`, and the existing Mithril progress view takes over. Rebuild also marks the chain storage location as confirmed, because the rebuild targets the location in use. A rebuild that fails and leaves no chain therefore shows the Mithril error view with the reason and then the bootstrap decision, without the chain storage location picker. The same holds after an app restart in the middle of a rebuild (`rebuildPending`) or of an install (`installPending`): the picker is skipped and the bootstrap decision shows. When the chain is gone after a failed rebuild (`rebuildPending` without `installRetryRequired`), the error view says the old blockchain data was removed and Retry repeats the rebuild. After an unfinished install (`installPending`), the error view and the bootstrap decision say instead that a download of the blockchain data did not finish installing, never that old data was removed. Whenever the watchdog reports no chain (`hasChain === false`), and with either flag, the error view's secondary action is Choose how to sync, which opens the bootstrap decision, which labels the sync from genesis explicitly. The error view offers no Skip to blockchain sync there, because the node would start a sync from genesis the user did not choose (decision 21). That includes a refused or failed first bootstrap and a rebuild refused in a newly chosen location. After an install failed part-way (`installRetryRequired`), the view offers Retry, Choose another location where FR14 allows it, and no action that starts a node. After a rebuild's install failed, the removal note says only that Retry downloads the data again.
-- [ ] FR13. Not now hides the screen until the app restarts.
+- [ ] FR13. Not now hides the screen until the app restarts. While the watchdog holds the node (`nodeHeld`), the screen shows even after Not now and offers no Not now (decision 26).
 - [ ] FR14. The Mithril error view shows a specific message for `PROBE_FAILED`, `INVALID_CHAIN_PATH`, `CHAIN_DIR_NOT_REPLACEABLE`, `CHAIN_DIR_OTHER_NETWORK`, `WIPE_FAILED`, `INSUFFICIENT_SPACE`, `REBUILD_MARKER_FAILED` and `MARKER_FAILED`, and its Retry and Skip buttons are translated (they are hard-coded English at `MithrilSyncContainer.tsx:50-70`). While the view says the old data was removed or that an install did not finish, and while Retry is the only action after a failed install, the messages for `PROBE_FAILED`, `INSUFFICIENT_SPACE`, `CHAIN_DIR_NOT_REPLACEABLE`, `CHAIN_DIR_OTHER_NETWORK` and `REBUILD_MARKER_FAILED` leave out their statement that nothing was changed. After a failed or refused rebuild (`lastErrorRebuild`), Retry repeats the rebuild with `wipe_chain` for every code except `INVALID_CHAIN_PATH` and `CHAIN_DIR_OTHER_NETWORK`, a failed install included. For `INVALID_CHAIN_PATH` and `CHAIN_DIR_OTHER_NETWORK`, where the location is the cause, Retry opens the chain storage location picker. `INSUFFICIENT_SPACE` and `CHAIN_DIR_NOT_REPLACEABLE` offer Choose another location beside Retry (decision 18). A picker reached from a failed or refused rebuild says, when the folder picked holds blockchain data, that the rebuild deletes that data and downloads it again, instead of saying that the data will be reused. A location confirmed on that picker is not applied at once. The rebuild confirmation follows and names it, Rebuild sends the location and `start_mithril` with `wipe_chain` in one request, and Back drops the location (decision 17). After a failed sync that was not a rebuild, the picker applies the location at once, as on first run. When an install that was not a rebuild failed (`INSTALL_FAILED` with `rebuild: false`), a partial sync's as in decision 15 or a first bootstrap's, Retry shows the confirmation of FR12 and confirming rebuilds. When any other error did not come from a rebuild, Retry runs Mithril as before. After any `INSTALL_FAILED`, the view offers no Skip (decision 16).
 - [ ] FR15. Diagnostics shows the last detection of the session (kind, slot, time) from `lastChainDamage`, so a node start does not erase it, and has a Rebuild blockchain data action behind the same confirmation, whether anything was detected. While damage is detected the partial Mithril Sync action is disabled, with a hint that points to Rebuild blockchain data, because a partial sync moves the symptom without repairing the hole. The copied Diagnostics text includes the Blockchain data row.
 - [ ] FR16. All new copy exists in en-US and ja-JP.
+
+Startup silence (watchdog, main and renderer):
+
+- [ ] FR22. While the node process runs and before `chainDbReady`, when no byte has arrived on either output stream, a partial line included, for `startup_silence_secs` (300 by default), the watchdog logs `node: no output for N s while starting` and emits `node_silent { silent_secs }` once. Output that arrives after it emits `node_output_resumed`, and a new silence can be reported after that. A timer tick that arrives more than six tick intervals after the previous one, 30 s at the default, by the monotonic or the wall clock, is taken for the machine sleeping and restarts the silence count instead of prompting.
+- [ ] FR23. The loading screen shows a prompt while a silence is reported, with Restart Cardano node, which sends `restart_node`, and Keep waiting, which hides it until the next silence. The silence clears on `node_output_resumed`, `node_started`, `node_exited`, `node_shutdown_ms`, `node_startup_status`, `node_socket_ready`, `node_unrecoverable` and `stopped`. The prompt takes the Mithril prompt's place while both apply (decision 27).
+
+Download waiting for the network (watchdog, main and renderer):
+
+- [ ] FR24. While mithril-client downloads, until its file count reaches its total, the watchdog notes when the highest `files_downloaded`, the highest `bytes_downloaded` or the step number in its progress last grew. mithril-client reports immutable files as a file count and the ancillary archive as a byte count, one kind per line, so each count is tracked on its own. After `download_stall_secs` (60 by default in the Mithril configuration) without growth, the watchdog checks whether the aggregator in `aggregator_url` can be reached: it resolves the host and connects to the port, with one 5 s timeout over both. It checks again every `network_recheck_secs` (20 by default) while the download stays stalled. When the aggregator cannot be reached it logs that once and emits `mithril_waiting_for_network { waiting: true }`. Growth, a check that reaches the aggregator, and the end of the download emit `waiting: false`. mithril-client is never stopped or timed out for a stall.
+- [ ] FR25. While `mithrilWaitingForNetwork` is set, the Mithril progress view says that downloading will continue when the network returns, and the progress bar stays as it is. Main sets the flag from `mithril_waiting_for_network` and clears it on any Mithril phase other than `downloading` and `verifying`, on `mithril_error`, on `node_started` and on `stopped`.
 
 Targeted repair (gated on phase 6):
 
@@ -155,10 +184,11 @@ Targeted repair (gated on phase 6):
 ### Components Affected
 
 - `watchdog/src/chain_damage.rs` (new): the three signature parsers and a `ChainDamageDetector` that holds per-slot peer sets for signature 1 (bounded: the most recent 16 slots, 3 peers each) and the once-per-process flags.
-- `watchdog/src/supervisor.rs`: node output calls the detector from `pipe_to_log`, next to `try_parse_startup_status` (`supervisor.rs:556-579`). Wallet output turns parsing on with a wallet-only parser (today `pipe_to_log(..., false, None)` at `supervisor.rs:1805-1816`). After a failed or cancelled post-wipe download, it waits in the no-chain state (`supervisor.rs:914`) instead of restarting (`supervisor.rs:1211-1213`).
+- `watchdog/src/ledger_point.rs` (new): the check before a node start (FR2a).
+- `watchdog/src/supervisor.rs`: every node start in `run` passes the check of FR2a first, and the wait for `chainDbReady` in `run_node_wallet` watches for silence (FR22). Node output calls the detector from `pipe_to_log`, next to `try_parse_startup_status`. In `run_node_wallet`, the wallet's output streams pass `pipe_to_log` a wallet-only detector. After a failed or cancelled post-wipe download, `run` reports no chain and waits for the user's choice in `await_chain_choice` instead of starting the node again.
 - `watchdog/src/protocol.rs`: `Event::ChainDamage`.
-- `watchdog/src/mithril.rs`: the wipe moves after the probe and goes through `full_install_target` and `check_replaceable`. A distinct `PipelineResult` marks a failure after the wipe. The free-space check on the chain's volume runs before the wipe, staging moves inside the chain folder, and the record of a confirmed rebuild or an install, with its kind, is written before the chain changes and cleared when the install succeeds. The install renames without copying on one volume.
-- `watchdog/src/config.rs`: `rename_retry_secs` in the Mithril configuration, 60 by default.
+- `watchdog/src/mithril.rs`: the download watches its progress for a stall and checks the aggregator (FR24). The wipe moves after the probe and goes through `full_install_target` and `check_replaceable`. A distinct `PipelineResult` marks a failure after the wipe. The free-space check on the chain's volume runs before the wipe, staging moves inside the chain folder, and the record of a confirmed rebuild or an install, with its kind, is written before the chain changes and cleared when the install succeeds. The install renames without copying on one volume.
+- `watchdog/src/config.rs`: `rename_retry_secs` in the Mithril configuration, 60 by default. `read_node_storage` reads the chunk size and the LedgerDB backend from the node configuration and its Byron genesis, and `startup_silence_secs` in the node configuration is 300 by default. `download_stall_secs` and `network_recheck_secs` in the Mithril configuration are 60 and 20 by default.
 - `watchdog/src/bin/mock_node.rs` and the wallet mock: an environment variable naming a file of extra lines to print, so integration tests can inject field lines.
 - `watchdog/tests/integration.rs`, `watchdog/tests/chain_storage.rs`.
 - `source/common/types/watchdog.types.ts`: the `ChainDamage` and `ChainDamageKind` types, `chainDamage`, `lastChainDamage`, `lastErrorCode`, `lastErrorRebuild`, `rebuildPending`, `installPending` and `installRetryRequired` on `WatchdogState`, and `'chain-damaged'` on `LoadingPhase`.
@@ -167,6 +197,8 @@ Targeted repair (gated on phase 6):
 - `source/renderer/app/stores/BackendStore.ts`: the observables, the phase, `rebuildChain()`, `retryMithril()`, `showBootstrapDecision()` and `dismissChainDamage()`.
 - `source/renderer/app/containers/Root.tsx`: the page early return skips the `chain-damaged` phase.
 - `source/renderer/app/containers/loading/LoadingPage.tsx`, a new `containers/loading/ChainDamageContainer.tsx`, and new `components/loading/chain-damage/ChainDamageView.tsx` and `RebuildConfirmView.tsx` with `.scss` and `ChainDamage.messages.ts`.
+- `source/renderer/app/containers/loading/SyncingConnectingPage.tsx` and a new `components/loading/syncing-connecting/NodeSilencePrompt.tsx`: the silence prompt.
+- `source/renderer/app/containers/loading/MithrilSyncContainer.tsx` and `components/loading/mithril/MithrilProgressView.tsx`: the line for a download waiting for the network.
 - `source/renderer/app/containers/loading/MithrilSyncContainer.tsx`, `components/loading/mithril/MithrilErrorView.tsx` and `MithrilDecisionView.tsx`: error codes, translated buttons, and the notes on removed data and on an unfinished install.
 - `source/renderer/app/containers/loading/ChainStorageContainer.tsx` and `components/chain-storage/ChainStorageLocationPicker.tsx`: the notice on data found before a rebuild.
 - `source/renderer/app/components/status/DaedalusDiagnostics.tsx` and `containers/status/DaedalusDiagnosticsDialog.tsx`.
@@ -179,9 +211,23 @@ Targeted repair (gated on phase 6):
 New watchdog event, one JSON line as today:
 
 ```json
-{"event":"chain_damage","kind":"node_rejects_canonical_block","slot":200361988,"last_good_slot":null}
-{"event":"chain_damage","kind":"ledger_point_missing","slot":200102375,"last_good_slot":null}
-{"event":"chain_damage","kind":"wallet_chain_discontinuity","slot":200102408,"last_good_slot":200080892}
+{"event":"chain_damage","kind":"node_rejects_canonical_block","slot":200361988,"last_good_slot":null,"node_held":false}
+{"event":"chain_damage","kind":"ledger_point_missing","slot":200102375,"last_good_slot":null,"node_held":false}
+{"event":"chain_damage","kind":"wallet_chain_discontinuity","slot":200102408,"last_good_slot":200080892,"node_held":false}
+{"event":"chain_damage","kind":"ledger_point_missing","slot":136771192,"last_good_slot":null,"node_held":true}
+```
+
+The last line is the check before a node start (FR2a). The startup silence (FR22) adds two events:
+
+```json
+{"event":"node_silent","silent_secs":300}
+{"event":"node_output_resumed"}
+```
+
+A download waiting for the network (FR24) adds one:
+
+```json
+{"event":"mithril_waiting_for_network","waiting":true}
 ```
 
 `WatchdogState` gains:
@@ -206,7 +252,13 @@ lastErrorRebuild: boolean;
 rebuildPending: boolean;
 installPending: boolean;
 installRetryRequired: boolean;
+nodeHeld: boolean;
+nodeSilentSecs: number | null;
+nodeSilenceEpisode: number;
+mithrilWaitingForNetwork: boolean;
 ```
+
+`nodeSilenceEpisode` counts the silences reported, so a prompt dismissed for one silence shows again for the next.
 
 `mithril_error` gains `rebuild: bool`, which is always present, `chain_status` gains `rebuild_pending: bool` and `install_pending: bool`, which are always sent, and `INSUFFICIENT_SPACE` and `REBUILD_MARKER_FAILED` are new error codes. `MARKER_FAILED` keeps its meaning: the cutover record after the download could not be written. `mithril_status` gains `rebuild: bool` on every phase:
 
@@ -230,7 +282,11 @@ Phase 7 adds `chain_repair_status { phase, chunks, progress }` with phases `scan
 `BackendStore.loadingPhase` gains one check directly after `isStopping`:
 
 ```ts
-if (this.chainDamage && !this._chainDamageDismissed && !this._mithrilActive) {
+if (
+  this.chainDamage &&
+  (this.nodeHeld || !this._chainDamageDismissed) &&
+  !this._mithrilActive
+) {
   return 'chain-damaged';
 }
 ```
@@ -275,6 +331,10 @@ Draft en-US copy, to be confirmed by phase 5 testing (the wallet sentence depend
 | Secondary action after removal | Choose how to sync |
 | Diagnostics, Mithril Sync blocked | Unavailable while damaged blockchain data is detected. Use Rebuild blockchain data instead. |
 | Diagnostics | Blockchain data: No damage detected / Damage detected at slot {slot} ({time}). Action: Rebuild blockchain data |
+| Silence prompt title | Cardano node is not reporting progress |
+| Silence prompt body | Cardano node has reported nothing for {minutes} minutes while starting. It may still be working. If it is stuck, restarting it can help. |
+| Silence prompt actions | Restart Cardano node / Keep waiting |
+| Mithril download waiting for the network | Downloading will continue when the network returns. |
 
 New `defaultMessage` values carry the `!!!` prefix until reviewed, per `.agent/skills/i18n-messaging/SKILL.md:33`.
 
@@ -291,9 +351,9 @@ Phase 6 decides whether step 5 is needed for each kind, whether the wallet recov
 
 ## Implementation Strategy
 
-1. **Detection.** Event, parsers and detector, wallet output parsing, and mock-driven integration tests.
+1. **Detection.** Event, parsers and detector, wallet output parsing, mock-driven integration tests, and the check of the ledger snapshot's block before each node start.
 2. **Safe rebuild.** Probe before delete, no silent genesis sync, custom chain locations, and error codes passed to the renderer.
-3. **Offer screen.** State plumbing, store phase and actions, choice and confirm views, translated and code-aware error view, copy and stories.
+3. **Offer screen.** State plumbing, store phase and actions, choice and confirm views, translated and code-aware error view, copy and stories, and the startup silence prompt.
 4. **Diagnostics.** Detection row and manual rebuild.
 5. **Verification of the rebuild.** Nix checks and a reproduction of an 11.4.0 hole on preprod (Linux and Windows). The release waits for phase 7 (decision 10).
 6. **Targeted repair spike.** Rust boundary scan with tests and Windows timing, a recovery experiment per symptom on preprod, and a decision record.
@@ -309,7 +369,13 @@ Watchdog unit tests (`chain_damage.rs`):
 - Signature 1 fires on the third distinct peer for one slot and not on three lines from one peer. It ignores `InvalidBlock` lines without `BadInputsUTxO`, and keeps separate counts for two different slots.
 - Each kind fires once per process.
 
+Watchdog unit tests (`ledger_point.rs`, on databases built in temporary directories): a snapshot whose block is missing is refused and one whose block is present is not; a snapshot past the tip is skipped and one in the tip's chunk is left to the node; a suffixed name is read, and names with one number are tried in name order; no snapshots, no `clean` marker and an empty ImmutableDB start the node; snapshots the LSM backend would not load are skipped; an empty last chunk file, or a chunk file under a name the node does not open, moves the tip down; and every undecided case starts the node, among them a missing chunk file or LSM table snapshot, malformed or disagreeing index files, an epoch boundary slot and a `meta` number the check does not read. `config.rs` tests read the chunk size and the backend. The silence watch is tested with given clocks: one report per silence, a new one after output, and a long gap between ticks taken for sleep. The download watch is tested with given times: each count tracked on its own, a check after the stall and again at the recheck interval, a wait reported only when the aggregator cannot be reached, and growth, a reachable aggregator or the end of the download ending it. The aggregator's host and port are read from its URL.
+
 Watchdog integration tests:
+
+- A database whose ledger snapshot's block is missing emits `chain_damage` with `node_held: true` and starts no node, `restart_node` checks it again, and a rebuild sent then installs and starts the node. A database whose snapshot block is present starts the node.
+- A node that leaves a line unterminated emits `node_silent` once, and `node_output_resumed` when the line completes.
+- A download that stalls while the aggregator cannot be reached emits `mithril_waiting_for_network` with `waiting: true`, and `waiting: false` when its progress grows again, and the install finishes. A download that stalls while the aggregator can be reached emits nothing.
 
 - The mock node prints signature 2 and the watchdog emits `chain_damage`. The mock node prints signature 1 from three peers and the event follows. The wallet mock prints signature 3 and the event follows.
 - `wipe_chain` with a failing probe leaves the chain untouched.
@@ -339,7 +405,11 @@ Jest:
 - `chainStorageValidate.realfs.spec.ts`: the picker accepts database entries plus a staging leftover.
 - `ChainStorageLocationPicker.spec.tsx`: data found before a rebuild is named as deleted, not reused.
 - `MithrilSyncContainer.spec.tsx` and `BackendStore.spec.ts`: Retry after a failed install that was not a rebuild asks for the confirmation, Back sends nothing, and confirming sends `wipe_chain`. After a failed install, the view offers no action that starts a node. Without a chain the view offers Choose how to sync and no Skip, after a refused or failed first bootstrap and after a rebuild refused in a new location as well. An unfinished install shows its own note on the error and decision views, and `MithrilErrorView.spec.tsx` checks that no message says nothing changed while Retry is the only action. Choose another location appears for `INSUFFICIENT_SPACE` and `CHAIN_DIR_NOT_REPLACEABLE`, a location picked after a rebuild error is held for the confirmation that names it and sent with the rebuild, Back drops it, and after a sync that was not a rebuild the location is applied at once.
-- A component spec for the choice-to-confirm flow.
+- A component spec for the choice-to-confirm flow, and the choice without Not now while the node is held.
+- `WatchdogManager.spec.ts`: `node_held` sets `nodeHeld`, which `node_started` and `preparing` clear and which ends a requested restart; `node_silent` sets `nodeSilentSecs` and counts the episode, and the events of FR23 clear it.
+- `BackendStore.spec.ts`: the damaged data screen while the node is held, after Not now as well; the silence prompt for each new silence, Keep waiting, and the restart it sends.
+- `NodeSilencePrompt.spec.tsx`: the copy and both actions.
+- `WatchdogManager.spec.ts`, `BackendStore.spec.ts` and `MithrilProgressView.spec.tsx`: `mithrilWaitingForNetwork` and the line on the progress view.
 
 Storybook: one story per kind, the confirm view, the error view for each code in FR14, the decision and error views after removed data and after an unfinished install, and the location picker with data found before a rebuild, in en-US and ja-JP.
 
@@ -352,7 +422,7 @@ Manual, on preprod (Linux under WSL2 and Windows), reproducing a hole with 11.4.
 3. Quit cleanly. `mithril-client cardano-db verify --start N --end N` reports three tampered files, and the boundary scan reports a break before chunk N+1.
 4. Install the build under test. Restore a wallet from its recovery phrase. When its restore reaches chunk N, signature 3 appears and the offer screen follows. Rebuild, and record whether the wallet finishes without a resync. The confirmation copy depends on this result.
 5. On a fresh copy of the damaged chain, delete `ledger` and `lsm` so the node replays from genesis across the hole. Record whether a later block that spends an output created in the hole arrives and triggers signature 1. On preprod's low transaction volume it may not, and the field-line tests cover detection.
-6. Signature 2 has not been reproduced on demand. The field line covers detection, and the rebuild replaces every file it could involve.
+6. Signature 2 is reproduced with a preprod chain whose ledger snapshot at slot 136771192 lies in the missing tail of chunk 6331, which holds slots 136749698 to 136749780 only. Without the check of FR2a, the node replays from that snapshot and writes nothing until it is stopped. With it, Daedalus shows the offer screen without starting the node, and Rebuild from there installs a database and starts the node. The check refuses that chain. It starts the node on a copy of it whose chunk 6331 is whole, and on a healthy preprod chain.
 7. On Windows, repeat steps 4 and 5 with the chain in a user-picked folder reached through a junction.
 8. On Windows, rebuild through a junction, and in a folder on a second drive picked with Choose another location. `watchdog.log` shows the download staged on that drive, `mithril-client` and `snapshot-converter` given plain drive paths without `\\?\`, and an install that renames rather than copies.
 9. Give Daedalus Mainnet and Daedalus Pre-Prod the same storage folder. Start a first Mithril download in one and launch the other while it downloads. `watchdog.log` of the second shows the first one's staging kept, not deleted. The startup cleanup recognizes another network's staging by the `protocolMagicId` of the staged database, so the result depends on when `mithril-client` writes that file.
@@ -367,8 +437,8 @@ Manual, on preprod (Linux under WSL2 and Windows), reproducing a hole with 11.4.
 
 ## Open Questions
 
-None. Decisions 10 to 15 settled the questions raised while planning, decisions 16 to 18 apply decisions 13 to 15, and decisions 19 to 23 apply FR6, FR12 and decision 13.
+None. Decisions 10 to 15 settled the questions raised while planning, decisions 16 to 18 apply decisions 13 to 15, decisions 19 to 23 apply FR6, FR12 and decision 13, decisions 26 and 27 apply decisions 24 and 25, and decisions 28 and 29 record the owner's choices on the rebuild's download and confirmation.
 
 **Status:** In Progress
-**Date:** 2026-10-17
+**Date:** 2026-10-21
 **Author:** Adam Dean
