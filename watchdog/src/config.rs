@@ -56,6 +56,11 @@ pub struct NodeConfig {
     /// Set by `WatchdogConfig::set_network_magic`; None when it is unknown.
     #[serde(skip)]
     pub network_magic: Option<u32>,
+    /// How the node lays out its database, from its configuration. Set at
+    /// startup by `read_node_storage`; None when it could not be read, and
+    /// then the ledger point check before a node start is skipped.
+    #[serde(skip)]
+    pub storage: Option<NodeStorage>,
 }
 
 fn default_node_crash_restart_delay_ms() -> u64 {
@@ -190,24 +195,40 @@ fn default_rename_retry_secs() -> u64 {
     60
 }
 
-/// The network magic cardano-node checks a database against: the
-/// `protocolConsts.protocolMagic` of the Byron genesis that the node
-/// configuration given by `--config` names. A relative genesis path is
-/// relative to the configuration file, as cardano-node resolves it.
-pub async fn read_network_magic(node_args: &[String]) -> anyhow::Result<u32> {
+/// The node configuration given by `--config`, and its path.
+async fn read_node_config(node_args: &[String]) -> anyhow::Result<(PathBuf, serde_json::Value)> {
     let config_path = node_args
         .windows(2)
         .find(|w| w[0] == "--config")
         .map(|w| PathBuf::from(&w[1]))
         .ok_or_else(|| anyhow::anyhow!("the node arguments have no --config"))?;
     let node_config = read_json(&config_path).await?;
+    Ok((config_path, node_config))
+}
+
+/// The Byron genesis that `node_config`, read from `config_path`, names. A
+/// relative genesis path is relative to the configuration file, as
+/// cardano-node resolves it.
+async fn read_byron_genesis(
+    config_path: &Path,
+    node_config: &serde_json::Value,
+) -> anyhow::Result<(PathBuf, serde_json::Value)> {
     let genesis = node_config
         .get("ByronGenesisFile")
         .and_then(|v| v.as_str())
         .ok_or_else(|| anyhow::anyhow!("{} names no ByronGenesisFile", config_path.display()))?;
     let genesis_path = config_path.parent().unwrap_or(Path::new(".")).join(genesis);
-    read_json(&genesis_path)
-        .await?
+    let genesis = read_json(&genesis_path).await?;
+    Ok((genesis_path, genesis))
+}
+
+/// The network magic cardano-node checks a database against: the
+/// `protocolConsts.protocolMagic` of the Byron genesis that the node
+/// configuration given by `--config` names.
+pub async fn read_network_magic(node_args: &[String]) -> anyhow::Result<u32> {
+    let (config_path, node_config) = read_node_config(node_args).await?;
+    let (genesis_path, genesis) = read_byron_genesis(&config_path, &node_config).await?;
+    genesis
         .pointer("/protocolConsts/protocolMagic")
         .and_then(|v| v.as_u64())
         .and_then(|v| u32::try_from(v).ok())
@@ -217,6 +238,88 @@ pub async fn read_network_magic(node_args: &[String]) -> anyhow::Result<u32> {
                 genesis_path.display()
             )
         })
+}
+
+/// How cardano-node lays out the parts of its database that the check before
+/// a node start reads (`ledger_point`): the ImmutableDB chunk size and the
+/// LedgerDB backend.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NodeStorage {
+    /// Slots in each ImmutableDB chunk. For Cardano this is the Byron epoch
+    /// size, ten times the security parameter `protocolConsts.k` of the
+    /// Byron genesis: ouroboros-consensus gives the hard fork combinator the
+    /// chunk info of its first era (`nodeImmutableDbChunkInfo` in
+    /// `HardFork.Combinator.Node.InitStorage`), and Byron's is
+    /// `simpleChunkInfo (kEpochSlots k)`. That is 21600 slots on mainnet and
+    /// preprod, where k is 2160, and 4320 on preview.
+    pub chunk_slots: u64,
+    pub backend: LedgerBackend,
+}
+
+/// The LedgerDB backend cardano-node opens snapshots with, from the
+/// `LedgerDB` section of its configuration.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum LedgerBackend {
+    /// `V2LSM`, with the LSM database directory relative to the database
+    /// directory: `LSMDatabasePath`, or `lsm` when the configuration names
+    /// none.
+    Lsm(PathBuf),
+    /// Any other backend, by name. cardano-node uses `V2InMemory` when the
+    /// configuration has no `LedgerDB` section or names no `Backend`.
+    Other(String),
+}
+
+/// The node storage layout that the configuration given by `--config` and
+/// its Byron genesis describe.
+pub async fn read_node_storage(node_args: &[String]) -> anyhow::Result<NodeStorage> {
+    let (config_path, node_config) = read_node_config(node_args).await?;
+    let (genesis_path, genesis) = read_byron_genesis(&config_path, &node_config).await?;
+    let chunk_slots = genesis
+        .pointer("/protocolConsts/k")
+        .and_then(|v| v.as_u64())
+        .filter(|k| *k > 0)
+        .and_then(|k| k.checked_mul(10))
+        .ok_or_else(|| {
+            anyhow::anyhow!("{} has no usable protocolConsts.k", genesis_path.display())
+        })?;
+    let backend = ledger_backend(&node_config)
+        .map_err(|e| anyhow::anyhow!("{}: {e}", config_path.display()))?;
+    Ok(NodeStorage {
+        chunk_slots,
+        backend,
+    })
+}
+
+/// The LedgerDB backend of a node configuration, read as cardano-node's
+/// `Cardano.Node.Configuration.POM` reads it: a missing section or `Backend`
+/// means `V2InMemory`, and a null `LSMDatabasePath` counts as absent.
+fn ledger_backend(node_config: &serde_json::Value) -> anyhow::Result<LedgerBackend> {
+    let Some(section) = node_config.get("LedgerDB") else {
+        return Ok(LedgerBackend::Other("V2InMemory".to_string()));
+    };
+    let backend = match section.get("Backend") {
+        None | Some(serde_json::Value::Null) => "V2InMemory",
+        Some(v) => v
+            .as_str()
+            .ok_or_else(|| anyhow::anyhow!("LedgerDB.Backend is not a string"))?,
+    };
+    if backend != "V2LSM" {
+        return Ok(LedgerBackend::Other(backend.to_string()));
+    }
+    let dir = match section.get("LSMDatabasePath") {
+        None | Some(serde_json::Value::Null) => "lsm",
+        Some(v) => v
+            .as_str()
+            .ok_or_else(|| anyhow::anyhow!("LedgerDB.LSMDatabasePath is not a string"))?,
+    };
+    let dir = PathBuf::from(dir);
+    if dir.is_absolute() || dir.has_root() {
+        anyhow::bail!(
+            "LedgerDB.LSMDatabasePath {} is not relative to the database directory",
+            dir.display()
+        );
+    }
+    Ok(LedgerBackend::Lsm(dir))
 }
 
 async fn read_json(path: &Path) -> anyhow::Result<serde_json::Value> {
@@ -521,8 +624,12 @@ mod tests {
         /// A node configuration naming `genesis` as its Byron genesis, and
         /// node arguments that pass it with `--config`.
         fn node_args(&self, genesis: &str) -> Vec<String> {
+            self.node_args_with(serde_json::json!({ "ByronGenesisFile": genesis }))
+        }
+
+        /// Node arguments that pass `json` as the node configuration.
+        fn node_args_with(&self, json: serde_json::Value) -> Vec<String> {
             let config = self.0.join("config.yaml");
-            let json = serde_json::json!({ "ByronGenesisFile": genesis });
             std::fs::write(&config, json.to_string()).unwrap();
             vec![
                 "run".to_string(),
@@ -584,6 +691,96 @@ mod tests {
         d.write_genesis(&d.0.join("genesis-byron.json"), u64::from(u32::MAX) + 1);
         let args = d.node_args("genesis-byron.json");
         assert!(read_network_magic(&args).await.is_err());
+    }
+
+    // ── read_node_storage ───────────────────────────────────────────────────
+
+    /// Node arguments for a configuration with `ledger_db` as its LedgerDB
+    /// section, or none, and a Byron genesis with k = 2160.
+    fn storage_args(d: &Dir, ledger_db: Option<serde_json::Value>) -> Vec<String> {
+        d.write_genesis(&d.0.join("genesis-byron.json"), 1);
+        let mut json = serde_json::json!({ "ByronGenesisFile": "genesis-byron.json" });
+        if let Some(section) = ledger_db {
+            json["LedgerDB"] = section;
+        }
+        d.node_args_with(json)
+    }
+
+    #[tokio::test]
+    async fn node_storage_reads_the_chunk_size_and_the_lsm_directory() {
+        let d = Dir::new("storage-lsm");
+        let args = storage_args(
+            &d,
+            Some(serde_json::json!({ "Backend": "V2LSM", "LSMDatabasePath": "lsm/" })),
+        );
+        assert_eq!(
+            read_node_storage(&args).await.unwrap(),
+            NodeStorage {
+                chunk_slots: 21600,
+                backend: LedgerBackend::Lsm(PathBuf::from("lsm/")),
+            }
+        );
+    }
+
+    #[tokio::test]
+    async fn node_storage_puts_the_lsm_database_in_lsm_by_default() {
+        let d = Dir::new("storage-lsm-default");
+        let args = storage_args(&d, Some(serde_json::json!({ "Backend": "V2LSM" })));
+        assert_eq!(
+            read_node_storage(&args).await.unwrap().backend,
+            LedgerBackend::Lsm(PathBuf::from("lsm"))
+        );
+    }
+
+    #[tokio::test]
+    async fn node_storage_is_in_memory_without_a_backend() {
+        let d = Dir::new("storage-default");
+        let none = storage_args(&d, None);
+        assert_eq!(
+            read_node_storage(&none).await.unwrap().backend,
+            LedgerBackend::Other("V2InMemory".to_string())
+        );
+        let empty = storage_args(&d, Some(serde_json::json!({})));
+        assert_eq!(
+            read_node_storage(&empty).await.unwrap().backend,
+            LedgerBackend::Other("V2InMemory".to_string())
+        );
+    }
+
+    #[tokio::test]
+    async fn node_storage_names_another_backend() {
+        let d = Dir::new("storage-other");
+        let args = storage_args(&d, Some(serde_json::json!({ "Backend": "V2InMemory" })));
+        assert_eq!(
+            read_node_storage(&args).await.unwrap().backend,
+            LedgerBackend::Other("V2InMemory".to_string())
+        );
+    }
+
+    #[tokio::test]
+    async fn node_storage_refuses_an_absolute_lsm_directory() {
+        let d = Dir::new("storage-absolute");
+        let absolute = std::env::temp_dir().join("lsm");
+        let args = storage_args(
+            &d,
+            Some(serde_json::json!({
+                "Backend": "V2LSM",
+                "LSMDatabasePath": absolute.to_str().unwrap()
+            })),
+        );
+        assert!(read_node_storage(&args).await.is_err());
+    }
+
+    #[tokio::test]
+    async fn node_storage_is_unknown_without_k() {
+        let d = Dir::new("storage-no-k");
+        std::fs::write(
+            d.0.join("genesis-byron.json"),
+            br#"{"protocolConsts":{"protocolMagic":1}}"#,
+        )
+        .unwrap();
+        let args = d.node_args("genesis-byron.json");
+        assert!(read_node_storage(&args).await.is_err());
     }
 
     #[test]

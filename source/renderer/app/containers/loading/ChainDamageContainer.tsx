@@ -13,16 +13,18 @@ class ChainDamageContainer extends Component<InjectedProps> {
   };
 
   render() {
-    const { chainDamage, rebuildChain, dismissChainDamage } =
+    const { chainDamage, nodeHeld, rebuildChain, dismissChainDamage } =
       this.props.stores.backend;
     if (chainDamage == null) return null;
 
+    // Not now would leave a loading screen waiting for a node the watchdog
+    // does not start, so it is offered only while a node runs.
     return (
       <div className={styles.card}>
         <ChainDamageView
           damage={chainDamage}
           onRebuild={rebuildChain}
-          onDismiss={dismissChainDamage}
+          onDismiss={nodeHeld ? undefined : dismissChainDamage}
         />
       </div>
     );

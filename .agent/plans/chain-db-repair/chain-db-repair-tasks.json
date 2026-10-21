@@ -137,7 +137,7 @@
           "id": "task-026",
           "title": "Check the ledger snapshot's block before each node start",
           "description": "Before every node start, decide from the database files whether the node would stop on the missing ledger point (signature 2). When that is certain, report chain_damage with kind ledger_point_missing, the slot and node_held, and do not start the node. Anything unreadable or ambiguous starts the node as before.",
-          "status": "pending",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 8.0,
           "dependencies": [

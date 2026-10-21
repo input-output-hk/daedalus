@@ -27,6 +27,9 @@ export interface WatchdogState {
   // chainDamage it survives a node start and clears only when a rebuild
   // completes
   lastChainDamage: ChainDamage | null;
+  // True when the watchdog found chainDamage before starting the node and
+  // does not start it; cleared when a node starts or a Mithril sync begins
+  nodeHeld: boolean;
   // True when lastError came from a rebuild, so Retry repeats the rebuild
   lastErrorRebuild: boolean;
   // True when a rebuild was confirmed and has not finished, e.g. the app was
@@ -89,12 +92,15 @@ export type ChainDamageKind =
   | 'wallet_chain_discontinuity';
 
 // ChainDamageEvent — a chain_damage event as the watchdog writes it.
-// last_good_slot is set only for wallet_chain_discontinuity.
+// last_good_slot is set only for wallet_chain_discontinuity. node_held is true
+// when the damage was found before the node started, and the watchdog then
+// does not start it.
 export type ChainDamageEvent = {
   event: 'chain_damage';
   kind: ChainDamageKind;
   slot: number | null;
   last_good_slot: number | null;
+  node_held: boolean;
 };
 
 // ChainDamage — the polled form of a chain_damage event. detectedAt is the

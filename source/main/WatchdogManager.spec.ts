@@ -208,6 +208,54 @@ describe('WatchdogManager chain damage', () => {
   });
 });
 
+describe('WatchdogManager node held for chain damage', () => {
+  const held = {
+    event: 'chain_damage',
+    kind: 'ledger_point_missing',
+    slot: 136771192,
+    last_good_slot: null,
+    node_held: true,
+  };
+
+  it('records that the watchdog holds the node for damage found before it started', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().nodeHeld).toBe(false);
+    emit(held);
+    expect(manager.getState().nodeHeld).toBe(true);
+    expect(manager.getState().chainDamage).toEqual(
+      expect.objectContaining({ kind: 'ledger_point_missing', slot: 136771192 })
+    );
+  });
+
+  it('records damage found in a running node as not held', () => {
+    const { manager, emit } = makeManager();
+    emit({ ...held, node_held: false });
+    expect(manager.getState().nodeHeld).toBe(false);
+    emit({ ...held, node_held: undefined });
+    expect(manager.getState().nodeHeld).toBe(false);
+  });
+
+  it('clears nodeHeld when a node starts or a Mithril sync starts preparing', () => {
+    const { manager, emit } = makeManager();
+    emit(held);
+    emit({ event: 'node_started', pid: 1, started_at_unix_ms: 0 });
+    expect(manager.getState().nodeHeld).toBe(false);
+    emit(held);
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    expect(manager.getState().nodeHeld).toBe(false);
+  });
+
+  it('ends a requested node restart when the watchdog holds the new node', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'node_started', pid: 1, started_at_unix_ms: 0 });
+    manager.sendCommand({ cmd: 'restart_node' });
+    emit({ event: 'node_shutdown_ms', ms: 200, force_killed: false });
+    expect(manager.getState().requestedRestart).toBe('node');
+    emit(held);
+    expect(manager.getState().requestedRestart).toBeNull();
+  });
+});
+
 describe('WatchdogManager rebuild state', () => {
   it('records whether a mithril_error came from a rebuild', () => {
     const { manager, emit } = makeManager();

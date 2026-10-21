@@ -21,7 +21,8 @@ type Props = {
   // Which view opens first; only the stories start on the confirmation
   initialView?: 'choice' | 'confirm';
   onRebuild: () => void;
-  onDismiss: () => void;
+  // Not now; without it the choice offers only the rebuild
+  onDismiss?: () => void;
 };
 
 type State = {
@@ -66,12 +67,14 @@ export default class ChainDamageView extends Component<Props, State> {
               })}
         </div>
         <div className={styles.actions}>
-          <Button
-            className={styles.secondaryAction}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.notNow)}
-            onClick={onDismiss}
-          />
+          {onDismiss && (
+            <Button
+              className={styles.secondaryAction}
+              skin={ButtonSkin}
+              label={intl.formatMessage(messages.notNow)}
+              onClick={onDismiss}
+            />
+          )}
           <Button
             className={styles.primaryAction}
             skin={ButtonSkin}

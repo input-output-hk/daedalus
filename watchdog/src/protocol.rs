@@ -269,15 +269,19 @@ pub enum Event {
     NodeUnrecoverable {
         crashes: u32,
     },
-    /// The node or wallet output shows that the local chain database has a hole.
-    /// `slot` is the slot named by the evidence (the rejected block, the missing
-    /// ledger point, or the first block after the gap). `last_good_slot` is the
-    /// wallet's last slot before the gap and is set only for
-    /// `wallet_chain_discontinuity`.
+    /// The node or wallet output shows that the local chain database has a hole,
+    /// or the check before a node start found that the node would stop on a
+    /// missing ledger point. `slot` is the slot named by the evidence (the
+    /// rejected block, the missing ledger point, or the first block after the
+    /// gap). `last_good_slot` is the wallet's last slot before the gap and is
+    /// set only for `wallet_chain_discontinuity`. `node_held` is true when the
+    /// damage was found before the node started: the watchdog does not start
+    /// it, and waits for a Mithril sync, a retry or a stop.
     ChainDamage {
         kind: ChainDamageKind,
         slot: Option<u64>,
         last_good_slot: Option<u64>,
+        node_held: bool,
     },
     /// The update installer requested with `install_update` was started.
     UpdateInstallerLaunched {
@@ -820,12 +824,26 @@ mod tests {
             kind: ChainDamageKind::LedgerPointMissing,
             slot: Some(200_102_375),
             last_good_slot: None,
+            node_held: false,
         })
         .unwrap();
         assert_eq!(
             line,
-            r#"{"event":"chain_damage","kind":"ledger_point_missing","slot":200102375,"last_good_slot":null}"#
+            r#"{"event":"chain_damage","kind":"ledger_point_missing","slot":200102375,"last_good_slot":null,"node_held":false}"#
         );
+    }
+
+    #[test]
+    fn chain_damage_found_before_the_node_started() {
+        let j = to_json(&Event::ChainDamage {
+            kind: ChainDamageKind::LedgerPointMissing,
+            slot: Some(136_771_192),
+            last_good_slot: None,
+            node_held: true,
+        });
+        assert_eq!(j["kind"], "ledger_point_missing");
+        assert_eq!(j["slot"], 136_771_192u64);
+        assert_eq!(j["node_held"], true);
     }
 
     #[test]
@@ -834,6 +852,7 @@ mod tests {
             kind: ChainDamageKind::WalletChainDiscontinuity,
             slot: Some(200_102_408),
             last_good_slot: Some(200_080_892),
+            node_held: false,
         });
         assert_eq!(j["kind"], "wallet_chain_discontinuity");
         assert_eq!(j["slot"], 200_102_408u64);
@@ -858,6 +877,7 @@ mod tests {
                 kind,
                 slot: None,
                 last_good_slot: None,
+                node_held: false,
             });
             assert_eq!(j["kind"], expected);
         }

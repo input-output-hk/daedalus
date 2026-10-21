@@ -12,8 +12,8 @@
 // after the startup phases, so a test can inject log lines.
 // With MOCK_NODE_UNTERMINATED_LINE=<file> it stops after opening the ledger
 // database begins, writes that file's contents to stderr without the final
-// newline, and hangs there until the shutdown pipe closes, as cardano-node
-// does after its fatal missing ledger point error. Once a file named
+// newline, and hangs there until the shutdown pipe closes, so a test can
+// leave a line unterminated while the node runs. Once a file named
 // <socket_path>.finish exists, it writes the newline and keeps hanging.
 use std::io::Write as _;
 

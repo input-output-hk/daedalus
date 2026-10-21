@@ -1088,10 +1088,213 @@ fn chain_damage_signatures_are_read_from_their_own_process() {
     assert!(events.is_empty(), "{events:?}");
 }
 
-/// cardano-node writes the missing ledger point error without a newline and
-/// then hangs before the ledger database is open. The event arrives while the
-/// node is still running, and when the rest of the line arrives it is logged
-/// once, whole, and reported no more.
+// ── Tests: ledger snapshot check before a node start ─────────────────────────
+
+/// CRC-32 as zlib computes it, which the node's chunk and snapshot checksums
+/// are.
+fn crc32(bytes: &[u8]) -> u32 {
+    let mut crc = 0xFFFF_FFFFu32;
+    for &b in bytes {
+        crc ^= u32::from(b);
+        for _ in 0..8 {
+            crc = if crc & 1 != 0 {
+                0xEDB8_8320 ^ (crc >> 1)
+            } else {
+                crc >> 1
+            };
+        }
+    }
+    !crc
+}
+
+/// Slots per chunk in the test databases: ten times the k the test Byron
+/// genesis gives.
+const TEST_CHUNK_SLOTS: u64 = 100;
+
+/// Writes ImmutableDB chunk `chunk` into `immutable` with a block at each of
+/// `slots`, its secondary index carrying each block's CRC32, and a whole
+/// primary index.
+fn write_chunk(immutable: &Path, chunk: u64, slots: &[u64]) {
+    let mut data = Vec::new();
+    let mut secondary = Vec::new();
+    let mut filled = vec![false; TEST_CHUNK_SLOTS as usize + 1];
+    for &slot in slots {
+        let block = format!("block at slot {slot}").into_bytes();
+        secondary.extend_from_slice(&(data.len() as u64).to_be_bytes());
+        secondary.extend_from_slice(&[0, 0, 0, 0]);
+        secondary.extend_from_slice(&crc32(&block).to_be_bytes());
+        secondary.extend_from_slice(&[0xAB; 32]);
+        secondary.extend_from_slice(&slot.to_be_bytes());
+        data.extend_from_slice(&block);
+        filled[(slot % TEST_CHUNK_SLOTS) as usize + 1] = true;
+    }
+    let mut primary = vec![1u8];
+    let mut offset = 0u32;
+    primary.extend_from_slice(&offset.to_be_bytes());
+    for f in filled {
+        if f {
+            offset += 56;
+        }
+        primary.extend_from_slice(&offset.to_be_bytes());
+    }
+    std::fs::write(immutable.join(format!("{chunk:05}.chunk")), data).unwrap();
+    std::fs::write(immutable.join(format!("{chunk:05}.secondary")), secondary).unwrap();
+    std::fs::write(immutable.join(format!("{chunk:05}.primary")), primary).unwrap();
+}
+
+/// Creates `<state_dir>/chain` as a cleanly stopped database whose chunk 0
+/// ends at slot 20, followed by chunks 1 and 2, with one LSM ledger snapshot
+/// at `snapshot_slot`. Returns the node arguments that point the node at it,
+/// with a node configuration that selects the LSM backend and a Byron
+/// genesis with k = 10.
+fn populate_checked_database(dir: &TempDir, socket_path: &Path, snapshot_slot: u64) -> Vec<String> {
+    let chain = dir.path().join("chain");
+    let immutable = chain.join("immutable");
+    std::fs::create_dir_all(&immutable).unwrap();
+    write_chunk(&immutable, 0, &[10, 20]);
+    write_chunk(&immutable, 1, &[110, 150]);
+    write_chunk(&immutable, 2, &[210, 250]);
+    let name = snapshot_slot.to_string();
+    let snapshot = chain.join("ledger").join(&name);
+    std::fs::create_dir_all(&snapshot).unwrap();
+    let state = b"ledger state".to_vec();
+    std::fs::write(snapshot.join("state"), &state).unwrap();
+    std::fs::write(
+        snapshot.join("meta"),
+        json!({"backend": "utxohd-lsm", "checksum": crc32(&state), "tablesCodecVersion": 1})
+            .to_string(),
+    )
+    .unwrap();
+    std::fs::write(snapshot.join("utxoSize"), b"3").unwrap();
+    std::fs::create_dir_all(chain.join("lsm").join("snapshots").join(&name)).unwrap();
+    std::fs::create_dir_all(chain.join("volatile")).unwrap();
+    std::fs::write(chain.join("clean"), b"").unwrap();
+    // The network magic mock-mithril-client writes into what it installs.
+    std::fs::write(chain.join("protocolMagicId"), b"764824073").unwrap();
+
+    let config = dir.path().join("node-config.json");
+    std::fs::write(
+        &config,
+        json!({
+            "ByronGenesisFile": "genesis-byron.json",
+            "LedgerDB": {"Backend": "V2LSM", "LSMDatabasePath": "lsm/"}
+        })
+        .to_string(),
+    )
+    .unwrap();
+    std::fs::write(
+        dir.path().join("genesis-byron.json"),
+        json!({"protocolConsts": {"k": 10, "protocolMagic": 764824073}}).to_string(),
+    )
+    .unwrap();
+    vec![
+        socket_path.to_str().unwrap().to_string(),
+        "--config".to_string(),
+        config.to_str().unwrap().to_string(),
+        "--database-path".to_string(),
+        chain.to_str().unwrap().to_string(),
+    ]
+}
+
+/// A database whose newest ledger snapshot names a slot missing from the
+/// ImmutableDB is reported as ledger_point_missing before the node starts,
+/// and the node is not started. A retry checks again and reports it again.
+#[test]
+fn ledger_point_missing_before_start_holds_the_node() {
+    let dir = TempDir::new("ledger-point-held");
+    let mut cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET);
+    cfg.node_args = populate_checked_database(&dir, &cfg.socket_path, 50);
+    let (cfg, _port) = cfg.build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let status = expect(&rx, "chain_status");
+    assert_eq!(status["has_chain"], true);
+    let damage = expect(&rx, "chain_damage");
+    assert_eq!(damage["kind"], "ledger_point_missing");
+    assert_eq!(damage["slot"], 50);
+    assert!(damage["last_good_slot"].is_null());
+    assert_eq!(damage["node_held"], true);
+    expect_none_of(&rx, &["node_started"], 1000);
+
+    send(&mut stdin, json!({"cmd": "restart_node"}));
+    let again = expect(&rx, "chain_damage");
+    assert_eq!(again["node_held"], true);
+    expect_none_of(&rx, &["node_started"], 1000);
+
+    let log =
+        std::fs::read_to_string(dir.path().join("logs").join("watchdog.log")).unwrap_or_default();
+    assert!(
+        log.contains("chain damage detected: kind=ledger_point_missing, slot=50"),
+        "{log}"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A database whose newest ledger snapshot names a block that is there starts
+/// the node as before.
+#[test]
+fn ledger_point_present_starts_the_node() {
+    let dir = TempDir::new("ledger-point-present");
+    let mut cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET);
+    cfg.node_args = populate_checked_database(&dir, &cfg.socket_path, 20);
+    let (cfg, _port) = cfg.build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .expect("timeout waiting for node_started");
+        assert_ne!(v["event"], "chain_damage", "{v}");
+        if v["event"] == "node_started" {
+            break;
+        }
+    }
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A rebuild sent while the node is held runs without a node to stop, and the
+/// node starts on the database it installs.
+#[test]
+fn ledger_point_missing_before_start_rebuilds() {
+    let dir = TempDir::new("ledger-point-rebuild");
+    let mut cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).mithril();
+    cfg.node_args = populate_checked_database(&dir, &cfg.socket_path, 50);
+    let (cfg, _port) = cfg.build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    let damage = expect(&rx, "chain_damage");
+    assert_eq!(damage["node_held"], true);
+
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    let preparing = expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+    assert_eq!(preparing["rebuild"], true, "{preparing}");
+    expect(&rx, "node_started");
+    let completed = expect_with(&rx, "mithril_status", |v| v["phase"] == "completed");
+    assert_eq!(completed["rebuild"], true, "{completed}");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// cardano-node writes the missing ledger point error without a newline. When
+/// the node leaves it unterminated, the event arrives while the node is still
+/// running, and when the rest of the line arrives it is logged once, whole,
+/// and reported no more.
 #[test]
 fn chain_damage_from_an_unterminated_line_while_the_node_hangs() {
     let dir = TempDir::new("damage-unterminated");

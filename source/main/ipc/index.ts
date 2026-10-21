@@ -94,6 +94,7 @@ export default (window: BrowserWindow) => {
         lastErrorCode: null,
         chainDamage: null,
         lastChainDamage: null,
+        nodeHeld: false,
         lastErrorRebuild: false,
         rebuildPending: false,
         installPending: false,

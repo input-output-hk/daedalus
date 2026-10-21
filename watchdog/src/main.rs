@@ -11,6 +11,7 @@ mod config;
 mod crash_window;
 mod installer;
 mod instance;
+mod ledger_point;
 mod mithril;
 mod protocol;
 mod state;
@@ -270,6 +271,21 @@ async fn main() -> Result<()> {
         }
         Err(e) => tracing::warn!(
             "network magic unknown, so a database of another network cannot be recognised: {e:#}"
+        ),
+    }
+
+    // The layout the ledger snapshot check reads before each node start.
+    match config::read_node_storage(&config.node.args).await {
+        Ok(storage) => {
+            tracing::info!(
+                "node storage: {} slots per chunk, LedgerDB backend {:?}",
+                storage.chunk_slots,
+                storage.backend
+            );
+            config.node.storage = Some(storage);
+        }
+        Err(e) => tracing::warn!(
+            "node storage layout unknown, so the ledger snapshot is not checked before the node starts: {e:#}"
         ),
     }
 

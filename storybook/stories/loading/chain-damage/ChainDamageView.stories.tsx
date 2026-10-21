@@ -50,6 +50,12 @@ storiesOf('Loading / Chain Damage', module)
   ))
   .add('Node Rejects Canonical Block', () => renderView(nodeRejects))
   .add('Ledger Point Missing', () => renderView(ledgerPointMissing))
+  .add('Ledger Point Missing Before Start', () => (
+    <ChainDamageView
+      damage={ledgerPointMissing}
+      onRebuild={action('onRebuild')}
+    />
+  ))
   .add('Wallet Chain Discontinuity', () => renderView(walletDiscontinuity))
   .add('Detection Without Slot', () =>
     renderView({ ...ledgerPointMissing, slot: null })

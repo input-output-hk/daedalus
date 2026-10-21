@@ -125,4 +125,14 @@ describe('ChainDamageView', () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(onRebuild).not.toHaveBeenCalled();
   });
+
+  it('offers only the rebuild when it cannot be dismissed', () => {
+    renderView(damage(), { onDismiss: undefined });
+    expect(
+      screen.queryByRole('button', { name: 'Not now' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Rebuild blockchain data' })
+    ).toBeInTheDocument();
+  });
 });

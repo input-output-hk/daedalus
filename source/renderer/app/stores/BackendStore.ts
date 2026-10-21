@@ -85,6 +85,9 @@ export default class BackendStore extends Store {
   // The last detection of the session, which Diagnostics shows; it outlives
   // chainDamage and clears only when a rebuild completes
   @observable lastChainDamage: ChainDamage | null = null;
+  // True when the watchdog found chainDamage before starting the node and
+  // does not start it, so no node runs behind the damaged data screen
+  @observable nodeHeld = false;
   @observable walletUnrecoverable = false;
   @observable nodeUnrecoverable = false;
   @observable nodeSocketWaitMs: number | null = null;
@@ -210,6 +213,7 @@ export default class BackendStore extends Store {
         this.installRetryRequired = state.installRetryRequired ?? false;
         this.chainDamage = state.chainDamage ?? null;
         this.lastChainDamage = state.lastChainDamage ?? null;
+        this.nodeHeld = state.nodeHeld ?? false;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;
@@ -366,9 +370,11 @@ export default class BackendStore extends Store {
     }
     // The chain database has a hole: offer the rebuild before anything else,
     // including a ready wallet. A running Mithril pipeline keeps the screen.
+    // When the watchdog holds the node back, no node runs behind the screen,
+    // so an earlier Not now does not hide it.
     if (
       this.chainDamage !== null &&
-      !this._chainDamageDismissed &&
+      (this.nodeHeld || !this._chainDamageDismissed) &&
       !this._mithrilActive
     ) {
       return 'chain-damaged';

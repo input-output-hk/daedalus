@@ -65,6 +65,9 @@ export interface WatchdogState {
   // chainDamage it survives a node start and clears only when a rebuild
   // completes
   lastChainDamage: ChainDamage | null;
+  // True when the watchdog found chainDamage before starting the node and
+  // does not start it; cleared when a node starts or a Mithril sync begins
+  nodeHeld: boolean;
   // True when lastError came from a rebuild, so Retry repeats the rebuild
   lastErrorRebuild: boolean;
   // True when a rebuild was confirmed and has not finished, e.g. the app was
@@ -172,6 +175,7 @@ class WatchdogManager {
       lastErrorCode: null,
       chainDamage: null,
       lastChainDamage: null,
+      nodeHeld: false,
       lastErrorRebuild: false,
       rebuildPending: false,
       installPending: false,
@@ -458,6 +462,7 @@ class WatchdogManager {
         s.requestedRestart = null;
         // The new node reports its own damage from its own output.
         s.chainDamage = null;
+        s.nodeHeld = false;
         // A running node means no rebuild or install is waiting for the
         // user's choice, and no failed install is waiting for another.
         s.rebuildPending = false;
@@ -558,12 +563,19 @@ class WatchdogManager {
           detectedAt: new Date().toISOString(),
         };
         s.lastChainDamage = s.chainDamage;
+        s.nodeHeld = event.node_held === true;
+        // A node restart the user asked for has stopped the old node, and
+        // the watchdog holds back the new one.
+        if (s.nodeHeld) s.requestedRestart = null;
         break;
 
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;
         // A rebuild is starting; the damage it replaces is no longer current.
-        if (event.phase === 'preparing') s.chainDamage = null;
+        if (event.phase === 'preparing') {
+          s.chainDamage = null;
+          s.nodeHeld = false;
+        }
         if (event.phase === 'completed') {
           s.lastErrorRebuild = false;
           s.rebuildPending = false;

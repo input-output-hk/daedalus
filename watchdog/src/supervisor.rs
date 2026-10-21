@@ -17,12 +17,13 @@ use tracing::{info, warn};
 #[cfg(unix)]
 use nix::sys::signal::Signal;
 
-use crate::chain_damage::{ChainDamageDetector, SharedDetector};
+use crate::chain_damage::{ChainDamageDetector, Detection, SharedDetector};
 use crate::chain_validation;
 use crate::config::WatchdogConfig;
 use crate::crash_window::CrashWindow;
+use crate::ledger_point::{self, Verdict};
 use crate::mithril;
-use crate::protocol::{Command as Cmd, ElectronRestartPayload, Event, emit};
+use crate::protocol::{ChainDamageKind, Command as Cmd, ElectronRestartPayload, Event, emit};
 use crate::state;
 
 type ExitInfo = (Option<i32>, Option<String>);
@@ -498,9 +499,10 @@ fn wallet_exhausted(
     false
 }
 
-// Waits, once cardano-node is unrecoverable, for the user to retry
-// (restart_node, start_node or restart_wallet), start a Mithril sync, or
-// stop. Settings changes are saved and apply when the node next starts.
+// Waits, once cardano-node is unrecoverable or while the ledger snapshot
+// check holds it back, for the user to retry (restart_node, start_node or
+// restart_wallet), start a Mithril sync, or stop. Settings changes are saved
+// and apply when the node next starts.
 async fn wait_for_retry(
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     settings: &mut Settings<'_>,
@@ -703,8 +705,8 @@ const MAX_LOG_LINE_BYTES: u64 = 1024 * 1024;
 
 /// How long a child may leave a line without its newline before `damage`
 /// reads what has arrived. cardano-node writes the missing ledger point error
-/// without a newline and then hangs, so the line would otherwise reach the
-/// detector only when the node exits.
+/// without a newline, running into the text that follows it, so the line
+/// would otherwise reach the detector only when the node exits.
 const PARTIAL_LINE_WAIT: Duration = Duration::from_millis(500);
 
 /// Copy a child's output pipe into `log`, feeding startup and sync-progress
@@ -1017,6 +1019,29 @@ async fn holds_other_network_db(config: &WatchdogConfig, wstate: &state::Watchdo
     };
     emit_error(&state::other_network_message(&db, found, expected));
     true
+}
+
+/// The slot of the ledger snapshot the node would stop on, when the check
+/// before a node start finds that its block is missing from the
+/// ImmutableDB. Any other verdict is logged, and the node starts.
+async fn missing_ledger_point(config: &WatchdogConfig) -> Option<u64> {
+    match ledger_point::check_before_start(config).await {
+        Verdict::BlockMissing { slot } => {
+            warn!(
+                "ledger snapshot check: the node would replay from the ledger snapshot at \
+                 slot {slot}, whose block is missing from the ImmutableDB; not starting the node"
+            );
+            Some(slot)
+        }
+        Verdict::Start(reason) => {
+            info!("ledger snapshot check: {reason}; starting the node");
+            None
+        }
+        Verdict::Unknown(reason) => {
+            warn!("ledger snapshot check could not decide: {reason}; starting the node");
+            None
+        }
+    }
 }
 
 /// The chain directory Mithril installs into, when Mithril is configured.
@@ -1379,6 +1404,45 @@ pub async fn run(
                 if holds_other_network_db(&config, &wstate).await {
                     emit_no_chain(None);
                     choose_chain = true;
+                    continue;
+                }
+                // A node that would stop on a missing ledger point, and
+                // then wait with no output until it is stopped, is not
+                // started. The damage is reported, and the watchdog waits
+                // for a rebuild, a retry or a stop.
+                if let Some(slot) = missing_ledger_point(&config).await {
+                    // The Mithril view waits for the node an install was
+                    // for. That node is not started, so the view is closed
+                    // here, before the damage is reported.
+                    if after_mithril != AfterMithril::Nothing {
+                        emit(&Event::MithrilStatus {
+                            phase: "completed".to_string(),
+                            rebuild: matches!(
+                                after_mithril,
+                                AfterMithril::Installed { rebuild: true }
+                            ),
+                        });
+                        after_mithril = AfterMithril::Nothing;
+                    }
+                    Detection {
+                        kind: ChainDamageKind::LedgerPointMissing,
+                        slot: Some(slot),
+                        last_good_slot: None,
+                    }
+                    .report_held();
+                    let held = wait_for_retry(
+                        &mut cmd_rx,
+                        &mut Settings {
+                            config: &mut config,
+                            base_node_args: &base_node_args,
+                            wstate: &mut wstate,
+                        },
+                    )
+                    .await;
+                    next = held.instead();
+                    if next.is_none() {
+                        info!("checking the ledger snapshot again before starting the node");
+                    }
                     continue;
                 }
                 let result = run_node_wallet(

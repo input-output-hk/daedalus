@@ -46,6 +46,16 @@ pub struct Detection {
 impl Detection {
     /// Write the detection to `watchdog.log` and emit the `chain_damage` event.
     pub fn report(self) {
+        self.report_as(false);
+    }
+
+    /// `report` for damage found before the node started, which the watchdog
+    /// does not start.
+    pub fn report_held(self) {
+        self.report_as(true);
+    }
+
+    fn report_as(self, node_held: bool) {
         let slot = self
             .slot
             .map_or_else(|| "unknown".to_string(), |s| s.to_string());
@@ -63,6 +73,7 @@ impl Detection {
             kind: self.kind,
             slot: self.slot,
             last_good_slot: self.last_good_slot,
+            node_held,
         });
     }
 }
@@ -124,10 +135,11 @@ impl ChainDamageDetector {
     }
 
     /// Inspect output the process has left without a newline for a while.
-    /// cardano-node writes the missing ledger point error that way and then
-    /// hangs, so the complete line would arrive only when the node exits. Each
-    /// node signature carries its evidence before the text that identifies
-    /// it, so a partial line that matches holds all of it. The wallet's slots
+    /// cardano-node writes the missing ledger point error without a newline,
+    /// running into the text that follows it, so the complete line can arrive
+    /// only as the node exits. Each node signature carries its evidence
+    /// before the text that identifies it, so a partial line that matches
+    /// holds all of it. The wallet's slots
     /// follow its identifying text, and it writes whole lines, so a wallet
     /// detector waits for the newline. A kind reported here is not reported
     /// again when the rest of the line arrives.

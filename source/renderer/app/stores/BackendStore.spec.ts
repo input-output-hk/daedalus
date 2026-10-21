@@ -292,6 +292,52 @@ describe('BackendStore chain damage', () => {
   });
 });
 
+describe('BackendStore chain damage found before the node started', () => {
+  it('returns chain-damaged after dismissChainDamage while the node is held', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).chainDamage = damage;
+    store.dismissChainDamage();
+    expect(store.loadingPhase).toBe('node-starting');
+    (store as any).nodeHeld = true;
+    expect(store.loadingPhase).toBe('chain-damaged');
+  });
+
+  it('returns mithril-syncing over chain-damaged while a rebuild runs for a held node', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).chainDamage = damage;
+    (store as any).nodeHeld = true;
+    (store as any).mithrilPhase = 'downloading';
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('copies nodeHeld from the poll and defaults it to false', async () => {
+    const store = makeStore();
+    const state = {
+      hasChain: true,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      chainDamage: damage,
+      nodeHeld: true,
+    };
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      state
+    );
+    await store._pollBackendStatus();
+    expect(store.nodeHeld).toBe(true);
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      ...state,
+      nodeHeld: undefined,
+    });
+    await store._pollBackendStatus();
+    expect(store.nodeHeld).toBe(false);
+  });
+});
+
 describe('BackendStore.retryMithril', () => {
   beforeEach(() => {
     (mithrilCommandChannel.send as jest.Mock).mockClear();
