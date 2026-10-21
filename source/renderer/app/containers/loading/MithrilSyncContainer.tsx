@@ -165,6 +165,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
           }
           bootstrapStartedAt={this._mithrilStartedAt}
           showDownloadProgressBar
+          waitingForNetwork={backend.mithrilWaitingForNetwork}
           onAction={() => backend.cancelMithril()}
         />
       </div>

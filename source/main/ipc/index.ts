@@ -89,6 +89,7 @@ export default (window: BrowserWindow) => {
         },
         mithrilPhase: null,
         mithrilProgress: null,
+        mithrilWaitingForNetwork: false,
         mithrilSignificantlyBehind: null,
         lastError: null,
         lastErrorCode: null,

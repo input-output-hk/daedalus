@@ -583,6 +583,7 @@
   "loading.mithrilBootstrap.progress.verifyingDatabase": "Verifying database integrity",
   "loading.mithrilBootstrap.progress.verifyingDigests": "Verifying snapshot digests",
   "loading.mithrilBootstrap.progress.verifyingSignature": "Verifying snapshot signature",
+  "loading.mithrilBootstrap.progress.waitingForNetwork": "Downloading will continue when the network returns.",
   "loading.mithrilBootstrap.selectLabel": "Snapshot",
   "loading.mithrilBootstrap.snapshotCreatedLabel": "Created",
   "loading.mithrilBootstrap.snapshotDetailsTitle": "Snapshot details",

@@ -16,6 +16,10 @@ export interface WatchdogState {
   };
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
+  // True while a Mithril download has stalled and the watchdog cannot reach
+  // the aggregator; mithril-client continues by itself when the network
+  // returns
+  mithrilWaitingForNetwork: boolean;
   lastError: string | null;
   // The code of the mithril_error that set lastError; null when lastError
   // came from an error without one

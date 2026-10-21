@@ -46,6 +46,10 @@ export interface WatchdogState {
   // Mithril
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
+  // True while a Mithril download has stalled and the watchdog cannot reach
+  // the aggregator; mithril-client continues by itself when the network
+  // returns
+  mithrilWaitingForNetwork: boolean;
 
   // Mithril probe result: set when node is significantly behind the certified tip
   mithrilSignificantlyBehind: {
@@ -176,6 +180,7 @@ class WatchdogManager {
       },
       mithrilPhase: null,
       mithrilProgress: null,
+      mithrilWaitingForNetwork: false,
       mithrilSignificantlyBehind: null,
       lastError: null,
       lastErrorCode: null,
@@ -469,6 +474,7 @@ class WatchdogManager {
         s.walletUnrecoverable = false;
         s.requestedRestart = null;
         s.nodeSilentSecs = null;
+        s.mithrilWaitingForNetwork = false;
         // The new node reports its own damage from its own output.
         s.chainDamage = null;
         s.nodeHeld = false;
@@ -593,6 +599,10 @@ class WatchdogManager {
 
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;
+        // Only a download waits for the network.
+        if (event.phase !== 'downloading' && event.phase !== 'verifying') {
+          s.mithrilWaitingForNetwork = false;
+        }
         // A rebuild is starting; the damage it replaces is no longer current.
         if (event.phase === 'preparing') {
           s.chainDamage = null;
@@ -625,8 +635,13 @@ class WatchdogManager {
         };
         break;
 
+      case 'mithril_waiting_for_network':
+        s.mithrilWaitingForNetwork = event.waiting === true;
+        break;
+
       case 'mithril_error':
         s.mithrilPhase = 'error';
+        s.mithrilWaitingForNetwork = false;
         s.lastError = event.message as string;
         s.lastErrorCode = (event.code as string | undefined) ?? null;
         s.lastErrorRebuild = event.rebuild === true;
@@ -653,6 +668,7 @@ class WatchdogManager {
         this._nodeRunning = false;
         s.requestedRestart = null;
         s.nodeSilentSecs = null;
+        s.mithrilWaitingForNetwork = false;
         if (this._installRequested && this._installResult === null) {
           // The installer starts next; wait for the watchdog's report on it.
           if (this._finishStop) {

@@ -446,6 +446,187 @@ enum ProcResult {
     Stopped,
 }
 
+/// Longest a check of whether the aggregator can be reached may take, name
+/// resolution and connection together.
+const AGGREGATOR_CHECK_TIMEOUT: Duration = Duration::from_secs(5);
+
+/// How often the download watch looks at the download, at most.
+const DOWNLOAD_WATCH_TICK_MAX: Duration = Duration::from_secs(5);
+
+/// Watches a Mithril download for a stall, and for the checks of the
+/// aggregator that follow one. mithril-client waits for the network by
+/// itself and continues when it returns, without reporting anything, so a
+/// stall with an aggregator that cannot be reached is taken for that wait.
+///
+/// mithril-client reports the immutable files it has downloaded as
+/// `files_downloaded` and the ancillary archive as `bytes_downloaded`, one
+/// kind per line, with the other read as 0, and announces each step with its
+/// number. Progress is the highest of each count growing on its own. The
+/// download ends when the file count reaches its total, or when a later
+/// step is announced after file or byte progress.
+struct DownloadWatch {
+    stall_after: Duration,
+    recheck_every: Duration,
+    files: u64,
+    bytes: u64,
+    step: u32,
+    grew_at: Instant,
+    next_check: Option<Instant>,
+    done: bool,
+    waiting: bool,
+}
+
+impl DownloadWatch {
+    fn new(stall_after: Duration, recheck_every: Duration, now: Instant) -> Self {
+        DownloadWatch {
+            stall_after,
+            recheck_every,
+            files: 0,
+            bytes: 0,
+            step: 0,
+            grew_at: now,
+            next_check: None,
+            done: false,
+            waiting: false,
+        }
+    }
+
+    /// How often the watch is to be looked at.
+    fn tick(&self) -> Duration {
+        (self.stall_after / 4).clamp(Duration::from_millis(100), DOWNLOAD_WATCH_TICK_MAX)
+    }
+
+    /// Takes in one progress report. Returns `Some(false)` when it ends a
+    /// reported wait.
+    fn on_progress(
+        &mut self,
+        files_downloaded: u64,
+        files_total: u64,
+        bytes_downloaded: u64,
+        step: u32,
+        now: Instant,
+    ) -> Option<bool> {
+        let counted = self.files > 0 || self.bytes > 0;
+        let grew =
+            files_downloaded > self.files || bytes_downloaded > self.bytes || step > self.step;
+        if (step > self.step && counted) || (files_total > 0 && files_downloaded >= files_total) {
+            self.done = true;
+        }
+        self.files = self.files.max(files_downloaded);
+        self.bytes = self.bytes.max(bytes_downloaded);
+        self.step = self.step.max(step);
+        if grew {
+            self.grew_at = now;
+            self.next_check = None;
+        }
+        self.end_wait_if(grew || self.done)
+    }
+
+    /// Whether the aggregator is to be checked at `now`: the download has
+    /// stalled, and no check is due later.
+    fn check_due(&mut self, now: Instant) -> bool {
+        if !self.stalled(now) || self.next_check.is_some_and(|at| now < at) {
+            return false;
+        }
+        self.next_check = Some(now + self.recheck_every);
+        true
+    }
+
+    /// Takes in the result of a check. A check that finishes after the
+    /// download has grown again or ended counts for nothing. Returns the new
+    /// waiting state when it changes.
+    fn on_check(&mut self, reachable: bool, now: Instant) -> Option<bool> {
+        if !self.stalled(now) || reachable != self.waiting {
+            return None;
+        }
+        self.waiting = !reachable;
+        Some(self.waiting)
+    }
+
+    /// Ends the watch with the download. Returns `Some(false)` when a wait
+    /// was reported.
+    fn finish(&mut self) -> Option<bool> {
+        self.done = true;
+        self.end_wait_if(true)
+    }
+
+    fn stalled(&self, now: Instant) -> bool {
+        !self.done && now.saturating_duration_since(self.grew_at) >= self.stall_after
+    }
+
+    fn end_wait_if(&mut self, condition: bool) -> Option<bool> {
+        (condition && std::mem::take(&mut self.waiting)).then_some(false)
+    }
+}
+
+/// Logs and reports a change in whether the download waits for the network.
+fn report_network_wait(change: Option<bool>, stall_after: Duration, aggregator: &str) {
+    match change {
+        Some(true) => {
+            warn!(
+                "Mithril download: no progress for {} s and the aggregator at {aggregator} cannot \
+                 be reached; waiting for the network",
+                stall_after.as_secs()
+            );
+            emit(&Event::MithrilWaitingForNetwork { waiting: true });
+        }
+        Some(false) => {
+            info!("Mithril download: no longer waiting for the network");
+            emit(&Event::MithrilWaitingForNetwork { waiting: false });
+        }
+        None => {}
+    }
+}
+
+/// The host and port of the aggregator at `url`, an http or https URL, or
+/// None for a URL this does not read.
+fn aggregator_address(url: &str) -> Option<(String, u16)> {
+    let (scheme, rest) = url.split_once("://")?;
+    let default_port = match scheme.to_ascii_lowercase().as_str() {
+        "https" => 443,
+        "http" => 80,
+        _ => return None,
+    };
+    let authority = rest.split(['/', '?', '#']).next()?;
+    let authority = authority
+        .rsplit_once('@')
+        .map_or(authority, |(_, host)| host);
+    let (host, port) = match authority.strip_prefix('[') {
+        Some(bracketed) => {
+            let (host, after) = bracketed.split_once(']')?;
+            let port = match after {
+                "" => default_port,
+                port => port.strip_prefix(':')?.parse().ok()?,
+            };
+            (host, port)
+        }
+        None => match authority.rsplit_once(':') {
+            Some((host, port)) => (host, port.parse().ok()?),
+            None => (authority, default_port),
+        },
+    };
+    (!host.is_empty()).then(|| (host.to_string(), port))
+}
+
+/// Whether a TCP connection to `host` and `port` opens, with the name
+/// resolution and the connection bounded together by
+/// AGGREGATOR_CHECK_TIMEOUT.
+async fn aggregator_reachable(host: &str, port: u16) -> bool {
+    tokio::time::timeout(AGGREGATOR_CHECK_TIMEOUT, async {
+        let Ok(addresses) = tokio::net::lookup_host((host, port)).await else {
+            return false;
+        };
+        for address in addresses {
+            if tokio::net::TcpStream::connect(address).await.is_ok() {
+                return true;
+            }
+        }
+        false
+    })
+    .await
+    .unwrap_or(false)
+}
+
 async fn run_download(
     cfg: &MithrilConfig,
     staging_db: &Path,
@@ -561,7 +742,50 @@ async fn run_download(
         }
     };
 
-    loop {
+    // A download that stalls while the aggregator cannot be reached is
+    // reported as waiting for the network. mithril-client is left running:
+    // it continues by itself when the network returns.
+    let aggregator = aggregator_address(&cfg.aggregator_url);
+    if aggregator.is_none() {
+        warn!(
+            "cannot read a host and port from the aggregator URL {}; a stalled download is not checked",
+            cfg.aggregator_url
+        );
+    }
+    let stall_after = Duration::from_secs(cfg.download_stall_secs);
+    let watch_stalls = aggregator.is_some() && !stall_after.is_zero();
+    let mut watch = DownloadWatch::new(
+        stall_after,
+        Duration::from_secs(cfg.network_recheck_secs),
+        Instant::now(),
+    );
+    let mut watch_ticks = tokio::time::interval(watch.tick());
+    watch_ticks.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
+    let (reach_tx, mut reach_rx) = mpsc::channel::<bool>(4);
+    let aggregator_label = aggregator
+        .as_ref()
+        .map_or_else(String::new, |(host, port)| format!("{host}:{port}"));
+    let watch_progress = |watch: &mut DownloadWatch, ev: &Event| {
+        if let Event::MithrilProgress {
+            files_downloaded,
+            files_total,
+            bytes_downloaded,
+            step_num,
+            ..
+        } = ev
+        {
+            let change = watch.on_progress(
+                *files_downloaded,
+                *files_total,
+                *bytes_downloaded,
+                *step_num,
+                Instant::now(),
+            );
+            report_network_wait(change, stall_after, &aggregator_label);
+        }
+    };
+
+    let result = loop {
         tokio::select! {
             result = proc.wait() => {
                 // Drain remaining progress events
@@ -570,33 +794,50 @@ async fn run_download(
                     announce_downloading(&ev);
                     emit(&ev);
                 }
-                match result {
-                    Ok(s) if s.success() => return ProcResult::Success,
-                    Ok(s) => return ProcResult::Failed(format!("mithril-client exited with {s}")),
-                    Err(e) => return ProcResult::Failed(e.to_string()),
-                }
+                break match result {
+                    Ok(s) if s.success() => ProcResult::Success,
+                    Ok(s) => ProcResult::Failed(format!("mithril-client exited with {s}")),
+                    Err(e) => ProcResult::Failed(e.to_string()),
+                };
             }
             Some(ev) = prog_rx.recv() => {
                 announce_downloading(&ev);
+                watch_progress(&mut watch, &ev);
                 emit(&ev);
+            }
+            _ = watch_ticks.tick(), if watch_stalls => {
+                if watch.check_due(Instant::now()) {
+                    if let Some((host, port)) = aggregator.clone() {
+                        let tx = reach_tx.clone();
+                        tokio::spawn(async move {
+                            let _ = tx.send(aggregator_reachable(&host, port).await).await;
+                        });
+                    }
+                }
+            }
+            Some(reachable) = reach_rx.recv() => {
+                let change = watch.on_check(reachable, Instant::now());
+                report_network_wait(change, stall_after, &aggregator_label);
             }
             cmd = cmd_rx.recv() => {
                 match cmd {
                     Some(Cmd::CancelMithril) => {
                         let _ = proc.start_kill();
                         let _ = proc.wait().await;
-                        return ProcResult::Cancelled;
+                        break ProcResult::Cancelled;
                     }
                     Some(Cmd::Stop) | None => {
                         let _ = proc.start_kill();
                         let _ = proc.wait().await;
-                        return ProcResult::Stopped;
+                        break ProcResult::Stopped;
                     }
                     _ => {}
                 }
             }
         }
-    }
+    };
+    report_network_wait(watch.finish(), stall_after, &aggregator_label);
+    result
 }
 
 async fn validate_staged(staging_db: &Path) -> Result<()> {
@@ -2188,6 +2429,169 @@ mod tests {
         #[test]
         fn downloads_everything_without_local_chunks() {
             assert_eq!(download_range(None, 9172), None);
+        }
+    }
+
+    mod network_wait {
+        use super::super::{DownloadWatch, aggregator_address, aggregator_reachable};
+        use std::time::{Duration, Instant};
+
+        const STALL: Duration = Duration::from_secs(60);
+        const RECHECK: Duration = Duration::from_secs(20);
+
+        fn secs(n: u64) -> Duration {
+            Duration::from_secs(n)
+        }
+
+        /// A watch that has seen files 0 to 10 of 100 at the start.
+        fn watch(start: Instant) -> DownloadWatch {
+            let mut w = DownloadWatch::new(STALL, RECHECK, start);
+            assert_eq!(w.on_progress(10, 100, 0, 1, start), None);
+            w
+        }
+
+        #[test]
+        fn checks_the_aggregator_once_the_download_has_stalled() {
+            let start = Instant::now();
+            let mut w = watch(start);
+            assert!(!w.check_due(start + secs(59)));
+            assert!(w.check_due(start + secs(60)));
+            // Not again before the recheck interval.
+            assert!(!w.check_due(start + secs(75)));
+            assert!(w.check_due(start + secs(80)));
+        }
+
+        #[test]
+        fn waits_for_the_network_only_when_the_aggregator_cannot_be_reached() {
+            let start = Instant::now();
+            let mut w = watch(start);
+            assert_eq!(w.on_check(true, start + secs(61)), None);
+            assert_eq!(w.on_check(false, start + secs(81)), Some(true));
+            assert_eq!(w.on_check(false, start + secs(101)), None);
+            // Reached again with no progress: the wait ends all the same.
+            assert_eq!(w.on_check(true, start + secs(121)), Some(false));
+        }
+
+        #[test]
+        fn progress_ends_the_wait_and_restarts_the_stall() {
+            let start = Instant::now();
+            let mut w = watch(start);
+            assert!(w.check_due(start + secs(60)));
+            assert_eq!(w.on_check(false, start + secs(61)), Some(true));
+            assert_eq!(w.on_progress(11, 100, 0, 1, start + secs(90)), Some(false));
+            assert!(!w.check_due(start + secs(149)));
+            assert!(w.check_due(start + secs(150)));
+        }
+
+        #[test]
+        fn tracks_files_and_bytes_on_their_own() {
+            let start = Instant::now();
+            let mut w = watch(start);
+            // An ancillary line reads files as 0 and a file line reads bytes
+            // as 0; neither is a fall, and repeating one is no growth.
+            assert_eq!(w.on_progress(0, 0, 500, 1, start + secs(30)), None);
+            assert_eq!(w.on_progress(10, 100, 0, 1, start + secs(70)), None);
+            assert_eq!(w.on_progress(0, 0, 500, 1, start + secs(80)), None);
+            assert!(!w.check_due(start + secs(89)));
+            assert!(w.check_due(start + secs(90)));
+        }
+
+        #[test]
+        fn a_check_finished_after_progress_counts_for_nothing() {
+            let start = Instant::now();
+            let mut w = watch(start);
+            assert!(w.check_due(start + secs(60)));
+            assert_eq!(w.on_progress(11, 100, 0, 1, start + secs(62)), None);
+            assert_eq!(w.on_check(false, start + secs(63)), None);
+        }
+
+        #[test]
+        fn the_download_ends_with_its_last_file_or_a_later_step() {
+            let start = Instant::now();
+            let mut w = watch(start);
+            assert_eq!(w.on_progress(100, 100, 0, 1, start + secs(10)), None);
+            assert!(!w.check_due(start + secs(600)));
+
+            let mut w = watch(start);
+            assert!(w.check_due(start + secs(60)));
+            assert_eq!(w.on_check(false, start + secs(61)), Some(true));
+            assert_eq!(w.on_progress(0, 0, 0, 4, start + secs(70)), Some(false));
+            assert!(!w.check_due(start + secs(600)));
+        }
+
+        #[test]
+        fn a_step_before_any_download_is_progress_not_the_end() {
+            let start = Instant::now();
+            let mut w = DownloadWatch::new(STALL, RECHECK, start);
+            assert_eq!(w.on_progress(0, 0, 0, 2, start + secs(30)), None);
+            assert!(!w.check_due(start + secs(89)));
+            assert!(w.check_due(start + secs(90)));
+        }
+
+        #[test]
+        fn finishing_ends_a_reported_wait() {
+            let start = Instant::now();
+            let mut w = watch(start);
+            assert_eq!(w.finish(), None);
+            let mut w = watch(start);
+            assert_eq!(w.on_check(false, start + secs(61)), Some(true));
+            assert_eq!(w.finish(), Some(false));
+            assert!(!w.check_due(start + secs(600)));
+        }
+
+        #[test]
+        fn the_tick_follows_the_stall() {
+            let start = Instant::now();
+            assert_eq!(watch(start).tick(), secs(5));
+            assert_eq!(
+                DownloadWatch::new(secs(1), secs(1), start).tick(),
+                Duration::from_millis(250)
+            );
+        }
+
+        #[test]
+        fn reads_the_host_and_port_of_the_aggregator() {
+            let read = |url: &str| aggregator_address(url);
+            assert_eq!(
+                read("https://aggregator.release-preprod.api.mithril.network/aggregator"),
+                Some((
+                    "aggregator.release-preprod.api.mithril.network".to_string(),
+                    443
+                ))
+            );
+            assert_eq!(
+                read("http://localhost:8080"),
+                Some(("localhost".to_string(), 8080))
+            );
+            assert_eq!(
+                read("HTTP://user:pass@example.org?x=1"),
+                Some(("example.org".to_string(), 80))
+            );
+            assert_eq!(
+                read("https://[::1]:9443/a"),
+                Some(("::1".to_string(), 9443))
+            );
+            assert_eq!(read("https://[::1]/a"), Some(("::1".to_string(), 443)));
+            for odd in [
+                "u",
+                "ftp://example.org",
+                "https://",
+                "https://host:port",
+                "https://[::1",
+            ] {
+                assert_eq!(read(odd), None, "{odd}");
+            }
+        }
+
+        #[tokio::test]
+        async fn reaches_an_open_port_and_not_a_closed_one() {
+            let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+            let port = listener.local_addr().unwrap().port();
+            assert!(aggregator_reachable("127.0.0.1", port).await);
+            drop(listener);
+            let started = Instant::now();
+            assert!(!aggregator_reachable("127.0.0.1", port).await);
+            assert!(started.elapsed() < Duration::from_secs(5));
         }
     }
 

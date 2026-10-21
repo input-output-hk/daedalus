@@ -4712,6 +4712,11 @@
         "id": "loading.mithrilBootstrap.progress.snapshotSizeContext"
       },
       {
+        "defaultMessage": "!!!Downloading will continue when the network returns.",
+        "description": "Line on the Mithril progress view while the download has stalled and the Mithril aggregator cannot be reached; the download continues by itself once the network is back.",
+        "id": "loading.mithrilBootstrap.progress.waitingForNetwork"
+      },
+      {
         "defaultMessage": "!!!This can take several minutes — Daedalus is still working.",
         "description": "Reassurance line shown during long non-download Mithril phases (verifying/unpacking/converting/installing/finalizing) so the dialogue never looks frozen.",
         "id": "loading.mithrilBootstrap.progress.longPhaseReassurance"

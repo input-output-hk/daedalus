@@ -190,6 +190,15 @@ pub struct MithrilConfig {
     /// renamed until it lets go.
     #[serde(default = "default_rename_retry_secs")]
     pub rename_retry_secs: u64,
+    /// How long, in seconds, a download may go without its progress growing
+    /// before the watchdog checks whether the aggregator can be reached. 0
+    /// turns the check off.
+    #[serde(default = "default_download_stall_secs")]
+    pub download_stall_secs: u64,
+    /// How often, in seconds, that check is repeated while the download
+    /// stays stalled.
+    #[serde(default = "default_network_recheck_secs")]
+    pub network_recheck_secs: u64,
     /// `chain_path` as configured. A storage folder picked by the user
     /// replaces `chain_path`, and clearing the folder restores this value.
     /// Recorded by `state::apply_to_config` the first time it runs.
@@ -206,6 +215,14 @@ fn default_behind_threshold() -> u64 {
 
 fn default_rename_retry_secs() -> u64 {
     60
+}
+
+fn default_download_stall_secs() -> u64 {
+    60
+}
+
+fn default_network_recheck_secs() -> u64 {
+    20
 }
 
 /// The node configuration given by `--config`, and its path.
@@ -828,6 +845,9 @@ mod tests {
         )
         .unwrap();
         assert_eq!(c.node.network_magic, None);
+        let mithril = c.mithril.as_ref().unwrap();
+        assert_eq!(mithril.download_stall_secs, 60);
+        assert_eq!(mithril.network_recheck_secs, 20);
         c.set_network_magic(2);
         assert_eq!(c.node.network_magic, Some(2));
         assert_eq!(c.mithril.unwrap().network_magic, Some(2));

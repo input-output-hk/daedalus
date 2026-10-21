@@ -273,7 +273,7 @@
           "id": "task-028",
           "title": "Say when a Mithril download is waiting for the network",
           "description": "While mithril-client downloads, note when its file count, byte count or step last grew. After 60 s without growth, check whether the aggregator can be reached, and again every 20 s while the download stays stalled. Emit mithril_waiting_for_network while it cannot be reached, and show on the progress view that downloading will continue when the network returns.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 6.0,
           "dependencies": [

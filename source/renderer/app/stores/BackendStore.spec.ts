@@ -406,6 +406,33 @@ describe('BackendStore startup silence', () => {
   });
 });
 
+describe('BackendStore Mithril download waiting for the network', () => {
+  it('copies mithrilWaitingForNetwork from the poll and defaults it to false', async () => {
+    const store = makeStore();
+    const state = {
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'downloading',
+      mithrilWaitingForNetwork: true,
+    };
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      state
+    );
+    await store._pollBackendStatus();
+    expect(store.mithrilWaitingForNetwork).toBe(true);
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      ...state,
+      mithrilWaitingForNetwork: undefined,
+    });
+    await store._pollBackendStatus();
+    expect(store.mithrilWaitingForNetwork).toBe(false);
+  });
+});
+
 describe('BackendStore.retryMithril', () => {
   beforeEach(() => {
     (mithrilCommandChannel.send as jest.Mock).mockClear();

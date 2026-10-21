@@ -203,6 +203,13 @@ pub enum Event {
         message: String,
         rebuild: bool,
     },
+    /// A Mithril download has made no progress for a while and the
+    /// aggregator cannot be reached (`waiting` true), or it no longer waits
+    /// (`waiting` false): its progress grew, the aggregator can be reached,
+    /// or the download ended. mithril-client resumes by itself.
+    MithrilWaitingForNetwork {
+        waiting: bool,
+    },
     /// Emitted once on startup if watchdog-state.json is absent, before chain_status.
     /// Electron should respond with a `migrate_state` command carrying any persisted
     /// overrides from the old electron-store (custom chain path, RTS flags, etc.).
@@ -889,6 +896,16 @@ mod tests {
             });
             assert_eq!(j["kind"], expected);
         }
+    }
+
+    #[test]
+    fn mithril_waiting_for_network() {
+        let line =
+            serde_json::to_string(&Event::MithrilWaitingForNetwork { waiting: true }).unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"mithril_waiting_for_network","waiting":true}"#
+        );
     }
 
     #[test]

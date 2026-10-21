@@ -61,6 +61,39 @@ const renderContainer = (
     </ThemeProvider>
   );
 
+describe('MithrilSyncContainer progress view', () => {
+  afterEach(cleanup);
+
+  const waitingLine = 'Downloading will continue when the network returns.';
+  const intlMessages = { [messages.progressWaitingForNetwork.id]: waitingLine };
+
+  it('says that the download continues when the network returns while it waits', () => {
+    renderContainer(
+      makeBackend({
+        mithrilPhase: 'downloading',
+        lastError: null,
+        lastErrorCode: null,
+        mithrilWaitingForNetwork: true,
+      }),
+      intlMessages
+    );
+    expect(screen.getByText(waitingLine)).toBeInTheDocument();
+  });
+
+  it('says nothing about the network while the download goes on', () => {
+    renderContainer(
+      makeBackend({
+        mithrilPhase: 'downloading',
+        lastError: null,
+        lastErrorCode: null,
+        mithrilWaitingForNetwork: false,
+      }),
+      intlMessages
+    );
+    expect(screen.queryByText(waitingLine)).not.toBeInTheDocument();
+  });
+});
+
 describe('MithrilSyncContainer error view', () => {
   afterEach(cleanup);
 

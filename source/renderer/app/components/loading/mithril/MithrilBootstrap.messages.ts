@@ -427,6 +427,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Static, real-size context appended to the Mithril download readout (derived from snapshot.size); not a moving bar.',
   },
+  progressWaitingForNetwork: {
+    id: 'loading.mithrilBootstrap.progress.waitingForNetwork',
+    defaultMessage: '!!!Downloading will continue when the network returns.',
+    description:
+      'Line on the Mithril progress view while the download has stalled and the Mithril aggregator cannot be reached; the download continues by itself once the network is back.',
+  },
   progressLongPhaseReassurance: {
     id: 'loading.mithrilBootstrap.progress.longPhaseReassurance',
     defaultMessage:

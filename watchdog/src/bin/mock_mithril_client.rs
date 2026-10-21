@@ -24,6 +24,10 @@
 // With MOCK_MITHRIL_DOWNLOAD_HANG=1, "download" emits its progress lines and
 // then waits until it is killed, so a test can cancel a download in progress.
 //
+// With MOCK_MITHRIL_DOWNLOAD_STALL_MS=<n>, "download" repeats its second
+// progress line, with the same counts, for n milliseconds before it goes on,
+// like a client whose download waits for the network.
+//
 // The snapshot's immutable_file_number is set very high (999_999) so the
 // behind-ness probe always concludes that a sync is needed when force=false.
 
@@ -74,13 +78,25 @@ fn main() {
         }
 
         // Emit JSON progress lines (watchdog reads these from both stdout/stderr).
+        let stall_ms: u64 = env::var("MOCK_MITHRIL_DOWNLOAD_STALL_MS")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(0);
         for i in 1u64..=5 {
-            println!(
+            let line = format!(
                 r#"{{"files_downloaded":{i},"files_total":5,"bytes_downloaded":{b},"bytes_total":500,"seconds_elapsed":{s}.0,"step_num":1,"total_steps":4}}"#,
                 b = i * 100,
                 s = i,
             );
+            println!("{line}");
             sleep(Duration::from_millis(20));
+            if i == 2 && stall_ms > 0 {
+                let until = std::time::Instant::now() + Duration::from_millis(stall_ms);
+                while std::time::Instant::now() < until {
+                    println!("{line}");
+                    sleep(Duration::from_millis(100));
+                }
+            }
         }
         if env::var("MOCK_MITHRIL_DOWNLOAD_HANG").as_deref() == Ok("1") {
             sleep(Duration::from_secs(300));

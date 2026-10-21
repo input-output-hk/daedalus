@@ -295,6 +295,47 @@ describe('WatchdogManager startup silence', () => {
   });
 });
 
+describe('WatchdogManager Mithril download waiting for the network', () => {
+  const waiting = { event: 'mithril_waiting_for_network', waiting: true };
+
+  it('records the wait and its end', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().mithrilWaitingForNetwork).toBe(false);
+    emit(waiting);
+    expect(manager.getState().mithrilWaitingForNetwork).toBe(true);
+    emit({ event: 'mithril_waiting_for_network', waiting: false });
+    expect(manager.getState().mithrilWaitingForNetwork).toBe(false);
+  });
+
+  it.each(['downloading', 'verifying'])(
+    'keeps the wait through the %s phase',
+    (phase) => {
+      const { manager, emit } = makeManager();
+      emit(waiting);
+      emit({ event: 'mithril_status', phase, rebuild: false });
+      expect(manager.getState().mithrilWaitingForNetwork).toBe(true);
+    }
+  );
+
+  it.each([
+    { event: 'mithril_status', phase: 'converting', rebuild: false },
+    { event: 'mithril_status', phase: 'cancelled', rebuild: false },
+    {
+      event: 'mithril_error',
+      code: 'DOWNLOAD_FAILED',
+      message: 'x',
+      rebuild: false,
+    },
+    { event: 'node_started', pid: 1, started_at_unix_ms: 0 },
+    { event: 'stopped' },
+  ])('ends the wait on $event $phase', (event) => {
+    const { manager, emit } = makeManager();
+    emit(waiting);
+    emit(event);
+    expect(manager.getState().mithrilWaitingForNetwork).toBe(false);
+  });
+});
+
 describe('WatchdogManager rebuild state', () => {
   it('records whether a mithril_error came from a rebuild', () => {
     const { manager, emit } = makeManager();

@@ -65,6 +65,9 @@ export default class BackendStore extends Store {
   };
   @observable mithrilPhase: string | null = null;
   @observable mithrilProgress: MithrilProgress | null = null;
+  // A Mithril download has stalled and the watchdog cannot reach the
+  // aggregator; the download continues when the network returns
+  @observable mithrilWaitingForNetwork = false;
   @observable lastError: string | null = null;
   // The code of the Mithril error that set lastError, e.g. PROBE_FAILED
   @observable lastErrorCode: string | null = null;
@@ -212,6 +215,7 @@ export default class BackendStore extends Store {
           this._pendingChainPath = null;
         }
         this.mithrilProgress = state.mithrilProgress;
+        this.mithrilWaitingForNetwork = state.mithrilWaitingForNetwork ?? false;
         this.lastError = state.lastError;
         this.lastErrorCode = state.lastErrorCode ?? null;
         this.lastErrorRebuild = state.lastErrorRebuild ?? false;

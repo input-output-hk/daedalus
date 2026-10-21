@@ -583,6 +583,7 @@
   "loading.mithrilBootstrap.progress.verifyingDatabase": "データベースの整合性を検証中",
   "loading.mithrilBootstrap.progress.verifyingDigests": "スナップショットダイジェストを検証中",
   "loading.mithrilBootstrap.progress.verifyingSignature": "スナップショットの署名を検証中",
+  "loading.mithrilBootstrap.progress.waitingForNetwork": "ネットワークが復旧すると、ダウンロードが再開されます。",
   "loading.mithrilBootstrap.selectLabel": "スナップショット",
   "loading.mithrilBootstrap.snapshotCreatedLabel": "作成日時",
   "loading.mithrilBootstrap.snapshotDetailsTitle": "スナップショットの詳細",
