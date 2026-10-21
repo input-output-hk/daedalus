@@ -291,12 +291,12 @@
           "implementationNotes": [
             "mithril-client 0.13.9 reports no error and no progress while the network is unavailable and continues when it returns, so it is never stopped or timed out for a stall.",
             "mithril-client 0.13.9 reports immutable files as files_downloaded and the ancillary archive as bytes_downloaded, one kind per line; track the highest of each on its own, since the other reads as 0 on each line.",
-            "Resolve the aggregator's host and connect to its port under one 5 s timeout; never wait on an unbounded lookup.",
+            "Check the aggregator with mithril-client's snapshot query, which takes the download's route through any proxy, and stop a query still running after 15 s; never wait on an unbounded lookup.",
             "download_stall_secs and network_recheck_secs in the Mithril configuration, 60 and 20 by default, so tests use short durations.",
             "Clear the wait on growth, on a check that reaches the aggregator, and when the download ends."
           ],
           "testCases": [
-            "Unit tests of the download watch with given times, and of reading the host and port from the aggregator URL.",
+            "Unit tests of the download watch with given times, and of the check with a stand-in client that succeeds, fails, cannot start or is still running at the limit.",
             "Integration: a mock download that stalls with an unreachable aggregator emits waiting true, then false when it continues; with a reachable aggregator it emits nothing.",
             "Jest: mithrilWaitingForNetwork in WatchdogManager and BackendStore, and the line on MithrilProgressView."
           ]
@@ -470,7 +470,8 @@
             "startup_silence_secs in the node configuration, 300 by default, lets tests use a short limit.",
             "A tick more than six intervals after the previous one, by the monotonic or the wall clock, restarts the silence count, because the machine slept.",
             "restart_node is already handled before chainDbReady, in the node_starting loop of run_node_wallet.",
-            "The silence prompt takes the Mithril prompt's place while both apply (PRD decision 27)."
+            "The silence prompt takes the Mithril prompt's place while both apply (PRD decision 27).",
+            "Main keeps the silence that Keep waiting or Restart Cardano node dismissed, beside the count, so a reload of the window does not show the prompt again."
           ],
           "testCases": [
             "Unit tests of the silence watch: one report per silence, a new silence after output, and a long gap between ticks restarting the count.",
@@ -481,7 +482,7 @@
         {
           "id": "task-029",
           "title": "Make the Mithril error view's hint and details readable",
-          "description": "Set the error hint as body text, close the gap between the hint and the technical details, and give the details header and its toggle the Mithril card's colors on every theme. Styles only: no message, role or markup changes.",
+          "description": "Set the error hint as body text, close the gap between the hint and the technical details, and give the details header and its toggle the Mithril card's colors on every theme. The toggle is a button (PRD decision 32).",
           "status": "completed",
           "priority": "medium",
           "estimatedHours": 1.5,
@@ -489,16 +490,17 @@
             "task-012"
           ],
           "targetPaths": [
+            "source/renderer/app/components/loading/mithril/MithrilErrorView.tsx",
             "source/renderer/app/components/loading/mithril/MithrilErrorView.scss"
           ],
           "implementationNotes": [
             "The hint was 13px with the body's line-height of 1, under a title with the same line-height, so it read as a caption pressed against the title.",
             "CollapsibleSection colors its header with --theme-main-body-messages-color and its link with --rp-link-color, both set for the main app background: on the light-blue Mithril card they measure 1.95:1 and 2.49:1.",
             "The header uses --theme-mithril-body-text-color and the toggle takes --theme-mithril-button-secondary-text-color through --rp-link-color, which measure at least 5.76:1 and 8.18:1 against the card on every theme.",
-            "The widget's link toggle is a span with aria-hidden and no tab stop, followed by a literal full stop. Its button mode renders a button instead, which MithrilSyncContainer specs would count among the view's buttons, so the toggle stays a link here."
+            "The widget's link toggle is a span with aria-hidden and no tab stop, followed by a literal full stop, so the view uses its button mode (PRD decision 32), drawn as a small secondary action with its own focus outline."
           ],
           "testCases": [
-            "Existing Jest specs for MithrilErrorView and MithrilSyncContainer open the details through the toggle's text and count the view's buttons.",
+            "Jest: MithrilErrorView opens and closes the details with the toggle button, and MithrilSyncContainer specs list the offered actions by name, leaving out the toggle.",
             "Storybook: the error stories on the light-blue, dark-blue, cardano and white themes, collapsed and expanded, and in ja-JP."
           ]
         }
@@ -526,7 +528,9 @@
           ],
           "implementationNotes": [
             "Place it next to the Mithril Sync action (DaedalusDiagnosticsDialog.tsx:24-26).",
-            "Reuse the confirm view from task-011 inside a Dialog, as MithrilPartialSyncConfirmation does."
+            "Reuse the confirm view from task-011 inside a Dialog, as MithrilPartialSyncConfirmation does.",
+            "Restart Cardano node stays available while the watchdog holds the node, because the restart runs the ledger snapshot check again (PRD decision 26).",
+            "Close Diagnostics once a confirmed rebuild or Mithril Sync has been sent (PRD decision 31)."
           ],
           "testCases": [
             "Diagnostics shows 'No damage detected' by default and the slot and time after a chain_damage event.",
