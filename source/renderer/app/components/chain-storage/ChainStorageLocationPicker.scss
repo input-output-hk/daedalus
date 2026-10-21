@@ -127,6 +127,13 @@
   margin: 10px 0 0;
 }
 
+// On the way to a rebuild, data found in the folder will be deleted, so the
+// notice that says so is set as a warning rather than as help text
+.rebuildDataNotice {
+  color: var(--theme-chain-storage-error-text-color);
+  font-family: var(--font-medium);
+}
+
 .resetActionRow {
   align-items: center;
   display: flex;

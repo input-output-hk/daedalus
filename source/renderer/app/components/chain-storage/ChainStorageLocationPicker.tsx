@@ -425,7 +425,8 @@ function ChainStorageLocationPicker(props: Props, { intl }: Context) {
           <p
             className={classNames(
               styles.storageSubtext,
-              styles.storageHelpText
+              styles.storageHelpText,
+              hasBlockchainData && forRebuild && styles.rebuildDataNotice
             )}
             id={
               hasBlockchainData
