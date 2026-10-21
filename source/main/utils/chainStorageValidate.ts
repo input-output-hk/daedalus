@@ -5,10 +5,16 @@ import type {
   ChainStorageValidationReason,
 } from '../../common/types/watchdog.types';
 
-// Top-level entries of a cardano-node database directory, and the files that
-// desktop file browsers leave in any directory they display. The watchdog
-// replaces a directory with a Mithril snapshot only when it holds nothing else.
-// mithril-staging is the watchdog's download area inside the chain directory.
+// The watchdog's download area inside the chain directory, and the file in it
+// that names the network the download is for, written before the download
+// starts.
+const STAGING_ENTRY = 'mithril-staging';
+const STAGING_NETWORK_MARKER = 'network-magic';
+
+// Top-level entries of a cardano-node database directory with the staging
+// entry, and the files that desktop file browsers leave in any directory they
+// display. The watchdog replaces a directory with a Mithril snapshot only when
+// it holds nothing else.
 const DATABASE_ENTRIES = new Set([
   'immutable',
   'volatile',
@@ -18,7 +24,7 @@ const DATABASE_ENTRIES = new Set([
   'lock',
   'clean',
   'protocolMagicId',
-  'mithril-staging',
+  STAGING_ENTRY,
 ]);
 const OS_METADATA_ENTRIES = new Set(['.DS_Store', 'Thumbs.db', 'desktop.ini']);
 
@@ -52,26 +58,45 @@ export const parseNetworkMagic = (
   return magic <= 0xffffffff ? magic : null;
 };
 
-// The network magic of the node database in `chainSubdir`, or null when it
-// has no readable marker.
-const readDatabaseNetworkMagic = (chainSubdir: string): number | null => {
-  const marker = path.join(chainSubdir, 'protocolMagicId');
-  if (!isFile(marker)) {
+// The network magic written in `file`, or null when it has no readable one.
+const readNetworkMagicFile = (file: string): number | null => {
+  if (!isFile(file)) {
     return null;
   }
   try {
-    return parseNetworkMagic(fs.readFileSync(marker, 'utf8'));
+    return parseNetworkMagic(fs.readFileSync(file, 'utf8'));
   } catch {
     return null;
   }
 };
 
+// The network magic of the node database in `chainSubdir`, or null when it
+// has no readable marker.
+const readDatabaseNetworkMagic = (chainSubdir: string): number | null =>
+  readNetworkMagicFile(path.join(chainSubdir, 'protocolMagicId'));
+
+// The network that the Mithril staging entry in `chainSubdir` holds a download
+// for: the one its marker names or, in an entry without a marker, the one the
+// database staged in it names. Null when neither names a network.
+const readStagingNetworkMagic = (chainSubdir: string): number | null => {
+  const staging = path.join(chainSubdir, STAGING_ENTRY);
+  const marked = readNetworkMagicFile(
+    path.join(staging, STAGING_NETWORK_MARKER)
+  );
+  return marked != null
+    ? marked
+    : readNetworkMagicFile(
+        path.join(staging, 'download', 'db', 'protocolMagicId')
+      );
+};
+
 // Why an existing chain subdirectory cannot hold the database, or null when it
 // can. It can when cardano-node can open it (it holds a node database of this
 // network) or when a Mithril snapshot may replace it (it holds only database
-// entries). Another network's database belongs to the Daedalus that runs that
-// network: the node refuses it and the watchdog does not change it. Anything
-// else would leave the node refusing to start and Mithril refusing to install.
+// entries). Another network's database, or its download in the staging entry,
+// belongs to the Daedalus that runs that network: the node refuses it and the
+// watchdog does not change it. Anything else would leave the node refusing to
+// start and Mithril refusing to install.
 function getChainSubdirectoryConflict(
   chainSubdir: string,
   networkMagic: number | null
@@ -80,11 +105,11 @@ function getChainSubdirectoryConflict(
     if (!fs.statSync(chainSubdir).isDirectory()) {
       return 'chain-entry-not-directory';
     }
-    const databaseMagic = readDatabaseNetworkMagic(chainSubdir);
+    const isOtherNetwork = (magic: number | null): boolean =>
+      networkMagic != null && magic != null && magic !== networkMagic;
     if (
-      networkMagic != null &&
-      databaseMagic != null &&
-      databaseMagic !== networkMagic
+      isOtherNetwork(readDatabaseNetworkMagic(chainSubdir)) ||
+      isOtherNetwork(readStagingNetworkMagic(chainSubdir))
     ) {
       return 'chain-subdirectory-other-network';
     }

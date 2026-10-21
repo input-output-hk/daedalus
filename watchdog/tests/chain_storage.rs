@@ -724,6 +724,81 @@ fn startup_deletes_the_staging_beside_this_networks_database() {
     stop(child, stdin, &rx);
 }
 
+/// Two networks share a storage folder. While one downloads its first
+/// snapshot, before mithril-client has written `protocolMagicId` into the
+/// staged database, the other starts: it leaves the download alone, and its
+/// own Mithril sync is refused without changing anything.
+#[test]
+fn a_download_in_a_shared_folder_is_left_to_its_network() {
+    let downloading = TempDir::new("shared-downloading");
+    first_run(&downloading);
+    let folder = downloading.picked_folder();
+    let staging = folder.join("chain").join("mithril-staging");
+    let cfg = config_on_network(&downloading, NETWORK_MAGIC);
+    let (child, mut stdin, rx) = spawn_with(
+        &downloading,
+        &cfg,
+        &[("MOCK_MITHRIL_DOWNLOAD_HANG", Path::new("1"))],
+    );
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_phase(&rx, "downloading");
+    assert_eq!(
+        std::fs::read_to_string(staging.join("network-magic")).unwrap(),
+        NETWORK_MAGIC
+    );
+    assert!(
+        !staging
+            .join("download")
+            .join("db")
+            .join("protocolMagicId")
+            .exists()
+    );
+    let before = tree(&folder);
+
+    let other = TempDir::new("shared-other");
+    std::fs::write(
+        other.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let other_cfg = config_on_network(&other, OTHER_NETWORK_MAGIC);
+    let mithril_args = other.0.join("mithril-args.json");
+    let (other_child, mut other_stdin, other_rx) = spawn_with(
+        &other,
+        &other_cfg,
+        &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)],
+    );
+
+    assert_eq!(expect(&other_rx, "chain_status")["has_chain"], false);
+    assert_eq!(tree(&folder), before);
+    assert!(
+        other.log().contains("belongs to network magic 764824073"),
+        "{}",
+        other.log()
+    );
+
+    send(&mut other_stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&other_rx, "mithril_error");
+    assert_eq!(err["code"], "CHAIN_DIR_OTHER_NETWORK");
+    assert!(
+        err["message"]
+            .as_str()
+            .unwrap()
+            .contains(staging.to_str().unwrap()),
+        "{err}"
+    );
+    assert!(!mithril_args.exists(), "a download was started");
+    assert_eq!(tree(&folder), before);
+
+    stop(other_child, other_stdin, &other_rx);
+    stop(child, stdin, &rx);
+}
+
 /// Every start of the node is checked, not only the first: moving a running
 /// node to a folder that holds another network's database stops it and does
 /// not start it again there.

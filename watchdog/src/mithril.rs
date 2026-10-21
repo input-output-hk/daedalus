@@ -956,8 +956,24 @@ const OS_METADATA_ENTRIES: &[&str] = &[".DS_Store", "Thumbs.db", "desktop.ini"];
 /// installed. It lies inside the directory a link or junction at the chain
 /// path resolves to, so it is on the chain's own volume and the install is a
 /// rename. It is never part of the database: check_replaceable allows it, the
-/// wipe leaves it alone, and the has-chain check does not look at it.
+/// wipe leaves it alone, and the has-chain check does not look at it. Its
+/// marker names the network it holds a download for.
 pub(crate) const STAGING_ENTRY: &str = "mithril-staging";
+
+/// File in the staging entry that names the network its download is for, as
+/// the network magic in decimal text, the form of a database's
+/// `protocolMagicId`. It is written when the staging entry is created, before
+/// mithril-client starts, and lies beside the download, not in it, so it is
+/// never installed into the chain. mithril-client 0.13.9 writes
+/// `protocolMagicId` into the database it downloads only late in the
+/// download, so until then this marker is what tells another network's
+/// Daedalus, sharing the storage folder, that the staging entry is not its
+/// own.
+const STAGING_NETWORK_MARKER: &str = "network-magic";
+
+/// Where the staging marker is written before it is renamed into place, so
+/// the marker is never read half-written.
+const STAGING_NETWORK_MARKER_TEMP: &str = "network-magic.tmp";
 
 /// Where earlier versions staged a Mithril download: in the state
 /// directory, which can be on another volume than the chain.
@@ -1172,7 +1188,9 @@ fn size_on_disk(path: &Path) -> u64 {
 
 /// The space a full install into `dir` frees before it downloads: a staging
 /// leftover, which is deleted before every download, and for a rebuild the
-/// database entries the wipe deletes.
+/// database entries the wipe deletes. A staging entry of another network is
+/// never deleted, but network_allowed refuses the install before this
+/// counts one.
 async fn space_freed_before_download(dir: &Path, wipe_chain: bool) -> u64 {
     let mut names = vec![STAGING_ENTRY];
     if wipe_chain {
@@ -1253,24 +1271,118 @@ async fn space_allowed(dir: &Path, db_size: Option<u64>, wipe_chain: bool) -> bo
     false
 }
 
+/// The network the staging entry `staging` holds a download for: the network
+/// magic in its marker or, in a staging entry written without one, in the
+/// `protocolMagicId` of the database staged in it. None when neither names a
+/// network.
+async fn staging_network_magic(staging: &Path) -> Option<u32> {
+    match state::network_magic_in(&staging.join(STAGING_NETWORK_MARKER)).await {
+        Some(magic) => Some(magic),
+        None => state::database_network_magic(&staging.join("download").join("db")).await,
+    }
+}
+
+/// The network magic of the staging entry `staging` when it names a network
+/// other than `network_magic`, the cluster's: that network's Daedalus may be
+/// downloading into it now. None when it names this network or none, or when
+/// the cluster's network magic is unknown.
+async fn other_network_staging(staging: &Path, network_magic: Option<u32>) -> Option<u32> {
+    let expected = network_magic?;
+    staging_network_magic(staging)
+        .await
+        .filter(|found| *found != expected)
+}
+
+/// The network magic of another network whose download the staging entry in
+/// the chain directory `dir` may hold, which keeps it at startup. The staging
+/// entry's own marker decides, or the database staged in it. A staging entry
+/// that names no network is taken for the other network's when the chain
+/// directory holds that network's database.
+async fn staging_kept_for(dir: &Path, network_magic: Option<u32>) -> Option<u32> {
+    let expected = network_magic?;
+    let owner = match staging_network_magic(&dir.join(STAGING_ENTRY)).await {
+        Some(found) => Some(found),
+        None => state::database_network_magic(dir).await,
+    };
+    owner.filter(|found| *found != expected)
+}
+
+/// Writes the marker that names the network `magic` into the staging entry
+/// `staging`. It is written in full to a temporary file there and renamed
+/// over the marker, tried again for up to `rename_budget` as an install's
+/// renames are, so a reader never sees a partial value. It is not flushed to
+/// the disk first: a marker that a crash leaves empty names no network, as
+/// in a staging entry without one.
+async fn write_staging_marker(
+    staging: &Path,
+    magic: u32,
+    rename_budget: Duration,
+) -> std::io::Result<()> {
+    let temp = staging.join(STAGING_NETWORK_MARKER_TEMP);
+    let written = async {
+        tokio::fs::write(&temp, magic.to_string()).await?;
+        rename_with_retry(&temp, &staging.join(STAGING_NETWORK_MARKER), rename_budget).await
+    }
+    .await;
+    if written.is_err() {
+        let _ = tokio::fs::remove_file(&temp).await;
+    }
+    written
+}
+
+/// Why the staging entry could not be prepared for a download.
+#[derive(Debug)]
+enum StagingRefused {
+    /// It holds a download for another network, `found`; this network's is
+    /// `expected`.
+    OtherNetwork {
+        found: u32,
+        expected: u32,
+    },
+    Io(std::io::Error),
+}
+
+/// Prepares the staging entry `staging` for a download for `network_magic`:
+/// deletes what an earlier download of this network left there, creates the
+/// download directory, and writes the marker that names the network, all
+/// before mithril-client starts. A staging entry of another network is left
+/// as it is and refused. Without a known network magic no marker is written,
+/// as before staging entries were marked.
+async fn prepare_staging(
+    staging: &Path,
+    network_magic: Option<u32>,
+    rename_budget: Duration,
+) -> Result<(), StagingRefused> {
+    if let (Some(expected), Some(found)) = (
+        network_magic,
+        other_network_staging(staging, network_magic).await,
+    ) {
+        return Err(StagingRefused::OtherNetwork { found, expected });
+    }
+    let _ = remove_entry(staging).await;
+    tokio::fs::create_dir_all(staging.join("download"))
+        .await
+        .map_err(StagingRefused::Io)?;
+    if let Some(magic) = network_magic {
+        write_staging_marker(staging, magic, rename_budget)
+            .await
+            .map_err(StagingRefused::Io)?;
+    }
+    Ok(())
+}
+
 /// Deletes what an interrupted Mithril run left behind: the staging entry in
 /// the chain directory, and the staging directory earlier versions kept
 /// in the state directory. Called at startup, when no pipeline of this
-/// Daedalus runs. The staging entry is kept when the chain directory, or the
-/// database staged in it, belongs to another network: every network keeps
-/// its database in the chain directory of the storage folder, so the
-/// Daedalus of that network may be downloading into it now.
+/// Daedalus runs. Every network keeps its database in the chain directory of
+/// the storage folder, so a staging entry of another network may hold that
+/// network's download in progress, and is kept (`staging_kept_for`).
 pub async fn remove_stale_staging(cfg: &MithrilConfig) {
     let mut leftovers = vec![Path::new(&cfg.state_dir).join(LEGACY_STAGING_DIR)];
     if let Ok(target) = full_install_target(Path::new(&cfg.chain_path)).await {
         if target.is_absolute() {
             let staging = target.join(STAGING_ENTRY);
-            let staged_db = staging.join("download").join("db");
-            let other = match state::other_network_magic(&target, cfg.network_magic).await {
-                Some(found) => Some(found),
-                None => state::other_network_magic(&staged_db, cfg.network_magic).await,
-            };
-            match other {
+            match staging_kept_for(&target, cfg.network_magic).await {
                 Some(found) => info!(
                     "mithril: {} belongs to network magic {found}, not this network's; it is left as it is",
                     staging.display()
@@ -1294,23 +1406,36 @@ pub async fn remove_stale_staging(cfg: &MithrilConfig) {
 /// Whether Mithril may change the chain directory at all. Never when it holds
 /// another network's database: a partial sync would rewrite its chunks and
 /// ledger, and a full install or a wipe would delete it, although it holds
-/// nothing but database entries. Emits a `CHAIN_DIR_OTHER_NETWORK` error when
-/// it may not; `wipe_chain` tells the renderer whether the sync was a rebuild.
+/// nothing but database entries. Nor when its staging entry holds another
+/// network's download: every download first deletes what the staging entry
+/// holds. Emits a `CHAIN_DIR_OTHER_NETWORK` error when it may not;
+/// `wipe_chain` tells the renderer whether the sync was a rebuild.
 async fn network_allowed(chain_path: &Path, network_magic: Option<u32>, wipe_chain: bool) -> bool {
-    let (Some(expected), Some(found)) = (
-        network_magic,
-        state::other_network_magic(chain_path, network_magic).await,
-    ) else {
+    let Some(expected) = network_magic else {
         return true;
     };
-    let message = state::other_network_message(chain_path, found, expected);
+    let staging = chain_path.join(STAGING_ENTRY);
+    if let Some(found) = state::other_network_magic(chain_path, network_magic).await {
+        refuse_other_network(chain_path, found, expected, wipe_chain);
+        return false;
+    }
+    if let Some(found) = other_network_staging(&staging, network_magic).await {
+        refuse_other_network(&staging, found, expected, wipe_chain);
+        return false;
+    }
+    true
+}
+
+/// Logs and reports that `dir`, in the chain directory, holds data of the
+/// network `found` and so is not changed.
+fn refuse_other_network(dir: &Path, found: u32, expected: u32, wipe_chain: bool) {
+    let message = state::other_network_message(dir, found, expected);
     warn!("mithril: refusing to change the chain directory: {message}");
     emit(&Event::MithrilError {
         code: "CHAIN_DIR_OTHER_NETWORK".to_string(),
         message,
         rebuild: wipe_chain,
     });
-    false
 }
 
 // For bootstrap (local_highest = None): replace the entire chain directory.
@@ -1638,7 +1763,8 @@ pub async fn run_pipeline(
     }
 
     // Nothing is wiped from, downloaded for or installed over another
-    // network's database.
+    // network's database, and no download replaces another network's in the
+    // staging entry.
     let chain_path = PathBuf::from(&cfg.chain_path);
     if !network_allowed(&chain_path, cfg.network_magic, wipe_chain).await {
         return PipelineResult::Cancelled;
@@ -1793,15 +1919,24 @@ pub async fn run_pipeline(
     // pass `download_dir` to the client and then work with `download_dir/db`.
     let download_dir = staging_root.join("download");
     let staging_db = download_dir.join("db");
-    let _ = remove_entry(&staging_root).await;
-    if let Err(e) = tokio::fs::create_dir_all(&download_dir).await {
-        warn!("mithril: failed to create staging directory: {e}");
-        emit(&Event::MithrilError {
-            code: "STAGING_FAILED".to_string(),
-            message: e.to_string(),
-            rebuild: wipe_chain,
-        });
-        return failed();
+    let rename_budget = Duration::from_secs(cfg.rename_retry_secs);
+    match prepare_staging(&staging_root, cfg.network_magic, rename_budget).await {
+        Ok(()) => {}
+        // network_allowed refused this before anything was deleted; the
+        // other network's download began since.
+        Err(StagingRefused::OtherNetwork { found, expected }) => {
+            refuse_other_network(&staging_root, found, expected, wipe_chain);
+            return failed();
+        }
+        Err(StagingRefused::Io(e)) => {
+            warn!("mithril: failed to create staging directory: {e}");
+            emit(&Event::MithrilError {
+                code: "STAGING_FAILED".to_string(),
+                message: e.to_string(),
+                rebuild: wipe_chain,
+            });
+            return failed();
+        }
     }
 
     // 3. Download — "downloading" status is emitted by run_download on first real progress event.
@@ -1967,7 +2102,6 @@ pub async fn run_pipeline(
         }
     }
 
-    let rename_budget = Duration::from_secs(cfg.rename_retry_secs);
     if let Err(e) = install_staged(&staging_db, &chain_path, is_partial, rename_budget).await {
         // The cutover-in-progress marker and the record are already written
         // and the chain may be partially modified. Return Failed so the
@@ -3006,6 +3140,272 @@ mod tests {
             let chain = t.0.join("chain");
             std::os::unix::fs::symlink(&hop, &chain).unwrap();
             assert!(check_rebuild_path(&chain).await.is_err());
+        }
+    }
+
+    /// The staging entry's network marker, and what startup and a download
+    /// do with a staging entry of this network, of another, or of none.
+    mod staging {
+        use super::super::{
+            STAGING_ENTRY, STAGING_NETWORK_MARKER, STAGING_NETWORK_MARKER_TEMP, StagingRefused,
+            network_allowed, prepare_staging, remove_stale_staging, staging_network_magic,
+        };
+        use crate::config::MithrilConfig;
+        use std::collections::BTreeMap;
+        use std::fs;
+        use std::path::{Path, PathBuf};
+        use std::time::Duration;
+
+        /// The cluster's network magic in these tests.
+        const THIS: u32 = 2;
+        /// Another network's.
+        const OTHER: &str = "1";
+
+        struct TempDir(PathBuf);
+
+        impl TempDir {
+            fn new(label: &str) -> Self {
+                let p = std::env::temp_dir().join(format!(
+                    "wdg-staging-{label}-{}-{}",
+                    std::process::id(),
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap()
+                        .subsec_nanos()
+                ));
+                fs::create_dir_all(&p).unwrap();
+                TempDir(p)
+            }
+
+            fn chain(&self) -> PathBuf {
+                self.0.join("chain")
+            }
+
+            fn staging(&self) -> PathBuf {
+                self.chain().join(STAGING_ENTRY)
+            }
+        }
+
+        impl Drop for TempDir {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+
+        /// A staging entry in `t`'s chain directory holding part of a
+        /// download, with a marker naming `marker` and a staged
+        /// `protocolMagicId` naming `staged`, each when given.
+        fn make_staging(t: &TempDir, marker: Option<&str>, staged: Option<&str>) {
+            let staged_db = t.staging().join("download").join("db");
+            fs::create_dir_all(staged_db.join("immutable")).unwrap();
+            fs::write(
+                staged_db.join("immutable").join("00000.chunk"),
+                b"in flight",
+            )
+            .unwrap();
+            if let Some(magic) = marker {
+                fs::write(t.staging().join(STAGING_NETWORK_MARKER), magic).unwrap();
+            }
+            if let Some(magic) = staged {
+                fs::write(staged_db.join("protocolMagicId"), magic).unwrap();
+            }
+        }
+
+        /// Every entry under `dir` with the contents of each file.
+        fn tree(dir: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
+            let mut entries = BTreeMap::new();
+            let mut stack = vec![dir.to_path_buf()];
+            while let Some(d) = stack.pop() {
+                for entry in fs::read_dir(&d).unwrap() {
+                    let path = entry.unwrap().path();
+                    let rel = path.strip_prefix(dir).unwrap().to_path_buf();
+                    if path.is_dir() {
+                        entries.insert(rel, None);
+                        stack.push(path);
+                    } else {
+                        entries.insert(rel, Some(fs::read(&path).unwrap()));
+                    }
+                }
+            }
+            entries
+        }
+
+        fn config(t: &TempDir, network_magic: Option<u32>) -> MithrilConfig {
+            let mut cfg: MithrilConfig = serde_json::from_value(serde_json::json!({
+                "mithril_bin": "m",
+                "snapshot_converter_bin": "c",
+                "converter_config": "cfg",
+                "aggregator_url": "u",
+                "genesis_vkey": "g",
+                "state_dir": t.0.to_str().unwrap(),
+                "chain_path": t.chain().to_str().unwrap(),
+            }))
+            .unwrap();
+            cfg.network_magic = network_magic;
+            cfg
+        }
+
+        /// Whether startup keeps a staging entry with `marker` and `staged`,
+        /// in a chain directory whose database names `chain`.
+        async fn kept_at_startup(
+            marker: Option<&str>,
+            staged: Option<&str>,
+            chain: Option<&str>,
+        ) -> bool {
+            let t = TempDir::new("startup");
+            make_staging(&t, marker, staged);
+            if let Some(magic) = chain {
+                fs::write(t.chain().join("protocolMagicId"), magic).unwrap();
+            }
+            remove_stale_staging(&config(&t, Some(THIS))).await;
+            t.staging().exists()
+        }
+
+        #[tokio::test]
+        async fn a_download_is_prepared_with_the_network_beside_it() {
+            let t = TempDir::new("prepare");
+            prepare_staging(&t.staging(), Some(THIS), Duration::ZERO)
+                .await
+                .unwrap();
+
+            assert_eq!(
+                fs::read_to_string(t.staging().join(STAGING_NETWORK_MARKER)).unwrap(),
+                "2"
+            );
+            assert!(t.staging().join("download").is_dir());
+            assert!(!t.staging().join(STAGING_NETWORK_MARKER_TEMP).exists());
+            assert_eq!(
+                tree(&t.staging()).into_keys().collect::<Vec<_>>(),
+                vec![
+                    PathBuf::from("download"),
+                    PathBuf::from(STAGING_NETWORK_MARKER)
+                ]
+            );
+        }
+
+        #[tokio::test]
+        async fn a_leftover_of_this_network_or_of_none_is_replaced() {
+            for (marker, staged) in [
+                (Some("2"), None),
+                (None, Some("2")),
+                (Some("2"), Some("2")),
+                (None, None),
+            ] {
+                let t = TempDir::new("replace");
+                make_staging(&t, marker, staged);
+                prepare_staging(&t.staging(), Some(THIS), Duration::ZERO)
+                    .await
+                    .unwrap();
+                assert!(
+                    !t.staging().join("download").join("db").exists(),
+                    "marker {marker:?}, staged {staged:?}: the leftover was kept"
+                );
+                assert_eq!(
+                    fs::read_to_string(t.staging().join(STAGING_NETWORK_MARKER)).unwrap(),
+                    "2"
+                );
+            }
+        }
+
+        #[tokio::test]
+        async fn a_download_of_another_network_is_refused_and_left_as_it_is() {
+            for (marker, staged) in [(Some(OTHER), None), (None, Some(OTHER))] {
+                let t = TempDir::new("refuse");
+                make_staging(&t, marker, staged);
+                let before = tree(&t.staging());
+
+                let refused = prepare_staging(&t.staging(), Some(THIS), Duration::ZERO).await;
+
+                assert!(
+                    matches!(
+                        refused,
+                        Err(StagingRefused::OtherNetwork {
+                            found: 1,
+                            expected: THIS
+                        })
+                    ),
+                    "marker {marker:?}, staged {staged:?}: {refused:?}"
+                );
+                assert_eq!(tree(&t.staging()), before);
+            }
+        }
+
+        #[tokio::test]
+        async fn without_a_known_network_a_leftover_is_replaced_and_nothing_marked() {
+            let t = TempDir::new("unknown");
+            make_staging(&t, Some(OTHER), None);
+            prepare_staging(&t.staging(), None, Duration::ZERO)
+                .await
+                .unwrap();
+            assert_eq!(
+                tree(&t.staging()).into_keys().collect::<Vec<_>>(),
+                vec![PathBuf::from("download")]
+            );
+        }
+
+        #[tokio::test]
+        async fn the_marker_names_the_network_before_the_staged_database() {
+            let t = TempDir::new("read");
+            assert_eq!(staging_network_magic(&t.staging()).await, None);
+            make_staging(&t, None, Some(OTHER));
+            assert_eq!(staging_network_magic(&t.staging()).await, Some(1));
+            fs::write(t.staging().join(STAGING_NETWORK_MARKER), "2\n").unwrap();
+            assert_eq!(staging_network_magic(&t.staging()).await, Some(2));
+            // A marker that holds no number names no network.
+            fs::write(t.staging().join(STAGING_NETWORK_MARKER), "").unwrap();
+            assert_eq!(staging_network_magic(&t.staging()).await, Some(1));
+        }
+
+        #[tokio::test]
+        async fn startup_deletes_a_leftover_of_this_network() {
+            assert!(!kept_at_startup(Some("2"), None, None).await);
+            assert!(!kept_at_startup(None, Some("2"), None).await);
+        }
+
+        #[tokio::test]
+        async fn startup_keeps_a_download_of_another_network() {
+            assert!(kept_at_startup(Some(OTHER), None, None).await);
+            assert!(kept_at_startup(None, Some(OTHER), None).await);
+        }
+
+        #[tokio::test]
+        async fn startup_deletes_a_staging_entry_that_names_no_network() {
+            assert!(!kept_at_startup(None, None, None).await);
+            assert!(!kept_at_startup(None, None, Some("2")).await);
+        }
+
+        #[tokio::test]
+        async fn startup_keeps_an_unnamed_staging_entry_beside_another_networks_database() {
+            assert!(kept_at_startup(None, None, Some(OTHER)).await);
+        }
+
+        #[tokio::test]
+        async fn the_marker_decides_over_the_chain_directory_at_startup() {
+            assert!(!kept_at_startup(Some("2"), None, Some(OTHER)).await);
+            assert!(kept_at_startup(Some(OTHER), None, Some("2")).await);
+        }
+
+        #[tokio::test]
+        async fn startup_without_a_known_network_deletes_any_staging_entry() {
+            let t = TempDir::new("startup-unknown");
+            make_staging(&t, Some(OTHER), None);
+            remove_stale_staging(&config(&t, None)).await;
+            assert!(!t.staging().exists());
+        }
+
+        #[tokio::test]
+        async fn a_sync_is_refused_over_a_download_of_another_network() {
+            let t = TempDir::new("allowed");
+            make_staging(&t, Some(OTHER), None);
+            let before = tree(&t.chain());
+            assert!(!network_allowed(&t.chain(), Some(THIS), true).await);
+            assert_eq!(tree(&t.chain()), before);
+
+            fs::write(t.staging().join(STAGING_NETWORK_MARKER), "2").unwrap();
+            assert!(network_allowed(&t.chain(), Some(THIS), true).await);
+            fs::remove_file(t.staging().join(STAGING_NETWORK_MARKER)).unwrap();
+            assert!(network_allowed(&t.chain(), Some(THIS), true).await);
+            assert!(network_allowed(&t.chain(), None, true).await);
         }
     }
 
