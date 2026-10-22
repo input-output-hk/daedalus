@@ -7,8 +7,20 @@ import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import AppUpdateContainer from './appUpdate/AppUpdateContainer';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
+import type { LoadingPhase } from '../../../common/types/watchdog.types';
 
 type Props = InjectedContainerProps;
+
+// Loading phases that show a Mithril sync or a rebuild of the chain data, or
+// ask for a decision about one: the damaged blockchain data screen with its
+// confirmation, the Mithril progress and error views, and the choice between
+// Mithril and a sync from genesis. A first run reaches that choice only
+// through the location picker, which follows the setup pages.
+const CHAIN_RECOVERY_PHASES: ReadonlySet<LoadingPhase> = new Set<LoadingPhase>([
+  'chain-damaged',
+  'mithril-syncing',
+  'bootstrap-decision',
+]);
 
 @inject('stores', 'actions')
 @observer
@@ -54,10 +66,14 @@ class Root extends Component<Props> {
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = backend.loadingPhase === 'stopping';
-    // The damaged blockchain data screen asks for a decision that no other
-    // page can wait on, so it replaces every page, including the ones that
-    // are otherwise shown without a connected node.
-    const isChainDamaged = backend.loadingPhase === 'chain-damaged';
+    // Those phases replace every page, including the ones that are otherwise
+    // shown without a connected node, and so does the location picker asked
+    // for from the Mithril error view. The picker of a first run follows the
+    // setup pages.
+    const isChainRecoveryShown =
+      CHAIN_RECOVERY_PHASES.has(backend.loadingPhase) ||
+      (backend.loadingPhase === 'chain-storage-setup' &&
+        backend.chainStoragePickerRequested);
 
     if (
       isCurrentLocaleSet &&
@@ -78,7 +94,7 @@ class Root extends Component<Props> {
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
-      !isChainDamaged &&
+      !isChainRecoveryShown &&
       ((isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
         (isProfilePage &&
           (isNotEnoughDiskSpace || !isNodeInStoppingSequence || isSetupPage)))

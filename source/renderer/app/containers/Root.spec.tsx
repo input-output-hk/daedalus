@@ -31,13 +31,34 @@ jest.mock('../components/wallet/wallet-import/WalletImportFileDialog', () => ({
 
 type Page = 'staking' | 'settings' | 'voting' | 'governance' | 'profile';
 
-const makeStores = (loadingPhase: string, page: Page) => ({
+// The pages shown without waiting for the node: staking, settings, voting
+// and governance once connected, and the profile pages at any time
+const pages: Array<Page> = [
+  'staking',
+  'settings',
+  'voting',
+  'governance',
+  'profile',
+];
+
+// Each loading phase of a Mithril sync or a rebuild, on each of those pages
+const recoveryCases: Array<[string, Page]> = pages.flatMap((page) =>
+  ['chain-damaged', 'mithril-syncing', 'bootstrap-decision'].map(
+    (phase): [string, Page] => [phase, page]
+  )
+);
+
+const makeStores = (
+  loadingPhase: string,
+  page: Page,
+  chainStoragePickerRequested = false
+) => ({
   app: {
     environment: { isTest: false },
     isSetupPage: false,
   },
   appUpdate: { displayAppUpdateOverlay: false },
-  backend: { loadingPhase },
+  backend: { loadingPhase, chainStoragePickerRequested },
   networkStatus: {
     isConnected: true,
     isNotEnoughDiskSpace: false,
@@ -57,9 +78,16 @@ const makeStores = (loadingPhase: string, page: Page) => ({
   wallets: { hasLoadedWallets: true, hasAnyWallets: true },
 });
 
-const renderRoot = (loadingPhase: string, page: Page) =>
+const renderRoot = (
+  loadingPhase: string,
+  page: Page,
+  chainStoragePickerRequested = false
+) =>
   render(
-    <Provider stores={makeStores(loadingPhase, page)} actions={{}}>
+    <Provider
+      stores={makeStores(loadingPhase, page, chainStoragePickerRequested)}
+      actions={{}}
+    >
       <Root>
         <div>page content</div>
       </Root>
@@ -69,13 +97,7 @@ const renderRoot = (loadingPhase: string, page: Page) =>
 describe('Root', () => {
   afterEach(cleanup);
 
-  it.each([
-    'staking',
-    'settings',
-    'voting',
-    'governance',
-    'profile',
-  ] as Array<Page>)(
+  it.each(pages)(
     'shows the page content on %s while the node is syncing',
     (page) => {
       renderRoot('node-starting', page);
@@ -84,18 +106,36 @@ describe('Root', () => {
     }
   );
 
-  it.each([
-    'staking',
-    'settings',
-    'voting',
-    'governance',
-    'profile',
-  ] as Array<Page>)(
-    'shows the loading page instead of %s when the chain data is damaged',
-    (page) => {
-      renderRoot('chain-damaged', page);
+  it.each(recoveryCases)(
+    'shows the loading page in the %s phase instead of %s',
+    (phase, page) => {
+      renderRoot(phase, page);
       expect(screen.getByText('loading page')).toBeInTheDocument();
       expect(screen.queryByText('page content')).toBeNull();
+    }
+  );
+
+  it.each(pages)(
+    'shows the location picker asked for from the Mithril error view instead of %s',
+    (page) => {
+      renderRoot('chain-storage-setup', page, true);
+      expect(screen.getByText('loading page')).toBeInTheDocument();
+      expect(screen.queryByText('page content')).toBeNull();
+    }
+  );
+
+  it("shows the setup pages before a first run's location picker", () => {
+    renderRoot('chain-storage-setup', 'profile');
+    expect(screen.getByText('page content')).toBeInTheDocument();
+    expect(screen.queryByText('loading page')).toBeNull();
+  });
+
+  it.each(pages)(
+    'shows the page content on %s while the wallet is ready',
+    (page) => {
+      renderRoot('ready', page);
+      expect(screen.getByText('page content')).toBeInTheDocument();
+      expect(screen.queryByText('loading page')).toBeNull();
     }
   );
 });

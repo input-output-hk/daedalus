@@ -369,6 +369,13 @@ export default class BackendStore extends Store {
     );
   }
 
+  // The location picker was asked for from the Mithril error view, as a step
+  // of a sync or a rebuild, rather than shown for a first run
+  @computed
+  get chainStoragePickerRequested(): boolean {
+    return this._chainStoragePickerRequested;
+  }
+
   // The location the pending rebuild confirmation is for, when one was picked
   @computed
   get pendingChainLocation(): string | null {
