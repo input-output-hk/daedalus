@@ -4,6 +4,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { createHash } from 'crypto';
+import { deflateRawSync } from 'zlib';
 
 const { ec: EC } = require('elliptic');
 const braces = require('braces');
@@ -11,10 +12,15 @@ const { sprintf } = require('sprintf-js');
 const extract = require('extract-zip');
 const vectors = require('./fixtures/elliptic-p521-regressions.json');
 
-// Minimal stored ZIP writer so the regression fixtures can contain duplicate
+// Minimal ZIP writer so the regression fixtures can contain duplicate
 // entry names and Unix symlinks. Ordinary ZIP writers often reject duplicates.
 function archive(
-  entries: Array<{ name: string; contents: string; mode?: number }>
+  entries: Array<{
+    name: string;
+    contents: string;
+    mode?: number;
+    compress?: boolean;
+  }>
 ) {
   const files: Buffer[] = [];
   const directory: Buffer[] = [];
@@ -22,6 +28,8 @@ function archive(
   for (const entry of entries) {
     const name = Buffer.from(entry.name);
     const contents = Buffer.from(entry.contents);
+    const payload = entry.compress ? deflateRawSync(contents) : contents;
+    const method = entry.compress ? 8 : 0;
     let crc = 0xffffffff;
     for (const byte of contents) {
       crc ^= byte;
@@ -33,23 +41,25 @@ function archive(
     const local = Buffer.alloc(30);
     local.writeUInt32LE(0x04034b50, 0);
     local.writeUInt16LE(20, 4);
+    local.writeUInt16LE(method, 8);
     local.writeUInt32LE(crc, 14);
-    local.writeUInt32LE(contents.length, 18);
+    local.writeUInt32LE(payload.length, 18);
     local.writeUInt32LE(contents.length, 22);
     local.writeUInt16LE(name.length, 26);
     const central = Buffer.alloc(46);
     central.writeUInt32LE(0x02014b50, 0);
     central.writeUInt16LE((3 << 8) | 20, 4);
     central.writeUInt16LE(20, 6);
+    central.writeUInt16LE(method, 10);
     central.writeUInt32LE(crc, 16);
-    central.writeUInt32LE(contents.length, 20);
+    central.writeUInt32LE(payload.length, 20);
     central.writeUInt32LE(contents.length, 24);
     central.writeUInt16LE(name.length, 28);
     central.writeUInt32LE(((entry.mode || 0o100644) << 16) >>> 0, 38);
     central.writeUInt32LE(offset, 42);
-    files.push(local, name, contents);
+    files.push(local, name, payload);
     directory.push(central, name);
-    offset += local.length + name.length + contents.length;
+    offset += local.length + name.length + payload.length;
   }
   const central = Buffer.concat(directory);
   const end = Buffer.alloc(22);
@@ -137,6 +147,19 @@ describe('ZIP extraction containment', () => {
     fs.mkdirSync(dir);
   });
   afterEach(() => fs.rmSync(temporary, { recursive: true, force: true }));
+
+  test('finishes extracting large deflated entries on Node 26', async () => {
+    // yauzl 2.x stalls at EOF here, leaving installer packaging unfinished.
+    const contents = 'wallet'.repeat(256 * 1024);
+    fs.writeFileSync(
+      zip,
+      archive([{ name: 'electron.bin', contents, compress: true }])
+    );
+    await extract(zip, { dir });
+    expect(fs.readFileSync(path.join(dir, 'electron.bin'), 'utf8')).toBe(
+      contents
+    );
+  });
 
   test('extracts regular files through both Promise and legacy callback APIs', async () => {
     fs.writeFileSync(

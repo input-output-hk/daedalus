@@ -1,0 +1,45 @@
+diff --git a/node_modules/cbor/lib/encoder.js b/node_modules/cbor/lib/encoder.js
+--- a/node_modules/cbor/lib/encoder.js
++++ b/node_modules/cbor/lib/encoder.js
+@@ -500,14 +500,10 @@ class Encoder extends stream.Transform {
+       // gets with object keys later
+       const entries = [...obj.entries()]
+       const enc = new Encoder(this) // TODO: fix genTypes
+-      const bs = new NoFilter({highWaterMark:this.readableHighWaterMark})
+-      enc.pipe(bs)
+       entries.sort(([a], [b]) => {
+         // a, b are the keys
+-        enc.pushAny(a)
+-        const a_cbor = bs.read()
+-        enc.pushAny(b)
+-        const b_cbor = bs.read()
++        const a_cbor = enc._encodeAll([a])
++        const b_cbor = enc._encodeAll([b])
+         return a_cbor.compare(b_cbor)
+       })
+       for (const [k, v] of entries) {
+@@ -739,9 +735,18 @@ class Encoder extends stream.Transform {
+   _encodeAll(objs) {
+-    const bs = new NoFilter({ highWaterMark:this.readableHighWaterMark })
+-    this.pipe(bs)
+-    for (const o of objs) {
+-      this.pushAny(o)
++    // Synchronous encoding cannot depend on stream delivery timing (Node 26
++    // may defer chunks). Collect every byte without stream backpressure.
++    const chunks = []
++    const push = this.push
++    this.push = (chunk, encoding) => {
++      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding))
++      return true
++    }
++    try {
++      for (const o of objs) {
++        this.pushAny(o)
++      }
++    } finally {
++      this.push = push
+     }
+-    this.end()
+-    return bs.read()
++    return Buffer.concat(chunks)
+   }
