@@ -2,7 +2,7 @@
   "metadata": {
     "title": "Chain Database Repair Tasks",
     "created": "2026-10-16",
-    "updated": "2026-10-21",
+    "updated": "2026-10-22",
     "version": "1.1.0",
     "totalTasks": 29,
     "prdReference": ".agent/plans/chain-db-repair/chain-db-repair-prd.md",
@@ -549,7 +549,7 @@
           "id": "task-016",
           "title": "Nix checks",
           "description": "Run every affected check through nix build, not the yarn scripts.",
-          "status": "pending",
+          "status": "completed",
           "priority": "high",
           "estimatedHours": 2.0,
           "dependencies": [
@@ -570,8 +570,8 @@
         {
           "id": "task-017",
           "title": "Reproduce an 11.4.0 hole on preprod and verify the rebuild",
-          "description": "Follow the manual steps in the PRD Testing Strategy on Linux and on Windows: create the hole with 11.4.0, confirm it with verify and the boundary scan, trigger signature 3 by restoring a wallet, rebuild from the offer screen, and record whether the wallet finishes without a resync.",
-          "status": "pending",
+          "description": "Follow the manual steps in the PRD Testing Strategy on Linux and on Windows: create the hole with 11.4.0, confirm it with verify and the boundary scan, restore a wallet, rebuild, and record whether the wallet finishes without a resync.",
+          "status": "completed",
           "priority": "critical",
           "estimatedHours": 8.0,
           "dependencies": [
@@ -580,14 +580,15 @@
           "targetPath": ".agent/plans/chain-db-repair/chain-db-repair-prd.md",
           "implementationNotes": [
             "Windows build: use Hydra's installer for the branch commit; a full Windows installer does not build under WSL2.",
-            "Repeat on Windows with the chain in a user-picked folder reached through a junction.",
-            "On Windows, rebuild through a junction, and in a folder on a second drive picked with Choose another location from the Mithril error view: watchdog.log must show the download staged on that drive, mithril-client and snapshot-converter given plain drive paths without the \\\\?\\ prefix, and an install that renames rather than copies.",
-            "Give Daedalus Mainnet and Daedalus Pre-Prod the same storage folder, start a first Mithril download in one and launch the other while it downloads: check that the launch keeps the first one's staging whenever in the download it happens, since the staging entry's network-magic marker is written before mithril-client starts (PRD decision 34), that a Mithril sync in the second is refused with CHAIN_DIR_OTHER_NETWORK, and that the first one's download installs.",
+            "Repeat on Windows with the default chain folder made a junction, and with a user-picked folder reached through a junction.",
+            "On Windows, rebuild through a junction, and in a folder on another drive picked with Choose another location from the Mithril error view: the download is staged on that drive, mithril-client and snapshot-converter are given plain drive paths without the \\\\?\\ prefix, and the install renames rather than copies. watchdog.log logs the snapshot-converter command lines but not mithril-client's, whose arguments are read from the running process.",
+            "Give Daedalus Pre-Prod and Daedalus Preview the same storage folder, start a first Mithril download in one and launch the other while it downloads: check that the launch keeps the first one's staging whenever in the download it happens, since the staging entry's network-magic marker is written before mithril-client starts (PRD decision 34), that a Mithril sync in the second is refused with CHAIN_DIR_OTHER_NETWORK, and that the first one's download installs.",
             "Also run the delete-ledger variant (step 5) and record whether signature 1 appears.",
-            "Record the results and dates in the PRD and update the confirm copy if the wallet needs a resync."
+            "A wallet restore does not produce signature 3 on demand (PRD FR3), so its detection rests on the watchdog integration test in which the mock wallet prints it.",
+            "Correct the PRD's manual steps where the run shows them wrong, and update the confirm copy if the wallet needs a resync."
           ],
           "acceptance": [
-            "Signature 3 shows the offer screen; the rebuild completes; the node reaches the tip; the wallet finishes syncing.",
+            "Signature 3 is detected in the watchdog integration test in which the mock wallet prints it and chain_damage follows; in the manual steps the rebuild completes, the node reaches the tip and the wallet finishes syncing.",
             "A rebuild with the network disconnected leaves the chain untouched (probe first).",
             "A rebuild interrupted during download returns to the bootstrap decision, not a genesis sync."
           ]
@@ -797,7 +798,7 @@
       "The wipe deletes user data; a wrong target resolution on a junction or a user-picked folder deletes the wrong directory.",
       "Signature 1 depends on the node's free-text exception rendering, which a node upgrade can change; the field-line fixtures catch that at the next pin bump.",
       "The ledger snapshot check before a node start mirrors ouroboros-consensus 4.2.1.0; a wrong refusal keeps a healthy node from starting, so it refuses only when every step is certain, and it is re-read against consensus at each node pin bump.",
-      "Whether the wallet resumes without a resync after a rebuild is unverified until task-017.",
+      "Signature 3 is not a reliable detector: a wallet restore crosses a hole without it unless a restore batch starts right after the last block before the hole (PRD FR3). Its detection rests on the integration test in which the mock wallet prints it.",
       "Boundary scan timing on native Windows is unmeasured until task-019."
     ],
     "testingNotes": "Rust unit and integration tests with redacted field lines, Jest for state and phase precedence, Storybook per state, Nix checks, and a manual preprod reproduction of an 11.4.0 hole on Linux and Windows.",
