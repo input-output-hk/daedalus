@@ -115,6 +115,10 @@ export interface WatchdogState {
   dismissedSilenceEpisode: number;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
+  // Not now on the damaged data screen, which lasts until Daedalus restarts;
+  // kept here, not in the renderer, so a reload of the window does not show
+  // the screen again
+  chainDamageDismissed: boolean;
 }
 
 type EventHandler = (event: Record<string, unknown>) => void;
@@ -212,6 +216,7 @@ class WatchdogManager {
       nodeSilenceEpisode: 0,
       dismissedSilenceEpisode: 0,
       requestedRestart: null,
+      chainDamageDismissed: false,
     };
   }
 
@@ -321,10 +326,15 @@ class WatchdogManager {
   }
 
   // Commands that main answers itself and does not send to the watchdog.
-  // The prompt the user dismissed is recorded here, beside the silence count,
-  // so the renderer reads it back after a reload of the window.
+  // The silence prompt the user dismissed is recorded here, beside the
+  // silence count, and so is Not now on the damaged data screen, so the
+  // renderer reads both back after a reload of the window.
   private _keepCommand(cmd: object): boolean {
     const { cmd: name, episode } = cmd as { cmd?: string; episode?: unknown };
+    if (name === 'dismiss_chain_damage') {
+      this.state.chainDamageDismissed = true;
+      return true;
+    }
     if (name !== 'dismiss_node_silence') return false;
     if (typeof episode === 'number') {
       this.state.dismissedSilenceEpisode = Math.max(

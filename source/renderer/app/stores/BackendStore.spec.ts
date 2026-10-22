@@ -335,6 +335,64 @@ describe('BackendStore chain damage', () => {
   });
 });
 
+describe('BackendStore Not now on the damaged data screen', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  const polled = (overrides: Record<string, unknown> = {}) => ({
+    hasChain: true,
+    walletPort: 8090,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+    mithrilPhase: null,
+    chainDamage: damage,
+    lastChainDamage: damage,
+    ...overrides,
+  });
+
+  it('has main record the dismissal', () => {
+    const store = makeStore();
+    store.dismissChainDamage();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'dismiss_chain_damage',
+    });
+  });
+
+  it('keeps the screen hidden after a reload of the window', async () => {
+    // A new store stands for the renderer after a reload; main still holds
+    // the damage and the dismissal.
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({ chainDamageDismissed: true })
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('ready');
+  });
+
+  it('keeps a dismissal in this window until main reports it', async () => {
+    const store = makeStore();
+    store.dismissChainDamage();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({ chainDamageDismissed: undefined })
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('ready');
+  });
+
+  it('shows the screen after a reload while the watchdog holds the node', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({ chainDamageDismissed: true, nodeHeld: true, walletPort: null })
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('chain-damaged');
+  });
+});
+
 describe('BackendStore chain damage found before the node started', () => {
   it('returns chain-damaged after dismissChainDamage while the node is held', () => {
     const store = makeStore();

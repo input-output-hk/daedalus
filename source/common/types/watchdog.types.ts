@@ -82,6 +82,10 @@ export interface WatchdogState {
   dismissedSilenceEpisode: number;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
+  // Not now on the damaged data screen, which lasts until Daedalus restarts;
+  // kept here, not in the renderer, so a reload of the window does not show
+  // the screen again
+  chainDamageDismissed: boolean;
 }
 
 // BackendStopProgress — from backend_stop_progress events, emitted while the
@@ -167,6 +171,9 @@ export type MithrilCommand =
   | { cmd: 'set_electron_flags'; flags: string[] }
   // Kept by main, which records the dismissed silence and does not forward it
   | { cmd: 'dismiss_node_silence'; episode: number }
+  // Kept by main, which records Not now on the damaged data screen and does
+  // not forward it
+  | { cmd: 'dismiss_chain_damage' }
   | {
       cmd: 'migrate_state';
       chain_path: string | null;

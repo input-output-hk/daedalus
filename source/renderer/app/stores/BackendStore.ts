@@ -121,7 +121,9 @@ export default class BackendStore extends Store {
     latestCertifiedImmutable: number;
   } | null = null;
   @observable _mithrilPromptDismissed = false;
-  // Set by "Not now" on the chain-damaged screen; lasts until the app restarts
+  // Set by "Not now" on the chain-damaged screen; lasts until the app
+  // restarts. Main keeps it as well, so the poll restores it after a reload
+  // of the window.
   @observable _chainDamageDismissed = false;
   // Set from the Mithril error view to choose another chain storage location;
   // the picker shows until a location is confirmed
@@ -252,6 +254,8 @@ export default class BackendStore extends Store {
         this.nodeSilentSecs = state.nodeSilentSecs ?? null;
         this.nodeSilenceEpisode = state.nodeSilenceEpisode ?? 0;
         // A dismissal not yet reported back by main stays in effect
+        this._chainDamageDismissed =
+          this._chainDamageDismissed || state.chainDamageDismissed === true;
         this._dismissedSilenceEpisode = Math.max(
           this._dismissedSilenceEpisode,
           state.dismissedSilenceEpisode ?? 0
@@ -602,10 +606,12 @@ export default class BackendStore extends Store {
   };
 
   // "Not now" on the chain-damaged screen; the screen stays hidden until the
-  // app restarts, and Diagnostics keeps the detection
+  // app restarts, and Diagnostics keeps the detection. Main records it, so a
+  // reload of the window does not show the screen again.
   @action
   dismissChainDamage = () => {
     this._chainDamageDismissed = true;
+    mithrilCommandChannel.send({ cmd: 'dismiss_chain_damage' });
   };
 
   @action

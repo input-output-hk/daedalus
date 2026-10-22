@@ -117,6 +117,7 @@ export default (window: BrowserWindow) => {
         nodeSilenceEpisode: 0,
         dismissedSilenceEpisode: 0,
         requestedRestart: null,
+        chainDamageDismissed: false,
       }
     )
   );

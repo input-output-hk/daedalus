@@ -410,6 +410,26 @@ describe('WatchdogManager dismissed silence prompt', () => {
   });
 });
 
+describe('WatchdogManager Not now on the damaged data screen', () => {
+  it('records the dismissal for the rest of the session and sends nothing to the watchdog', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    const { socket } = manager as any;
+    expect(manager.getState().chainDamageDismissed).toBe(false);
+    manager.sendCommand({ cmd: 'dismiss_chain_damage' });
+    expect(manager.getState().chainDamageDismissed).toBe(true);
+    expect(socket.write).not.toHaveBeenCalled();
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    emit({
+      event: 'chain_damage',
+      kind: 'node_rejects_canonical_block',
+      slot: 1,
+      last_good_slot: null,
+      node_held: false,
+    });
+    expect(manager.getState().chainDamageDismissed).toBe(true);
+  });
+});
+
 describe('WatchdogManager Mithril download waiting for the network', () => {
   const waiting = { event: 'mithril_waiting_for_network', waiting: true };
 
