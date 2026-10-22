@@ -18,6 +18,7 @@ const renderView = (
     message: string;
   },
   extraProps: {
+    rebuild?: boolean;
     chainRemoved?: boolean;
     installUnfinished?: boolean;
     retryOnly?: boolean;
@@ -219,6 +220,35 @@ describe('MithrilErrorView', () => {
     expect(
       screen.queryByText(/Check your network connection and try the download/)
     ).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ['a refusal', { code: 'PROBE_FAILED', message: 'x' }],
+    [
+      'a failure in a stage',
+      { code: 'mithril_error', stage: 'download', message: 'x' },
+    ],
+  ])(
+    'titles %s of a rebuild as a rebuild that could not finish',
+    (_name, error) => {
+      renderView(error, { rebuild: true });
+      expect(
+        screen.getByRole('heading', {
+          name: 'Could not rebuild the blockchain data',
+        })
+      ).toBeInTheDocument();
+      expect(screen.queryByText('Mithril bootstrap failed')).toBeNull();
+    }
+  );
+
+  it('keeps the bootstrap title when the failure was not a rebuild', () => {
+    renderView({ code: 'PROBE_FAILED', message: 'x' });
+    expect(
+      screen.getByRole('heading', { name: 'Mithril bootstrap failed' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('Could not rebuild the blockchain data')
+    ).toBeNull();
   });
 
   it('shows the message for the stage when the code has none', () => {

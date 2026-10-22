@@ -4332,14 +4332,14 @@
         "id": "loading.chainDamage.confirm.title"
       },
       {
-        "defaultMessage": "!!!Daedalus will delete the blockchain data on this computer and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer and finish syncing afterward.",
-        "description": "Body of the confirmation for rebuilding the blockchain data: what is deleted, what is downloaded, and that Daedalus is unusable meanwhile",
-        "id": "loading.chainDamage.confirm.body"
+        "defaultMessage": "!!!Daedalus will delete the blockchain data on this computer and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer.",
+        "description": "Body of the confirmation for rebuilding the blockchain data: what is deleted, what is downloaded, that Daedalus is unusable meanwhile, and that the wallets stay on this computer",
+        "id": "loading.chainDamage.confirm.deleteAndDownload"
       },
       {
-        "defaultMessage": "!!!Daedalus will keep the blockchain data in {location}, delete any blockchain data already there, and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer and finish syncing afterward.",
-        "description": "Body of the confirmation for rebuilding the blockchain data in a newly chosen location: the location, what is deleted there, what is downloaded, and that Daedalus is unusable meanwhile",
-        "id": "loading.chainDamage.confirm.bodyInLocation"
+        "defaultMessage": "!!!Daedalus will keep the blockchain data in {location}, delete any blockchain data already there, and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer.",
+        "description": "Body of the confirmation for rebuilding the blockchain data in a newly chosen location: the location ({location} is a folder path), what is deleted there, what is downloaded, that Daedalus is unusable meanwhile, and that the wallets stay on this computer",
+        "id": "loading.chainDamage.confirm.deleteAndDownloadInLocation"
       },
       {
         "defaultMessage": "!!!Rebuild",
@@ -4437,6 +4437,11 @@
         "id": "loading.mithrilBootstrap.errorTitle"
       },
       {
+        "defaultMessage": "!!!Could not rebuild the blockchain data",
+        "description": "Title of the Mithril error view when a rebuild of the blockchain data failed or was refused.",
+        "id": "loading.mithrilBootstrap.error.rebuild.title"
+      },
+      {
         "defaultMessage": "!!!The node could not start with the restored chain data. Wipe the chain and try Mithril Sync again, or do a Blockchain Sync from Genesis.",
         "description": "Hint for node-start failures after Mithril bootstrap.",
         "id": "loading.mithrilBootstrap.startFailureHint"
@@ -4450,6 +4455,11 @@
         "defaultMessage": "!!!Skip to blockchain sync",
         "description": "Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.",
         "id": "loading.mithrilBootstrap.error.skip"
+      },
+      {
+        "defaultMessage": "!!!Not now",
+        "description": "Button label on the Mithril error view after a rebuild was refused before it deleted anything, for example because the Mithril service could not be reached or the drive has too little free space. Cardano node has already started again on the existing blockchain data; the button closes the error view and continues with that data.",
+        "id": "loading.mithrilBootstrap.error.notNow"
       },
       {
         "defaultMessage": "!!!The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.",

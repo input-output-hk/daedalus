@@ -22,6 +22,9 @@ interface Props {
   title?: string;
   hint?: string | null;
   hintAsBody?: boolean;
+  // The Mithril run that failed or was refused was a rebuild of the
+  // blockchain data
+  rebuild?: boolean;
   // A rebuild removed the old blockchain data before it failed
   chainRemoved?: boolean;
   // A Mithril install began changing the blockchain data and did not finish,
@@ -127,6 +130,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     title,
     hint,
     hintAsBody,
+    rebuild,
     chainRemoved,
     installUnfinished,
     retryOnly,
@@ -154,13 +158,18 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const hasTechnicalDetails = Boolean(error?.message || error?.code);
   const logPath = error?.logPath;
   const resolvedActions = actions || [];
+  // A rebuild names what failed in the user's terms; the stage it failed in
+  // is in the hint and the technical details.
+  const titleMessage = rebuild
+    ? messages.errorRebuildTitle
+    : messages[copy.title];
   // Actions render verbatim in caller order; any reordering is the caller's responsibility.
 
   return (
     <div className={styles.root} role="alert">
       <div className={styles.header}>
         <h1 id={MITHRIL_ERROR_HEADING_ID}>
-          {title || intl.formatMessage(messages[copy.title])}
+          {title || intl.formatMessage(titleMessage)}
         </h1>
         {resolvedHint &&
           (hintAsBody ? (

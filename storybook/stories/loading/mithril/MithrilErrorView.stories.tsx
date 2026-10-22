@@ -24,14 +24,26 @@ const errorActions = [
   },
 ];
 
-const locationErrorActions = [
+const chooseLocationAction = {
+  label: 'Choose another location',
+  onClick: () => bootstrapActions.onDecline(),
+  variant: 'secondary' as const,
+};
+
+// A rebuild refused before it deleted anything: the node runs again on the
+// existing blockchain data, and Not now continues with it
+const notNowAction = {
+  label: 'Not now',
+  onClick: () => bootstrapActions.onDecline(),
+  variant: 'secondary' as const,
+};
+
+const rebuildRefusedActions = [errorActions[0], notNowAction];
+
+const rebuildLocationRefusedActions = [
   errorActions[0],
-  {
-    label: 'Choose another location',
-    onClick: () => bootstrapActions.onDecline(),
-    variant: 'secondary' as const,
-  },
-  errorActions[1],
+  chooseLocationAction,
+  notNowAction,
 ];
 
 storiesOf('Loading / Mithril / Error', module)
@@ -79,14 +91,23 @@ storiesOf('Loading / Mithril / Error', module)
       actions={errorActions}
     />
   ))
+  .add('Rebuild Probe Failed', () => (
+    <MithrilErrorView
+      error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
+      rebuild
+      onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
+      actions={rebuildRefusedActions}
+    />
+  ))
   .add('Invalid Chain Path', () => (
     <MithrilErrorView
       error={{
         code: 'INVALID_CHAIN_PATH',
         message: 'detail from the watchdog',
       }}
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={errorActions}
+      actions={rebuildRefusedActions}
     />
   ))
   .add('Chain Dir Not Replaceable', () => (
@@ -95,8 +116,9 @@ storiesOf('Loading / Mithril / Error', module)
         code: 'CHAIN_DIR_NOT_REPLACEABLE',
         message: 'detail from the watchdog',
       }}
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={locationErrorActions}
+      actions={rebuildLocationRefusedActions}
     />
   ))
   .add('Chain Dir Other Network', () => (
@@ -105,8 +127,9 @@ storiesOf('Loading / Mithril / Error', module)
         code: 'CHAIN_DIR_OTHER_NETWORK',
         message: 'detail from the watchdog',
       }}
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={errorActions}
+      actions={rebuildRefusedActions}
     />
   ))
   .add('Insufficient Space', () => (
@@ -115,8 +138,9 @@ storiesOf('Loading / Mithril / Error', module)
         code: 'INSUFFICIENT_SPACE',
         message: 'detail from the watchdog',
       }}
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={locationErrorActions}
+      actions={rebuildLocationRefusedActions}
     />
   ))
   .add('Rebuild Marker Failed', () => (
@@ -125,14 +149,16 @@ storiesOf('Loading / Mithril / Error', module)
         code: 'REBUILD_MARKER_FAILED',
         message: 'detail from the watchdog',
       }}
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={errorActions}
+      actions={rebuildRefusedActions}
     />
   ))
   .add('Probe Failed After Data Removed', () => (
     <MithrilErrorView
       error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
       chainRemoved
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
       actions={[
         errorActions[0],
@@ -162,6 +188,7 @@ storiesOf('Loading / Mithril / Error', module)
         message: 'detail from the watchdog',
       }}
       chainRemoved
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
       actions={[
         errorActions[0],
@@ -186,6 +213,7 @@ storiesOf('Loading / Mithril / Error', module)
     <MithrilErrorView
       error={{ code: 'PROBE_FAILED', message: 'detail from the watchdog' }}
       installUnfinished
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
       actions={[
         errorActions[0],
@@ -202,6 +230,7 @@ storiesOf('Loading / Mithril / Error', module)
       error={{ code: 'INSTALL_FAILED', message: 'detail from the watchdog' }}
       chainRemoved
       retryOnly
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
       actions={[errorActions[0]]}
     />
@@ -209,6 +238,7 @@ storiesOf('Loading / Mithril / Error', module)
   .add('Wipe Failed', () => (
     <MithrilErrorView
       error={{ code: 'WIPE_FAILED', message: 'detail from the watchdog' }}
+      rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
       actions={errorActions}
     />

@@ -11,6 +11,22 @@ import styles from '../../components/loading/mithril/MithrilBootstrap.scss';
 
 const TERMINAL_PHASES = new Set(['completed', 'cancelled', 'error']);
 
+// Codes of the refusals of a rebuild that come before it deletes anything.
+// The watchdog then starts the node again on the chain it had, so the error
+// view's action that starts the node continues with that chain. A refusal
+// that comes after the delete leaves no chain, and the view offers the sync
+// choice instead.
+const CHAIN_KEPT_REBUILD_CODES: Array<string> = [
+  'ANCILLARY_VKEY_MISSING',
+  'CHAIN_DIR_OTHER_NETWORK',
+  'INVALID_CHAIN_PATH',
+  'PROBE_FAILED',
+  'CHAIN_DIR_NOT_REPLACEABLE',
+  'STAGING_FAILED',
+  'INSUFFICIENT_SPACE',
+  'REBUILD_MARKER_FAILED',
+];
+
 type ErrorAction = {
   label: string;
   onClick: () => void;
@@ -57,6 +73,10 @@ class MithrilSyncContainer extends Component<InjectedProps> {
     // location as well as removed data.
     const noChain =
       backend.hasChain === false || chainRemoved || installUnfinished;
+    const nodeRestartedOnChain =
+      backend.lastErrorRebuild &&
+      lastErrorCode != null &&
+      CHAIN_KEPT_REBUILD_CODES.includes(lastErrorCode);
     const errorActions: Array<ErrorAction> = [
       {
         label: intl.formatMessage(messages.errorRetry),
@@ -80,7 +100,9 @@ class MithrilSyncContainer extends Component<InjectedProps> {
               variant: 'secondary',
             }
           : {
-              label: intl.formatMessage(messages.errorSkip),
+              label: intl.formatMessage(
+                nodeRestartedOnChain ? messages.errorNotNow : messages.errorSkip
+              ),
               onClick: () => backend.startNode(),
               variant: 'secondary',
             }
@@ -135,6 +157,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
                 ? { code: lastErrorCode ?? 'mithril_error', message: lastError }
                 : null
             }
+            rebuild={backend.lastErrorRebuild}
             chainRemoved={chainRemoved}
             installUnfinished={installUnfinished}
             retryOnly={retryOnly}

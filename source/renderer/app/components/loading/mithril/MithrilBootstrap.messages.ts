@@ -84,6 +84,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Mithril bootstrap failed',
     description: 'Generic title for the Mithril bootstrap error state.',
   },
+  errorRebuildTitle: {
+    id: 'loading.mithrilBootstrap.error.rebuild.title',
+    defaultMessage: '!!!Could not rebuild the blockchain data',
+    description:
+      'Title of the Mithril error view when a rebuild of the blockchain data failed or was refused.',
+  },
   startFailureHint: {
     id: 'loading.mithrilBootstrap.startFailureHint',
     defaultMessage:
@@ -101,6 +107,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Skip to blockchain sync',
     description:
       'Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.',
+  },
+  errorNotNow: {
+    id: 'loading.mithrilBootstrap.error.notNow',
+    defaultMessage: '!!!Not now',
+    description:
+      'Button label on the Mithril error view after a rebuild was refused before it deleted anything, for example because the Mithril service could not be reached or the drive has too little free space. Cardano node has already started again on the existing blockchain data; the button closes the error view and continues with that data.',
   },
   errorChainRemovedHint: {
     id: 'loading.mithrilBootstrap.error.chainRemovedHint',

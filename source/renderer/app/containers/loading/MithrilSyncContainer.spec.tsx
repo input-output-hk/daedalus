@@ -143,6 +143,124 @@ describe('MithrilSyncContainer error view', () => {
   });
 });
 
+describe('MithrilSyncContainer after a rebuild failed or was refused', () => {
+  afterEach(cleanup);
+
+  const copy = {
+    [messages.errorRetry.id]: 'Retry',
+    [messages.errorSkip.id]: 'Skip to blockchain sync',
+    [messages.errorNotNow.id]: 'Not now',
+    [messages.errorChooseSync.id]: 'Choose how to sync',
+    [messages.errorChooseLocation.id]: 'Choose another location',
+    [messages.errorTitle.id]: 'Mithril bootstrap failed',
+    [messages.errorRebuildTitle.id]: 'Could not rebuild the blockchain data',
+  };
+
+  it.each([
+    [
+      'had no ancillary verification key',
+      'ANCILLARY_VKEY_MISSING',
+      ['Retry', 'Not now'],
+    ],
+    ['could not use the folder', 'INVALID_CHAIN_PATH', ['Retry', 'Not now']],
+    [
+      'could not reach the Mithril service',
+      'PROBE_FAILED',
+      ['Retry', 'Not now'],
+    ],
+    [
+      'could not resolve the staging folder',
+      'STAGING_FAILED',
+      ['Retry', 'Not now'],
+    ],
+    [
+      'found too little free space',
+      'INSUFFICIENT_SPACE',
+      ['Retry', 'Choose another location', 'Not now'],
+    ],
+    [
+      'found other files in the folder',
+      'CHAIN_DIR_NOT_REPLACEABLE',
+      ['Retry', 'Choose another location', 'Not now'],
+    ],
+    ['could not record itself', 'REBUILD_MARKER_FAILED', ['Retry', 'Not now']],
+    [
+      "found another network's data",
+      'CHAIN_DIR_OTHER_NETWORK',
+      ['Retry', 'Not now'],
+    ],
+  ])(
+    'offers Not now in place of the skip when a rebuild %s before deleting anything',
+    (_name, code, actions) => {
+      const backend = makeBackend({
+        lastErrorRebuild: true,
+        lastErrorCode: code,
+        canChooseAnotherLocation: actions.includes('Choose another location'),
+      });
+      renderContainer(backend, copy);
+      expect(offeredActions()).toEqual(actions);
+      fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
+      expect(backend.startNode).toHaveBeenCalledTimes(1);
+    }
+  );
+
+  it.each([
+    [
+      'a first bootstrap could not reach the Mithril service',
+      { lastErrorRebuild: false, lastErrorCode: 'PROBE_FAILED' },
+    ],
+    [
+      'a first bootstrap found too little free space',
+      { lastErrorRebuild: false, lastErrorCode: 'INSUFFICIENT_SPACE' },
+    ],
+    [
+      'a rebuild failed while downloading',
+      { lastErrorRebuild: true, lastErrorCode: 'DOWNLOAD_FAILED' },
+    ],
+  ])('keeps the skip when %s', (_name, overrides) => {
+    renderContainer(makeBackend(overrides), copy);
+    expect(offeredActions()).toEqual(['Retry', 'Skip to blockchain sync']);
+  });
+
+  it('offers the sync choice and no Not now when the rebuild left no chain', () => {
+    renderContainer(
+      makeBackend({
+        hasChain: false,
+        lastErrorRebuild: true,
+        lastErrorCode: 'PROBE_FAILED',
+      }),
+      copy
+    );
+    expect(offeredActions()).toEqual(['Retry', 'Choose how to sync']);
+  });
+
+  it('titles the error as a rebuild that could not finish', () => {
+    renderContainer(
+      makeBackend({ lastErrorRebuild: true, lastErrorCode: 'PROBE_FAILED' }),
+      copy
+    );
+    expect(
+      screen.getByRole('heading', {
+        name: 'Could not rebuild the blockchain data',
+      })
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Mithril bootstrap failed')).toBeNull();
+  });
+
+  it('keeps the bootstrap title for an error that did not come from a rebuild', () => {
+    renderContainer(
+      makeBackend({ lastErrorRebuild: false, lastErrorCode: 'PROBE_FAILED' }),
+      copy
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Mithril bootstrap failed' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('Could not rebuild the blockchain data')
+    ).toBeNull();
+  });
+});
+
 describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
   afterEach(cleanup);
 

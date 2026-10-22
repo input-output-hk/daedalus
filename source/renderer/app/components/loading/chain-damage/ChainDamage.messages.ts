@@ -66,18 +66,18 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description: 'Title of the confirmation for rebuilding the blockchain data',
   },
   confirmBody: {
-    id: 'loading.chainDamage.confirm.body',
+    id: 'loading.chainDamage.confirm.deleteAndDownload',
     defaultMessage:
-      '!!!Daedalus will delete the blockchain data on this computer and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer and finish syncing afterward.',
+      '!!!Daedalus will delete the blockchain data on this computer and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer.',
     description:
-      'Body of the confirmation for rebuilding the blockchain data: what is deleted, what is downloaded, and that Daedalus is unusable meanwhile',
+      'Body of the confirmation for rebuilding the blockchain data: what is deleted, what is downloaded, that Daedalus is unusable meanwhile, and that the wallets stay on this computer',
   },
   confirmBodyInLocation: {
-    id: 'loading.chainDamage.confirm.bodyInLocation',
+    id: 'loading.chainDamage.confirm.deleteAndDownloadInLocation',
     defaultMessage:
-      '!!!Daedalus will keep the blockchain data in {location}, delete any blockchain data already there, and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer and finish syncing afterward.',
+      '!!!Daedalus will keep the blockchain data in {location}, delete any blockchain data already there, and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer.',
     description:
-      'Body of the confirmation for rebuilding the blockchain data in a newly chosen location: the location, what is deleted there, what is downloaded, and that Daedalus is unusable meanwhile',
+      'Body of the confirmation for rebuilding the blockchain data in a newly chosen location: the location ({location} is a folder path), what is deleted there, what is downloaded, that Daedalus is unusable meanwhile, and that the wallets stay on this computer',
   },
   confirmRebuild: {
     id: 'loading.chainDamage.confirm.rebuild',
