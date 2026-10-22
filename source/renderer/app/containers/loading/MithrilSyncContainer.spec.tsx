@@ -348,11 +348,47 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
     }
   );
 
+  describe('when the rebuild could not delete the old data', () => {
+    const wipeFailed = (overrides = {}) =>
+      makeBackend({
+        hasChain: false,
+        lastErrorRebuild: true,
+        rebuildPending: true,
+        lastErrorCode: 'WIPE_FAILED',
+        ...overrides,
+      });
+    const wipeCopy = {
+      ...copy,
+      [messages.errorWipeFailedHint.id]: 'Could not delete; close programs.',
+    };
+
+    it('says the data could not be deleted, not that it was removed, and offers Retry and the sync choice', () => {
+      renderContainer(wipeFailed(), wipeCopy);
+      expect(
+        screen.getByText('Could not delete; close programs.')
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText('The old blockchain data was removed.')
+      ).toBeNull();
+      expect(offeredActions()).toEqual(['Retry', 'Choose how to sync']);
+    });
+
+    it('says nothing about removed data on the decision view that follows', () => {
+      renderContainer(
+        wipeFailed({ loadingPhase: 'bootstrap-decision' }),
+        wipeCopy
+      );
+      expect(screen.queryByText('Old data removed, sync again.')).toBeNull();
+    });
+  });
+
   it('notes the removal on the decision view after a restart mid-rebuild', () => {
     renderContainer(
       makeBackend({
         loadingPhase: 'bootstrap-decision',
         mithrilPhase: null,
+        lastError: null,
+        lastErrorCode: null,
         hasChain: false,
         rebuildPending: true,
       }),

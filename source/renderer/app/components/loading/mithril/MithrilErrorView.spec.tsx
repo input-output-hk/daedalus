@@ -203,6 +203,19 @@ describe('MithrilErrorView', () => {
     }
   );
 
+  it('says only that the old data could not be deleted after a rebuild failed to delete it', () => {
+    renderView(
+      { code: 'WIPE_FAILED', message: 'x' },
+      { chainRemoved: true, rebuild: true }
+    );
+    expect(
+      screen.getByText(
+        'Daedalus could not delete the blockchain data files. Close any other programs that might be using the blockchain folder, then retry.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/was removed/)).toBeNull();
+  });
+
   it('keeps the message of a code that says nothing about unchanged data once the old data was removed', () => {
     renderView({ code: 'MARKER_FAILED', message: 'x' }, { chainRemoved: true });
     expect(screen.getByText(/so it did not install it/)).toBeInTheDocument();

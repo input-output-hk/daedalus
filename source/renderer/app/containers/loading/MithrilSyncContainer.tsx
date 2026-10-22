@@ -11,6 +11,11 @@ import styles from '../../components/loading/mithril/MithrilBootstrap.scss';
 
 const TERMINAL_PHASES = new Set(['completed', 'cancelled', 'error']);
 
+// The error of a rebuild that could not delete the old blockchain data. The
+// rebuild recorded itself first, so the watchdog reports it as pending, but
+// the data was not removed.
+const WIPE_FAILED_CODE = 'WIPE_FAILED';
+
 // Codes of the refusals of a rebuild that come before it deletes anything.
 // The watchdog then starts the node again on the chain it had, so the error
 // view's action that starts the node continues with that chain. A refusal
@@ -127,7 +132,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
       return (
         <div className={styles.card}>
           <MithrilDecisionView
-            chainRemoved={chainRemoved}
+            chainRemoved={chainRemoved && lastErrorCode !== WIPE_FAILED_CODE}
             installUnfinished={installUnfinished}
             onAccept={() => backend.startMithril()}
             onDecline={() => backend.startNode()}

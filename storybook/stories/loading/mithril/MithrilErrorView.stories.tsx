@@ -235,11 +235,21 @@ storiesOf('Loading / Mithril / Error', module)
       actions={[errorActions[0]]}
     />
   ))
+  // The rebuild recorded itself before the delete failed, so the watchdog
+  // reports the rebuild as pending and no chain to start the node on
   .add('Wipe Failed', () => (
     <MithrilErrorView
       error={{ code: 'WIPE_FAILED', message: 'detail from the watchdog' }}
+      chainRemoved
       rebuild
       onOpenExternalLink={(value) => bootstrapActions.onOpenExternalLink(value)}
-      actions={errorActions}
+      actions={[
+        errorActions[0],
+        {
+          label: 'Choose how to sync',
+          onClick: () => bootstrapActions.onDecline(),
+          variant: 'secondary' as const,
+        },
+      ]}
     />
   ));

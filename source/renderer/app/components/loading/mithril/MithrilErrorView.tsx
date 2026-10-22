@@ -77,6 +77,9 @@ type CodeHint = {
   // it: the same message without its statement that the blockchain data was
   // not changed
   afterRemoval?: keyof typeof messages;
+  // The message says that the old data could not be deleted, so the view
+  // leaves out its note that the old data was removed
+  deleteFailed?: boolean;
 };
 
 // Codes of the errors a rebuild reports before or while it replaces the chain
@@ -95,7 +98,7 @@ const ERROR_HINT_BY_CODE: Record<string, CodeHint> = {
     hint: 'errorChainDirOtherNetworkHint',
     afterRemoval: 'errorChainDirOtherNetworkRemovedHint',
   },
-  WIPE_FAILED: { hint: 'errorWipeFailedHint' },
+  WIPE_FAILED: { hint: 'errorWipeFailedHint', deleteFailed: true },
   INSUFFICIENT_SPACE: {
     hint: 'errorInsufficientSpaceHint',
     afterRemoval: 'errorInsufficientSpaceRemovedHint',
@@ -150,6 +153,10 @@ function MithrilErrorView(props: Props, { intl }: Context) {
     dataChanged && codeCopy?.afterRemoval
       ? codeCopy.afterRemoval
       : codeCopy?.hint;
+  // A rebuild records itself before it deletes anything, so a failed delete
+  // counts as removed data too, but its message says the data could not be
+  // deleted
+  const showRemovalNote = Boolean(chainRemoved && !codeCopy?.deleteFailed);
   let resolvedHint = hint;
   if (resolvedHint === undefined) {
     const hintKey = codeHint ?? copy.hint;
@@ -177,7 +184,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           ) : (
             <div className={styles.errorHint}>{resolvedHint}</div>
           ))}
-        {chainRemoved && (
+        {showRemovalNote && (
           <p className={styles.hintBody}>
             {intl.formatMessage(
               retryOnly
