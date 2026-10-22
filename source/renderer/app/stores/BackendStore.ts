@@ -95,7 +95,8 @@ export default class BackendStore extends Store {
   // The last hole in the chain database the watchdog detected
   @observable chainDamage: ChainDamage | null = null;
   // The last detection of the session, which Diagnostics shows; it outlives
-  // chainDamage and clears only when a rebuild completes
+  // chainDamage, and clears only when the chain it was found in is gone or a
+  // rebuild has replaced it
   @observable lastChainDamage: ChainDamage | null = null;
   // True when the watchdog found chainDamage before starting the node and
   // does not start it, so no node runs behind the damaged data screen

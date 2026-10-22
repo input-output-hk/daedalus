@@ -69,8 +69,8 @@ export interface WatchdogState {
   // node starts or a Mithril sync begins
   chainDamage: ChainDamage | null;
   // The last detection of the session, which Diagnostics shows; unlike
-  // chainDamage it survives a node start and clears only when a rebuild
-  // completes
+  // chainDamage it survives a node start, and clears only when the chain it
+  // was found in is gone or a rebuild has replaced it
   lastChainDamage: ChainDamage | null;
   // True when the watchdog found chainDamage before starting the node and
   // does not start it; cleared when a node starts or a Mithril sync begins
@@ -492,6 +492,12 @@ class WatchdogManager {
         // starts one or while it waits for the user's choice, so a requested
         // restart has nothing left to stop.
         s.requestedRestart = null;
+        // No chain is left that a node starts on without the user's choice:
+        // a rebuild deleted it, or the location holds none. The damage found
+        // before is no longer that of the chain in use; each node run, and
+        // the check before each node start, look for damage in the chain the
+        // node then uses.
+        if (event.has_chain === false) s.lastChainDamage = null;
         break;
 
       case 'node_started':

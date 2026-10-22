@@ -31,8 +31,8 @@ export interface WatchdogState {
   // node starts or a Mithril sync begins
   chainDamage: ChainDamage | null;
   // The last detection of the session, which Diagnostics shows; unlike
-  // chainDamage it survives a node start and clears only when a rebuild
-  // completes
+  // chainDamage it survives a node start, and clears only when the chain it
+  // was found in is gone or a rebuild has replaced it
   lastChainDamage: ChainDamage | null;
   // True when the watchdog found chainDamage before starting the node and
   // does not start it; cleared when a node starts or a Mithril sync begins

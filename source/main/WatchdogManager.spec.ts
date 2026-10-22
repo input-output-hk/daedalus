@@ -698,7 +698,29 @@ describe('WatchdogManager last chain damage', () => {
     expect(manager.getState().lastChainDamage).toBeNull();
   });
 
-  it('is cleared when the bootstrap decision is accepted after a failed rebuild and that sync completes', () => {
+  it('is cleared when a sync that the watchdog runs as a rebuild completes', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit(damage);
+    manager.sendCommand({ cmd: 'start_mithril', force: true });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: false });
+    emit({
+      event: 'mithril_error',
+      code: 'INSTALL_FAILED',
+      message: 'x',
+      rebuild: false,
+    });
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+    // The record of the failed install makes the next sync a rebuild.
+    manager.sendCommand({ cmd: 'start_mithril' });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'finalizing', rebuild: true });
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    expect(manager.getState().lastChainDamage).not.toBeNull();
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
+    expect(manager.getState().lastChainDamage).toBeNull();
+  });
+
+  it('is cleared when a failed rebuild leaves no chain, and stays cleared through the sync from genesis the user chooses next', () => {
     const { manager, emit } = makeManagerWithSocket();
     emit(damage);
     manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
@@ -709,15 +731,11 @@ describe('WatchdogManager last chain damage', () => {
       message: 'x',
       rebuild: true,
     });
-    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
-    // Accept on the bootstrap decision sends a plain sync, which the watchdog
-    // runs as a rebuild.
-    manager.sendCommand({ cmd: 'start_mithril' });
-    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
-    emit({ event: 'mithril_status', phase: 'finalizing', rebuild: true });
-    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
     expect(manager.getState().lastChainDamage).not.toBeNull();
-    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
+    emit({ event: 'chain_status', has_chain: false, rebuild_pending: true });
+    expect(manager.getState().lastChainDamage).toBeNull();
+    manager.sendCommand({ cmd: 'start_node' });
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
     expect(manager.getState().lastChainDamage).toBeNull();
   });
 
