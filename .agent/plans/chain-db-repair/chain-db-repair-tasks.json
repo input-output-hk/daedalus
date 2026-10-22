@@ -424,7 +424,7 @@
           ],
           "implementationNotes": [
             "Ids follow namespace.context.messageKey, e.g. loading.chainDamage.title, and every message carries a description (.agent/skills/i18n-messaging/SKILL.md).",
-            "The confirm sentence about wallets finishing their sync stays draft until task-017 confirms it."
+            "The confirm's wallet sentence is \"Your wallets stay on this computer.\" (PRD decision 37)."
           ]
         },
         {
