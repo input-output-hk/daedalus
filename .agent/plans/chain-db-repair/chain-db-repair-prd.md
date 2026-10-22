@@ -4,7 +4,7 @@
 
 When cardano-node or cardano-wallet output shows that the local chain database has a hole in its ImmutableDB, Daedalus tells the user what is wrong and offers to rebuild the database with Mithril, keeping their wallets. This plan builds that in three parts: detection in the watchdog from three log signatures seen in the field, a rebuild path that is safe to offer, and a full-screen offer in the renderer with a matching action in Diagnostics.
 
-A fourth part is gated on a spike: a targeted repair that finds the hole with a fast boundary scan, replaces only the damaged chunks with certified copies, and, after asking the user, installs a fresh certified ledger. If it works for a symptom, it runs first, and the full rebuild becomes the fallback. All four parts ship in one release (decision 10).
+The three parts ship on their own, in a patch release (decision 35). A targeted repair, which finds the hole with a fast boundary scan, replaces only the damaged chunks with certified copies, and, after asking the user, installs a fresh certified ledger, is planned in [chain-db-targeted-repair](../chain-db-targeted-repair/chain-db-targeted-repair-prd.md). It builds on the detection, the rebuild and the offer screen delivered here, and falls back to them.
 
 ## Problem Statement
 
@@ -41,11 +41,12 @@ The wallet databases are intact in all four installs. These users need the chain
   - a rebuild whose download fails returns to the first-run choice instead of a silent genesis sync;
   - custom chain locations rebuild in place.
 - Record each detection in `watchdog.log` and Diagnostics, and offer the same rebuild manually from Diagnostics.
-- Establish on preprod whether a targeted repair recovers each symptom. If it does, run it first, ask before it installs a fresh ledger, and fall back to the rebuild.
 
 ## Non-Goals
 
-- Finding holes on installs that show no symptoms. The background scan in the 2026-09-29 decision is separate work. That work will use this plan's boundary scan as its detector once phase 6 has measured it (decision 12).
+- The targeted repair: the boundary scan, the swap of damaged chunks for certified copies, and the fresh certified ledger installed after asking. It is planned in [chain-db-targeted-repair](../chain-db-targeted-repair/chain-db-targeted-repair-prd.md) (decision 35).
+- Finding holes on installs that show no symptoms. The background scan in the 2026-09-29 decision is separate work. Its detector is settled in the targeted repair plan, which measures the boundary scan.
+- Resyncing a wallet. A wallet restore that crossed a hole without signature 3 (FR3) holds none of the hole's blocks, and a rebuild does not add them, because the wallet continues from its checkpoint after the hole. Whether the targeted repair plan includes a wallet resync is an open question there.
 - Corruption inside a chunk (`ChecksumMismatchError`, the #3409 class). The event carries a `kind`, so another kind can be added later, but no parser for it is written here.
 - Persisting a detection across restarts. Each node run detects the first and third signatures from its own output, within minutes of a start, and the check before each node start finds the second from the database files (decision 24). A stored marker could outlive a manual fix. The one thing that persists is the record of a confirmed rebuild, or of an install, that has not finished (FR6), because by then the old chain is deleted or partly replaced.
 - Changing the node's own validation after an unclean start. It already finds a hole and truncates the chain there, at a cost of hours.
@@ -56,7 +57,7 @@ The wallet databases are intact in all four installs. These users need the chain
 - [research/01-field-log-signatures.md](research/01-field-log-signatures.md): the three signatures, with redacted lines, counts, matching rules, and how each install behaved.
 - [research/02-code-paths-at-11.5.0.md](research/02-code-paths-at-11.5.0.md): the rebuild path, supervisor states, log parsing, event plumbing, and screen selection at `22440487d`.
 - [research/03-boundary-scan.md](research/03-boundary-scan.md) and `research/03-boundary-scan-prototype.py`: locating a hole from the chunk indexes in about 3 minutes on mainnet, against hours for a full read.
-- A preprod experiment with `mithril-client` 0.13.9 against the release-preprod aggregator: `cardano-db verify --start N --end N` run over a stopped node's chain directory names a tampered chunk file, and `cardano-db download --start N --end N --allow-override` replaces only that file, byte for byte. An unscoped `verify --allow-missing` reported the tampered file in its JSON but exited 0, so a caller reads the JSON, not the exit code.
+- A preprod experiment with `mithril-client` 0.13.9 against the release-preprod aggregator: `cardano-db verify --start N --end N` run over a stopped node's chain directory names a tampered chunk file. The targeted repair plan carries the rest of that experiment, which replaced the file with `cardano-db download`.
 - `.agent/plans/mithril-partial-sync/mithril-partial-sync-prd.md` and `.agent/plans/mithril/mithril-snapshot-ux.md`: the partial sync and the existing Mithril screens.
 - `.agent/system/architecture.md`, `.agent/workflows/ipc.md`, `.agent/workflows/frontend.md`, `.agent/skills/i18n-messaging/SKILL.md`.
 - Public issue #3416.
@@ -75,14 +76,14 @@ Plan decisions:
 5. The first signature fires when three distinct peers reject the same block. One misbehaving peer cannot reach that threshold. In every field install, at least one rejected block came from 12 or more peers.
 6. The rebuild deletes the old chain before downloading the new one. Staging the download beside the old chain would keep it if the download failed, but it needs room for two full databases, about 217 GB each on mainnet (measured 2026-09-30). The old chain is already damaged. A failed or cancelled download leads back to the first-run choice.
 7. The offer screen asks before rebuilding, because the rebuild deletes local data and takes the app out of use for a full download. "Not now" dismisses the screen until the app restarts; Diagnostics keeps the detection and the manual rebuild.
-8. The targeted repair replaces chunks without asking (decision 1) and asks before installing a fresh ledger (decision 11). It falls back to the offer screen when it cannot locate or fix the damage.
+8. Moved to the targeted repair plan, where it is decision 4: how the targeted repair asks and when it falls back to the offer screen.
 9. There is one `chain_damage` event with a `kind` field rather than one event per signature, so a later kind reuses the screen and the state.
 
 Owner decisions on the questions raised while planning:
 
-10. **2026-10-16.** The rebuild offer does not ship ahead of the targeted repair. Phases 1 to 7 go out in one release. If phase 6 shows the targeted repair cannot recover a symptom, its decision record says so, and the owner decides then whether to release without it.
-11. **2026-10-16.** The targeted repair asks before the partial sync that installs a fresh ledger, because the node stays offline while it runs. Decision 1 still covers the chunk swap, which needs no prompt. A kind that phase 6 shows needs no fresh ledger is repaired without a prompt.
-12. **2026-10-16.** The background scan from decision 1 finds holes with the boundary scan instead of a full-range `cardano-db verify`, once phase 6 has measured the Rust scan on Windows. `verify` remains the check for corruption inside a chunk. The scan reads chunk indexes, not logs, so it keeps decision 2.
+10. **2026-10-16.** The rebuild offer does not ship ahead of the targeted repair. Phases 1 to 7 go out in one release. If phase 6 shows the targeted repair cannot recover a symptom, its decision record says so, and the owner decides then whether to release without it. Decision 35 replaces this decision.
+11. **2026-10-16.** Moved to the targeted repair plan, where it is decision 5: the targeted repair asks before the partial sync that installs a fresh ledger.
+12. **2026-10-16.** Moved to the targeted repair plan, where it is decision 6: the background scan finds holes with the boundary scan.
 13. **2026-10-16.** An install that fails after a rebuild keeps the existing strict wait: the Mithril error view with Retry, no node start, and no `chain_status { has_chain: false }`.
 14. **2026-10-16.** Mithril staging lives inside the chain folder, on the chain's own volume, for every Mithril install into that location, so an install is a rename and never a copy between volumes. A rebuild checks the free space on that volume before it deletes anything, counting the space the wipe frees, and refuses with `INSUFFICIENT_SPACE` when the download would not fit. Decision 6 stands: the old chain is still deleted before the download starts. The database size comes from `total_db_size_uncompressed` in `mithril-client snapshot show`, and the check requires that size plus 10 percent, the margin `mithril-client` adds to a partial download, to fit in the free space plus what the wipe and a staging leftover will free. The staging entry, `mithril-staging`, is never chain data: the replaceability check, the wipe, the has-chain check and the storage location picker all accept or ignore it. A leftover of this network, or one that names no network, is deleted before each download. At startup a leftover of this network is deleted and one of another network is left as it is (decision 34).
 15. **2026-10-17.** Retry on the Mithril error view after a partial sync failed during its install step (`INSTALL_FAILED` with `rebuild: false`) offers the rebuild behind the confirmation. The watchdog waits for another Mithril sync there, and a plain Retry usually finds nothing to download. Nothing is deleted before the confirmation, and confirming sends `start_mithril` with `wipe_chain: true`.
@@ -127,6 +128,11 @@ Owner decision of 2026-10-21 on a storage folder that two networks share:
 
 34. **2026-10-21.** Each staging entry the watchdog creates for a download names the network it downloads for. When the watchdog creates `mithril-staging` for a download, before `mithril-client` starts, it writes `network-magic` into it, beside `download` and never inside the database, holding the network magic as decimal text. The marker is written to a temporary file and renamed into place. `mithril-client` 0.13.9 writes `protocolMagicId` into the staged database only late in the download, so without the marker another network's Daedalus that starts during the download cannot tell it from a leftover. The startup cleanup reads the marker, and for an entry without one the staged `protocolMagicId`: a staging entry of this network is deleted as a leftover of an interrupted sync, one of another network is left as it is, and one that names no network is deleted as before, unless the chain directory holds another network's database. A Mithril sync, a rebuild included, refuses with `CHAIN_DIR_OTHER_NETWORK` before anything is deleted when the staging entry names another network, and the location picker refuses such a folder as `chain-subdirectory-other-network`. Both reuse the existing copy for another network's data.
 
+Owner decisions of 2026-10-22 on the release and on a storage folder that two networks share:
+
+35. **2026-10-22.** Phases 1 to 5 ship on their own, in a patch release, so that installs already showing a signature get the rebuild without waiting for the targeted repair. This replaces decision 10. Phases 6 and 7, the targeted repair, move to their own plan, [chain-db-targeted-repair](../chain-db-targeted-repair/chain-db-targeted-repair-prd.md), together with FR17 to FR21 and decisions 8, 11 and 12. This plan keeps the release work, and its CHANGELOG entry describes only what phases 1 to 5 deliver.
+36. **2026-10-22.** A second network's sync from genesis that starts beside a running Mithril download, in a storage folder the two networks share, is accepted as a residual risk. Every network keeps its database in the same chain folder of the storage folder. While the first network downloads with no database in place, that folder holds only its staging entry, so the second network's Daedalus finds no chain and offers the bootstrap decision. Its Mithril sync is refused (decision 34), but a node start is not, because the check before a node start looks only for another network's database (`holds_other_network_db` in `watchdog/src/supervisor.rs`). The second network's node then writes its database beside the staging entry. When the first network's download finishes, the check before its install (`network_allowed` in `watchdog/src/mithril.rs`) finds that database, refuses with `CHAIN_DIR_OTHER_NETWORK` and deletes the download. The cost is that whole download: the first network's Daedalus is left without a chain, and Retry on its error view opens the location picker. Neither network's chain data is damaged, and the second network's sync continues.
+
 ## Requirements
 
 ### Functional Requirements
@@ -168,17 +174,9 @@ Download waiting for the network (watchdog, main and renderer):
 - [ ] FR24. While mithril-client downloads, until its file count reaches its total, the watchdog notes when the highest `files_downloaded`, the highest `bytes_downloaded` or the step number in its progress last grew. mithril-client reports immutable files as a file count and the ancillary archive as a byte count, one kind per line, so each count is tracked on its own. After `download_stall_secs` (60 by default in the Mithril configuration) without growth, the watchdog checks whether mithril-client can reach the aggregator in `aggregator_url`. It runs `cardano-db snapshot show latest`, the query of the probe before a download, so the check takes the download's route through any proxy that the environment or the system sets. A query that succeeds reaches the aggregator. One that fails, or that is still running after 15 s and is then stopped, does not. One check runs at a time, and it is repeated every `network_recheck_secs` (20 by default) while the download stays stalled. When the aggregator cannot be reached it logs that once and emits `mithril_waiting_for_network { waiting: true }`. Growth, a check that reaches the aggregator, and the end of the download emit `waiting: false`. mithril-client is never stopped or timed out for a stall.
 - [ ] FR25. While `mithrilWaitingForNetwork` is set, the Mithril progress view says that downloading will continue when the network returns, and the progress bar stays as it is. Main sets the flag from `mithril_waiting_for_network` and clears it on any Mithril phase other than `downloading` and `verifying`, on `mithril_error`, on `node_started` and on `stopped`.
 
-Targeted repair (gated on phase 6):
+Targeted repair:
 
-- [ ] FR17. A boundary scan in the watchdog reports every break in hash linkage between non-empty post-Byron chunks, and every missing `.chunk`, `.primary` or `.secondary` file.
-- [ ] FR18. On `chain_damage`, with the wallet and node stopped, the watchdog does the following, then restarts the node and wallet:
-  - runs the scan;
-  - for each break, downloads every chunk from the last non-empty chunk before the break through the chunk before the one where the break shows, with certificate verification, into staging;
-  - swaps the downloaded chunks in only after every download has verified;
-  - for each kind that needs a fresh certified ledger, asks, then runs the partial sync that installs one (decision 11).
-- [ ] FR19. The renderer shows a "Repairing blockchain data" screen with the phase and progress. Before the partial sync it asks whether to install a fresh verified ledger, with Install and Not now. Not now leaves the replaced chunks in place, restarts the node and wallet on the old ledger, and shows nothing more until the app restarts; Diagnostics keeps the detection and the manual rebuild.
-- [ ] FR20. If the scan finds no break or a step before the swap fails, the chain is left as it was. If the ledger install fails after the swap, the replaced chunks stay, since they are certified copies. Either way the offer screen appears. A repair runs at most once per app session.
-- [ ] FR21. Each replaced chunk is logged in `watchdog.log` and listed in Diagnostics.
+- FR17 to FR21, the targeted repair, moved to the targeted repair plan, where they are FR1 to FR5 (decision 35).
 
 ### Non-Functional Requirements
 
@@ -188,7 +186,6 @@ Targeted repair (gated on phase 6):
 - The rebuild never deletes a directory that fails `check_replaceable`, and never ends in a genesis sync the user did not choose.
 - Copy states no size, duration or percentage that the code does not measure.
 - All three desktop platforms, with Windows junctions and macOS and Linux symlinks for custom chain locations.
-- The boundary scan reads only index entries and first headers. Over a 9P mount it measured 185 s for mainnet. Native reads must be no slower, which phase 6 measures.
 
 ## Technical Design
 
@@ -216,7 +213,6 @@ Targeted repair (gated on phase 6):
 - `source/renderer/app/components/status/DaedalusDiagnostics.tsx` and `containers/status/DaedalusDiagnosticsDialog.tsx`.
 - `source/renderer/app/i18n/locales/{en-US,ja-JP,defaultMessages}.json`.
 - `storybook/stories/loading/chain-damage/ChainDamageView.stories.tsx`.
-- Phase 7: `watchdog/src/chain_scan.rs` and `watchdog/src/chain_repair.rs` (new), and a `ChainRepairView` in the renderer.
 
 ### Data / IPC / API Changes
 
@@ -288,8 +284,6 @@ A Mithril sync that finds the local chain current ends with `mithril_status` `co
 
 There is no new IPC channel. The renderer reads the state through the existing 2-second poll, and the rebuild uses `MITHRIL_COMMAND_CHANNEL`, which already forwards `wipe_chain` verbatim.
 
-Phase 7 adds `chain_repair_status { phase, chunks, progress }` with phases `scanning`, `downloading`, `swapping`, `awaiting_ledger_confirmation`, `syncing`, `completed` and `failed`, a `chainRepair` field on the polled state, and a `confirm_repair_ledger { install }` command sent over `MITHRIL_COMMAND_CHANNEL`.
-
 ### UI / Store / Process Changes
 
 `BackendStore.loadingPhase` gains one check directly after `isStopping`:
@@ -351,16 +345,9 @@ Draft en-US copy, to be confirmed by phase 5 testing (the wallet sentence depend
 
 New `defaultMessage` values carry the `!!!` prefix until reviewed, per `.agent/skills/i18n-messaging/SKILL.md:33`.
 
-### Targeted Repair (phases 6 and 7)
+### Targeted Repair
 
-1. On `chain_damage`, stop the wallet and the node.
-2. Scan the ImmutableDB as in [research/03](research/03-boundary-scan.md). A break before chunk M means the chunks from N (the last non-empty chunk before M) to M-1 are incomplete. In every field case and in #3416 itself, that is chunk N alone.
-3. For each break, run `mithril-client cardano-db download --start N --end M-1` into a staging directory inside the chain folder (decision 14), without ancillary files. The client verifies the files against the certificate.
-4. When every download has verified, move each chunk's `.chunk`, `.primary` and `.secondary` into `immutable/`.
-5. If the kind needs a fresh ledger, emit `awaiting_ledger_confirmation` and wait for the user (decision 11). On Install, run the existing partial sync (`run_pipeline` forced, no wipe), which installs a fresh certified ledger and replaces `ledger/` and `lsm/` (`watchdog/src/mithril.rs:510-523`). Filling the hole is enough for the wallet symptom. The two node symptoms also need a ledger that never replayed across the hole. On Not now, go to step 6 and do not ask again this session.
-6. Restart the node and wallet. If a signature reappears in the same session, show the offer screen and do not repair again.
-
-Phase 6 decides whether step 5 is needed for each kind, whether the wallet recovers without a resync, and how long the scan takes natively on Windows. The answers go in `research/04-targeted-repair-spike.md`.
+The targeted repair is planned in [chain-db-targeted-repair](../chain-db-targeted-repair/chain-db-targeted-repair-prd.md) (decision 35). It runs on the `chain_damage` event, stages its downloads inside the chain folder as decision 14 sets for every Mithril install, installs a fresh ledger with the existing partial sync, and falls back to the offer screen and the rebuild.
 
 ## Implementation Strategy
 
@@ -368,9 +355,8 @@ Phase 6 decides whether step 5 is needed for each kind, whether the wallet recov
 2. **Safe rebuild.** Probe before delete, no silent genesis sync, custom chain locations, and error codes passed to the renderer.
 3. **Offer screen.** State plumbing, store phase and actions, choice and confirm views, translated and code-aware error view, copy and stories, and the startup silence prompt.
 4. **Diagnostics.** Detection row and manual rebuild.
-5. **Verification of the rebuild.** Nix checks and a reproduction of an 11.4.0 hole on preprod (Linux and Windows). The release waits for phase 7 (decision 10).
-6. **Targeted repair spike.** Rust boundary scan with tests and Windows timing, a recovery experiment per symptom on preprod, and a decision record.
-7. **Targeted repair and release preparation.** Built if phase 6 succeeds: the repair pipeline, the repairing screen with the ledger confirmation, Diagnostics history, verification, and the CHANGELOG entry.
+5. **Verification of the rebuild.** Nix checks and a reproduction of an 11.4.0 hole on preprod (Linux and Windows).
+6. **Release.** The CHANGELOG entry for a patch release of phases 1 to 5 on their own, describing only what they deliver (decision 35).
 
 The plan lands as one epic branch cut from `origin/master`, with one draft pull request. The plan workspace is the first commit, each task is one commit, and the branch is pushed once per phase.
 
@@ -436,7 +422,7 @@ Manual, on preprod (Linux under WSL2 and Windows), reproducing a hole with 11.4.
 
 1. List preprod snapshots and pick the one whose `immutable_file_number` is three below the newest. Download it with `--include-ancillary` into a scratch directory. Delete its `ledger` directory. Its highest chunk N is the unfinalized one from the ancillary archive, one above the snapshot's number.
 2. With Daedalus Pre-Prod 11.4.0 closed, swap that directory in as the chain directory. Start the app and run Mithril Sync from Diagnostics while the node replays. `watchdog.log` shows `Mithril forced by caller: local=N, certified=C` with C at least N+2. `node.log` then shows the replay from a ledger snapshot at a slot of at least 21600 × (N+1), the first slot of chunk N+1 on preprod, followed by the sync from peers. The ledger then lies after the hole, in a chunk the sync downloaded whole. A snapshot two below the newest can give C equal to N+1 instead, with the ledger snapshot in chunk N, inside the hole, so that startup stops at signature 2: the chain of step 6.
-3. Quit cleanly. `mithril-client cardano-db verify latest --db-dir <chain directory> --start N --end N` reports three tampered files, and the boundary scan reports a break before chunk N+1. The chain directory must hold the `clean` marker. Without it, the node validates every chunk at its next start and truncates the chain at the hole, so the later steps would test the node's own repair. A quit that hangs leaves no marker; create an empty `clean` file in its place. The later steps run on copies of this chain.
+3. Quit cleanly. `mithril-client cardano-db verify latest --db-dir <chain directory> --start N --end N` reports three tampered files, and the boundary scan prototype of [research/03](research/03-boundary-scan.md) reports a break before chunk N+1. The chain directory must hold the `clean` marker. Without it, the node validates every chunk at its next start and truncates the chain at the hole, so the later steps would test the node's own repair. A quit that hangs leaves no marker; create an empty `clean` file in its place. The later steps run on copies of this chain.
 4. Install the build under test and start it on a copy of the chain. Restore a wallet from its recovery phrase. The restore crosses the hole without signature 3 unless one of its batches starts right after the last block before the hole (FR3). Rebuild from the offer screen when a signature raised it, otherwise from Diagnostics, and record whether the wallet finishes without a resync. The confirmation copy depends on this result.
 5. On a fresh copy of the damaged chain, delete `ledger` and `lsm` so the node replays from genesis across the hole. Record whether a later block that spends an output created in the hole arrives and triggers signature 1. On preprod's low transaction volume it may not, and the field-line tests cover detection.
 6. Signature 2 is reproduced with a preprod chain whose ledger snapshot at slot 136771192 lies in the missing tail of chunk 6331, which holds slots 136749698 to 136749780 only. Steps 1 to 3 make it when step 1 picks the snapshot two below the newest. Without the check of FR2a, the node replays from that snapshot and writes nothing until it is stopped. With it, Daedalus shows the offer screen without starting the node, and Rebuild from there installs a database and starts the node. The check refuses that chain. It starts the node on a copy of it whose chunk 6331 is whole, and on a healthy preprod chain.
@@ -447,14 +433,14 @@ Manual, on preprod (Linux under WSL2 and Windows), reproducing a hole with 11.4.
 ## Rollout / Migration / Rollback
 
 - No data migration. The only persisted state is the record of a confirmed rebuild, or of an install, that has not finished (FR6). A record written before kinds existed reads as a rebuild's. The detection lives in memory, and the rebuild uses the existing Mithril bootstrap.
-- Phases 1 to 7 ship in one release (decision 10).
-- The CHANGELOG entry describes the behavior a user sees: the damaged-data screen, the targeted repair and its ledger confirmation, the rebuild, and the Diagnostics action.
+- Phases 1 to 5 ship on their own, in a patch release (decision 35). The targeted repair ships later, from its own plan.
+- The CHANGELOG entry describes the behavior a user sees: the damaged-data screen, the rebuild, the Diagnostics action, the prompt when the node writes nothing while it starts, and the note on a Mithril download waiting for the network. It describes no targeted repair.
 - Rollback is a revert. The new event is additive. The rebuild changes affect `wipe_chain`, which nothing sends in 11.5.0, and the staging location of every Mithril install (decision 14), which a revert restores.
 - An affected install sees the screen on the first start after upgrading that produces a signature. Installs with holes but no symptoms see nothing until one appears, or until the background scan from decision 1 ships.
 
 ## Open Questions
 
-None. Decisions 10 to 15 settled the questions raised while planning, decisions 16 to 18 apply decisions 13 to 15, decisions 19 to 23 apply FR6, FR12 and decision 13, decisions 26 and 27 apply decisions 24 and 25, decisions 28 and 29 record the owner's choices on the rebuild's download and confirmation, decisions 30 to 33 record the owner's choices on translation, Diagnostics and the styling of two notices, and decision 34 records the owner's choice on a storage folder that two networks share.
+None. Decisions 10 to 15 settled the questions raised while planning, decisions 16 to 18 apply decisions 13 to 15, decisions 19 to 23 apply FR6, FR12 and decision 13, decisions 26 and 27 apply decisions 24 and 25, decisions 28 and 29 record the owner's choices on the rebuild's download and confirmation, decisions 30 to 33 record the owner's choices on translation, Diagnostics and the styling of two notices, decision 34 records the owner's choice on a storage folder that two networks share, decision 35 records the owner's choice to ship phases 1 to 5 ahead of the targeted repair, and decision 36 records the residual the owner accepted for a shared storage folder.
 
 **Status:** In Progress
 **Date:** 2026-10-22

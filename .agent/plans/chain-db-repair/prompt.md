@@ -20,3 +20,7 @@ The wallet databases are intact in all four. In 11.5.0 the renderer never sends 
 - Owner ruling, 2026-09-30: log lines may start a check or a repair and may hint at which chunks to check first, but their absence proves nothing, because logs rotate and users clear them. Detection that has to be complete uses `mithril-client cardano-db verify`.
 - The background scan for installs that carry holes without symptoms is a separate effort and stays out of this plan, apart from sharing the chunk swap with it.
 - Experiments that damage or repair a chain database run on preprod or preview, never on a mainnet install that is in use.
+
+## Later scope change
+
+On 2026-10-22 the targeted repair moved to its own plan, [chain-db-targeted-repair](../chain-db-targeted-repair/prompt.md). This plan ships the detection, the rebuild and the offer screen on their own (PRD decision 35).
