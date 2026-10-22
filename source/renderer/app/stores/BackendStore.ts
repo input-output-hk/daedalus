@@ -397,6 +397,16 @@ export default class BackendStore extends Store {
     return phase !== null && phase !== 'completed' && phase !== 'cancelled';
   }
 
+  // The Mithril view keeps its place over the damaged data screen: a running
+  // pipeline, or the error of a rebuild, whose Retry repeats the rebuild. The
+  // error of any other sync gives way, because that sync does not repair the
+  // damage and its Retry would run it again.
+  @computed
+  get _mithrilOutranksDamage(): boolean {
+    if (this._shownMithrilPhase === 'error') return this.lastErrorRebuild;
+    return this._mithrilActive;
+  }
+
   // The Mithril phase the loading screens go by: a dismissed error counts as
   // no Mithril run
   @computed
@@ -414,13 +424,14 @@ export default class BackendStore extends Store {
       return 'stopping';
     }
     // The chain database has a hole: offer the rebuild before anything else,
-    // including a ready wallet. A running Mithril pipeline keeps the screen.
-    // When the watchdog holds the node back, no node runs behind the screen,
-    // so an earlier Not now does not hide it.
+    // including a ready wallet. A running Mithril pipeline keeps the screen,
+    // and so does the error of a rebuild. When the watchdog holds the node
+    // back, no node runs behind the screen, so an earlier Not now does not
+    // hide it.
     if (
       this.chainDamage !== null &&
       (this.nodeHeld || !this._chainDamageDismissed) &&
-      !this._mithrilActive
+      !this._mithrilOutranksDamage
     ) {
       return 'chain-damaged';
     }

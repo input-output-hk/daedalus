@@ -179,7 +179,7 @@ describe('BackendStore chain damage', () => {
     expect(store.loadingPhase).toBe('stopping');
   });
 
-  it.each(['preparing', 'downloading', 'installing', 'error'])(
+  it.each(['preparing', 'downloading', 'installing'])(
     'returns mithril-syncing over chain-damaged while the Mithril phase is %s',
     (phase) => {
       const store = makeStore();
@@ -189,6 +189,49 @@ describe('BackendStore chain damage', () => {
       expect(store.loadingPhase).toBe('mithril-syncing');
     }
   );
+
+  it('keeps the error view of a rebuild over chain-damaged', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).chainDamage = damage;
+    (store as any).mithrilPhase = 'error';
+    (store as any).lastErrorCode = 'INVALID_CHAIN_PATH';
+    (store as any).lastErrorRebuild = true;
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('offers the rebuild over the error of a partial sync that failed before the damage was found', async () => {
+    const store = makeStore();
+    const polled = {
+      hasChain: true,
+      walletPort: null,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'error',
+      lastErrorCode: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+      lastErrorRebuild: false,
+      chainDamage: null,
+    };
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    // The watchdog started the node again on the chain, and its output shows
+    // the damage while the error view is still up.
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      ...polled,
+      chainDamage: { ...damage, kind: 'node_rejects_canonical_block' },
+    });
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('chain-damaged');
+    // Not now returns to the error the damage screen replaced.
+    store.dismissChainDamage();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
 
   it('returns chain-damaged once the Mithril phase is cancelled or completed', () => {
     const store = makeStore();
