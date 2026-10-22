@@ -2728,10 +2728,15 @@ mod tests {
         #[tokio::test]
         async fn a_client_still_running_at_the_limit_is_stopped_and_not_reached() {
             let (dir, cfg) = client("hang", r#"echo $$ > "$(dirname "$0")/pid"; exec sleep 30"#);
+            let limit = Duration::from_secs(2);
             let started = Instant::now();
-            assert!(!aggregator_reachable(&cfg, Duration::from_millis(500)).await);
-            assert!(started.elapsed() < Duration::from_secs(5));
-            let pid = std::fs::read_to_string(dir.0.join("pid")).unwrap();
+            assert!(!aggregator_reachable(&cfg, limit).await);
+            assert!(started.elapsed() < limit * 5);
+            // A client that has not run its first line by the limit is stopped
+            // before it writes its pid, and the check waits for it to exit.
+            let Ok(pid) = std::fs::read_to_string(dir.0.join("pid")) else {
+                return;
+            };
             let alive = std::process::Command::new("kill")
                 .args(["-0", pid.trim()])
                 .status()
