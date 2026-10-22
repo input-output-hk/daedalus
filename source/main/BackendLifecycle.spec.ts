@@ -126,6 +126,19 @@ describe('BackendLifecycle', () => {
     expect(revokeCip30Sessions).toHaveBeenCalledTimes(1);
   });
 
+  it.each(['mithril_error', 'chain_status'])(
+    'tells the renderer at once when %s ends a requested restart',
+    (event) => {
+      const lifecycle = new BackendLifecycle();
+      lifecycle.start();
+      watchdogEvent({ event });
+      expect(backendStopStatusChannel.send).toHaveBeenLastCalledWith(
+        { quitting: false, restart: null, progress: null },
+        expect.anything()
+      );
+    }
+  );
+
   it('shares a controlled stop and retains backend state and progress', async () => {
     const stopped = deferred<void>();
     manager.stop.mockReturnValue(stopped.promise);

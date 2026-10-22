@@ -44,6 +44,8 @@ const STOP_STATUS_EVENTS = new Set([
   'wallet_unrecoverable',
   'node_unrecoverable',
   'mithril_status',
+  'mithril_error',
+  'chain_status',
 ]);
 
 class BackendLifecycle {

@@ -88,6 +88,36 @@ describe('WatchdogManager requested restart', () => {
     expect(manager.getState().requestedRestart).toBeNull();
   });
 
+  it('ends a node restart for a new location when the rebuild sent with it is refused before it prepares', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'node_started', pid: 1, started_at_unix_ms: 0 });
+    manager.sendCommand({ cmd: 'set_chain_path', path: '/new' });
+    manager.sendCommand({ cmd: 'start_mithril', wipe_chain: true });
+    expect(manager.getState().requestedRestart).toBe('node');
+    emit({ event: 'node_shutdown_ms', ms: 900, force_killed: false });
+    emit({
+      event: 'mithril_error',
+      code: 'CHAIN_DIR_OTHER_NETWORK',
+      message: 'x',
+      rebuild: true,
+    });
+    expect(manager.getState().requestedRestart).toBeNull();
+  });
+
+  it('ends a node restart when the watchdog reports no chain and waits for a choice', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    emit({ event: 'node_started', pid: 1, started_at_unix_ms: 0 });
+    manager.sendCommand({ cmd: 'set_chain_path', path: '/new' });
+    emit({ event: 'node_shutdown_ms', ms: 900, force_killed: false });
+    emit({
+      event: 'chain_status',
+      has_chain: false,
+      rebuild_pending: false,
+      install_pending: false,
+    });
+    expect(manager.getState().requestedRestart).toBeNull();
+  });
+
   it('marks nothing when no node is running to restart', () => {
     const { manager, emit } = makeManagerWithSocket();
     manager.sendCommand({ cmd: 'set_chain_path', path: '/x' });

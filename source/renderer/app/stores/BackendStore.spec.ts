@@ -1117,6 +1117,52 @@ describe('BackendStore._onBackendStopStatus', () => {
   });
 });
 
+describe('BackendStore after a rebuild in a newly picked location was refused', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+    (confirmChainStorageChannel.request as jest.Mock)
+      .mockReset()
+      .mockResolvedValue(undefined);
+  });
+
+  it('leaves the stopping screen for the error view, and its sync choice for the bootstrap decision', async () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).mithrilPhase = 'error';
+    (store as any).lastErrorCode = 'INVALID_CHAIN_PATH';
+    (store as any).lastErrorRebuild = true;
+    store.retryMithril();
+    await store.setChainStorageDirectory('/new');
+    store.confirmStorageLocation();
+    store.rebuildChain();
+    // Main pushes the restart that the location change asked for.
+    await (store as any)._onBackendStopStatus({
+      quitting: false,
+      restart: 'node',
+      progress: null,
+    });
+    expect(store.loadingPhase).toBe('stopping');
+    // The rebuild is refused in the new location, which holds no chain, and
+    // main has ended the restart.
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      hasChain: false,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: 'error',
+      lastErrorCode: 'CHAIN_DIR_OTHER_NETWORK',
+      lastErrorRebuild: true,
+      requestedRestart: null,
+    });
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    store.showBootstrapDecision();
+    expect(store.loadingPhase).toBe('bootstrap-decision');
+  });
+});
+
 describe('BackendStore._pollBackendStatus', () => {
   it('copies the code of the Mithril error from the polled state', async () => {
     const store = makeStore();

@@ -474,6 +474,10 @@ class WatchdogManager {
         // The watchdog reports no chain once a rebuild deleted it, which also
         // ends the wait after a failed install.
         s.installRetryRequired = false;
+        // The watchdog reports the chain only while no node runs, before it
+        // starts one or while it waits for the user's choice, so a requested
+        // restart has nothing left to stop.
+        s.requestedRestart = null;
         break;
 
       case 'node_started':
@@ -674,6 +678,10 @@ class WatchdogManager {
         s.lastError = event.message as string;
         s.lastErrorCode = (event.code as string | undefined) ?? null;
         s.lastErrorRebuild = event.rebuild === true;
+        // The Mithril run replaced the requested node restart, as it does
+        // when it reports a phase. A run refused before it prepares reports
+        // only this error.
+        if (s.requestedRestart === 'node') s.requestedRestart = null;
         if (event.code === INSTALL_FAILED_CODE) {
           s.installRetryRequired = true;
           // A rebuild deletes the old chain before it installs, so its failed
