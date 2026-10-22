@@ -935,7 +935,7 @@
       originalPackageJson = builtins.fromJSON (builtins.readFile ../package.json);
 
       nodejs = let
-        base = pkgs.nodejs_24;
+        base = pkgs.nodejs_26;
       in
         if !(pkgs.lib.hasInfix "-darwin" targetSystem)
         then base
