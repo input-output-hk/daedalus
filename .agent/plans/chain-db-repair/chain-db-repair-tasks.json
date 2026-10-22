@@ -605,7 +605,7 @@
           "id": "task-018",
           "title": "CHANGELOG entry",
           "description": "Describe what phases 1 to 5 deliver under vNext, in user terms: the damaged-data screen and its rebuild, the Diagnostics row and Rebuild blockchain data action, the prompt when the node writes nothing while it starts, and the note on a Mithril download waiting for the network. The entry describes no targeted repair.",
-          "status": "pending",
+          "status": "completed",
           "priority": "medium",
           "estimatedHours": 0.5,
           "dependencies": [
