@@ -183,8 +183,7 @@ storiesOf('Loading / Mithril / Error', module)
   .add('Rebuild Failed After Data Removed', () => (
     <MithrilErrorView
       error={{
-        code: 'DOWNLOAD_FAILED',
-        stage: 'download',
+        code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
         message: 'detail from the watchdog',
       }}
       chainRemoved

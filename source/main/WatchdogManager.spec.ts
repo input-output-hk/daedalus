@@ -457,7 +457,7 @@ describe('WatchdogManager Mithril download waiting for the network', () => {
     { event: 'mithril_status', phase: 'cancelled', rebuild: false },
     {
       event: 'mithril_error',
-      code: 'DOWNLOAD_FAILED',
+      code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
       message: 'x',
       rebuild: false,
     },
@@ -482,7 +482,11 @@ describe('WatchdogManager rebuild state', () => {
       rebuild: true,
     });
     expect(manager.getState().lastErrorRebuild).toBe(true);
-    emit({ event: 'mithril_error', code: 'DOWNLOAD_FAILED', message: 'x' });
+    emit({
+      event: 'mithril_error',
+      code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+      message: 'x',
+    });
     expect(manager.getState().lastErrorRebuild).toBe(false);
   });
 

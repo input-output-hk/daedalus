@@ -599,7 +599,7 @@ describe('BackendStore.retryMithril', () => {
 
   it('runs a plain Mithril sync when the error did not come from a rebuild', () => {
     const store = makeStore();
-    failed(store, 'DOWNLOAD_FAILED', false);
+    failed(store, 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED', false);
     store.retryMithril();
     expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
       cmd: 'start_mithril',
@@ -1023,7 +1023,7 @@ describe('BackendStore after a rebuild removed the chain data', () => {
     (store as any).chainPathConfirmed = true;
     (store as any).mithrilPhase = 'error';
     (store as any).lastErrorRebuild = true;
-    (store as any).lastErrorCode = 'DOWNLOAD_FAILED';
+    (store as any).lastErrorCode = 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED';
   };
 
   it('shows the Mithril error first', () => {

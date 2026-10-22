@@ -57,8 +57,8 @@ describe('MithrilErrorView', () => {
 
   it('says the old blockchain data was removed after a failed rebuild', () => {
     renderView(
-      { code: 'DOWNLOAD_FAILED', stage: 'download', message: 'x' },
-      { chainRemoved: true }
+      { code: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED', message: 'x' },
+      { chainRemoved: true, rebuild: true }
     );
     expect(
       screen.getByText(

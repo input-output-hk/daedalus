@@ -14,12 +14,14 @@ import messages from '../../components/loading/mithril/MithrilBootstrap.messages
 import chainDamageMessages from '../../components/loading/chain-damage/ChainDamage.messages';
 import MithrilSyncContainer from './MithrilSyncContainer';
 
+// By default, a partial sync that could not reach the Mithril service: the
+// watchdog started the node again on the chain it had
 const makeBackend = (overrides = {}) => ({
   loadingPhase: 'mithril-syncing',
   mithrilPhase: 'error',
   mithrilProgress: null,
-  lastError: 'could not delete the files',
-  lastErrorCode: 'WIPE_FAILED',
+  lastError: 'could not reach the aggregator',
+  lastErrorCode: 'PROBE_FAILED',
   startMithril: jest.fn(),
   retryMithril: jest.fn(),
   startNode: jest.fn(),
@@ -114,13 +116,13 @@ describe('MithrilSyncContainer error view', () => {
   it('shows the message for the code the watchdog reported', () => {
     renderContainer(makeBackend(), {
       [globalMessages.view.id]: 'View',
-      [messages.errorWipeFailedHint.id]: 'Close other programs and retry.',
+      [messages.errorProbeFailedHint.id]: 'Check your connection and retry.',
     });
     expect(
-      screen.getByText('Close other programs and retry.')
+      screen.getByText('Check your connection and retry.')
     ).toBeInTheDocument();
     fireEvent.click(screen.getByText('View'));
-    expect(screen.getByText('WIPE_FAILED')).toBeInTheDocument();
+    expect(screen.getByText('PROBE_FAILED')).toBeInTheDocument();
   });
 
   it('labels the buttons from the locale and retries or starts the node from them', () => {
@@ -207,23 +209,29 @@ describe('MithrilSyncContainer after a rebuild failed or was refused', () => {
 
   it.each([
     [
-      'a first bootstrap could not reach the Mithril service',
+      'could not reach the Mithril service',
       { lastErrorRebuild: false, lastErrorCode: 'PROBE_FAILED' },
     ],
     [
-      'a first bootstrap found too little free space',
-      { lastErrorRebuild: false, lastErrorCode: 'INSUFFICIENT_SPACE' },
+      'could not resolve the staging folder',
+      { lastErrorRebuild: false, lastErrorCode: 'STAGING_FAILED' },
     ],
     [
-      'a rebuild failed while downloading',
-      { lastErrorRebuild: true, lastErrorCode: 'DOWNLOAD_FAILED' },
+      'failed while downloading',
+      {
+        lastErrorRebuild: false,
+        lastErrorCode: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+      },
     ],
-  ])('keeps the skip when %s', (_name, overrides) => {
-    renderContainer(makeBackend(overrides), copy);
-    expect(offeredActions()).toEqual(['Retry', 'Skip to blockchain sync']);
-  });
+  ])(
+    'keeps the skip when a partial sync %s and the node runs on the chain again',
+    (_name, overrides) => {
+      renderContainer(makeBackend(overrides), copy);
+      expect(offeredActions()).toEqual(['Retry', 'Skip to blockchain sync']);
+    }
+  );
 
-  it('offers the sync choice and no Not now when the rebuild left no chain', () => {
+  it('offers the sync choice and no Not now when a rebuild is refused where there is no chain', () => {
     renderContainer(
       makeBackend({
         hasChain: false,
@@ -268,6 +276,7 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
   const copy = {
     [messages.errorRetry.id]: 'Retry',
     [messages.errorSkip.id]: 'Skip to blockchain sync',
+    [messages.errorNotNow.id]: 'Not now',
     [messages.errorChooseSync.id]: 'Choose how to sync',
     [messages.errorChainRemovedHint.id]: 'The old blockchain data was removed.',
     [messages.decisionChainRemovedNotice.id]: 'Old data removed, sync again.',
@@ -277,7 +286,7 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
       hasChain: false,
       lastErrorRebuild: true,
       rebuildPending: true,
-      lastErrorCode: 'DOWNLOAD_FAILED',
+      lastErrorCode: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
     });
 
   it('says the old data was removed and offers the sync choice instead of skipping', () => {
@@ -296,24 +305,31 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
 
   it.each([
     [
-      'the rebuild did not delete anything',
-      { hasChain: true, rebuildPending: false },
+      'Not now',
+      'a rebuild was refused before it deleted anything',
+      {
+        hasChain: true,
+        rebuildPending: false,
+        lastErrorCode: 'PROBE_FAILED',
+      },
     ],
     [
-      'the error did not come from a rebuild and a chain is there',
+      'Skip to blockchain sync',
+      'a partial sync failed and the node runs on the chain again',
       { hasChain: true, lastErrorRebuild: false, rebuildPending: false },
     ],
-  ])('keeps the skip action when %s', (_name, overrides) => {
-    const backend = { ...removed(), ...overrides };
-    renderContainer(backend, copy);
-    expect(
-      screen.queryByText('The old blockchain data was removed.')
-    ).toBeNull();
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Skip to blockchain sync' })
-    );
-    expect(backend.startNode).toHaveBeenCalledTimes(1);
-  });
+  ])(
+    'notes no removal and starts the node from %s when %s',
+    (label, _name, overrides) => {
+      const backend = { ...removed(), ...overrides };
+      renderContainer(backend, copy);
+      expect(
+        screen.queryByText('The old blockchain data was removed.')
+      ).toBeNull();
+      fireEvent.click(screen.getByRole('button', { name: label }));
+      expect(backend.startNode).toHaveBeenCalledTimes(1);
+    }
+  );
 
   it.each([
     [
@@ -326,7 +342,10 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
     ],
     [
       'a first bootstrap failed to download',
-      { lastErrorRebuild: false, lastErrorCode: 'DOWNLOAD_FAILED' },
+      {
+        lastErrorRebuild: false,
+        lastErrorCode: 'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+      },
     ],
   ])(
     'offers the sync choice and no skip when %s and there is no chain',
@@ -405,6 +424,8 @@ describe('MithrilSyncContainer after a rebuild removed the chain data', () => {
       makeBackend({
         loadingPhase: 'bootstrap-decision',
         mithrilPhase: null,
+        lastError: null,
+        lastErrorCode: null,
         hasChain: false,
       }),
       copy
@@ -434,6 +455,8 @@ describe('MithrilSyncContainer after an install did not finish', () => {
       makeBackend({
         loadingPhase: 'bootstrap-decision',
         mithrilPhase: null,
+        lastError: null,
+        lastErrorCode: null,
         hasChain: false,
         installPending: true,
       }),
@@ -487,10 +510,12 @@ describe('MithrilSyncContainer after an install failed', () => {
     [messages.errorChainRemovedHint.id]: 'Removed; retry or choose.',
     [messages.errorChainRemovedRetryHint.id]: 'Removed; retry.',
   };
+  // Main marks a failed install that was not a rebuild as unfinished
   const installFailed = (overrides = {}) =>
     makeBackend({
       lastErrorCode: 'INSTALL_FAILED',
       installRetryRequired: true,
+      installPending: true,
       ...overrides,
     });
 
@@ -507,7 +532,11 @@ describe('MithrilSyncContainer after an install failed', () => {
 
   it('says the old data was removed and offers only Retry after the install of a rebuild failed', () => {
     renderContainer(
-      installFailed({ lastErrorRebuild: true, rebuildPending: true }),
+      installFailed({
+        lastErrorRebuild: true,
+        rebuildPending: true,
+        installPending: false,
+      }),
       copy
     );
     expect(screen.getByText('Removed; retry.')).toBeInTheDocument();
@@ -533,6 +562,7 @@ describe('MithrilSyncContainer after a partial sync failed to install', () => {
     makeBackend({
       lastErrorCode: 'INSTALL_FAILED',
       installRetryRequired: true,
+      installPending: true,
       _rebuildConfirmationRequested: true,
     });
 
