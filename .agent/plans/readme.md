@@ -341,6 +341,7 @@ Every active plan should include a `*-tasks.json` file next to its PRD. This fil
 | Mithril | [Mithril Sync in Rust Watchdog](mithril-watchdog/mithril-watchdog-prd.md) | Draft | 2026-07-31 |
 | Linux Packaging | [Watchdog as Entry Point](linux-repackaging/watchdog-entry-point-prd.md) | Draft | 2026-09-15 |
 | Mithril | [Chain Database Repair](chain-db-repair/chain-db-repair-prd.md) | In Progress | 2026-10-16 |
+| Mithril | [Chain Database Targeted Repair](chain-db-targeted-repair/chain-db-targeted-repair-prd.md) | Draft | 2026-10-22 |
 
 ---
 
