@@ -207,12 +207,18 @@ const props = (chainDamage: ChainDamage | null) =>
   }) as any;
 
 // The copied text is built from the instance's props and intl context alone.
-const diagnosticsText = (chainDamage: ChainDamage | null) => {
+const diagnosticsText = (
+  chainDamage: ChainDamage | null,
+  overrides: Record<string, unknown> = {}
+) => {
   const { intl } = new IntlProvider({
     locale: 'en-US',
     messages: translations,
   } as any).getChildContext();
-  const diagnostics = new DaedalusDiagnostics(props(chainDamage));
+  const diagnostics = new DaedalusDiagnostics({
+    ...props(chainDamage),
+    ...overrides,
+  });
   diagnostics.context = { intl };
   return diagnostics.getDiagnosticsText();
 };
@@ -229,6 +235,35 @@ describe('DaedalusDiagnostics copied text', () => {
     expect(diagnosticsText(damage)).toContain(
       `Blockchain data: Damage detected at slot 200102375 (${time})`
     );
+  });
+});
+
+describe('DaedalusDiagnostics node state on the damaged data screen', () => {
+  afterEach(cleanup);
+
+  it('reports the node as stopped while the watchdog holds it, in the dialog and the copied text', () => {
+    renderComponent({
+      cardanoNodeState: 'chain-damaged',
+      isNodeHeld: true,
+      chainDamage: damage,
+    });
+    expect(screen.getByText('Stopped')).toBeInTheDocument();
+    expect(screen.queryByText('Running')).toBeNull();
+    expect(
+      diagnosticsText(damage, {
+        cardanoNodeState: 'chain-damaged',
+        isNodeHeld: true,
+      })
+    ).toContain('Cardano node state: Stopped');
+  });
+
+  it('reports the node as running while it runs behind the screen', () => {
+    expect(
+      diagnosticsText(damage, {
+        cardanoNodeState: 'chain-damaged',
+        isNodeHeld: false,
+      })
+    ).toContain('Cardano node state: Running');
   });
 });
 

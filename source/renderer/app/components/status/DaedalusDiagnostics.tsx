@@ -1359,8 +1359,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
     }
   };
   getLocalisationForCardanoNodeState = () => {
-    const { cardanoNodeState } = this.props;
+    const { cardanoNodeState, isNodeHeld } = this.props;
     let localisationKey;
+
+    // The watchdog found the damage before it started the node and holds it
+    // back, so no node runs behind the damaged data screen
+    if (cardanoNodeState === 'chain-damaged' && isNodeHeld) {
+      return messages.nodeHasStopped;
+    }
 
     switch (cardanoNodeState) {
       case CardanoNodeStates.STARTING:
