@@ -632,6 +632,38 @@ fn partial_sync_while_running() {
     let _ = child.wait();
 }
 
+/// A network without Mithril, such as a local test cluster: a Mithril sync or
+/// a rebuild stops the node, starts it again on the chain it had and keeps
+/// the watchdog running.
+#[test]
+fn mithril_request_without_mithril_restarts_the_node() {
+    let dir = TempDir::new("no-mithril");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "chain_status");
+    expect(&rx, "node_started");
+    expect(&rx, "wallet_ready");
+
+    for cmd in [
+        json!({"cmd": "start_mithril", "force": true}),
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    ] {
+        send(&mut stdin, cmd);
+        expect(&rx, "node_shutdown_ms");
+        expect(&rx, "node_started");
+        expect(&rx, "wallet_ready");
+    }
+    assert!(dir.path().join("chain").join("protocolMagicId").exists());
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 /// Partial sync with the local chain behind the certified tip: the highest
 /// local chunk (the one the node was still appending to) is downloaded again
 /// and replaced, so no blocks are missing between it and the next chunk.

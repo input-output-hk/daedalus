@@ -816,6 +816,36 @@ describe('BackendStore rebuild starting', () => {
     expect(store.lastErrorCode).toBe('REBUILD_MARKER_FAILED');
   });
 
+  it('ends when the watchdog starts the node in place of the rebuild, as on a network without Mithril', async () => {
+    const store = makeStore();
+    const polled = {
+      hasChain: true,
+      walletPort: 8090,
+      nodeStartedAt: 1000,
+      blockSyncProgress: {
+        replayedBlock: 0,
+        validatingChunk: 0,
+        pushingLedger: 0,
+      },
+      mithrilPhase: null,
+    };
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled
+    );
+    await store._pollBackendStatus();
+    store.rebuildChain();
+    await store._pollBackendStatus();
+    expect(store.rebuildStarting).toBe(true);
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue({
+      ...polled,
+      walletPort: null,
+      nodeStartedAt: 2000,
+    });
+    await store._pollBackendStatus();
+    expect(store.rebuildStarting).toBe(false);
+    expect(store.loadingPhase).toBe('node-starting');
+  });
+
   it('ends when the location and the rebuild could not be sent', async () => {
     (confirmChainStorageChannel.request as jest.Mock).mockRejectedValue(
       new Error('no main process')

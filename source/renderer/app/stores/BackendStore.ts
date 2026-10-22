@@ -75,11 +75,15 @@ export default class BackendStore extends Store {
   @observable lastErrorCode: string | null = null;
   // How many Mithril errors main has received, as of the last poll
   @observable mithrilErrorCount = 0;
-  // Set when a confirmed rebuild is sent, to the Mithril error count of that
-  // moment, and null otherwise. Until the watchdog reports the rebuild, with
-  // a phase or with an error after that count, the Mithril view shows the
-  // rebuild preparing in place of the error it replaces.
-  @observable _rebuildStartingAfter: number | null = null;
+  // Set when a confirmed rebuild is sent, to the Mithril error count and the
+  // node start of that moment, and null otherwise. Until the watchdog reports
+  // the rebuild, with a phase or with an error after that count, or starts a
+  // node in its place, the Mithril view shows the rebuild preparing in place
+  // of the error it replaces.
+  @observable _rebuildStartingAfter: {
+    errorCount: number;
+    nodeStartedAt: number | null;
+  } | null = null;
   // True when the Mithril error came from a rebuild of the chain data
   @observable lastErrorRebuild = false;
   // True when a confirmed rebuild has not finished, e.g. Daedalus was closed
@@ -234,10 +238,15 @@ export default class BackendStore extends Store {
         this.lastErrorCode = state.lastErrorCode ?? null;
         this.mithrilErrorCount = state.mithrilErrorCount ?? 0;
         // A poll answered before main had the rebuild still reports the old
-        // state, so only a phase of a run or a later error ends the wait.
+        // state, so only a phase of a run, a later error or a later node
+        // start ends the wait. The watchdog starts the node in place of the
+        // run on a network without Mithril.
+        const starting = this._rebuildStartingAfter;
         if (
-          this._rebuildStartingAfter !== null &&
-          (this.mithrilErrorCount > this._rebuildStartingAfter ||
+          starting !== null &&
+          (this.mithrilErrorCount > starting.errorCount ||
+            (state.nodeStartedAt != null &&
+              state.nodeStartedAt !== starting.nodeStartedAt) ||
             (state.mithrilPhase != null &&
               !IDLE_MITHRIL_PHASES.includes(state.mithrilPhase)))
         ) {
@@ -542,7 +551,10 @@ export default class BackendStore extends Store {
     this._pendingChainPath = null;
     this._rebuildConfirmationRequested = false;
     this._mithrilErrorDismissed = false;
-    this._rebuildStartingAfter = this.mithrilErrorCount;
+    this._rebuildStartingAfter = {
+      errorCount: this.mithrilErrorCount,
+      nodeStartedAt: this.nodeStartedAt,
+    };
     if (picked != null) {
       confirmChainStorageChannel
         .request({ customPath: picked.customPath, rebuild: true })

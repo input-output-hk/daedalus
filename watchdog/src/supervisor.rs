@@ -1596,8 +1596,15 @@ pub async fn run(
                 // continue loop immediately — no delay, no crash-count increment
             }
             RunResult::StartMithril { force, wipe_chain } => {
+                // A network without Mithril has nothing to sync from. The
+                // node and wallet were stopped for the sync, so the loop
+                // starts them again on the chain they had.
                 let Some(mc) = config.mithril.clone() else {
-                    break;
+                    warn!(
+                        "start_mithril ignored: Mithril is not configured for this network; \
+                         starting the node again"
+                    );
+                    continue;
                 };
                 use mithril::PipelineResult;
                 // Set when a rebuild started deleting the chain and installed nothing.
