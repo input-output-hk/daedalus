@@ -121,6 +121,63 @@ describe('WatchdogManager unrecoverable state', () => {
     emit({ event: 'wallet_started', pid: 3, started_at_unix_ms: 0 });
     expect(manager.getState().walletUnrecoverable).toBe(false);
   });
+
+  it('clears both unrecoverable flags when a Mithril run starts preparing', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'wallet_unrecoverable', attempt: 1 });
+    emit({ event: 'node_unrecoverable', crashes: 5 });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    expect(manager.getState().nodeUnrecoverable).toBe(false);
+    expect(manager.getState().walletUnrecoverable).toBe(false);
+  });
+
+  it.each([
+    'ANCILLARY_VKEY_MISSING',
+    'CHAIN_DIR_OTHER_NETWORK',
+    'INVALID_CHAIN_PATH',
+  ])(
+    'clears both unrecoverable flags when a Mithril run is refused with %s before it prepares',
+    (code) => {
+      const { manager, emit } = makeManager();
+      emit({ event: 'wallet_unrecoverable', attempt: 1 });
+      emit({ event: 'node_unrecoverable', crashes: 5 });
+      emit({ event: 'mithril_error', code, message: 'x', rebuild: true });
+      expect(manager.getState().nodeUnrecoverable).toBe(false);
+      expect(manager.getState().walletUnrecoverable).toBe(false);
+    }
+  );
+
+  it('keeps the Mithril error and the wait for Retry when a rebuild after repeated crashes fails to install', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'wallet_unrecoverable', attempt: 1 });
+    emit({ event: 'node_unrecoverable', crashes: 5 });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'downloading', rebuild: true });
+    emit({ event: 'mithril_status', phase: 'installing', rebuild: true });
+    emit({
+      event: 'mithril_error',
+      code: 'INSTALL_FAILED',
+      message: 'install staged db: permission denied',
+      rebuild: true,
+    });
+    const state = manager.getState();
+    expect(state.nodeUnrecoverable).toBe(false);
+    expect(state.walletUnrecoverable).toBe(false);
+    expect(state.mithrilPhase).toBe('error');
+    expect(state.installRetryRequired).toBe(true);
+  });
+
+  it('records a process given up on again after a Mithril run', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'node_unrecoverable', crashes: 5 });
+    emit({ event: 'mithril_status', phase: 'preparing', rebuild: true });
+    emit({ event: 'node_started', pid: 2, started_at_unix_ms: 0 });
+    emit({ event: 'mithril_status', phase: 'completed', rebuild: true });
+    emit({ event: 'wallet_unrecoverable', attempt: 1 });
+    emit({ event: 'node_unrecoverable', crashes: 5 });
+    expect(manager.getState().nodeUnrecoverable).toBe(true);
+    expect(manager.getState().walletUnrecoverable).toBe(true);
+  });
 });
 
 describe('WatchdogManager Mithril error', () => {

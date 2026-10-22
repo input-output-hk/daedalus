@@ -269,6 +269,13 @@ export default class BackendStore extends Store {
     runInAction('update mithrilPhase', () => {
       this.mithrilPhase = event.phase;
       if (event.phase !== 'error') this._mithrilErrorDismissed = false;
+      // Main clears both unrecoverable flags when a Mithril run starts;
+      // clearing them here as well shows the Mithril progress without
+      // waiting for the next poll.
+      if (event.phase === 'preparing') {
+        this.nodeUnrecoverable = false;
+        this.walletUnrecoverable = false;
+      }
     });
   };
 

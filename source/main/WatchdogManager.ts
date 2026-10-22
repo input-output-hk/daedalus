@@ -623,10 +623,15 @@ class WatchdogManager {
         if (event.phase !== 'downloading' && event.phase !== 'verifying') {
           s.mithrilWaitingForNetwork = false;
         }
-        // A rebuild is starting; the damage it replaces is no longer current.
+        // A Mithril run is starting, with no node or wallet running. The
+        // damage a rebuild replaces is no longer current, and neither is a
+        // process the watchdog gave up on before the run. One that keeps
+        // crashing after the run is given up on again.
         if (event.phase === 'preparing') {
           s.chainDamage = null;
           s.nodeHeld = false;
+          s.nodeUnrecoverable = false;
+          s.walletUnrecoverable = false;
         }
         if (event.phase === 'completed') {
           s.lastErrorRebuild = false;
@@ -662,6 +667,10 @@ class WatchdogManager {
       case 'mithril_error':
         s.mithrilPhase = 'error';
         s.mithrilWaitingForNetwork = false;
+        // A run refused before it prepares reports only this error, so the
+        // error clears both unrecoverable flags as preparing does.
+        s.nodeUnrecoverable = false;
+        s.walletUnrecoverable = false;
         s.lastError = event.message as string;
         s.lastErrorCode = (event.code as string | undefined) ?? null;
         s.lastErrorRebuild = event.rebuild === true;

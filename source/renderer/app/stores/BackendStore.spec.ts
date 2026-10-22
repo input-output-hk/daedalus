@@ -982,6 +982,87 @@ describe('BackendStore unrecoverable backend', () => {
   });
 });
 
+describe('BackendStore Mithril run after the backend was given up on', () => {
+  const polled = (overrides: Record<string, unknown>) => ({
+    hasChain: true,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+    mithrilPhase: null,
+    walletUnrecoverable: false,
+    nodeUnrecoverable: false,
+    ...overrides,
+  });
+
+  const givenUp = async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({ walletUnrecoverable: true, nodeUnrecoverable: true })
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('error');
+    return store;
+  };
+
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  it('shows the Mithril progress as soon as the run starts preparing', async () => {
+    const store = await givenUp();
+    await (store as any)._onMithrilStatus({ phase: 'preparing' });
+    expect(store.nodeUnrecoverable).toBe(false);
+    expect(store.walletUnrecoverable).toBe(false);
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('keeps the flags for any other Mithril phase pushed before the next poll', async () => {
+    const store = await givenUp();
+    await (store as any)._onMithrilStatus({ phase: 'completed' });
+    expect(store.nodeUnrecoverable).toBe(true);
+    expect(store.walletUnrecoverable).toBe(true);
+  });
+
+  it('shows the Mithril progress and then the error view with Retry when a rebuild fails to install', async () => {
+    const store = await givenUp();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({ mithrilPhase: 'downloading' })
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({
+        hasChain: false,
+        mithrilPhase: 'error',
+        lastErrorCode: 'INSTALL_FAILED',
+        lastErrorRebuild: true,
+        rebuildPending: true,
+        installRetryRequired: true,
+      })
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    expect(store.installRetryRequired).toBe(true);
+    store.retryMithril();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'start_mithril',
+      wipe_chain: true,
+    });
+  });
+
+  it('shows the generic error again when a process is given up on after the run', async () => {
+    const store = await givenUp();
+    await (store as any)._onMithrilStatus({ phase: 'preparing' });
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({ mithrilPhase: 'completed', nodeUnrecoverable: true })
+    );
+    await store._pollBackendStatus();
+    expect(store.loadingPhase).toBe('error');
+  });
+});
+
 describe('BackendStore._onBackendStopStatus', () => {
   it('sets isStopping and records the stop progress', async () => {
     const store = makeStore();
