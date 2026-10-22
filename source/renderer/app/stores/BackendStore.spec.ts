@@ -318,13 +318,13 @@ describe('BackendStore chain damage', () => {
     );
   });
 
-  it('goes to the bootstrap decision, not the location picker, when a rebuild leaves no chain', () => {
+  it('goes to the bootstrap decision, not the location picker, when a rebuild leaves no chain', async () => {
     const store = makeStore();
     // A session that started with an existing chain never confirmed a location.
     (store as any).hasChain = true;
     store.rebuildChain();
     (store as any).hasChain = false;
-    (store as any).mithrilPhase = 'cancelled';
+    await (store as any)._onMithrilStatus({ phase: 'cancelled' });
     expect(store.loadingPhase).toBe('bootstrap-decision');
   });
 
@@ -678,6 +678,112 @@ describe('BackendStore.retryMithril', () => {
     });
     await store._pollBackendStatus();
     expect(store.lastErrorRebuild).toBe(true);
+  });
+});
+
+describe('BackendStore rebuild starting', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+    (confirmChainStorageChannel.request as jest.Mock)
+      .mockReset()
+      .mockResolvedValue(undefined);
+  });
+
+  // The state main reports after a partial sync failed to install, the
+  // first Mithril error of the session
+  const installFailed = (overrides: Record<string, unknown> = {}) => ({
+    hasChain: true,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+    mithrilPhase: 'error',
+    lastError: 'install failed',
+    lastErrorCode: 'INSTALL_FAILED',
+    lastErrorRebuild: false,
+    installRetryRequired: true,
+    installPending: true,
+    mithrilErrorCount: 1,
+    ...overrides,
+  });
+
+  const confirmedRebuild = async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      installFailed()
+    );
+    await store._pollBackendStatus();
+    store.retryMithril();
+    store.rebuildChain();
+    return store;
+  };
+
+  it('shows the rebuild preparing, not the error it replaces, until the watchdog reports it', async () => {
+    const store = await confirmedRebuild();
+    expect(store.rebuildStarting).toBe(true);
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    // Main has cleared the rebuild flag of the old error and still reports it.
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      installFailed({ lastErrorRebuild: false })
+    );
+    await store._pollBackendStatus();
+    expect(store.rebuildStarting).toBe(true);
+    await (store as any)._onMithrilStatus({ phase: 'preparing' });
+    expect(store.rebuildStarting).toBe(false);
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('ends when a poll reports a phase of the run', async () => {
+    const store = await confirmedRebuild();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      installFailed({ mithrilPhase: 'downloading' })
+    );
+    await store._pollBackendStatus();
+    expect(store.rebuildStarting).toBe(false);
+  });
+
+  it('ends with the error the rebuild was refused with', async () => {
+    const store = await confirmedRebuild();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      installFailed({
+        lastErrorCode: 'REBUILD_MARKER_FAILED',
+        lastErrorRebuild: true,
+        mithrilErrorCount: 2,
+      })
+    );
+    await store._pollBackendStatus();
+    expect(store.rebuildStarting).toBe(false);
+    expect(store.loadingPhase).toBe('mithril-syncing');
+    expect(store.lastErrorCode).toBe('REBUILD_MARKER_FAILED');
+  });
+
+  it('ends when the location and the rebuild could not be sent', async () => {
+    (confirmChainStorageChannel.request as jest.Mock).mockRejectedValue(
+      new Error('no main process')
+    );
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).mithrilPhase = 'error';
+    (store as any).lastErrorCode = 'INVALID_CHAIN_PATH';
+    (store as any).lastErrorRebuild = true;
+    store.retryMithril();
+    await store.setChainStorageDirectory('/new');
+    store.confirmStorageLocation();
+    store.rebuildChain();
+    expect(store.rebuildStarting).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(store.rebuildStarting).toBe(false);
+  });
+
+  it('shows the rebuild preparing at once when it is confirmed on the damaged data screen', () => {
+    const store = makeStore();
+    (store as any).hasChain = true;
+    (store as any).walletPort = 8090;
+    (store as any).chainDamage = damage;
+    expect(store.loadingPhase).toBe('chain-damaged');
+    store.rebuildChain();
+    expect(store.loadingPhase).toBe('mithril-syncing');
   });
 });
 
@@ -1197,6 +1303,7 @@ describe('BackendStore after a rebuild in a newly picked location was refused', 
       mithrilPhase: 'error',
       lastErrorCode: 'CHAIN_DIR_OTHER_NETWORK',
       lastErrorRebuild: true,
+      mithrilErrorCount: 1,
       requestedRestart: null,
     });
     await store._pollBackendStatus();

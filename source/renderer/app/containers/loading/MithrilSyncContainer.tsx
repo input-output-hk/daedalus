@@ -54,13 +54,11 @@ class MithrilSyncContainer extends Component<InjectedProps> {
 
   render() {
     const { backend, app } = this.props.stores;
-    const {
-      loadingPhase,
-      mithrilPhase,
-      mithrilProgress,
-      lastError,
-      lastErrorCode,
-    } = backend;
+    const { loadingPhase, mithrilProgress, lastError, lastErrorCode } = backend;
+    // A confirmed rebuild that the watchdog has not reported yet shows as
+    // preparing, not as the error it replaces
+    const rebuildStarting = backend.rebuildStarting;
+    const mithrilPhase = rebuildStarting ? 'preparing' : backend.mithrilPhase;
     const { intl } = this.context;
     // A rebuild deleted the chain data and has not finished: there is nothing
     // to skip to, since the node would start a sync from genesis.
@@ -194,6 +192,8 @@ class MithrilSyncContainer extends Component<InjectedProps> {
           bootstrapStartedAt={this._mithrilStartedAt}
           showDownloadProgressBar
           waitingForNetwork={backend.mithrilWaitingForNetwork}
+          // There is no run to cancel until the watchdog starts it
+          hideAction={rebuildStarting}
           onAction={() => backend.cancelMithril()}
         />
       </div>

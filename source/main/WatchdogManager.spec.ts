@@ -224,6 +224,15 @@ describe('WatchdogManager Mithril error', () => {
     expect(manager.getState().lastErrorCode).toBe('PROBE_FAILED');
   });
 
+  it('counts the Mithril errors', () => {
+    const { manager, emit } = makeManager();
+    expect(manager.getState().mithrilErrorCount).toBe(0);
+    emit({ event: 'mithril_error', code: 'PROBE_FAILED', message: 'x' });
+    emit({ event: 'mithril_error', code: 'PROBE_FAILED', message: 'x' });
+    emit({ event: 'error', message: 'not a Mithril error' });
+    expect(manager.getState().mithrilErrorCount).toBe(2);
+  });
+
   it('clears lastErrorCode when an error without a code replaces lastError', () => {
     const { manager, emit } = makeManager();
     emit({

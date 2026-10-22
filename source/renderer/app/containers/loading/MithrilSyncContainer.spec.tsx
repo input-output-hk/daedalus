@@ -36,6 +36,7 @@ const makeBackend = (overrides = {}) => ({
   chooseAnotherLocation: jest.fn(),
   pendingChainLocation: null,
   cancelMithril: jest.fn(),
+  rebuildStarting: false,
   ...overrides,
 });
 
@@ -568,6 +569,32 @@ describe('MithrilSyncContainer after a partial sync failed to install', () => {
       { [messages.errorRetry.id]: 'Retry' }
     );
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
+  });
+});
+
+describe('MithrilSyncContainer while a confirmed rebuild starts', () => {
+  afterEach(cleanup);
+
+  it('shows the rebuild preparing with no Cancel in place of the error it replaces', () => {
+    renderContainer(
+      makeBackend({
+        lastErrorCode: 'INSTALL_FAILED',
+        installRetryRequired: true,
+        rebuildStarting: true,
+      }),
+      {
+        [messages.title.id]: 'Fast sync with Mithril',
+        [messages.cancel.id]: 'Cancel',
+        [messages.errorRetry.id]: 'Retry',
+        [messages.errorTitle.id]: 'Mithril bootstrap failed',
+      }
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Fast sync with Mithril' })
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Mithril bootstrap failed')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Retry' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull();
   });
 });
 

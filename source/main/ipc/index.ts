@@ -93,6 +93,7 @@ export default (window: BrowserWindow) => {
         mithrilSignificantlyBehind: null,
         lastError: null,
         lastErrorCode: null,
+        mithrilErrorCount: 0,
         chainDamage: null,
         lastChainDamage: null,
         nodeHeld: false,

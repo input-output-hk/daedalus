@@ -35,6 +35,8 @@ const INSTALL_FAILED_CODE = 'INSTALL_FAILED';
 // Codes of the errors a rebuild reports when the chain storage location itself
 // is the problem; repeating the rebuild there fails the same way.
 const LOCATION_ERROR_CODES = ['INVALID_CHAIN_PATH', 'CHAIN_DIR_OTHER_NETWORK'];
+// Mithril phases in which no pipeline runs: its end, or its error
+const IDLE_MITHRIL_PHASES = ['completed', 'cancelled', 'error'];
 // Codes of the errors that the user can resolve in the location or by
 // choosing another one, so the error view offers both
 const LOCATION_CHOICE_CODES = [
@@ -71,6 +73,13 @@ export default class BackendStore extends Store {
   @observable lastError: string | null = null;
   // The code of the Mithril error that set lastError, e.g. PROBE_FAILED
   @observable lastErrorCode: string | null = null;
+  // How many Mithril errors main has received, as of the last poll
+  @observable mithrilErrorCount = 0;
+  // Set when a confirmed rebuild is sent, to the Mithril error count of that
+  // moment, and null otherwise. Until the watchdog reports the rebuild, with
+  // a phase or with an error after that count, the Mithril view shows the
+  // rebuild preparing in place of the error it replaces.
+  @observable _rebuildStartingAfter: number | null = null;
   // True when the Mithril error came from a rebuild of the chain data
   @observable lastErrorRebuild = false;
   // True when a confirmed rebuild has not finished, e.g. Daedalus was closed
@@ -220,6 +229,17 @@ export default class BackendStore extends Store {
         this.mithrilWaitingForNetwork = state.mithrilWaitingForNetwork ?? false;
         this.lastError = state.lastError;
         this.lastErrorCode = state.lastErrorCode ?? null;
+        this.mithrilErrorCount = state.mithrilErrorCount ?? 0;
+        // A poll answered before main had the rebuild still reports the old
+        // state, so only a phase of a run or a later error ends the wait.
+        if (
+          this._rebuildStartingAfter !== null &&
+          (this.mithrilErrorCount > this._rebuildStartingAfter ||
+            (state.mithrilPhase != null &&
+              !IDLE_MITHRIL_PHASES.includes(state.mithrilPhase)))
+        ) {
+          this._rebuildStartingAfter = null;
+        }
         this.lastErrorRebuild = state.lastErrorRebuild ?? false;
         this.rebuildPending = state.rebuildPending ?? false;
         this.installPending = state.installPending ?? false;
@@ -268,6 +288,8 @@ export default class BackendStore extends Store {
   _onMithrilStatus = async (event: { phase: string }): Promise<void> => {
     runInAction('update mithrilPhase', () => {
       this.mithrilPhase = event.phase;
+      // The watchdog runs the rebuild that was starting, or another run
+      this._rebuildStartingAfter = null;
       if (event.phase !== 'error') this._mithrilErrorDismissed = false;
       // Main clears both unrecoverable flags when a Mithril run starts;
       // clearing them here as well shows the Mithril progress without
@@ -383,6 +405,12 @@ export default class BackendStore extends Store {
     return this._chainStoragePickerRequested;
   }
 
+  // A confirmed rebuild was sent and the watchdog has not reported it yet
+  @computed
+  get rebuildStarting(): boolean {
+    return this._rebuildStartingAfter !== null;
+  }
+
   // The location the pending rebuild confirmation is for, when one was picked
   @computed
   get pendingChainLocation(): string | null {
@@ -407,10 +435,11 @@ export default class BackendStore extends Store {
     return this._mithrilActive;
   }
 
-  // The Mithril phase the loading screens go by: a dismissed error counts as
-  // no Mithril run
+  // The Mithril phase the loading screens go by: a rebuild that is starting
+  // counts as preparing, and a dismissed error counts as no Mithril run
   @computed
   get _shownMithrilPhase(): string | null {
+    if (this.rebuildStarting) return 'preparing';
     return this._mithrilErrorDismissed && this.mithrilPhase === 'error'
       ? null
       : this.mithrilPhase;
@@ -497,6 +526,10 @@ export default class BackendStore extends Store {
   // location picker. A picked location and the rebuild go in one request:
   // main sends the location change and the rebuild back to back, so the
   // watchdog never starts a node on the new location before the rebuild.
+  //
+  // The Mithril view shows the rebuild preparing from here on. The watchdog
+  // may first stop the node, for up to its stop timeout, and the error the
+  // rebuild replaces is no longer current.
   @action
   rebuildChain = () => {
     const picked = this._pendingChainPath;
@@ -504,12 +537,16 @@ export default class BackendStore extends Store {
     this._pendingChainPath = null;
     this._rebuildConfirmationRequested = false;
     this._mithrilErrorDismissed = false;
+    this._rebuildStartingAfter = this.mithrilErrorCount;
     if (picked != null) {
       confirmChainStorageChannel
         .request({ customPath: picked.customPath, rebuild: true })
         .catch((error) => {
           logger.error('BackendStore: the rebuild in another location failed', {
             error: String(error),
+          });
+          runInAction('end the rebuild that did not start', () => {
+            this._rebuildStartingAfter = null;
           });
         });
     } else {

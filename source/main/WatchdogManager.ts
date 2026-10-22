@@ -62,6 +62,9 @@ export interface WatchdogState {
   // The code of the mithril_error that set lastError; null when lastError
   // came from an error without one
   lastErrorCode: string | null;
+  // Counts the mithril_error events, so the renderer can tell a new error
+  // from the one it already shows
+  mithrilErrorCount: number;
   // The last hole in the chain database the watchdog detected; cleared when a
   // node starts or a Mithril sync begins
   chainDamage: ChainDamage | null;
@@ -187,6 +190,7 @@ class WatchdogManager {
       mithrilSignificantlyBehind: null,
       lastError: null,
       lastErrorCode: null,
+      mithrilErrorCount: 0,
       chainDamage: null,
       lastChainDamage: null,
       nodeHeld: false,
@@ -670,6 +674,7 @@ class WatchdogManager {
 
       case 'mithril_error':
         s.mithrilPhase = 'error';
+        s.mithrilErrorCount += 1;
         s.mithrilWaitingForNetwork = false;
         // A run refused before it prepares reports only this error, so the
         // error clears both unrecoverable flags as preparing does.
