@@ -1,0 +1,655 @@
+{
+  "metadata": {
+    "title": "Chain Database Repair Tasks",
+    "created": "2026-10-16",
+    "updated": "2026-10-22",
+    "version": "1.2.0",
+    "totalTasks": 22,
+    "prdReference": ".agent/plans/chain-db-repair/chain-db-repair-prd.md",
+    "description": "Detect a hole in the local chain database from node and wallet log signatures, and offer a safe Mithril rebuild that keeps wallets.",
+    "sourceFiles": [
+      ".agent/plans/chain-db-repair/research/01-field-log-signatures.md",
+      ".agent/plans/chain-db-repair/research/02-code-paths-at-11.5.0.md",
+      ".agent/plans/chain-db-repair/research/03-boundary-scan.md",
+      "watchdog/src/mithril.rs",
+      "watchdog/src/supervisor.rs",
+      "watchdog/src/protocol.rs",
+      "source/main/WatchdogManager.ts",
+      "source/renderer/app/stores/BackendStore.ts",
+      "source/renderer/app/containers/loading/LoadingPage.tsx"
+    ],
+    "importantNote": "Phase 2 changes code that deletes the chain directory. Every wipe path needs a test that proves what is and is not deleted before it merges. Phases 1 to 5 ship on their own, in a patch release (PRD decision 35). The targeted repair, first planned here as phases 6 and 7 with tasks 019 to 025, is planned in .agent/plans/chain-db-targeted-repair/."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Detection in the watchdog",
+      "description": "Recognise the three field signatures in node and wallet output and report them as one chain_damage event.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Add the chain_damage event",
+          "description": "Add Event::ChainDamage { kind, slot, last_good_slot } with kinds node_rejects_canonical_block, ledger_point_missing and wallet_chain_discontinuity, and the matching TypeScript event type.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 1.5,
+          "dependencies": [],
+          "targetPaths": [
+            "watchdog/src/protocol.rs",
+            "source/common/types/watchdog.types.ts"
+          ],
+          "implementationNotes": [
+            "Follow the serde tagging already used by Event (tag = event, snake_case), protocol.rs:85-241.",
+            "slot and last_good_slot are Option<u64>; last_good_slot is set only for wallet_chain_discontinuity."
+          ],
+          "testCases": [
+            "Serialises to {\"event\":\"chain_damage\",\"kind\":\"ledger_point_missing\",\"slot\":200102375,\"last_good_slot\":null}."
+          ],
+          "acceptance": [
+            "The event round-trips through serde and matches the JSON in the PRD Data / IPC section."
+          ]
+        },
+        {
+          "id": "task-002",
+          "title": "Parse the two node signatures",
+          "description": "Create chain_damage.rs with parsers for signature 1 (BadInputsUTxO under ChainSync.Client.Exception, counted per slot across distinct remoteAddress values) and signature 2 (critical invariant violation), and a ChainDamageDetector called from the node's pipe_to_log.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 5.0,
+          "dependencies": [
+            "task-001"
+          ],
+          "targetPaths": [
+            "watchdog/src/chain_damage.rs",
+            "watchdog/src/supervisor.rs"
+          ],
+          "implementationNotes": [
+            "Cheap substring checks first (BadInputsUTxO, Critical invariant violation); only matching lines are parsed further.",
+            "Strip ANSI escape sequences before reading numbers.",
+            "Signature 1: read the slot after 'InvalidBlock (Point (At (Block {blockPointSlot = SlotNo ' and the peer from 'remoteAddress = ...}'. Fire on the third distinct peer for one slot. Keep at most 16 slots and 3 peers each.",
+            "Signature 2: both 'Critical invariant violation' and 'that was in immutable db is gone before we could open ledgerdb'; slot from 'blockPointSlot = SlotNo '. The message runs into 'Node configuration:' with no newline.",
+            "One detector per node process; each kind fires once per process. Log WARN 'chain damage detected: kind=..., slot=...' to watchdog.log.",
+            "pipe_to_log currently takes a bool and an optional startup sender (supervisor.rs:625-630); pass the detector the same way rather than adding another bool."
+          ],
+          "testCases": [
+            "Each redacted field line from research/01 is recognised, including the 34,731-byte line.",
+            "Three lines from one peer for one slot do not fire; three peers do.",
+            "Two slots are counted separately.",
+            "InvalidBlock lines without BadInputsUTxO do not count.",
+            "A second signature 2 line in the same process emits nothing."
+          ],
+          "acceptance": [
+            "cargo test passes for chain_damage.rs and existing supervisor parsing tests are unchanged."
+          ]
+        },
+        {
+          "id": "task-003",
+          "title": "Parse the wallet signature",
+          "description": "Turn on parsing for cardano-wallet stdout and stderr with a wallet-only parser that recognises signature 3 and emits chain_damage with slot and last_good_slot.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3.0,
+          "dependencies": [
+            "task-002"
+          ],
+          "targetPaths": [
+            "watchdog/src/chain_damage.rs",
+            "watchdog/src/supervisor.rs"
+          ],
+          "implementationNotes": [
+            "Wallet output is piped with parsing off today (supervisor.rs:1805-1816).",
+            "Match 'restoreBlocks: given chain isn't a valid continuation'. Read '-<slot>#<blockNo>]' after 'Wallet is at:' (last_good_slot) and after 'continues starting from:' (slot).",
+            "The wallet logs the line once per wallet worker; fire once per wallet process.",
+            "The node parsers must not run on wallet output, and the wallet parser must not run on node output."
+          ],
+          "testCases": [
+            "The redacted field line yields slot 200102408 and last_good_slot 200080892.",
+            "Eleven repeats in one wallet process emit one event."
+          ]
+        },
+        {
+          "id": "task-004",
+          "title": "Inject field lines in integration tests",
+          "description": "Give the mock node and the wallet mock a way to print extra lines from a file named by an environment variable, and add integration tests that each signature produces one chain_damage event.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 4.0,
+          "dependencies": [
+            "task-002",
+            "task-003"
+          ],
+          "targetPaths": [
+            "watchdog/src/bin/mock_node.rs",
+            "watchdog/tests/integration.rs"
+          ],
+          "implementationNotes": [
+            "mock_node prints hard-coded lines today (mock_node.rs:19-30); add e.g. MOCK_NODE_EXTRA_LINES and a wallet equivalent.",
+            "Use the redacted lines from research/01 as fixtures under watchdog/tests/fixtures/."
+          ],
+          "testCases": [
+            "Signature 2 from the mock node produces chain_damage ledger_point_missing.",
+            "Signature 1 from three peers produces node_rejects_canonical_block; from one peer it does not.",
+            "Signature 3 from the wallet mock produces wallet_chain_discontinuity."
+          ]
+        },
+        {
+          "id": "task-026",
+          "title": "Check the ledger snapshot's block before each node start",
+          "description": "Before every node start, decide from the database files whether the node would stop on the missing ledger point (signature 2). When that is certain, report chain_damage with kind ledger_point_missing, the slot and node_held, and do not start the node. Anything unreadable or ambiguous starts the node as before.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 8.0,
+          "dependencies": [
+            "task-002",
+            "task-010"
+          ],
+          "targetPaths": [
+            "watchdog/src/ledger_point.rs",
+            "watchdog/src/config.rs",
+            "watchdog/src/supervisor.rs",
+            "watchdog/src/protocol.rs",
+            "source/main/WatchdogManager.ts",
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/renderer/app/containers/loading/ChainDamageContainer.tsx",
+            "source/renderer/app/components/loading/chain-damage/ChainDamageView.tsx"
+          ],
+          "implementationNotes": [
+            "cardano-node 11.1.3 holds the signature 2 error until it is asked to stop, so detection from output reports it only when the user quits.",
+            "Mirror ouroboros-consensus 4.2.1.0, which cardano-node 11.1.3 is built with: Storage.LedgerDB.API.initialize (tryNewestFirst, snapshotTooRecent), Storage.LedgerDB.Snapshots (snapshotFromPath, defaultListSnapshots), Storage.LedgerDB.V2.LSM.loadSnapshot, ImmutableDB.Impl.Validation.validateMostRecentChunk and ImmutableDB.Impl.Iterator.getSlotInfo.",
+            "The chunk size is ten times protocolConsts.k of the Byron genesis; the LedgerDB backend and LSMDatabasePath come from the node configuration.",
+            "Compare slots only: the hash of the snapshot's block is inside the encoded ledger state.",
+            "While the node is held, wait as after node_unrecoverable, and close a Mithril view that an install left open with mithril_status completed before the report.",
+            "While the node is held, the offer screen shows even after Not now and offers no Not now (PRD decision 26)."
+          ],
+          "testCases": [
+            "Unit tests on databases in temporary directories: block missing, block present, a snapshot past the tip, a snapshot in the tip's chunk, a suffixed name, no snapshots, a missing chunk file, an empty last chunk, snapshots the LSM backend skips, and each undecided case starting the node.",
+            "Integration: a held node emits chain_damage with node_held and no node_started, restart_node checks again, and a rebuild from the held state starts the node.",
+            "Jest: nodeHeld in WatchdogManager and BackendStore, and ChainDamageView without Not now."
+          ],
+          "acceptance": [
+            "A preprod chain whose ledger snapshot lies in the missing tail of chunk 6331 is refused; the same chain with chunk 6331 whole and a healthy preprod chain are not."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Safe rebuild",
+      "description": "Make start_mithril with wipe_chain safe to offer: probe before deleting, never a silent genesis sync, and custom chain locations rebuilt in place.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-005",
+          "title": "Probe the aggregator before deleting",
+          "description": "Move the wipe in run_pipeline after a successful probe, so an unreachable aggregator leaves the chain untouched.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 2.0,
+          "dependencies": [],
+          "targetPath": "watchdog/src/mithril.rs",
+          "implementationNotes": [
+            "Today the wipe is at mithril.rs:754-791 and the probe follows at :800.",
+            "After the wipe the pipeline must still run as a full bootstrap, which it does today because the probe sees no local chunks (mithril.rs:812, :838). With the probe first, set is_partial = false explicitly when wipe_chain is set."
+          ],
+          "testCases": [
+            "wipe_chain with a failing mock probe leaves every chain file in place and emits PROBE_FAILED."
+          ]
+        },
+        {
+          "id": "task-006",
+          "title": "No silent genesis sync after a failed rebuild",
+          "description": "When the pipeline fails or is cancelled after the wipe, report chain_status { has_chain: false } and wait in the no-chain state instead of restarting the node on an empty directory.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 4.0,
+          "dependencies": [
+            "task-005"
+          ],
+          "targetPaths": [
+            "watchdog/src/mithril.rs",
+            "watchdog/src/supervisor.rs"
+          ],
+          "implementationNotes": [
+            "Today Cancelled restarts the node and wallet (supervisor.rs:1203-1213), which syncs from genesis.",
+            "Add a PipelineResult for 'failed after wipe' (or carry a flag) and route it to the no-chain wait (supervisor.rs:914), so the renderer shows the bootstrap decision.",
+            "UserCancelled after a wipe follows the same route."
+          ],
+          "testCases": [
+            "wipe_chain with a failing mock download emits chain_status has_chain false and starts no node.",
+            "Cancelling a wipe_chain download does the same.",
+            "A plain partial sync that fails still restarts the node as today."
+          ]
+        },
+        {
+          "id": "task-007",
+          "title": "Rebuild custom chain locations in place",
+          "description": "Resolve the wipe target with full_install_target and refuse it with CHAIN_DIR_NOT_REPLACEABLE unless check_replaceable passes; delete the contents of the real directory and keep any link or junction.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 5.0,
+          "dependencies": [
+            "task-005"
+          ],
+          "targetPaths": [
+            "watchdog/src/mithril.rs",
+            "watchdog/tests/chain_storage.rs"
+          ],
+          "implementationNotes": [
+            "The current safety check requires the canonical path to be inside state_dir (mithril.rs:754-789), which refuses every user-picked folder (state.rs:184-199).",
+            "Keep INVALID_CHAIN_PATH for a relative path or a filesystem root.",
+            "Full bootstrap already installs inside a link's target (mithril.rs:463-475); the wipe must leave the same link in place."
+          ],
+          "testCases": [
+            "Link or junction inside state_dir pointing elsewhere: target contents replaced, link kept.",
+            "User-picked folder outside state_dir: rebuilt in place.",
+            "Folder holding a non-database file: CHAIN_DIR_NOT_REPLACEABLE, nothing deleted.",
+            "wipe_chain_full_bootstrap (integration.rs:1182) still passes."
+          ]
+        },
+        {
+          "id": "task-008",
+          "title": "Pass the Mithril error code to the renderer",
+          "description": "Keep the code of mithril_error as lastErrorCode on WatchdogState so the renderer can show a specific message.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2.0,
+          "dependencies": [],
+          "targetPaths": [
+            "source/main/WatchdogManager.ts",
+            "source/common/types/watchdog.types.ts",
+            "source/main/ipc/index.ts",
+            "source/renderer/app/stores/BackendStore.ts"
+          ],
+          "implementationNotes": [
+            "WatchdogManager drops the code today (WatchdogManager.ts:505-508) and the renderer labels every failure 'mithril_error' (MithrilSyncContainer.tsx:55).",
+            "Add the field in all four places that define or default WatchdogState (watchdog.types.ts:2-44, WatchdogManager.ts:25-75 and :125-157, ipc/index.ts:62-97)."
+          ],
+          "testCases": [
+            "WatchdogManager.spec: a mithril_error event with code PROBE_FAILED sets lastErrorCode."
+          ]
+        },
+        {
+          "id": "task-028",
+          "title": "Say when a Mithril download is waiting for the network",
+          "description": "While mithril-client downloads, note when its file count, byte count or step last grew. After 60 s without growth, check whether the aggregator can be reached, and again every 20 s while the download stays stalled. Emit mithril_waiting_for_network while it cannot be reached, and show on the progress view that downloading will continue when the network returns.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 6.0,
+          "dependencies": [
+            "task-005"
+          ],
+          "targetPaths": [
+            "watchdog/src/mithril.rs",
+            "watchdog/src/config.rs",
+            "watchdog/src/protocol.rs",
+            "source/main/WatchdogManager.ts",
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/renderer/app/containers/loading/MithrilSyncContainer.tsx",
+            "source/renderer/app/components/loading/mithril/MithrilProgressView.tsx"
+          ],
+          "implementationNotes": [
+            "mithril-client 0.13.9 reports no error and no progress while the network is unavailable and continues when it returns, so it is never stopped or timed out for a stall.",
+            "mithril-client 0.13.9 reports immutable files as files_downloaded and the ancillary archive as bytes_downloaded, one kind per line; track the highest of each on its own, since the other reads as 0 on each line.",
+            "Check the aggregator with mithril-client's snapshot query, which takes the download's route through any proxy, and stop a query still running after 15 s; never wait on an unbounded lookup.",
+            "download_stall_secs and network_recheck_secs in the Mithril configuration, 60 and 20 by default, so tests use short durations.",
+            "Clear the wait on growth, on a check that reaches the aggregator, and when the download ends."
+          ],
+          "testCases": [
+            "Unit tests of the download watch with given times, and of the check with a stand-in client that succeeds, fails, cannot start or is still running at the limit.",
+            "Integration: a mock download that stalls with an unreachable aggregator emits waiting true, then false when it continues; with a reachable aggregator it emits nothing.",
+            "Jest: mithrilWaitingForNetwork in WatchdogManager and BackendStore, and the line on MithrilProgressView."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Offer screen",
+      "description": "A full-screen damaged-data state with a choice and a confirmation that starts the rebuild.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-009",
+          "title": "Carry chainDamage through the main process",
+          "description": "Handle chain_damage in WatchdogManager, add chainDamage to WatchdogState, and clear it on node_started and on mithril_status preparing.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": [
+            "task-001"
+          ],
+          "targetPaths": [
+            "source/main/WatchdogManager.ts",
+            "source/common/types/watchdog.types.ts",
+            "source/main/ipc/index.ts"
+          ],
+          "implementationNotes": [
+            "Map snake_case event fields to camelCase and add detectedAt (ISO time of receipt).",
+            "Same four places as task-008."
+          ],
+          "testCases": [
+            "chain_damage sets chainDamage; node_started clears it; mithril_status preparing clears it."
+          ]
+        },
+        {
+          "id": "task-010",
+          "title": "Add the chain-damaged phase to BackendStore",
+          "description": "Copy chainDamage from the poll, add LoadingPhase 'chain-damaged' directly after the isStopping check, and add rebuildChain() and dismissChainDamage().",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 3.0,
+          "dependencies": [
+            "task-009"
+          ],
+          "targetPaths": [
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/common/types/watchdog.types.ts"
+          ],
+          "implementationNotes": [
+            "loadingPhase order is at BackendStore.ts:265-308; the new check precedes the unrecoverable-error and ready checks and yields to a running Mithril pipeline.",
+            "rebuildChain() sends { cmd: 'start_mithril', wipe_chain: true } on mithrilCommandChannel and logs it with logger.info.",
+            "_chainDamageDismissed is a plain observable reset only by an app restart, like _mithrilPromptDismissed."
+          ],
+          "testCases": [
+            "chain-damaged wins over ready and over error.",
+            "A running Mithril pipeline wins over chain-damaged.",
+            "dismissChainDamage() returns the previous phase.",
+            "rebuildChain() sends wipe_chain true."
+          ]
+        },
+        {
+          "id": "task-011",
+          "title": "Build the choice and confirm views",
+          "description": "Create ChainDamageView (choice and confirm), ChainDamageContainer, and the LoadingPage branch on the full-screen backdrop.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 6.0,
+          "dependencies": [
+            "task-010"
+          ],
+          "targetPaths": [
+            "source/renderer/app/components/loading/chain-damage/ChainDamageView.tsx",
+            "source/renderer/app/components/loading/chain-damage/ChainDamageView.scss",
+            "source/renderer/app/components/loading/chain-damage/ChainDamage.messages.ts",
+            "source/renderer/app/containers/loading/ChainDamageContainer.tsx",
+            "source/renderer/app/containers/loading/LoadingPage.tsx"
+          ],
+          "implementationNotes": [
+            "Follow the choice-to-confirm structure of SyncingConnectingMithrilPrompt.tsx:118-147 and :199-230.",
+            "Use the draft copy table in the PRD; one symptom sentence per kind.",
+            "The detail line shows kind and slot so a support request can quote it.",
+            "Class component or function component: match the neighbouring Mithril views."
+          ],
+          "testCases": [
+            "Component spec: choice view shows the symptom for each kind; Rebuild opens confirm; Back returns; confirm calls rebuildChain; Not now calls dismissChainDamage."
+          ]
+        },
+        {
+          "id": "task-012",
+          "title": "Make the Mithril error view code-aware and translated",
+          "description": "Show a specific message for PROBE_FAILED, INVALID_CHAIN_PATH, CHAIN_DIR_NOT_REPLACEABLE and CHAIN_DIR_OTHER_NETWORK, and replace the hard-coded English Retry and Skip buttons with messages.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3.0,
+          "dependencies": [
+            "task-008"
+          ],
+          "targetPaths": [
+            "source/renderer/app/containers/loading/MithrilSyncContainer.tsx",
+            "source/renderer/app/components/loading/mithril/MithrilErrorView.tsx",
+            "source/renderer/app/components/loading/mithril/MithrilBootstrap.messages.ts"
+          ],
+          "implementationNotes": [
+            "Hard-coded buttons are at MithrilSyncContainer.tsx:50-70.",
+            "A failed rebuild now returns to the bootstrap decision (task-006), so this view shows the reason on the way."
+          ]
+        },
+        {
+          "id": "task-013",
+          "title": "Copy and translations",
+          "description": "Add en-US messages with the !!! prefix, run yarn i18n:manage, and add reviewed ja-JP translations for every new message.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 3.0,
+          "dependencies": [
+            "task-011",
+            "task-012",
+            "task-015"
+          ],
+          "targetPaths": [
+            "source/renderer/app/i18n/locales/en-US.json",
+            "source/renderer/app/i18n/locales/ja-JP.json",
+            "source/renderer/app/i18n/locales/defaultMessages.json"
+          ],
+          "implementationNotes": [
+            "Ids follow namespace.context.messageKey, e.g. loading.chainDamage.title, and every message carries a description (.agent/skills/i18n-messaging/SKILL.md).",
+            "The confirm's wallet sentence is \"Your wallets stay on this computer.\" (PRD decision 37)."
+          ]
+        },
+        {
+          "id": "task-014",
+          "title": "Storybook stories",
+          "description": "Add stories for each kind, the confirm view, and the error view for each code in FR14.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 2.0,
+          "dependencies": [
+            "task-011",
+            "task-012"
+          ],
+          "targetPaths": [
+            "storybook/stories/loading/chain-damage/ChainDamageView.stories.tsx",
+            "storybook/stories/loading/mithril/MithrilErrorView.stories.tsx"
+          ],
+          "implementationNotes": [
+            "Follow storybook/stories/loading/mithril/*.stories.tsx: one .add() per state, StoryDecorator and LoadingOverlayStoryFrame."
+          ]
+        },
+        {
+          "id": "task-027",
+          "title": "Prompt when the node is silent while it starts",
+          "description": "Emit node_silent once per silence when the node writes nothing on either output stream for 300 s before chainDbReady, and node_output_resumed when output returns. The loading screen offers Restart Cardano node and Keep waiting.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 5.0,
+          "dependencies": [
+            "task-026"
+          ],
+          "targetPaths": [
+            "watchdog/src/supervisor.rs",
+            "watchdog/src/protocol.rs",
+            "watchdog/src/config.rs",
+            "source/main/WatchdogManager.ts",
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/renderer/app/containers/loading/SyncingConnectingPage.tsx",
+            "source/renderer/app/components/loading/syncing-connecting/NodeSilencePrompt.tsx"
+          ],
+          "implementationNotes": [
+            "Partial lines count as output: pipe_to_log notes bytes as they arrive.",
+            "startup_silence_secs in the node configuration, 300 by default, lets tests use a short limit.",
+            "A tick more than six intervals after the previous one, by the monotonic or the wall clock, restarts the silence count, because the machine slept.",
+            "restart_node is already handled before chainDbReady, in the node_starting loop of run_node_wallet.",
+            "The silence prompt takes the Mithril prompt's place while both apply (PRD decision 27).",
+            "Main keeps the silence that Keep waiting or Restart Cardano node dismissed, beside the count, so a reload of the window does not show the prompt again."
+          ],
+          "testCases": [
+            "Unit tests of the silence watch: one report per silence, a new silence after output, and a long gap between ticks restarting the count.",
+            "Integration: a node that leaves a line unterminated emits node_silent once, and node_output_resumed when the line completes.",
+            "Jest: WatchdogManager state, BackendStore prompt visibility per silence, and NodeSilencePrompt actions."
+          ]
+        },
+        {
+          "id": "task-029",
+          "title": "Make the Mithril error view's hint and details readable",
+          "description": "Set the error hint as body text, close the gap between the hint and the technical details, and give the details header and its toggle the Mithril card's colors on every theme. The toggle is a button (PRD decision 32).",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 1.5,
+          "dependencies": [
+            "task-012"
+          ],
+          "targetPaths": [
+            "source/renderer/app/components/loading/mithril/MithrilErrorView.tsx",
+            "source/renderer/app/components/loading/mithril/MithrilErrorView.scss"
+          ],
+          "implementationNotes": [
+            "The hint was 13px with the body's line-height of 1, under a title with the same line-height, so it read as a caption pressed against the title.",
+            "CollapsibleSection colors its header with --theme-main-body-messages-color and its link with --rp-link-color, both set for the main app background: on the light-blue Mithril card they measure 1.95:1 and 2.49:1.",
+            "The header uses --theme-mithril-body-text-color and the toggle takes --theme-mithril-button-secondary-text-color through --rp-link-color, which measure at least 5.76:1 and 8.18:1 against the card on every theme.",
+            "The widget's link toggle is a span with aria-hidden and no tab stop, followed by a literal full stop, so the view uses its button mode (PRD decision 32), drawn as a small secondary action with its own focus outline."
+          ],
+          "testCases": [
+            "Jest: MithrilErrorView opens and closes the details with the toggle button, and MithrilSyncContainer specs list the offered actions by name, leaving out the toggle.",
+            "Storybook: the error stories on the light-blue, dark-blue, cardano and white themes, collapsed and expanded, and in ja-JP."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Diagnostics",
+      "description": "Show the detection and offer the rebuild from Diagnostics.",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-015",
+          "title": "Diagnostics row and manual rebuild",
+          "description": "Add a Blockchain data row with the last detection of the session and a Rebuild blockchain data action behind the same confirmation, available whether or not anything was detected.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 4.0,
+          "dependencies": [
+            "task-010"
+          ],
+          "targetPaths": [
+            "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+            "source/renderer/app/containers/status/DaedalusDiagnosticsDialog.tsx"
+          ],
+          "implementationNotes": [
+            "Place it next to the Mithril Sync action (DaedalusDiagnosticsDialog.tsx:24-26).",
+            "Reuse the confirm view from task-011 inside a Dialog, as MithrilPartialSyncConfirmation does.",
+            "Restart Cardano node stays available while the watchdog holds the node, because the restart runs the ledger snapshot check again (PRD decision 26).",
+            "Close Diagnostics once a confirmed rebuild or Mithril Sync has been sent (PRD decision 31)."
+          ],
+          "testCases": [
+            "Diagnostics shows 'No damage detected' by default and the slot and time after a chain_damage event.",
+            "The action opens the confirmation and sends wipe_chain only after Rebuild."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Verification of the rebuild",
+      "description": "Prove the rebuild offer end to end on preprod with a real 11.4.0 hole, on Linux and Windows.",
+      "riskLevel": "medium",
+      "tasks": [
+        {
+          "id": "task-016",
+          "title": "Nix checks",
+          "description": "Run every affected check through nix build, not the yarn scripts.",
+          "status": "completed",
+          "priority": "high",
+          "estimatedHours": 2.0,
+          "dependencies": [
+            "task-004",
+            "task-006",
+            "task-007",
+            "task-013",
+            "task-014",
+            "task-015",
+            "task-026",
+            "task-027",
+            "task-028"
+          ],
+          "implementationNotes": [
+            "nix build '.#checks.x86_64-linux.<name>' --no-link for watchdog-clippy, watchdog-test, jest, compile, lint, stylelint, i18n, storybook, treefmt and prettier-version-parity."
+          ]
+        },
+        {
+          "id": "task-017",
+          "title": "Reproduce an 11.4.0 hole on preprod and verify the rebuild",
+          "description": "Follow the manual steps in the PRD Testing Strategy on Linux and on Windows: create the hole with 11.4.0, confirm it with verify and the boundary scan, restore a wallet, rebuild, and record whether the wallet finishes without a resync.",
+          "status": "completed",
+          "priority": "critical",
+          "estimatedHours": 8.0,
+          "dependencies": [
+            "task-016"
+          ],
+          "targetPath": ".agent/plans/chain-db-repair/chain-db-repair-prd.md",
+          "implementationNotes": [
+            "Windows build: use Hydra's installer for the branch commit; a full Windows installer does not build under WSL2.",
+            "Repeat on Windows with the default chain folder made a junction, and with a user-picked folder reached through a junction.",
+            "On Windows, rebuild through a junction, and in a folder on another drive picked with Choose another location from the Mithril error view: the download is staged on that drive, mithril-client and snapshot-converter are given plain drive paths without the \\\\?\\ prefix, and the install renames rather than copies. watchdog.log logs the snapshot-converter command lines but not mithril-client's, whose arguments are read from the running process.",
+            "Give Daedalus Pre-Prod and Daedalus Preview the same storage folder, start a first Mithril download in one and launch the other while it downloads: check that the launch keeps the first one's staging whenever in the download it happens, since the staging entry's network-magic marker is written before mithril-client starts (PRD decision 34), that a Mithril sync in the second is refused with CHAIN_DIR_OTHER_NETWORK, and that the first one's download installs.",
+            "Also run the delete-ledger variant (step 5) and record whether signature 1 appears.",
+            "A wallet restore does not produce signature 3 on demand (PRD FR3), so its detection rests on the watchdog integration test in which the mock wallet prints it.",
+            "Correct the PRD's manual steps where the run shows them wrong, and update the confirm copy if the wallet needs a resync."
+          ],
+          "acceptance": [
+            "Signature 3 is detected in the watchdog integration test in which the mock wallet prints it and chain_damage follows; in the manual steps the rebuild completes, the node reaches the tip and the wallet finishes syncing.",
+            "A rebuild with the network disconnected leaves the chain untouched (probe first).",
+            "A rebuild interrupted during download returns to the bootstrap decision, not a genesis sync."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Release",
+      "description": "Prepare the patch release of phases 1 to 5 on their own (PRD decision 35).",
+      "riskLevel": "low",
+      "tasks": [
+        {
+          "id": "task-018",
+          "title": "CHANGELOG entry",
+          "description": "Describe what phases 1 to 5 deliver under vNext, in user terms: the damaged-data screen and its rebuild, the Diagnostics row and Rebuild blockchain data action, the prompt when the node writes nothing while it starts, and the note on a Mithril download waiting for the network. The entry describes no targeted repair.",
+          "status": "completed",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-017"
+          ],
+          "targetPath": "CHANGELOG.md",
+          "implementationNotes": [
+            "Follow the 11.5.0 entries: what the user sees, then what changed, with the pull request link.",
+            "The targeted repair has its own entry when it ships, from .agent/plans/chain-db-targeted-repair/."
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 6,
+    "totalTasks": 22,
+    "estimatedTotalHours": 80.5,
+    "criticalPath": [
+      "task-001",
+      "task-009",
+      "task-010",
+      "task-011",
+      "task-013",
+      "task-016",
+      "task-017",
+      "task-018"
+    ],
+    "keyFiles": [
+      "watchdog/src/chain_damage.rs",
+      "watchdog/src/mithril.rs",
+      "watchdog/src/supervisor.rs",
+      "source/renderer/app/stores/BackendStore.ts",
+      "source/renderer/app/components/loading/chain-damage/ChainDamageView.tsx",
+      "watchdog/src/ledger_point.rs"
+    ],
+    "riskAreas": [
+      "The wipe deletes user data; a wrong target resolution on a junction or a user-picked folder deletes the wrong directory.",
+      "Signature 1 depends on the node's free-text exception rendering, which a node upgrade can change; the field-line fixtures catch that at the next pin bump.",
+      "The ledger snapshot check before a node start mirrors ouroboros-consensus 4.2.1.0; a wrong refusal keeps a healthy node from starting, so it refuses only when every step is certain, and it is re-read against consensus at each node pin bump.",
+      "Signature 3 is not a reliable detector: a wallet restore crosses a hole without it unless a restore batch starts right after the last block before the hole (PRD FR3). Its detection rests on the integration test in which the mock wallet prints it.",
+      "A wallet whose restore crossed a hole without signature 3 holds none of the hole's blocks, and the rebuild does not add them, because the wallet continues from its checkpoint after the hole. Whether the targeted repair plan includes a wallet resync is an open question there."
+    ],
+    "testingNotes": "Rust unit and integration tests with redacted field lines, Jest for state and phase precedence, Storybook per state, Nix checks, and a manual preprod reproduction of an 11.4.0 hole on Linux and Windows.",
+    "rollbackPlan": "Revert the branch. The chain_damage event is additive and the wipe changes affect only wipe_chain, which no released renderer sends."
+  }
+}

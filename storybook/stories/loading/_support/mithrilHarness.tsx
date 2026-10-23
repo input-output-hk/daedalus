@@ -61,6 +61,7 @@ interface ManagedChainStorageLocationPickerProps {
   availableSpaceBytes?: number;
   isRecoveryFallback?: boolean;
   isChainStorageLoading?: boolean;
+  forRebuild?: boolean;
 }
 
 export function ManagedChainStorageLocationPicker({
@@ -73,6 +74,7 @@ export function ManagedChainStorageLocationPicker({
   availableSpaceBytes,
   isRecoveryFallback,
   isChainStorageLoading,
+  forRebuild,
 }: ManagedChainStorageLocationPickerProps) {
   const [currentCustomPath, setCurrentCustomPath] = useState<string | null>(
     customChainPath
@@ -118,6 +120,7 @@ export function ManagedChainStorageLocationPicker({
       isRecoveryFallback={isRecoveryFallback}
       estimatedRequiredSpaceBytes={estimatedRequiredSpaceBytes}
       isChainStorageLoading={isChainStorageLoading}
+      forRebuild={forRebuild}
       onSetChainStorageDirectory={async (path) => {
         bootstrapActions.onSetChainStorageDirectory(path);
         const nextValidation = getValidationPreset(

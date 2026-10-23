@@ -20,6 +20,9 @@ const messages = defineMessages({
 
 type Props = {
   isActionBlocked: boolean;
+  // Damage to the blockchain data is detected: Rebuild is the repair, and a
+  // partial sync would only move the symptom
+  isBlockedByChainDamage: boolean;
   isMithrilPartialSyncWorking: boolean;
   isSignificantlyBehind: boolean;
   isProbeFailed: boolean;
@@ -64,7 +67,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   }
 
   showConfirmation = () => {
-    if (this.props.isActionBlocked) {
+    if (this.props.isActionBlocked || this.props.isBlockedByChainDamage) {
       return;
     }
 
@@ -110,6 +113,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
   render() {
     const {
       isActionBlocked,
+      isBlockedByChainDamage,
       isSignificantlyBehind,
       isProbeFailed,
       isAtOrPastSnapshot,
@@ -151,6 +155,7 @@ export default class MithrilPartialSyncSection extends Component<Props, State> {
         </div>
         <MithrilPartialSyncRecommendation
           isActionBlocked={isActionBlocked}
+          isBlockedByChainDamage={isBlockedByChainDamage}
           variant={availabilityVariant}
           onShowConfirmation={this.showConfirmation}
         />

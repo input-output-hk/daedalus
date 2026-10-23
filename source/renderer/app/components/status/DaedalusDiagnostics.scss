@@ -415,6 +415,14 @@
     margin-right: 0 !important;
   }
 
+  .chainDataStatus {
+    text-align: right;
+  }
+
+  .chainDataDamaged {
+    color: var(--theme-network-window-red-color);
+  }
+
   .mithrilPartialSyncHint {
     color: var(--theme-network-window-text-color);
     font-family: var(--font-regular);

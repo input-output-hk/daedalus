@@ -1,0 +1,232 @@
+{
+  "metadata": {
+    "title": "Chain Database Targeted Repair Tasks",
+    "created": "2026-10-22",
+    "updated": "2026-10-22",
+    "version": "1.0.0",
+    "totalTasks": 8,
+    "prdReference": ".agent/plans/chain-db-targeted-repair/chain-db-targeted-repair-prd.md",
+    "description": "Find a hole in the local chain database with a boundary scan, replace only the damaged chunks with certified copies, and, after asking, install a fresh certified ledger, before falling back to the full rebuild.",
+    "sourceFiles": [
+      ".agent/plans/chain-db-repair/chain-db-repair-prd.md",
+      ".agent/plans/chain-db-repair/research/01-field-log-signatures.md",
+      ".agent/plans/chain-db-repair/research/03-boundary-scan.md",
+      ".agent/plans/chain-db-repair/research/03-boundary-scan-prototype.py",
+      "watchdog/src/chain_damage.rs",
+      "watchdog/src/ledger_point.rs",
+      "watchdog/src/mithril.rs",
+      "watchdog/src/supervisor.rs",
+      "watchdog/src/protocol.rs",
+      "source/main/WatchdogManager.ts",
+      "source/renderer/app/stores/BackendStore.ts",
+      "source/renderer/app/containers/loading/ChainDamageContainer.tsx"
+    ],
+    "importantNote": "Builds on the chain_damage event, the rebuild (start_mithril with wipe_chain) and the offer screen that the chain-db-repair plan delivers, which ship first (its PRD decision 35); the PRD's 'What This Plan Builds On' names them. Phase 2 starts only after task-003 records which symptoms the targeted repair recovers. These were tasks 019 to 025 of the chain-db-repair plan, renumbered; the PRD's Implementation Strategy maps the IDs."
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Targeted repair spike",
+      "description": "Establish whether a boundary scan plus certified chunk swap plus fresh ledger recovers each symptom, and how fast the scan runs natively.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-001",
+          "title": "Boundary scan in Rust",
+          "description": "Port .agent/plans/chain-db-repair/research/03-boundary-scan-prototype.py to watchdog/src/chain_scan.rs, reading only the first and last 56-byte index entries of each chunk and one header per chunk.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6.0,
+          "dependencies": [],
+          "targetPath": "watchdog/src/chain_scan.rs",
+          "implementationNotes": [
+            "Carry the last hash across empty chunks (preprod has 164).",
+            "Report a missing .chunk, .primary or .secondary as damage instead of failing.",
+            "Skip Byron headers; holes come from partial syncs near the tip.",
+            "Check blake2b-256 of each read header against its index entry, and report a mismatch as a scan failure, not as a hole."
+          ],
+          "testCases": [
+            "Fixture: two consecutive mainnet chunks linked; the same with the first chunk's last 500 index entries removed reports one break.",
+            "Empty chunk between two linked chunks: no break.",
+            "Missing .secondary: reported."
+          ],
+          "acceptance": [
+            "Scan of the preprod and mainnet installs from a Windows build of the watchdog, timed and recorded in research/01-targeted-repair-spike.md."
+          ]
+        },
+        {
+          "id": "task-002",
+          "title": "Recovery experiment per symptom",
+          "description": "On preprod chains with a real 11.4.0 hole, replace the incomplete chunks with certified copies, with the node stopped, then run the partial sync. Record for each reproducible symptom whether the node reaches the tip and the wallet finishes without a resync, and whether the partial sync was needed.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 8.0,
+          "dependencies": [
+            "task-001"
+          ],
+          "targetPath": ".agent/plans/chain-db-targeted-repair/research/01-targeted-repair-spike.md",
+          "implementationNotes": [
+            "Make the damaged chains with the reproduction of an 11.4.0 hole in the chain-db-repair PRD's Testing Strategy: steps 1 to 3 for a ledger after the hole, step 6 for a ledger snapshot inside it, and step 5's deleted ledger for a replay across it.",
+            "Download with mithril-client cardano-db download --start N --end M-1 into an empty directory, without --include-ancillary, then move the three files of each chunk into immutable/.",
+            "Wallet symptom: try the swap alone first, then with the partial sync.",
+            "Node symptom after a ledger replay: swap plus partial sync."
+          ]
+        },
+        {
+          "id": "task-003",
+          "title": "Decision record",
+          "description": "Write research/01-targeted-repair-spike.md with the measurements and the per-symptom result, including which kinds need a fresh ledger and therefore the ledger confirmation (PRD decision 5).",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 1.0,
+          "dependencies": [
+            "task-002"
+          ],
+          "targetPaths": [
+            ".agent/plans/chain-db-targeted-repair/research/01-targeted-repair-spike.md",
+            ".agent/plans/chain-db-targeted-repair/chain-db-targeted-repair-prd.md"
+          ],
+          "acceptance": [
+            "The PRD Repair Sequence section states, per kind, whether the ledger step and its confirmation run.",
+            "If a symptom cannot be recovered, the owner's decision on building the repair for the other symptoms is recorded in the PRD."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Targeted repair and release preparation",
+      "description": "Built if phase 1 succeeds: repair before offering the rebuild, asking before a fresh ledger install, then write the release note.",
+      "riskLevel": "high",
+      "tasks": [
+        {
+          "id": "task-004",
+          "title": "Repair pipeline in the watchdog",
+          "description": "On chain_damage, stop the wallet and node, scan, download the incomplete chunks into staging, swap them in after every download verifies, wait for confirm_repair_ledger before the partial sync for kinds that need a fresh ledger, run it, and restart; emit chain_repair_status; fall back to the offer on any failure.",
+          "status": "pending",
+          "priority": "critical",
+          "estimatedHours": 10.0,
+          "dependencies": [
+            "task-003"
+          ],
+          "targetPaths": [
+            "watchdog/src/chain_repair.rs",
+            "watchdog/src/supervisor.rs",
+            "watchdog/src/protocol.rs",
+            "watchdog/tests/integration.rs"
+          ],
+          "implementationNotes": [
+            "Stage the downloads in the chain folder's staging entry, mithril-staging, on the chain's volume, prepared as every Mithril download prepares it, with its network-magic marker (chain-db-repair PRD decisions 14 and 34), so the swap is a rename.",
+            "At most one repair per app session; a signature after a repair goes straight to the offer screen.",
+            "Log each replaced chunk with its number in watchdog.log.",
+            "The fallback is the offer screen and the rebuild, which waits for the user's choice after a failure (await_chain_choice in supervisor.rs) instead of a genesis sync.",
+            "Integration tests inject signatures with MOCK_NODE_EXTRA_LINES and MOCK_WALLET_EXTRA_LINES."
+          ],
+          "testCases": [
+            "Mock mithril-client: a scan with one break downloads that chunk, swaps it, runs the partial sync, restarts.",
+            "A failed download leaves every chain file unchanged and keeps chain_damage set.",
+            "A scan with no break keeps chain_damage set and does not download.",
+            "A kind that needs a fresh ledger stops at awaiting_ledger_confirmation; confirm_repair_ledger { install: false } restarts the node without the partial sync and does not ask again this session."
+          ]
+        },
+        {
+          "id": "task-005",
+          "title": "Repairing screen and ledger confirmation",
+          "description": "Show 'Repairing blockchain data' with the phase and progress while chain_repair_status runs, ask before the ledger install with Install and Not now, and show the offer screen when the repair fails.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6.0,
+          "dependencies": [
+            "task-004"
+          ],
+          "targetPaths": [
+            "source/renderer/app/components/loading/chain-damage/ChainRepairView.tsx",
+            "source/renderer/app/stores/BackendStore.ts",
+            "source/main/WatchdogManager.ts",
+            "source/common/types/watchdog.types.ts",
+            "source/common/ipc/api.ts"
+          ],
+          "implementationNotes": [
+            "Scanning, downloading and swapping inform, with Quit as the only action (PRD decision 1).",
+            "awaiting_ledger_confirmation shows Install and Not now and sends confirm_repair_ledger over MITHRIL_COMMAND_CHANNEL (PRD decision 5).",
+            "Follow ChainDamageView and RebuildConfirmView, which ChainDamageContainer shows on the full-screen loading backdrop."
+          ]
+        },
+        {
+          "id": "task-006",
+          "title": "Repair history in Diagnostics",
+          "description": "List the chunks replaced this session with their numbers and time.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 2.0,
+          "dependencies": [
+            "task-004"
+          ],
+          "targetPath": "source/renderer/app/components/status/DaedalusDiagnostics.tsx",
+          "implementationNotes": [
+            "Place it with the Blockchain data row, which shows lastChainDamage and the Rebuild blockchain data action."
+          ]
+        },
+        {
+          "id": "task-007",
+          "title": "Verify the targeted repair",
+          "description": "Repeat the reproduction of an 11.4.0 hole on preprod from the chain-db-repair PRD's Testing Strategy with the repair enabled on Linux and Windows, including Not now at the ledger confirmation, and run the Nix checks.",
+          "status": "pending",
+          "priority": "high",
+          "estimatedHours": 6.0,
+          "dependencies": [
+            "task-004",
+            "task-005",
+            "task-006"
+          ],
+          "targetPaths": [
+            ".agent/plans/chain-db-targeted-repair/chain-db-targeted-repair-prd.md"
+          ]
+        },
+        {
+          "id": "task-008",
+          "title": "CHANGELOG entry",
+          "description": "Describe the targeted repair and its ledger confirmation under vNext, in user terms.",
+          "status": "pending",
+          "priority": "medium",
+          "estimatedHours": 0.5,
+          "dependencies": [
+            "task-007"
+          ],
+          "targetPath": "CHANGELOG.md",
+          "implementationNotes": [
+            "The damaged-data screen, the rebuild and the Diagnostics action are in the chain-db-repair release's entry; this entry describes what the targeted repair adds."
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPhases": 2,
+    "totalTasks": 8,
+    "estimatedTotalHours": 39.5,
+    "criticalPath": [
+      "task-001",
+      "task-002",
+      "task-003",
+      "task-004",
+      "task-005",
+      "task-007",
+      "task-008"
+    ],
+    "keyFiles": [
+      "watchdog/src/chain_scan.rs",
+      "watchdog/src/chain_repair.rs",
+      "watchdog/src/supervisor.rs",
+      "source/renderer/app/stores/BackendStore.ts",
+      "source/renderer/app/components/loading/chain-damage/ChainRepairView.tsx"
+    ],
+    "riskAreas": [
+      "Boundary scan timing on native Windows is unmeasured until task-001.",
+      "A swap that stops part-way: FR4 covers a failure before the swap and one after it, not one during it (PRD Open Questions).",
+      "A wallet whose restore crossed a hole without signature 3 holds none of the hole's blocks, and neither the swap nor the rebuild adds them (PRD Open Questions)."
+    ],
+    "testingNotes": "Rust unit tests on chunk fixtures, integration tests with a mock mithril-client, Jest for the repair state and screen, Storybook per repair phase, Nix checks, and a manual preprod reproduction of an 11.4.0 hole on Linux and Windows.",
+    "rollbackPlan": "Revert the branch. chain_repair_status and confirm_repair_ledger are additive; without the repair, chain_damage leads to the offer screen and the rebuild."
+  }
+}

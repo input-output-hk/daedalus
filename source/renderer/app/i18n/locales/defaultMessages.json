@@ -1012,6 +1012,11 @@
         "id": "chainStorage.locationPicker.dataFoundNotice"
       },
       {
+        "defaultMessage": "!!!Existing blockchain data found. The rebuild deletes the blockchain data in this folder and downloads it again.",
+        "description": "Notice shown when the location picker was opened from a failed or refused rebuild and the selected blockchain data location already contains chain data, which the rebuild deletes.",
+        "id": "chainStorage.locationPicker.rebuildDataNotice"
+      },
+      {
         "defaultMessage": "!!!Daedalus will create a chain subdirectory inside the selected parent folder.",
         "description": "Help text shown when Daedalus will create the managed chain subdirectory.",
         "id": "chainStorage.locationPicker.subdirectoryCreationNotice"
@@ -1702,6 +1707,41 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Blockchain data",
+        "description": "Row label for the blockchain data status and rebuild action in the diagnostics dialog",
+        "id": "daedalus.diagnostics.dialog.chainDataSectionLabel"
+      },
+      {
+        "defaultMessage": "!!!No damage detected",
+        "description": "Status shown in diagnostics when no gap in the blockchain data was detected in this session",
+        "id": "daedalus.diagnostics.dialog.chainDataStatusOk"
+      },
+      {
+        "defaultMessage": "!!!Damage detected at slot {slot} ({time})",
+        "description": "Status shown in diagnostics with the slot and time of the last gap in the blockchain data detected in this session",
+        "id": "daedalus.diagnostics.dialog.chainDataStatusDamage"
+      },
+      {
+        "defaultMessage": "!!!Damage detected ({time})",
+        "description": "Status shown in diagnostics with the time of the last gap in the blockchain data detected in this session, when no slot is known",
+        "id": "daedalus.diagnostics.dialog.chainDataStatusDamageNoSlot"
+      },
+      {
+        "defaultMessage": "!!!Rebuild blockchain data",
+        "description": "Button label that opens the confirmation for rebuilding the blockchain data from diagnostics",
+        "id": "daedalus.diagnostics.dialog.chainDataRebuildButton"
+      },
+      {
+        "defaultMessage": "!!!Unavailable while Mithril work is already active.",
+        "description": "Hint text beneath the disabled rebuild button in diagnostics while Mithril work is active",
+        "id": "daedalus.diagnostics.dialog.chainDataRebuildHintBlocked"
+      }
+    ],
+    "path": "source/renderer/app/components/status/ChainDataSection.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!SYSTEM INFO",
         "description": "System info",
         "id": "daedalus.diagnostics.dialog.system.info"
@@ -2210,6 +2250,11 @@
         "defaultMessage": "!!!Unavailable while Mithril work is already active.",
         "description": "Hint text beneath the disabled Mithril partial sync diagnostics button while Mithril work is active",
         "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintBlocked"
+      },
+      {
+        "defaultMessage": "!!!Unavailable while damaged blockchain data is detected. Use Rebuild blockchain data instead.",
+        "description": "Hint text beneath the disabled Mithril partial sync diagnostics button while damage to the blockchain data is detected and the rebuild is the repair",
+        "id": "daedalus.diagnostics.dialog.mithrilPartialSyncButtonHintChainDamage"
       }
     ],
     "path": "source/renderer/app/components/status/MithrilPartialSyncRecommendation.tsx"
@@ -4237,6 +4282,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Blockchain data needs to be rebuilt",
+        "description": "Headline of the screen that offers to rebuild the blockchain data after Daedalus detects a gap in it",
+        "id": "loading.chainDamage.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus cannot finish syncing because part of the blockchain data stored on this computer is missing.",
+        "description": "Explanation shown when peers keep serving blocks that the local node rejects because blockchain data on this computer is missing",
+        "id": "loading.chainDamage.symptom.nodeRejectsCanonicalBlock"
+      },
+      {
+        "defaultMessage": "!!!Cardano node cannot start because part of the blockchain data stored on this computer is missing.",
+        "description": "Explanation shown when the node cannot open its database because blockchain data on this computer is missing",
+        "id": "loading.chainDamage.symptom.ledgerPointMissing"
+      },
+      {
+        "defaultMessage": "!!!A wallet cannot finish syncing because part of the blockchain data stored on this computer is missing.",
+        "description": "Explanation shown when a wallet stops syncing because blockchain data on this computer is missing",
+        "id": "loading.chainDamage.symptom.walletChainDiscontinuity"
+      },
+      {
+        "defaultMessage": "!!!Your wallets and funds are safe, and you do not need your recovery phrase. Daedalus can rebuild the blockchain data by downloading a verified copy with Mithril.",
+        "description": "Reassurance and description of the rebuild on the screen that offers to rebuild the blockchain data",
+        "id": "loading.chainDamage.body"
+      },
+      {
+        "defaultMessage": "!!!Detected: {kind} at slot {slot}",
+        "description": "Technical detail line naming the kind of damage and the slot, for quoting in a support request",
+        "id": "loading.chainDamage.detail"
+      },
+      {
+        "defaultMessage": "!!!Detected: {kind}",
+        "description": "Technical detail line naming the kind of damage when no slot is known, for quoting in a support request",
+        "id": "loading.chainDamage.detailNoSlot"
+      },
+      {
+        "defaultMessage": "!!!Rebuild blockchain data",
+        "description": "Button label that opens the confirmation for rebuilding the blockchain data",
+        "id": "loading.chainDamage.rebuild"
+      },
+      {
+        "defaultMessage": "!!!Not now",
+        "description": "Button label that hides the rebuild offer until Daedalus restarts",
+        "id": "loading.chainDamage.notNow"
+      },
+      {
+        "defaultMessage": "!!!Rebuild blockchain data?",
+        "description": "Title of the confirmation for rebuilding the blockchain data",
+        "id": "loading.chainDamage.confirm.title"
+      },
+      {
+        "defaultMessage": "!!!Daedalus will delete the blockchain data on this computer and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer.",
+        "description": "Body of the confirmation for rebuilding the blockchain data: what is deleted, what is downloaded, that Daedalus is unusable meanwhile, and that the wallets stay on this computer",
+        "id": "loading.chainDamage.confirm.deleteAndDownload"
+      },
+      {
+        "defaultMessage": "!!!Daedalus will keep the blockchain data in {location}, delete any blockchain data already there, and download a complete verified copy. This is a large download, and Daedalus cannot be used until it finishes. Your wallets stay on this computer.",
+        "description": "Body of the confirmation for rebuilding the blockchain data in a newly chosen location: the location ({location} is a folder path), what is deleted there, what is downloaded, that Daedalus is unusable meanwhile, and that the wallets stay on this computer",
+        "id": "loading.chainDamage.confirm.deleteAndDownloadInLocation"
+      },
+      {
+        "defaultMessage": "!!!Rebuild",
+        "description": "Button label that starts rebuilding the blockchain data, in the confirmation",
+        "id": "loading.chainDamage.confirm.rebuild"
+      },
+      {
+        "defaultMessage": "!!!Back",
+        "description": "Button label that leaves the rebuild confirmation without rebuilding",
+        "id": "loading.chainDamage.confirm.back"
+      }
+    ],
+    "path": "source/renderer/app/components/loading/chain-damage/ChainDamage.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Fast sync with Mithril",
         "description": "Headline for the Mithril bootstrap prompt.",
         "id": "loading.mithrilBootstrap.title"
@@ -4312,19 +4432,139 @@
         "id": "loading.mithrilBootstrap.cancel"
       },
       {
-        "defaultMessage": "!!!Wipe chain & retry",
-        "description": "Button label to wipe chain and retry Mithril bootstrap.",
-        "id": "loading.mithrilBootstrap.wipeAndRetry"
-      },
-      {
         "defaultMessage": "!!!Mithril bootstrap failed",
         "description": "Generic title for the Mithril bootstrap error state.",
         "id": "loading.mithrilBootstrap.errorTitle"
       },
       {
+        "defaultMessage": "!!!Could not rebuild the blockchain data",
+        "description": "Title of the Mithril error view when a rebuild of the blockchain data failed or was refused.",
+        "id": "loading.mithrilBootstrap.error.rebuild.title"
+      },
+      {
         "defaultMessage": "!!!The node could not start with the restored chain data. Wipe the chain and try Mithril Sync again, or do a Blockchain Sync from Genesis.",
         "description": "Hint for node-start failures after Mithril bootstrap.",
         "id": "loading.mithrilBootstrap.startFailureHint"
+      },
+      {
+        "defaultMessage": "!!!Retry",
+        "description": "Button label on the Mithril error view that runs Mithril Sync again.",
+        "id": "loading.mithrilBootstrap.error.retry"
+      },
+      {
+        "defaultMessage": "!!!Skip to blockchain sync",
+        "description": "Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.",
+        "id": "loading.mithrilBootstrap.error.skip"
+      },
+      {
+        "defaultMessage": "!!!Not now",
+        "description": "Button label on the Mithril error view after a rebuild was refused before it deleted anything, for example because the Mithril service could not be reached or the drive has too little free space. Cardano node has already started again on the existing blockchain data; the button closes the error view and continues with that data.",
+        "id": "loading.mithrilBootstrap.error.notNow"
+      },
+      {
+        "defaultMessage": "!!!The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.",
+        "description": "Note on the Mithril error view when a rebuild failed after it had already removed the old blockchain data.",
+        "id": "loading.mithrilBootstrap.error.chainRemovedHint"
+      },
+      {
+        "defaultMessage": "!!!The old blockchain data was removed. Retry downloads it again with Mithril.",
+        "description": "Note on the Mithril error view when the install of a rebuild failed after the old blockchain data was removed, where Retry is the only action.",
+        "id": "loading.mithrilBootstrap.error.chainRemovedRetryHint"
+      },
+      {
+        "defaultMessage": "!!!A download of the blockchain data did not finish installing. Retry downloads it again with Mithril, or choose how to sync.",
+        "description": "Note on the Mithril error view when a Mithril install began changing the blockchain data and did not finish, for example because Daedalus was closed during the first download, without any old blockchain data having been removed.",
+        "id": "loading.mithrilBootstrap.error.installUnfinishedHint"
+      },
+      {
+        "defaultMessage": "!!!A download of the blockchain data did not finish installing. Retry downloads it again with Mithril.",
+        "description": "Note on the Mithril error view when a Mithril install that was not a rebuild failed part-way, where Retry is the only action.",
+        "id": "loading.mithrilBootstrap.error.installUnfinishedRetryHint"
+      },
+      {
+        "defaultMessage": "!!!Choose another location",
+        "description": "Button label on the Mithril error view that opens the blockchain data location picker, shown when the drive is too full or the folder holds other files.",
+        "id": "loading.mithrilBootstrap.error.chooseLocation"
+      },
+      {
+        "defaultMessage": "!!!Choose how to sync",
+        "description": "Button label on the Mithril error view that opens the choice between Mithril fast sync and a Blockchain Sync from Genesis, after the old blockchain data was removed.",
+        "id": "loading.mithrilBootstrap.error.chooseSync"
+      },
+      {
+        "defaultMessage": "!!!The old blockchain data was removed, so the blockchain needs to be synced again.",
+        "description": "Note on the Mithril bootstrap prompt when a rebuild removed the old blockchain data and did not finish.",
+        "id": "loading.mithrilBootstrap.decisionChainRemovedNotice"
+      },
+      {
+        "defaultMessage": "!!!A download of the blockchain data did not finish installing, so the blockchain needs to be synced again.",
+        "description": "Note on the Mithril bootstrap prompt when a Mithril install began changing the blockchain data and did not finish, without any old blockchain data having been removed.",
+        "id": "loading.mithrilBootstrap.decisionInstallUnfinishedNotice"
+      },
+      {
+        "defaultMessage": "!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry, or choose another location.",
+        "description": "Hint for the INSUFFICIENT_SPACE error on the Mithril error view, shown when a rebuild was refused before it deleted anything because the drive that holds the blockchain data is too full for the download.",
+        "id": "loading.mithrilBootstrap.error.insufficientSpaceHint"
+      },
+      {
+        "defaultMessage": "!!!There is not enough free space on the drive that holds the blockchain data. Free some space on that drive and retry, or choose another location.",
+        "description": "Hint for the INSUFFICIENT_SPACE error on the Mithril error view after an earlier rebuild attempt removed the old blockchain data, so it does not say the data is unchanged.",
+        "id": "loading.mithrilBootstrap.error.insufficientSpace.removedHint"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry.",
+        "description": "Hint for the REBUILD_MARKER_FAILED error on the Mithril error view, shown when a rebuild was refused before it deleted anything because Daedalus could not write the record of the rebuild to its data folder.",
+        "id": "loading.mithrilBootstrap.error.rebuildMarkerFailed.hint"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not record the rebuild in its data folder. Check that the data folder is writable and retry.",
+        "description": "Hint for the REBUILD_MARKER_FAILED error on the Mithril error view after an earlier rebuild attempt removed the old blockchain data, so it does not say nothing was changed.",
+        "id": "loading.mithrilBootstrap.error.rebuildMarkerFailed.removedHint"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not write to its data folder before installing the downloaded blockchain data, so it did not install it. Check that the data folder is writable and retry.",
+        "description": "Hint for the MARKER_FAILED error on the Mithril error view, shown when Daedalus could not write to its data folder after the download and before the install, so the downloaded blockchain data was not installed.",
+        "id": "loading.mithrilBootstrap.error.markerFailed.hint"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not reach the Mithril service. Your blockchain data has not been changed. Check your internet connection and try again.",
+        "description": "Hint shown when the Mithril service could not be reached before anything was changed or deleted.",
+        "id": "loading.mithrilBootstrap.error.probeFailed.hint"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not reach the Mithril service. Check your internet connection and try again.",
+        "description": "Hint shown when the Mithril service could not be reached after an earlier rebuild attempt removed the old blockchain data, so it does not say the data is unchanged.",
+        "id": "loading.mithrilBootstrap.error.probeFailed.removedHint"
+      },
+      {
+        "defaultMessage": "!!!Daedalus cannot rebuild the blockchain data in this folder. Choose a different blockchain data location and try again.",
+        "description": "Hint shown when the configured blockchain data location cannot be used for a rebuild.",
+        "id": "loading.mithrilBootstrap.error.invalidChainPath.hint"
+      },
+      {
+        "defaultMessage": "!!!The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and retry, or choose another location.",
+        "description": "Hint shown when the blockchain data folder holds files that are not blockchain data, so a rebuild refused to delete it.",
+        "id": "loading.mithrilBootstrap.error.chainDirNotReplaceable.hint"
+      },
+      {
+        "defaultMessage": "!!!The blockchain data folder contains other files, so Daedalus cannot install the blockchain data there. Move those files elsewhere and retry, or choose another location.",
+        "description": "Hint shown when the blockchain data folder holds files that are not blockchain data, after an earlier rebuild attempt removed the old blockchain data.",
+        "id": "loading.mithrilBootstrap.error.chainDirNotReplaceable.removedHint"
+      },
+      {
+        "defaultMessage": "!!!The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again.",
+        "description": "Hint shown when the blockchain data folder holds another Cardano network, so a rebuild refused to change it.",
+        "id": "loading.mithrilBootstrap.error.chainDirOtherNetwork.hint"
+      },
+      {
+        "defaultMessage": "!!!The blockchain data folder holds data for a different Cardano network. Choose a different blockchain data location and try again.",
+        "description": "Hint shown when the blockchain data folder holds another Cardano network, after an earlier rebuild attempt removed the old blockchain data.",
+        "id": "loading.mithrilBootstrap.error.chainDirOtherNetwork.removedHint"
+      },
+      {
+        "defaultMessage": "!!!Daedalus could not delete the blockchain data files. Close any other programs that might be using the blockchain folder, then retry.",
+        "description": "Hint shown when deleting the old blockchain data failed during a rebuild, typically because another program holds a file open.",
+        "id": "loading.mithrilBootstrap.error.wipeFailed.hint"
       },
       {
         "defaultMessage": "!!!Preparing",
@@ -4480,6 +4720,11 @@
         "defaultMessage": "!!!≈ {totalSize} total",
         "description": "Static, real-size context appended to the Mithril download readout (derived from snapshot.size); not a moving bar.",
         "id": "loading.mithrilBootstrap.progress.snapshotSizeContext"
+      },
+      {
+        "defaultMessage": "!!!Downloading will continue when the network returns.",
+        "description": "Line on the Mithril progress view while the download has stalled and the Mithril aggregator cannot be reached; the download continues by itself once the network is back.",
+        "id": "loading.mithrilBootstrap.progress.waitingForNetwork"
       },
       {
         "defaultMessage": "!!!This can take several minutes — Daedalus is still working.",
@@ -4713,6 +4958,31 @@
       }
     ],
     "path": "source/renderer/app/components/loading/no-disk-space-error/NoDiskSpaceError.tsx"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Cardano node is not reporting progress",
+        "description": "Title of the prompt on the loading screen when Cardano node has written no output for several minutes while it starts",
+        "id": "loading.nodeSilence.title"
+      },
+      {
+        "defaultMessage": "!!!Cardano node has reported nothing for {minutes, plural, one {# minute} other {# minutes}} while starting. It may still be working. If it is stuck, restarting it can help.",
+        "description": "Body of the prompt on the loading screen when Cardano node has written no output for the given number of minutes while it starts",
+        "id": "loading.nodeSilence.body"
+      },
+      {
+        "defaultMessage": "!!!Restart Cardano node",
+        "description": "Button on the prompt about Cardano node writing no output while it starts, which restarts Cardano node",
+        "id": "loading.nodeSilence.restart"
+      },
+      {
+        "defaultMessage": "!!!Keep waiting",
+        "description": "Button on the prompt about Cardano node writing no output while it starts, which hides the prompt until Cardano node is silent again",
+        "id": "loading.nodeSilence.keepWaiting"
+      }
+    ],
+    "path": "source/renderer/app/components/loading/syncing-connecting/NodeSilencePrompt.tsx"
   },
   {
     "descriptors": [

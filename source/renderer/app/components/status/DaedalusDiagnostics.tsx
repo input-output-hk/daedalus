@@ -12,6 +12,10 @@ import SVGInline from 'react-svg-inline';
 import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
+import ChainDataSection, {
+  formatChainDataStatus,
+  messages as chainDataMessages,
+} from './ChainDataSection';
 import MithrilPartialSyncSection from './MithrilPartialSyncSection';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
@@ -19,6 +23,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { formatDiagnosticsText } from '../../utils/formatDiagnosticsText';
 import type { DiagnosticsTextSection } from '../../utils/formatDiagnosticsText';
+import type { ChainDamage } from '../../../../common/types/watchdog.types';
 import { getSupportUrl } from '../../../../common/utils/reporting';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -532,6 +537,11 @@ type Props = {
     walletId: string,
     localName: string
   ) => Promise<void>;
+  chainDamage: ChainDamage | null;
+  // The watchdog found chain damage before starting the node and does not
+  // start it; a node restart runs that check again
+  isNodeHeld: boolean;
+  onRebuildChain: () => void;
 };
 type State = {
   isNodeRestarting: boolean;
@@ -592,6 +602,16 @@ class DaedalusDiagnostics extends Component<Props, State> {
       (cardanoNodeState !== prevCardanoNodeState &&
         includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)) ||
       nodeBackUp
+    ) {
+      this.setState({ isNodeRestarting: false }); // eslint-disable-line
+    }
+
+    // A restart of a held node ends when the watchdog has checked the chain
+    // again: it either starts the node, which the phase change above catches,
+    // or reports the damage again and keeps holding the node.
+    if (
+      this.props.isNodeHeld &&
+      this.props.chainDamage?.detectedAt !== prevProps.chainDamage?.detectedAt
     ) {
       this.setState({ isNodeRestarting: false }); // eslint-disable-line
     }
@@ -691,6 +711,9 @@ class DaedalusDiagnostics extends Component<Props, State> {
       isMithrilAtOrPastSnapshot,
       mithrilBehindByEpochs,
       onStartMithrilPartialSync,
+      chainDamage,
+      isNodeHeld,
+      onRebuildChain,
     } = this.props;
     const {
       platform,
@@ -987,6 +1010,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
                     style={{ float: 'none' }}
                     onClick={() => this.restartNode()}
                     disabled={
+                      !isNodeHeld &&
                       !includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
                     }
                   >
@@ -1037,6 +1061,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('cardanoNodeInSync', isNodeInSync)}
               <MithrilPartialSyncSection
                 isActionBlocked={isMithrilPartialSyncWorking}
+                isBlockedByChainDamage={chainDamage != null}
                 isMithrilPartialSyncWorking={isMithrilPartialSyncWorking}
                 isSignificantlyBehind={isMithrilSignificantlyBehind}
                 isProbeFailed={isMithrilProbeFailed}
@@ -1044,6 +1069,12 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 behindByEpochs={mithrilBehindByEpochs}
                 onRestoreFocus={this.restoreDialogCloseOnEscKey}
                 onStartMithrilPartialSync={onStartMithrilPartialSync}
+              />
+              <ChainDataSection
+                chainDamage={chainDamage}
+                isActionBlocked={isMithrilPartialSyncWorking}
+                onRestoreFocus={this.restoreDialogCloseOnEscKey}
+                onRebuildChain={onRebuildChain}
               />
             </div>
             {global.cip30Enabled && this.props.diagnosticsAvailable && (
@@ -1158,6 +1189,7 @@ class DaedalusDiagnostics extends Component<Props, State> {
       localTip,
       networkTip,
       nodeConnectionError,
+      chainDamage,
     } = this.props;
     const { formatMessage } = intl;
     const onOff = (value: boolean) =>
@@ -1303,6 +1335,10 @@ class DaedalusDiagnostics extends Component<Props, State> {
           row('cardanoNodeTimeCorrect', onOff(isNodeTimeCorrect)),
           row('cardanoNodeSyncing', onOff(isNodeSyncing)),
           row('cardanoNodeInSync', onOff(isNodeInSync)),
+          {
+            label: formatMessage(chainDataMessages.sectionLabel),
+            value: formatChainDataStatus(intl, chainDamage),
+          },
         ],
       },
     ];
@@ -1323,8 +1359,14 @@ class DaedalusDiagnostics extends Component<Props, State> {
     }
   };
   getLocalisationForCardanoNodeState = () => {
-    const { cardanoNodeState } = this.props;
+    const { cardanoNodeState, isNodeHeld } = this.props;
     let localisationKey;
+
+    // The watchdog found the damage before it started the node and holds it
+    // back, so no node runs behind the damaged data screen
+    if (cardanoNodeState === 'chain-damaged' && isNodeHeld) {
+      return messages.nodeHasStopped;
+    }
 
     switch (cardanoNodeState) {
       case CardanoNodeStates.STARTING:

@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import SyncingConnecting from '../../components/loading/syncing-connecting/SyncingConnecting';
 import SyncingConnectingMithrilPrompt from '../../components/loading/syncing-connecting/SyncingConnectingMithrilPrompt';
+import NodeSilencePrompt from '../../components/loading/syncing-connecting/NodeSilencePrompt';
 import { computeBehindByEpochs } from '../../utils/mithrilBehindness';
 import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 
@@ -43,6 +44,11 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       walletUnrecoverable,
       nodeUnrecoverable,
       retryBackend,
+      showNodeSilencePrompt,
+      nodeSilentSecs,
+      restartSilentNode,
+      keepWaitingForNode,
+      lastChainDamage,
     } = backend;
     // Map loadingPhase to the cardanoNodeState shape the component expects
     const cardanoNodeState = loadingPhase;
@@ -64,8 +70,16 @@ class LoadingSyncingConnectingPage extends Component<Props> {
         blockSyncProgress.replayedBlock < 99) ||
       (blockSyncProgress.validatingChunk > 0 &&
         blockSyncProgress.validatingChunk < 99);
+    const showSilencePrompt =
+      !isNodeStopping && showNodeSilencePrompt && nodeSilentSecs !== null;
+    // The silence prompt takes the Mithril prompt's place while both apply.
+    // While damage to the blockchain data is known, the prompt's partial sync
+    // would move the symptom without repairing it, so only the rebuild is
+    // offered.
     const showMithrilPrompt =
+      !showSilencePrompt &&
       !isNodeStopping &&
+      lastChainDamage === null &&
       !mithrilPromptDismissed &&
       (mithrilSignificantlyBehind !== null ||
         (loadingPhase === 'node-starting' && isInLongReplay));
@@ -77,6 +91,13 @@ class LoadingSyncingConnectingPage extends Component<Props> {
       : undefined;
     return (
       <>
+        {showSilencePrompt && (
+          <NodeSilencePrompt
+            silentSecs={nodeSilentSecs}
+            onRestart={restartSilentNode}
+            onKeepWaiting={keepWaitingForNode}
+          />
+        )}
         {showMithrilPrompt && (
           <SyncingConnectingMithrilPrompt
             behindByEpochs={behindByEpochs}

@@ -2,6 +2,20 @@
 
 ## vNext
 
+### Features
+
+- Blockchain data: Daedalus now recognizes when part of the blockchain data stored on the computer is missing and shows a screen that says so. A partial Mithril sync in versions before 11.5.0 could leave such a gap. Three signs lead to the screen: cardano-node keeps rejecting a block that three or more peers send, the node's ledger snapshot points into the gap, or a wallet stops syncing at the gap. Daedalus checks the ledger snapshot before every node start. The screen offers Rebuild blockchain data and Not now. Rebuild blockchain data asks for confirmation, then deletes the blockchain data and downloads a complete verified copy with Mithril. Wallets stay on the computer. Not now hides the screen until Daedalus restarts. When the node cannot start on the damaged data, the screen offers only the rebuild ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Diagnostics: a Blockchain data row shows damage detected since Daedalus started, with its slot and time, until the blockchain data is rebuilt or removed. Diagnostics also offers a Rebuild blockchain data button that opens the same confirmation, even when no damage was detected. While damage is detected, Mithril Sync is disabled and its hint points to the rebuild. The copied diagnostic information includes the row ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Rebuilding the blockchain data: before deleting anything, a rebuild checks that the Mithril service answers with a snapshot and that the blockchain data folder holds only blockchain data. When Daedalus can read the snapshot's size and the drive's free space, it also checks that the drive has room for the snapshot once the old data is deleted. When a check fails, nothing is deleted. The error view, titled "Could not rebuild the blockchain data", says which check failed and offers Retry, or another location when the folder is the cause. If a rebuild fails after deleting the data, Daedalus does not start a sync from genesis unless the user chooses one, even after a restart ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- When cardano-node writes nothing for five minutes while it starts, the loading screen says so and offers Restart Cardano node or Keep waiting ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Mithril: while a download makes no progress and the Mithril service cannot be reached, the progress view says that downloading will continue when the network returns ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Mithril: a download is now kept inside the blockchain data folder, on the drive that holds the data. When two networks share a storage folder, Daedalus for one network leaves the other network's in-progress download in place, refuses a Mithril sync into that folder, and its storage picker refuses the folder ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
 ### Fixes
 
 - Keep ordinary mainnet and selfnode on upstream wallet contracts and native Send, staking, governance, and hardware confirmation flows; activate CIP-30 behavior only in preprod, preview, and mainnet-flight packages.

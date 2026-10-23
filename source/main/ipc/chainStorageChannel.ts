@@ -35,8 +35,8 @@ export function handleChainStorageRequests(): void {
     return validatePath(candidatePath, stateDirectoryPath, networkMagic);
   });
 
-  confirmChannel.onRequest(async ({ customPath }) => {
-    logger.info('chainStorage: confirming path', { customPath });
+  confirmChannel.onRequest(async ({ customPath, rebuild }) => {
+    logger.info('chainStorage: confirming path', { customPath, rebuild });
 
     if (customPath != null) {
       requestElectronStore({
@@ -49,5 +49,14 @@ export function handleChainStorageRequests(): void {
     }
 
     await backendLifecycle.setCustomChainPath(customPath);
+    // Sent straight after the location, so the watchdog holds the rebuild
+    // while it stops the node for the change and runs it in place of the
+    // restart: no node starts on the new location before the rebuild.
+    if (rebuild === true) {
+      backendLifecycle.sendMithrilCommand({
+        cmd: 'start_mithril',
+        wipe_chain: true,
+      });
+    }
   });
 }

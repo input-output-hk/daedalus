@@ -95,6 +95,16 @@ storiesOf('Loading / Chain Storage', module)
       availableSpaceBytes={256 * 1024 * 1024 * 1024}
     />
   ))
+  .add('Data Found Before A Rebuild', () => (
+    <ManagedChainStorageLocationPicker
+      customChainPath="/mnt/fast-ssd/daedalus-chain"
+      defaultChainPath={defaultChainPath}
+      validationPreset="existing-directory"
+      estimatedRequiredSpaceBytes={snapshotSize}
+      availableSpaceBytes={256 * 1024 * 1024 * 1024}
+      forRebuild
+    />
+  ))
   .add('Recovery + Data Found', () => (
     <ManagedChainStorageLocationPicker
       customChainPath={null}

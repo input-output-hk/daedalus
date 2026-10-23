@@ -4,6 +4,7 @@ import { storiesOf } from '@storybook/react';
 import StoryDecorator from '../../_support/StoryDecorator';
 import LoadingOverlayStoryFrame from '../_support/LoadingOverlayStoryFrame';
 import { ManagedMithrilDecisionView } from '../_support/mithrilHarness';
+import MithrilDecisionView from '../../../../source/renderer/app/components/loading/mithril/MithrilDecisionView';
 import {
   loadingBooleanKnob,
   loadingRadiosKnob,
@@ -11,6 +12,7 @@ import {
   loadingTextKnob,
 } from '../_support/loadingKnobs';
 import {
+  bootstrapActions,
   defaultChainPath,
   explicitSnapshot,
   latestSnapshot,
@@ -90,5 +92,19 @@ storiesOf('Loading / Mithril / Snapshot Picker', module)
       isFetchingSnapshots={false}
       customChainPath="/mnt/fast-ssd/daedalus-chain"
       defaultChainPath={defaultChainPath}
+    />
+  ))
+  .add('After A Rebuild Removed The Data', () => (
+    <MithrilDecisionView
+      chainRemoved
+      onAccept={() => bootstrapActions.onAccept()}
+      onDecline={() => bootstrapActions.onDecline()}
+    />
+  ))
+  .add('After An Install Did Not Finish', () => (
+    <MithrilDecisionView
+      installUnfinished
+      onAccept={() => bootstrapActions.onAccept()}
+      onDecline={() => bootstrapActions.onDecline()}
     />
   ));

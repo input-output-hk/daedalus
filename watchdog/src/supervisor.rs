@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -11,17 +12,19 @@ use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
 use tokio::net::TcpStream;
 use tokio::process::{Child, ChildStdin, Command};
 use tokio::sync::{mpsc, oneshot, watch};
-use tokio::time::{Duration, Instant, interval_at, sleep, timeout};
+use tokio::time::{Duration, Instant, MissedTickBehavior, interval, interval_at, sleep, timeout};
 use tracing::{info, warn};
 
 #[cfg(unix)]
 use nix::sys::signal::Signal;
 
+use crate::chain_damage::{ChainDamageDetector, Detection, SharedDetector};
 use crate::chain_validation;
 use crate::config::WatchdogConfig;
 use crate::crash_window::CrashWindow;
+use crate::ledger_point::{self, Verdict};
 use crate::mithril;
-use crate::protocol::{Command as Cmd, ElectronRestartPayload, Event, emit};
+use crate::protocol::{ChainDamageKind, Command as Cmd, ElectronRestartPayload, Event, emit};
 use crate::state;
 
 type ExitInfo = (Option<i32>, Option<String>);
@@ -31,6 +34,21 @@ enum RunResult {
     NodeCrashed,
     RestartRequested,
     StartMithril { force: bool, wipe_chain: bool },
+}
+
+/// How the Mithril pipeline before a node start ended, when the renderer has
+/// still to be told. The Mithril view stays up until the node has started
+/// again; then `completed` closes it.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum AfterMithril {
+    /// No pipeline ran, or the renderer already has its outcome.
+    Nothing,
+    /// A database was installed; `rebuild` is true when a rebuild installed
+    /// it, which `completed` passes on.
+    Installed { rebuild: bool },
+    /// The local chain is close enough to the certified tip, and nothing was
+    /// changed. Nothing else ends the renderer's Mithril view in this case.
+    NotNeeded,
 }
 
 fn unix_ms() -> u64 {
@@ -304,7 +322,17 @@ impl Settings<'_> {
 #[derive(Default)]
 struct HeldRequests {
     stop: bool,
+    /// `force` and `wipe_chain` of the Mithril sync to run, merged over every
+    /// request held.
     mithril: Option<(bool, bool)>,
+}
+
+/// One Mithril sync for two requests. A later request never turns off a
+/// rebuild (`wipe_chain`) or a forced sync that an earlier one asked for: a
+/// plain sync in place of a confirmed rebuild would sync over the damage the
+/// rebuild was to replace.
+fn merge_mithril(earlier: (bool, bool), later: (bool, bool)) -> (bool, bool) {
+    (earlier.0 || later.0, earlier.1 || later.1)
 }
 
 impl HeldRequests {
@@ -316,7 +344,10 @@ impl HeldRequests {
             }
             Cmd::StartMithril { force, wipe_chain } => {
                 info!("Mithril sync requested; it runs before the node starts again");
-                self.mithril = Some((force, wipe_chain));
+                self.mithril = Some(match self.mithril {
+                    Some(earlier) => merge_mithril(earlier, (force, wipe_chain)),
+                    None => (force, wipe_chain),
+                });
             }
             Cmd::SetChainPath { path } => {
                 settings.wstate.chain_path = path;
@@ -368,11 +399,16 @@ impl HeldRequests {
     }
 
     // The next step once the node has exited: `planned`, unless a held request
-    // replaces it. A planned stop is never replaced.
+    // replaces it. A planned stop is never replaced, and a planned Mithril
+    // sync is merged with a held one.
     fn after(&self, planned: RunResult) -> RunResult {
-        match planned {
-            RunResult::Stopped => RunResult::Stopped,
-            planned => self.instead().unwrap_or(planned),
+        match (planned, self.mithril) {
+            (RunResult::Stopped, _) => RunResult::Stopped,
+            (RunResult::StartMithril { force, wipe_chain }, Some(held)) if !self.stop => {
+                let (force, wipe_chain) = merge_mithril((force, wipe_chain), held);
+                RunResult::StartMithril { force, wipe_chain }
+            }
+            (planned, _) => self.instead().unwrap_or(planned),
         }
     }
 }
@@ -464,9 +500,10 @@ fn wallet_exhausted(
     false
 }
 
-// Waits, once cardano-node is unrecoverable, for the user to retry
-// (restart_node, start_node or restart_wallet), start a Mithril sync, or
-// stop. Settings changes are saved and apply when the node next starts.
+// Waits, once cardano-node is unrecoverable or while the ledger snapshot
+// check holds it back, for the user to retry (restart_node, start_node or
+// restart_wallet), start a Mithril sync, or stop. Settings changes are saved
+// and apply when the node next starts.
 async fn wait_for_retry(
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     settings: &mut Settings<'_>,
@@ -485,6 +522,56 @@ async fn wait_for_retry(
                 held.stop = true;
                 return held;
             }
+        }
+    }
+}
+
+/// How the wait that follows a failed install ended.
+enum InstallRetry {
+    /// A Mithril sync installed a database; `rebuild` is true when it was a
+    /// rebuild.
+    Installed { rebuild: bool },
+    /// A rebuild began deleting the chain and installed nothing.
+    Wiped,
+    /// The watchdog is to stop.
+    Stopped,
+}
+
+/// Waits after a Mithril install failed part-way. The chain may be partly
+/// replaced, so no node starts on it and `start_node` is ignored: the wait
+/// ends only when a Mithril sync installs a database, or when a rebuild
+/// deletes the chain and installs nothing, which leaves no chain at all.
+/// Settings changes are saved and applied, so a chain location chosen
+/// meanwhile is the one the next sync installs into.
+async fn await_install_retry(
+    cmd_rx: &mut mpsc::Receiver<Cmd>,
+    settings: &mut Settings<'_>,
+) -> InstallRetry {
+    use mithril::PipelineResult;
+    loop {
+        match cmd_rx.recv().await {
+            Some(Cmd::StartMithril { force, wipe_chain }) => {
+                let Some(mc) = settings.config.mithril.clone() else {
+                    continue;
+                };
+                match mithril::run_pipeline(&mc, cmd_rx, force, wipe_chain).await {
+                    PipelineResult::Installed { rebuild } => {
+                        return InstallRetry::Installed { rebuild };
+                    }
+                    PipelineResult::FailedAfterWipe => return InstallRetry::Wiped,
+                    PipelineResult::Stopped => return InstallRetry::Stopped,
+                    PipelineResult::NotNeeded
+                    | PipelineResult::Cancelled
+                    | PipelineResult::UserCancelled
+                    | PipelineResult::Failed => {}
+                }
+            }
+            Some(Cmd::Stop) | None => return InstallRetry::Stopped,
+            Some(Cmd::StartNode) => info!(
+                "start_node ignored: the failed install left no chain to start the node on; \
+                 waiting for a Mithril sync to install one"
+            ),
+            Some(cmd) => HeldRequests::default().take(cmd, settings).await,
         }
     }
 }
@@ -617,8 +704,96 @@ const TRACE_HOSTNAME: &str = "daedalus";
 /// as it fills, so a child that never writes a newline cannot grow the buffer.
 const MAX_LOG_LINE_BYTES: u64 = 1024 * 1024;
 
+/// How long a child may leave a line without its newline before `damage`
+/// reads what has arrived. cardano-node writes the missing ledger point error
+/// without a newline, running into the text that follows it, so the line
+/// would otherwise reach the detector only when the node exits.
+const PARTIAL_LINE_WAIT: Duration = Duration::from_millis(500);
+
+/// Bytes a child has written so far, counted as they arrive, for the startup
+/// silence watch. Shared by the stdout and stderr readers of one process.
+type OutputCount = Arc<AtomicU64>;
+
+/// How often the startup silence watch looks at the node's output, at most.
+const SILENCE_TICK_MAX: Duration = Duration::from_secs(5);
+
+/// Ticks of the silence watch that may pass without one arriving before the
+/// gap is taken for the machine sleeping: 30 s at the default tick.
+const SILENCE_TICKS_BEFORE_SLEEP: u32 = 6;
+
+/// A change in a starting node's output that the silence watch reports.
+#[derive(Debug, PartialEq, Eq)]
+enum Silence {
+    /// No byte has arrived for the limit.
+    Began,
+    /// Output arrived after a reported silence, which lasted this long.
+    Ended(Duration),
+}
+
+/// Watches a starting node's output for a silence of `limit`, reported once
+/// until output arrives again. The watch runs on the watchdog's own timer: a
+/// tick that arrives long after the one before, by the monotonic or the wall
+/// clock, means the machine slept, and the silence is counted again from
+/// then rather than reported. A clock that does not advance while the
+/// machine sleeps does not count the sleep either.
+struct SilenceWatch {
+    limit: Duration,
+    tick: Duration,
+    output: u64,
+    quiet_since: Instant,
+    last_tick: (Instant, SystemTime),
+    reported: bool,
+}
+
+impl SilenceWatch {
+    fn new(limit: Duration, now: Instant, wall: SystemTime) -> Self {
+        SilenceWatch {
+            limit,
+            tick: (limit / 60).clamp(Duration::from_millis(50), SILENCE_TICK_MAX),
+            output: 0,
+            quiet_since: now,
+            last_tick: (now, wall),
+            reported: false,
+        }
+    }
+
+    /// The longest gap between two ticks that the watchdog's timer makes
+    /// while the machine is awake.
+    fn max_gap(&self) -> Duration {
+        (self.tick * SILENCE_TICKS_BEFORE_SLEEP).max(Duration::from_secs(1))
+    }
+
+    /// Looks at the output count `output` at a tick of the timer.
+    fn on_tick(&mut self, now: Instant, wall: SystemTime, output: u64) -> Option<Silence> {
+        let (last, last_wall) = std::mem::replace(&mut self.last_tick, (now, wall));
+        let gap = now
+            .saturating_duration_since(last)
+            .max(wall.duration_since(last_wall).unwrap_or(Duration::MAX));
+        if output != self.output {
+            self.output = output;
+            let quiet = now.saturating_duration_since(self.quiet_since);
+            self.quiet_since = now;
+            return std::mem::take(&mut self.reported).then_some(Silence::Ended(quiet));
+        }
+        if gap > self.max_gap() {
+            self.quiet_since = now;
+            return None;
+        }
+        if !self.reported && now.saturating_duration_since(self.quiet_since) >= self.limit {
+            self.reported = true;
+            return Some(Silence::Began);
+        }
+        None
+    }
+}
+
 /// Copy a child's output pipe into `log`, feeding startup and sync-progress
-/// parsers when `parse_sync_progress` is set. Output is decoded lossily, so
+/// parsers when `parse_sync_progress` is set, and every line to `damage` when
+/// one is given. A line the child leaves unterminated for PARTIAL_LINE_WAIT is
+/// also shown to `damage` as it stands; the bytes stay in the buffer, so the
+/// line is still logged once, whole, when its newline or the end of the
+/// output arrives. Every byte is added to `output` when one is given, a
+/// partial line's within PARTIAL_LINE_WAIT. Output is decoded lossily, so
 /// bytes that are not valid UTF-8 (a Windows user name in the active code page,
 /// for instance) are logged with replacement characters and reading continues:
 /// stopping would close the pipe and make the child's next write fail.
@@ -627,22 +802,53 @@ async fn pipe_to_log(
     log: RotatingLog,
     parse_sync_progress: bool,
     startup_tx: Option<mpsc::UnboundedSender<&'static str>>,
+    damage: Option<SharedDetector>,
+    output: Option<OutputCount>,
 ) {
+    let count = |bytes: usize| {
+        if let Some(ref output) = output {
+            output.fetch_add(bytes as u64, Ordering::Relaxed);
+        }
+    };
     let mut buf = BufReader::new(reader);
     let mut raw: Vec<u8> = Vec::new();
     loop {
         raw.clear();
-        match (&mut buf)
-            .take(MAX_LOG_LINE_BYTES)
-            .read_until(b'\n', &mut raw)
-            .await
-        {
-            Ok(0) => break,
+        // How much of `raw` the detector has already seen as a partial line.
+        let mut partial_seen = 0;
+        // read_until is cancel safe: bytes read before the timeout stay in
+        // `raw`, and the next call appends to them.
+        let read = loop {
+            let mut limited = (&mut buf).take(MAX_LOG_LINE_BYTES - raw.len() as u64);
+            let next = limited.read_until(b'\n', &mut raw);
+            match timeout(PARTIAL_LINE_WAIT, next).await {
+                Ok(read) => break read,
+                Err(_) if raw.len() > partial_seen => {
+                    count(raw.len() - partial_seen);
+                    partial_seen = raw.len();
+                    if let Some(ref detector) = damage {
+                        let line = String::from_utf8_lossy(&raw);
+                        let detection = detector
+                            .lock()
+                            .ok()
+                            .and_then(|mut d| d.observe_partial(&line));
+                        if let Some(detection) = detection {
+                            detection.report();
+                        }
+                    }
+                }
+                Err(_) => {}
+            }
+        };
+        match read {
             Err(e) => {
                 warn!("child output pipe read failed; no longer logging it: {e}");
                 break;
             }
+            // End of output, with nothing left over from an unterminated line.
+            Ok(_) if raw.is_empty() => break,
             Ok(_) => {
+                count(raw.len() - partial_seen);
                 let line = String::from_utf8_lossy(&raw);
                 if parse_sync_progress {
                     if let Some((kind, progress)) = try_parse_block_sync(&line) {
@@ -659,6 +865,12 @@ async fn pipe_to_log(
                         if let Some(ref tx) = startup_tx {
                             let _ = tx.send(phase);
                         }
+                    }
+                }
+                if let Some(ref detector) = damage {
+                    let detection = detector.lock().ok().and_then(|mut d| d.observe(&line));
+                    if let Some(detection) = detection {
+                        detection.report();
                     }
                 }
                 if let Ok(mut w) = log.lock() {
@@ -896,41 +1108,134 @@ async fn holds_other_network_db(config: &WatchdogConfig, wstate: &state::Watchdo
     true
 }
 
+/// The slot of the ledger snapshot the node would stop on, when the check
+/// before a node start finds that its block is missing from the
+/// ImmutableDB. Any other verdict is logged, and the node starts.
+async fn missing_ledger_point(config: &WatchdogConfig) -> Option<u64> {
+    match ledger_point::check_before_start(config).await {
+        Verdict::BlockMissing { slot } => {
+            warn!(
+                "ledger snapshot check: the node would replay from the ledger snapshot at \
+                 slot {slot}, whose block is missing from the ImmutableDB; not starting the node"
+            );
+            Some(slot)
+        }
+        Verdict::Start(reason) => {
+            info!("ledger snapshot check: {reason}; starting the node");
+            None
+        }
+        Verdict::Unknown(reason) => {
+            warn!("ledger snapshot check could not decide: {reason}; starting the node");
+            None
+        }
+    }
+}
+
+/// The chain directory Mithril installs into, when Mithril is configured.
+fn mithril_chain_path(config: &WatchdogConfig) -> Option<String> {
+    config.mithril.as_ref().map(|mc| mc.chain_path.clone())
+}
+
+/// `chain_status` for a chain directory that holds no chain to start the node
+/// on. `pending` is the kind of the record of an unfinished rebuild or install
+/// that is the reason, if one is.
+fn emit_no_chain(pending: Option<mithril::RecordKind>) {
+    emit(&Event::ChainStatus {
+        has_chain: false,
+        rebuild_pending: pending == Some(mithril::RecordKind::Rebuild),
+        install_pending: pending == Some(mithril::RecordKind::Install),
+    });
+}
+
+/// The kind of the record that makes the chain directory wait for a Mithril
+/// sync, when `pending` says there is one. A wait that follows a rebuild has
+/// written a record before it deleted anything, so a record that cannot be
+/// found counts as a rebuild's.
+async fn pending_kind(config: &WatchdogConfig, pending: bool) -> Option<mithril::RecordKind> {
+    if !pending {
+        return None;
+    }
+    let found = match config.mithril {
+        Some(ref mc) => mithril::pending_record(mc).await,
+        None => None,
+    };
+    Some(found.unwrap_or(mithril::RecordKind::Rebuild))
+}
+
 /// Waits, while there is no chain to start the node on, for the user to choose
 /// between syncing from genesis (`start_node`) and a Mithril bootstrap
 /// (`start_mithril`). Settings changes meanwhile are saved and applied.
-/// Returns whether Mithril installed a database, or None, after emitting
-/// `stopped`, when the watchdog is to stop.
+/// Returns what the renderer is to be told once the node has started, or
+/// None, after emitting `stopped`, when the watchdog is to stop.
+///
+/// `rebuild` is true when the wait follows a rebuild that started deleting the
+/// chain and installed nothing, or an install that did not finish, as the
+/// record of either says. Until the chain directory changes, a Mithril
+/// bootstrap of it is then a rebuild too, so it deletes whatever a failed
+/// delete or install left instead of syncing it.
 async fn await_chain_choice(
     config: &mut WatchdogConfig,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
     base_node_args: &[String],
     wstate: &mut state::WatchdogState,
     el_restart_tx: &Option<mpsc::UnboundedSender<ElectronRestartPayload>>,
-) -> Option<bool> {
+    mut rebuild: bool,
+) -> Option<AfterMithril> {
     loop {
         match cmd_rx.recv().await {
-            Some(Cmd::StartNode) => return Some(false),
-            Some(Cmd::StartMithril { wipe_chain, .. }) => {
+            Some(Cmd::StartNode) => {
+                // The user chose to sync from genesis on what is there, so
+                // no rebuild is pending any more.
                 if let Some(ref mc) = config.mithril {
-                    use mithril::PipelineResult;
-                    match mithril::run_pipeline(mc, cmd_rx, true, wipe_chain).await {
-                        PipelineResult::Installed => return Some(true),
-                        PipelineResult::Stopped => {
-                            emit(&Event::Stopped);
-                            return None;
-                        }
-                        PipelineResult::NotNeeded
-                        | PipelineResult::Cancelled
-                        | PipelineResult::UserCancelled
-                        | PipelineResult::Failed => {
-                            // Still no chain data (or install failed) — re-prompt.
-                            emit(&Event::ChainStatus { has_chain: false });
-                            continue;
+                    mithril::clear_rebuild_marker(mc).await;
+                }
+                return Some(AfterMithril::Nothing);
+            }
+            Some(Cmd::StartMithril { wipe_chain, .. }) => {
+                // Mithril not configured; ignore and keep waiting.
+                let Some(mc) = config.mithril.clone() else {
+                    continue;
+                };
+                use mithril::PipelineResult;
+                let wipe_chain = wipe_chain || rebuild;
+                let wiped = match mithril::run_pipeline(&mc, cmd_rx, true, wipe_chain).await {
+                    PipelineResult::Installed { rebuild } => {
+                        return Some(AfterMithril::Installed { rebuild });
+                    }
+                    PipelineResult::Stopped => {
+                        emit(&Event::Stopped);
+                        return None;
+                    }
+                    PipelineResult::FailedAfterWipe => true,
+                    // An install that failed part-way may have replaced part
+                    // of the chain, so a sync from genesis is not offered on
+                    // it: only another Mithril sync ends the wait.
+                    PipelineResult::Failed => {
+                        let mut settings = Settings {
+                            config: &mut *config,
+                            base_node_args,
+                            wstate: &mut *wstate,
+                        };
+                        match await_install_retry(cmd_rx, &mut settings).await {
+                            InstallRetry::Installed { rebuild } => {
+                                return Some(AfterMithril::Installed { rebuild });
+                            }
+                            InstallRetry::Wiped => true,
+                            InstallRetry::Stopped => {
+                                emit(&Event::Stopped);
+                                return None;
+                            }
                         }
                     }
+                    PipelineResult::NotNeeded
+                    | PipelineResult::Cancelled
+                    | PipelineResult::UserCancelled => false,
+                };
+                if wiped {
+                    rebuild = true;
                 }
-                // Mithril not configured; ignore and keep waiting.
+                // Still no chain data: re-prompt.
+                emit_no_chain(pending_kind(config, rebuild).await);
             }
             Some(Cmd::Stop) | None => {
                 emit(&Event::Stopped);
@@ -949,12 +1254,21 @@ async fn await_chain_choice(
                 );
             }
             Some(Cmd::SetChainPath { path }) => {
+                let before = mithril_chain_path(config);
                 wstate.chain_path = path;
                 info!("chain_path updated: {:?}", wstate.chain_path);
                 if let Err(e) = state::save(&config.node.state_dir, wstate).await {
                     warn!("Failed to save watchdog state: {e}");
                 }
                 state::apply_to_config(config, base_node_args, wstate);
+                // Another directory is not the one the rebuild deleted.
+                let same = match (before.as_deref(), mithril_chain_path(config).as_deref()) {
+                    (Some(before), Some(after)) => mithril::same_chain_path(before, after),
+                    (before, after) => before == after,
+                };
+                if !same {
+                    rebuild = false;
+                }
             }
             Some(Cmd::SetNodeExtraArgs { args }) => {
                 wstate.node_extra_args = args;
@@ -1022,18 +1336,17 @@ pub async fn run(
                     let _ = mithril::write_marker(&mc.state_dir, "node-start-verified").await;
                 }
                 info!("Cleared stale installed-awaiting-node-start marker from previous session");
-                false
+                AfterMithril::Nothing
             }
             Some("cutover-in-progress") => {
-                let staging = std::path::PathBuf::from(&mc.state_dir).join("mithril-partial-sync");
-                let _ = tokio::fs::remove_dir_all(&staging).await;
-                warn!("Cleaned up stale Mithril staging from interrupted cutover");
-                false
+                // remove_stale_staging below deletes what it staged.
+                warn!("a Mithril install was interrupted in the previous session");
+                AfterMithril::Nothing
             }
-            _ => false,
+            _ => AfterMithril::Nothing,
         }
     } else {
-        false
+        AfterMithril::Nothing
     };
 
     // On the first launch after an upgrade from a pre-watchdog-state.json build,
@@ -1101,15 +1414,57 @@ pub async fn run(
         }
     }
 
+    // No pipeline runs yet, so any Mithril staging is left from an
+    // interrupted run. The chain directory is known once the state is.
+    if let Some(ref mc) = config.mithril {
+        mithril::remove_stale_staging(mc).await;
+    }
+
+    // A record beside a chain marked clean is left from an install that
+    // finished or a rebuild that deleted nothing: the node starts as usual.
+    if let Some(ref mc) = config.mithril {
+        mithril::remove_finished_record(mc).await;
+    }
+
+    // A rebuild that began deleting the chain in an earlier session and
+    // installed nothing, or an install that began changing the database and
+    // did not finish, leaves database entries the node would replay from
+    // genesis. The user chooses again instead, as after a failed rebuild in
+    // this session.
+    let pending = match config.mithril {
+        Some(ref mc) => mithril::pending_record(mc).await,
+        None => None,
+    };
+    if let Some(kind) = pending {
+        warn!(
+            "a {} of the chain did not finish in an earlier session; \
+             waiting for the user's choice instead of starting the node",
+            kind.describe()
+        );
+    }
+
     // Emit chain status and, if empty, wait for the user to choose genesis vs Mithril.
-    let has_chain = chain_has_data(&config, wstate.chain_path.as_deref()).await || after_mithril;
-    info!("chain status: has_chain={has_chain}");
-    emit(&Event::ChainStatus { has_chain });
+    let has_chain = pending.is_none()
+        && (chain_has_data(&config, wstate.chain_path.as_deref()).await
+            || matches!(after_mithril, AfterMithril::Installed { .. }));
+    info!("chain status: has_chain={has_chain} pending={pending:?}");
+    if has_chain {
+        emit(&Event::ChainStatus {
+            has_chain,
+            rebuild_pending: false,
+            install_pending: false,
+        });
+    } else {
+        emit_no_chain(pending);
+    }
     let mut choose_chain = !has_chain;
 
     let mut crashes = CrashCounters::new(&config);
     // Set when a request held during a wait replaces starting the node again.
     let mut next: Option<RunResult> = None;
+    // Set when a rebuild started deleting the chain and installed nothing,
+    // for the wait for the user's choice that follows; see await_chain_choice.
+    let mut rebuild_chain = pending.is_some();
     loop {
         if choose_chain {
             // Hold here until the UI sends start_node or start_mithril.
@@ -1119,10 +1474,11 @@ pub async fn run(
                 &base_node_args,
                 &mut wstate,
                 &el_restart_tx,
+                std::mem::take(&mut rebuild_chain),
             )
             .await
             {
-                Some(installed) => after_mithril = installed,
+                Some(after) => after_mithril = after,
                 None => return Ok(()),
             }
             choose_chain = false;
@@ -1133,8 +1489,47 @@ pub async fn run(
                 // Every start of the node passes here. Another network's
                 // database is reported as no chain, so the user chooses again.
                 if holds_other_network_db(&config, &wstate).await {
-                    emit(&Event::ChainStatus { has_chain: false });
+                    emit_no_chain(None);
                     choose_chain = true;
+                    continue;
+                }
+                // A node that would stop on a missing ledger point, and
+                // then wait with no output until it is stopped, is not
+                // started. The damage is reported, and the watchdog waits
+                // for a rebuild, a retry or a stop.
+                if let Some(slot) = missing_ledger_point(&config).await {
+                    // The Mithril view waits for the node an install was
+                    // for. That node is not started, so the view is closed
+                    // here, before the damage is reported.
+                    if after_mithril != AfterMithril::Nothing {
+                        emit(&Event::MithrilStatus {
+                            phase: "completed".to_string(),
+                            rebuild: matches!(
+                                after_mithril,
+                                AfterMithril::Installed { rebuild: true }
+                            ),
+                        });
+                        after_mithril = AfterMithril::Nothing;
+                    }
+                    Detection {
+                        kind: ChainDamageKind::LedgerPointMissing,
+                        slot: Some(slot),
+                        last_good_slot: None,
+                    }
+                    .report_held();
+                    let held = wait_for_retry(
+                        &mut cmd_rx,
+                        &mut Settings {
+                            config: &mut config,
+                            base_node_args: &base_node_args,
+                            wstate: &mut wstate,
+                        },
+                    )
+                    .await;
+                    next = held.instead();
+                    if next.is_none() {
+                        info!("checking the ledger snapshot again before starting the node");
+                    }
                     continue;
                 }
                 let result = run_node_wallet(
@@ -1147,7 +1542,7 @@ pub async fn run(
                     &el_restart_tx,
                 )
                 .await?;
-                after_mithril = false;
+                after_mithril = AfterMithril::Nothing;
                 result
             }
         };
@@ -1201,111 +1596,136 @@ pub async fn run(
                 // continue loop immediately — no delay, no crash-count increment
             }
             RunResult::StartMithril { force, wipe_chain } => {
-                if let Some(ref mc) = config.mithril {
-                    use mithril::PipelineResult;
-                    match mithril::run_pipeline(mc, &mut cmd_rx, force, wipe_chain).await {
-                        PipelineResult::Installed => {
-                            after_mithril = true;
-                            // loop continues to restart node/wallet
-                        }
-                        PipelineResult::NotNeeded | PipelineResult::Cancelled => {
-                            // loop continues to restart node/wallet
-                        }
-                        PipelineResult::Stopped => break,
-                        PipelineResult::UserCancelled => {
-                            // Wait for the user to choose a recovery action before
-                            // restarting the node.
-                            'recovery: loop {
-                                match cmd_rx.recv().await {
-                                    Some(Cmd::StartNode) => break 'recovery,
-                                    Some(Cmd::StartMithril {
-                                        force: f,
-                                        wipe_chain: wc,
-                                    }) => {
-                                        match mithril::run_pipeline(mc, &mut cmd_rx, f, wc).await {
-                                            PipelineResult::Installed => {
-                                                after_mithril = true;
-                                                break 'recovery;
-                                            }
-                                            PipelineResult::NotNeeded
-                                            | PipelineResult::Cancelled => break 'recovery,
-                                            PipelineResult::UserCancelled
-                                            | PipelineResult::Failed => continue 'recovery,
-                                            PipelineResult::Stopped => {
-                                                emit(&Event::Stopped);
-                                                return Ok(());
-                                            }
-                                        }
-                                    }
-                                    Some(Cmd::Stop) | None => {
-                                        emit(&Event::Stopped);
-                                        return Ok(());
-                                    }
-                                    Some(Cmd::ValidateChainDir {
-                                        path,
-                                        default_chain_path,
-                                        required_space_bytes,
-                                    }) => {
-                                        spawn_validate_chain_dir(
-                                            config.node.state_dir.clone(),
-                                            path,
-                                            default_chain_path,
-                                            required_space_bytes,
-                                        );
-                                    }
-                                    _ => {}
-                                }
-                            }
-                            // fall through to restart node/wallet
-                        }
-                        PipelineResult::Failed => {
-                            // Post-cutover install failure: chain may be partially installed.
-                            // Must not restart node. Require wipe-and-full-sync to recover.
-                            'failed_recovery: loop {
-                                match cmd_rx.recv().await {
-                                    Some(Cmd::StartMithril {
-                                        force: f,
-                                        wipe_chain: wc,
-                                    }) => {
-                                        match mithril::run_pipeline(mc, &mut cmd_rx, f, wc).await {
-                                            PipelineResult::Installed => {
-                                                after_mithril = true;
-                                                break 'failed_recovery;
-                                            }
-                                            PipelineResult::NotNeeded
-                                            | PipelineResult::Cancelled
-                                            | PipelineResult::UserCancelled
-                                            | PipelineResult::Failed => continue 'failed_recovery,
-                                            PipelineResult::Stopped => {
-                                                emit(&Event::Stopped);
-                                                return Ok(());
-                                            }
-                                        }
-                                    }
-                                    Some(Cmd::Stop) | None => {
-                                        emit(&Event::Stopped);
-                                        return Ok(());
-                                    }
-                                    Some(Cmd::ValidateChainDir {
-                                        path,
-                                        default_chain_path,
-                                        required_space_bytes,
-                                    }) => {
-                                        spawn_validate_chain_dir(
-                                            config.node.state_dir.clone(),
-                                            path,
-                                            default_chain_path,
-                                            required_space_bytes,
-                                        );
-                                    }
-                                    _ => {} // StartNode is intentionally ignored here
-                                }
-                            }
-                            // fall through to restart node/wallet after successful wipe+install
-                        }
+                // A network without Mithril has nothing to sync from. The
+                // node and wallet were stopped for the sync, so the loop
+                // starts them again on the chain they had.
+                let Some(mc) = config.mithril.clone() else {
+                    warn!(
+                        "start_mithril ignored: Mithril is not configured for this network; \
+                         starting the node again"
+                    );
+                    continue;
+                };
+                use mithril::PipelineResult;
+                // Set when a rebuild started deleting the chain and installed nothing.
+                let mut wiped = false;
+                // Set when an install failed part-way.
+                let mut install_failed = false;
+                // Set when the sync changed nothing and the chain directory
+                // holds no chain to start the node on.
+                let mut no_chain = false;
+                match mithril::run_pipeline(&mc, &mut cmd_rx, force, wipe_chain).await {
+                    PipelineResult::Installed { rebuild } => {
+                        after_mithril = AfterMithril::Installed { rebuild };
+                        // loop continues to restart node/wallet
                     }
-                } else {
-                    break;
+                    PipelineResult::NotNeeded => {
+                        after_mithril = AfterMithril::NotNeeded;
+                        // loop continues to restart node/wallet
+                    }
+                    PipelineResult::Cancelled => {
+                        // The sync was refused or failed before it changed
+                        // anything, and the loop starts the node again on the
+                        // chain it had. A chain location sent with the sync,
+                        // as the renderer sends a rebuild in another
+                        // location, can hold no chain: a node started there
+                        // would sync from genesis without asking.
+                        no_chain = !chain_has_data(&config, wstate.chain_path.as_deref()).await;
+                    }
+                    PipelineResult::Stopped => break,
+                    PipelineResult::FailedAfterWipe => wiped = true,
+                    PipelineResult::Failed => install_failed = true,
+                    PipelineResult::UserCancelled => {
+                        // Wait for the user to choose a recovery action before
+                        // restarting the node.
+                        'recovery: loop {
+                            match cmd_rx.recv().await {
+                                Some(Cmd::StartNode) => break 'recovery,
+                                Some(Cmd::StartMithril {
+                                    force: f,
+                                    wipe_chain: wc,
+                                }) => match mithril::run_pipeline(&mc, &mut cmd_rx, f, wc).await {
+                                    PipelineResult::Installed { rebuild } => {
+                                        after_mithril = AfterMithril::Installed { rebuild };
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::NotNeeded => {
+                                        after_mithril = AfterMithril::NotNeeded;
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::Cancelled => break 'recovery,
+                                    PipelineResult::FailedAfterWipe => {
+                                        wiped = true;
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::Failed => {
+                                        install_failed = true;
+                                        break 'recovery;
+                                    }
+                                    PipelineResult::UserCancelled => continue 'recovery,
+                                    PipelineResult::Stopped => {
+                                        emit(&Event::Stopped);
+                                        return Ok(());
+                                    }
+                                },
+                                Some(Cmd::Stop) | None => {
+                                    emit(&Event::Stopped);
+                                    return Ok(());
+                                }
+                                Some(Cmd::ValidateChainDir {
+                                    path,
+                                    default_chain_path,
+                                    required_space_bytes,
+                                }) => {
+                                    spawn_validate_chain_dir(
+                                        config.node.state_dir.clone(),
+                                        path,
+                                        default_chain_path,
+                                        required_space_bytes,
+                                    );
+                                }
+                                _ => {}
+                            }
+                        }
+                        // fall through to restart node/wallet
+                    }
+                }
+                if install_failed {
+                    // Post-cutover install failure: the chain may be partly
+                    // installed, so the node must not start on it until a
+                    // Mithril sync installs a database.
+                    let mut settings = Settings {
+                        config: &mut config,
+                        base_node_args: &base_node_args,
+                        wstate: &mut wstate,
+                    };
+                    match await_install_retry(&mut cmd_rx, &mut settings).await {
+                        InstallRetry::Installed { rebuild } => {
+                            after_mithril = AfterMithril::Installed { rebuild };
+                        }
+                        InstallRetry::Wiped => wiped = true,
+                        InstallRetry::Stopped => break,
+                    }
+                }
+                if no_chain {
+                    warn!(
+                        "the chain directory holds no chain after a sync that changed nothing; \
+                         waiting for the user's choice instead of starting the node"
+                    );
+                    emit_no_chain(None);
+                    choose_chain = true;
+                }
+                if wiped {
+                    // A node started now would sync from genesis without
+                    // asking. Report no chain and wait for the user's
+                    // choice, as on first run.
+                    warn!(
+                        "the rebuild started deleting the chain and installed nothing; \
+                         waiting for the user's choice instead of starting the node"
+                    );
+                    emit_no_chain(pending_kind(&config, true).await);
+                    choose_chain = true;
+                    rebuild_chain = true;
                 }
             }
         }
@@ -1319,7 +1739,7 @@ pub async fn run(
 async fn run_node_wallet(
     config: &mut WatchdogConfig,
     cmd_rx: &mut mpsc::Receiver<Cmd>,
-    after_mithril: bool,
+    after_mithril: AfterMithril,
     crashes: &mut CrashCounters,
     base_node_args: &[String],
     wstate: &mut state::WatchdogState,
@@ -1392,14 +1812,17 @@ async fn run_node_wallet(
 
     // Dismiss the Mithril overlay now that the node is running so the user
     // sees normal sync/replay progress screens instead of the Mithril UI.
-    if after_mithril {
-        if let Some(ref mc) = config.mithril {
-            if let Err(e) = mithril::write_marker(&mc.state_dir, "node-start-verified").await {
-                warn!("Failed to write node-start-verified marker: {e}");
+    if after_mithril != AfterMithril::Nothing {
+        if let AfterMithril::Installed { .. } = after_mithril {
+            if let Some(ref mc) = config.mithril {
+                if let Err(e) = mithril::write_marker(&mc.state_dir, "node-start-verified").await {
+                    warn!("Failed to write node-start-verified marker: {e}");
+                }
             }
         }
         emit(&Event::MithrilStatus {
             phase: "completed".to_string(),
+            rebuild: matches!(after_mithril, AfterMithril::Installed { rebuild: true }),
         });
     }
 
@@ -1407,18 +1830,27 @@ async fn run_node_wallet(
     // loop can gate wallet startup on chainDbReady.
     let (startup_tx, mut startup_rx) = mpsc::unbounded_channel::<&'static str>();
 
+    // One detector and one output count per node process, shared by both
+    // output streams.
+    let node_damage: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::node()));
+    let node_output: OutputCount = Arc::new(AtomicU64::new(0));
+
     // Forward node logs
     tokio::spawn(pipe_to_log(
         node_proc.stdout.take().unwrap(),
         Arc::clone(&node_log),
         true,
         Some(startup_tx.clone()),
+        Some(Arc::clone(&node_damage)),
+        Some(Arc::clone(&node_output)),
     ));
     tokio::spawn(pipe_to_log(
         node_proc.stderr.take().unwrap(),
         node_log,
         true,
         Some(startup_tx),
+        Some(node_damage),
+        Some(Arc::clone(&node_output)),
     ));
 
     // Watch node for exit. The kill channel lets us force-kill via start_kill()
@@ -1473,8 +1905,29 @@ async fn run_node_wallet(
     // signal across platforms.
     let mut startup_state = NodeStartupState::Init;
 
+    // A node that writes nothing for startup_silence_secs while it starts is
+    // reported once per silence, so the user can restart it.
+    let silence_limit = Duration::from_secs(config.node.startup_silence_secs);
+    let mut silence = SilenceWatch::new(silence_limit, Instant::now(), SystemTime::now());
+    let mut silence_ticks = interval(silence.tick);
+    silence_ticks.set_missed_tick_behavior(MissedTickBehavior::Delay);
+
     'node_starting: loop {
         tokio::select! {
+            _ = silence_ticks.tick(), if !silence_limit.is_zero() => {
+                let output = node_output.load(Ordering::Relaxed);
+                match silence.on_tick(Instant::now(), SystemTime::now(), output) {
+                    Some(Silence::Began) => {
+                        warn!("node: no output for {} s while starting", silence_limit.as_secs());
+                        emit(&Event::NodeSilent { silent_secs: silence_limit.as_secs() });
+                    }
+                    Some(Silence::Ended(quiet)) => {
+                        info!("node: output resumed after {} s without output", quiet.as_secs());
+                        emit(&Event::NodeOutputResumed);
+                    }
+                    None => {}
+                }
+            }
             Some(phase) = startup_rx.recv() => {
                 startup_state = match (&startup_state, phase) {
                     (NodeStartupState::Init,             "openingChainDb")    => NodeStartupState::OpeningChainDb,
@@ -1802,16 +2255,22 @@ async fn run_node_wallet(
         });
         info!("cardano-wallet started (PID {wallet_pid}, attempt {attempt})");
 
+        // One detector per wallet process, shared by both output streams.
+        let wallet_damage: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::wallet()));
         tokio::spawn(pipe_to_log(
             wallet.stdout.take().unwrap(),
             Arc::clone(&wallet_log),
             false,
+            None,
+            Some(Arc::clone(&wallet_damage)),
             None,
         ));
         tokio::spawn(pipe_to_log(
             wallet.stderr.take().unwrap(),
             wallet_log,
             false,
+            None,
+            Some(wallet_damage),
             None,
         ));
 
@@ -2216,7 +2675,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("out.log");
         let log = open_log(path.to_str().unwrap());
-        pipe_to_log(std::io::Cursor::new(input), log, false, None).await;
+        pipe_to_log(std::io::Cursor::new(input), log, false, None, None, None).await;
         let out = std::fs::read(&path).unwrap();
         let _ = std::fs::remove_dir_all(&dir);
         out
@@ -2238,12 +2697,208 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn pipe_to_log_detects_an_unterminated_line_and_logs_it_once() {
+        use tokio::io::AsyncWriteExt;
+        const LINE: &str = "cardano-node.exe: Critical invariant violation: block Point (At (Block \
+{blockPointSlot = SlotNo 200102375, blockPointHash = <redacted>})) that was in immutable db is gone \
+before we could open ledgerdb";
+        let dir = std::env::temp_dir().join(format!("wdg-unit-partial-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("out.log");
+        let detector: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::node()));
+        let (mut child_end, our_end) = tokio::io::duplex(64 * 1024);
+        let reader = tokio::spawn(pipe_to_log(
+            our_end,
+            open_log(path.to_str().unwrap()),
+            false,
+            None,
+            Some(Arc::clone(&detector)),
+            None,
+        ));
+
+        child_end.write_all(LINE.as_bytes()).await.unwrap();
+        sleep(PARTIAL_LINE_WAIT * 4).await;
+        // The detector has reported the line, so it does not report it again.
+        assert_eq!(detector.lock().unwrap().observe(LINE), None);
+        assert_eq!(std::fs::read(&path).unwrap_or_default(), b"");
+
+        child_end.write_all(b"Node configuration\n").await.unwrap();
+        drop(child_end);
+        reader.await.unwrap();
+        let out = std::fs::read_to_string(&path).unwrap();
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(out, format!("{LINE}Node configuration\n"));
+    }
+
+    #[tokio::test]
     async fn pipe_to_log_splits_overlong_line_without_losing_bytes() {
         let mut input = vec![b'a'; MAX_LOG_LINE_BYTES as usize * 2 + 10];
         input.extend_from_slice(b"\nnext\n");
         let expected = input.clone();
         let out = piped_log("overlong", input).await;
         assert_eq!(out, expected);
+    }
+
+    #[tokio::test]
+    async fn pipe_to_log_counts_partial_lines_as_output() {
+        use tokio::io::AsyncWriteExt;
+        let dir = std::env::temp_dir().join(format!("wdg-unit-count-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("out.log");
+        let output: OutputCount = Arc::new(AtomicU64::new(0));
+        let (mut child_end, our_end) = tokio::io::duplex(1024);
+        let reader = tokio::spawn(pipe_to_log(
+            our_end,
+            open_log(path.to_str().unwrap()),
+            false,
+            None,
+            None,
+            Some(Arc::clone(&output)),
+        ));
+
+        child_end.write_all(b"abc").await.unwrap();
+        sleep(PARTIAL_LINE_WAIT * 3).await;
+        assert_eq!(output.load(Ordering::Relaxed), 3);
+
+        child_end.write_all(b"de\n").await.unwrap();
+        drop(child_end);
+        reader.await.unwrap();
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(output.load(Ordering::Relaxed), 6);
+    }
+
+    // ── SilenceWatch ──────────────────────────────────────────────────────────
+
+    /// A clock for a silence watch: monotonic and wall time, moved together
+    /// unless a test moves one alone.
+    struct Clock {
+        now: Instant,
+        wall: SystemTime,
+    }
+
+    impl Clock {
+        fn new() -> Self {
+            Clock {
+                now: Instant::now(),
+                wall: UNIX_EPOCH + Duration::from_secs(1_800_000_000),
+            }
+        }
+
+        fn advance(&mut self, secs: u64) {
+            self.now += Duration::from_secs(secs);
+            self.wall += Duration::from_secs(secs);
+        }
+    }
+
+    /// Ticks `watch` every 5 s for `secs` seconds with an unchanged
+    /// `output`, and returns how many seconds in each report came.
+    fn tick_quietly(
+        watch: &mut SilenceWatch,
+        clock: &mut Clock,
+        secs: u64,
+        output: u64,
+    ) -> Vec<(u64, Silence)> {
+        let mut reports = Vec::new();
+        for t in (5..=secs).step_by(5) {
+            clock.advance(5);
+            if let Some(report) = watch.on_tick(clock.now, clock.wall, output) {
+                reports.push((t, report));
+            }
+        }
+        reports
+    }
+
+    #[test]
+    fn silence_is_reported_once_at_the_limit() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 900, 0),
+            vec![(300, Silence::Began)]
+        );
+    }
+
+    #[test]
+    fn output_keeps_a_silence_from_being_reported() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        for t in 1..=180u64 {
+            clock.advance(5);
+            assert_eq!(watch.on_tick(clock.now, clock.wall, t), None, "tick {t}");
+        }
+    }
+
+    #[test]
+    fn output_ends_a_silence_and_a_new_one_is_reported() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 310, 0),
+            vec![(300, Silence::Began)]
+        );
+        clock.advance(5);
+        assert_eq!(
+            watch.on_tick(clock.now, clock.wall, 1),
+            Some(Silence::Ended(Duration::from_secs(315)))
+        );
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 600, 1),
+            vec![(300, Silence::Began)]
+        );
+    }
+
+    #[test]
+    fn output_without_a_reported_silence_reports_nothing() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert!(tick_quietly(&mut watch, &mut clock, 200, 0).is_empty());
+        clock.advance(5);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 7), None);
+    }
+
+    #[test]
+    fn a_late_tick_restarts_the_count_as_after_sleep() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert!(tick_quietly(&mut watch, &mut clock, 200, 0).is_empty());
+        // The machine slept for an hour, and the monotonic clock counted it.
+        clock.advance(3600);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 0), None);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 600, 0),
+            vec![(300, Silence::Began)]
+        );
+    }
+
+    #[test]
+    fn a_wall_clock_gap_restarts_the_count_as_after_sleep() {
+        let mut clock = Clock::new();
+        let mut watch = SilenceWatch::new(Duration::from_secs(300), clock.now, clock.wall);
+        assert!(tick_quietly(&mut watch, &mut clock, 200, 0).is_empty());
+        // The monotonic clock stopped while the machine slept; the wall
+        // clock did not.
+        clock.now += Duration::from_secs(5);
+        clock.wall += Duration::from_secs(3600);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 0), None);
+        assert_eq!(
+            tick_quietly(&mut watch, &mut clock, 600, 0),
+            vec![(300, Silence::Began)]
+        );
+        // A wall clock set back counts as a gap too.
+        clock.now += Duration::from_secs(5);
+        clock.wall -= Duration::from_secs(60);
+        assert_eq!(watch.on_tick(clock.now, clock.wall, 0), None);
+    }
+
+    #[test]
+    fn the_tick_follows_the_limit() {
+        let start = (Instant::now(), SystemTime::now());
+        let watch = SilenceWatch::new(Duration::from_secs(300), start.0, start.1);
+        assert_eq!(watch.tick, Duration::from_secs(5));
+        assert_eq!(watch.max_gap(), Duration::from_secs(30));
+        let watch = SilenceWatch::new(Duration::from_secs(1), start.0, start.1);
+        assert_eq!(watch.tick, Duration::from_millis(50));
+        assert_eq!(watch.max_gap(), Duration::from_secs(1));
     }
 
     // ── HeldRequests ──────────────────────────────────────────────────────────
@@ -2282,6 +2937,65 @@ mod tests {
             mithril: Some((true, true)),
         };
         assert!(matches!(held.after(RunResult::Stopped), RunResult::Stopped));
+    }
+
+    #[test]
+    fn a_later_request_never_turns_off_a_rebuild_or_force() {
+        assert_eq!(merge_mithril((false, true), (false, false)), (false, true));
+        assert_eq!(merge_mithril((true, false), (false, false)), (true, false));
+        assert_eq!(merge_mithril((false, false), (true, true)), (true, true));
+        assert_eq!(merge_mithril((true, false), (false, true)), (true, true));
+    }
+
+    #[test]
+    fn held_plain_sync_keeps_a_planned_rebuild() {
+        let held = HeldRequests {
+            stop: false,
+            mithril: Some((false, false)),
+        };
+        assert!(matches!(
+            held.after(RunResult::StartMithril {
+                force: false,
+                wipe_chain: true
+            }),
+            RunResult::StartMithril {
+                force: false,
+                wipe_chain: true
+            }
+        ));
+    }
+
+    #[test]
+    fn held_rebuild_extends_a_planned_forced_sync() {
+        let held = HeldRequests {
+            stop: false,
+            mithril: Some((false, true)),
+        };
+        assert!(matches!(
+            held.after(RunResult::StartMithril {
+                force: true,
+                wipe_chain: false
+            }),
+            RunResult::StartMithril {
+                force: true,
+                wipe_chain: true
+            }
+        ));
+    }
+
+    #[test]
+    fn held_stop_replaces_a_planned_mithril_sync() {
+        let held = HeldRequests {
+            stop: true,
+            mithril: Some((false, true)),
+        };
+        assert!(matches!(
+            held.after(RunResult::StartMithril {
+                force: false,
+                wipe_chain: true
+            }),
+            RunResult::Stopped
+        ));
     }
 
     #[test]

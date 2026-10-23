@@ -16,7 +16,39 @@ export interface WatchdogState {
   };
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
+  // True while a Mithril download has stalled and the watchdog cannot reach
+  // the aggregator; mithril-client continues by itself when the network
+  // returns
+  mithrilWaitingForNetwork: boolean;
   lastError: string | null;
+  // The code of the mithril_error that set lastError; null when lastError
+  // came from an error without one
+  lastErrorCode: string | null;
+  // Counts the mithril_error events, so the renderer can tell a new error
+  // from the one it already shows
+  mithrilErrorCount: number;
+  // The last hole in the chain database the watchdog detected; cleared when a
+  // node starts or a Mithril sync begins
+  chainDamage: ChainDamage | null;
+  // The last detection of the session, which Diagnostics shows; unlike
+  // chainDamage it survives a node start, and clears only when the chain it
+  // was found in is gone or a rebuild has replaced it
+  lastChainDamage: ChainDamage | null;
+  // True when the watchdog found chainDamage before starting the node and
+  // does not start it; cleared when a node starts or a Mithril sync begins
+  nodeHeld: boolean;
+  // True when lastError came from a rebuild, so Retry repeats the rebuild
+  lastErrorRebuild: boolean;
+  // True when a rebuild was confirmed and has not finished, e.g. the app was
+  // closed after the chain data was deleted
+  rebuildPending: boolean;
+  // True when a Mithril install began changing the chain data and did not
+  // finish, e.g. the app was closed during a first download's install; unlike
+  // rebuildPending no old chain data was removed
+  installPending: boolean;
+  // True after a Mithril install failed part-way: the watchdog starts no node
+  // and ignores start_node until a Mithril sync installs a database
+  installRetryRequired: boolean;
   walletUnrecoverable: boolean;
   nodeSocketWaitMs: number | null;
   walletReadyWaitMs: number | null;
@@ -39,8 +71,21 @@ export interface WatchdogState {
   backendStopProgress: BackendStopProgress | null;
   // cardano-node crashed too often; the watchdog waits for a retry
   nodeUnrecoverable: boolean;
+  // Seconds cardano-node has written no output while starting, once the
+  // watchdog reports the silence; null while the node writes
+  nodeSilentSecs: number | null;
+  // Counts the silences reported, so a prompt dismissed for one shows again
+  // for the next
+  nodeSilenceEpisode: number;
+  // The silence whose prompt the user dismissed; kept here, not in the
+  // renderer, so a reload of the window does not show that prompt again
+  dismissedSilenceEpisode: number;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
+  // Not now on the damaged data screen, which lasts until Daedalus restarts;
+  // kept here, not in the renderer, so a reload of the window does not show
+  // the screen again
+  chainDamageDismissed: boolean;
 }
 
 // BackendStopProgress — from backend_stop_progress events, emitted while the
@@ -58,6 +103,34 @@ export type BackendStopProgress = {
 // Diagnostics, a chain storage change). 'node' lasts until the new node
 // starts; 'wallet' until the restarted wallet is ready.
 export type RequestedRestart = 'node' | 'wallet';
+
+// ChainDamageKind — which log signature identified a hole in the chain
+// database, from the `kind` of chain_damage events.
+export type ChainDamageKind =
+  | 'node_rejects_canonical_block'
+  | 'ledger_point_missing'
+  | 'wallet_chain_discontinuity';
+
+// ChainDamageEvent — a chain_damage event as the watchdog writes it.
+// last_good_slot is set only for wallet_chain_discontinuity. node_held is true
+// when the damage was found before the node started, and the watchdog then
+// does not start it.
+export type ChainDamageEvent = {
+  event: 'chain_damage';
+  kind: ChainDamageKind;
+  slot: number | null;
+  last_good_slot: number | null;
+  node_held: boolean;
+};
+
+// ChainDamage — the polled form of a chain_damage event. detectedAt is the
+// ISO time the main process received the event.
+export type ChainDamage = {
+  kind: ChainDamageKind;
+  slot: number | null;
+  lastGoodSlot: number | null;
+  detectedAt: string;
+};
 
 // MithrilProgress — from mithril_progress events
 export interface MithrilProgress {
@@ -77,6 +150,7 @@ export type LoadingPhase =
   | 'chain-storage-setup'
   | 'bootstrap-decision'
   | 'mithril-syncing'
+  | 'chain-damaged'
   | 'node-starting'
   | 'ready'
   | 'error'
@@ -95,6 +169,11 @@ export type MithrilCommand =
   | { cmd: 'set_chain_path'; path: string | null }
   | { cmd: 'set_node_extra_args'; args: string[] }
   | { cmd: 'set_electron_flags'; flags: string[] }
+  // Kept by main, which records the dismissed silence and does not forward it
+  | { cmd: 'dismiss_node_silence'; episode: number }
+  // Kept by main, which records Not now on the damaged data screen and does
+  // not forward it
+  | { cmd: 'dismiss_chain_damage' }
   | {
       cmd: 'migrate_state';
       chain_path: string | null;

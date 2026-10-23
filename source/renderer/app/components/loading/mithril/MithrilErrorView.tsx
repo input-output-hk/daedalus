@@ -22,6 +22,16 @@ interface Props {
   title?: string;
   hint?: string | null;
   hintAsBody?: boolean;
+  // The Mithril run that failed or was refused was a rebuild of the
+  // blockchain data
+  rebuild?: boolean;
+  // A rebuild removed the old blockchain data before it failed
+  chainRemoved?: boolean;
+  // A Mithril install began changing the blockchain data and did not finish,
+  // without removing old data
+  installUnfinished?: boolean;
+  // Retry is the only action, so the removal note offers no sync choice
+  retryOnly?: boolean;
   actions?: Array<{
     label: string;
     onClick(): void;
@@ -29,8 +39,6 @@ interface Props {
   }>;
   // Opt-in right-alignment of the actions footer; default keeps it left-aligned in caller order.
   rightAlignActions?: boolean;
-  onWipeRetry?(): void;
-  onDecline?(): void;
 }
 
 interface Context {
@@ -63,6 +71,45 @@ const ERROR_COPY_BY_STAGE: Partial<
   },
 };
 
+type CodeHint = {
+  hint: keyof typeof messages;
+  // Used once a rebuild has removed the old data, or an install has changed
+  // it: the same message without its statement that the blockchain data was
+  // not changed
+  afterRemoval?: keyof typeof messages;
+  // The message says that the old data could not be deleted, so the view
+  // leaves out its note that the old data was removed
+  deleteFailed?: boolean;
+};
+
+// Codes of the errors a rebuild reports before or while it replaces the chain
+// data. Each has its own message, which takes precedence over the stage copy.
+const ERROR_HINT_BY_CODE: Record<string, CodeHint> = {
+  PROBE_FAILED: {
+    hint: 'errorProbeFailedHint',
+    afterRemoval: 'errorProbeFailedRemovedHint',
+  },
+  INVALID_CHAIN_PATH: { hint: 'errorInvalidChainPathHint' },
+  CHAIN_DIR_NOT_REPLACEABLE: {
+    hint: 'errorChainDirNotReplaceableHint',
+    afterRemoval: 'errorChainDirNotReplaceableRemovedHint',
+  },
+  CHAIN_DIR_OTHER_NETWORK: {
+    hint: 'errorChainDirOtherNetworkHint',
+    afterRemoval: 'errorChainDirOtherNetworkRemovedHint',
+  },
+  WIPE_FAILED: { hint: 'errorWipeFailedHint', deleteFailed: true },
+  INSUFFICIENT_SPACE: {
+    hint: 'errorInsufficientSpaceHint',
+    afterRemoval: 'errorInsufficientSpaceRemovedHint',
+  },
+  REBUILD_MARKER_FAILED: {
+    hint: 'errorRebuildMarkerFailedHint',
+    afterRemoval: 'errorRebuildMarkerFailedRemovedHint',
+  },
+  MARKER_FAILED: { hint: 'errorMarkerFailedHint' },
+};
+
 const getLogPathHref = (logPath: string) => {
   const normalizedPath = logPath.replace(/\\/g, '/');
 
@@ -83,42 +130,53 @@ function MithrilErrorView(props: Props, { intl }: Context) {
   const {
     error,
     onOpenExternalLink,
-    onWipeRetry,
-    onDecline,
     title,
     hint,
     hintAsBody,
+    rebuild,
+    chainRemoved,
+    installUnfinished,
+    retryOnly,
     actions,
     rightAlignActions,
   } = props;
+  // The blockchain data is no longer what it was before Mithril changed it,
+  // so no message may say that it was not changed. That includes the wait
+  // after a failed install, where only Retry is offered: the install may have
+  // changed part of the data before a later attempt was refused.
+  const dataChanged = Boolean(chainRemoved || installUnfinished || retryOnly);
   const copy =
     (error?.stage && ERROR_COPY_BY_STAGE[error.stage]) ||
     ({ title: 'errorTitle' } as ErrorCopy);
+  const codeCopy = error?.code ? ERROR_HINT_BY_CODE[error.code] : undefined;
+  const codeHint =
+    dataChanged && codeCopy?.afterRemoval
+      ? codeCopy.afterRemoval
+      : codeCopy?.hint;
+  // A rebuild records itself before it deletes anything, so a failed delete
+  // counts as removed data too, but its message says the data could not be
+  // deleted
+  const showRemovalNote = Boolean(chainRemoved && !codeCopy?.deleteFailed);
   let resolvedHint = hint;
   if (resolvedHint === undefined) {
-    resolvedHint = copy.hint ? intl.formatMessage(messages[copy.hint]) : null;
+    const hintKey = codeHint ?? copy.hint;
+    resolvedHint = hintKey ? intl.formatMessage(messages[hintKey]) : null;
   }
   const hasTechnicalDetails = Boolean(error?.message || error?.code);
   const logPath = error?.logPath;
-  const resolvedActions = actions || [
-    {
-      label: intl.formatMessage(messages.wipeAndRetry),
-      onClick: onWipeRetry,
-      variant: 'primary' as const,
-    },
-    {
-      label: intl.formatMessage(messages.decline),
-      onClick: onDecline,
-      variant: 'secondary' as const,
-    },
-  ];
+  const resolvedActions = actions || [];
+  // A rebuild names what failed in the user's terms; the stage it failed in
+  // is in the hint and the technical details.
+  const titleMessage = rebuild
+    ? messages.errorRebuildTitle
+    : messages[copy.title];
   // Actions render verbatim in caller order; any reordering is the caller's responsibility.
 
   return (
     <div className={styles.root} role="alert">
       <div className={styles.header}>
         <h1 id={MITHRIL_ERROR_HEADING_ID}>
-          {title || intl.formatMessage(messages[copy.title])}
+          {title || intl.formatMessage(titleMessage)}
         </h1>
         {resolvedHint &&
           (hintAsBody ? (
@@ -126,6 +184,24 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           ) : (
             <div className={styles.errorHint}>{resolvedHint}</div>
           ))}
+        {showRemovalNote && (
+          <p className={styles.hintBody}>
+            {intl.formatMessage(
+              retryOnly
+                ? messages.errorChainRemovedRetryHint
+                : messages.errorChainRemovedHint
+            )}
+          </p>
+        )}
+        {!chainRemoved && installUnfinished && (
+          <p className={styles.hintBody}>
+            {intl.formatMessage(
+              retryOnly
+                ? messages.errorInstallUnfinishedRetryHint
+                : messages.errorInstallUnfinishedHint
+            )}
+          </p>
+        )}
         {logPath && onOpenExternalLink && (
           <Link
             className={styles.logPathLink}
@@ -141,7 +217,7 @@ function MithrilErrorView(props: Props, { intl }: Context) {
           <CollapsibleSection
             header={intl.formatMessage(messages.errorDetailsHeader)}
             headerFontStyle="light"
-            expandButtonStyle="link"
+            expandButtonStyle="button"
           >
             <div className={styles.detailsBody}>
               {error?.code && (

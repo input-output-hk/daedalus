@@ -54,14 +54,19 @@ pub async fn holds_node_db(dir: &Path) -> bool {
             .is_ok_and(|m| m.is_dir())
 }
 
+/// The network magic written in `file` as cardano-node writes it to
+/// `protocolMagicId`: decimal text. None when there is no such file or it
+/// does not hold a number.
+pub async fn network_magic_in(file: &Path) -> Option<u32> {
+    let text = tokio::fs::read_to_string(file).await.ok()?;
+    text.trim().parse().ok()
+}
+
 /// The network magic in the `protocolMagicId` file that cardano-node keeps
 /// in the root of every database, or None when there is no such file or it
 /// does not hold a number.
 pub async fn database_network_magic(dir: &Path) -> Option<u32> {
-    let text = tokio::fs::read_to_string(dir.join("protocolMagicId"))
-        .await
-        .ok()?;
-    text.trim().parse().ok()
+    network_magic_in(&dir.join("protocolMagicId")).await
 }
 
 /// The network magic of the database in `dir` when it names a network other

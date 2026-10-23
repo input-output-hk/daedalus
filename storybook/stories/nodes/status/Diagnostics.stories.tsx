@@ -96,6 +96,9 @@ const baseProps: ComponentProps<typeof DaedalusDiagnostics> = {
   onLaunchDapp: async (url, walletId, localName) => {
     action('onLaunchDapp')({ url, walletId, localName });
   },
+  chainDamage: null,
+  isNodeHeld: false,
+  onRebuildChain: action('onRebuildChain'),
 };
 
 type ConfirmationProps = ComponentProps<typeof MithrilPartialSyncConfirmation>;
@@ -134,6 +137,7 @@ function AutoOpenedPartialSyncConfirmation() {
     <div ref={containerRef}>
       <MithrilPartialSyncSection
         isActionBlocked={false}
+        isBlockedByChainDamage={false}
         isMithrilPartialSyncWorking={false}
         isSignificantlyBehind
         isProbeFailed={false}
@@ -168,6 +172,17 @@ storiesOf('Nodes / Diagnostic', module)
   ))
   .add('DApp Browser Unavailable', () => (
     <DaedalusDiagnostics {...baseProps} diagnosticsAvailable={false} />
+  ))
+  .add('Chain Damage Detected', () => (
+    <DaedalusDiagnostics
+      {...baseProps}
+      chainDamage={{
+        kind: 'wallet_chain_discontinuity',
+        slot: 200102408,
+        lastGoodSlot: 200080892,
+        detectedAt: '2026-10-16T12:00:00.000Z',
+      }}
+    />
   ));
 
 storiesOf('Nodes / Diagnostic / Mithril Partial Sync Confirmation', module)

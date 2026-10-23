@@ -73,6 +73,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Notice shown when the selected blockchain data location already contains chain data that will be reused.',
   },
+  rebuildDataNotice: {
+    id: 'chainStorage.locationPicker.rebuildDataNotice',
+    defaultMessage:
+      '!!!Existing blockchain data found. The rebuild deletes the blockchain data in this folder and downloads it again.',
+    description:
+      'Notice shown when the location picker was opened from a failed or refused rebuild and the selected blockchain data location already contains chain data, which the rebuild deletes.',
+  },
   subdirectoryCreationNotice: {
     id: 'chainStorage.locationPicker.subdirectoryCreationNotice',
     defaultMessage:

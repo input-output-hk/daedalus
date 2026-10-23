@@ -1,5 +1,6 @@
 import { action, computed, observable, reaction, runInAction } from 'mobx';
 import Store from './lib/Store';
+import { logger } from '../utils/logging';
 import { getCachedBackendStatusChannel } from '../ipc/backendStatusChannel';
 import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
 import {
@@ -22,11 +23,26 @@ import type {
   MithrilProgress,
   ChainStorageValidation,
   BackendStopProgress,
+  ChainDamage,
   RequestedRestart,
 } from '../../../common/types/watchdog.types';
 
 // DEFINE CONSTANTS
 const BACKEND_STATUS_POLL_INTERVAL = 2000; // ms
+
+// The error a sync reports when installing the downloaded database failed
+const INSTALL_FAILED_CODE = 'INSTALL_FAILED';
+// Codes of the errors a rebuild reports when the chain storage location itself
+// is the problem; repeating the rebuild there fails the same way.
+const LOCATION_ERROR_CODES = ['INVALID_CHAIN_PATH', 'CHAIN_DIR_OTHER_NETWORK'];
+// Mithril phases in which no pipeline runs: its end, or its error
+const IDLE_MITHRIL_PHASES = ['completed', 'cancelled', 'error'];
+// Codes of the errors that the user can resolve in the location or by
+// choosing another one, so the error view offers both
+const LOCATION_CHOICE_CODES = [
+  'INSUFFICIENT_SPACE',
+  'CHAIN_DIR_NOT_REPLACEABLE',
+];
 // END CONSTANTS
 
 export default class BackendStore extends Store {
@@ -51,9 +67,55 @@ export default class BackendStore extends Store {
   };
   @observable mithrilPhase: string | null = null;
   @observable mithrilProgress: MithrilProgress | null = null;
+  // A Mithril download has stalled and the watchdog cannot reach the
+  // aggregator; the download continues when the network returns
+  @observable mithrilWaitingForNetwork = false;
   @observable lastError: string | null = null;
+  // The code of the Mithril error that set lastError, e.g. PROBE_FAILED
+  @observable lastErrorCode: string | null = null;
+  // How many Mithril errors main has received, as of the last poll
+  @observable mithrilErrorCount = 0;
+  // Set when a confirmed rebuild is sent, to the Mithril error count and the
+  // node start of that moment, and null otherwise. Until the watchdog reports
+  // the rebuild, with a phase or with an error after that count, or starts a
+  // node in its place, the Mithril view shows the rebuild preparing in place
+  // of the error it replaces.
+  @observable _rebuildStartingAfter: {
+    errorCount: number;
+    nodeStartedAt: number | null;
+  } | null = null;
+  // True when the Mithril error came from a rebuild of the chain data
+  @observable lastErrorRebuild = false;
+  // True when a confirmed rebuild has not finished, e.g. Daedalus was closed
+  // after the chain data was deleted; the location is already decided
+  @observable rebuildPending = false;
+  // True when a Mithril install began changing the chain data and did not
+  // finish, e.g. Daedalus was closed during a first download's install; the
+  // location is already decided, and no old chain data was removed
+  @observable installPending = false;
+  // True after a Mithril install failed part-way: the watchdog starts no node
+  // until a Mithril sync installs a database, so only Retry is offered
+  @observable installRetryRequired = false;
+  // The last hole in the chain database the watchdog detected
+  @observable chainDamage: ChainDamage | null = null;
+  // The last detection of the session, which Diagnostics shows; it outlives
+  // chainDamage, and clears only when the chain it was found in is gone or a
+  // rebuild has replaced it
+  @observable lastChainDamage: ChainDamage | null = null;
+  // True when the watchdog found chainDamage before starting the node and
+  // does not start it, so no node runs behind the damaged data screen
+  @observable nodeHeld = false;
   @observable walletUnrecoverable = false;
   @observable nodeUnrecoverable = false;
+  // Seconds the starting node has written no output, once the watchdog
+  // reports the silence; null while it writes
+  @observable nodeSilentSecs: number | null = null;
+  // Counts the silences reported; Keep waiting hides the prompt until the
+  // next one
+  @observable nodeSilenceEpisode = 0;
+  // The silence whose prompt the user dismissed. Main keeps it as well, so
+  // the poll restores it after a reload of the window.
+  @observable _dismissedSilenceEpisode = 0;
   @observable nodeSocketWaitMs: number | null = null;
   @observable walletReadyWaitMs: number | null = null;
   @observable nodeForceKilled = false;
@@ -64,6 +126,25 @@ export default class BackendStore extends Store {
     latestCertifiedImmutable: number;
   } | null = null;
   @observable _mithrilPromptDismissed = false;
+  // Set by "Not now" on the chain-damaged screen; lasts until the app
+  // restarts. Main keeps it as well, so the poll restores it after a reload
+  // of the window.
+  @observable _chainDamageDismissed = false;
+  // Set from the Mithril error view to choose another chain storage location;
+  // the picker shows until a location is confirmed
+  @observable _chainStoragePickerRequested = false;
+  // A location confirmed on that picker after a failed or refused rebuild. It
+  // is not applied yet: it goes to the watchdog together with the rebuild,
+  // once the rebuild confirmation is confirmed. customPath null is the
+  // default location.
+  @observable _pendingChainPath: { customPath: string | null } | null = null;
+  // Set by Retry after a partial sync failed to install; the rebuild
+  // confirmation shows in place of the error until it is confirmed or left
+  @observable _rebuildConfirmationRequested = false;
+  // Set by the error view's secondary action after a rebuild removed the chain
+  // data, so the bootstrap decision shows instead of the error; cleared when
+  // the Mithril phase moves on
+  @observable _mithrilErrorDismissed = false;
   @observable _probeHasFired = false;
   // Daedalus is quitting
   @observable isStopping = false;
@@ -146,10 +227,49 @@ export default class BackendStore extends Store {
         this.nodeStartupPhase = state.nodeStartupPhase;
         this.blockSyncProgress = { ...state.blockSyncProgress };
         this.mithrilPhase = state.mithrilPhase;
+        if (state.mithrilPhase !== 'error') {
+          this._mithrilErrorDismissed = false;
+          this._rebuildConfirmationRequested = false;
+          this._pendingChainPath = null;
+        }
         this.mithrilProgress = state.mithrilProgress;
+        this.mithrilWaitingForNetwork = state.mithrilWaitingForNetwork ?? false;
         this.lastError = state.lastError;
+        this.lastErrorCode = state.lastErrorCode ?? null;
+        this.mithrilErrorCount = state.mithrilErrorCount ?? 0;
+        // A poll answered before main had the rebuild still reports the old
+        // state, so only a phase of a run, a later error or a later node
+        // start ends the wait. The watchdog starts the node in place of the
+        // run on a network without Mithril.
+        const starting = this._rebuildStartingAfter;
+        if (
+          starting !== null &&
+          (this.mithrilErrorCount > starting.errorCount ||
+            (state.nodeStartedAt != null &&
+              state.nodeStartedAt !== starting.nodeStartedAt) ||
+            (state.mithrilPhase != null &&
+              !IDLE_MITHRIL_PHASES.includes(state.mithrilPhase)))
+        ) {
+          this._rebuildStartingAfter = null;
+        }
+        this.lastErrorRebuild = state.lastErrorRebuild ?? false;
+        this.rebuildPending = state.rebuildPending ?? false;
+        this.installPending = state.installPending ?? false;
+        this.installRetryRequired = state.installRetryRequired ?? false;
+        this.chainDamage = state.chainDamage ?? null;
+        this.lastChainDamage = state.lastChainDamage ?? null;
+        this.nodeHeld = state.nodeHeld ?? false;
         this.walletUnrecoverable = state.walletUnrecoverable;
         this.nodeUnrecoverable = state.nodeUnrecoverable ?? false;
+        this.nodeSilentSecs = state.nodeSilentSecs ?? null;
+        this.nodeSilenceEpisode = state.nodeSilenceEpisode ?? 0;
+        // A dismissal not yet reported back by main stays in effect
+        this._chainDamageDismissed =
+          this._chainDamageDismissed || state.chainDamageDismissed === true;
+        this._dismissedSilenceEpisode = Math.max(
+          this._dismissedSilenceEpisode,
+          state.dismissedSilenceEpisode ?? 0
+        );
         this.nodeSocketWaitMs = state.nodeSocketWaitMs;
         this.walletReadyWaitMs = state.walletReadyWaitMs;
         this.nodeForceKilled = state.nodeForceKilled;
@@ -182,6 +302,16 @@ export default class BackendStore extends Store {
   _onMithrilStatus = async (event: { phase: string }): Promise<void> => {
     runInAction('update mithrilPhase', () => {
       this.mithrilPhase = event.phase;
+      // The watchdog runs the rebuild that was starting, or another run
+      this._rebuildStartingAfter = null;
+      if (event.phase !== 'error') this._mithrilErrorDismissed = false;
+      // Main clears both unrecoverable flags when a Mithril run starts;
+      // clearing them here as well shows the Mithril progress without
+      // waiting for the next poll.
+      if (event.phase === 'preparing') {
+        this.nodeUnrecoverable = false;
+        this.walletUnrecoverable = false;
+      }
     });
   };
 
@@ -261,12 +391,96 @@ export default class BackendStore extends Store {
     return this._mithrilPromptDismissed;
   }
 
+  // The node has written nothing for a while as it starts, and the user has
+  // not chosen to keep waiting through this silence
+  @computed
+  get showNodeSilencePrompt(): boolean {
+    return (
+      this.nodeSilentSecs !== null &&
+      this.nodeSilenceEpisode !== this._dismissedSilenceEpisode &&
+      this.loadingPhase === 'node-starting'
+    );
+  }
+
+  // The Mithril error is one the user can resolve by choosing another
+  // chain storage location as well as by retrying
+  @computed
+  get canChooseAnotherLocation(): boolean {
+    return (
+      this.lastErrorCode != null &&
+      LOCATION_CHOICE_CODES.includes(this.lastErrorCode)
+    );
+  }
+
+  // The location picker was asked for from the Mithril error view, as a step
+  // of a sync or a rebuild, rather than shown for a first run
+  @computed
+  get chainStoragePickerRequested(): boolean {
+    return this._chainStoragePickerRequested;
+  }
+
+  // A confirmed rebuild was sent and the watchdog has not reported it yet
+  @computed
+  get rebuildStarting(): boolean {
+    return this._rebuildStartingAfter !== null;
+  }
+
+  // The location the pending rebuild confirmation is for, when one was picked
+  @computed
+  get pendingChainLocation(): string | null {
+    if (this._pendingChainPath == null) return null;
+    return this._pendingChainPath.customPath ?? this.defaultChainPath;
+  }
+
+  // A Mithril pipeline is running, or has failed and shows its error
+  @computed
+  get _mithrilActive(): boolean {
+    const phase = this._shownMithrilPhase;
+    return phase !== null && phase !== 'completed' && phase !== 'cancelled';
+  }
+
+  // The Mithril view keeps its place over the damaged data screen: a running
+  // pipeline, or the error of a rebuild, whose Retry repeats the rebuild. The
+  // error of any other sync gives way, because that sync does not repair the
+  // damage and its Retry would run it again.
+  @computed
+  get _mithrilOutranksDamage(): boolean {
+    if (this._shownMithrilPhase === 'error') return this.lastErrorRebuild;
+    return this._mithrilActive;
+  }
+
+  // The Mithril phase the loading screens go by: a rebuild that is starting
+  // counts as preparing, and a dismissed error counts as no Mithril run
+  @computed
+  get _shownMithrilPhase(): string | null {
+    if (this.rebuildStarting) return 'preparing';
+    return this._mithrilErrorDismissed && this.mithrilPhase === 'error'
+      ? null
+      : this.mithrilPhase;
+  }
+
   @computed
   get loadingPhase(): LoadingPhase {
     // Daedalus is quitting: the backend is being stopped, whatever state it
     // was in before
     if (this.isStopping) {
       return 'stopping';
+    }
+    // The chain database has a hole: offer the rebuild before anything else,
+    // including a ready wallet. A running Mithril pipeline keeps the screen,
+    // and so does the error of a rebuild. When the watchdog holds the node
+    // back, no node runs behind the screen, so an earlier Not now does not
+    // hide it.
+    if (
+      this.chainDamage !== null &&
+      (this.nodeHeld || !this._chainDamageDismissed) &&
+      !this._mithrilOutranksDamage
+    ) {
+      return 'chain-damaged';
+    }
+    // Retry after a rebuild failed on the storage location: pick another one
+    if (this._chainStoragePickerRequested) {
+      return 'chain-storage-setup';
     }
     // Unrecoverable error takes top priority
     if (this.walletUnrecoverable || this.nodeUnrecoverable) {
@@ -285,18 +499,17 @@ export default class BackendStore extends Store {
     // chain_status { has_chain: false } — show storage picker first, then decision
     if (
       this.hasChain === false &&
-      (this.mithrilPhase === null || this.mithrilPhase === 'cancelled')
+      (this._shownMithrilPhase === null ||
+        this._shownMithrilPhase === 'cancelled')
     ) {
-      return this.chainPathConfirmed
+      return this.chainPathConfirmed ||
+        this.rebuildPending ||
+        this.installPending
         ? 'bootstrap-decision'
         : 'chain-storage-setup';
     }
     // Mithril sync is in progress (phase non-null, not yet completed or cancelled)
-    if (
-      this.mithrilPhase !== null &&
-      this.mithrilPhase !== 'completed' &&
-      this.mithrilPhase !== 'cancelled'
-    ) {
+    if (this._mithrilActive) {
       return 'mithril-syncing';
     }
     // Wallet not yet ready
@@ -310,17 +523,123 @@ export default class BackendStore extends Store {
   // =============== ACTIONS ===============
   @action
   startMithril = () => {
+    this._mithrilErrorDismissed = false;
     mithrilCommandChannel.send({ cmd: 'start_mithril' });
   };
 
   @action
   startMithrilForce = () => {
+    this._mithrilErrorDismissed = false;
     mithrilCommandChannel.send({ cmd: 'start_mithril', force: true });
+  };
+
+  // Deletes the chain database and downloads a verified copy with Mithril.
+  // The rebuild targets the chain location in use, or the one picked for it,
+  // so that location counts as confirmed: if the rebuild fails and the
+  // watchdog reports no chain, the bootstrap decision follows without the
+  // location picker. A picked location and the rebuild go in one request:
+  // main sends the location change and the rebuild back to back, so the
+  // watchdog never starts a node on the new location before the rebuild.
+  //
+  // The Mithril view shows the rebuild preparing from here on. The watchdog
+  // may first stop the node, for up to its stop timeout, and the error the
+  // rebuild replaces is no longer current.
+  @action
+  rebuildChain = () => {
+    const picked = this._pendingChainPath;
+    this.chainPathConfirmed = true;
+    this._pendingChainPath = null;
+    this._rebuildConfirmationRequested = false;
+    this._mithrilErrorDismissed = false;
+    this._rebuildStartingAfter = {
+      errorCount: this.mithrilErrorCount,
+      nodeStartedAt: this.nodeStartedAt,
+    };
+    if (picked != null) {
+      confirmChainStorageChannel
+        .request({ customPath: picked.customPath, rebuild: true })
+        .catch((error) => {
+          logger.error('BackendStore: the rebuild in another location failed', {
+            error: String(error),
+          });
+          runInAction('end the rebuild that did not start', () => {
+            this._rebuildStartingAfter = null;
+          });
+        });
+    } else {
+      mithrilCommandChannel.send({ cmd: 'start_mithril', wipe_chain: true });
+    }
+    // The logger sends its arguments over IPC, which cannot clone a MobX
+    // observable, so only plain values go in.
+    logger.info('BackendStore: rebuilding the chain database', {
+      kind: this.chainDamage?.kind ?? null,
+      slot: this.chainDamage?.slot ?? null,
+    });
+  };
+
+  // Retry on the Mithril error view. After a failed or refused rebuild it
+  // repeats the rebuild, since the chain data may already be gone and a plain
+  // sync would not replace what is left; when the storage location caused the
+  // failure it asks for another location, which leads to the rebuild
+  // confirmation for that location. A partial sync that failed to
+  // install leaves the chain partly replaced, and the watchdog waits for
+  // another sync that a plain Retry usually finds nothing to download for, so
+  // Retry asks to confirm a rebuild. Otherwise it runs Mithril again.
+  @action
+  retryMithril = () => {
+    if (!this.lastErrorRebuild) {
+      if (this.lastErrorCode === INSTALL_FAILED_CODE) {
+        this._rebuildConfirmationRequested = true;
+      } else {
+        this.startMithril();
+      }
+    } else if (
+      this.lastErrorCode != null &&
+      LOCATION_ERROR_CODES.includes(this.lastErrorCode)
+    ) {
+      this._chainStoragePickerRequested = true;
+    } else {
+      this.rebuildChain();
+    }
+  };
+
+  // "Choose another location" on the Mithril error view
+  @action
+  chooseAnotherLocation = () => {
+    this._chainStoragePickerRequested = true;
+  };
+
+  // "Back" on the rebuild confirmation that follows a failed install or a
+  // picked location: the Mithril error view shows again, and a picked
+  // location is dropped without being applied
+  @action
+  cancelRebuildConfirmation = () => {
+    this._rebuildConfirmationRequested = false;
+    this._pendingChainPath = null;
+  };
+
+  // "Not now" on the chain-damaged screen; the screen stays hidden until the
+  // app restarts, and Diagnostics keeps the detection. Main records it, so a
+  // reload of the window does not show the screen again.
+  @action
+  dismissChainDamage = () => {
+    this._chainDamageDismissed = true;
+    mithrilCommandChannel.send({ cmd: 'dismiss_chain_damage' });
   };
 
   @action
   startNode = () => {
+    // The watchdog clears the Mithril phase when it gets the command; hiding
+    // the error now keeps it off the screen until the next poll shows that.
+    this._mithrilErrorDismissed = true;
     mithrilCommandChannel.send({ cmd: 'start_node' });
+  };
+
+  // Secondary action of the Mithril error view after a rebuild removed the
+  // chain data: back to the choice between Mithril and a sync from genesis
+  @action
+  showBootstrapDecision = () => {
+    this._mithrilErrorDismissed = true;
   };
 
   @action
@@ -336,6 +655,27 @@ export default class BackendStore extends Store {
   _restartNode = () => {
     mithrilCommandChannel.send({ cmd: 'restart_node' });
   };
+
+  // "Restart Cardano node" on the silence prompt
+  @action
+  restartSilentNode = () => {
+    this._dismissSilence();
+    this._restartNode();
+  };
+
+  // "Keep waiting" on the silence prompt: hidden until the next silence
+  @action
+  keepWaitingForNode = () => {
+    this._dismissSilence();
+  };
+
+  // Hides the prompt for the current silence at once, and has main record
+  // it, so a reload of the window does not show it again
+  _dismissSilence() {
+    const episode = this.nodeSilenceEpisode;
+    this._dismissedSilenceEpisode = episode;
+    mithrilCommandChannel.send({ cmd: 'dismiss_node_silence', episode });
+  }
 
   _restartWallet = () => {
     mithrilCommandChannel.send({ cmd: 'restart_wallet' });
@@ -385,13 +725,34 @@ export default class BackendStore extends Store {
     });
   };
 
+  // A location picked after a failed or refused rebuild is held for the
+  // rebuild confirmation instead of being applied: applied now, it would make
+  // the watchdog start a node there before the user chose the rebuild.
+  get _holdsPickedLocation(): boolean {
+    return this._chainStoragePickerRequested && this.lastErrorRebuild;
+  }
+
+  // The location picker shows on the way to a rebuild, which deletes any
+  // blockchain data in the location picked, so it must not say that data
+  // found there will be reused
+  @computed
+  get locationPickerForRebuild(): boolean {
+    return this._holdsPickedLocation;
+  }
+
   @action
   setChainStorageDirectory = async (
     customPath: string | null
   ): Promise<ChainStorageValidation | null> => {
+    if (this._holdsPickedLocation) {
+      this._pendingChainPath = { customPath };
+      this.chainPathConfirmed = true;
+      return null;
+    }
     await confirmChainStorageChannel.request({ customPath });
     runInAction('set chainPathConfirmed after setChainStorageDirectory', () => {
       this.chainPathConfirmed = true;
+      this._confirmPickedLocation();
     });
     return null;
   };
@@ -399,11 +760,17 @@ export default class BackendStore extends Store {
   @action
   resetChainStorageDirectory =
     async (): Promise<ChainStorageValidation | null> => {
+      if (this._holdsPickedLocation) {
+        this._pendingChainPath = { customPath: null };
+        this.chainPathConfirmed = true;
+        return null;
+      }
       await confirmChainStorageChannel.request({ customPath: null });
       runInAction(
         'set chainPathConfirmed after resetChainStorageDirectory',
         () => {
           this.chainPathConfirmed = true;
+          this._confirmPickedLocation();
         }
       );
       return null;
@@ -413,8 +780,19 @@ export default class BackendStore extends Store {
   confirmStorageLocation = () => {
     runInAction('set chainPathConfirmed', () => {
       this.chainPathConfirmed = true;
+      this._confirmPickedLocation();
     });
   };
+
+  // A location was confirmed on the picker the Mithril error view asked for.
+  // After a failed or refused rebuild the rebuild confirmation follows, for
+  // the picked location if one was picked; otherwise the error view returns.
+  _confirmPickedLocation() {
+    if (this._holdsPickedLocation) {
+      this._rebuildConfirmationRequested = true;
+    }
+    this._chainStoragePickerRequested = false;
+  }
 
   @action
   dismissMithrilPrompt = () => {

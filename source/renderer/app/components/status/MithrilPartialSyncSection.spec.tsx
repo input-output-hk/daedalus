@@ -39,6 +39,7 @@ jest.mock('react-polymorph/lib/components/PopOver', () => ({
 
 const defaultProps = {
   isActionBlocked: false,
+  isBlockedByChainDamage: false,
   isMithrilPartialSyncWorking: false,
   isSignificantlyBehind: true,
   isProbeFailed: false,
@@ -98,6 +99,39 @@ describe('MithrilPartialSyncSection', () => {
     ).toBeInTheDocument();
     expect(
       screen.queryByText(/Review what will happen before Daedalus/)
+    ).toBeNull();
+  });
+
+  it('disables the button with a hint pointing to the rebuild while damage is detected', () => {
+    const onStartMithrilPartialSync = jest.fn();
+    renderComponent({
+      isBlockedByChainDamage: true,
+      onStartMithrilPartialSync,
+    });
+
+    const button = screen.getByRole('button', { name: 'Mithril Sync' });
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(
+      screen.queryByRole('heading', { name: 'Before Mithril Sync begins' })
+    ).toBeNull();
+    expect(
+      screen.getByText(/Use Rebuild blockchain data instead/)
+    ).toBeVisible();
+    expect(
+      screen.queryByText('Unavailable while Mithril work is already active.')
+    ).toBeNull();
+    expect(onStartMithrilPartialSync).not.toHaveBeenCalled();
+  });
+
+  it('shows the active-work hint, not the damage hint, when both apply', () => {
+    renderComponent({ isActionBlocked: true, isBlockedByChainDamage: true });
+
+    expect(
+      screen.getByText('Unavailable while Mithril work is already active.')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Use Rebuild blockchain data instead/)
     ).toBeNull();
   });
 

@@ -82,6 +82,30 @@ pub enum Command {
     },
 }
 
+/// Which log signature identified the damage.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ChainDamageKind {
+    /// The node rejects a canonical block with `BadInputsUTxO` from several peers.
+    NodeRejectsCanonicalBlock,
+    /// The node cannot open its ledger because the ledger point is missing from
+    /// the ImmutableDB.
+    LedgerPointMissing,
+    /// The wallet is given a chain that does not continue from its checkpoint.
+    WalletChainDiscontinuity,
+}
+
+impl ChainDamageKind {
+    /// The name used on the wire and in `watchdog.log`.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ChainDamageKind::NodeRejectsCanonicalBlock => "node_rejects_canonical_block",
+            ChainDamageKind::LedgerPointMissing => "ledger_point_missing",
+            ChainDamageKind::WalletChainDiscontinuity => "wallet_chain_discontinuity",
+        }
+    }
+}
+
 #[derive(Debug, Serialize)]
 #[serde(tag = "event", rename_all = "snake_case")]
 pub enum Event {
@@ -143,8 +167,12 @@ pub enum Event {
     Error {
         message: String,
     },
+    /// A step of a Mithril pipeline. `rebuild` is true when the pipeline is a
+    /// rebuild, asked for with `wipe_chain` or forced by one that did not
+    /// finish, so a `completed` that carries it means the chain was replaced.
     MithrilStatus {
         phase: String,
+        rebuild: bool,
     },
     MithrilProgress {
         files_downloaded: u64,
@@ -167,9 +195,20 @@ pub enum Event {
         local_immutable_count: u64,
         latest_certified_immutable: u64,
     },
+    /// A Mithril pipeline failed or refused to run. `rebuild` is true when
+    /// that pipeline was a rebuild, asked for with `wipe_chain` or continuing
+    /// one that did not finish, so a retry repeats the rebuild.
     MithrilError {
         code: String,
         message: String,
+        rebuild: bool,
+    },
+    /// A Mithril download has made no progress for a while and the
+    /// aggregator cannot be reached (`waiting` true), or it no longer waits
+    /// (`waiting` false): its progress grew, the aggregator can be reached,
+    /// or the download ended. mithril-client resumes by itself.
+    MithrilWaitingForNetwork {
+        waiting: bool,
     },
     /// Emitted once on startup if watchdog-state.json is absent, before chain_status.
     /// Electron should respond with a `migrate_state` command carrying any persisted
@@ -177,8 +216,15 @@ pub enum Event {
     MigrateStateRequest,
     /// Emitted once on startup. When `has_chain` is false the supervisor waits
     /// for a `start_node` or `start_mithril` command before doing anything.
+    /// `rebuild_pending` is true when that wait follows a rebuild that began
+    /// deleting the chain directory and installed nothing, in this session or
+    /// an earlier one, and `install_pending` when it follows an install that
+    /// began changing the database and did not finish. Either way the
+    /// directory is the one in use, and a `start_mithril` then rebuilds it.
     ChainStatus {
         has_chain: bool,
+        rebuild_pending: bool,
+        install_pending: bool,
     },
     /// Result of a `validate_chain_dir` command.
     ChainDirValidation {
@@ -230,6 +276,28 @@ pub enum Event {
     NodeUnrecoverable {
         crashes: u32,
     },
+    /// The node or wallet output shows that the local chain database has a hole,
+    /// or the check before a node start found that the node would stop on a
+    /// missing ledger point. `slot` is the slot named by the evidence (the
+    /// rejected block, the missing ledger point, or the first block after the
+    /// gap). `last_good_slot` is the wallet's last slot before the gap and is
+    /// set only for `wallet_chain_discontinuity`. `node_held` is true when the
+    /// damage was found before the node started: the watchdog does not start
+    /// it, and waits for a Mithril sync, a retry or a stop.
+    ChainDamage {
+        kind: ChainDamageKind,
+        slot: Option<u64>,
+        last_good_slot: Option<u64>,
+        node_held: bool,
+    },
+    /// cardano-node has written nothing on either output stream for
+    /// `silent_secs` while it starts, before `chainDbReady`. Emitted once per
+    /// silence; output that arrives after it emits `node_output_resumed`.
+    NodeSilent {
+        silent_secs: u64,
+    },
+    /// cardano-node wrote output again after a `node_silent`.
+    NodeOutputResumed,
     /// The update installer requested with `install_update` was started.
     UpdateInstallerLaunched {
         pid: u32,
@@ -478,10 +546,25 @@ mod tests {
         ] {
             let j = to_json(&Event::MithrilStatus {
                 phase: phase.to_string(),
+                rebuild: false,
             });
             assert_eq!(j["event"], "mithril_status", "phase={phase}");
             assert_eq!(j["phase"], phase, "phase={phase}");
+            assert_eq!(j["rebuild"], false, "phase={phase}");
         }
+    }
+
+    #[test]
+    fn mithril_status_of_a_rebuild() {
+        let line = serde_json::to_string(&Event::MithrilStatus {
+            phase: "completed".to_string(),
+            rebuild: true,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"mithril_status","phase":"completed","rebuild":true}"#
+        );
     }
 
     #[test]
@@ -547,26 +630,57 @@ mod tests {
 
     #[test]
     fn mithril_error() {
-        let j = to_json(&Event::MithrilError {
+        let line = serde_json::to_string(&Event::MithrilError {
             code: "PROBE_FAILED".to_string(),
             message: "connection refused".to_string(),
-        });
-        assert_eq!(j["event"], "mithril_error");
-        assert_eq!(j["code"], "PROBE_FAILED");
-        assert_eq!(j["message"], "connection refused");
+            rebuild: true,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"mithril_error","code":"PROBE_FAILED","message":"connection refused","rebuild":true}"#
+        );
     }
 
     #[test]
     fn chain_status_true() {
-        let j = to_json(&Event::ChainStatus { has_chain: true });
+        let j = to_json(&Event::ChainStatus {
+            has_chain: true,
+            rebuild_pending: false,
+            install_pending: false,
+        });
         assert_eq!(j["event"], "chain_status");
         assert_eq!(j["has_chain"], true);
+        assert_eq!(j["rebuild_pending"], false);
+        assert_eq!(j["install_pending"], false);
     }
 
     #[test]
-    fn chain_status_false() {
-        let j = to_json(&Event::ChainStatus { has_chain: false });
-        assert_eq!(j["has_chain"], false);
+    fn chain_status_with_a_rebuild_pending() {
+        let line = serde_json::to_string(&Event::ChainStatus {
+            has_chain: false,
+            rebuild_pending: true,
+            install_pending: false,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"chain_status","has_chain":false,"rebuild_pending":true,"install_pending":false}"#
+        );
+    }
+
+    #[test]
+    fn chain_status_with_an_install_pending() {
+        let line = serde_json::to_string(&Event::ChainStatus {
+            has_chain: false,
+            rebuild_pending: false,
+            install_pending: true,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"chain_status","has_chain":false,"rebuild_pending":false,"install_pending":true}"#
+        );
     }
 
     // ── Command deserialization tests ─────────────────────────────────────────
@@ -717,6 +831,89 @@ mod tests {
         let j = to_json(&Event::NodeUnrecoverable { crashes: 5 });
         assert_eq!(j["event"], "node_unrecoverable");
         assert_eq!(j["crashes"], 5);
+    }
+
+    #[test]
+    fn chain_damage_without_last_good_slot() {
+        let line = serde_json::to_string(&Event::ChainDamage {
+            kind: ChainDamageKind::LedgerPointMissing,
+            slot: Some(200_102_375),
+            last_good_slot: None,
+            node_held: false,
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"chain_damage","kind":"ledger_point_missing","slot":200102375,"last_good_slot":null,"node_held":false}"#
+        );
+    }
+
+    #[test]
+    fn chain_damage_found_before_the_node_started() {
+        let j = to_json(&Event::ChainDamage {
+            kind: ChainDamageKind::LedgerPointMissing,
+            slot: Some(136_771_192),
+            last_good_slot: None,
+            node_held: true,
+        });
+        assert_eq!(j["kind"], "ledger_point_missing");
+        assert_eq!(j["slot"], 136_771_192u64);
+        assert_eq!(j["node_held"], true);
+    }
+
+    #[test]
+    fn chain_damage_with_last_good_slot() {
+        let j = to_json(&Event::ChainDamage {
+            kind: ChainDamageKind::WalletChainDiscontinuity,
+            slot: Some(200_102_408),
+            last_good_slot: Some(200_080_892),
+            node_held: false,
+        });
+        assert_eq!(j["kind"], "wallet_chain_discontinuity");
+        assert_eq!(j["slot"], 200_102_408u64);
+        assert_eq!(j["last_good_slot"], 200_080_892u64);
+    }
+
+    #[test]
+    fn chain_damage_kinds_serialise_in_snake_case() {
+        let kinds = [
+            (
+                ChainDamageKind::NodeRejectsCanonicalBlock,
+                "node_rejects_canonical_block",
+            ),
+            (ChainDamageKind::LedgerPointMissing, "ledger_point_missing"),
+            (
+                ChainDamageKind::WalletChainDiscontinuity,
+                "wallet_chain_discontinuity",
+            ),
+        ];
+        for (kind, expected) in kinds {
+            let j = to_json(&Event::ChainDamage {
+                kind,
+                slot: None,
+                last_good_slot: None,
+                node_held: false,
+            });
+            assert_eq!(j["kind"], expected);
+        }
+    }
+
+    #[test]
+    fn mithril_waiting_for_network() {
+        let line =
+            serde_json::to_string(&Event::MithrilWaitingForNetwork { waiting: true }).unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"mithril_waiting_for_network","waiting":true}"#
+        );
+    }
+
+    #[test]
+    fn node_silence_events() {
+        let line = serde_json::to_string(&Event::NodeSilent { silent_secs: 300 }).unwrap();
+        assert_eq!(line, r#"{"event":"node_silent","silent_secs":300}"#);
+        let line = serde_json::to_string(&Event::NodeOutputResumed).unwrap();
+        assert_eq!(line, r#"{"event":"node_output_resumed"}"#);
     }
 
     #[test]

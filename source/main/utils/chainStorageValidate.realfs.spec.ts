@@ -69,6 +69,76 @@ describe('validatePath', () => {
     expect(validatePath(folder, stateDir, NETWORK_MAGIC).isValid).toBe(true);
   });
 
+  it('accepts a chain subdirectory holding database entries and a staging leftover', () => {
+    fs.mkdirSync(path.join(chain, 'volatile'), { recursive: true });
+    fs.mkdirSync(path.join(chain, 'mithril-staging', 'download', 'db'), {
+      recursive: true,
+    });
+
+    const result = validatePath(folder, stateDir, NETWORK_MAGIC);
+
+    expect(result.isValid).toBe(true);
+  });
+
+  describe('with a staging entry that names a network', () => {
+    const staging = () => path.join(chain, 'mithril-staging');
+    const stagedDatabase = () => path.join(staging(), 'download', 'db');
+
+    beforeEach(() => {
+      fs.mkdirSync(path.join(stagedDatabase(), 'immutable'), {
+        recursive: true,
+      });
+    });
+
+    it('accepts a download of this network', () => {
+      fs.writeFileSync(path.join(staging(), 'network-magic'), '1');
+
+      expect(validatePath(folder, stateDir, NETWORK_MAGIC).isValid).toBe(true);
+    });
+
+    it("refuses another network's download and leaves it", () => {
+      fs.writeFileSync(
+        path.join(staging(), 'network-magic'),
+        OTHER_NETWORK_MAGIC
+      );
+
+      const result = validatePath(folder, stateDir, NETWORK_MAGIC);
+
+      expect(result).toEqual({
+        isValid: false,
+        path: folder,
+        reason: 'chain-subdirectory-other-network',
+      });
+      expect(
+        fs.readFileSync(path.join(staging(), 'network-magic'), 'utf8')
+      ).toBe(OTHER_NETWORK_MAGIC);
+      expect(fs.readdirSync(staging()).sort()).toEqual([
+        'download',
+        'network-magic',
+      ]);
+    });
+
+    it('refuses a staged database of another network in an entry without a marker', () => {
+      fs.writeFileSync(
+        path.join(stagedDatabase(), 'protocolMagicId'),
+        OTHER_NETWORK_MAGIC
+      );
+
+      expect(validatePath(folder, stateDir, NETWORK_MAGIC).reason).toBe(
+        'chain-subdirectory-other-network'
+      );
+    });
+
+    it('accepts any download when the network magic is unknown', () => {
+      fs.writeFileSync(
+        path.join(staging(), 'network-magic'),
+        OTHER_NETWORK_MAGIC
+      );
+
+      expect(validatePath(folder, stateDir, null).isValid).toBe(true);
+    });
+  });
+
   it('refuses a chain subdirectory holding other files and leaves them', () => {
     fs.mkdirSync(chain);
     fs.writeFileSync(path.join(chain, 'photo.jpg'), 'user data');

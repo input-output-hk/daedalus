@@ -14,6 +14,7 @@ import type { ChainStorageValidation } from '../../../../common/types/watchdog.t
 import translations from '../../i18n/locales/en-US.json';
 import { showOpenDialogChannel } from '../../ipc/show-file-dialog-channels';
 import ChainStorageLocationPicker from './ChainStorageLocationPicker';
+import styles from './ChainStorageLocationPicker.scss';
 
 jest.mock('../../ipc/show-file-dialog-channels', () => ({
   showOpenDialogChannel: {
@@ -513,6 +514,52 @@ describe('ChainStorageLocationPicker', () => {
     expect(dataFoundNotice).toBeInTheDocument();
     expect(describedByIds).toContain(recoveryNotice.getAttribute('id'));
     expect(describedByIds).toContain(dataFoundNotice.getAttribute('id'));
+  });
+
+  it('says the rebuild deletes the data found instead of reusing it when the picker leads to a rebuild', () => {
+    renderComponent({
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/current-chain',
+        resolvedPath: '/mnt/current-chain',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+        chainSubdirectoryStatus: 'existing-directory',
+      },
+      forRebuild: true,
+    });
+
+    const input = screen.getByLabelText(/blockchain data location/i);
+    const rebuildNotice = screen.getByText(
+      'Existing blockchain data found. The rebuild deletes the blockchain data in this folder and downloads it again.'
+    );
+    const describedByIds =
+      input.getAttribute('aria-describedby')?.split(' ') ?? [];
+
+    expect(screen.queryByText(/will reuse this data/i)).not.toBeInTheDocument();
+    expect(describedByIds).toContain(rebuildNotice.getAttribute('id'));
+    expect(rebuildNotice).toHaveClass(styles.rebuildDataNotice);
+  });
+
+  it('sets the data found notice as help text when the data will be reused', () => {
+    renderComponent({
+      chainStorageValidation: {
+        isValid: true,
+        path: '/mnt/current-chain',
+        resolvedPath: '/mnt/current-chain',
+        availableSpaceBytes: 4000,
+        requiredSpaceBytes: 1024,
+        chainSubdirectoryStatus: 'existing-directory',
+      },
+    });
+    const notice = screen.getByText(/will reuse this data/i);
+    expect(notice).toHaveClass(styles.storageHelpText);
+    expect(notice).not.toHaveClass(styles.rebuildDataNotice);
+  });
+
+  it('shows no rebuild notice for a location without blockchain data', () => {
+    renderComponent({ forRebuild: true });
+    expect(screen.queryByText(/The rebuild deletes/)).not.toBeInTheDocument();
   });
 
   it('shows no storage status message for an empty directly selected chain directory', () => {

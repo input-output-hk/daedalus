@@ -4,6 +4,8 @@ import net from 'net';
 import { logger } from './utils/logging';
 import type {
   BackendStopProgress,
+  ChainDamage,
+  ChainDamageKind,
   RequestedRestart,
 } from '../common/types/watchdog.types';
 
@@ -44,6 +46,10 @@ export interface WatchdogState {
   // Mithril
   mithrilPhase: string | null;
   mithrilProgress: MithrilProgress | null;
+  // True while a Mithril download has stalled and the watchdog cannot reach
+  // the aggregator; mithril-client continues by itself when the network
+  // returns
+  mithrilWaitingForNetwork: boolean;
 
   // Mithril probe result: set when node is significantly behind the certified tip
   mithrilSignificantlyBehind: {
@@ -53,6 +59,34 @@ export interface WatchdogState {
 
   // Error
   lastError: string | null;
+  // The code of the mithril_error that set lastError; null when lastError
+  // came from an error without one
+  lastErrorCode: string | null;
+  // Counts the mithril_error events, so the renderer can tell a new error
+  // from the one it already shows
+  mithrilErrorCount: number;
+  // The last hole in the chain database the watchdog detected; cleared when a
+  // node starts or a Mithril sync begins
+  chainDamage: ChainDamage | null;
+  // The last detection of the session, which Diagnostics shows; unlike
+  // chainDamage it survives a node start, and clears only when the chain it
+  // was found in is gone or a rebuild has replaced it
+  lastChainDamage: ChainDamage | null;
+  // True when the watchdog found chainDamage before starting the node and
+  // does not start it; cleared when a node starts or a Mithril sync begins
+  nodeHeld: boolean;
+  // True when lastError came from a rebuild, so Retry repeats the rebuild
+  lastErrorRebuild: boolean;
+  // True when a rebuild was confirmed and has not finished, e.g. the app was
+  // closed after the chain data was deleted
+  rebuildPending: boolean;
+  // True when a Mithril install began changing the chain data and did not
+  // finish, e.g. the app was closed during a first download's install; unlike
+  // rebuildPending no old chain data was removed
+  installPending: boolean;
+  // True after a Mithril install failed part-way: the watchdog starts no node
+  // and ignores start_node until a Mithril sync installs a database
+  installRetryRequired: boolean;
   walletUnrecoverable: boolean;
 
   // Diagnostics
@@ -70,8 +104,21 @@ export interface WatchdogState {
 
   // cardano-node crashed too often; the watchdog waits for a retry
   nodeUnrecoverable: boolean;
+  // Seconds cardano-node has written no output while starting, once the
+  // watchdog reports the silence; null while the node writes
+  nodeSilentSecs: number | null;
+  // Counts the silences reported, so a prompt dismissed for one shows again
+  // for the next
+  nodeSilenceEpisode: number;
+  // The silence whose prompt the user dismissed; kept here, not in the
+  // renderer, so a reload of the window does not show that prompt again
+  dismissedSilenceEpisode: number;
   // A restart the user asked for, until it has stopped the process
   requestedRestart: RequestedRestart | null;
+  // Not now on the damaged data screen, which lasts until Daedalus restarts;
+  // kept here, not in the renderer, so a reload of the window does not show
+  // the screen again
+  chainDamageDismissed: boolean;
 }
 
 type EventHandler = (event: Record<string, unknown>) => void;
@@ -94,6 +141,9 @@ export const INSTALLER_RESULT_TIMEOUT_MS = 30_000;
 
 // What came of an install_update request. message says why it failed.
 export type InstallerResult = { launched: boolean; message: string | null };
+
+// The code of the mithril_error a Mithril install that failed part-way reports
+const INSTALL_FAILED_CODE = 'INSTALL_FAILED';
 
 class WatchdogManager {
   private rl: ReadlineInterface | null = null;
@@ -140,8 +190,18 @@ class WatchdogManager {
       },
       mithrilPhase: null,
       mithrilProgress: null,
+      mithrilWaitingForNetwork: false,
       mithrilSignificantlyBehind: null,
       lastError: null,
+      lastErrorCode: null,
+      mithrilErrorCount: 0,
+      chainDamage: null,
+      lastChainDamage: null,
+      nodeHeld: false,
+      lastErrorRebuild: false,
+      rebuildPending: false,
+      installPending: false,
+      installRetryRequired: false,
       walletUnrecoverable: false,
       nodeSocketWaitMs: null,
       walletReadyWaitMs: null,
@@ -152,7 +212,11 @@ class WatchdogManager {
       shutdownRequested: false,
       backendStopProgress: null,
       nodeUnrecoverable: false,
+      nodeSilentSecs: null,
+      nodeSilenceEpisode: 0,
+      dismissedSilenceEpisode: 0,
       requestedRestart: null,
+      chainDamageDismissed: false,
     };
   }
 
@@ -234,6 +298,7 @@ class WatchdogManager {
   // ---------------------------------------------------------------------------
 
   sendCommand(cmd: object): void {
+    if (this._keepCommand(cmd)) return;
     const line = JSON.stringify(cmd) + '\n';
     if (this.socket) {
       if (!this.socket.writable) {
@@ -245,6 +310,7 @@ class WatchdogManager {
       }
       this.socket.write(line);
       this._noteRequestedRestart(cmd);
+      this._noteMithrilCommand(cmd);
       return;
     }
     if (!process.stdout.writable) {
@@ -256,6 +322,45 @@ class WatchdogManager {
     }
     process.stdout.write(line);
     this._noteRequestedRestart(cmd);
+    this._noteMithrilCommand(cmd);
+  }
+
+  // Commands that main answers itself and does not send to the watchdog.
+  // The silence prompt the user dismissed is recorded here, beside the
+  // silence count, and so is Not now on the damaged data screen, so the
+  // renderer reads both back after a reload of the window.
+  private _keepCommand(cmd: object): boolean {
+    const { cmd: name, episode } = cmd as { cmd?: string; episode?: unknown };
+    if (name === 'dismiss_chain_damage') {
+      this.state.chainDamageDismissed = true;
+      return true;
+    }
+    if (name !== 'dismiss_node_silence') return false;
+    if (typeof episode === 'number') {
+      this.state.dismissedSilenceEpisode = Math.max(
+        this.state.dismissedSilenceEpisode,
+        episode
+      );
+    }
+    return true;
+  }
+
+  // A new Mithril run or a node start ends the error of the previous run, so
+  // a stale rebuild flag cannot change what Retry does next.
+  private _noteMithrilCommand(cmd: object): void {
+    const { cmd: name } = cmd as { cmd?: string };
+    if (name === 'start_mithril') {
+      this.state.lastErrorRebuild = false;
+    } else if (name === 'start_node') {
+      // The watchdog ignores start_node while it waits for an install after a
+      // failed one, so the error stays where it is.
+      if (this.state.installRetryRequired) return;
+      this.state.lastErrorRebuild = false;
+      // The user moved on from a Mithril error; without this the error view
+      // stays up while the node syncs.
+      this.state.mithrilPhase = null;
+      this.state.mithrilProgress = null;
+    }
   }
 
   // Commands that make the watchdog stop and start a running process again.
@@ -378,6 +483,21 @@ class WatchdogManager {
 
       case 'chain_status':
         s.hasChain = event.has_chain as boolean;
+        s.rebuildPending = event.rebuild_pending === true;
+        s.installPending = event.install_pending === true;
+        // The watchdog reports no chain once a rebuild deleted it, which also
+        // ends the wait after a failed install.
+        s.installRetryRequired = false;
+        // The watchdog reports the chain only while no node runs, before it
+        // starts one or while it waits for the user's choice, so a requested
+        // restart has nothing left to stop.
+        s.requestedRestart = null;
+        // No chain is left that a node starts on without the user's choice:
+        // a rebuild deleted it, or the location holds none. The damage found
+        // before is no longer that of the chain in use; each node run, and
+        // the check before each node start, look for damage in the chain the
+        // node then uses.
+        if (event.has_chain === false) s.lastChainDamage = null;
         break;
 
       case 'node_started':
@@ -397,6 +517,16 @@ class WatchdogManager {
         s.nodeUnrecoverable = false;
         s.walletUnrecoverable = false;
         s.requestedRestart = null;
+        s.nodeSilentSecs = null;
+        s.mithrilWaitingForNetwork = false;
+        // The new node reports its own damage from its own output.
+        s.chainDamage = null;
+        s.nodeHeld = false;
+        // A running node means no rebuild or install is waiting for the
+        // user's choice, and no failed install is waiting for another.
+        s.rebuildPending = false;
+        s.installPending = false;
+        s.installRetryRequired = false;
         this._nodeRunning = true;
         s.blockSyncProgress = {
           replayedBlock: 0,
@@ -407,10 +537,21 @@ class WatchdogManager {
 
       case 'node_socket_ready':
         s.nodeSocketWaitMs = event.waited_ms as number;
+        s.nodeSilentSecs = null;
         break;
 
       case 'node_startup_status':
         s.nodeStartupPhase = event.phase as string;
+        s.nodeSilentSecs = null;
+        break;
+
+      case 'node_silent':
+        s.nodeSilentSecs = event.silent_secs as number;
+        s.nodeSilenceEpisode += 1;
+        break;
+
+      case 'node_output_resumed':
+        s.nodeSilentSecs = null;
         break;
 
       case 'node_block_sync_progress': {
@@ -468,11 +609,13 @@ class WatchdogManager {
       case 'node_unrecoverable':
         s.nodeUnrecoverable = true;
         s.requestedRestart = null;
+        s.nodeSilentSecs = null;
         this._nodeRunning = false;
         break;
 
       case 'node_exited':
       case 'node_shutdown_ms':
+        s.nodeSilentSecs = null;
         this._nodeRunning = false;
         break;
 
@@ -483,8 +626,47 @@ class WatchdogManager {
         };
         break;
 
+      case 'chain_damage':
+        s.chainDamage = {
+          kind: event.kind as ChainDamageKind,
+          slot: (event.slot as number | null | undefined) ?? null,
+          lastGoodSlot:
+            (event.last_good_slot as number | null | undefined) ?? null,
+          detectedAt: new Date().toISOString(),
+        };
+        s.lastChainDamage = s.chainDamage;
+        s.nodeHeld = event.node_held === true;
+        // A node restart the user asked for has stopped the old node, and
+        // the watchdog holds back the new one.
+        if (s.nodeHeld) s.requestedRestart = null;
+        break;
+
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;
+        // Only a download waits for the network.
+        if (event.phase !== 'downloading' && event.phase !== 'verifying') {
+          s.mithrilWaitingForNetwork = false;
+        }
+        // A Mithril run is starting, with no node or wallet running. The
+        // damage a rebuild replaces is no longer current, and neither is a
+        // process the watchdog gave up on before the run. One that keeps
+        // crashing after the run is given up on again.
+        if (event.phase === 'preparing') {
+          s.chainDamage = null;
+          s.nodeHeld = false;
+          s.nodeUnrecoverable = false;
+          s.walletUnrecoverable = false;
+        }
+        if (event.phase === 'completed') {
+          s.lastErrorRebuild = false;
+          s.rebuildPending = false;
+          s.installPending = false;
+          // Only a rebuild repairs the chain; a partial sync leaves the
+          // detection in place. The watchdog says whether the pipeline was a
+          // rebuild, including one it ran in place of a plain sync because an
+          // earlier rebuild had deleted the chain and not finished.
+          if (event.rebuild === true) s.lastChainDamage = null;
+        }
         // A Mithril sync replaced the requested node restart.
         if (s.requestedRestart === 'node') s.requestedRestart = null;
         break;
@@ -502,13 +684,40 @@ class WatchdogManager {
         };
         break;
 
+      case 'mithril_waiting_for_network':
+        s.mithrilWaitingForNetwork = event.waiting === true;
+        break;
+
       case 'mithril_error':
         s.mithrilPhase = 'error';
+        s.mithrilErrorCount += 1;
+        s.mithrilWaitingForNetwork = false;
+        // A run refused before it prepares reports only this error, so the
+        // error clears both unrecoverable flags as preparing does.
+        s.nodeUnrecoverable = false;
+        s.walletUnrecoverable = false;
         s.lastError = event.message as string;
+        s.lastErrorCode = (event.code as string | undefined) ?? null;
+        s.lastErrorRebuild = event.rebuild === true;
+        // The Mithril run replaced the requested node restart, as it does
+        // when it reports a phase. A run refused before it prepares reports
+        // only this error.
+        if (s.requestedRestart === 'node') s.requestedRestart = null;
+        if (event.code === INSTALL_FAILED_CODE) {
+          s.installRetryRequired = true;
+          // A rebuild deletes the old chain before it installs, so its failed
+          // install leaves the rebuild unfinished. Any other install leaves
+          // itself unfinished, without having removed old chain data. As in
+          // the watchdog's record, a rebuild that continues an unfinished
+          // install stays an install.
+          if (event.rebuild !== true) s.installPending = true;
+          else if (!s.installPending) s.rebuildPending = true;
+        }
         break;
 
       case 'error':
         s.lastError = event.message as string;
+        s.lastErrorCode = null;
         break;
 
       case 'stopped':
@@ -516,6 +725,8 @@ class WatchdogManager {
         this._watchdogStopped = true;
         this._nodeRunning = false;
         s.requestedRestart = null;
+        s.nodeSilentSecs = null;
+        s.mithrilWaitingForNetwork = false;
         if (this._installRequested && this._installResult === null) {
           // The installer starts next; wait for the watchdog's report on it.
           if (this._finishStop) {

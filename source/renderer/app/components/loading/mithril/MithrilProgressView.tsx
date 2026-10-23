@@ -34,6 +34,8 @@ interface Props {
   hideAction?: boolean;
   actionDisabled?: boolean;
   showDownloadProgressBar?: boolean;
+  // The download has stalled and the aggregator cannot be reached
+  waitingForNetwork?: boolean;
   onAction(): void;
 }
 
@@ -117,6 +119,7 @@ function MithrilProgressView(props: Props, { intl }: Context) {
     hideAction,
     actionDisabled,
     showDownloadProgressBar,
+    waitingForNetwork,
     onAction,
   } = props;
 
@@ -192,6 +195,12 @@ function MithrilProgressView(props: Props, { intl }: Context) {
       {isLongRunningPhase && (
         <p className={styles.reassurance} aria-live="polite">
           {intl.formatMessage(messages.progressLongPhaseReassurance)}
+        </p>
+      )}
+
+      {waitingForNetwork && !isCancelling && (
+        <p className={styles.reassurance} role="status" aria-live="polite">
+          {intl.formatMessage(messages.progressWaitingForNetwork)}
         </p>
       )}
 

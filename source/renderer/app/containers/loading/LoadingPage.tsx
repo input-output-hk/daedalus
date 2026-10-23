@@ -6,6 +6,7 @@ import SystemTimeErrorPage from './SystemTimeErrorPage';
 import SyncingConnectingPage from './SyncingConnectingPage';
 import MithrilSyncContainer from './MithrilSyncContainer';
 import ChainStorageContainer from './ChainStorageContainer';
+import ChainDamageContainer from './ChainDamageContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import styles from '../../components/loading/mithril/MithrilBootstrap.scss';
 
@@ -59,6 +60,27 @@ class LoadingPage extends Component<InjectedProps> {
           <div className={styles.card}>
             <ChainStorageContainer />
           </div>
+        </div>
+      );
+    }
+
+    if (loadingPhase === 'chain-damaged') {
+      return (
+        <div
+          style={{
+            alignItems: 'center',
+            backgroundColor:
+              'var(--theme-mithril-overlay-backdrop-start, rgba(24, 37, 55, 1))',
+            bottom: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            left: 0,
+            position: 'fixed',
+            right: 0,
+            top: 0,
+          }}
+        >
+          <ChainDamageContainer />
         </div>
       );
     }

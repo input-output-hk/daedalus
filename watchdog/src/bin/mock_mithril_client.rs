@@ -15,6 +15,24 @@
 // MOCK_MITHRIL_ARGS_FILE, if set, receives the download arguments as a JSON
 // array so tests can assert what the watchdog passed.
 //
+// "snapshot show" states a database size of 1000 bytes, or of
+// MOCK_SNAPSHOT_SIZE bytes when that is set.
+//
+// With MOCK_MITHRIL_PROBE_FAIL=1, "snapshot show" fails with exit code 1, like
+// a client that cannot reach the aggregator.
+//
+// With MOCK_MITHRIL_DOWNLOAD_HANG=1, "download" emits its progress lines and
+// then waits until it is killed, so a test can cancel a download in progress.
+//
+// With MOCK_MITHRIL_DOWNLOAD_STALL_MS=<n>, "download" repeats its second
+// progress line, with the same counts, for n milliseconds before it goes on,
+// like a client whose download waits for the network.
+//
+// With MOCK_MITHRIL_OFFLINE_FILE=<path>, "download" creates that file while
+// it stalls and removes it when it goes on, and "snapshot show" fails while
+// the file exists, like a client that cannot reach the aggregator while the
+// network is gone.
+//
 // The snapshot's immutable_file_number is set very high (999_999) so the
 // behind-ness probe always concludes that a sync is needed when force=false.
 
@@ -34,14 +52,35 @@ fn main() {
     let is_show = args.iter().any(|a| a == "show");
     let is_download = args.iter().any(|a| a == "download");
 
+    let offline_file = env::var("MOCK_MITHRIL_OFFLINE_FILE").ok();
+
     if is_show {
+        if offline_file
+            .as_deref()
+            .is_some_and(|f| Path::new(f).exists())
+        {
+            eprintln!("mock-mithril-client: network unavailable");
+            std::process::exit(1);
+        }
+        if env::var("MOCK_MITHRIL_PROBE_FAIL").as_deref() == Ok("1") {
+            eprintln!("mock-mithril-client: aggregator unreachable");
+            std::process::exit(1);
+        }
         // MOCK_CERTIFIED_IMMUTABLE overrides the returned immutable file number;
         // defaults to 999999 so the behind-ness probe always triggers a sync.
         let certified: u64 = env::var("MOCK_CERTIFIED_IMMUTABLE")
             .ok()
             .and_then(|v| v.parse().ok())
             .unwrap_or(999_999);
-        println!(r#"{{"beacon":{{"immutable_file_number":{certified}}}}}"#);
+        // MOCK_SNAPSHOT_SIZE overrides the database size the snapshot states;
+        // defaults to 1000 bytes, which any test volume has room for.
+        let size: u64 = env::var("MOCK_SNAPSHOT_SIZE")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(1000);
+        println!(
+            r#"{{"beacon":{{"immutable_file_number":{certified}}},"total_db_size_uncompressed":{size}}}"#
+        );
         return;
     }
 
@@ -53,13 +92,34 @@ fn main() {
         }
 
         // Emit JSON progress lines (watchdog reads these from both stdout/stderr).
+        let stall_ms: u64 = env::var("MOCK_MITHRIL_DOWNLOAD_STALL_MS")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(0);
         for i in 1u64..=5 {
-            println!(
+            let line = format!(
                 r#"{{"files_downloaded":{i},"files_total":5,"bytes_downloaded":{b},"bytes_total":500,"seconds_elapsed":{s}.0,"step_num":1,"total_steps":4}}"#,
                 b = i * 100,
                 s = i,
             );
+            println!("{line}");
             sleep(Duration::from_millis(20));
+            if i == 2 && stall_ms > 0 {
+                if let Some(ref file) = offline_file {
+                    fs::write(file, b"").unwrap();
+                }
+                let until = std::time::Instant::now() + Duration::from_millis(stall_ms);
+                while std::time::Instant::now() < until {
+                    println!("{line}");
+                    sleep(Duration::from_millis(100));
+                }
+                if let Some(ref file) = offline_file {
+                    let _ = fs::remove_file(file);
+                }
+            }
+        }
+        if env::var("MOCK_MITHRIL_DOWNLOAD_HANG").as_deref() == Ok("1") {
+            sleep(Duration::from_secs(300));
         }
         // Emit a verifying-phase progress line.
         println!(

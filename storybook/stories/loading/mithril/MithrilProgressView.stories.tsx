@@ -74,6 +74,18 @@ storiesOf('Loading / Mithril / Progress', module)
       />
     );
   })
+  .add('Waiting For The Network', () => (
+    <MithrilProgressView
+      status="downloading"
+      progressItems={getBootstrapProgressItems('downloading')}
+      filesDownloaded={Math.round(snapshotFilesTotal * 0.47)}
+      filesTotal={snapshotFilesTotal}
+      snapshotSizeBytes={snapshotSize}
+      bootstrapStartedAt={createBootstrapStartedAt(18)}
+      waitingForNetwork
+      onAction={() => bootstrapActions.onCancel()}
+    />
+  ))
   .add('Preparing', () => (
     <MithrilProgressView
       status="preparing"

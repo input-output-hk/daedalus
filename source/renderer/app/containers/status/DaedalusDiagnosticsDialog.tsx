@@ -21,8 +21,16 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
   };
   handleForceCheckNetworkClock = () =>
     this.props.actions.networkStatus.forceCheckNetworkClock.trigger();
+  // A confirmed Mithril sync or rebuild shows its progress, and any error,
+  // on the loading screen, which this dialog would cover. The dialog closes
+  // once the request is sent.
   handleStartMithrilPartialSync = async () => {
     this.props.stores.backend.startMithrilForce();
+    this.props.actions.app.closeDaedalusDiagnosticsDialog.trigger();
+  };
+  handleRebuildChain = () => {
+    this.props.stores.backend.rebuildChain();
+    this.props.actions.app.closeDaedalusDiagnosticsDialog.trigger();
   };
   handleCopyStateDirectoryPath = () =>
     this.props.actions.networkStatus.copyStateDirectoryPath.trigger();
@@ -184,6 +192,9 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
           consoleCaptureEnabled={dapp.consoleCaptureEnabled}
           onConsoleCaptureChange={this.handleConsoleCaptureChange}
           onLaunchDapp={this.handleLaunchDapp}
+          chainDamage={backend.lastChainDamage}
+          isNodeHeld={backend.nodeHeld}
+          onRebuildChain={this.handleRebuildChain}
         />
       </ReactModal>
     );

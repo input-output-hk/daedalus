@@ -79,21 +79,185 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Cancel',
     description: 'Button label to cancel Mithril bootstrap.',
   },
-  wipeAndRetry: {
-    id: 'loading.mithrilBootstrap.wipeAndRetry',
-    defaultMessage: '!!!Wipe chain & retry',
-    description: 'Button label to wipe chain and retry Mithril bootstrap.',
-  },
   errorTitle: {
     id: 'loading.mithrilBootstrap.errorTitle',
     defaultMessage: '!!!Mithril bootstrap failed',
     description: 'Generic title for the Mithril bootstrap error state.',
+  },
+  errorRebuildTitle: {
+    id: 'loading.mithrilBootstrap.error.rebuild.title',
+    defaultMessage: '!!!Could not rebuild the blockchain data',
+    description:
+      'Title of the Mithril error view when a rebuild of the blockchain data failed or was refused.',
   },
   startFailureHint: {
     id: 'loading.mithrilBootstrap.startFailureHint',
     defaultMessage:
       '!!!The node could not start with the restored chain data. Wipe the chain and try Mithril Sync again, or do a Blockchain Sync from Genesis.',
     description: 'Hint for node-start failures after Mithril bootstrap.',
+  },
+  errorRetry: {
+    id: 'loading.mithrilBootstrap.error.retry',
+    defaultMessage: '!!!Retry',
+    description:
+      'Button label on the Mithril error view that runs Mithril Sync again.',
+  },
+  errorSkip: {
+    id: 'loading.mithrilBootstrap.error.skip',
+    defaultMessage: '!!!Skip to blockchain sync',
+    description:
+      'Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.',
+  },
+  errorNotNow: {
+    id: 'loading.mithrilBootstrap.error.notNow',
+    defaultMessage: '!!!Not now',
+    description:
+      'Button label on the Mithril error view after a rebuild was refused before it deleted anything, for example because the Mithril service could not be reached or the drive has too little free space. Cardano node has already started again on the existing blockchain data; the button closes the error view and continues with that data.',
+  },
+  errorChainRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.chainRemovedHint',
+    defaultMessage:
+      '!!!The old blockchain data was removed. Retry downloads it again with Mithril, or choose how to sync.',
+    description:
+      'Note on the Mithril error view when a rebuild failed after it had already removed the old blockchain data.',
+  },
+  errorChainRemovedRetryHint: {
+    id: 'loading.mithrilBootstrap.error.chainRemovedRetryHint',
+    defaultMessage:
+      '!!!The old blockchain data was removed. Retry downloads it again with Mithril.',
+    description:
+      'Note on the Mithril error view when the install of a rebuild failed after the old blockchain data was removed, where Retry is the only action.',
+  },
+  errorInstallUnfinishedHint: {
+    id: 'loading.mithrilBootstrap.error.installUnfinishedHint',
+    defaultMessage:
+      '!!!A download of the blockchain data did not finish installing. Retry downloads it again with Mithril, or choose how to sync.',
+    description:
+      'Note on the Mithril error view when a Mithril install began changing the blockchain data and did not finish, for example because Daedalus was closed during the first download, without any old blockchain data having been removed.',
+  },
+  errorInstallUnfinishedRetryHint: {
+    id: 'loading.mithrilBootstrap.error.installUnfinishedRetryHint',
+    defaultMessage:
+      '!!!A download of the blockchain data did not finish installing. Retry downloads it again with Mithril.',
+    description:
+      'Note on the Mithril error view when a Mithril install that was not a rebuild failed part-way, where Retry is the only action.',
+  },
+  errorChooseLocation: {
+    id: 'loading.mithrilBootstrap.error.chooseLocation',
+    defaultMessage: '!!!Choose another location',
+    description:
+      'Button label on the Mithril error view that opens the blockchain data location picker, shown when the drive is too full or the folder holds other files.',
+  },
+  errorChooseSync: {
+    id: 'loading.mithrilBootstrap.error.chooseSync',
+    defaultMessage: '!!!Choose how to sync',
+    description:
+      'Button label on the Mithril error view that opens the choice between Mithril fast sync and a Blockchain Sync from Genesis, after the old blockchain data was removed.',
+  },
+  decisionChainRemovedNotice: {
+    id: 'loading.mithrilBootstrap.decisionChainRemovedNotice',
+    defaultMessage:
+      '!!!The old blockchain data was removed, so the blockchain needs to be synced again.',
+    description:
+      'Note on the Mithril bootstrap prompt when a rebuild removed the old blockchain data and did not finish.',
+  },
+  decisionInstallUnfinishedNotice: {
+    id: 'loading.mithrilBootstrap.decisionInstallUnfinishedNotice',
+    defaultMessage:
+      '!!!A download of the blockchain data did not finish installing, so the blockchain needs to be synced again.',
+    description:
+      'Note on the Mithril bootstrap prompt when a Mithril install began changing the blockchain data and did not finish, without any old blockchain data having been removed.',
+  },
+  errorInsufficientSpaceHint: {
+    id: 'loading.mithrilBootstrap.error.insufficientSpaceHint',
+    defaultMessage:
+      '!!!There is not enough free space on the drive that holds the blockchain data. Your blockchain data has not been changed. Free some space on that drive and retry, or choose another location.',
+    description:
+      'Hint for the INSUFFICIENT_SPACE error on the Mithril error view, shown when a rebuild was refused before it deleted anything because the drive that holds the blockchain data is too full for the download.',
+  },
+  errorInsufficientSpaceRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.insufficientSpace.removedHint',
+    defaultMessage:
+      '!!!There is not enough free space on the drive that holds the blockchain data. Free some space on that drive and retry, or choose another location.',
+    description:
+      'Hint for the INSUFFICIENT_SPACE error on the Mithril error view after an earlier rebuild attempt removed the old blockchain data, so it does not say the data is unchanged.',
+  },
+  errorRebuildMarkerFailedHint: {
+    id: 'loading.mithrilBootstrap.error.rebuildMarkerFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry.',
+    description:
+      'Hint for the REBUILD_MARKER_FAILED error on the Mithril error view, shown when a rebuild was refused before it deleted anything because Daedalus could not write the record of the rebuild to its data folder.',
+  },
+  errorRebuildMarkerFailedRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.rebuildMarkerFailed.removedHint',
+    defaultMessage:
+      '!!!Daedalus could not record the rebuild in its data folder. Check that the data folder is writable and retry.',
+    description:
+      'Hint for the REBUILD_MARKER_FAILED error on the Mithril error view after an earlier rebuild attempt removed the old blockchain data, so it does not say nothing was changed.',
+  },
+  errorMarkerFailedHint: {
+    id: 'loading.mithrilBootstrap.error.markerFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not write to its data folder before installing the downloaded blockchain data, so it did not install it. Check that the data folder is writable and retry.',
+    description:
+      'Hint for the MARKER_FAILED error on the Mithril error view, shown when Daedalus could not write to its data folder after the download and before the install, so the downloaded blockchain data was not installed.',
+  },
+  errorProbeFailedHint: {
+    id: 'loading.mithrilBootstrap.error.probeFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not reach the Mithril service. Your blockchain data has not been changed. Check your internet connection and try again.',
+    description:
+      'Hint shown when the Mithril service could not be reached before anything was changed or deleted.',
+  },
+  errorProbeFailedRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.probeFailed.removedHint',
+    defaultMessage:
+      '!!!Daedalus could not reach the Mithril service. Check your internet connection and try again.',
+    description:
+      'Hint shown when the Mithril service could not be reached after an earlier rebuild attempt removed the old blockchain data, so it does not say the data is unchanged.',
+  },
+  errorInvalidChainPathHint: {
+    id: 'loading.mithrilBootstrap.error.invalidChainPath.hint',
+    defaultMessage:
+      '!!!Daedalus cannot rebuild the blockchain data in this folder. Choose a different blockchain data location and try again.',
+    description:
+      'Hint shown when the configured blockchain data location cannot be used for a rebuild.',
+  },
+  errorChainDirNotReplaceableHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirNotReplaceable.hint',
+    defaultMessage:
+      '!!!The blockchain data folder contains other files, so Daedalus did not delete it. Move those files elsewhere and retry, or choose another location.',
+    description:
+      'Hint shown when the blockchain data folder holds files that are not blockchain data, so a rebuild refused to delete it.',
+  },
+  errorChainDirNotReplaceableRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirNotReplaceable.removedHint',
+    defaultMessage:
+      '!!!The blockchain data folder contains other files, so Daedalus cannot install the blockchain data there. Move those files elsewhere and retry, or choose another location.',
+    description:
+      'Hint shown when the blockchain data folder holds files that are not blockchain data, after an earlier rebuild attempt removed the old blockchain data.',
+  },
+  errorChainDirOtherNetworkHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirOtherNetwork.hint',
+    defaultMessage:
+      '!!!The blockchain data folder holds data for a different Cardano network, so Daedalus did not change it. Choose a different blockchain data location and try again.',
+    description:
+      'Hint shown when the blockchain data folder holds another Cardano network, so a rebuild refused to change it.',
+  },
+  errorChainDirOtherNetworkRemovedHint: {
+    id: 'loading.mithrilBootstrap.error.chainDirOtherNetwork.removedHint',
+    defaultMessage:
+      '!!!The blockchain data folder holds data for a different Cardano network. Choose a different blockchain data location and try again.',
+    description:
+      'Hint shown when the blockchain data folder holds another Cardano network, after an earlier rebuild attempt removed the old blockchain data.',
+  },
+  errorWipeFailedHint: {
+    id: 'loading.mithrilBootstrap.error.wipeFailed.hint',
+    defaultMessage:
+      '!!!Daedalus could not delete the blockchain data files. Close any other programs that might be using the blockchain folder, then retry.',
+    description:
+      'Hint shown when deleting the old blockchain data failed during a rebuild, typically because another program holds a file open.',
   },
   stepPreparing: {
     id: 'loading.mithrilBootstrap.step.preparing',
@@ -274,6 +438,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!≈ {totalSize} total',
     description:
       'Static, real-size context appended to the Mithril download readout (derived from snapshot.size); not a moving bar.',
+  },
+  progressWaitingForNetwork: {
+    id: 'loading.mithrilBootstrap.progress.waitingForNetwork',
+    defaultMessage: '!!!Downloading will continue when the network returns.',
+    description:
+      'Line on the Mithril progress view while the download has stalled and the Mithril aggregator cannot be reached; the download continues by itself once the network is back.',
   },
   progressLongPhaseReassurance: {
     id: 'loading.mithrilBootstrap.progress.longPhaseReassurance',

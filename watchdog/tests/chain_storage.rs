@@ -1,7 +1,8 @@
 // Chain storage in a folder the user picked: the database lives in
 // `<folder>/chain` for the node and for Mithril, whether the folder came from
-// the storage picker or from an earlier version's settings, and a Mithril
-// bootstrap never deletes files that are not a node database.
+// the storage picker or from an earlier version's settings, a Mithril
+// bootstrap never deletes files that are not a node database, and a rebuild
+// replaces the database where it is, keeping any link that leads to it.
 //
 // Unix-only, like the other process tests: the node is a shell script that
 // reads the shutdown pipe on fd 3.
@@ -180,6 +181,13 @@ fn make_other_network_db(dir: &Path) {
     std::fs::write(dir.join("protocolMagicId"), OTHER_NETWORK_MAGIC).unwrap();
 }
 
+/// A database of this network in `dir`, with the same entries as
+/// `make_other_network_db`.
+fn make_this_network_db(dir: &Path) {
+    make_other_network_db(dir);
+    std::fs::write(dir.join("protocolMagicId"), NETWORK_MAGIC).unwrap();
+}
+
 /// Every entry under `dir` with the contents of each file, to show that a
 /// directory was left exactly as it was.
 fn tree(dir: &Path) -> BTreeMap<PathBuf, Option<Vec<u8>>> {
@@ -259,6 +267,11 @@ fn stop(mut child: Child, mut stdin: ChildStdin, rx: &mpsc::Receiver<Value>) {
     let _ = child.wait();
 }
 
+/// Waits for the Mithril pipeline to report `phase`.
+fn expect_phase(rx: &mpsc::Receiver<Value>, phase: &str) {
+    while expect(rx, "mithril_status")["phase"] != phase {}
+}
+
 /// No state file yet, and an empty default location: the first-run path
 /// where the storage picker is shown.
 fn first_run(dir: &TempDir) {
@@ -323,6 +336,8 @@ fn bootstrap_refuses_a_chain_directory_with_unrelated_files() {
 
     let err = expect(&rx, "mithril_error");
     assert_eq!(err["code"], "CHAIN_DIR_NOT_REPLACEABLE");
+    // A first-run bootstrap is not a rebuild.
+    assert_eq!(err["rebuild"], false, "{err}");
     assert!(
         err["message"].as_str().unwrap().contains("photo.jpg"),
         "{err}"
@@ -634,6 +649,156 @@ fn configured_folder_with_another_networks_database_starts_no_node() {
     stop(child, stdin, &rx);
 }
 
+/// A Mithril staging entry beside a database of `magic` in the configured
+/// storage folder, holding a part-downloaded database staged for `staged`.
+/// Returns the storage folder.
+fn folder_with_staging(dir: &TempDir, magic: Option<&str>, staged: &str) -> PathBuf {
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    std::fs::create_dir_all(&db).unwrap();
+    if let Some(magic) = magic {
+        make_other_network_db(&db);
+        std::fs::write(db.join("protocolMagicId"), magic).unwrap();
+    }
+    let staged_db = db.join("mithril-staging").join("download").join("db");
+    std::fs::create_dir_all(staged_db.join("immutable")).unwrap();
+    std::fs::write(
+        staged_db.join("immutable").join("00000.chunk"),
+        b"in flight",
+    )
+    .unwrap();
+    std::fs::write(staged_db.join("protocolMagicId"), staged).unwrap();
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    folder
+}
+
+/// Startup leaves a staging entry alone when the chain directory holds
+/// another network's database: that network's Daedalus, sharing the storage
+/// folder, may be downloading into it.
+#[test]
+fn startup_keeps_the_staging_beside_another_networks_database() {
+    let dir = TempDir::new("other-staging");
+    let folder = folder_with_staging(&dir, Some(OTHER_NETWORK_MAGIC), OTHER_NETWORK_MAGIC);
+    let before = tree(&folder);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// The same holds for another network's first download into an empty chain
+/// directory, which only the staged database names.
+#[test]
+fn startup_keeps_a_staged_database_of_another_network() {
+    let dir = TempDir::new("other-staged");
+    let folder = folder_with_staging(&dir, None, OTHER_NETWORK_MAGIC);
+    let before = tree(&folder);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// A staging entry of this network is a leftover of an interrupted sync and
+/// is deleted at startup, as before.
+#[test]
+fn startup_deletes_the_staging_beside_this_networks_database() {
+    let dir = TempDir::new("own-staging");
+    let folder = folder_with_staging(&dir, Some(NETWORK_MAGIC), NETWORK_MAGIC);
+    let cfg = config_on_network(&dir, NETWORK_MAGIC);
+    let (child, stdin, rx) = spawn_with(&dir, &cfg, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    assert!(!folder.join("chain").join("mithril-staging").exists());
+
+    stop(child, stdin, &rx);
+}
+
+/// Two networks share a storage folder. While one downloads its first
+/// snapshot, before mithril-client has written `protocolMagicId` into the
+/// staged database, the other starts: it leaves the download alone, and its
+/// own Mithril sync is refused without changing anything.
+#[test]
+fn a_download_in_a_shared_folder_is_left_to_its_network() {
+    let downloading = TempDir::new("shared-downloading");
+    first_run(&downloading);
+    let folder = downloading.picked_folder();
+    let staging = folder.join("chain").join("mithril-staging");
+    let cfg = config_on_network(&downloading, NETWORK_MAGIC);
+    let (child, mut stdin, rx) = spawn_with(
+        &downloading,
+        &cfg,
+        &[("MOCK_MITHRIL_DOWNLOAD_HANG", Path::new("1"))],
+    );
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], false);
+    send(
+        &mut stdin,
+        json!({"cmd": "set_chain_path", "path": folder.to_str().unwrap()}),
+    );
+    send(&mut stdin, json!({"cmd": "start_mithril"}));
+    expect_phase(&rx, "downloading");
+    assert_eq!(
+        std::fs::read_to_string(staging.join("network-magic")).unwrap(),
+        NETWORK_MAGIC
+    );
+    assert!(
+        !staging
+            .join("download")
+            .join("db")
+            .join("protocolMagicId")
+            .exists()
+    );
+    let before = tree(&folder);
+
+    let other = TempDir::new("shared-other");
+    std::fs::write(
+        other.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let other_cfg = config_on_network(&other, OTHER_NETWORK_MAGIC);
+    let mithril_args = other.0.join("mithril-args.json");
+    let (other_child, mut other_stdin, other_rx) = spawn_with(
+        &other,
+        &other_cfg,
+        &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)],
+    );
+
+    assert_eq!(expect(&other_rx, "chain_status")["has_chain"], false);
+    assert_eq!(tree(&folder), before);
+    assert!(
+        other.log().contains("belongs to network magic 764824073"),
+        "{}",
+        other.log()
+    );
+
+    send(&mut other_stdin, json!({"cmd": "start_mithril"}));
+    let err = expect(&other_rx, "mithril_error");
+    assert_eq!(err["code"], "CHAIN_DIR_OTHER_NETWORK");
+    assert!(
+        err["message"]
+            .as_str()
+            .unwrap()
+            .contains(staging.to_str().unwrap()),
+        "{err}"
+    );
+    assert!(!mithril_args.exists(), "a download was started");
+    assert_eq!(tree(&folder), before);
+
+    stop(other_child, other_stdin, &other_rx);
+    stop(child, stdin, &rx);
+}
+
 /// Every start of the node is checked, not only the first: moving a running
 /// node to a folder that holds another network's database stops it and does
 /// not start it again there.
@@ -695,6 +860,171 @@ fn this_networks_database_in_a_picked_folder_is_synced_as_before() {
     );
     assert!(!db.join("immutable").join("00009.chunk").exists());
     assert_eq!(dir.node_database_path().as_deref(), db.to_str());
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild of a chain directory that is a link, as 11.0 to 11.2 kept a
+/// custom location, deletes the database in the link's target outside the
+/// state directory, installs the new one there, and keeps the link.
+#[test]
+fn rebuild_through_a_link_replaces_the_target_and_keeps_the_link() {
+    let dir = TempDir::new("rebuild-link");
+    let target = dir.0.join("elsewhere");
+    make_this_network_db(&target);
+    let chain = dir.state().join("chain");
+    std::os::unix::fs::symlink(&target, &chain).unwrap();
+    std::fs::write(dir.state().join("watchdog-state.json"), b"{}").unwrap();
+    let mithril_args = dir.0.join("mithril-args.json");
+    let (child, mut stdin, rx) = spawn(&dir, &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_phase(&rx, "finalizing");
+    expect(&rx, "node_started");
+
+    // The download was staged inside the link's target, on its volume, and
+    // nothing of it is left once installed.
+    let args: Vec<String> =
+        serde_json::from_str(&std::fs::read_to_string(&mithril_args).unwrap()).unwrap();
+    let i = args.iter().position(|a| a == "--download-dir").unwrap();
+    assert_eq!(
+        Path::new(&args[i + 1]),
+        target.join("mithril-staging").join("download")
+    );
+    assert!(!target.join("mithril-staging").exists());
+
+    assert!(
+        std::fs::symlink_metadata(&chain)
+            .unwrap()
+            .file_type()
+            .is_symlink(),
+        "the link was replaced"
+    );
+    assert_eq!(std::fs::read_link(&chain).unwrap(), target);
+    assert_eq!(
+        std::fs::read(target.join("protocolMagicId")).unwrap(),
+        NETWORK_MAGIC.as_bytes()
+    );
+    assert!(!target.join("immutable").join("00000.chunk").exists());
+    assert!(!target.join("ledger").join("999").exists());
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild of the database in a folder the user picked outside the state
+/// directory rebuilds it in place, and the folder's own files stay.
+#[test]
+fn rebuild_in_a_picked_folder_rebuilds_in_place() {
+    let dir = TempDir::new("rebuild-picked");
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    make_this_network_db(&db);
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let (child, mut stdin, rx) = spawn(&dir, &[]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "node_socket_ready");
+    std::fs::remove_file(dir.node_args_file()).unwrap();
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    expect_phase(&rx, "finalizing");
+    expect(&rx, "node_socket_ready");
+
+    assert_eq!(
+        std::fs::read(folder.join("notes.txt")).unwrap(),
+        b"user data"
+    );
+    assert_eq!(
+        std::fs::read(db.join("protocolMagicId")).unwrap(),
+        NETWORK_MAGIC.as_bytes()
+    );
+    assert!(!db.join("immutable").join("00000.chunk").exists());
+    assert!(!db.join("ledger").join("999").exists());
+    assert_eq!(dir.node_database_path().as_deref(), db.to_str());
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild refuses a chain directory that holds a file of the user's own
+/// next to the database, before anything is downloaded or deleted, and the
+/// node starts again on the chain it had.
+#[test]
+fn rebuild_refuses_a_chain_directory_with_unrelated_files_and_deletes_nothing() {
+    let dir = TempDir::new("rebuild-refuse");
+    let folder = dir.picked_folder();
+    let db = folder.join("chain");
+    make_this_network_db(&db);
+    std::fs::write(db.join("photo.jpg"), b"user data").unwrap();
+    std::fs::write(
+        dir.state().join("watchdog-state.json"),
+        json!({ "chain_path": folder.to_str().unwrap() }).to_string(),
+    )
+    .unwrap();
+    let before = tree(&folder);
+    let mithril_args = dir.0.join("mithril-args.json");
+    let (child, mut stdin, rx) = spawn(&dir, &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "CHAIN_DIR_NOT_REPLACEABLE");
+    assert_eq!(err["rebuild"], true, "{err}");
+    assert!(
+        err["message"].as_str().unwrap().contains("photo.jpg"),
+        "{err}"
+    );
+    expect(&rx, "node_started");
+    assert!(!mithril_args.exists(), "a download was started");
+    assert_eq!(tree(&folder), before);
+
+    stop(child, stdin, &rx);
+}
+
+/// A rebuild refuses a relative chain path before it probes, downloads or
+/// deletes anything.
+#[test]
+fn rebuild_refuses_a_relative_chain_path() {
+    let dir = TempDir::new("rebuild-relative");
+    let db = dir.state().join("chain");
+    make_this_network_db(&db);
+    std::fs::write(dir.state().join("watchdog-state.json"), b"{}").unwrap();
+    let before = tree(&db);
+    let mithril_args = dir.0.join("mithril-args.json");
+    let mut cfg = config(&dir);
+    cfg["mithril"]["chain_path"] = json!("chain");
+    let (child, mut stdin, rx) =
+        spawn_with(&dir, &cfg, &[("MOCK_MITHRIL_ARGS_FILE", &mithril_args)]);
+
+    assert_eq!(expect(&rx, "chain_status")["has_chain"], true);
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "INVALID_CHAIN_PATH");
+    assert_eq!(err["rebuild"], true, "{err}");
+    expect(&rx, "node_started");
+    assert!(!mithril_args.exists(), "a download was started");
+    assert_eq!(tree(&db), before);
 
     stop(child, stdin, &rx);
 }

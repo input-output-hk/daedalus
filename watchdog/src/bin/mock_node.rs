@@ -8,13 +8,21 @@
 // a node that takes a while to close its database.
 // With MOCK_NODE_CRASH_AFTER_READY_MS=<n> it exits with code 1 n milliseconds
 // after reporting chainDbReady, like a node that crashes once running.
+// With MOCK_NODE_EXTRA_LINES=<file> it prints that file's contents to stdout
+// after the startup phases, so a test can inject log lines.
+// With MOCK_NODE_UNTERMINATED_LINE=<file> it stops after opening the ledger
+// database begins, writes that file's contents to stderr without the final
+// newline, and hangs there until the shutdown pipe closes, so a test can
+// leave a line unterminated while the node runs. Once a file named
+// <socket_path>.finish exists, it writes the newline and keeps hanging.
+use std::io::Write as _;
+
 fn main() {
     let socket_path = std::env::args().nth(1).expect("socket path required");
     if let Some(parent) = std::path::Path::new(&socket_path).parent() {
         let _ = std::fs::create_dir_all(parent);
     }
     // Emit the full startup phase sequence so the state machine reaches chainDbReady.
-    use std::io::Write as _;
     // Echo the host name the watchdog gave the node, so tests can assert on it.
     println!(
         "TRACE_DISPATCHER_LOGGING_HOSTNAME={}",
@@ -26,8 +34,19 @@ fn main() {
     println!("StartedOpeningVolatileDB");
     println!("OpenedVolatileDB");
     println!("StartedOpeningLgrDB");
+    if let Some(file) = std::env::var_os("MOCK_NODE_UNTERMINATED_LINE") {
+        std::io::stdout().flush().unwrap();
+        hang_on_unterminated_line(&socket_path, &file);
+        return;
+    }
     println!("OpenedLgrDB");
     println!("OpenedDB");
+    if let Some(extra) = std::env::var_os("MOCK_NODE_EXTRA_LINES") {
+        print!(
+            "{}",
+            std::fs::read_to_string(extra).expect("read MOCK_NODE_EXTRA_LINES")
+        );
+    }
     std::io::stdout().flush().unwrap();
     std::fs::File::create(&socket_path).expect("create socket file");
 
@@ -39,6 +58,43 @@ fn main() {
         std::process::exit(1);
     }
 
+    wait_for_shutdown();
+
+    if let Some(ms) = std::env::var("MOCK_NODE_EXIT_DELAY_MS")
+        .ok()
+        .and_then(|v| v.parse::<u64>().ok())
+    {
+        std::thread::sleep(std::time::Duration::from_millis(ms));
+    }
+    if std::env::var("MOCK_NODE_IGNORE_SHUTDOWN").as_deref() == Ok("1") {
+        loop {
+            std::thread::sleep(std::time::Duration::from_secs(3600));
+        }
+    }
+}
+
+/// Write `file` to stderr without its final newline, write the newline once
+/// `<socket_path>.finish` exists, and return when the shutdown pipe closes.
+fn hang_on_unterminated_line(socket_path: &str, file: &std::ffi::OsStr) {
+    let text = std::fs::read_to_string(file).expect("read MOCK_NODE_UNTERMINATED_LINE");
+    let mut err = std::io::stderr();
+    err.write_all(text.trim_end_matches('\n').as_bytes())
+        .unwrap();
+    err.flush().unwrap();
+    let finish = std::path::PathBuf::from(format!("{socket_path}.finish"));
+    std::thread::spawn(move || {
+        while !finish.exists() {
+            std::thread::sleep(std::time::Duration::from_millis(20));
+        }
+        let mut err = std::io::stderr();
+        err.write_all(b"\n").unwrap();
+        err.flush().unwrap();
+    });
+    wait_for_shutdown();
+}
+
+/// Block until the watchdog closes the shutdown pipe.
+fn wait_for_shutdown() {
     #[cfg(unix)]
     {
         use std::io::Read;
@@ -55,17 +111,5 @@ fn main() {
         use std::io::Read;
         let mut buf = [0u8; 64];
         while std::io::stdin().read(&mut buf).unwrap_or(0) > 0 {}
-    }
-
-    if let Some(ms) = std::env::var("MOCK_NODE_EXIT_DELAY_MS")
-        .ok()
-        .and_then(|v| v.parse::<u64>().ok())
-    {
-        std::thread::sleep(std::time::Duration::from_millis(ms));
-    }
-    if std::env::var("MOCK_NODE_IGNORE_SHUTDOWN").as_deref() == Ok("1") {
-        loop {
-            std::thread::sleep(std::time::Duration::from_secs(3600));
-        }
     }
 }
