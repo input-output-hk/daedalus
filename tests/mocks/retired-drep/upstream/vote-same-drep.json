@@ -1,0 +1,20 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:32:16Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 933
+  },
+  "request": {
+    "method": "PUT",
+    "path": "/v2/dreps/drep1yfq754rwac7c4dcfz0c26yvyv5hn6udgjxkx2g9kyje4wmsx5lvav/wallets/3bae5249a08c32dd381ed95cdfe765b82736878d",
+    "body": {
+      "passphrase": "<redacted>"
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": "{\"code\":\"same_vote\",\"message\":\"I couldn't cast a vote :  drep1yfq754rwac7c4dcfz0c26yvyv5hn6udgjxkx2g9kyje4wmsx5lvav. I have already voted like that; repeating this action would incur an unnecessary fee!\"}"
+  }
+}

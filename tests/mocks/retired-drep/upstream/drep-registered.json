@@ -1,0 +1,18 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:29:38Z",
+  "chain": {
+    "epoch": 0,
+    "slot": 140
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/dreps/drep1yfq754rwac7c4dcfz0c26yvyv5hn6udgjxkx2g9kyje4wmsx5lvav",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"anchor\":null,\"credential\":{\"hash\":\"41ea546eee3d8ab70913f0ad1184652f3d71a891ac6520b624b3576e\",\"type\":\"key_hash\"},\"deposit\":{\"quantity\":500000000,\"unit\":\"lovelace\"},\"expiry_epoch\":20,\"id\":\"drep1yfq754rwac7c4dcfz0c26yvyv5hn6udgjxkx2g9kyje4wmsx5lvav\",\"metadata\":null,\"name\":null,\"status\":\"active\",\"voting_power\":{\"quantity\":\"0\",\"unit\":\"lovelace\"}}"
+  }
+}

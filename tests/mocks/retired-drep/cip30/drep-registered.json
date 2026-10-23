@@ -1,0 +1,18 @@
+{
+  "backend": "cip30",
+  "wallet": "v2026-09-16 (git revision: d408e4f29e46dc34454b160b3994ee9974b5cde2)",
+  "recorded": "2026-10-23T23:21:45Z",
+  "chain": {
+    "epoch": 0,
+    "slot": 95
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/dreps/drep1yt3ngxy0tqu7xa09p03rurn9duvhafwrjcz4xem7ka3l30q9v96ms",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"anchor\":null,\"credential\":{\"hash\":\"e334188f5839e375e50be23e0e656f197ea5c3960553677eb763f8bc\",\"type\":\"key_hash\"},\"deposit\":{\"quantity\":500000000,\"unit\":\"lovelace\"},\"expiry_epoch\":20,\"id\":\"drep1yt3ngxy0tqu7xa09p03rurn9duvhafwrjcz4xem7ka3l30q9v96ms\",\"metadata\":null,\"name\":null,\"status\":\"active\",\"voting_power\":{\"quantity\":\"0\",\"unit\":\"lovelace\"}}"
+  }
+}

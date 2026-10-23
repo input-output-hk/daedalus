@@ -1,0 +1,18 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:32:25Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 980
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/dreps/drep1yfq754rwac7c4dcfz0c26yvyv5hn6udgjxkx2g9kyje4wmsx5lvav",
+    "body": null
+  },
+  "response": {
+    "status": 404,
+    "body": "{\"code\":\"not_found\",\"message\":\"No DRep found for the given identifier.\"}"
+  }
+}

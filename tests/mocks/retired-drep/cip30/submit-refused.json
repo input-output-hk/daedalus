@@ -1,0 +1,20 @@
+{
+  "backend": "cip30",
+  "wallet": "v2026-09-16 (git revision: d408e4f29e46dc34454b160b3994ee9974b5cde2)",
+  "recorded": "2026-10-23T23:24:29Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 930
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/ed201f48ce73408dd0f801637ba73891a53c5cbd/transactions-submit",
+    "body": {
+      "transaction": "84a600d9010281825820261d14265df42e8ccacece17a41b70a724c2a4d38409b67414a75d13158c423b01018282581d601f5ab13220d638ee8109d06c2c23a12a4b03cf131ea4c404939e962e1a004c4b4082583900370b280bf88b1da829a228d071c5ec70d083c92760cdc8bf58fa35e4845dd6fa3072bf11d8c8301885c32cc768de3e004cd6cfe679a8e2121b0000001a0da2ec5e021a0002a56d0319904a05a1581de0845dd6fa3072bf11d8c8301885c32cc768de3e004cd6cfe679a8e2121aa8f7c4460800a100d9010282825820a70630082af808a8bf74dd1dc8fb13f0a790126945c09ada3a2b0ee14b7cc94258409be2bef5daeb76e99a4b36719f816665b24fff49c62582c1e39b8e8973697be315b2ec20bfcac07a4f203894f8544667d4fd9953341173078d74d48b89a15b09825820139719628d0e4a3806a22000f7d0f12d440ceee340fc300b5da79aa65736d3d658404fe6d8aa69d1346eb72cf7e20ae71543cd1c38f2046a9490857bd061e2daef6bcff3e347eac42519aadc05e5807b13dd9df915e180ea18f0e5c939be58e4fb03f5f6"
+    }
+  },
+  "response": {
+    "status": 500,
+    "body": "{\"code\":\"created_invalid_transaction\",\"message\":\"The submitted transaction was rejected by the local node. Here's an error message that may help with debugging: HardForkApplyTxErrFromEra S (S (S (S (S (S (Z (WrapApplyTxErr {unwrapApplyTxErr = ConwayApplyTxError (ConwayWdrlNotDelegatedToDRep (KeyHash {unKeyHash = \\\"845dd6fa3072bf11d8c8301885c32cc768de3e004cd6cfe679a8e212\\\"} :| []) :| [])})))))))\"}"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "backend": "cip30",
+  "wallet": "v2026-09-16 (git revision: d408e4f29e46dc34454b160b3994ee9974b5cde2)",
+  "recorded": "2026-10-23T23:24:43Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 999
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/dreps/summary",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"active_drep_count\":1,\"inactive_drep_count\":0,\"total_drep_count\":1,\"total_drep_stake\":{\"quantity\":\"0\",\"unit\":\"lovelace\"}}"
+  }
+}

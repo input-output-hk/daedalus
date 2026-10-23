@@ -1,0 +1,30 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:32:15Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 922
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/3bae5249a08c32dd381ed95cdfe765b82736878d/transactions-construct",
+    "body": {
+      "encoding": "base16",
+      "payments": [
+        {
+          "address": "addr_test1vp9uf2uz6czxsgwk7z488vpp7v6emegucyqklpwf45ftw0cw9n3y8",
+          "amount": {
+            "quantity": 5000000,
+            "unit": "lovelace"
+          }
+        }
+      ],
+      "withdrawal": "self"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"coin_selection\":{\"change\":[{\"address\":\"addr_test1qpz76mfkezqpn7vmupj58fqqdluzyajd9vhye44296mg4vyqzsepa8h2h64lte9y4za4wu43p5cqzwjq0x5aeljmle5qtvlc8l\",\"amount\":{\"quantity\":113627793394,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"1\",\"6\"]}],\"collateral\":[],\"deposits_returned\":[],\"deposits_taken\":[],\"inputs\":[{\"address\":\"addr_test1qzla03xfpjj7pr2syy0ycp7nv4j0nk02g4ut478hw7ehzevqzsepa8h2h64lte9y4za4wu43p5cqzwjq0x5aeljmle5qu2n8u5\",\"amount\":{\"quantity\":108746211340,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"1\",\"5\"],\"id\":\"0f58cc67c25b894816a80bf0d8dff5e3bd1483826522d23bc413bb949aedf0b1\",\"index\":1}],\"outputs\":[{\"address\":\"addr_test1vp9uf2uz6czxsgwk7z488vpp7v6emegucyqklpwf45ftw0cw9n3y8\",\"amount\":{\"quantity\":5000000,\"unit\":\"lovelace\"},\"assets\":[]}],\"withdrawals\":[{\"amount\":{\"quantity\":4886755651,\"unit\":\"lovelace\"},\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"2\",\"0\"],\"stake_address\":\"stake_test1uzqpgvs7nm4ta2l4ujj23w6hw2cs6vqp8fq8n2wuledlu6qjl0ey8\"}]},\"fee\":{\"quantity\":173597,\"unit\":\"lovelace\"},\"transaction\":\"84a600d90102818258200f58cc67c25b894816a80bf0d8dff5e3bd1483826522d23bc413bb949aedf0b101018282581d604bc4ab82d6046821d6f0aa73b021f3359de51cc1016f85c9ad12b73f1a004c4b408258390045ed6d36c88019f99be06543a4006ff822764d2b2e4cd6aa2eb68ab08014321e9eeabeabf5e4a4a8bb5772b10d30013a4079a9dcfe5bfe681b0000001a74be87f2021a0002a61d0319904405a1581de08014321e9eeabeabf5e4a4a8bb5772b10d30013a4079a9dcfe5bfe681b000000012345f9430800a0f5f6\"}"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:32:15Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 933
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/proxy/transactions",
+    "body": "<signed transaction, application/octet-stream>"
+  },
+  "response": {
+    "status": 500,
+    "body": "{\"code\":\"created_invalid_transaction\",\"message\":\"The submitted transaction was rejected by the local node. Here's an error message that may help with debugging: HardForkApplyTxErrFromEra S (S (S (S (S (S (Z (WrapApplyTxErr {unwrapApplyTxErr = ConwayApplyTxError (ConwayWdrlNotDelegatedToDRep (KeyHash {unKeyHash = \\\"8014321e9eeabeabf5e4a4a8bb5772b10d30013a4079a9dcfe5bfe68\\\"} :| []) :| [])})))))))\"}"
+  }
+}

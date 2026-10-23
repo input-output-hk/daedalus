@@ -1,0 +1,30 @@
+{
+  "backend": "cip30",
+  "wallet": "v2026-09-16 (git revision: d408e4f29e46dc34454b160b3994ee9974b5cde2)",
+  "recorded": "2026-10-23T23:24:29Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 930
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/ed201f48ce73408dd0f801637ba73891a53c5cbd/transactions-construct",
+    "body": {
+      "encoding": "base16",
+      "payments": [
+        {
+          "address": "addr_test1vq044vfjyrtr3m5pp8gxctpr5y4ykq70zv02f3qyjw0fvtslangr2",
+          "amount": {
+            "quantity": 5000000,
+            "unit": "lovelace"
+          }
+        }
+      ],
+      "withdrawal": "self"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"coin_selection\":{\"change\":[{\"address\":\"addr_test1qqmsk2qtlz93m2pf5g5dquw9a3cdpq7fyasvmj9ltrarteyytht05vrjhuga3jpsrzzuxtx8dr0ruqzv6m87v7dgugfqnlspq6\",\"amount\":{\"quantity\":111897930846,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"0\",\"0\"]}],\"collateral\":[],\"deposits_returned\":[],\"deposits_taken\":[],\"inputs\":[{\"address\":\"addr_test1qqmsk2qtlz93m2pf5g5dquw9a3cdpq7fyasvmj9ltrarteyytht05vrjhuga3jpsrzzuxtx8dr0ruqzv6m87v7dgugfqnlspq6\",\"amount\":{\"quantity\":109068294341,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"0\",\"0\"],\"id\":\"261d14265df42e8ccacece17a41b70a724c2a4d38409b67414a75d13158c423b\",\"index\":1}],\"outputs\":[{\"address\":\"addr_test1vq044vfjyrtr3m5pp8gxctpr5y4ykq70zv02f3qyjw0fvtslangr2\",\"amount\":{\"quantity\":5000000,\"unit\":\"lovelace\"},\"assets\":[]}],\"withdrawals\":[{\"amount\":{\"quantity\":2834809926,\"unit\":\"lovelace\"},\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"2\",\"0\"],\"stake_address\":\"stake_test1uzz9m4h6xpet7ywceqcp3pwr9nrk3h37qpxddnlx0x5wyys8q46g5\"}]},\"fee\":{\"quantity\":173421,\"unit\":\"lovelace\"},\"transaction\":\"84a600d9010281825820261d14265df42e8ccacece17a41b70a724c2a4d38409b67414a75d13158c423b01018282581d601f5ab13220d638ee8109d06c2c23a12a4b03cf131ea4c404939e962e1a004c4b4082583900370b280bf88b1da829a228d071c5ec70d083c92760cdc8bf58fa35e4845dd6fa3072bf11d8c8301885c32cc768de3e004cd6cfe679a8e2121b0000001a0da2ec5e021a0002a56d0319904a05a1581de0845dd6fa3072bf11d8c8301885c32cc768de3e004cd6cfe679a8e2121aa8f7c4460800a0f5f6\"}"
+  }
+}

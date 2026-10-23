@@ -1,0 +1,23 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:34:41Z",
+  "chain": {
+    "epoch": 11,
+    "slot": 1655
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/3bae5249a08c32dd381ed95cdfe765b82736878d/coin-selections/random",
+    "body": {
+      "delegation_action": {
+        "action": "join",
+        "pool": "pool1gcf0q82n84ymyynuy52phxsmeamrqyr9s8r9s537qrfd6ufnrw6"
+      }
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": "{\"code\":\"no_utxos_available\",\"message\":\"Unable to create a transaction because the wallet has no unspent transaction outputs (UTxOs) available. A transaction must spend at least one UTxO in order to be accepted for inclusion on the Cardano blockchain.\"}"
+  }
+}

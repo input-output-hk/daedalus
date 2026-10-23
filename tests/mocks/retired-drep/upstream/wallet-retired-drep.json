@@ -1,0 +1,18 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:32:25Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 980
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/wallets/3bae5249a08c32dd381ed95cdfe765b82736878d",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"address_pool_gap\":20,\"assets\":{\"available\":[],\"total\":[]},\"balance\":{\"available\":{\"quantity\":108745865202,\"unit\":\"lovelace\"},\"reward\":{\"quantity\":4886755651,\"unit\":\"lovelace\"},\"total\":{\"quantity\":113632620853,\"unit\":\"lovelace\"}},\"delegation\":{\"active\":{\"status\":\"voting_and_delegating\",\"target\":\"pool1gvhka46z7re7dvzx2jxu2njeqg6qa2gvms4wsezec8vxvsfwvlw\",\"voting\":\"drep1yfq754rwac7c4dcfz0c26yvyv5hn6udgjxkx2g9kyje4wmsx5lvav\"},\"next\":[{\"changes_at\":{\"epoch_number\":8,\"epoch_start_time\":\"2026-10-23T23:33:09Z\"},\"status\":\"voting_and_delegating\",\"target\":\"pool1gvhka46z7re7dvzx2jxu2njeqg6qa2gvms4wsezec8vxvsfwvlw\",\"voting\":\"drep1yfq754rwac7c4dcfz0c26yvyv5hn6udgjxkx2g9kyje4wmsx5lvav\"}]},\"id\":\"3bae5249a08c32dd381ed95cdfe765b82736878d\",\"name\":\"W1\",\"passphrase\":{\"encryption_method\":\"argon2id-v2\",\"last_updated_at\":\"2026-10-23T23:29:20.964465367Z\"},\"state\":{\"status\":\"ready\"},\"tip\":{\"absolute_slot_number\":980,\"epoch_number\":6,\"height\":{\"quantity\":121,\"unit\":\"block\"},\"slot_number\":80,\"time\":\"2026-10-23T23:32:25Z\"}}"
+  }
+}

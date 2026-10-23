@@ -1,0 +1,29 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:32:12Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 915
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/3bae5249a08c32dd381ed95cdfe765b82736878d/payment-fees",
+    "body": {
+      "payments": [
+        {
+          "address": "addr_test1vp9uf2uz6czxsgwk7z488vpp7v6emegucyqklpwf45ftw0cw9n3y8",
+          "amount": {
+            "quantity": 5000000,
+            "unit": "lovelace"
+          }
+        }
+      ],
+      "withdrawal": "self"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"deposit\":{\"quantity\":0,\"unit\":\"lovelace\"},\"estimated_max\":{\"quantity\":174389,\"unit\":\"lovelace\"},\"estimated_min\":{\"quantity\":172629,\"unit\":\"lovelace\"},\"minimum_coins\":[{\"quantity\":866310,\"unit\":\"lovelace\"}]}"
+  }
+}

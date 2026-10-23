@@ -1,0 +1,30 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-23T23:32:12Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 915
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/3bae5249a08c32dd381ed95cdfe765b82736878d/transactions",
+    "body": {
+      "payments": [
+        {
+          "address": "addr_test1vp9uf2uz6czxsgwk7z488vpp7v6emegucyqklpwf45ftw0cw9n3y8",
+          "amount": {
+            "quantity": 5000000,
+            "unit": "lovelace"
+          }
+        }
+      ],
+      "passphrase": "<redacted>",
+      "withdrawal": "self"
+    }
+  },
+  "response": {
+    "status": 500,
+    "body": "{\"code\":\"created_invalid_transaction\",\"message\":\"The submitted transaction was rejected by the local node. Here's an error message that may help with debugging: HardForkApplyTxErrFromEra S (S (S (S (S (S (Z (WrapApplyTxErr {unwrapApplyTxErr = ConwayApplyTxError (ConwayWdrlNotDelegatedToDRep (KeyHash {unKeyHash = \\\"8014321e9eeabeabf5e4a4a8bb5772b10d30013a4079a9dcfe5bfe68\\\"} :| []) :| [])})))))))\"}"
+  }
+}
