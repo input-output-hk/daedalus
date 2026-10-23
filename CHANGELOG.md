@@ -2,19 +2,31 @@
 
 ## vNext
 
+## 11.6.0
+
+This is a mainnet-only maintenance release. The changelog also records development of the dApp connector and single-address mode, which depend on a cardano-wallet fork in preview environments. Those features are reserved for the next release and are not part of the 11.6.0 release offering.
+
 ### Features
 
-- Blockchain data: Daedalus now recognizes when part of the blockchain data stored on the computer is missing and shows a screen that says so. A partial Mithril sync in versions before 11.5.0 could leave such a gap. Three signs lead to the screen: cardano-node keeps rejecting a block that three or more peers send, the node's ledger snapshot points into the gap, or a wallet stops syncing at the gap. Daedalus checks the ledger snapshot before every node start. The screen offers Rebuild blockchain data and Not now. Rebuild blockchain data asks for confirmation, then deletes the blockchain data and downloads a complete verified copy with Mithril. Wallets stay on the computer. Not now hides the screen until Daedalus restarts. When the node cannot start on the damaged data, the screen offers only the rebuild ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+- Apps: connect supported dApps to a selected wallet through CIP-30, with a network-specific catalog, connection permissions, and settings to revoke access. Apps are enabled in preprod, preview, and mainnet-flight packages, subject to the installed platform's sandbox checks; ordinary mainnet and selfnode retain their native wallet flows ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
 
-- Diagnostics: a Blockchain data row shows damage detected since Daedalus started, with its slot and time, until the blockchain data is rebuilt or removed. Diagnostics also offers a Rebuild blockchain data button that opens the same confirmation, even when no damage was detected. While damage is detected, Mithril Sync is disabled and its hint points to the rebuild. The copied diagnostic information includes the row ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+- dApp transactions: review transaction details before signing or submitting, sign messages with CIP-8, and use supported governance and batch transaction extensions, including CIP-95, CIP-103, and policy-gated CIP-104. Ledger and Trezor signing is restricted to supported device capabilities. Collateral settings let users select an existing output or prepare one through the normal confirmed Send flow ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
 
-- Rebuilding the blockchain data: before deleting anything, a rebuild checks that the Mithril service answers with a snapshot and that the blockchain data folder holds only blockchain data. When Daedalus can read the snapshot's size and the drive's free space, it also checks that the drive has room for the snapshot once the old data is deleted. When a check fails, nothing is deleted. The error view, titled "Could not rebuild the blockchain data", says which check failed and offers Retry, or another location when the folder is the cause. If a rebuild fails after deleting the data, Daedalus does not start a sync from genesis unless the user chooses one, even after a restart ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+- Transaction approval: native wallet and dApp transactions share a review and approval flow in packages with CIP-30 enabled. Approval receipts and transaction history distinguish pending, confirmed, expired, failed, and unknown submission outcomes; CSV exports preserve those distinctions and leave unavailable amounts blank ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
 
-- When cardano-node writes nothing for five minutes while it starts, the loading screen says so and offers Restart Cardano node or Keep waiting ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+- Wallet settings: in fork-backed preview environments, single-address mode uses the wallet's first receiving address for receiving payments and automatically selected outputs, including change. Existing funds and explicitly entered recipient addresses are unchanged. The setting explains the privacy implications of address reuse ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
 
-- Mithril: while a download makes no progress and the Mithril service cannot be reached, the progress view says that downloading will continue when the network returns ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+- Linux: deprecate the portable `.bin` installer in favor of native Debian, RPM, and Arch packages, and the NixOS service included in the flake. A `.bin` installer is still provided for 11.6.0. Supported native installations validate Chromium containment before launching dApps in fork-backed preview environments ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
 
-- Mithril: a download is now kept inside the blockchain data folder, on the drive that holds the data. When two networks share a storage folder, Daedalus for one network leaves the other network's in-progress download in place, refuses a Mithril sync into that folder, and its storage picker refuses the folder ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+- Blockchain data: recognize gaps left by partial Mithril syncs in versions before 11.5.0 and offer a confirmed rebuild from a complete verified Mithril snapshot. Detection covers repeated rejection of the same block from three or more peers, a ledger snapshot pointing into a gap, and a wallet unable to continue through a gap. The ledger snapshot is checked before each node start. The damage screen offers Rebuild blockchain data and, when the node can still start, Not now; rebuilding replaces blockchain data while keeping wallets on the computer ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Diagnostics: show detected blockchain damage, including its slot and time, and include it in copied diagnostics. A Rebuild blockchain data button opens the same confirmation even when no damage has been detected. Mithril partial sync is disabled while damage is known, with a hint directing users to the rebuild ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Blockchain rebuilds: check the Mithril service, snapshot availability, and destination contents before deleting data, and check available space when snapshot size and drive information can be read. Failed checks preserve existing data and offer Retry or another location as appropriate. A failed or interrupted rebuild does not silently start syncing from genesis, including after a restart ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Startup: when cardano-node writes nothing for five minutes while starting, show a notice offering Restart Cardano node or Keep waiting ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
+
+- Mithril: show when a stalled download is waiting for the network to return. Stage downloads on the drive that holds the blockchain data, retain recovery information across interrupted installations, and protect another network's in-progress download when storage folders are shared ([PR #3431](https://github.com/input-output-hk/daedalus/pull/3431)).
 
 ### Fixes
 
@@ -29,6 +41,18 @@
 - Refresh pending collateral preparation while Apps stays open, adopting the confirmed output and clearing the preparation notice without requiring navigation; stop polling after completion or leaving Apps.
 - Preserve success-only DRep favorites when delegation uses unified transaction approval, and retain watchdog-managed shutdown and installer handling alongside authenticated dApp IPC.
 - Restore the runtime configuration path passed by the watchdog to Electron on launch and restart, fixing startup failure before the Daedalus window appears.
+- Show localized dApp launch failures, preserve window lifecycle handling, and permit Apps navigation while the wallet is syncing ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
+- Fix Windows and macOS packaging stopping before the Electron application is produced after the Node.js build-tool update. Update the ZIP reader to `yauzl` 3.4.0 and cover large compressed archives with a regression test ([PR #3433](https://github.com/input-output-hk/daedalus/pull/3433)).
+
+### Chores
+
+- Harden dApp isolation, trusted navigation, privileged IPC authentication, network access, and privacy-safe logging. Extend platform sandbox validation, hardware capability checks, and connector conformance and adversarial tests ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
+
+- Update the upstream cardano-wallet backend to `v2026-10-07` for ordinary mainnet and selfnode packages, and use the pinned `cip30-alpha1` backend for preprod, preview, and mainnet-flight. Keep cardano-node at 11.1.3 ([PR #3429](https://github.com/input-output-hk/daedalus/pull/3429)).
+
+- Update Electron from 41.3.0 to 42.11.14, refresh hardware-wallet and JavaScript dependencies, migrate Storybook tooling, update release CLI dependencies, and apply regression-tested dependency security patches. Move Nix builds to nixpkgs 26.05 and align native-module compilation and platform packaging with the updated dependencies ([PR #3432](https://github.com/input-output-hk/daedalus/pull/3432)).
+
+- Update the Node.js build tools to 26.12.1 and TOML to 5.0.1 for security fixes; retain a compatibility patch for CBOR byte-string encoding. The build-tool Node.js version is separate from the runtime embedded in Electron ([PR #3433](https://github.com/input-output-hk/daedalus/pull/3433)).
 
 ## 11.5.0
 
