@@ -45,6 +45,11 @@ class WalletSendPage extends Component<Props, State> {
   }) => {
     const { walletId, address, amount, isHardwareWallet, selectedAssets } =
       params;
+    const withdrawalDecision = this.props.stores.wallets.withdrawalDecisionFor(
+      walletId,
+      'payment'
+    );
+    const { withdrawal } = withdrawalDecision;
 
     if (isHardwareWallet) {
       const coinSelection: CoinSelectionsResponse =
@@ -53,10 +58,12 @@ class WalletSendPage extends Component<Props, State> {
           address,
           amount,
           assets: selectedAssets,
+          withdrawal,
         });
       return {
         fee: coinSelection.fee,
         coinSelection,
+        withdrawalDecision,
       };
     }
 
@@ -66,18 +73,20 @@ class WalletSendPage extends Component<Props, State> {
         address,
         amount,
         assets: selectedAssets,
+        withdrawal,
       });
 
     return {
       fee,
       minimumAda,
+      withdrawalDecision,
     };
   };
 
   submit = (
     isHardwareWallet: boolean,
     walletId: string,
-    { coinSelection, ...data }: FormData
+    { coinSelection, withdrawalDecision, ...data }: FormData
   ) => {
     const wallet = this.props.stores.wallets.getWalletById(walletId);
     if (!wallet) throw new Error('Wallet required before sending.');
@@ -85,7 +94,9 @@ class WalletSendPage extends Component<Props, State> {
       if (isHardwareWallet) {
         this.props.stores.hardwareWallets.updateTxSignRequest(coinSelection);
       }
-      this.setState({ confirmationDialogData: data });
+      this.setState({
+        confirmationDialogData: { ...data, withdrawalDecision },
+      });
       this.props.actions.dialogs.open.trigger({
         dialog: WalletSendConfirmationDialogView,
       });
@@ -116,6 +127,7 @@ class WalletSendPage extends Component<Props, State> {
       assetsAmounts: data.assetsAmounts,
       hasAssetsRemainingAfterTransaction,
       isCollateralPreparation: data.isCollateralPreparation,
+      withdrawal: withdrawalDecision.withdrawal,
     });
   };
 
@@ -188,7 +200,7 @@ class WalletSendPage extends Component<Props, State> {
             selectedAssets,
           })
         }
-        walletAmount={wallet.amount}
+        walletAmount={wallet.spendableAmount}
         validateAmount={validateAmount}
         validateAssetAmount={validateAssetAmount}
         addressValidator={isValidAddress}

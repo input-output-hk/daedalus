@@ -5,6 +5,7 @@ import {
 } from 'cardano-crypto.js';
 import { blake2b } from 'blakejs';
 import BigNumber from 'bignumber.js';
+import { runInAction } from 'mobx';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import {
   deriveXpubChannel,
@@ -12,6 +13,7 @@ import {
   getCardanoAdaAppChannel,
   getHardwareWalletTransportChannel,
   signExactHardwareTransactionChannel,
+  signTransactionLedgerChannel,
   showAddressChannel,
 } from '../ipc/getHardwareWalletChannel';
 import { getHardwareWalletsNetworkConfig } from '../config/hardwareWalletsConfig';
@@ -230,6 +232,7 @@ describe('HardwareWalletsStore payment construction', () => {
         address: 'addr1receiver',
         amount: 5_000_000,
         metadata,
+        withdrawal: 'self',
       })
     );
     await store._sendMoney();
@@ -484,6 +487,7 @@ describe('HardwareWalletsStore payment construction', () => {
       walletId: 'wallet',
       address: 'addr1receiver',
       amount: 5_000_000,
+      withdrawal: 'self',
     });
 
     expect(getDappTransactionContext).not.toHaveBeenCalled();
@@ -497,6 +501,37 @@ describe('HardwareWalletsStore payment construction', () => {
       constructionData,
     });
     expect(acquireWalletSendLock).not.toHaveBeenCalled();
+  });
+
+  it('constructs a payment without a withdrawal key when the request carries none', async () => {
+    const constructTransaction = jest.fn().mockResolvedValue({
+      transaction: '84a0a0f5f6',
+      coinSelection,
+    });
+    const store = new HardwareWalletsStore(
+      { ada: { constructTransaction }, localStorage: {} } as unknown as Api,
+      {} as ActionsMap,
+      {} as AnalyticsTracker
+    );
+    (store as any).stores = {
+      wallets: { getWalletById: () => ({ id: 'wallet' }) },
+    };
+
+    const selected = await store.selectCoins({
+      walletId: 'wallet',
+      address: 'addr1receiver',
+      amount: 5_000_000,
+      withdrawal: null,
+    });
+
+    const { withdrawal, ...withoutWithdrawal } = constructionData;
+    expect(withdrawal).toBe('self');
+    expect(constructTransaction).toHaveBeenCalledWith({
+      walletId: 'wallet',
+      data: withoutWithdrawal,
+    });
+    expect(selected.constructionData).toEqual(withoutWithdrawal);
+    expect('withdrawal' in selected.constructionData).toBe(false);
   });
 
   it('prepares native Ledger payments without dApp certification', async () => {
@@ -1224,6 +1259,7 @@ describe('HardwareWalletsStore upstream payment lifetime', () => {
       61284: { map: [{ k: { int: 1 }, v: { bytes: 'ab' } }] },
       61285: { map: [] },
     },
+    withdrawal: 'self',
   };
   const fixture = () => {
     const select = jest.fn().mockResolvedValue(selection(1));
@@ -1299,6 +1335,7 @@ describe('HardwareWalletsStore upstream payment lifetime', () => {
         address: payment.address,
         amount: payment.amount,
         assets: payment.assets,
+        withdrawal: 'self',
       },
       metadata: payment.metadata,
     });
@@ -1308,6 +1345,48 @@ describe('HardwareWalletsStore upstream payment lifetime', () => {
       paymentRequest: payment,
     });
     expect(store.txSignRequest.exactPayment).toBeUndefined();
+  });
+
+  it('selects a payment with the withdrawal the request carries', async () => {
+    const { store, select } = fixture();
+    const noWithdrawal = { ...payment, withdrawal: null };
+    const preview = await store.selectCoins(noWithdrawal);
+    expect(select.mock.calls[0][0].payments.withdrawal).toBeNull();
+    expect(preview.paymentRequest.withdrawal).toBeNull();
+  });
+
+  it('reselects under the lease with the withdrawal the preview was priced with', async () => {
+    const { store, select } = fixture();
+    store.updateTxSignRequest(
+      await store.selectCoins({ ...payment, withdrawal: null })
+    );
+    await store.initiateTransaction({ walletId: 'wallet' });
+    expect(select).toHaveBeenCalledTimes(2);
+    expect(
+      select.mock.calls.map(([request]) => request.payments.withdrawal)
+    ).toEqual([null, null]);
+    expect(store.txSignRequest.paymentRequest.withdrawal).toBeNull();
+  });
+
+  it('sends the Ledger no withdrawal when the selection has none', async () => {
+    const { store } = fixture();
+    const request = jest
+      .spyOn(signTransactionLedgerChannel, 'request')
+      .mockRejectedValue(new Error('device stopped'));
+    (store as any).stores.addresses = { _inspectAddress: jest.fn() };
+    (store as any).stores.networkStatus = { absoluteSlotNumber: 100 };
+    runInAction(() => {
+      store.hardwareWalletsLocalDataRequest.result = {
+        wallet: {
+          extendedPublicKey: { publicKeyHex: '00', chainCodeHex: '00' },
+        },
+      } as unknown as HardwareWalletsStore['hardwareWalletsConnectionData'];
+    });
+    store.updateTxSignRequest({ ...selection(1), withdrawals: [] });
+    await expect(
+      store._signTransactionLedger('wallet', 'device')
+    ).rejects.toThrow('device stopped');
+    expect(request.mock.calls[0][0].withdrawals).toEqual([]);
   });
 
   it('reselects under the lease and retains it through external submission, including reset', async () => {

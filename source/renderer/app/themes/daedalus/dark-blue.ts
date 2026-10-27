@@ -575,6 +575,15 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-notification-message-text-color': '#fafbfc',
     '--theme-notification-message-checkmark-icon-color': '#fafbfc',
     '--theme-notification-message-close-icon-color': '#fafbfc',
+    '--theme-held-rewards-notification-background-color': '#4b5a68',
+    '--theme-held-rewards-notification-title-color': '#e9f4fe',
+    '--theme-held-rewards-notification-description-color': '#e9f4fe',
+    '--theme-held-rewards-notification-button-text-color': '#4b5a68',
+    '--theme-held-rewards-notification-button-background-color': '#e9f4fe',
+    '--theme-held-rewards-notification-button-background-color-hover':
+      'rgba(233, 244, 254, 0.9)',
+    '--theme-held-rewards-notification-button-background-color-active':
+      'rgba(233, 244, 254, 0.8)',
     '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',

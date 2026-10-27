@@ -99,6 +99,7 @@ export const filterLogData = (data: object): Record<string, unknown> => {
     'drepIdentity',
     'currentDRep',
     'votingTarget',
+    'ledgerVote',
     'chosenOption',
     'raw',
     'cip105',

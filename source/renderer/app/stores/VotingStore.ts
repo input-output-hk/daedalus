@@ -353,15 +353,17 @@ export default class VotingStore extends Store {
   }) => {
     if (!global.cip30Enabled) {
       try {
+        let transactionId: string | null = null;
         if (wallet.isHardwareWallet) {
-          await this.stores.hardwareWallets._sendMoney({
+          const sent = await this.stores.hardwareWallets._sendMoney({
             selectedWalletId: wallet.id,
             isDelegationTransaction: true,
           });
+          transactionId = sent?.id ?? null;
         } else {
           if (!passphrase) throw new Error('Spending password required');
           this.delegateVotesRequest.reset();
-          await this.stores.transactions.withWalletSendLock(
+          const sent = await this.stores.transactions.withWalletSendLock(
             wallet.id,
             () =>
               this.delegateVotesRequest.execute({
@@ -370,13 +372,14 @@ export default class VotingStore extends Store {
                 walletId: wallet.id,
               }).promise
           );
+          transactionId = sent?.id ?? null;
         }
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
           this._getVoteKind(chosenOption)
         );
-        return { success: true as const };
+        return { success: true as const, transactionId };
       } catch (error) {
         return {
           success: false as const,
@@ -386,20 +389,24 @@ export default class VotingStore extends Store {
     }
     if (wallet.isHardwareWallet) {
       try {
-        await this.stores.hardwareWallets.submitConstructedNativeTransaction({
-          walletId: wallet.id,
-          action: 'drep-delegation',
-          data: {
-            encoding: 'base16',
-            vote: chosenOption,
-          },
-        });
+        const submitted =
+          await this.stores.hardwareWallets.submitConstructedNativeTransaction({
+            walletId: wallet.id,
+            action: 'drep-delegation',
+            data: {
+              encoding: 'base16',
+              vote: chosenOption,
+            },
+          });
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
           this._getVoteKind(chosenOption)
         );
-        return { success: true as const };
+        return {
+          success: true as const,
+          transactionId: submitted?.id ?? null,
+        };
       } catch {
         const errorCode: GenericErrorCode = 'generic';
         logger.error('VotingStore: error while delegating vote with HW', {
@@ -409,14 +416,15 @@ export default class VotingStore extends Store {
       }
     }
     try {
-      await this.stores.wallets.submitConstructedNativeTransaction({
-        walletId: wallet.id,
-        action: 'drep-delegation',
-        data: {
-          encoding: 'base16',
-          vote: chosenOption,
-        },
-      });
+      const submitted =
+        await this.stores.wallets.submitConstructedNativeTransaction({
+          walletId: wallet.id,
+          action: 'drep-delegation',
+          data: {
+            encoding: 'base16',
+            vote: chosenOption,
+          },
+        });
 
       this.analytics.sendEvent(
         EventCategories.VOTING,
@@ -426,6 +434,7 @@ export default class VotingStore extends Store {
 
       return {
         success: true as const,
+        transactionId: submitted?.id ?? null,
       };
     } catch (error) {
       return {

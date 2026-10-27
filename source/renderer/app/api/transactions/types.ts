@@ -127,7 +127,7 @@ export type GetTransactionFeeRequest = {
   availableBalance: BigNumber;
   rewardsBalance: BigNumber;
   isLegacy: boolean;
-  withdrawal?: 'self' | Array<string>;
+  withdrawal: TransactionWithdrawalType | null;
 };
 export type GetTransactionFeeResponse = {
   fee: BigNumber;
@@ -140,7 +140,7 @@ export type CreateTransactionRequest = {
   passphrase: string;
   isLegacy: boolean;
   assets?: ApiTokens;
-  withdrawal?: 'self' | Array<string>;
+  withdrawal: TransactionWithdrawalType | null;
 };
 export type DeleteTransactionRequest = {
   walletId: string;
@@ -230,6 +230,7 @@ export type CoinSelectionsPaymentRequestType = {
   amount: number;
   assets?: ApiTokens;
   metadata?: VotingMetadataType;
+  withdrawal: 'self' | null;
 };
 export type CoinSelectionsRequest =
   | CoinSelectionsPaymentRequestType

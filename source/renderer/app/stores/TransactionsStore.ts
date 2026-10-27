@@ -40,6 +40,7 @@ import {
 import type { ApiTokens } from '../api/assets/types';
 import { EventCategories } from '../analytics';
 import { logger } from '../utils/logging';
+import { balancesFor } from '../utils/governance/rewardWithdrawal';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 
@@ -91,6 +92,7 @@ type TransactionFeeRequest = {
   address: string;
   amount: number;
   assets?: ApiTokens;
+  withdrawal: 'self' | null;
 };
 export type WalletSendLease = Readonly<{
   walletId: string;
@@ -556,13 +558,11 @@ export default class TransactionsStore extends Store {
       );
     }
 
-    const { amount, availableAmount, reward, isLegacy } = wallet;
+    const { isLegacy } = wallet;
     this.calculateTransactionFeeRequest.reset();
     return this.calculateTransactionFeeRequest.execute({
       ...transactionFeeRequest,
-      walletBalance: amount,
-      availableBalance: availableAmount.plus(reward),
-      rewardsBalance: reward,
+      ...balancesFor(wallet, transactionFeeRequest.withdrawal),
       isLegacy,
     });
   };

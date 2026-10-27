@@ -17,6 +17,8 @@
 #     payment         POST /v2/wallets/{id}/transactions {payments, passphrase, withdrawal: "self"}
 #     hardware wallet POST /v2/wallets/{id}/coin-selections/random {payments, withdrawal: "self", metadata: null},
 #                     then POST /v2/proxy/transactions with the signed CBOR
+#     hardware wallet POST /v2/wallets/{id}/coin-selections/random {payments, metadata: null} (no withdrawal)
+#     undelegation    POST /v2/wallets/{id}/coin-selections/random {delegation_action: {action: "quit", pool}}
 #     vote fee        POST /v2/wallets/{id}/coin-selections/random {delegation_action: {action: "join", pool}}
 #     vote            PUT /v2/dreps/{drep}/wallets/{id} {passphrase}
 #     pool            PUT /v2/stake-pools/{pool}/wallets/{id} {passphrase}
@@ -70,17 +72,19 @@ payments_to() {
 
 # Request flows ---------------------------------------------------------------------
 
-# pay LABEL WID [SHAPE]: a payment that requests the reward withdrawal, in the
-# shape the Daedalus build for SHAPE (default: this backend) sends. Sets
+# pay LABEL WID [SHAPE [FEE-FIXTURE]]: a payment that requests the reward
+# withdrawal, in the shape the Daedalus build for SHAPE (default: this backend)
+# sends; FEE-FIXTURE names the fee estimate's recorded exchange. Sets
 # PAY_ACCEPTED (yes or no), PAY_WITHDRAWAL (lovelace withdrawn) and
 # PAY_OBSERVED.
 pay() {
-  local label="$1" id="$2" shape="${3:-$BACKEND}" payments
+  local label="$1" id="$2" shape="${3:-$BACKEND}" fee_fixture="${4:-}" payments
   payments=$(payments_to "$DEST")
   PAY_ACCEPTED=no PAY_WITHDRAWAL=0
   if [ "$shape" = upstream ]; then
     api "$label-fee" POST "/v2/wallets/$id/payment-fees" \
       "$(jq -n --argjson p "$payments" '{payments: $p, withdrawal: "self"}')"
+    [ -z "$fee_fixture" ] || fixture "$fee_fixture"
     api "$label" POST "/v2/wallets/$id/transactions" \
       "$(jq -n --argjson p "$payments" --arg pw "$PASS" '{payments: $p, passphrase: $pw, withdrawal: "self"}')"
     PAY_OBSERVED=$(observed)
@@ -101,12 +105,13 @@ pay() {
   PAY_OBSERVED="$PAY_OBSERVED, withdrew $PAY_WITHDRAWAL"
 }
 
-# vote LABEL WID TARGET: a vote delegation to TARGET (a DRep id, abstain or
+# vote LABEL WID TARGET [FIXTURE]: a vote delegation to TARGET (a DRep id, abstain or
 # no_confidence) as the Daedalus build for this backend sends it. On the
 # mainnet build the governance form first estimates the fee with a stake pool
-# join selection and stops if that fails. Sets VOTE_ACCEPTED and VOTE_OBSERVED.
+# join selection and stops if that fails. FIXTURE names the vote request's
+# recorded exchange on the mainnet build. Sets VOTE_ACCEPTED and VOTE_OBSERVED.
 vote() {
-  local label="$1" id="$2" target="$3"
+  local label="$1" id="$2" target="$3" vote_fixture="${4:-}"
   VOTE_ACCEPTED=no
   if [ "$BACKEND" = upstream ]; then
     local current other
@@ -122,6 +127,7 @@ vote() {
       return 0
     fi
     api "$label" PUT "/v2/dreps/$target/wallets/$id" "$(jq -n --arg p "$PASS" '{passphrase: $p}')"
+    [ -z "$vote_fixture" ] || fixture "$vote_fixture"
     VOTE_OBSERVED="$VOTE_OBSERVED, vote $(observed)"
     if is_accepted && wait_last_tx "$id"; then VOTE_ACCEPTED=yes; fi
   else
@@ -327,6 +333,49 @@ retire() {
 
 # Withdrawal-carrying requests after the retirement ----------------------------------
 
+# current_pool WID: the stake pool the wallet reports as its latest
+# delegation, as Daedalus reads it.
+current_pool() {
+  wallet_json "$1" | jq -r '[.delegation.active.target, (.delegation.next[]?.target)]
+    | map(select(. != null)) | last // ""'
+}
+
+# hardware_proxy_payment WID: submits the P-hw selection the way a hardware
+# wallet's payment is: the selection built into a transaction body outside the
+# wallet, signed by transactions-sign (standing in for the device) and posted
+# to /v2/proxy/transactions. A body the wallet will not sign is a PRECONDITION.
+hardware_proxy_payment() {
+  local id="$1" seen what="Hardware-wallet payment submitted through the proxy, no withdrawal"
+  local req="POST /v2/proxy/transactions, signed CBOR of the P-hw selection"
+  local want="HTTP 202, in the ledger, no withdrawal" body="$STATE/p-hw.body.cbor.hex" signed txid
+  if [ ! -s "$STATE/p-hw.selection.json" ]; then
+    result P-hw-proxy "$what" "$req" "$want" "no P-hw selection" PRECONDITION
+    return 0
+  fi
+  if ! selection_body "$STATE/p-hw.selection.json" "$body"; then
+    result P-hw-proxy "$what" "$req" "$want" \
+      "the selection could not be built into a body ($(head -c 200 "$body.build.txt" 2>/dev/null))" PRECONDITION
+    return 0
+  fi
+  api P-hw-proxy-sign POST "/v2/wallets/$id/transactions-sign" \
+    "$(jq -n --arg t "$(cat "$body")" --arg p "$PASS" '{transaction: $t, passphrase: $p, encoding: "base16"}')"
+  if ! is_accepted; then
+    result P-hw-proxy "$what" "$req" "$want" "transactions-sign refused the body: $(observed): $(jq -r '.message // ""' "$R_FILE" | head -c 300)" PRECONDITION
+    return 0
+  fi
+  signed=$(jq -r .transaction "$R_FILE")
+  echo "$signed" | xxd -r -p >"$STATE/p-hw.signed.cbor"
+  api_octets P-hw-proxy /v2/proxy/transactions "$STATE/p-hw.signed.cbor"
+  txid=$(jq -r '.id // empty' "$R_FILE")
+  seen=$(observed)
+  if is_accepted && [ -n "$txid" ] && wait_tx "$id" "$txid"; then
+    seen="$seen, in ledger, withdrew $(curl -s "$API/v2/wallets/$id/transactions/$txid" | jq -r '[.withdrawals[]?.amount.quantity] | add // 0')"
+    check P-hw-proxy "$what" "$req" "$want" "$seen" '[ "$R_STATUS" = 202 ] && [[ "$seen" == *"withdrew 0" ]]'
+  else
+    result P-hw-proxy "$what" "$req" "$want" "$seen, not in the ledger" FAIL
+  fi
+}
+
 after_retirement() {
   local payments before seen withdrawal
   payments=$(payments_to "$DEST")
@@ -335,6 +384,8 @@ after_retirement() {
       "reward > $MIN_REWARD" "$(reward_of "$W1")" PRECONDITION
     return 0
   fi
+  api F-wallet GET "/v2/wallets/$W1"
+  fixture wallet-held-rewards
 
   api F-fee POST "/v2/wallets/$W1/payment-fees" \
     "$(jq -n --argjson p "$payments" '{payments: $p, withdrawal: "self"}')"
@@ -354,11 +405,27 @@ after_retirement() {
     'funds_unchanged "$before" "$W1"'
   release_pending "$W1" F-pay
 
+  api P-fee POST "/v2/wallets/$W1/payment-fees" "$(jq -n --argjson p "$payments" '{payments: $p}')"
+  fixture payment-fee-nowdrl
+  check P-fee "Payment fee estimate, no withdrawal requested" "payment-fees, no withdrawal" \
+    "HTTP 202" "$(observed)" '[ "$R_STATUS" = 202 ]'
+  cp "$R_FILE" "$STATE/p-fee.res.json"
+
   api F-pay-nowdrl POST "/v2/wallets/$W1/transactions" \
     "$(jq -n --argjson p "$payments" --arg pw "$PASS" '{payments: $p, passphrase: $pw}')"
+  fixture payment-nowdrl
   check F-pay-nowdrl "Payment without a withdrawal" "POST /transactions, no withdrawal" \
     "accepted" "$(observed)" is_accepted
-  if is_accepted; then wait_last_tx "$W1" || true; fi
+  if is_accepted; then
+    wait_last_tx "$W1" || true
+    seen="fee $(jq -r .fee.quantity "$R_FILE") against estimate $(jq -r '"\(.estimated_min.quantity) to \(.estimated_max.quantity)"' "$STATE/p-fee.res.json"), withdraws $(jq -r '[.withdrawals[]?.amount.quantity] | add // 0' "$R_FILE")"
+    check P-agree "Submitted payment agrees with its fee estimate" "POST /transactions against payment-fees" \
+      "fee within the estimate, no withdrawal" "$seen" \
+      'fee_within_estimate "$STATE/p-fee.res.json" "$R_FILE" && [ "$(jq "[.withdrawals[]?] | length" "$R_FILE")" = 0 ]'
+  else
+    result P-agree "Submitted payment agrees with its fee estimate" "POST /transactions against payment-fees" \
+      "fee within the estimate, no withdrawal" "no payment: $(observed)" PRECONDITION
+  fi
 
   api F-hw POST "/v2/wallets/$W1/coin-selections/random" \
     "$(jq -n --argjson p "$payments" '{payments: $p, withdrawal: "self", metadata: null}')"
@@ -370,6 +437,31 @@ after_retirement() {
   fi
   check F-hw "Hardware-wallet payment selection requesting the withdrawal" \
     "coin-selections/random, mainnet build" "$GATE" "$seen" is_refused_before_submission
+
+  local pool
+  pool=$(current_pool "$W1")
+  api F-hw-quit POST "/v2/wallets/$W1/coin-selections/random" \
+    "$(jq -n --arg p "$pool" '{delegation_action: {action: "quit", pool: $p}}')"
+  fixture hardware-quit-refused
+  seen=$(observed)
+  if is_accepted; then
+    seen="$seen, selection withdraws $(jq -r '[.withdrawals[]?.amount.quantity] | add // 0' "$R_FILE")"
+  fi
+  check F-hw-quit "Hardware-wallet undelegation selection from an account with no vote delegation" \
+    "coin-selections/random {delegation_action: quit}, mainnet build" "$GATE" "$seen" is_refused_before_submission
+
+  api P-hw POST "/v2/wallets/$W1/coin-selections/random" \
+    "$(jq -n --argjson p "$payments" '{payments: $p, metadata: null}')"
+  fixture hardware-selection-nowdrl
+  seen=$(observed)
+  if is_accepted; then
+    seen="$seen, selection withdraws $(jq -r '[.withdrawals[]?.amount.quantity] | add // 0' "$R_FILE")"
+    cp "$R_FILE" "$STATE/p-hw.selection.json"
+  fi
+  check P-hw "Hardware-wallet payment selection, no withdrawal" "coin-selections/random, no withdrawal" \
+    "HTTP 200, no withdrawals" "$seen" \
+    '[ "$R_STATUS" = 200 ] && [ "$(jq "[.withdrawals[]?] | length" "$R_FILE")" = 0 ]'
+  hardware_proxy_payment "$W1"
 
   before=$(available_of "$W1")
   construct_flow F-construct "$W1" \
@@ -393,6 +485,15 @@ after_retirement() {
     'funds_unchanged "$before" "$W1"'
   release_pending "$W1" F-construct
 
+  construct_flow P-construct "$W1" "$(jq -n --argjson p "$payments" '{encoding: "base16", payments: $p}')"
+  if [ "$CF_CONSTRUCT_STATUS" = 202 ]; then
+    R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+    fixture construct-payment-nowdrl
+  fi
+  check P-construct "Payment without a withdrawal" "construct, sign, submit, no withdrawal" \
+    "construct 202, submit 202, no withdrawal" "$(construct_observed), withdrew $CF_WITHDRAWAL" \
+    '[ "$CF_CONSTRUCT_STATUS" = 202 ] && [ "$CF_SUBMIT_STATUS" = 202 ] && [ "$CF_WITHDRAWAL" = 0 ]'
+
   construct_flow F-pool-wdrl "$W1" \
     "$(jq -n --arg p "$POOL2" '{encoding: "base16", delegations: [{join: {pool: $p, stake_key_index: "0H"}}], withdrawal: "self"}')"
   check F-pool-wdrl "Stake pool delegation combined with the withdrawal" "construct, variant" \
@@ -409,6 +510,17 @@ after_retirement() {
     "$seen; $(funds_seen "$before" "$W1")" \
     '[ "$R_STATUS" = 404 ] && [ "$R_CODE" = not_found ] && funds_unchanged "$before" "$W1"'
   release_pending "$W1" F-vote-retired
+
+  before=$(available_of "$W1")
+  construct_flow F-vote-construct-retired "$W1" \
+    "$(jq -n --arg d "$DREP_A_CIP129" '{encoding: "base16", vote: $d}')"
+  R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+  fixture vote-construct-retired
+  check F-vote-construct-retired "Vote delegation to the retired DRep" "construct, cip30 builds" \
+    "HTTP 404 not_found at construct, nothing submitted (available unchanged, no pending transaction)" \
+    "$(construct_observed); $(funds_seen "$before" "$W1")" \
+    '[ "$CF_CONSTRUCT_STATUS" = 404 ] && [ "$CF_CONSTRUCT_CODE" = not_found ] && funds_unchanged "$before" "$W1"'
+  release_pending "$W1" F-vote-construct-retired
 
   construct_flow F-vote-wdrl "$W1" \
     "$(jq -n --arg d "$DREP_B_CIP129" '{encoding: "base16", vote: $d, withdrawal: "self"}')"
@@ -590,8 +702,10 @@ redelegate() {
   done
   check H-field "Ledger vote delegation reported by the wallet" \
     "GET /v2/wallets/{id} .$LEDGER_VOTE_FIELD" "drep:B" "$seen" '[ "$seen" = drep:B ]'
+  api H-wallet GET "/v2/wallets/$W1"
+  fixture wallet-drep
   if wait_withdrawable "$W1"; then
-    pay H-pay "$W1"
+    pay H-pay "$W1" "$BACKEND" payment-fee-delegated
     check H-pay "Payment after re-delegation" "payment, $(build_of "$BACKEND")" "accepted, rewards withdrawn" \
       "$PAY_OBSERVED" '[ "$PAY_ACCEPTED" = yes ] && [ "$PAY_WITHDRAWAL" -gt 0 ]'
   else
@@ -651,17 +765,34 @@ itn_restore() {
 
 undelegation_two_step() {
   retire B "$W1" || return 0
-  local reward seen
-  vote T-vote "$W1" abstain
+  local reward seen withdrawal quit_certificate
+  vote T-vote "$W1" abstain vote-abstain
   check T-vote "Undelegation step 1: vote delegation to Abstain" "vote, $(build_of "$BACKEND")" "accepted" \
     "$VOTE_OBSERVED" '[ "$VOTE_ACCEPTED" = yes ]'
   wait_ledger_field "$W1" abstain || true
+  api T-wallet GET "/v2/wallets/$W1"
+  fixture wallet-abstain
   if ! wait_withdrawable "$W1"; then
     result T-quit "Undelegation step 2: undelegation with the withdrawal" "undelegation, $(build_of "$BACKEND")" \
       "accepted" "reward $(reward_of "$W1")" PRECONDITION
     return 0
   fi
   reward=$(reward_of "$W1")
+  api T-hw-quit POST "/v2/wallets/$W1/coin-selections/random" \
+    "$(jq -n --arg p "$(current_pool "$W1")" '{delegation_action: {action: "quit", pool: $p}}')"
+  fixture hardware-quit-selection
+  seen=$(observed)
+  withdrawal=0 quit_certificate=no
+  if is_accepted; then
+    withdrawal=$(jq -r '[.withdrawals[]?.amount.quantity] | add // 0' "$R_FILE")
+    jq -e 'any(.certificates[]?; (.certificate_type // "") | test("quit"))' "$R_FILE" >/dev/null &&
+      quit_certificate=yes
+    seen="$seen, selection withdraws $withdrawal, quit certificate: $quit_certificate"
+  fi
+  check T-hw-quit "Hardware-wallet undelegation selection once the account is vote-delegated" \
+    "coin-selections/random {delegation_action: quit}, mainnet build" \
+    "HTTP 200, withdraws the whole balance ($reward), carries the quit certificate" "$seen" \
+    'is_accepted && [ "$withdrawal" = "$reward" ] && [ "$quit_certificate" = yes ]'
   undelegate T-quit "$W1"
   seen=$(ledger_vote "$W1")
   check T-quit "Undelegation step 2: undelegation with the withdrawal" "undelegation, $(build_of "$BACKEND")" \

@@ -493,6 +493,44 @@ cbor_has_vote_certificate() {
     any(.. | objects; (."delegatee type"? // "") | test("vote"))' >/dev/null
 }
 
+# selection_fee FILE: the fee a coin selection leaves, in lovelace: what its
+# inputs, withdrawals and returned deposits supply, less its outputs, change
+# and deposits taken. The selection response carries no fee field.
+selection_fee() {
+  jq -r 'def sum(f): [f] | add // 0;
+    sum(.inputs[].amount.quantity) + sum(.withdrawals[]?.amount.quantity)
+    + sum(.deposits_returned[]?.quantity)
+    - sum(.outputs[].amount.quantity) - sum(.change[].amount.quantity)
+    - sum(.deposits_taken[]?.quantity)' "$1"
+}
+
+# selection_body SELECTION-FILE OUT-FILE: builds the coin selection into an
+# unsigned transaction body with cardano-cli, as a client that constructs the
+# transaction itself does for a hardware wallet, and writes its CBOR (base16)
+# to OUT-FILE. Returns non-zero when the selection carries what build-raw is
+# not given here (assets, withdrawals, certificates) or cardano-cli refuses.
+selection_body() {
+  local sel="$1" out="$2" args=() line
+  if jq -e '[.inputs[], .outputs[], .change[]] | any(.assets | length > 0)
+      or ((.withdrawals // []) | length > 0) or ((.certificates // []) | length > 0)'     "$sel" >/dev/null; then
+    return 1
+  fi
+  while IFS= read -r line; do args+=(--tx-in "$line"); done \
+    < <(jq -r '.inputs[] | "\(.id)#\(.index)"' "$sel")
+  while IFS= read -r line; do args+=(--tx-out "$line"); done \
+    < <(jq -r '(.outputs[], .change[]) | "\(.address)+\(.amount.quantity)"' "$sel")
+  "$CLI" conway transaction build-raw "${args[@]}" --fee "$(selection_fee "$sel")" \
+    --out-file "$out.json" >"$out.build.txt" 2>&1 || return 1
+  jq -r .cborHex "$out.json" >"$out"
+}
+
+# fee_within_estimate ESTIMATE-FILE TRANSACTION-FILE: the transaction's fee lies
+# within the payment-fees response's estimated_min to estimated_max.
+fee_within_estimate() {
+  jq -e --slurpfile t "$2" '.estimated_min.quantity <= $t[0].fee.quantity
+    and $t[0].fee.quantity <= .estimated_max.quantity' "$1" >/dev/null
+}
+
 # register_extra_dreps N: registers N DReps with cardano-cli, 80 to a
 # transaction, paying from genesis UTxO key 2.
 register_extra_dreps() {

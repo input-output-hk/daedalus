@@ -1,0 +1,64 @@
+.component {
+  background-color: var(--theme-held-rewards-notification-background-color);
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25) inset;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 20px 40px;
+
+  .title {
+    color: var(--theme-held-rewards-notification-title-color);
+    flex-grow: 1;
+    font-family: var(--font-medium);
+    font-size: 16px;
+    font-weight: 500;
+    height: 22px;
+    line-height: 1.38;
+  }
+
+  .description {
+    color: var(--theme-held-rewards-notification-description-color);
+    font-family: var(--font-light);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    line-height: 1.36;
+    margin-top: 10px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 22px;
+  }
+
+  .actionDelegate {
+    background-color: var(
+      --theme-held-rewards-notification-button-background-color
+    );
+    border-radius: 2px;
+    box-sizing: border-box;
+    color: var(--theme-held-rewards-notification-button-text-color);
+    cursor: pointer;
+    font-family: var(--font-medium);
+    font-size: 14px;
+    font-weight: 500;
+    height: 33px;
+    line-height: 33px;
+    margin-left: 10px;
+    padding: 0 20px;
+    text-align: center;
+    white-space: nowrap;
+    width: auto;
+
+    &:hover {
+      background-color: var(
+        --theme-held-rewards-notification-button-background-color-hover
+      ) !important;
+    }
+    &:active {
+      background-color: var(
+        --theme-held-rewards-notification-button-background-color-active
+      ) !important;
+    }
+  }
+}

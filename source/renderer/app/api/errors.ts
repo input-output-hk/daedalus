@@ -124,7 +124,7 @@ export const messages = defineMessages({
   },
 });
 
-type Balances = {
+export type Balances = {
   walletBalance: BigNumber;
   availableBalance: BigNumber;
   rewardsBalance: BigNumber;

@@ -24,8 +24,16 @@ function TopBarContainer(
     stores: null,
   }
 ) {
-  const { sidebar, app, networkStatus, wallets, newsFeed, appUpdate, staking } =
-    stores;
+  const {
+    sidebar,
+    app,
+    networkStatus,
+    wallets,
+    newsFeed,
+    appUpdate,
+    staking,
+    governance,
+  } = stores;
   const {
     isSynced,
     syncPercentage,
@@ -74,6 +82,13 @@ function TopBarContainer(
       sourceWalletId,
     });
 
+  const onDelegateHeldRewards = (walletId: string) => {
+    governance.setDelegationNavState({ selectedWalletId: walletId });
+    actions.router.goToRoute.trigger({
+      route: ROUTES.GOVERNANCE.DELEGATE,
+    });
+  };
+
   const { unread } = newsFeed.newsFeedData;
   const { displayAppUpdateNewsItem } = appUpdate;
   const hasUnreadNews = unread.length > 0;
@@ -85,6 +100,7 @@ function TopBarContainer(
       onTransferFunds={onTransferFunds}
       hasRewardsWallets={hasRewardsWallets}
       onWalletAdd={onWalletAdd}
+      onDelegateHeldRewards={onDelegateHeldRewards}
       onLearnMore={openExternalLink}
       isShelleyActivated={isShelleyActivated}
     >

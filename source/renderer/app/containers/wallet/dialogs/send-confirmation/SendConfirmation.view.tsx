@@ -23,6 +23,8 @@ import {
   isNotEnoughFundsForTokenError,
   isPasswordValid,
 } from './helpers';
+import { useDiscreetModeFeature } from '../../../../features/discreet-mode';
+import { discreetWalletAmount } from '../../../../features/discreet-mode/replacers/discreetWalletAmount';
 import styles from './styles.scss';
 
 function View({
@@ -34,6 +36,8 @@ function View({
   receiver,
   totalAmount,
   transactionFee,
+  withdrawal,
+  heldReward,
   hwDeviceStatus,
   formattedTotalAmount,
   wallet,
@@ -66,8 +70,10 @@ function View({
     selectedAssets,
     isHardwareWallet,
     isCollateralPreparation,
+    withdrawal,
     onSubmitCb,
   });
+  const discreetModeFeature = useDiscreetModeFeature();
   const isSendingAssets = !!selectedAssets.length;
 
   const buttonLabel = !isSubmitting ? (
@@ -135,6 +141,17 @@ function View({
       ) && (
         <div className={styles.warning}>
           <FormattedHTMLMessage {...messages.emptyingWarning} tagName="p" />
+        </div>
+      )}
+      {heldReward != null && (
+        <div className={styles.warning} role="note">
+          <p>
+            {intl.formatMessage(messages.rewardsNotWithdrawn, {
+              rewardsAmount: discreetModeFeature.discreetValue({
+                replacer: discreetWalletAmount({ amount: heldReward }),
+              }),
+            })}
+          </p>
         </div>
       )}
       {isSendingAssets ? (

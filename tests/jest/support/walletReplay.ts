@@ -11,7 +11,7 @@ import type { RequestConfig } from '../../../source/renderer/app/api/common/type
  * wallet's bytes exactly as they arrived.
  */
 export type RecordedExchange = {
-  backend: 'upstream' | 'cip30';
+  backend: 'upstream' | 'cip30' | 'ledger-vote';
   wallet: string;
   recorded: string;
   chain: { epoch: number; slot: number } | null;
@@ -36,7 +36,7 @@ export type ReplayRoute = {
 
 export type WalletReplay = {
   config: RequestConfig;
-  received: Array<{ method: string; path: string }>;
+  received: Array<{ method: string; path: string; body: unknown }>;
   close: () => Promise<void>;
 };
 
@@ -65,9 +65,17 @@ export const startWalletReplay = async (
   const received: WalletReplay['received'] = [];
   const held: Array<http.ServerResponse> = [];
   const server = http.createServer((request, response) => {
-    request.resume();
+    const chunks: Array<Buffer> = [];
+    request.on('data', (chunk: Buffer) => chunks.push(chunk));
     request.on('end', () => {
-      received.push({ method: request.method, path: request.url });
+      const text = Buffer.concat(chunks).toString('utf8');
+      let body: unknown = text === '' ? null : text;
+      try {
+        body = text === '' ? null : JSON.parse(text);
+      } catch (error) {
+        // A body that is not JSON is recorded as the text received.
+      }
+      received.push({ method: request.method, path: request.url, body });
       const route = routes.find(
         (candidate) =>
           candidate.method === request.method &&

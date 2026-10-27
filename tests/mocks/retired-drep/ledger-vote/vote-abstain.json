@@ -1,0 +1,20 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-27T18:10:19Z",
+  "chain": {
+    "epoch": 12,
+    "slot": 1890
+  },
+  "request": {
+    "method": "PUT",
+    "path": "/v2/dreps/abstain/wallets/47db4693adc954fc036ae0da6d76e5fe1e4efe4e",
+    "body": {
+      "passphrase": "<redacted>"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"amount\":{\"quantity\":171837,\"unit\":\"lovelace\"},\"burn\":{\"tokens\":[]},\"certificates\":[{\"certificate_type\":\"cast_vote\",\"reward_account_path\":[\"1852H\",\"1815H\",\"0H\",\"2\",\"0\"],\"vote\":\"abstain\"}],\"collateral\":[],\"collateral_outputs\":[],\"deposit_returned\":{\"quantity\":0,\"unit\":\"lovelace\"},\"deposit_taken\":{\"quantity\":0,\"unit\":\"lovelace\"},\"direction\":\"outgoing\",\"expires_at\":{\"absolute_slot_number\":37892,\"epoch_number\":252,\"slot_number\":92,\"time\":\"2026-10-27T20:10:19.4Z\"},\"extra_signatures\":[],\"fee\":{\"quantity\":171837,\"unit\":\"lovelace\"},\"id\":\"fafeed13b65a72d8edb3020f963c17c6a3969dff3b01182f85fbbaa66747eaf5\",\"inputs\":[{\"address\":\"addr_test1qpl3z3s6zpjq43x3myu64sw5xjzekg5a4dqmxvhut9qgqvtye00fmpcv08zyj2uaqqk73eyl22rhs69nkfm3qjxpx38s7gt045\",\"amount\":{\"quantity\":131210495446,\"unit\":\"lovelace\"},\"assets\":[],\"id\":\"e0c1084d0d9f17ba2fd0752cb7661905af7f21f3940160859daa695e285cb9f9\",\"index\":1}],\"mint\":{\"tokens\":[]},\"outputs\":[{\"address\":\"addr_test1qrqeudj0kpm7g9s284yvs3k08f4w65ldw68k5esaq4zrl9rye00fmpcv08zyj2uaqqk73eyl22rhs69nkfm3qjxpx38s8c6etx\",\"amount\":{\"quantity\":131210323609,\"unit\":\"lovelace\"},\"assets\":[]}],\"pending_since\":{\"absolute_slot_number\":1890,\"epoch_number\":12,\"height\":{\"quantity\":203,\"unit\":\"block\"},\"slot_number\":90,\"time\":\"2026-10-27T18:10:19Z\"},\"script_validity\":\"valid\",\"status\":\"pending\",\"validity_interval\":{\"invalid_before\":{\"quantity\":0,\"unit\":\"slot\"},\"invalid_hereafter\":{\"quantity\":37892,\"unit\":\"slot\"}},\"withdrawals\":[]}"
+  }
+}

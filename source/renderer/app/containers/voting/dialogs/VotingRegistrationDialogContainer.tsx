@@ -296,6 +296,8 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
           address: address.id,
           amount,
           metadata: votingData.metadata,
+          withdrawal: wallets.withdrawalDecisionFor(walletId, 'payment')
+            .withdrawal,
         });
         if (!isCurrent()) return;
 
@@ -305,6 +307,7 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
           walletId,
           address: address.id,
           amount,
+          withdrawal: null,
         }));
       }
       if (!isCurrent()) return;

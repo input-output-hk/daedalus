@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { DelegationCalculateFeeResponse } from '../../../../api/staking/types';
 import UndelegateWalletConfirmationDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationDialog';
+import UndelegateWalletVoteFirstDialog from '../../../../components/wallet/settings/UndelegateWalletVoteFirstDialog';
 import UndelegateWalletSuccessDialog from '../../../../components/wallet/settings/UndelegateWalletSuccessDialog';
 import {
   DELEGATION_ACTIONS,
@@ -30,6 +31,7 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
   };
   _isMounted = false;
   _ownsHardwareTransaction = false;
+  _undelegationStarted = false;
 
   cancelHardwareTransaction = () => {
     if (!this._ownsHardwareTransaction) return;
@@ -41,13 +43,67 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
+    this._proceed();
+  }
 
+  componentDidUpdate() {
+    this._proceed();
+  }
+
+  get needsVoteDelegationFirst() {
+    const { wallets } = this.props.stores;
+    const walletId = this.selectedWalletId;
+    if (walletId == null || !wallets.getWalletById(walletId)) return false;
+    return (
+      wallets.withdrawalDecisionFor(walletId, 'undelegation').kind ===
+      'delegate_vote_first'
+    );
+  }
+
+  // Starts the vote delegation while the ledger holds none, and the
+  // undelegation once it does, which is also when the wait for the ledger ends.
+  _proceed() {
+    if (this._undelegationStarted) return;
+    const walletId = this.selectedWalletId;
+    const { wallets } = this.props.stores;
+    const wallet = walletId == null ? null : wallets.getWalletById(walletId);
+    if (!wallet) return;
+    if (this.needsVoteDelegationFirst) {
+      const step = wallets.undelegationVoteStepFor(walletId);
+      if (step == null && this._isMounted) this._prepareVoteStep(wallet);
+      return;
+    }
+    this._undelegationStarted = true;
+    // The device state left by the vote delegation must not enable the
+    // undelegation's confirmation before its own transaction is prepared.
+    this.cancelHardwareTransaction();
     if (global.cip30Enabled) this.submit();
     else
       this._handleCalculateTransactionFee().catch(() => {
         // Request errors are displayed by the confirmation dialog.
       });
   }
+
+  _prepareVoteStep = (wallet: { id: string; isHardwareWallet: boolean }) => {
+    if (wallet.isHardwareWallet) this._ownsHardwareTransaction = true;
+    this.props.stores.wallets.prepareUndelegationVote(wallet.id).catch(() => {
+      // The step records its own failure.
+    });
+  };
+
+  _retryVoteStep = () => {
+    const wallet = this.props.stores.wallets.getWalletById(
+      this.selectedWalletId
+    );
+    if (wallet) this._prepareVoteStep(wallet);
+  };
+
+  _cancelVoteStep = () => {
+    const { actions, stores } = this.props;
+    stores.wallets.cancelUndelegationVote(this.selectedWalletId);
+    this.cancelHardwareTransaction();
+    actions.dialogs.closeActiveDialog.trigger();
+  };
 
   componentWillUnmount() {
     this._isMounted = false;
@@ -174,6 +230,30 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
               result: false,
             });
           }}
+        />
+      );
+    }
+
+    if (this.needsVoteDelegationFirst && !this._undelegationStarted) {
+      return (
+        <UndelegateWalletVoteFirstDialog
+          walletName={walletName}
+          heldReward={walletToBeUndelegated.reward}
+          isHardwareWallet={walletToBeUndelegated.isHardwareWallet}
+          step={wallets.undelegationVoteStepFor(walletToBeUndelegated.id)}
+          hwDeviceStatus={hwDeviceStatus}
+          isTrezor={isTrezor}
+          onSubmit={(passphrase) => {
+            wallets
+              .submitUndelegationVote(walletToBeUndelegated.id, passphrase)
+              .catch(() => {
+                // The step records its own failure.
+              });
+          }}
+          onRetry={this._retryVoteStep}
+          onCancel={this._cancelVoteStep}
+          onClose={() => actions.dialogs.closeActiveDialog.trigger()}
+          onExternalLinkClick={onExternalLinkClick}
         />
       );
     }

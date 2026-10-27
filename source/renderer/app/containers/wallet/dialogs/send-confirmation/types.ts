@@ -5,6 +5,7 @@ import { StoresMap } from '../../../../stores/index';
 import { ActionsMap } from '../../../../actions/index';
 import Wallet, { HwDeviceStatus } from '../../../../domains/Wallet';
 import { AssetToken } from '../../../../api/assets/types';
+import type { WithdrawalDecision } from '../../../../utils/governance/rewardWithdrawal';
 import LocalizableError from '../../../../i18n/LocalizableError';
 
 type CommonProps = {
@@ -19,6 +20,8 @@ type CommonProps = {
   hwDeviceStatus: HwDeviceStatus;
   totalAmount: BigNumber;
   transactionFee: string | null | undefined;
+  withdrawal: 'self' | null;
+  withdrawalDecision?: WithdrawalDecision;
   onExternalLinkClick: (...args: Array<any>) => any;
 };
 
@@ -32,10 +35,15 @@ export type SubmitPayload = {
   assets?: Array<AssetToken>;
   assetsAmounts?: Array<string>;
   hasAssetsRemainingAfterTransaction: boolean;
-} & Pick<CommonProps, 'amount' | 'receiver' | 'isHardwareWallet'>;
+} & Pick<
+  CommonProps,
+  'amount' | 'receiver' | 'isHardwareWallet' | 'withdrawal'
+>;
 
-export type ViewProps = CommonProps & {
+export type ViewProps = Omit<CommonProps, 'withdrawalDecision'> & {
   intl: Intl;
+  // The reward balance this payment leaves in place, or null when it does not.
+  heldReward: BigNumber | null;
   assetTokens: Array<AssetToken>;
   areTermsAccepted: boolean;
   wallet: Wallet;
@@ -70,6 +78,7 @@ export type UseForm = Pick<
   | 'assetsAmounts'
   | 'isHardwareWallet'
   | 'isCollateralPreparation'
+  | 'withdrawal'
   | 'onSubmitCb'
 >;
 

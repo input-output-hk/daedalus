@@ -1,0 +1,28 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-27T18:07:06Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 918
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/47db4693adc954fc036ae0da6d76e5fe1e4efe4e/payment-fees",
+    "body": {
+      "payments": [
+        {
+          "address": "addr_test1vzdavreewvy74nlds73vvyuf0usq06xpwky30yx32dyw0gsqy56kl",
+          "amount": {
+            "quantity": 5000000,
+            "unit": "lovelace"
+          }
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"deposit\":{\"quantity\":0,\"unit\":\"lovelace\"},\"estimated_max\":{\"quantity\":168097,\"unit\":\"lovelace\"},\"estimated_min\":{\"quantity\":166337,\"unit\":\"lovelace\"},\"minimum_coins\":[{\"quantity\":866310,\"unit\":\"lovelace\"}]}"
+  }
+}

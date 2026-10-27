@@ -21,6 +21,8 @@ export function Containter({
   totalAmount,
   onExternalLinkClick,
   transactionFee,
+  withdrawal,
+  withdrawalDecision,
   hwDeviceStatus,
   isHardwareWallet,
   formattedTotalAmount,
@@ -37,6 +39,7 @@ export function Containter({
       isTransactionPending,
       checkIsTrezorByWalletId,
       initiateTransaction,
+      txSignRequest,
     },
     collateral,
   } = stores;
@@ -50,6 +53,15 @@ export function Containter({
   if (!activeWallet) {
     throw new Error('Active wallet required for WalletSendPage.');
   }
+
+  // A payment leaves the rewards in place when the ledger holds no vote
+  // delegation. A hardware selection must agree: it withdraws nothing.
+  const leavesRewardsInPlace =
+    withdrawalDecision?.kind === 'omit' &&
+    withdrawalDecision.reason === 'ledger_not_delegated' &&
+    (!isHardwareWallet ||
+      (txSignRequest?.coinSelection?.withdrawals ?? []).length === 0);
+  const heldReward = leavesRewardsInPlace ? activeWallet.reward : null;
 
   const [areTermsAccepted, setAreTermsAccepted] = useState(false);
   const ownsHardwareTransaction = useRef(false);
@@ -139,6 +151,8 @@ export function Containter({
       formattedTotalAmount={formattedTotalAmount}
       totalAmount={totalAmount}
       transactionFee={transactionFee}
+      withdrawal={withdrawal}
+      heldReward={heldReward}
       wallet={activeWallet}
       isFlight={isFlight}
       isSubmitting={isSubmitting}

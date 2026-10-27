@@ -555,6 +555,15 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
   notification: {
     '--theme-notification-message-background-color': '#36374df2',
     '--theme-notification-message-text-color': '#ffffff',
+    '--theme-held-rewards-notification-background-color': '#56576b',
+    '--theme-held-rewards-notification-title-color': '#ffffff',
+    '--theme-held-rewards-notification-description-color': '#ffffff',
+    '--theme-held-rewards-notification-button-text-color': '#56576b',
+    '--theme-held-rewards-notification-button-background-color': '#ffffff',
+    '--theme-held-rewards-notification-button-background-color-hover':
+      'rgba(255, 255, 255, 0.9)',
+    '--theme-held-rewards-notification-button-background-color-active':
+      'rgba(255, 255, 255, 0.8)',
     '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#ffffff',

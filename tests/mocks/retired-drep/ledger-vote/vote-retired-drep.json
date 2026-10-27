@@ -1,0 +1,20 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-27T18:07:17Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 974
+  },
+  "request": {
+    "method": "PUT",
+    "path": "/v2/dreps/drep1yf2f3r9dgraelzrj47mrcjcdya4khyh4thakq3gpnu8vf8sa30vq2/wallets/47db4693adc954fc036ae0da6d76e5fe1e4efe4e",
+    "body": {
+      "passphrase": "<redacted>"
+    }
+  },
+  "response": {
+    "status": 404,
+    "body": "{\"code\":\"not_found\",\"message\":\"I couldn't delegate the vote to drep1yf2f3r9dgraelzrj47mrcjcdya4khyh4thakq3gpnu8vf8sa30vq2: the ledger holds no registered DRep with this identifier, and it refuses a vote delegation to an unregistered DRep. A DRep that has retired is no longer registered. Delegate the vote to a registered DRep, to abstain or to no_confidence.\"}"
+  }
+}

@@ -19,6 +19,7 @@ export const useForm = ({
   assetsAmounts,
   isHardwareWallet,
   isCollateralPreparation,
+  withdrawal,
   onSubmitCb,
 }: UseForm) => {
   const form = useMemo(
@@ -38,6 +39,7 @@ export const useForm = ({
             passphrase,
             isHardwareWallet,
             isCollateralPreparation,
+            withdrawal,
             hasAssetsRemainingAfterTransaction: hasAssetsAfterTransaction({
               assetTokens,
               selectedAssets,
@@ -59,6 +61,7 @@ export const useForm = ({
       assetsAmounts,
       isHardwareWallet,
       isCollateralPreparation,
+      withdrawal,
       onSubmitCb,
     ]
   );

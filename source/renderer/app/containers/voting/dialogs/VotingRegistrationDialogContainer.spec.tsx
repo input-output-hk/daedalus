@@ -26,6 +26,8 @@ import { BrowserLocalStorageBridge } from '../../../features/local-storage';
 import { DiscreetModeFeatureProvider } from '../../../features/discreet-mode';
 import { NUMBER_OPTIONS } from '../../../config/profileConfig';
 import { DeviceTypes } from '../../../../../common/types/hardware-wallets.types';
+import type { LedgerVoteDelegation } from '../../../api/wallets/types';
+import { decideWithdrawal } from '../../../utils/governance/rewardWithdrawal';
 import type {
   HardwareTransactionPreparation,
   TrezorDevicePayload,
@@ -93,7 +95,14 @@ const deferred = <T,>(): Deferred<T> => {
 const originalPilot = global.cip30Enabled;
 let dispose = () => {};
 
-function mountRegistration(hardware = true, pilot = false) {
+function mountRegistration(
+  hardware = true,
+  pilot = false,
+  ledger: { ledgerVote: LedgerVoteDelegation; reward: number } = {
+    ledgerVote: { status: 'unknown' },
+    reward: 0,
+  }
+) {
   global.cip30Enabled = pilot;
   const wallet = {
     id: 'wallet',
@@ -103,7 +112,8 @@ function mountRegistration(hardware = true, pilot = false) {
     isRestoring: false,
     amount: new BigNumber(1000),
     availableAmount: new BigNumber(1000),
-    reward: new BigNumber(0),
+    reward: new BigNumber(ledger.reward),
+    ledgerVote: ledger.ledgerVote,
     assets: { total: [] },
   };
   const selection: CoinSelectionsResponse = {
@@ -173,6 +183,13 @@ function mountRegistration(hardware = true, pilot = false) {
       all: [wallet],
       active: wallet,
       getWalletById: (walletId: string) => ({ ...wallet, id: walletId }),
+      withdrawalDecisionFor: (_walletId: string, purpose: 'payment') =>
+        decideWithdrawal({
+          purpose,
+          isLegacy: wallet.isLegacy,
+          ledgerVote: wallet.ledgerVote,
+          reward: wallet.reward,
+        }),
       refreshWalletsData: jest.fn(),
     },
     transactions,
@@ -395,6 +412,7 @@ async function beginNativePayment(
     walletId,
     address: 'unrelated-payment-address',
     amount: 1000000,
+    withdrawal: 'self',
   });
   fixture.hardwareWallets.updateTxSignRequest(preview);
   const draft = fixture.hardwareWallets.txSignRequest;
@@ -511,6 +529,7 @@ async function paymentPreview(
     walletId,
     address: 'payment-address',
     amount: 1000000,
+    withdrawal: 'self',
   });
 }
 
@@ -558,6 +577,7 @@ it('refuses to claim a different-wallet initiated lease after Catalyst preview c
     walletId: 'other-wallet',
     address: 'catalyst-address',
     amount: 1000000,
+    withdrawal: 'self',
   });
   await expect(
     operation.initiate({
@@ -926,6 +946,68 @@ it('retains pilot receiving and Catalyst metadata through the real hardware sele
   fixture.unmount();
   await act(async () => fixture.transports[0].resolve(null));
   expect(fixture.externalSubmit).not.toHaveBeenCalled();
+});
+
+describe('VotingRegistrationDialogContainer reward withdrawal', () => {
+  const delegated = {
+    ledgerVote: {
+      status: 'delegated' as const,
+      voting: { status: 'abstain' } as never,
+    },
+    reward: 5,
+  };
+  const held = { ledgerVote: { status: 'not_delegated' as const }, reward: 5 };
+
+  it.each([
+    ['delegated', delegated],
+    ['held', held],
+  ])(
+    'prices the software registration without a withdrawal for a wallet with %s rewards',
+    async (_name, ledger) => {
+      const fixture = mountRegistration(false, false, ledger);
+      fixture.start();
+      await waitFor(() =>
+        expect(fixture.calculateFee).toHaveBeenCalledTimes(1)
+      );
+      expect(fixture.calculateFee).toHaveBeenCalledWith(
+        expect.objectContaining({ withdrawal: null })
+      );
+    }
+  );
+
+  it.each([
+    ['delegated', delegated, 'self'],
+    ['held', held, null],
+  ])(
+    'selects the hardware registration with the decided withdrawal for a wallet with %s rewards',
+    async (_name, ledger, expected) => {
+      const fixture = mountRegistration(true, false, ledger);
+      fixture.start();
+      await waitFor(() => expect(fixture.selectCoins).toHaveBeenCalledTimes(1));
+      expect(fixture.selectCoins.mock.calls[0][0].payments.withdrawal).toBe(
+        expected
+      );
+      fixture.unmount();
+    }
+  );
+
+  it.each([
+    ['delegated', delegated, true],
+    ['held', held, false],
+  ])(
+    'constructs the pilot hardware registration with the decided withdrawal for a wallet with %s rewards',
+    async (_name, ledger, withdraws) => {
+      const fixture = mountRegistration(true, true, ledger);
+      fixture.start();
+      await waitFor(() =>
+        expect(fixture.constructTransaction).toHaveBeenCalled()
+      );
+      const { data } = fixture.constructTransaction.mock.calls[0][0];
+      expect(data.withdrawal).toBe(withdraws ? 'self' : undefined);
+      expect('withdrawal' in data).toBe(withdraws);
+      fixture.unmount();
+    }
+  );
 });
 
 it('does not replace a newer registration key after cancelled key generation resumes', async () => {

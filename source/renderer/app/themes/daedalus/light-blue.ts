@@ -571,6 +571,15 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-notification-message-text-color': '#fafbfc',
     '--theme-notification-message-checkmark-icon-color': '#fafbfc',
     '--theme-notification-message-close-icon-color': '#fafbfc',
+    '--theme-held-rewards-notification-background-color': '#062148',
+    '--theme-held-rewards-notification-title-color': '#fafbfc',
+    '--theme-held-rewards-notification-description-color': '#fafbfc',
+    '--theme-held-rewards-notification-button-text-color': '#062148',
+    '--theme-held-rewards-notification-button-background-color': '#fafbfc',
+    '--theme-held-rewards-notification-button-background-color-hover':
+      'rgba(250, 251, 252, 0.9)',
+    '--theme-held-rewards-notification-button-background-color-active':
+      'rgba(250, 251, 252, 0.8)',
     '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#fafbfc',

@@ -45,6 +45,7 @@ export type AdaWallet = {
   delegation: {
     active: WalletDelegation;
     next?: WalletNextDelegation;
+    ledger_vote?: ApiWalletLedgerVote;
   };
   name: string;
   passphrase?: {
@@ -88,10 +89,20 @@ export type DRepDelegation =
   | {
       kind: 'drep';
       drep: DRepIdentity;
-      source: 'verified' | 'unverified' | 'onchain';
+      source: 'verified' | 'unverified' | 'onchain' | 'ledger';
     }
   | { kind: 'abstain' }
   | { kind: 'no_confidence' };
+// The wallet's reading of the vote delegation the ledger holds for the
+// account, as sent in delegation.ledger_vote.
+export type ApiWalletLedgerVote =
+  | { status: 'delegated'; voting: string }
+  | { status: 'not_delegated' };
+// 'unknown' covers an absent, malformed or unreadable field and a legacy wallet.
+export type LedgerVoteDelegation =
+  | { status: 'unknown' }
+  | { status: 'not_delegated' }
+  | { status: 'delegated'; voting: DRepDelegation };
 export type WalletSyncStateProgress = {
   quantity: number;
   unit: 'percentage';

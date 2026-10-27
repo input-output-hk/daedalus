@@ -137,6 +137,7 @@ function mountFlow(
       active: wallet,
       allWallets: [wallet],
       getWalletById: (id: string) => (id === wallet.id ? wallet : null),
+      withdrawalDecisionFor: () => ({ kind: 'withdraw' }),
       undelegateWalletSubmissionSuccess: false,
       _undelegateWallet: unifiedQuit,
       refreshWalletsData: jest.fn(),

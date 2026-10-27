@@ -8,7 +8,10 @@ import Wallet, {
   WalletUnits,
 } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
-import { WalletTransaction } from '../domains/WalletTransaction';
+import {
+  WalletTransaction,
+  TransactionStates,
+} from '../domains/WalletTransaction';
 import {
   MAX_ADA_WALLETS_COUNT,
   LOVELACES_PER_ADA,
@@ -21,6 +24,11 @@ import { downloadCsv } from '../utils/csvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
+import { decideWithdrawal } from '../utils/governance/rewardWithdrawal';
+import type {
+  WithdrawalDecision,
+  WithdrawalPurpose,
+} from '../utils/governance/rewardWithdrawal';
 import { formattedWalletAmount } from '../utils/formatters';
 import { ellipsis } from '../utils/strings';
 import {
@@ -58,6 +66,10 @@ import type {
   TransferFundsRequest,
 } from '../api/wallets/types';
 import type { QuitStakePoolRequest } from '../api/staking/types';
+import type {
+  DelegateVotesError,
+  InitializeVPDelegationTxError,
+} from './VotingStore';
 import type { ConstructTransactionData } from '../api/transactions/types';
 import type { NativeTransactionAction } from '../../../common/transactions/nativePlan';
 import type {
@@ -76,10 +88,28 @@ import { verifySignedNativeTransaction } from '../../../common/transactions/nati
  * The base wallet store that contains logic for dealing with wallets
  */
 
+// The vote delegation to Abstain that an undelegation needs first when the
+// ledger holds no vote delegation for an account with a reward. It lives for
+// the session, per wallet.
+export type UndelegationVoteStep =
+  | { status: 'estimating' }
+  | { status: 'ready'; fee: BigNumber | null }
+  | { status: 'submitting' }
+  | { status: 'awaiting_ledger'; transactionId: string | null }
+  | {
+      status: 'failed';
+      errorCode:
+        | InitializeVPDelegationTxError
+        | DelegateVotesError
+        | 'vote_not_confirmed';
+    };
+
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
   @observable
   undelegateWalletSubmissionSuccess: boolean | null | undefined = null;
+  @observable
+  _undelegationVoteSteps: Record<string, UndelegationVoteStep> = {};
   @observable
   isAddressFromSameWallet = false;
   // REQUESTS
@@ -273,7 +303,10 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
-    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
+    this.registerReactions([
+      this._updateActiveWalletOnRouteChanges,
+      this._advanceUndelegationVoteSteps,
+    ]);
     const {
       router,
       walletBackup,
@@ -745,6 +778,99 @@ export default class WalletsStore extends Store {
     quitStakePoolRequest.reset();
     this.refreshWalletsData();
   };
+  undelegationVoteStepFor = (walletId: string): UndelegationVoteStep | null =>
+    this._undelegationVoteSteps[walletId] ?? null;
+  _setUndelegationVoteStep = (
+    walletId: string,
+    step: UndelegationVoteStep | null
+  ) => {
+    runInAction('WalletsStore::_setUndelegationVoteStep', () => {
+      const { [walletId]: _previous, ...others } = this._undelegationVoteSteps;
+      this._undelegationVoteSteps = step
+        ? { ...others, [walletId]: step }
+        : others;
+    });
+  };
+  prepareUndelegationVote = async (walletId: string) => {
+    const current = this.undelegationVoteStepFor(walletId);
+    if (
+      current?.status === 'submitting' ||
+      current?.status === 'awaiting_ledger'
+    )
+      return;
+    const wallet = this.getWalletById(walletId);
+    if (!wallet) return;
+    this._setUndelegationVoteStep(walletId, { status: 'estimating' });
+    // The cip30 build prices nothing here; its approval dialog shows the fee.
+    if (global.cip30Enabled) {
+      this._setUndelegationVoteStep(walletId, { status: 'ready', fee: null });
+      return;
+    }
+    const result = await this.stores.voting.initializeVPDelegationTx({
+      chosenOption: 'abstain',
+      wallet,
+    });
+    // A cancel or a retry during the estimate supersedes this result.
+    if (this.undelegationVoteStepFor(walletId)?.status !== 'estimating') return;
+    this._setUndelegationVoteStep(
+      walletId,
+      result.success
+        ? { status: 'ready', fee: result.fees }
+        : { status: 'failed', errorCode: result.errorCode }
+    );
+  };
+  submitUndelegationVote = async (walletId: string, passphrase?: string) => {
+    if (this.undelegationVoteStepFor(walletId)?.status !== 'ready') return;
+    const wallet = this.getWalletById(walletId);
+    if (!wallet) return;
+    this._setUndelegationVoteStep(walletId, { status: 'submitting' });
+    const result = await this.stores.voting.delegateVotes({
+      chosenOption: 'abstain',
+      wallet,
+      passphrase,
+    });
+    this._setUndelegationVoteStep(
+      walletId,
+      result.success
+        ? { status: 'awaiting_ledger', transactionId: result.transactionId }
+        : { status: 'failed', errorCode: result.errorCode }
+    );
+  };
+  cancelUndelegationVote = (walletId: string) => {
+    const status = this.undelegationVoteStepFor(walletId)?.status;
+    if (status === 'submitting' || status === 'awaiting_ledger') return;
+    this._setUndelegationVoteStep(walletId, null);
+  };
+  // Ends a wait when the wallet reads the vote delegation, and fails it when
+  // the delegation transaction failed or expired.
+  _advanceUndelegationVoteSteps = () => {
+    Object.keys(this._undelegationVoteSteps).forEach((walletId) => {
+      const step = this._undelegationVoteSteps[walletId];
+      if (step.status !== 'awaiting_ledger') return;
+      const wallet = this.getWalletById(walletId);
+      if (!wallet) return;
+      if (wallet.ledgerVote.status === 'delegated') {
+        this._setUndelegationVoteStep(walletId, null);
+        return;
+      }
+      if (step.transactionId == null) return;
+      const recent =
+        this.stores.transactions._getTransactionsRecentRequest(walletId).result;
+      const transaction = (recent ? recent.transactions : []).find(
+        ({ id }) => id === step.transactionId
+      );
+      if (
+        transaction &&
+        (transaction.state === TransactionStates.FAILED ||
+          transaction.state === TransactionStates.EXPIRED)
+      ) {
+        this._setUndelegationVoteStep(walletId, {
+          status: 'failed',
+          errorCode: 'vote_not_confirmed',
+        });
+      }
+    });
+  };
   _setUndelegateWalletSubmissionSuccess = ({ result }: { result: boolean }) => {
     runInAction(
       'AdaWalletsStore::_setUndelegateWalletSubmissionSuccess',
@@ -942,6 +1068,7 @@ export default class WalletsStore extends Store {
     assetsAmounts: assetsAmountsStr,
     hasAssetsRemainingAfterTransaction,
     isCollateralPreparation = false,
+    withdrawal,
   }: {
     receiver: string;
     amount: string;
@@ -950,6 +1077,7 @@ export default class WalletsStore extends Store {
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
     isCollateralPreparation?: boolean;
+    withdrawal: 'self' | null;
   }) => {
     const assetsAmounts = assetsAmountsStr
       ? assetsAmountsStr.map((assetAmount) => new BigNumber(assetAmount))
@@ -995,6 +1123,7 @@ export default class WalletsStore extends Store {
             isLegacy: wallet.isLegacy,
             assets: formattedAssets,
             hasAssetsRemainingAfterTransaction,
+            withdrawal,
           }).promise
       );
     } else {
@@ -1013,7 +1142,7 @@ export default class WalletsStore extends Store {
               ...(formattedAssets?.length ? { assets: formattedAssets } : {}),
             },
           ],
-          withdrawal: 'self',
+          ...(withdrawal === 'self' ? { withdrawal } : {}),
         },
       });
     }
@@ -1278,6 +1407,26 @@ export default class WalletsStore extends Store {
 
   getWalletById = (id: string): Wallet | null | undefined =>
     this.all.find((w) => w.id === id);
+  // The wallet must be known; a caller names a wallet from the store.
+  withdrawalDecisionFor = (
+    walletId: string,
+    purpose: WithdrawalPurpose,
+    options?: {
+      withdrawRewards?: boolean;
+    }
+  ): WithdrawalDecision => {
+    const wallet = this.getWalletById(walletId);
+    if (wallet == null) {
+      throw new Error('WalletsStore::withdrawalDecisionFor unknown wallet');
+    }
+    return decideWithdrawal({
+      purpose,
+      isLegacy: wallet.isLegacy,
+      ledgerVote: wallet.ledgerVote,
+      reward: wallet.reward,
+      withdrawRewards: options?.withdrawRewards,
+    });
+  };
   getWalletByName = (name: string): Wallet | null | undefined =>
     this.all.find((w) => w.name === name);
   getWalletRoute = (walletId: string, page = 'summary'): string =>

@@ -1,0 +1,18 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-27T18:04:31Z",
+  "chain": {
+    "epoch": 0,
+    "slot": 139
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/dreps/drep1yf2f3r9dgraelzrj47mrcjcdya4khyh4thakq3gpnu8vf8sa30vq2",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"anchor\":null,\"credential\":{\"hash\":\"54988cad40fb9f8872afb63c4b0d276b6b92f55dfb6045019f0ec49e\",\"type\":\"key_hash\"},\"deposit\":{\"quantity\":500000000,\"unit\":\"lovelace\"},\"expiry_epoch\":20,\"id\":\"drep1yf2f3r9dgraelzrj47mrcjcdya4khyh4thakq3gpnu8vf8sa30vq2\",\"metadata\":null,\"name\":null,\"status\":\"active\",\"voting_power\":{\"quantity\":\"0\",\"unit\":\"lovelace\"}}"
+  }
+}

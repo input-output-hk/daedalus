@@ -41,6 +41,7 @@ const paymentRequest = () => {
     passphrase: 'Secret-passphrase-1',
     isLegacy: false,
     hasAssetsRemainingAfterTransaction: false,
+    withdrawal: 'self' as const,
   };
 };
 

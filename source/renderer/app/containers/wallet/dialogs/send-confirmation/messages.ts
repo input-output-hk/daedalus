@@ -51,6 +51,13 @@ export const messages: Record<string, ReactIntlMessage> = defineMessages({
       "!!!Warning: This transaction will reduce your wallet's balance to less than 2 ada. Your wallet's balance should always be over 2 ada to spend future staking rewards.",
     description: "Warning: This transaction will reduce your wallet's balance",
   },
+  rewardsNotWithdrawn: {
+    id: 'wallet.send.confirmationDialog.rewardsNotWithdrawn',
+    defaultMessage:
+      "!!!This transaction leaves this wallet's {rewardsAmount} of staking rewards in place: they cannot be withdrawn until its voting power is delegated.",
+    description:
+      'Note on the send confirmation when a payment leaves held staking rewards in place. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode',
+  },
   addressToLabel: {
     id: 'wallet.send.confirmationDialog.addressToLabel',
     defaultMessage: '!!!To',

@@ -1,0 +1,18 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-27T18:07:24Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 1015
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/dreps",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": "[{\"anchor\":null,\"credential\":{\"hash\":\"e709ff764f31e8c9b723513e36959cf787eb0fb1354884c8bc0283b5\",\"type\":\"key_hash\"},\"deposit\":{\"quantity\":500000000,\"unit\":\"lovelace\"},\"expiry_epoch\":26,\"id\":\"drep1ytnsnlmkfuc73jdhydgnud54nnmc06c0ky653pxghspg8dgf9dlan\",\"metadata\":null,\"name\":null,\"status\":\"active\",\"voting_power\":{\"quantity\":\"0\",\"unit\":\"lovelace\"}}]"
+  }
+}

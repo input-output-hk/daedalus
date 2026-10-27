@@ -486,7 +486,7 @@ describe('Governance sanitization — call boundaries', () => {
         passphrase: '',
         wallet: { id: 'wallet-1', isHardwareWallet: true } as any,
       })
-    ).resolves.toEqual({ success: true });
+    ).resolves.toEqual({ success: true, transactionId: 'tx' });
     expect(analytics.sendEvent).toHaveBeenCalledWith(
       EventCategories.VOTING,
       'Casted governance vote',

@@ -189,6 +189,7 @@ import {
   AdaWallets,
   WalletNextDelegation,
   DRepDelegation,
+  LedgerVoteDelegation,
   CreateHardwareWalletRequest,
   LegacyAdaWallet,
   LegacyAdaWallets,
@@ -1011,7 +1012,7 @@ export default class AdaApi {
       passphrase,
       isLegacy,
       assets,
-      withdrawal = TransactionWithdrawal,
+      withdrawal,
       hasAssetsRemainingAfterTransaction,
     } = request;
 
@@ -1040,7 +1041,7 @@ export default class AdaApi {
         response = await createTransaction(this.config, {
           walletId,
           // @ts-ignore ts-migrate(2322) FIXME: Type '{ withdrawal: TransactionWithdrawalType; pay... Remove this comment to see the full error message
-          data: { ...data, withdrawal },
+          data: { ...data, ...(withdrawal != null ? { withdrawal } : {}) },
         });
       }
 
@@ -1209,7 +1210,7 @@ export default class AdaApi {
       availableBalance,
       rewardsBalance,
       isLegacy,
-      withdrawal = TransactionWithdrawal,
+      withdrawal,
     } = request;
 
     try {
@@ -1236,7 +1237,7 @@ export default class AdaApi {
         response = await getTransactionFee(this.config, {
           walletId,
           // @ts-ignore ts-migrate(2322) FIXME: Type '{ withdrawal: TransactionWithdrawalType; pay... Remove this comment to see the full error message
-          data: { ...data, withdrawal },
+          data: { ...data, ...(withdrawal != null ? { withdrawal } : {}) },
         });
       }
 
@@ -1316,7 +1317,9 @@ export default class AdaApi {
               assets: payments.assets,
             },
           ],
-          withdrawal: TransactionWithdrawal,
+          ...(payments.withdrawal != null
+            ? { withdrawal: payments.withdrawal }
+            : {}),
           metadata: metadata || null,
         };
       } else {
@@ -3188,6 +3191,41 @@ const parseVoting = (voting: unknown): DRepDelegation | null => {
   return { kind: 'drep', drep, source: 'onchain' };
 };
 
+const LOGGABLE_STATUS_PATTERN = /^[a-z_]{1,32}$/;
+
+// Wire value for delegation.ledger_vote: { status: 'not_delegated' } or
+// { status: 'delegated', voting }. An absent field, or any shape outside those
+// two, reads as 'unknown'. The warning carries a bounded status token only,
+// never the voting target.
+const parseLedgerVote = (raw: unknown): LedgerVoteDelegation => {
+  if (raw == null || typeof raw !== 'object' || Array.isArray(raw)) {
+    return { status: 'unknown' };
+  }
+  const fields = raw as Record<string, unknown>;
+  const { status } = fields;
+  const keys = Object.keys(fields);
+  if (status === 'not_delegated' && keys.length === 1) {
+    return { status: 'not_delegated' };
+  }
+  if (status === 'delegated' && keys.length === 2 && 'voting' in fields) {
+    const parsed = parseVoting(fields.voting);
+    if (parsed !== null) {
+      return {
+        status: 'delegated',
+        voting:
+          parsed.kind === 'drep' ? { ...parsed, source: 'ledger' } : parsed,
+      };
+    }
+  }
+  logger.warn('AdaApi::parseLedgerVote unrecognized ledger vote', {
+    status:
+      typeof status === 'string' && LOGGABLE_STATUS_PATTERN.test(status)
+        ? status
+        : 'invalid',
+  });
+  return { status: 'unknown' };
+};
+
 // The newest pending entry that speaks to the caller's concern. Entries are
 // ranked by the epoch they activate in rather than by array position, because a
 // pending stake change and a pending vote change are independent and either can
@@ -3281,6 +3319,9 @@ export const _createWalletFromServerData = action(
         ? parseVoting(get(active, 'voting', null))
         : null;
     }
+    const ledgerVote: LedgerVoteDelegation = isLegacy
+      ? { status: 'unknown' }
+      : parseLedgerVote(get(delegation, 'ledger_vote', null));
     // Last
     const next = get(delegation, 'next', null);
     const pendingDelegationEntries = Array.isArray(next) ? next : [];
@@ -3359,6 +3400,7 @@ export const _createWalletFromServerData = action(
       lastDelegationStakePoolStatus,
       pendingDelegations: next,
       votingTarget,
+      ledgerVote,
       discovery,
     });
   }

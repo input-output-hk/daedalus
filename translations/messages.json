@@ -1432,6 +1432,26 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Staking rewards on hold",
+        "description": "Title of the notification on a wallet whose staking rewards cannot be withdrawn because its voting power is not delegated",
+        "id": "wallet.heldRewards.notification.title"
+      },
+      {
+        "defaultMessage": "!!!{rewardsAmount} of staking rewards cannot be withdrawn from this wallet, because its voting power is not delegated, for example because its DRep retired. Payments still work and leave the rewards in place. Delegate the voting power to any DRep, to Abstain or to No Confidence to release them; they can be withdrawn once that delegation is confirmed.",
+        "description": "Body of that notification. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
+        "id": "wallet.heldRewards.notification.description"
+      },
+      {
+        "defaultMessage": "!!!Delegate voting power",
+        "description": "Button on that notification; opens the voting power delegation form with this wallet selected",
+        "id": "wallet.heldRewards.notification.delegateButton"
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/HeldRewardsNotification.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Byron",
         "description": "Label \"Byron\" on the legacy badge.",
         "id": "wallet.byron.badge.label"
@@ -8772,6 +8792,36 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!<p>Undelegating <strong>{walletName}</strong> withdraws its {rewardsAmount} of staking rewards, and that withdrawal is refused while the wallet's voting power is not delegated, for example because its DRep retired.</p><p>Undelegation therefore takes two transactions. The first delegates the voting power to Abstain. Once it is confirmed, the second undelegates the wallet and withdraws the rewards.</p>",
+        "description": "Explanation at the start of a two-step undelegation; HTML as in descriptionWithTicker",
+        "id": "wallet.settings.undelegate.voteFirst.description"
+      },
+      {
+        "defaultMessage": "!!!Step 1 of 2: delegate voting power to Abstain",
+        "description": "Heading of the first step of a two-step undelegation",
+        "id": "wallet.settings.undelegate.voteFirst.stepOneLabel"
+      },
+      {
+        "defaultMessage": "!!!Delegate to Abstain",
+        "description": "Button that submits the first step",
+        "id": "wallet.settings.undelegate.voteFirst.confirmButtonLabel"
+      },
+      {
+        "defaultMessage": "!!!Waiting for the delegation to Abstain to be confirmed. The undelegation follows once it is.",
+        "description": "Shown while the first step's transaction is not yet in the ledger",
+        "id": "wallet.settings.undelegate.voteFirst.waiting"
+      },
+      {
+        "defaultMessage": "!!!The delegation to Abstain was not confirmed. No undelegation was sent.",
+        "description": "Shown when the first step's transaction failed or expired",
+        "id": "wallet.settings.undelegate.voteFirst.voteNotConfirmed"
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletVoteFirstDialog.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Unpair wallet",
         "description": "Unpair wallet header on the wallet settings page.",
         "id": "wallet.settings.unpairWallet.header"
@@ -10485,6 +10535,11 @@
         "defaultMessage": "!!!Warning: This transaction will reduce your wallet's balance to less than 2 ada. Your wallet's balance should always be over 2 ada to spend future staking rewards.",
         "description": "Warning: This transaction will reduce your wallet's balance",
         "id": "wallet.send.confirmationDialog.emptyingWarning"
+      },
+      {
+        "defaultMessage": "!!!This transaction leaves this wallet's {rewardsAmount} of staking rewards in place: they cannot be withdrawn until its voting power is delegated.",
+        "description": "Note on the send confirmation when a payment leaves held staking rewards in place. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
+        "id": "wallet.send.confirmationDialog.rewardsNotWithdrawn"
       },
       {
         "defaultMessage": "!!!To",

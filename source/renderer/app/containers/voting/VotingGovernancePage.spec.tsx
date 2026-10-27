@@ -178,7 +178,7 @@ const buildStores = ({
       delegateVotes: jest.fn<
         ReturnType<VotingStore['delegateVotes']>,
         Parameters<VotingStore['delegateVotes']>
-      >(async () => ({ success: true })),
+      >(async () => ({ success: true as const, transactionId: 'tx-1' })),
     },
     // allWallets is the Shelley-only collection the governance pages read:
     // a Byron wallet cannot delegate voting power.
@@ -299,7 +299,8 @@ describe('Automatic favorites after delegation submission', () => {
     stores.voting.delegateVotes.mockImplementationOnce(
       () =>
         new Promise((resolve) => {
-          completeSubmission = () => resolve({ success: true });
+          completeSubmission = () =>
+            resolve({ success: true, transactionId: 'tx-1' });
         })
     );
     fireEvent.click(screen.getByRole('button', { name: 'Submit' }));

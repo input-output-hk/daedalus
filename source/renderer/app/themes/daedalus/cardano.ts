@@ -573,6 +573,15 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-notification-message-text-color': '#ffffff',
     '--theme-notification-message-checkmark-icon-color': '#ffffff',
     '--theme-notification-message-close-icon-color': '#ffffff',
+    '--theme-held-rewards-notification-background-color': '#5e6066',
+    '--theme-held-rewards-notification-title-color': '#ffffff',
+    '--theme-held-rewards-notification-description-color': '#ffffff',
+    '--theme-held-rewards-notification-button-text-color': '#5e6066',
+    '--theme-held-rewards-notification-button-background-color': '#ffffff',
+    '--theme-held-rewards-notification-button-background-color-hover':
+      'rgba(255, 255, 255, 0.9)',
+    '--theme-held-rewards-notification-button-background-color-active':
+      'rgba(255, 255, 255, 0.8)',
     '--theme-legacy-badge-background-color': '#ab1700',
     '--theme-legacy-notification-background-color': '#ab2712',
     '--theme-legacy-notification-learn-more-button-text-color': '#ffffff',

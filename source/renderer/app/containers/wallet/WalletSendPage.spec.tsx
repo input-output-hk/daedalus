@@ -19,9 +19,13 @@ import HardwareWalletsStore from '../../stores/HardwareWalletsStore';
 import TransactionsStore from '../../stores/TransactionsStore';
 import DialogsActions from '../../actions/dialogs-actions';
 import Action from '../../actions/lib/Action';
+import { AnalyticsProvider } from '../../components/analytics';
 import { noopAnalyticsTracker } from '../../analytics';
 import { BrowserLocalStorageBridge } from '../../features/local-storage';
-import { DiscreetModeFeatureProvider } from '../../features/discreet-mode';
+import {
+  DiscreetModeFeatureProvider,
+  DiscreetModeToggle,
+} from '../../features/discreet-mode';
 import { NUMBER_OPTIONS } from '../../config/profileConfig';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import { DeviceTypes } from '../../../../common/types/hardware-wallets.types';
@@ -33,6 +37,8 @@ import type { Api } from '../../api';
 import type { ActionsMap } from '../../actions';
 import type { StoresMap } from '../../stores';
 import type { CoinSelectionsResponse } from '../../api/transactions/types';
+import type { LedgerVoteDelegation } from '../../api/wallets/types';
+import { decideWithdrawal } from '../../utils/governance/rewardWithdrawal';
 
 jest.mock('../../components/analytics/withAnalytics', () => ({
   withAnalytics: (component: React.ComponentType) => component,
@@ -56,7 +62,14 @@ const originalPilot = global.cip30Enabled;
 const originalFlight = global.isFlight;
 let dispose: () => Promise<void> = async () => undefined;
 
-function mountSend(isHardwareWallet: boolean, isLegacy = false) {
+function mountSend(
+  isHardwareWallet: boolean,
+  isLegacy = false,
+  ledger: { ledgerVote: LedgerVoteDelegation; reward: number } = {
+    ledgerVote: { status: 'unknown' },
+    reward: 0,
+  }
+) {
   const wallet = {
     id: 'wallet',
     name: 'Ledger smoke wallet',
@@ -64,7 +77,13 @@ function mountSend(isHardwareWallet: boolean, isLegacy = false) {
     isLegacy,
     amount: new BigNumber(20),
     availableAmount: new BigNumber(20),
-    reward: new BigNumber(0),
+    reward: new BigNumber(ledger.reward),
+    spendableAmount: new BigNumber(
+      ledger.ledgerVote.status === 'not_delegated' && !isLegacy
+        ? 20 - ledger.reward
+        : 20
+    ),
+    ledgerVote: ledger.ledgerVote,
     assets: { total: [] },
     isRestoring: false,
   };
@@ -79,9 +98,20 @@ function mountSend(isHardwareWallet: boolean, isLegacy = false) {
     fee: new BigNumber('0.17'),
   };
   const selectCoins = jest.fn().mockResolvedValue(selection);
+  const constructTransaction = jest.fn().mockResolvedValue({
+    transaction: '84a0a0f5f6',
+    coinSelection: selection,
+  });
+  const calculateFee = jest
+    .fn()
+    .mockResolvedValue({ fee: new BigNumber('0.17') });
   const submitExternal = jest.fn();
   const api = {
-    ada: { selectCoins, createExternalTransaction: submitExternal },
+    ada: {
+      selectCoins,
+      constructTransaction,
+      createExternalTransaction: submitExternal,
+    },
     localStorage: {},
   } as unknown as Api;
   const softwareSend = jest.fn();
@@ -111,6 +141,13 @@ function mountSend(isHardwareWallet: boolean, isLegacy = false) {
     wallets: {
       active: wallet,
       getWalletById: () => wallet,
+      withdrawalDecisionFor: (_walletId: string, purpose: 'payment') =>
+        decideWithdrawal({
+          purpose,
+          isLegacy: wallet.isLegacy,
+          ledgerVote: wallet.ledgerVote,
+          reward: wallet.reward,
+        }),
       isValidAddress: () => true,
       isAddressFromSameWallet: true,
       sendMoneyRequest: { isExecuting: false, error: null, reset: jest.fn() },
@@ -120,7 +157,7 @@ function mountSend(isHardwareWallet: boolean, isLegacy = false) {
       acquireWalletSendLock: transactions.acquireWalletSendLock,
       validateAmount: async () => true,
       validateAssetAmount: async () => true,
-      calculateTransactionFee: async () => ({ fee: new BigNumber('0.17') }),
+      calculateTransactionFee: calculateFee,
     },
     app: { openExternalLink: jest.fn() },
     profile: { currentNumberFormat: NUMBER_OPTIONS[0].value },
@@ -154,17 +191,20 @@ function mountSend(isHardwareWallet: boolean, isLegacy = false) {
   const view = render(
     <TestDecorator>
       <BrowserLocalStorageBridge>
-        <DiscreetModeFeatureProvider>
-          <Provider stores={stores} actions={actions}>
-            <WalletSendPage
-              {...({
-                stores,
-                actions,
-                analyticsTracker: noopAnalyticsTracker,
-              } as unknown as React.ComponentProps<typeof WalletSendPage>)}
-            />
-          </Provider>
-        </DiscreetModeFeatureProvider>
+        <AnalyticsProvider tracker={noopAnalyticsTracker}>
+          <DiscreetModeFeatureProvider>
+            <Provider stores={stores} actions={actions}>
+              <DiscreetModeToggle />
+              <WalletSendPage
+                {...({
+                  stores,
+                  actions,
+                  analyticsTracker: noopAnalyticsTracker,
+                } as unknown as React.ComponentProps<typeof WalletSendPage>)}
+              />
+            </Provider>
+          </DiscreetModeFeatureProvider>
+        </AnalyticsProvider>
       </BrowserLocalStorageBridge>
     </TestDecorator>
   );
@@ -174,8 +214,11 @@ function mountSend(isHardwareWallet: boolean, isLegacy = false) {
     hardwareWallets,
     transactions,
     selectCoins,
+    constructTransaction,
+    calculateFee,
     submitExternal,
     softwareSend,
+    actions,
   };
 }
 
@@ -390,4 +433,277 @@ it('keeps pilot Shelley Send on unified approval instead of the legacy dialog', 
     )
   );
   expect(screen.queryByLabelText('Modal Dialog')).not.toBeInTheDocument();
+});
+
+describe('WalletSendPage reward withdrawal', () => {
+  const heldRewards = {
+    ledgerVote: { status: 'not_delegated' as const },
+    reward: 5,
+  };
+  const cases: Array<
+    [
+      string,
+      { ledgerVote: LedgerVoteDelegation; reward: number },
+      'self' | null,
+    ]
+  > = [
+    ['held rewards and no vote delegation', heldRewards, null],
+    [
+      'a delegated vote and rewards',
+      {
+        ledgerVote: {
+          status: 'delegated' as const,
+          voting: { status: 'abstain' } as never,
+        },
+        reward: 5,
+      },
+      'self',
+    ],
+    [
+      'an unread ledger value and rewards',
+      { ledgerVote: { status: 'unknown' as const }, reward: 5 },
+      'self',
+    ],
+    [
+      'a zero reward',
+      { ledgerVote: { status: 'unknown' as const }, reward: 0 },
+      null,
+    ],
+  ];
+
+  const withdrawalKeys = (calls: Array<Array<unknown>>) =>
+    calls
+      .map(([request]) => request as { payments: { withdrawal: unknown } })
+      .map(({ payments }) => payments.withdrawal);
+
+  it.each(cases)(
+    'sends the priced withdrawal on a mainnet software wallet with %s',
+    async (_name, ledger, expected) => {
+      global.cip30Enabled = false;
+      global.isFlight = false;
+      const fixture = mountSend(false, false, ledger);
+      await clickSend();
+      const dialog = await screen.findByLabelText('Modal Dialog');
+      fireEvent.change(dialog.querySelector('input[type="password"]')!, {
+        target: { value: 'fixture-password' },
+      });
+      const approve = within(dialog).getByRole('button', { name: 'Send' });
+      await waitFor(() => expect(approve).not.toBeDisabled());
+      fireEvent.click(approve);
+      await waitFor(() => expect(fixture.softwareSend).toHaveBeenCalled());
+      expect(fixture.calculateFee).toHaveBeenLastCalledWith(
+        expect.objectContaining({ withdrawal: expected })
+      );
+      expect(fixture.softwareSend.mock.calls[0][0].withdrawal).toBe(expected);
+    }
+  );
+
+  it.each(cases)(
+    'sends the priced withdrawal on a cip30 software wallet with %s',
+    async (_name, ledger, expected) => {
+      global.cip30Enabled = true;
+      global.isFlight = false;
+      const fixture = mountSend(false, false, ledger);
+      await clickSend();
+      await waitFor(() => expect(fixture.softwareSend).toHaveBeenCalled());
+      expect(fixture.calculateFee).toHaveBeenLastCalledWith(
+        expect.objectContaining({ withdrawal: expected })
+      );
+      expect(fixture.softwareSend.mock.calls[0][0].withdrawal).toBe(expected);
+    }
+  );
+
+  it.each(cases)(
+    'selects, reselects and signs one withdrawal on a mainnet hardware wallet with %s',
+    async (_name, ledger, expected) => {
+      global.cip30Enabled = false;
+      global.isFlight = false;
+      const transport = jest
+        .spyOn(getHardwareWalletTransportChannel, 'request')
+        .mockImplementation(() => new Promise(() => undefined));
+      jest
+        .spyOn(resetTrezorActionChannel, 'request')
+        .mockResolvedValue(undefined);
+      const fixture = mountSend(true, false, ledger);
+      await clickSend();
+      await screen.findByLabelText('Modal Dialog');
+      await waitFor(() => expect(transport).toHaveBeenCalledTimes(1));
+      const values = withdrawalKeys(fixture.selectCoins.mock.calls);
+      expect(values.length).toBeGreaterThanOrEqual(2);
+      expect(new Set(values)).toEqual(new Set([expected]));
+      expect(
+        fixture.hardwareWallets.txSignRequest.paymentRequest.withdrawal
+      ).toBe(expected);
+    }
+  );
+
+  it.each(cases)(
+    'constructs the priced withdrawal on a cip30 hardware wallet with %s',
+    async (_name, ledger, expected) => {
+      global.cip30Enabled = true;
+      global.isFlight = false;
+      const fixture = mountSend(true, false, ledger);
+      fixture.actions.hardwareWallets.sendMoney.removeAll();
+      await clickSend();
+      await waitFor(() =>
+        expect(
+          fixture.hardwareWallets.txSignRequest?.exactPayment
+        ).toBeDefined()
+      );
+      const { constructionData } =
+        fixture.hardwareWallets.txSignRequest.exactPayment;
+      expect(constructionData.withdrawal).toBe(expected ?? undefined);
+      expect('withdrawal' in constructionData).toBe(expected === 'self');
+      expect(fixture.constructTransaction.mock.calls[0][0].data).toEqual(
+        constructionData
+      );
+    }
+  );
+});
+
+describe('WalletSendPage confirmation note on held rewards', () => {
+  const NOTE = /leaves this wallet's .* of staking rewards in place/;
+  const delegated = {
+    ledgerVote: {
+      status: 'delegated' as const,
+      voting: { status: 'abstain' } as never,
+    },
+    reward: 5,
+  };
+  const cases: Array<
+    [string, { ledgerVote: LedgerVoteDelegation; reward: number }, boolean]
+  > = [
+    [
+      'held rewards and no vote delegation',
+      { ...delegated, ledgerVote: { status: 'not_delegated' } },
+      true,
+    ],
+    ['a delegated vote and rewards', delegated, false],
+    [
+      'an unread ledger value and rewards',
+      { ledgerVote: { status: 'unknown' }, reward: 5 },
+      false,
+    ],
+    [
+      'a zero reward and no vote delegation',
+      { ledgerVote: { status: 'not_delegated' }, reward: 0 },
+      false,
+    ],
+  ];
+
+  it.each(cases)(
+    'on a software wallet with %s, shows the note: %s',
+    async (_name, ledger, shown) => {
+      global.cip30Enabled = false;
+      global.isFlight = false;
+      mountSend(false, false, ledger);
+      await clickSend();
+      const dialog = await screen.findByLabelText('Modal Dialog');
+      expect(NOTE.test(dialog.textContent ?? '')).toBe(shown);
+    }
+  );
+
+  it.each(cases)(
+    'on a hardware wallet with %s, shows the note: %s',
+    async (_name, ledger, shown) => {
+      global.cip30Enabled = false;
+      global.isFlight = false;
+      jest
+        .spyOn(getHardwareWalletTransportChannel, 'request')
+        .mockImplementation(() => new Promise(() => undefined));
+      jest
+        .spyOn(resetTrezorActionChannel, 'request')
+        .mockResolvedValue(undefined);
+      mountSend(true, false, ledger);
+      await clickSend();
+      const dialog = await screen.findByLabelText('Modal Dialog');
+      expect(NOTE.test(dialog.textContent ?? '')).toBe(shown);
+    }
+  );
+
+  it('words the note with the held amount', async () => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+    mountSend(false, false, {
+      ledgerVote: { status: 'not_delegated' },
+      reward: 5,
+    });
+    await clickSend();
+    const dialog = await screen.findByLabelText('Modal Dialog');
+    expect(dialog).toHaveTextContent(
+      "This transaction leaves this wallet's 5.000000 ADA of staking rewards in place: they cannot be withdrawn until its voting power is delegated."
+    );
+  });
+
+  it('does not show the note on a hardware wallet whose selection withdraws', async () => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+    jest
+      .spyOn(getHardwareWalletTransportChannel, 'request')
+      .mockImplementation(() => new Promise(() => undefined));
+    jest
+      .spyOn(resetTrezorActionChannel, 'request')
+      .mockResolvedValue(undefined);
+    const fixture = mountSend(true, false, {
+      ledgerVote: { status: 'not_delegated' },
+      reward: 5,
+    });
+    fixture.selectCoins.mockResolvedValue({
+      ...fixture.selection,
+      withdrawals: [{}] as unknown as CoinSelectionsResponse['withdrawals'],
+    });
+    await clickSend();
+    const dialog = await screen.findByLabelText('Modal Dialog');
+    expect(dialog).not.toHaveTextContent(NOTE);
+  });
+
+  it('hides the amount in discreet mode', async () => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+    mountSend(false, false, {
+      ledgerVote: { status: 'not_delegated' },
+      reward: 5,
+    });
+    await clickSend();
+    const dialog = await screen.findByLabelText('Modal Dialog');
+    fireEvent.click(
+      screen.getByRole('button', { name: /discreetModeToggle/i, hidden: true })
+    );
+    expect(dialog).toHaveTextContent(
+      "This transaction leaves this wallet's *** ADA of staking rewards in place"
+    );
+    expect(dialog).not.toHaveTextContent('5.000000 ADA of staking');
+  });
+});
+
+describe('WalletSendPage spendable amount', () => {
+  const shownAmount = async (ledger: {
+    ledgerVote: LedgerVoteDelegation;
+    reward: number;
+  }) => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+    mountSend(false, false, ledger);
+    fireEvent.change(screen.getByPlaceholderText('Paste an address'), {
+      target: { value: receiver },
+    });
+    return (await screen.findByText(/^of\b/)).textContent;
+  };
+
+  it('shows the wallet amount without held rewards', async () => {
+    const text = await shownAmount({
+      ledgerVote: { status: 'not_delegated' },
+      reward: 5,
+    });
+    expect(text).toContain('15');
+    expect(text).not.toContain('20');
+  });
+
+  it('shows the full wallet amount when the rewards are withdrawable', async () => {
+    const text = await shownAmount({
+      ledgerVote: { status: 'unknown' },
+      reward: 5,
+    });
+    expect(text).toContain('20');
+  });
 });

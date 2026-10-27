@@ -437,6 +437,21 @@ export default class StakingStore extends Store {
   @action
   _quitStakePool = async (request: QuitStakePoolRequest) => {
     const { walletId, isHardwareWallet } = request;
+    // A construct request names its withdrawal; the other builds leave it to
+    // the wallet. An account with a reward and no vote delegation has no
+    // undelegation that the ledger accepts, so nothing is sent for it.
+    const withdrawalDecision = global.cip30Enabled
+      ? this.stores.wallets.withdrawalDecisionFor(walletId, 'undelegation')
+      : null;
+    if (withdrawalDecision?.kind === 'delegate_vote_first') {
+      throw new Error(
+        'StakingStore::_quitStakePool requires a vote delegation first'
+      );
+    }
+    const withdrawal =
+      withdrawalDecision?.withdrawal === 'self'
+        ? ({ withdrawal: 'self' } as const)
+        : {};
     // Set quit transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
@@ -461,7 +476,7 @@ export default class StakingStore extends Store {
             data: {
               encoding: 'base16',
               delegations: [{ quit: { stake_key_index: '0H' } }],
-              withdrawal: 'self',
+              ...withdrawal,
             },
           });
       } else {
@@ -472,7 +487,7 @@ export default class StakingStore extends Store {
             data: {
               encoding: 'base16',
               delegations: [{ quit: { stake_key_index: '0H' } }],
-              withdrawal: 'self',
+              ...withdrawal,
             },
           });
       }

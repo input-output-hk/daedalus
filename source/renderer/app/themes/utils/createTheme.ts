@@ -1044,6 +1044,17 @@ export const createDaedalusComponentsTheme = (
       '--theme-notification-message-text-color': `${text.secondary}`,
       '--theme-notification-message-checkmark-icon-color': `${text.secondary}`,
       '--theme-notification-message-close-icon-color': `${text.secondary}`,
+      '--theme-held-rewards-notification-background-color': `${background.primary.regular}`,
+      '--theme-held-rewards-notification-title-color': `${text.primary}`,
+      '--theme-held-rewards-notification-description-color': `${text.primary}`,
+      '--theme-held-rewards-notification-button-text-color': `${background.primary.regular}`,
+      '--theme-held-rewards-notification-button-background-color': `${text.primary}`,
+      '--theme-held-rewards-notification-button-background-color-hover': `${chroma(
+        text.primary
+      ).alpha(0.9)}`,
+      '--theme-held-rewards-notification-button-background-color-active': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
       '--theme-legacy-badge-background-color': `${error.dark}`,
       '--theme-legacy-notification-background-color': '#ab2712',
       '--theme-legacy-notification-learn-more-button-text-color': `${text.secondary}`,

@@ -22,7 +22,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   title: {
     id: 'wallet.settings.undelegate.dialog.title',
     defaultMessage: '!!!Undelegate',

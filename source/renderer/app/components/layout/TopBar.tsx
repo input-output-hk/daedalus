@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import { IS_BYRON_WALLET_MIGRATION_ENABLED } from '../../config/walletsConfig';
 import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
+import HeldRewardsNotification from '../notifications/HeldRewardsNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
@@ -19,6 +20,7 @@ type Props = {
   activeWallet?: Wallet | null | undefined;
   onTransferFunds?: (...args: Array<any>) => any;
   onWalletAdd?: (...args: Array<any>) => any;
+  onDelegateHeldRewards?: (walletId: string) => void;
   hasRewardsWallets?: boolean;
   onLearnMore?: (...args: Array<any>) => any;
   isShelleyActivated: boolean;
@@ -35,6 +37,7 @@ class TopBar extends Component<Props> {
       hasRewardsWallets,
       onTransferFunds,
       onWalletAdd,
+      onDelegateHeldRewards,
       onLearnMore,
       isShelleyActivated,
     } = this.props;
@@ -49,6 +52,11 @@ class TopBar extends Component<Props> {
       activeWallet.amount.gt(0) &&
       !activeWallet.isRestoring &&
       ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
+    const hasHeldRewardsNotification =
+      activeWallet != null &&
+      activeWallet.hasHeldRewards &&
+      !activeWallet.isRestoring &&
+      onDelegateHeldRewards != null;
     const onTransferFundsFn =
       onTransferFunds && activeWallet
         ? () => onTransferFunds(activeWallet.id)
@@ -103,6 +111,12 @@ class TopBar extends Component<Props> {
               onWalletAdd={onWalletAdd}
             />
           )}
+        {hasHeldRewardsNotification && activeWallet && (
+          <HeldRewardsNotification
+            heldReward={activeWallet.heldReward}
+            onDelegate={() => onDelegateHeldRewards(activeWallet.id)}
+          />
+        )}
       </header>
     );
   }

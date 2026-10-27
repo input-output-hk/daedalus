@@ -63,6 +63,7 @@ export default class WalletsActions {
     assetsAmounts?: Array<string>;
     hasAssetsRemainingAfterTransaction?: boolean;
     isCollateralPreparation?: boolean;
+    withdrawal: 'self' | null;
   }> = new Action();
   chooseWalletExportType: Action<{
     walletExportType: WalletExportTypeChoices;

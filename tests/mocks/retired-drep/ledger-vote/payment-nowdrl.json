@@ -1,0 +1,29 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-27T18:07:06Z",
+  "chain": {
+    "epoch": 6,
+    "slot": 918
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/47db4693adc954fc036ae0da6d76e5fe1e4efe4e/transactions",
+    "body": {
+      "payments": [
+        {
+          "address": "addr_test1vzdavreewvy74nlds73vvyuf0usq06xpwky30yx32dyw0gsqy56kl",
+          "amount": {
+            "quantity": 5000000,
+            "unit": "lovelace"
+          }
+        }
+      ],
+      "passphrase": "<redacted>"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"amount\":{\"quantity\":5167217,\"unit\":\"lovelace\"},\"burn\":{\"tokens\":[]},\"certificates\":[],\"collateral\":[],\"collateral_outputs\":[],\"deposit_returned\":{\"quantity\":0,\"unit\":\"lovelace\"},\"deposit_taken\":{\"quantity\":0,\"unit\":\"lovelace\"},\"direction\":\"outgoing\",\"expires_at\":{\"absolute_slot_number\":36930,\"epoch_number\":246,\"slot_number\":30,\"time\":\"2026-10-27T20:07:07Z\"},\"extra_signatures\":[],\"fee\":{\"quantity\":167217,\"unit\":\"lovelace\"},\"id\":\"fde41578acc03bfa923c9c1ae505b05924a43a6eb8d01bd393699a8e6a01b37a\",\"inputs\":[{\"address\":\"addr_test1qpm7ulvyknxtsxrgcgu9kx45vens2a2y4sx6cxg4558w33tye00fmpcv08zyj2uaqqk73eyl22rhs69nkfm3qjxpx38ssv7jkk\",\"amount\":{\"quantity\":109773552613,\"unit\":\"lovelace\"},\"assets\":[],\"id\":\"bd3d2da5b57b5f577771caca6df30eea0bbdfed40f6a9afe2ec633c4d1c6e0c1\",\"index\":1}],\"mint\":{\"tokens\":[]},\"outputs\":[{\"address\":\"addr_test1vzdavreewvy74nlds73vvyuf0usq06xpwky30yx32dyw0gsqy56kl\",\"amount\":{\"quantity\":5000000,\"unit\":\"lovelace\"},\"assets\":[]},{\"address\":\"addr_test1qrunve7x0juqckse838c8e2p0m5alenqmvkjjvnpd3xrterye00fmpcv08zyj2uaqqk73eyl22rhs69nkfm3qjxpx38srgurfs\",\"amount\":{\"quantity\":109768385396,\"unit\":\"lovelace\"},\"assets\":[]}],\"pending_since\":{\"absolute_slot_number\":929,\"epoch_number\":6,\"height\":{\"quantity\":100,\"unit\":\"block\"},\"slot_number\":29,\"time\":\"2026-10-27T18:07:06.8Z\"},\"script_validity\":\"valid\",\"status\":\"pending\",\"validity_interval\":{\"invalid_before\":{\"quantity\":0,\"unit\":\"slot\"},\"invalid_hereafter\":{\"quantity\":36930,\"unit\":\"slot\"}},\"withdrawals\":[]}"
+  }
+}

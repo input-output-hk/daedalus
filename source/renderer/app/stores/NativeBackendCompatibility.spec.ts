@@ -197,6 +197,7 @@ describe('upstream native backend compatibility', () => {
         passphrase: 'approved-password',
         assets: [asset],
         assetsAmounts: ['7'],
+        withdrawal: null,
       });
       await Promise.resolve();
       expect(http).not.toHaveBeenCalled();
@@ -238,6 +239,7 @@ describe('upstream native backend compatibility', () => {
         receiver: payment.address,
         amount: '2000000',
         passphrase: 'wrong-password',
+        withdrawal: null,
       })
     ).rejects.toBeDefined();
     expect(actions.dialogs.closeActiveDialog.trigger).not.toHaveBeenCalled();
@@ -247,6 +249,7 @@ describe('upstream native backend compatibility', () => {
       receiver: payment.address,
       amount: '2000000',
       passphrase: 'approved-password',
+      withdrawal: null,
     });
     expect(http).toHaveBeenCalledTimes(2);
     expect(http.mock.calls[1][2].passphrase).toBe('approved-password');
@@ -288,7 +291,10 @@ describe('upstream native backend compatibility', () => {
       await Promise.resolve();
       expect(http).not.toHaveBeenCalled();
       lease.release();
-      await expect(submitted).resolves.toEqual({ success: true });
+      await expect(submitted).resolves.toEqual({
+        success: true,
+        transactionId: expect.any(String),
+      });
       expect(http).toHaveBeenCalledTimes(1);
       expect(http.mock.calls[0][0]).toMatchObject({
         method: 'PUT',

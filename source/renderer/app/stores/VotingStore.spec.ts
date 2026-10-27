@@ -118,7 +118,7 @@ const buildHardwareWallets = (overrides: Record<string, unknown> = {}) => ({
   })),
   updateTxSignRequest: jest.fn(),
   initiateTransaction: jest.fn(async () => undefined),
-  _sendMoney: jest.fn(async () => undefined),
+  _sendMoney: jest.fn(async () => ({ id: 'hw-tx-1' })),
   submitConstructedNativeTransaction: jest.fn(async () => ({ id: 'tx-1' })),
   sendMoneyRequest: { isExecuting: false },
   isTransactionPending: false,
@@ -161,7 +161,7 @@ describe('VotingStore hardware-wallet delegation branches', () => {
           passphrase: '',
           wallet: hwWallet,
         })
-      ).resolves.toEqual({ success: true });
+      ).resolves.toEqual({ success: true, transactionId: 'tx-1' });
       expect(
         hardwareWallets.submitConstructedNativeTransaction
       ).toHaveBeenCalledWith({
@@ -264,6 +264,43 @@ describe('same-vote server error in the delegation form', () => {
   });
 });
 
+describe('delegateVotes transaction id', () => {
+  const originalCapability = global.cip30Enabled;
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
+  });
+
+  it('is null when the hardware send returns no transaction', async () => {
+    global.cip30Enabled = false;
+    const hardwareWallets = buildHardwareWallets({
+      _sendMoney: jest.fn(async () => undefined),
+    });
+    const { store } = buildStore(hardwareWallets);
+    await expect(
+      store.delegateVotes({ chosenOption: 'abstain', wallet: hwWallet })
+    ).resolves.toEqual({ success: true, transactionId: null });
+  });
+
+  it('is the id of the constructed software transaction on the cip30 build', async () => {
+    global.cip30Enabled = true;
+    const { store } = buildStore(buildHardwareWallets());
+    const submitConstructedNativeTransaction = jest.fn(async () => ({
+      id: 'native-tx',
+    }));
+    store.configure({
+      wallets: { submitConstructedNativeTransaction },
+    } as unknown as Parameters<VotingStore['configure']>[0]);
+    await expect(
+      store.delegateVotes({ chosenOption: 'abstain', wallet: softwareWallet })
+    ).resolves.toEqual({ success: true, transactionId: 'native-tx' });
+    expect(submitConstructedNativeTransaction).toHaveBeenCalledWith({
+      walletId: softwareWallet.id,
+      action: 'drep-delegation',
+      data: { encoding: 'base16', vote: 'abstain' },
+    });
+  });
+});
+
 describe('upstream governance store dispatch', () => {
   beforeEach(() => {
     global.cip30Enabled = false;
@@ -302,7 +339,10 @@ describe('upstream governance store dispatch', () => {
           wallet: softwareWallet,
           passphrase: 'real-password',
         })
-      ).resolves.toEqual({ success: true });
+      ).resolves.toEqual({
+        success: true,
+        transactionId: 'upstream-transaction',
+      });
       expect(delegateVotes).toHaveBeenCalledWith({
         dRepId: chosenOption,
         walletId: softwareWallet.id,
@@ -337,7 +377,7 @@ describe('upstream governance store dispatch', () => {
         chosenOption: CIP129_KEY,
         wallet: hwWallet,
       })
-    ).resolves.toEqual({ success: true });
+    ).resolves.toEqual({ success: true, transactionId: 'hw-tx-1' });
     expect(hardwareWallets._sendMoney).toHaveBeenCalledWith({
       selectedWalletId: hwWallet.id,
       isDelegationTransaction: true,

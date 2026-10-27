@@ -22,6 +22,7 @@ import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
 import { messages as apiErrorMessages } from '../../api/errors';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
+import type { WithdrawalDecision } from '../../utils/governance/rewardWithdrawal';
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
@@ -67,6 +68,7 @@ type CalculateTransactionFeeArgs = {
 
 export interface FormData {
   coinSelection: CoinSelectionsResponse;
+  withdrawalDecision: WithdrawalDecision;
   receiver: string;
   selectedAssets: AssetToken[];
   assetsAmounts: string[];
@@ -90,6 +92,7 @@ type Props = {
     fee: BigNumber;
     coinSelection?: CoinSelectionsResponse;
     minimumAda?: BigNumber;
+    withdrawalDecision: WithdrawalDecision;
   }>;
   walletAmount: BigNumber;
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>;
@@ -147,6 +150,7 @@ type State = {
   hasPendingRequestTokens: boolean;
   adaInputState: AdaInputState;
   coinSelection?: CoinSelectionsResponse;
+  withdrawalDecision?: WithdrawalDecision;
   adaAmount: number;
 };
 
@@ -180,6 +184,7 @@ class WalletSendForm extends Component<Props, State> {
     adaInputState: AdaInputStateType.None,
     hasPendingRequestTokens: false,
     coinSelection: null,
+    withdrawalDecision: null,
     adaAmount: 0,
   };
   // We need to track the mounted state in order to avoid calling
@@ -291,6 +296,7 @@ class WalletSendForm extends Component<Props, State> {
 
     this.props.onSubmit({
       coinSelection: this.state.coinSelection,
+      withdrawalDecision: this.state.withdrawalDecision,
       receiver: this.form.$('receiver').value,
       amount: adaAmount,
       assetsAmounts: this.selectedAssetsAmounts,
@@ -658,7 +664,7 @@ class WalletSendForm extends Component<Props, State> {
     }
 
     try {
-      const { fee, minimumAda, coinSelection } =
+      const { fee, minimumAda, coinSelection, withdrawalDecision } =
         await this.props.calculateTransactionFee(receiver, adaAmount, assets);
 
       if (this._isMounted && !requestToken.aborted) {
@@ -670,6 +676,7 @@ class WalletSendForm extends Component<Props, State> {
           isCalculatingTransactionFee: false,
           adaInputState: this.state.adaInputState,
           coinSelection,
+          withdrawalDecision,
           adaAmount,
         };
 
@@ -1362,6 +1369,8 @@ class WalletSendForm extends Component<Props, State> {
                 currencyMaxFractionalDigits
               )}
               totalAmount={confirmationDialogData.totalAmount}
+              withdrawal={confirmationDialogData.withdrawalDecision.withdrawal}
+              withdrawalDecision={confirmationDialogData.withdrawalDecision}
               transactionFee={confirmationDialogData.transactionFee.toFormat(
                 currencyMaxFractionalDigits
               )}

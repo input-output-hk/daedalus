@@ -91,10 +91,7 @@ import {
   hardwareConnectorRowId,
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
-import {
-  TransactionStates,
-  TransactionWithdrawal,
-} from '../domains/WalletTransaction';
+import { TransactionStates } from '../domains/WalletTransaction';
 import {
   CERTIFICATE_TYPE,
   CATALYST_VOTING_REGISTRATION_TYPE,
@@ -143,6 +140,7 @@ import type {
   HardwareMessageRequest,
 } from '../../../common/types/hardware-wallets.types';
 import { logger } from '../utils/logging';
+import { balancesFor } from '../utils/governance/rewardWithdrawal';
 import { EventCategories } from '../analytics';
 import {
   HardwareWalletDevicesType,
@@ -1466,12 +1464,11 @@ export default class HardwareWalletsStore extends Store {
   selectCoins = async (
     params: CoinSelectionsPaymentRequestType
   ): Promise<CoinSelectionsResponse> => {
-    const { walletId, address, amount, assets, metadata } = params;
+    const { walletId, address, amount, assets, metadata, withdrawal } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
     if (!global.cip30Enabled) {
-      const { amount: totalAmount, availableAmount, reward } = wallet;
       const paymentRequest = Object.freeze({
         ...params,
         ...(assets ? { assets: assets.map((asset) => ({ ...asset })) } : {}),
@@ -1479,10 +1476,13 @@ export default class HardwareWalletsStore extends Store {
       this.selectCoinsRequest.reset();
       const coinSelection = await (this.selectCoinsRequest.execute({
         walletId,
-        walletBalance: totalAmount,
-        availableBalance: availableAmount.plus(reward),
-        rewardsBalance: reward,
-        payments: { address, amount, assets: paymentRequest.assets },
+        ...balancesFor(wallet, withdrawal),
+        payments: {
+          address,
+          amount,
+          assets: paymentRequest.assets,
+          withdrawal,
+        },
         metadata,
       }) as unknown as Promise<CoinSelectionsResponse>);
       return { ...coinSelection, paymentRequest };
@@ -1498,7 +1498,7 @@ export default class HardwareWalletsStore extends Store {
             ...(assets ? { assets: cloneDeep(assets) } : {}),
           },
         ],
-        withdrawal: TransactionWithdrawal,
+        ...(withdrawal === 'self' ? { withdrawal } : {}),
         metadata: metadata ? cloneDeep(metadata) : null,
       };
       const { transaction, coinSelection } =

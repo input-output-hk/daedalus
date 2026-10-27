@@ -45,7 +45,9 @@ Usage: drep-withdrawal-harness [options]
   --sustain-seconds N     length of the one-lookup-every-5-seconds probe
                           (default: 60)
   --fixtures DIR          also write the recorded exchanges the Jest specs
-                          replay to DIR/<backend>/<name>.json
+                          replay to DIR/<set>/<name>.json
+  --fixtures-set NAME     the directory under --fixtures to write to
+                          (default: the backend's name)
   --jest DIR              also run the specs that replay those exchanges
                           through Daedalus's own code, from the Daedalus
                           checkout DIR (needs its node_modules)
@@ -68,6 +70,7 @@ EXTRA_DREPS=1000
 LOOKUP_BURST=50
 SUSTAIN_SECONDS=60
 FIXTURES=''
+FIXTURES_SET=''
 JEST_DIR=''
 KEEP_STATE=''
 NODE_PORT=13101
@@ -128,6 +131,10 @@ while [ $# -gt 0 ]; do
     FIXTURES=$(realpath -m "$2")
     shift 2
     ;;
+  --fixtures-set)
+    FIXTURES_SET=$2
+    shift 2
+    ;;
   --jest)
     JEST_DIR=$(realpath "$2")
     shift 2
@@ -155,6 +162,11 @@ while [ $# -gt 0 ]; do
     ;;
   esac
 done
+
+if [ -n "$FIXTURES_SET" ] && [ "${#BACKENDS[@]}" != 1 ]; then
+  echo "--fixtures-set needs a single --backend" >&2
+  exit 2
+fi
 
 if [ -n "$WALLET_OVERRIDE" ] && [ "${#BACKENDS[@]}" != 1 ]; then
   echo "--wallet needs a single --backend" >&2
@@ -191,18 +203,18 @@ OUT_ROOT=$(realpath "$OUT_ROOT")
 # Every recorded exchange the specs replay, as JSON: the wallet that answered,
 # the request (secrets redacted) and the response body exactly as received.
 write_fixtures() {
-  local backend="$1" dir="$2" name base
-  mkdir -p "$FIXTURES/$backend"
+  local backend="$1" dir="$2" set="${FIXTURES_SET:-$1}" name base
+  mkdir -p "$FIXTURES/$set"
   while IFS=$'\t' read -r name base; do
     [ -n "$name" ] || continue
-    jq -n --arg backend "$backend" --rawfile wallet "$dir/wallet-version.txt" \
+    jq -n --arg set "$set" --rawfile wallet "$dir/wallet-version.txt" \
       --slurpfile req "$base.req.json" --rawfile body "$base.res.json" \
       --arg status "$(cat "$base.status")" \
-      '{backend: $backend, wallet: ($wallet | rtrimstr("\n")),
+      '{backend: $set, wallet: ($wallet | rtrimstr("\n")),
         recorded: $req[0].time, chain: $req[0].chain,
         request: ($req[0] | {method, path, body}),
         response: {status: ($status | tonumber), body: $body}}' \
-      >"$FIXTURES/$backend/$name.json"
+      >"$FIXTURES/$set/$name.json"
   done <"$dir/fixtures.tsv"
 }
 
@@ -252,6 +264,8 @@ write_report() {
 
 JEST_SPECS=(
   tests/jest/api/rewardWithdrawalRefusal.spec.ts
+  tests/jest/api/rewardWithdrawalDecision.spec.ts
+  tests/jest/api/paymentWithdrawalBody.spec.ts
   tests/jest/governance/retiredDRep.spec.ts
   source/renderer/app/domains/ApiError.spec.ts
 )

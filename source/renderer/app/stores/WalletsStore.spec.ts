@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import WalletsStore from './WalletsStore';
 import type Wallet from '../domains/Wallet';
 import type { Api } from '../api';
@@ -150,5 +151,117 @@ describe('WalletsStore dApp routes', () => {
     expect(store.all).toEqual([]);
     expect(store.isDeleting).toBe(false);
     expect(store.active).toBeNull();
+  });
+});
+
+describe('WalletsStore withdrawalDecisionFor', () => {
+  const withReward = (id: string, ledgerVote: unknown, reward = 5) =>
+    ({
+      id,
+      isLegacy: false,
+      ledgerVote,
+      reward: new BigNumber(reward),
+    }) as unknown as Wallet;
+
+  it('decides from the wallet the id names', () => {
+    const { store } = createStore(
+      [
+        withReward('held', { status: 'not_delegated' }),
+        withReward('free', { status: 'unknown' }),
+      ],
+      '/wallets/free/summary'
+    );
+    expect(store.withdrawalDecisionFor('held', 'payment')).toMatchObject({
+      kind: 'omit',
+      reason: 'ledger_not_delegated',
+    });
+    expect(store.withdrawalDecisionFor('held', 'undelegation').kind).toBe(
+      'delegate_vote_first'
+    );
+    expect(store.withdrawalDecisionFor('free', 'payment')).toMatchObject({
+      kind: 'withdraw',
+      withdrawal: 'self',
+    });
+  });
+
+  it('passes the withdraw choice through', () => {
+    const { store } = createStore(
+      [withReward('free', { status: 'unknown' })],
+      '/wallets/free/summary'
+    );
+    expect(
+      store.withdrawalDecisionFor('free', 'payment', {
+        withdrawRewards: false,
+      })
+    ).toMatchObject({ kind: 'omit', reason: 'declined' });
+  });
+
+  it('throws for a wallet the store does not hold', () => {
+    const { store } = createStore([], '/wallets');
+    expect(() => store.withdrawalDecisionFor('missing', 'payment')).toThrow();
+  });
+});
+
+describe('WalletsStore _sendMoney withdrawal', () => {
+  const originalCapability = global.cip30Enabled;
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
+  });
+
+  const payment = { receiver: 'addr1receiver', amount: '2000000' };
+  const mountSend = () => {
+    const createTransaction = jest.fn().mockResolvedValue({ id: 'tx' });
+    const api = { ada: { createTransaction } };
+    const store = new WalletsStore(
+      api as any,
+      { dialogs: { closeActiveDialog: { trigger: jest.fn() } } } as any,
+      { sendEvent: jest.fn() } as any
+    );
+    const active = {
+      id: 'wallet',
+      isLegacy: false,
+      isHardwareWallet: false,
+    } as Wallet;
+    store.configure({
+      transactions: {
+        withWalletSendLock: (_walletId: string, run: () => Promise<unknown>) =>
+          run(),
+      },
+      addresses: { all: [{ id: payment.receiver }] },
+    } as any);
+    store.walletsRequest.result = [active];
+    store.active = active;
+    store.goToWalletRoute = jest.fn();
+    store.refreshWalletsData = jest.fn();
+    const submit = jest.fn().mockResolvedValue({ id: 'tx' });
+    store.submitConstructedNativeTransaction = submit;
+    return { store, createTransaction, submit };
+  };
+
+  it.each(['self', null] as const)(
+    'passes the withdrawal %s to the mainnet payment request',
+    async (withdrawal) => {
+      global.cip30Enabled = false;
+      const { store, createTransaction, submit } = mountSend();
+      await store._sendMoney({ ...payment, passphrase: 'secret', withdrawal });
+      expect(createTransaction).toHaveBeenCalledTimes(1);
+      expect(createTransaction.mock.calls[0][0].withdrawal).toBe(withdrawal);
+      expect(submit).not.toHaveBeenCalled();
+    }
+  );
+
+  it('spreads the withdrawal into the cip30 construct body when it is self', async () => {
+    global.cip30Enabled = true;
+    const { store, createTransaction, submit } = mountSend();
+    await store._sendMoney({ ...payment, withdrawal: 'self' });
+    expect(createTransaction).not.toHaveBeenCalled();
+    expect(submit.mock.calls[0][0].data.withdrawal).toBe('self');
+  });
+
+  it('leaves the withdrawal key out of the cip30 construct body when it is null', async () => {
+    global.cip30Enabled = true;
+    const { store, submit } = mountSend();
+    await store._sendMoney({ ...payment, withdrawal: null });
+    expect('withdrawal' in submit.mock.calls[0][0].data).toBe(false);
   });
 });

@@ -9,6 +9,7 @@ import type {
   WalletPendingDelegations,
   Discovery,
   DRepDelegation,
+  LedgerVoteDelegation,
 } from '../api/wallets/types';
 import type { WalletTokens } from '../api/assets/types';
 
@@ -142,6 +143,7 @@ export type WalletProps = {
   lastDelegationStakePoolStatus?: string | null | undefined;
   pendingDelegations?: WalletPendingDelegations;
   votingTarget?: DRepDelegation | null;
+  ledgerVote?: LedgerVoteDelegation;
   discovery: Discovery;
   hasPassword: boolean;
   walletNotConnected?: boolean;
@@ -181,6 +183,8 @@ export default class Wallet {
   @observable
   votingTarget: DRepDelegation | null | undefined;
   @observable
+  ledgerVote: LedgerVoteDelegation = { status: 'unknown' };
+  @observable
   discovery: Discovery;
   @observable
   hasPassword: boolean;
@@ -191,6 +195,7 @@ export default class Wallet {
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
+    if (this.ledgerVote == null) this.ledgerVote = { status: 'unknown' };
   }
 
   @action
@@ -215,6 +220,7 @@ export default class Wallet {
         'lastDelegationStakePoolStatus',
         'pendingDelegations',
         'votingTarget',
+        'ledgerVote',
         'discovery',
         'hasPassword',
         'walletNotConnected',
@@ -226,6 +232,31 @@ export default class Wallet {
   @computed
   get hasFunds(): boolean {
     return this.amount.gt(0);
+  }
+
+  // The reward balance the ledger refuses to release while the account holds
+  // no vote delegation; zero otherwise.
+  @computed
+  get heldReward(): BigNumber {
+    if (
+      this.isLegacy ||
+      this.ledgerVote?.status !== 'not_delegated' ||
+      this.reward == null ||
+      !this.reward.gt(0)
+    ) {
+      return new BigNumber(0);
+    }
+    return this.reward;
+  }
+
+  @computed
+  get hasHeldRewards(): boolean {
+    return this.heldReward.gt(0);
+  }
+
+  @computed
+  get spendableAmount(): BigNumber {
+    return this.amount.minus(this.heldReward);
   }
 
   @computed

@@ -546,3 +546,66 @@ describe('TransactionsStore durable submissions', () => {
     ).toBeUndefined();
   });
 });
+
+describe('TransactionsStore calculateTransactionFee', () => {
+  const heldRewards = {
+    id: 'held',
+    isLegacy: false,
+    amount: new BigNumber(113528126347),
+    availableAmount: new BigNumber(109773552613),
+    reward: new BigNumber(3754573734),
+    ledgerVote: { status: 'not_delegated' },
+  };
+  const delegated = {
+    ...heldRewards,
+    id: 'delegated',
+    ledgerVote: { status: 'delegated', voting: { kind: 'abstain' } },
+  };
+
+  const feeRequestFor = async (wallet: typeof heldRewards, withdrawal) => {
+    const calculateTransactionFee = jest
+      .fn()
+      .mockResolvedValue({ fee: new BigNumber(1) });
+    const transactions = new TransactionsStore(
+      { ada: { calculateTransactionFee } } as never,
+      undefined as never,
+      undefined as never
+    );
+    transactions.configure({
+      wallets: { getWalletById: () => wallet },
+    } as never);
+    await transactions.calculateTransactionFee({
+      walletId: wallet.id,
+      address: 'addr_test1',
+      amount: 1000000,
+      withdrawal,
+    });
+    return calculateTransactionFee.mock.calls[0][0];
+  };
+
+  const balances = (request) => ({
+    walletBalance: request.walletBalance.toString(),
+    availableBalance: request.availableBalance.toString(),
+    rewardsBalance: request.rewardsBalance.toString(),
+  });
+
+  it('prices a held-rewards wallet without its reward when the withdrawal is omitted', async () => {
+    const request = await feeRequestFor(heldRewards, null);
+    expect(balances(request)).toEqual({
+      walletBalance: '109773552613',
+      availableBalance: '109773552613',
+      rewardsBalance: '0',
+    });
+    expect(request.withdrawal).toBeNull();
+  });
+
+  it('prices a delegated wallet with its reward when it withdraws', async () => {
+    const request = await feeRequestFor(delegated, 'self');
+    expect(balances(request)).toEqual({
+      walletBalance: '113528126347',
+      availableBalance: '113528126347',
+      rewardsBalance: '3754573734',
+    });
+    expect(request.withdrawal).toBe('self');
+  });
+});

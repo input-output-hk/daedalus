@@ -250,6 +250,11 @@ const coinSelectionResponse = {
 
 const formData = {
   coinSelection: coinSelectionResponse,
+  withdrawalDecision: {
+    kind: 'omit' as const,
+    withdrawal: null,
+    reason: 'no_reward' as const,
+  },
   receiver:
     'addr1qzhk85furdn6r9tlyp2q23q9vq7nfl420j7y0yqp3hf6yw7jar5rnzqr4h3g9whm0zjh65utc2ty5uqtcpm0rm7ahj0qq75een',
   selectedAssets: [
