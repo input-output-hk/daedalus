@@ -134,7 +134,7 @@ describe('dependency security patches', () => {
     }
   );
 
-  test('form-data escapes line breaks and quotes in field names and filenames', () => {
+  test('form-data escapes line breaks in field names and filenames', () => {
     const form = new FormData();
     form.append('email"\r\nX-Injected: true\r\nfake="', 'value', {
       filename: 'a"\r\nX-Injected: true.txt',
