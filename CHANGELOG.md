@@ -11,6 +11,7 @@
 - Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
 - Update body-parser from 1.20.8 to 1.20.9 for GHSA-27r3-jxmh-p828 ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
 - Update electron from 42.11.14 to 42.11.18 for GHSA-jr5w-w6x2-84p9 ([PR #3444](https://github.com/input-output-hk/daedalus/pull/3444)).
+- Remove the unused process group flag from the watchdog's Windows node and wallet spawns ([PR #3439](https://github.com/input-output-hk/daedalus/pull/3439)).
 
 ## 11.6.0
 
