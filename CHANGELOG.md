@@ -2,6 +2,11 @@
 
 ## vNext
 
+### Chores
+
+- Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
+- Update body-parser from 1.20.8 to 1.20.9 for GHSA-27r3-jxmh-p828 ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
+
 ## 11.6.0
 
 This is a mainnet-only maintenance release. The changelog also records development of the dApp connector and single-address mode, which depend on a cardano-wallet fork in preview environments. Those features are reserved for the next release and are not part of the 11.6.0 release offering.

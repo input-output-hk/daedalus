@@ -8,6 +8,7 @@ import { deflateRawSync } from 'zlib';
 
 const { ec: EC } = require('elliptic');
 const braces = require('braces');
+const FormData = require('form-data');
 const { sprintf } = require('sprintf-js');
 const extract = require('extract-zip');
 const vectors = require('./fixtures/elliptic-p521-regressions.json');
@@ -132,6 +133,17 @@ describe('dependency security patches', () => {
       expect(sprintf('%.2f', 1.25)).toBe('1.25');
     }
   );
+
+  test('form-data escapes line breaks in field names and filenames', () => {
+    const form = new FormData();
+    form.append('email"\r\nX-Injected: true\r\nfake="', 'value', {
+      filename: 'a"\r\nX-Injected: true.txt',
+    });
+    const body = form.getBuffer().toString();
+    expect(
+      body.split('\r\n').filter((l) => l.startsWith('X-Injected'))
+    ).toEqual([]);
+  });
 });
 
 describe('ZIP extraction containment', () => {
