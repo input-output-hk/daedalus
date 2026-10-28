@@ -628,6 +628,11 @@ export default class BackendStore extends Store {
   };
 
   @action
+  replayMithrilLedger = () => {
+    mithrilCommandChannel.send({ cmd: 'replay_mithril_ledger' });
+  };
+
+  @action
   startNode = () => {
     // The watchdog clears the Mithril phase when it gets the command; hiding
     // the error now keeps it off the screen until the next poll shows that.

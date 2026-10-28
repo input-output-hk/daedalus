@@ -34,6 +34,9 @@ pub enum PipelineResult {
     /// The user explicitly cancelled via `cancel_mithril`; the supervisor should
     /// wait for a recovery action rather than restarting the node immediately.
     UserCancelled,
+    /// The user explicitly chose to start the node while recovering from a
+    /// conversion failure, including a genesis sync after a rebuild.
+    StartNodeChosen,
     /// Post-cutover install failure: the `cutover-in-progress` marker and the
     /// record of the install were written but `install_staged` failed. Chain
     /// data may be partially modified; the node must not restart, in this
@@ -1449,6 +1452,16 @@ async fn install_staged(
     is_partial: bool,
     rename_budget: Duration,
 ) -> Result<()> {
+    install_staged_with_replay(staging_db, chain_path, is_partial, rename_budget, false).await
+}
+
+async fn install_staged_with_replay(
+    staging_db: &Path,
+    chain_path: &Path,
+    is_partial: bool,
+    rename_budget: Duration,
+    replay: bool,
+) -> Result<()> {
     if !is_partial {
         // If chain_path is a symlink or junction, install inside the real
         // target so the link entry point is preserved. The directory itself
@@ -1508,7 +1521,13 @@ async fn install_staged(
     // Replace ledger directory.
     let src_ledger = staging_db.join("ledger");
     let dst_ledger = chain_path.join("ledger");
-    let _ = tokio::fs::remove_dir_all(&dst_ledger).await;
+    if replay {
+        remove_replay_entry(&dst_ledger).await?;
+        remove_replay_entry(&chain_path.join("volatile")).await?;
+        remove_replay_entry(&chain_path.join("lsm")).await?;
+    } else {
+        let _ = tokio::fs::remove_dir_all(&dst_ledger).await;
+    }
     move_dir(&src_ledger, &dst_ledger, rename_budget).await?;
 
     // Always remove the old lsm — it belongs to the old ledger and is
@@ -1525,8 +1544,34 @@ async fn install_staged(
     // validation on next startup. Without this, node treats the partial-sync
     // state as an unclean shutdown and re-validates every immutable chunk.
     let src_clean = staging_db.join("clean");
-    move_file(&src_clean, &dst_clean, rename_budget).await?;
+    if !replay {
+        move_file(&src_clean, &dst_clean, rename_budget).await?;
+    }
 
+    Ok(())
+}
+
+// Unlike best-effort staging cleanup, a stale ledger or LSM database must
+// never survive a replay request. Propagate every error except absence.
+async fn remove_replay_entry(path: &Path) -> Result<()> {
+    let metadata = match tokio::fs::symlink_metadata(path).await {
+        Ok(metadata) => metadata,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+        Err(e) => return Err(e.into()),
+    };
+    if metadata.is_dir() && !metadata.file_type().is_symlink() {
+        tokio::fs::remove_dir_all(path).await?;
+    } else {
+        tokio::fs::remove_file(path).await?;
+    }
+    Ok(())
+}
+
+async fn prepare_ledger_replay(staging_db: &Path) -> Result<()> {
+    for name in ["ledger", "lsm", "lsm-export", "volatile", "clean"] {
+        remove_replay_entry(&staging_db.join(name)).await?;
+    }
+    tokio::fs::create_dir(staging_db.join("ledger")).await?;
     Ok(())
 }
 
@@ -1994,17 +2039,69 @@ pub async fn run_pipeline(
         phase: "converting".to_string(),
         rebuild: wipe_chain,
     });
+    let mut replay = false;
     match run_converter(cfg, &staging_db, cmd_rx).await {
         ProcResult::Success => {}
         ProcResult::Failed(msg) => {
-            let _ = tokio::fs::remove_dir_all(&staging_root).await;
             warn!("mithril conversion failed: {msg}");
+            // The pipeline now holds the recovery prompt itself. Report the
+            // removed chain here rather than waiting for the supervisor, so
+            // the UI still requires an explicit genesis choice after a wipe.
+            if wipe_chain {
+                let pending = pending_record(cfg).await;
+                emit(&Event::ChainStatus {
+                    has_chain: false,
+                    rebuild_pending: pending == Some(RecordKind::Rebuild),
+                    install_pending: pending == Some(RecordKind::Install),
+                });
+            }
             emit(&Event::MithrilError {
                 code: "PARTIAL_SYNC_CONVERSION_FAILED".to_string(),
                 message: msg,
                 rebuild: wipe_chain,
             });
-            return failed();
+            // Verification finished before conversion. Keep those immutable
+            // files until the user chooses how to recover; never automatically
+            // redownload them or start the node on the old chain.
+            loop {
+                match cmd_rx.recv().await {
+                    Some(Cmd::ReplayMithrilLedger) => {
+                        if let Err(e) = prepare_ledger_replay(&staging_db).await {
+                            let _ = tokio::fs::remove_dir_all(&staging_root).await;
+                            emit(&Event::MithrilError {
+                                code: "LEDGER_REPLAY_PREPARATION_FAILED".to_string(),
+                                message: e.to_string(),
+                                rebuild: wipe_chain,
+                            });
+                            return failed();
+                        }
+                        replay = true;
+                        break;
+                    }
+                    Some(Cmd::StartMithril { force, wipe_chain }) => {
+                        let _ = tokio::fs::remove_dir_all(&staging_root).await;
+                        return Box::pin(run_pipeline(cfg, cmd_rx, force, wipe_chain)).await;
+                    }
+                    Some(Cmd::StartNode) => {
+                        let _ = tokio::fs::remove_dir_all(&staging_root).await;
+                        clear_rebuild_marker(cfg).await;
+                        return PipelineResult::StartNodeChosen;
+                    }
+                    Some(Cmd::CancelMithril) => {
+                        let _ = tokio::fs::remove_dir_all(&staging_root).await;
+                        emit(&Event::MithrilStatus {
+                            phase: "cancelled".to_string(),
+                            rebuild: wipe_chain,
+                        });
+                        return cancelled_by_user();
+                    }
+                    Some(Cmd::Stop) | None => {
+                        let _ = tokio::fs::remove_dir_all(&staging_root).await;
+                        return PipelineResult::Stopped;
+                    }
+                    Some(_) => {}
+                }
+            }
         }
         ProcResult::Cancelled => {
             let _ = tokio::fs::remove_dir_all(&staging_root).await;
@@ -2102,7 +2199,12 @@ pub async fn run_pipeline(
         }
     }
 
-    if let Err(e) = install_staged(&staging_db, &chain_path, is_partial, rename_budget).await {
+    let install = if replay {
+        install_staged_with_replay(&staging_db, &chain_path, is_partial, rename_budget, true).await
+    } else {
+        install_staged(&staging_db, &chain_path, is_partial, rename_budget).await
+    };
+    if let Err(e) = install {
         // The cutover-in-progress marker and the record are already written
         // and the chain may be partially modified. Return Failed so the
         // supervisor does not restart the node against a partially installed

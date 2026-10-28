@@ -25,6 +25,8 @@ pub enum Command {
         wipe_chain: bool,
     },
     CancelMithril,
+    /// Reuse the verified download after snapshot conversion failed.
+    ReplayMithrilLedger,
     /// Run the behind-ness probe without starting a download. Emits
     /// `MithrilSignificantlyBehind` or `MithrilNotNeeded` with the result.
     ProbeMithril,

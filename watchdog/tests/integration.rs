@@ -2991,7 +2991,7 @@ fn mithril_download_failure() {
 
 // ── T9: Mithril conversion failure ───────────────────────────────────────────
 
-/// Download succeeds but converter fails → PARTIAL_SYNC_CONVERSION_FAILED → re-prompt.
+/// Download succeeds but converter fails: hold verified staging for recovery.
 #[test]
 fn mithril_conversion_failure() {
     let dir = TempDir::new("mithril-conv-fail");
@@ -3011,8 +3011,164 @@ fn mithril_conversion_failure() {
     let err = expect(&rx, "mithril_error");
     assert_eq!(err["code"], "PARTIAL_SYNC_CONVERSION_FAILED");
 
-    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+    assert!(
+        dir.path()
+            .join("chain/mithril-staging/download/db/immutable")
+            .is_dir()
+    );
+    expect_none_of(&rx, &["node_started", "chain_status"], 150);
 
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    assert!(!dir.path().join("chain/mithril-staging").exists());
+    drop(stdin);
+    let _ = child.wait();
+}
+
+fn replay_after_conversion_failure(existing_chain: bool, rebuild: bool) {
+    let dir = TempDir::new("conversion-ledger-replay");
+    let chain = dir.path().join("chain");
+    if existing_chain {
+        dir.populate_database();
+    }
+    let args_file = dir.path().join("mithril-args.json");
+    let (cfg, _) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .converter_bin(MOCK_CONVERTER_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_CERTIFIED_IMMUTABLE", "30"),
+            ("MOCK_MITHRIL_ARGS_FILE", args_file.to_str().unwrap()),
+        ],
+    );
+    if existing_chain {
+        expect(&rx, "wallet_ready");
+    } else {
+        expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+    }
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "force": true, "wipe_chain": rebuild}),
+    );
+    if rebuild {
+        let status = expect(&rx, "chain_status");
+        assert_eq!(status["has_chain"], false);
+        assert_eq!(status["rebuild_pending"], true);
+    }
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_CONVERSION_FAILED");
+    expect_none_of(&rx, &["node_started"], 100);
+
+    let staged = chain.join("mithril-staging/download/db");
+    // Full-download mocks have an empty immutable directory. This sentinel
+    // also proves replay installs exactly the bytes retained at failure.
+    std::fs::write(staged.join("immutable/00030.chunk"), b"verified blocks").unwrap();
+    std::fs::create_dir_all(staged.join("lsm")).unwrap();
+    std::fs::write(staged.join("lsm/partial-table"), b"bad import").unwrap();
+    std::fs::create_dir_all(staged.join("lsm-export")).unwrap();
+    std::fs::write(staged.join("lsm-export/table"), b"partial export").unwrap();
+    std::fs::create_dir_all(staged.join("volatile")).unwrap();
+    std::fs::write(staged.join("volatile/blocks"), b"unneeded").unwrap();
+    std::fs::create_dir_all(staged.join("ledger/12345")).unwrap();
+    std::fs::write(staged.join("ledger/12345/state"), b"unconverted").unwrap();
+    // Any second download would recreate this file.
+    std::fs::remove_file(&args_file).unwrap();
+    send(&mut stdin, json!({"cmd": "replay_mithril_ledger"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "finalizing");
+    expect(&rx, "node_started");
+    assert_eq!(
+        std::fs::read(chain.join("immutable/00030.chunk")).unwrap(),
+        b"verified blocks"
+    );
+    assert!(!args_file.exists(), "replay downloaded the snapshot again");
+    assert!(!chain.join("ledger/12345").exists());
+    assert!(!chain.join("ledger/999").exists());
+    assert_eq!(std::fs::read_dir(chain.join("ledger")).unwrap().count(), 0);
+    assert!(!chain.join("lsm").exists());
+    assert!(!chain.join("lsm-export").exists());
+    assert!(!chain.join("volatile").exists());
+    assert!(!chain.join("clean").exists());
+    assert!(!chain.join("mithril-staging").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+    if existing_chain && !rebuild {
+        assert_eq!(
+            std::fs::read(chain.join("immutable/00002.chunk")).unwrap(),
+            b"local 2"
+        );
+        assert_eq!(
+            std::fs::read(chain.join("immutable/00003.chunk")).unwrap(),
+            b"certified 3"
+        );
+        assert_eq!(
+            std::fs::read(chain.join("immutable/00031.chunk")).unwrap(),
+            b"ancillary"
+        );
+    }
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+#[test]
+fn mithril_conversion_failure_replay_bootstrap() {
+    replay_after_conversion_failure(false, false);
+}
+
+#[test]
+fn mithril_conversion_failure_replay_partial() {
+    replay_after_conversion_failure(true, false);
+}
+
+#[test]
+fn mithril_conversion_failure_replay_rebuild() {
+    replay_after_conversion_failure(true, true);
+}
+
+#[test]
+fn mithril_conversion_failure_choose_genesis_after_rebuild() {
+    let dir = TempDir::new("conversion-genesis");
+    dir.populate_database();
+    let (cfg, _) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .converter_bin(MOCK_CONVERTER_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+    expect(&rx, "wallet_ready");
+    send(
+        &mut stdin,
+        json!({"cmd": "start_mithril", "wipe_chain": true}),
+    );
+    let err = expect(&rx, "mithril_error");
+    assert_eq!(err["code"], "PARTIAL_SYNC_CONVERSION_FAILED");
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    expect(&rx, "node_started");
+    assert!(!dir.path().join("chain/mithril-staging").exists());
+    assert!(!dir.path().join("chain-rebuild.json").exists());
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+#[test]
+fn mithril_conversion_failure_retry_then_cancel() {
+    let dir = TempDir::new("conversion-retry-cancel");
+    let (cfg, _) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .converter_bin(MOCK_CONVERTER_FAIL)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+    for _ in 0..2 {
+        send(&mut stdin, json!({"cmd": "start_mithril"}));
+        expect_with(&rx, "mithril_status", |v| v["phase"] == "preparing");
+        let err = expect(&rx, "mithril_error");
+        assert_eq!(err["code"], "PARTIAL_SYNC_CONVERSION_FAILED");
+    }
+    send(&mut stdin, json!({"cmd": "cancel_mithril"}));
+    expect_with(&rx, "mithril_status", |v| v["phase"] == "cancelled");
+    expect_with(&rx, "chain_status", |v| v["has_chain"] == false);
+    assert!(!dir.path().join("chain/mithril-staging").exists());
     stop(&mut stdin);
     expect(&rx, "stopped");
     drop(stdin);

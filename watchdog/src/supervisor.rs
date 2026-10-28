@@ -528,9 +528,12 @@ async fn wait_for_retry(
 
 /// How the wait that follows a failed install ended.
 enum InstallRetry {
+    StartNodeChosen,
     /// A Mithril sync installed a database; `rebuild` is true when it was a
     /// rebuild.
-    Installed { rebuild: bool },
+    Installed {
+        rebuild: bool,
+    },
     /// A rebuild began deleting the chain and installed nothing.
     Wiped,
     /// The watchdog is to stop.
@@ -555,6 +558,7 @@ async fn await_install_retry(
                     continue;
                 };
                 match mithril::run_pipeline(&mc, cmd_rx, force, wipe_chain).await {
+                    PipelineResult::StartNodeChosen => return InstallRetry::StartNodeChosen,
                     PipelineResult::Installed { rebuild } => {
                         return InstallRetry::Installed { rebuild };
                     }
@@ -1199,6 +1203,7 @@ async fn await_chain_choice(
                 use mithril::PipelineResult;
                 let wipe_chain = wipe_chain || rebuild;
                 let wiped = match mithril::run_pipeline(&mc, cmd_rx, true, wipe_chain).await {
+                    PipelineResult::StartNodeChosen => return Some(AfterMithril::Nothing),
                     PipelineResult::Installed { rebuild } => {
                         return Some(AfterMithril::Installed { rebuild });
                     }
@@ -1217,6 +1222,7 @@ async fn await_chain_choice(
                             wstate: &mut *wstate,
                         };
                         match await_install_retry(cmd_rx, &mut settings).await {
+                            InstallRetry::StartNodeChosen => return Some(AfterMithril::Nothing),
                             InstallRetry::Installed { rebuild } => {
                                 return Some(AfterMithril::Installed { rebuild });
                             }
@@ -1615,6 +1621,7 @@ pub async fn run(
                 // holds no chain to start the node on.
                 let mut no_chain = false;
                 match mithril::run_pipeline(&mc, &mut cmd_rx, force, wipe_chain).await {
+                    PipelineResult::StartNodeChosen => {}
                     PipelineResult::Installed { rebuild } => {
                         after_mithril = AfterMithril::Installed { rebuild };
                         // loop continues to restart node/wallet
@@ -1645,6 +1652,7 @@ pub async fn run(
                                     force: f,
                                     wipe_chain: wc,
                                 }) => match mithril::run_pipeline(&mc, &mut cmd_rx, f, wc).await {
+                                    PipelineResult::StartNodeChosen => break 'recovery,
                                     PipelineResult::Installed { rebuild } => {
                                         after_mithril = AfterMithril::Installed { rebuild };
                                         break 'recovery;
@@ -1700,6 +1708,7 @@ pub async fn run(
                         wstate: &mut wstate,
                     };
                     match await_install_retry(&mut cmd_rx, &mut settings).await {
+                        InstallRetry::StartNodeChosen => {}
                         InstallRetry::Installed { rebuild } => {
                             after_mithril = AfterMithril::Installed { rebuild };
                         }

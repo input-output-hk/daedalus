@@ -4452,6 +4452,16 @@
         "id": "loading.mithrilBootstrap.error.retry"
       },
       {
+        "defaultMessage": "!!!Keep blocks and replay ledger",
+        "description": "Recovery action after Mithril snapshot conversion fails.",
+        "id": "loading.mithrilBootstrap.error.replayLedger"
+      },
+      {
+        "defaultMessage": "!!!The ledger snapshot could not be converted. You can keep the verified downloaded blocks and rebuild the ledger locally. This can take a long time, but does not download the blocks again.",
+        "description": "Explain the local ledger replay option after conversion failure.",
+        "id": "loading.mithrilBootstrap.error.replayLedgerHint"
+      },
+      {
         "defaultMessage": "!!!Skip to blockchain sync",
         "description": "Button label on the Mithril error view that starts a Blockchain Sync from Genesis instead of Mithril.",
         "id": "loading.mithrilBootstrap.error.skip"
