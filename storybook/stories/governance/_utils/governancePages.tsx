@@ -60,18 +60,22 @@ const FALLBACK_WALLETS: WalletDelegationSummary[] = [
   {
     walletId: 'wallet-1',
     walletName: 'Daily spending',
-    currentDRep: {
-      kind: 'drep',
-      drep: { raw: FALLBACK_ENTRY.drepId } as any,
-      source: 'onchain',
+    state: {
+      kind: 'current',
+      voting: {
+        kind: 'drep',
+        drep: { raw: FALLBACK_ENTRY.drepId } as any,
+        source: 'onchain',
+      },
+      source: 'ledger',
     },
-    drepEntry: FALLBACK_ENTRY,
+    lookup: { status: 'found', entry: FALLBACK_ENTRY },
   },
   {
     walletId: 'wallet-2',
     walletName: 'Long-term savings',
-    currentDRep: null,
-    drepEntry: null,
+    state: { kind: 'none' },
+    lookup: { status: 'idle' },
   },
 ];
 

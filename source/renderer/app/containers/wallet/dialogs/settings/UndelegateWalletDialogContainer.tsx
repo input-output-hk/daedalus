@@ -46,8 +46,13 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     });
   };
 
+  // The confirmation names the pool being left, which needs the stake pool
+  // list while the dialog is open.
+  _releaseStakePools: (() => void) | null = null;
+
   componentDidMount() {
     this._isMounted = true;
+    this._releaseStakePools = this.props.stores.staking.acquireStakePools();
     this._proceed();
   }
 
@@ -112,6 +117,8 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    this._releaseStakePools?.();
+    this._releaseStakePools = null;
     this.cancelHardwareTransaction();
   }
 

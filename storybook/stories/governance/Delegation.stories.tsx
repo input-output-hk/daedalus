@@ -345,6 +345,36 @@ const renderNonVotingPlaceholder = (activeSidebarCategory: string) => (
   </BorderedBox>
 );
 
+// Types a value into the DRep ID field and presses its button, the way a
+// reader would, so the story opens on the field's answer to it.
+function PastedValue({
+  value,
+  children,
+}: {
+  value: string;
+  children: React.ReactNode;
+}) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const input = ref.current?.querySelector<HTMLInputElement>(
+      'input[spellcheck="false"]'
+    );
+    if (!input) return;
+    const setValue = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype,
+      'value'
+    )?.set;
+    setValue?.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    window.setTimeout(() => {
+      Array.from(ref.current?.querySelectorAll('button') ?? [])
+        .find((button) => /DRep ID/.test(button.textContent ?? ''))
+        ?.click();
+    }, 0);
+  }, [value]);
+  return <div ref={ref}>{children}</div>;
+}
+
 storiesOf('Governance / Delegation', module)
   .addDecorator(governanceStoryDecorator)
   .addDecorator(withKnobs)
@@ -491,6 +521,14 @@ storiesOf('Governance / Delegation', module)
   // to the DRep selection, and the only thing that mentions rewards is the
   // paragraph at the top of the page.
   .add('Not delegated yet', () => renderPrefilledPanel('noDelegation'))
+  .add('Voting power not delegated: DRep retired', () =>
+    renderPrefilledPanel('drepRetired')
+  )
+  .add('Pasted DRep ID not valid', () => (
+    <PastedValue value="drep1notanid">
+      {renderPrefilledPanel('noDelegation')}
+    </PastedValue>
+  ))
   .add('Unavailable while syncing', () => (
     <div style={CENTERED_STORY_STYLE}>
       <VotingUnavailable

@@ -9,6 +9,7 @@ import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import type { VoteType } from '../../components/voting/voting-governance/types';
 import VotingPowerDelegationConfirmationDialog from '../../components/voting/voting-governance/VotingPowerDelegationConfirmationDialog';
 import { normalizeDRepIdentity } from '../../utils/governance/normalizeDRepIdentity';
+import type { DelegationNavState } from '../../stores/GovernanceStore';
 
 type Props = InjectedProps & RouteComponentProps;
 
@@ -20,6 +21,35 @@ class VotingGovernancePage extends Component<Props> {
     stores: null,
   };
   private preparingHardwareGovernance = false;
+  // The wallet of an approval result open when the form was reached, read
+  // before the result is cleared: a refused send's link is about that wallet,
+  // which need not be the active one.
+  private approvalWalletId: string | null = this.readApprovalWalletId();
+  // The handoff of the flow that opened the form, read once here. The form
+  // consumes it: it is cleared on mount, so no wallet or DRep choice outlives
+  // the flow that set it. Every way into the form sets it fresh, the form's
+  // own Browse DReps step included. The page stays mounted for a visit, so a
+  // form that remounts under it (for example while the node syncs) reads this
+  // copy again.
+  private handoff: DelegationNavState | null =
+    this.props.stores?.governance?.delegationNavState ?? null;
+
+  private readApprovalWalletId(): string | null {
+    const approval = this.props.stores?.walletApproval;
+    return approval?.result && approval.current
+      ? approval.current.walletId
+      : null;
+  }
+
+  componentDidMount() {
+    // The send-error and approval messages link here by address alone, which
+    // routes but leaves the dialog or approval result that showed the link
+    // open over this form.
+    const { actions, stores } = this.props;
+    actions.dialogs.closeActiveDialog.trigger();
+    stores.walletApproval.clearResultInPlace();
+    stores.governance.setDelegationNavState(null);
+  }
 
   componentWillUnmount() {
     const { hardwareWallets } = this.props.stores;
@@ -74,9 +104,27 @@ class VotingGovernancePage extends Component<Props> {
       );
     }
 
-    // GovernanceStore.delegationNavState is the sole transport for the DRep
-    // selection round trip (location.state is not available in hash history v4).
-    const initialFormState = governance.delegationNavState ?? undefined;
+    // The starting wallet is, in order: the wallet of the approval result the
+    // link was shown in, the handoff of the link that opened the form, and the
+    // wallet in use. A legacy wallet cannot delegate, so none is preselected.
+    const linkedWallet = this.approvalWalletId
+      ? wallets.getWalletById(this.approvalWalletId)
+      : null;
+    let initialFormState: DelegationNavState | undefined;
+    if (linkedWallet && !linkedWallet.isLegacy) {
+      initialFormState = { selectedWalletId: linkedWallet.id };
+    } else if (this.handoff) {
+      // A handoff that names no wallet, such as a DRep chosen in the
+      // Directory, takes the wallet in use.
+      initialFormState =
+        this.handoff.selectedWalletId == null &&
+        wallets.active &&
+        !wallets.active.isLegacy
+          ? { ...this.handoff, selectedWalletId: wallets.active.id }
+          : this.handoff;
+    } else if (wallets.active && !wallets.active.isLegacy) {
+      initialFormState = { selectedWalletId: wallets.active.id };
+    }
 
     return (
       <VotingPowerDelegation
@@ -89,7 +137,8 @@ class VotingGovernancePage extends Component<Props> {
         initialFormState={initialFormState}
         onBrowseDRepsClick={this.handleBrowseDRepsClick}
         onCancel={this.handleCancel}
-        onFetchDRep={(drepId) => governance.fetchDRep(drepId)}
+        onFetchDRep={(drepId) => governance.resolveDRep(drepId)}
+        onLookupDRep={(drepId) => governance.drepLookup(drepId)}
         onEnsureFavorited={(drepId) => {
           if (!governance.favoriteDRepIds.has(drepId)) {
             governance.toggleFavorite(drepId);

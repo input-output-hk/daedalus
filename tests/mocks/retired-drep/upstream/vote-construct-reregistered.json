@@ -1,0 +1,21 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-28T16:58:05Z",
+  "chain": {
+    "epoch": 14,
+    "slot": 2187
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/46779d0012b130a79bb3e538b6bfe064522586db/transactions-construct",
+    "body": {
+      "encoding": "base16",
+      "vote": "drep1yf3fdnw7e2auszn88zwu6upa44ldmteuzqp9645qxf88udc6edeun"
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": "{\"code\":\"same_vote\",\"message\":\"I couldn't cast a vote :  drep1yf3fdnw7e2auszn88zwu6upa44ldmteuzqp9645qxf88udc6edeun. I have already voted like that; repeating this action would incur an unnecessary fee!\"}"
+  }
+}

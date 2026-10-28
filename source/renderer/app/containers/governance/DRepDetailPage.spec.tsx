@@ -22,6 +22,7 @@ import type {
   AppDRepDirectoryEntry,
   AppDRepDetail,
 } from '../../stores/GovernanceStore';
+import { normalizeDRepIdentity } from '../../utils/governance/normalizeDRepIdentity';
 import DRepDetailPage from './DRepDetailPage';
 
 const DREP_ID = 'drep1yg7s8vuv87f8a8f5d0m9yk4p5xqw6r4s3t2u1v9w8x7y6z5a4b';
@@ -94,6 +95,7 @@ const renderPage = async ({
   locale = 'en-US',
   delegationNavState,
   syncProgress = 100,
+  wallets = [{ id: 'wallet-1' }],
 }: {
   governanceOverrides?: Record<string, unknown>;
   drepId?: string;
@@ -101,6 +103,7 @@ const renderPage = async ({
   locale?: string;
   delegationNavState?: Record<string, unknown>;
   syncProgress?: number | null;
+  wallets?: Array<Record<string, unknown>>;
 } = {}) => {
   // Observable so the container's reaction sees the flip like the real store.
   const networkStatus = observable({ isNodeInSync, syncProgress });
@@ -129,8 +132,8 @@ const renderPage = async ({
             governance,
             networkStatus,
             wallets: {
-              all: [{ id: 'wallet-1' }],
-              allWallets: [{ id: 'wallet-1' }],
+              all: wallets,
+              allWallets: wallets,
             },
           } as any
         }
@@ -1012,5 +1015,49 @@ describe('DRepDetailPage', () => {
 
     expect(governance.toggleFavorite).toHaveBeenCalledTimes(1);
     expect(governance.toggleFavorite).toHaveBeenCalledWith(DREP_ID);
+  });
+});
+
+describe('DRepDetailPage current delegation marker', () => {
+  afterEach(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
+
+  const identity = normalizeDRepIdentity(DECODABLE_DREP_ID)!;
+  const voting = {
+    kind: 'drep' as const,
+    drep: identity,
+    source: 'ledger' as const,
+  };
+  const walletWith = (ledgerVote: Record<string, unknown>) => ({
+    id: 'wallet-1',
+    isLegacy: false,
+    votingTarget: voting,
+    ledgerVote,
+  });
+  const render_ = (ledgerVote: Record<string, unknown>) =>
+    renderPage({
+      drepId: DECODABLE_DREP_ID,
+      governanceOverrides: {
+        drepLookup: jest.fn().mockReturnValue({ status: 'idle' }),
+        fetchDRep: jest
+          .fn()
+          .mockResolvedValue({ ...baseDetail, drepId: DECODABLE_DREP_ID }),
+      },
+      delegationNavState: { selectedWalletId: 'wallet-1' },
+      wallets: [walletWith(ledgerVote)],
+    });
+
+  it('offers Delegate for a DRep whose delegation ended', async () => {
+    await render_({ status: 'not_delegated' });
+    expect(
+      screen.getByRole('button', { name: 'Delegate' })
+    ).toBeInTheDocument();
+  });
+
+  it('does not offer Delegate for the DRep the ledger delegates to', async () => {
+    await render_({ status: 'delegated', voting });
+    expect(screen.queryByRole('button', { name: 'Delegate' })).toBeNull();
   });
 });

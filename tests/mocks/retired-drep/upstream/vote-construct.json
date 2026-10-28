@@ -1,0 +1,21 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-28T16:56:30Z",
+  "chain": {
+    "epoch": 11,
+    "slot": 1716
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/30325388b090a0d28345497f749966a3b1bb051c/transactions-construct",
+    "body": {
+      "encoding": "base16",
+      "vote": "drep1yg5weh983g0ptkcjcvky79ecyy68343p84u0ym4nhu4w9sgdn3qed"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"coin_selection\":{\"certificates\":[{\"certificate_type\":\"cast_vote\",\"reward_account_path\":[\"1852H\",\"1815H\",\"0H\",\"2\",\"0\"],\"vote\":\"drep1yg5weh983g0ptkcjcvky79ecyy68343p84u0ym4nhu4w9sgdn3qed\"}],\"change\":[{\"address\":\"addr_test1qqj9qawflafk4q9c7jta07cr49z3qltxwpqqskunu2umgl8e3eqp7yhxv877zcmd4ylxpy4h6nltsxz6hunfns0g0r6qm7s509\",\"amount\":{\"quantity\":112401234687,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"1\",\"11\"]}],\"collateral\":[],\"deposits_returned\":[],\"deposits_taken\":[],\"inputs\":[{\"address\":\"addr_test1qprzgdudpshef4dfjg0zwje266vjj49j45u9787u4xpp8m8e3eqp7yhxv877zcmd4ylxpy4h6nltsxz6hunfns0g0r6qgpess8\",\"amount\":{\"quantity\":112401407932,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"1\",\"9\"],\"id\":\"e70522b865e66f2101c64bfc4d23e3ae4ae7bfb3c0ee7c62e4f1019ac327b571\",\"index\":0}],\"outputs\":[],\"withdrawals\":[]},\"fee\":{\"quantity\":173245,\"unit\":\"lovelace\"},\"transaction\":\"84a600d9010281825820e70522b865e66f2101c64bfc4d23e3ae4ae7bfb3c0ee7c62e4f1019ac327b57100018182583900245075c9ff536a80b8f497d7fb03a945107d667040085b93e2b9b47cf98e401f12e661fde1636da93e6092b7d4feb8185abf2699c1e878f41b0000001a2ba2baff021a0002a4bd0319935b04d901028183098200581cf98e401f12e661fde1636da93e6092b7d4feb8185abf2699c1e878f48200581c28ecdca78a1e15db12c32c4f1738213478d6213d78f26eb3bf2ae2c10800a0f5f6\"}"
+  }
+}

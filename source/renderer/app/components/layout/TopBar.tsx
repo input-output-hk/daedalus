@@ -21,6 +21,8 @@ type Props = {
   onTransferFunds?: (...args: Array<any>) => any;
   onWalletAdd?: (...args: Array<any>) => any;
   onDelegateHeldRewards?: (walletId: string) => void;
+  // Whether a delegation was submitted for the active wallet's held rewards.
+  isHeldRewardsDelegationSubmitted?: boolean;
   hasRewardsWallets?: boolean;
   onLearnMore?: (...args: Array<any>) => any;
   isShelleyActivated: boolean;
@@ -38,6 +40,7 @@ class TopBar extends Component<Props> {
       onTransferFunds,
       onWalletAdd,
       onDelegateHeldRewards,
+      isHeldRewardsDelegationSubmitted,
       onLearnMore,
       isShelleyActivated,
     } = this.props;
@@ -115,6 +118,7 @@ class TopBar extends Component<Props> {
           <HeldRewardsNotification
             heldReward={activeWallet.heldReward}
             onDelegate={() => onDelegateHeldRewards(activeWallet.id)}
+            isDelegationSubmitted={isHeldRewardsDelegationSubmitted}
           />
         )}
       </header>

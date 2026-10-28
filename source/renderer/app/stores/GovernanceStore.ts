@@ -9,6 +9,12 @@ import type {
 } from '../../../common/types/governance.types';
 import { governanceDRepAnchorChannel } from '../ipc/governanceChannel';
 import { ROUTES } from '../routes-config';
+import { DREP_LIST_TIMEOUT } from '../config/governanceConfig';
+import { voteDelegationState } from '../utils/governance/voteDelegationState';
+import type {
+  DRepLookup,
+  VoteDelegationState,
+} from '../utils/governance/voteDelegationState';
 import {
   DEFAULT_DREP_COHORT_CRITERIA,
   createDRepCohortSeed,
@@ -184,6 +190,23 @@ export default class GovernanceStore extends Store {
   // Wallets page after the suggested/all lists have not yet loaded.
   @observable fetchedDReps: Map<string, AppDRepDirectoryEntry> = new Map();
 
+  // Lookups of single DReps. One request per DRep is in flight at a time and
+  // its outcome is remembered, so a screen that updates often never repeats a
+  // lookup that has an answer.
+  _drepLookups: Map<string, Promise<AppDRepDirectoryEntry | null>> = new Map();
+  @observable _drepLookupStatus: Map<
+    string,
+    'pending' | 'not_found' | 'failed'
+  > = new Map();
+  // DReps the wallet's registry answered 404 for while the node was in sync.
+  // Kept for the session: leaving Governance does not clear it.
+  @observable _missingDRepIds: Set<string> = new Set();
+
+  // The list loads are numbered, so an answer that arrives after its load
+  // timed out still fills the Directory unless a newer load has applied.
+  _listLoadGeneration = 0;
+  _appliedListGeneration = 0;
+
   // Navigation handoff for the DRep selection flow (directory ↔ governance form).
   // Hash history v4 drops location.state on every push, so this observable is
   // the single transport for the round-trip delegation form state.
@@ -314,6 +337,8 @@ export default class GovernanceStore extends Store {
     }
 
     const hasExistingData = this.allDReps.length > 0;
+    this._listLoadGeneration += 1;
+    const generation = this._listLoadGeneration;
 
     runInAction(() => {
       this.refreshState = hasExistingData
@@ -328,32 +353,59 @@ export default class GovernanceStore extends Store {
       // drawn once against complete figures instead of being drawn without a
       // ceiling and then redrawn under one. It resolves either way: a failure
       // is recorded in its own state, and an unknown share is not excluded.
-      const [rawDReps] = await Promise.all([
+      const load = Promise.all([
         this.api.ada.listDReps(),
         this.fetchDRepSummary(),
-      ]);
-      const currentEpoch = this.stores.networkStatus.localTip?.epoch ?? null;
-
-      runInAction(() => {
-        this.allDReps = rawDReps.map((item) =>
-          normalizeEntry(item, currentEpoch)
-        );
-        this.refreshState = GovernanceRefreshState.Loaded;
-        this.lastFetchedAt = Date.now();
-        this.error = null;
-      });
+      ]).then(([rawDReps]) => this._applyDRepList(rawDReps, generation));
+      // An answer after the time limit is applied above; a failure after it
+      // has nobody left to tell.
+      load.catch(() => {});
+      await this._withinListTimeout(load);
     } catch (err) {
       const normalized = this._normalizeError(err);
       logger.error('GovernanceStore: fetchAllDReps failed', {
         errorType: normalized.type,
       });
       runInAction(() => {
+        // A newer load owns the state; this one has nobody left to tell.
+        if (generation !== this._listLoadGeneration) return;
         this.error = normalized;
-        this.refreshState = hasExistingData
-          ? GovernanceRefreshState.Loaded
-          : GovernanceRefreshState.Failed;
+        this.refreshState =
+          this.allDReps.length > 0
+            ? GovernanceRefreshState.Loaded
+            : GovernanceRefreshState.Failed;
       });
     }
+  }
+
+  @action
+  _applyDRepList(rawDReps: Array<any>, generation: number): void {
+    if (generation < this._appliedListGeneration) return;
+    this._appliedListGeneration = generation;
+    const currentEpoch = this.stores.networkStatus.localTip?.epoch ?? null;
+    this.allDReps = rawDReps.map((item) => normalizeEntry(item, currentEpoch));
+    this.refreshState = GovernanceRefreshState.Loaded;
+    this.lastFetchedAt = Date.now();
+    this.error = null;
+  }
+
+  _withinListTimeout<T>(load: Promise<T>): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject({ type: 'TIMEOUT', message: '' }),
+        DREP_LIST_TIMEOUT
+      );
+      load.then(
+        (value) => {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        (err) => {
+          clearTimeout(timer);
+          reject(err);
+        }
+      );
+    });
   }
 
   @action
@@ -474,21 +526,109 @@ export default class GovernanceStore extends Store {
     );
   }
 
-  @action
-  async ensureDRep(drepId: string): Promise<void> {
-    if (this.lookupDRep(drepId) !== null) return;
-    try {
-      const entry = await this.fetchDRep(drepId);
-      runInAction(() => {
-        this.fetchedDReps.set(drepId, entry);
-      });
-    } catch {
-      // Non-critical; the "loading" caption degrades gracefully.
+  /**
+   * The entry for one DRep, looked up at most once while the answer is known.
+   *
+   * Returns a cached entry, the lookup already in flight, or null for a DRep
+   * that failed or that the wallet's registry does not hold. A 404 is
+   * remembered for the session when the node was in sync, since a registry
+   * read from a node that is behind is empty or partial; any other failure is
+   * remembered until the route leaves Governance. The Directory's Refresh
+   * forgets both.
+   */
+  resolveDRep(drepId: string): Promise<AppDRepDirectoryEntry | null> {
+    const known = this.lookupDRep(drepId);
+    if (known !== null) return Promise.resolve(known);
+    const inFlight = this._drepLookups.get(drepId);
+    if (inFlight) return inFlight;
+    if (
+      this._missingDRepIds.has(drepId) ||
+      this._drepLookupStatus.get(drepId) === 'failed' ||
+      this._drepLookupStatus.get(drepId) === 'not_found'
+    ) {
+      return Promise.resolve(null);
     }
+    runInAction(() => {
+      this._drepLookupStatus.set(drepId, 'pending');
+    });
+    const lookup = this.fetchDRep(drepId).then(
+      (entry) => {
+        runInAction(() => {
+          this.fetchedDReps.set(drepId, entry);
+          this._drepLookupStatus.delete(drepId);
+        });
+        this._drepLookups.delete(drepId);
+        return entry as AppDRepDirectoryEntry | null;
+      },
+      (err) => {
+        const missing =
+          (err as { code?: unknown } | null)?.code === 'not_found' &&
+          this.stores.networkStatus.isNodeInSync;
+        runInAction(() => {
+          if (missing) this._missingDRepIds.add(drepId);
+          this._drepLookupStatus.set(drepId, missing ? 'not_found' : 'failed');
+        });
+        this._drepLookups.delete(drepId);
+        return null;
+      }
+    );
+    this._drepLookups.set(drepId, lookup);
+    return lookup;
+  }
+
+  /**
+   * The wallets whose vote delegation ended, or whose DRep the wallet's
+   * registry does not hold, with the rewards each cannot withdraw.
+   */
+  @computed get endedDelegations(): Array<{
+    walletId: string;
+    walletName: string;
+    state: VoteDelegationState;
+    heldReward: BigNumber;
+  }> {
+    const wallets = this.stores.wallets?.allWallets ?? [];
+    return wallets
+      .map((wallet) => ({
+        walletId: wallet.id,
+        walletName: wallet.name,
+        state: voteDelegationState(wallet, (id) => this.drepLookup(id)),
+        heldReward: wallet.heldReward,
+      }))
+      .filter(
+        ({ state }) =>
+          state.kind === 'ended' || state.kind === 'not_in_registry'
+      );
+  }
+
+  /** What the lookup of one DRep has returned so far. */
+  drepLookup(drepId: string): DRepLookup {
+    const entry = this.lookupDRep(drepId);
+    if (entry !== null) return { status: 'found', entry };
+    if (this._missingDRepIds.has(drepId)) return { status: 'not_found' };
+    const status = this._drepLookupStatus.get(drepId);
+    return { status: status ?? 'idle' };
+  }
+
+  async ensureDRep(drepId: string): Promise<void> {
+    await this.resolveDRep(drepId);
+  }
+
+  @action
+  _forgetFailedDRepLookups(): void {
+    Array.from(this._drepLookupStatus.entries()).forEach(([id, status]) => {
+      if (status !== 'pending') this._drepLookupStatus.delete(id);
+    });
+  }
+
+  @action
+  _forgetDRepLookupOutcomes(): void {
+    this._missingDRepIds = new Set();
+    this._forgetFailedDRepLookups();
   }
 
   @action
   refresh(): Promise<void> {
+    this._forgetDRepLookupOutcomes();
     return this.fetchAllDReps();
   }
 
@@ -526,11 +666,15 @@ export default class GovernanceStore extends Store {
     // fetched data, and coming back to the directory should not undo them.
     this.allDReps = [];
     this.fetchedDReps = new Map();
+    this._forgetFailedDRepLookups();
     this.drepSummary = null;
     this.drepSummaryState = GovernanceRefreshState.Idle;
     this.refreshState = GovernanceRefreshState.Idle;
     this.error = null;
     this.lastFetchedAt = null;
+    // A handoff belongs to a flow inside Governance. One left by a round trip
+    // that was abandoned must not reach the next time the form opens.
+    this.delegationNavState = null;
   }
 
   setup(): void {

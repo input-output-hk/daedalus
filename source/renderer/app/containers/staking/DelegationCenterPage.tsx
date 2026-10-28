@@ -28,6 +28,16 @@ class DelegationCenterPage extends Component<Props, State> {
     stores: null,
   };
   state = { ...initialState };
+  // The page counts and names the pools of the delegating wallets: the list is
+  // fetched while the page is open and not otherwise.
+  releaseStakePools: (() => void) | null = null;
+  componentDidMount() {
+    this.releaseStakePools = this.props.stores.staking.acquireStakePools();
+  }
+  componentWillUnmount() {
+    this.releaseStakePools?.();
+    this.releaseStakePools = null;
+  }
   handleSetListActive = (selectedList: string) =>
     this.setState({
       selectedList,

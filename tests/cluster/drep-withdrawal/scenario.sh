@@ -19,8 +19,10 @@
 #                     then POST /v2/proxy/transactions with the signed CBOR
 #     hardware wallet POST /v2/wallets/{id}/coin-selections/random {payments, metadata: null} (no withdrawal)
 #     undelegation    POST /v2/wallets/{id}/coin-selections/random {delegation_action: {action: "quit", pool}}
-#     vote fee        POST /v2/wallets/{id}/coin-selections/random {delegation_action: {action: "join", pool}}
+#     vote fee        POST /v2/wallets/{id}/transactions-construct {encoding: "base16", vote}
 #     vote            PUT /v2/dreps/{drep}/wallets/{id} {passphrase}
+#     hardware wallet POST /v2/wallets/{id}/transactions-construct {encoding: "base16", vote}, then
+#                     POST /v2/proxy/transactions with the signed CBOR of a body built from its coin selection
 #     pool            PUT /v2/stake-pools/{pool}/wallets/{id} {passphrase}
 #     undelegation    DELETE /v2/stake-pools/*/wallets/{id} {passphrase}
 #     ITN redemption  payment-fees, then transactions, with withdrawal: <recovery phrase>
@@ -51,7 +53,7 @@ mkdir -p "$OUT/api" "$STATE"
 trap cluster_stop EXIT
 
 # Set by setup through save_var.
-PASS='' W1='' W2='' W3='' W1_ADDR='' W2_ADDR='' W3_ADDR='' POOL1='' POOL2=''
+PASS='' W1='' W2='' W3='' W4='' W1_ADDR='' W2_ADDR='' W3_ADDR='' W4_ADDR='' POOL1='' POOL2=''
 DREP_A_LEGACY='' DREP_A_CIP129='' DREP_A_HEX='' DREP_B_LEGACY='' DREP_B_CIP129='' DREP_B_HEX=''
 DEST=''
 HELD_SUBMIT_OBSERVED=''
@@ -106,26 +108,23 @@ pay() {
   PAY_OBSERVED="$PAY_OBSERVED, withdrew $PAY_WITHDRAWAL"
 }
 
-# vote LABEL WID TARGET [FIXTURE]: a vote delegation to TARGET (a DRep id, abstain or
-# no_confidence) as the Daedalus build for this backend sends it. On the
-# mainnet build the governance form first estimates the fee with a stake pool
-# join selection and stops if that fails. FIXTURE names the vote request's
-# recorded exchange on the mainnet build. Sets VOTE_ACCEPTED and VOTE_OBSERVED.
+# vote LABEL WID TARGET [PUT-FIXTURE [CONSTRUCT-FIXTURE]]: a vote delegation to
+# TARGET (a DRep id, abstain or no_confidence) as the Daedalus build for this
+# backend sends it. On the mainnet build the governance form first estimates
+# the fee with a vote-only transactions-construct and stops if that fails.
+# PUT-FIXTURE names the vote request's recorded exchange on the mainnet build;
+# CONSTRUCT-FIXTURE names the fee step's, recorded when it succeeds or, for a
+# refused vote, when it answers same_vote. Sets VOTE_ACCEPTED and VOTE_OBSERVED.
 vote() {
-  local label="$1" id="$2" target="$3" vote_fixture="${4:-}"
+  local label="$1" id="$2" target="$3" vote_fixture="${4:-}" construct_fixture="${5:-}"
   VOTE_ACCEPTED=no
   if [ "$BACKEND" = upstream ]; then
-    local current other
-    current=$(wallet_json "$id" | jq -r '[.delegation.active.target, (.delegation.next[]?.target)]
-      | map(select(. != null)) | last // ""')
-    other=$POOL1
-    [ "$current" != "$POOL1" ] || other=$POOL2
-    api "$label-fee" POST "/v2/wallets/$id/coin-selections/random" \
-      "$(jq -n --arg p "$other" '{delegation_action: {action: "join", pool: $p}}')"
+    api "$label-fee" POST "/v2/wallets/$id/transactions-construct" \
+      "$(jq -n --arg d "$target" '{encoding: "base16", vote: $d}')"
     VOTE_OBSERVED="fee step $(observed)"
     if ! is_accepted; then
       if [ "$R_CODE" = no_utxos_available ]; then
-        fixture vote-fee-funds-held
+        fixture vote-construct-funds-held
         if [ "$label" = H-held ]; then
           # The submission the confirmation dialog would send next, and the
           # wallet's balances while the lock holds.
@@ -137,15 +136,23 @@ vote() {
           fixture wallet-funds-held
           HELD_SUBMIT_OBSERVED="$HELD_SUBMIT_OBSERVED; available $(jq -r '.balance.available.quantity' "$R_FILE"), reward $(jq -r '.balance.reward.quantity' "$R_FILE"), total $(jq -r '.balance.total.quantity' "$R_FILE")"
         fi
+      elif [ -n "$construct_fixture" ] && [ "$R_CODE" = same_vote ]; then
+        fixture "$construct_fixture"
       fi
       return 0
     fi
+    [ -z "$construct_fixture" ] || fixture "$construct_fixture"
+    VOTE_OBSERVED="$VOTE_OBSERVED (cast_vote $(jq -r '[.coin_selection.certificates[]? | select(.certificate_type == "cast_vote") | .vote] | join(",")' "$R_FILE"))"
     api "$label" PUT "/v2/dreps/$target/wallets/$id" "$(jq -n --arg p "$PASS" '{passphrase: $p}')"
     [ -z "$vote_fixture" ] || fixture "$vote_fixture"
     VOTE_OBSERVED="$VOTE_OBSERVED, vote $(observed)"
     if is_accepted && wait_last_tx "$id"; then VOTE_ACCEPTED=yes; fi
   else
     construct_flow "$label" "$id" "$(jq -n --arg d "$target" '{encoding: "base16", vote: $d}')"
+    if [ -n "$construct_fixture" ]; then
+      R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+      fixture "$construct_fixture"
+    fi
     VOTE_OBSERVED=$(construct_observed)
     [ "$CF_SUBMIT_STATUS" != 202 ] || VOTE_ACCEPTED=yes
   fi
@@ -191,7 +198,7 @@ setup() {
   cluster_start
   save_var PASS "Secret-passphrase-1"
   local w size mnemonic id
-  for w in 1:24 2:15 3:24; do
+  for w in 1:24 2:15 3:24 4:24; do
     size=${w#*:}
     w=${w%:*}
     mnemonic=$("$WALLET" recovery-phrase generate --size "$size")
@@ -238,7 +245,7 @@ setup() {
 
   local pk="$STATE/data/pools-keys"
   cli_tx fund-and-register 1 \
-    --tx-out "$W1_ADDR+100000000000" --tx-out "$W2_ADDR+10000000000" --tx-out "$W3_ADDR+1000000000" \
+    --tx-out "$W1_ADDR+100000000000" --tx-out "$W2_ADDR+10000000000" --tx-out "$W3_ADDR+1000000000" --tx-out "$W4_ADDR+10000000000" \
     --certificate-file "$STATE/drepA/reg.cert" --certificate-file "$STATE/drepB/reg.cert" \
     --certificate-file "$pk/pool1/onchain-reg.cert" --certificate-file "$pk/pool2/onchain-reg.cert" \
     --witness-override 7 -- "$STATE/drepA/drep.skey" "$STATE/drepB/drep.skey" \
@@ -254,16 +261,16 @@ setup() {
     sleep 3
   done
   [ "$n" = 2 ] || die "the wallet's pool registry does not list both pools"
-  for id in "$W1" "$W2" "$W3"; do
+  for id in "$W1" "$W2" "$W3" "$W4"; do
     for _ in $(seq 1 60); do
       [ "$(available_of "$id")" -gt 0 ] && break
       sleep 2
     done
   done
 
-  # W1 and W2 delegate as a Daedalus mainnet user does: stake first, then
+  # W1, W2 and W4 delegate as a Daedalus mainnet user does: stake first, then
   # voting power to DRep A.
-  for id in "$W1" "$W2"; do
+  for id in "$W1" "$W2" "$W4"; do
     api setup-delegation-fees GET "/v2/wallets/$id/delegation-fees"
     api setup-join-pool1 PUT "/v2/stake-pools/$POOL1/wallets/$id" "$(jq -n --arg p "$PASS" '{passphrase: $p}')"
     { is_accepted && wait_last_tx "$id"; } || die "joining pool1: $(observed)"
@@ -271,24 +278,14 @@ setup() {
     { is_accepted && wait_last_tx "$id"; } || die "delegating to DRep A: $(observed)"
   done
 
-  # W1's stake key, for a transaction built by cardano-cli alone.
-  local keys="$STATE/w1keys"
-  mkdir -p "$keys"
-  "$ADDRESS" key from-recovery-phrase Shelley <"$STATE/w1.mnemonic" >"$keys/root.xsk"
-  "$ADDRESS" key child 1852H/1815H/0H/2/0 <"$keys/root.xsk" >"$keys/stake.xsk"
-  "$CLI" conway key convert-cardano-address-key --shelley-stake-key \
-    --signing-key-file "$keys/stake.xsk" --out-file "$keys/stake.skey"
-  "$CLI" conway key verification-key --signing-key-file "$keys/stake.skey" \
-    --verification-key-file "$keys/stake.evkey"
-  "$CLI" conway key non-extended-key --extended-verification-key-file "$keys/stake.evkey" \
-    --verification-key-file "$keys/stake.vkey"
-  [ "$("$CLI" conway stake-address build --stake-verification-key-file "$keys/stake.vkey")" = "$(stake_address_of "$W1")" ] ||
-    die "the stake key derived from W1's recovery phrase is not W1's"
+  # W1's and W4's stake keys, for transactions built by cardano-cli alone.
+  derive_stake_keys "$STATE/w1.mnemonic" "$STATE/w1keys" "$W1"
+  derive_stake_keys "$STATE/w4.mnemonic" "$STATE/w4keys" "$W4"
 
   # The wallet filled its DRep registry when it started, before DReps A and B
   # existed.
-  wallet_restart "$W1" "$W2" "$W3"
-  snapshot "setup: W1 and W2 delegated to DRep A" "$W1" "$W2"
+  wallet_restart "$W1" "$W2" "$W3" "$W4"
+  snapshot "setup: W1, W2 and W4 delegated to DRep A" "$W1" "$W2" "$W4"
 }
 
 # Control: DRep A registered ----------------------------------------------------------
@@ -563,7 +560,7 @@ after_retirement() {
     "$(jq -n --arg d "$DREP_A_CIP129" '{encoding: "base16", vote: $d}')"
   R_BASE=${CF_CONSTRUCT_FILE%.res.json}
   fixture vote-construct-retired
-  check F-vote-construct-retired "Vote delegation to the retired DRep" "construct, cip30 builds" \
+  check F-vote-construct-retired "Vote delegation to the retired DRep" "construct, both builds" \
     "HTTP 404 not_found at construct, nothing submitted (available unchanged, no pending transaction)" \
     "$(construct_observed); $(funds_seen "$before" "$W1")" \
     '[ "$CF_CONSTRUCT_STATUS" = 404 ] && [ "$CF_CONSTRUCT_CODE" = not_found ] && funds_unchanged "$before" "$W1"'
@@ -660,7 +657,8 @@ governance_registry() {
   release_pending "$W1" G
   release_pending "$W2" G
   release_pending "$W3" G
-  wallet_restart "$W1" "$W2" "$W3"
+  release_pending "$W4" G
+  wallet_restart "$W1" "$W2" "$W3" "$W4"
 
   # Daedalus looks up the DRep id the wallet reports as the current vote.
   local current listed
@@ -685,7 +683,7 @@ governance_registry() {
   # The list, timed while lookups of the missing DRep are outstanding, with
   # the registry at a realistic size.
   register_extra_dreps "$EXTRA_DREPS"
-  wallet_restart "$W1" "$W2" "$W3"
+  wallet_restart "$W1" "$W2" "$W3" "$W4"
   : >"$OUT/drep-latency.tsv"
   PROBE_T0=$(date +%s.%N)
   local i size
@@ -737,7 +735,7 @@ redelegate() {
       "reward > $MIN_REWARD" "reward $(reward_of "$W1")" PRECONDITION
   fi
 
-  vote H-held "$W1" "$DREP_B_CIP129"
+  vote H-held "$W1" "$DREP_B_CIP129" "" vote-construct
   check H-held "Vote delegation right after the refused undelegation" "vote, $(build_of "$BACKEND")" \
     "accepted" "$VOTE_OBSERVED" '[ "$VOTE_ACCEPTED" = yes ]'
   if [ -n "$HELD_SUBMIT_OBSERVED" ]; then
@@ -747,7 +745,7 @@ redelegate() {
   fi
   if [ "$VOTE_ACCEPTED" != yes ]; then
     release_pending "$W1" H-held
-    vote H-vote "$W1" "$DREP_B_CIP129"
+    vote H-vote "$W1" "$DREP_B_CIP129" "" vote-construct
     check H-vote "Vote delegation once no transaction is pending" "vote, $(build_of "$BACKEND")" \
       "accepted" "$VOTE_OBSERVED" '[ "$VOTE_ACCEPTED" = yes ]'
   fi
@@ -879,6 +877,159 @@ dropped_certificate() {
     'cbor_has_vote_certificate && [ "$seen" = no_confidence ]'
 }
 
+# A DRep that registers again after retiring -----------------------------------------------
+
+# hardware_proxy_abstain WID STAKE-KEY-DIR: the Abstain vote preparation and submission of a
+# hardware wallet: transactions-construct {vote}, a body built from its coin
+# selection outside the wallet with a vote delegation certificate for the
+# wallet's stake key, signed by transactions-sign (standing in for the device)
+# and posted to /v2/proxy/transactions on the mainnet build, or to the fork's
+# transaction-submission on the cip30 builds, which sign and submit the
+# construct's own CBOR. A body the wallet will not sign is a PRECONDITION, with
+# the construct's own CBOR sent through the proxy instead. Sets HV_OBSERVED and
+# HV_SUBMITTED (yes or no); HV_PRECONDITION is non-empty when the body built
+# outside the wallet was not used.
+hardware_proxy_abstain() {
+  local id="$1" keys="$2" unsigned own signed cert="$STATE/hw-vote.cert" body="$STATE/hw-vote.body.cbor.hex"
+  HV_SUBMITTED=no HV_PRECONDITION=''
+  api P-hw-vote-construct POST "/v2/wallets/$id/transactions-construct" \
+    '{"encoding": "base16", "vote": "abstain"}'
+  HV_OBSERVED="construct $(observed)"
+  is_accepted || return 0
+  own=$(jq -r .transaction "$R_FILE")
+  unsigned=$own
+  jq .coin_selection "$R_FILE" >"$STATE/hw-vote.selection.json"
+  if [ "$BACKEND" = upstream ]; then
+    "$CLI" conway stake-address vote-delegation-certificate \
+      --stake-verification-key-file "$keys/stake.vkey" --always-abstain --out-file "$cert"
+    if vote_selection_body "$STATE/hw-vote.selection.json" "$cert" "$body"; then
+      unsigned=$(cat "$body")
+    else
+      HV_PRECONDITION="the selection could not be built into a body ($(head -c 200 "$body.build.txt" 2>/dev/null))"
+    fi
+  fi
+  api P-hw-vote-sign POST "/v2/wallets/$id/transactions-sign" \
+    "$(jq -n --arg t "$unsigned" --arg p "$PASS" '{transaction: $t, passphrase: $p, encoding: "base16"}')"
+  if ! is_accepted; then
+    HV_OBSERVED="$HV_OBSERVED; transactions-sign refused the body: $(observed): $(jq -r '.message // ""' "$R_FILE" | head -c 300)"
+    HV_PRECONDITION=${HV_PRECONDITION:-transactions-sign refused the body built outside the wallet}
+    api P-hw-vote-sign-construct POST "/v2/wallets/$id/transactions-sign" \
+      "$(jq -n --arg t "$own" --arg p "$PASS" '{transaction: $t, passphrase: $p, encoding: "base16"}')"
+    is_accepted || return 0
+  fi
+  signed=$(jq -r .transaction "$R_FILE")
+  if [ "$BACKEND" = upstream ]; then
+    echo "$signed" | xxd -r -p >"$STATE/hw-vote.signed.cbor"
+    api_octets P-hw-vote /v2/proxy/transactions "$STATE/hw-vote.signed.cbor"
+  else
+    echo "$signed" >"$STATE/hw-vote.signed.cbor.hex"
+    dapp_submit P-hw-vote "$id" "$STATE/hw-vote.signed.cbor.hex" || {
+      HV_OBSERVED="$HV_OBSERVED; $DAPP_SUBMIT_WHY"
+      return 0
+    }
+  fi
+  HV_OBSERVED="$HV_OBSERVED; submission $(observed)"
+  if is_accepted; then HV_SUBMITTED=yes; fi
+}
+
+reregistered_drep() {
+  local seen
+  # DRep A registers again; the wallet's DRep registry is refreshed by a
+  # restart.
+  cli_tx reregister-drepA 1 --certificate-file "$STATE/drepA/reg.cert" \
+    --witness-override 2 -- "$STATE/drepA/drep.skey" ||
+    {
+      result RR-register "DRep A registers again" "cardano-cli transaction" "accepted" "$CLI_RESULT" PRECONDITION
+      return 0
+    }
+  result RR-register "DRep A registers again" "cardano-cli transaction" "(setup)" "$CLI_RESULT" NOTE
+  sleep 3
+  snapshot "DRep A registered again" "$W4"
+
+  seen=$(ledger_vote "$W4")
+  check RR-ledger "Ledger vote delegation of an account whose DRep registered again" \
+    "cardano-cli query stake-address-info" "none" "$seen" '[ "$seen" = none ]'
+  seen=$(wallet_history_vote "$W4")
+  result RR-history "Vote the wallet reports from its own history" \
+    "GET /v2/wallets/{id} .delegation.*.voting" "(history, no expectation)" "$seen" NOTE
+  wallet_restart "$W1" "$W2" "$W3" "$W4"
+  # The wallet reads the field after a restart, not at once.
+  local _
+  for _ in $(seq 1 15); do
+    seen=$(wallet_ledger_field "$W4")
+    [ "$seen" != absent ] && break
+    sleep 2
+  done
+  wait_ledger_field "$W4" none || true
+  seen=$(wallet_ledger_field "$W4")
+  check RR-field "Ledger vote delegation reported by the wallet" \
+    "GET /v2/wallets/{id} .$LEDGER_VOTE_FIELD" "none" "$seen" '[ "$seen" = none ]'
+  api RR-wallet GET "/v2/wallets/$W4"
+  fixture wallet-reregistered-drep
+  api RR-lookup GET "/v2/dreps/$DREP_A_CIP129"
+  fixture drep-registered-again
+  check RR-lookup "Registry lookup of a DRep that registered again" "GET /v2/dreps/{A}" \
+    "HTTP 200" "$(observed)" '[ "$R_STATUS" = 200 ]'
+
+  if wait_withdrawable "$W4"; then
+    pay RR-wdrl "$W4"
+    if [ "$BACKEND" = upstream ]; then
+      check RR-wdrl "Payment requesting the withdrawal while the account has no vote delegation" \
+        "payment, $(build_of "$BACKEND")" "$GATE" "$PAY_OBSERVED" is_refused_before_submission
+    else
+      check RR-wdrl "Payment requesting the withdrawal while the account has no vote delegation" \
+        "payment, $(build_of "$BACKEND")" "$GATE (at construct)" "$PAY_OBSERVED" construct_refused_before_submission
+    fi
+    release_pending "$W4" RR-wdrl
+  else
+    result RR-wdrl "Payment requesting the withdrawal while the account has no vote delegation" \
+      "payment, $(build_of "$BACKEND")" "$GATE" "reward $(reward_of "$W4")" PRECONDITION
+  fi
+
+  vote RR-vote-back "$W4" "$DREP_A_CIP129" "" vote-construct-reregistered
+  wait_ledger_vote "$W4" drep:A || true
+  seen=$(ledger_vote "$W4")
+  check RR-vote-back "Vote delegation back to the DRep that registered again" "vote, $(build_of "$BACKEND")" \
+    "accepted, ledger reads A" "$VOTE_OBSERVED, ledger: $seen" \
+    '[ "$VOTE_ACCEPTED" = yes ] && [ "$seen" = drep:A ]'
+
+  hardware_proxy_abstain "$W4" "$STATE/w4keys"
+  wait_ledger_vote "$W4" abstain || true
+  seen=$(ledger_vote "$W4")
+  if [ "$HV_SUBMITTED" = yes ] && [ "$seen" = abstain ] && [ -z "$HV_PRECONDITION" ]; then
+    result P-hw-vote "Hardware-wallet vote delegation submitted through the hardware endpoints" \
+      "construct {vote}, sign, $([ "$BACKEND" = upstream ] && echo 'POST /v2/proxy/transactions' || echo 'POST /v2/wallets/{id}/transaction-submission')" \
+      "accepted, ledger reads Abstain" "$HV_OBSERVED, ledger: $seen" PASS
+  elif [ -n "$HV_PRECONDITION" ]; then
+    result P-hw-vote "Hardware-wallet vote delegation submitted through the hardware endpoints" \
+      "construct {vote}, sign, $([ "$BACKEND" = upstream ] && echo 'POST /v2/proxy/transactions' || echo 'POST /v2/wallets/{id}/transaction-submission')" \
+      "accepted, ledger reads Abstain" "$HV_PRECONDITION; $HV_OBSERVED, ledger: $seen" PRECONDITION
+  else
+    result P-hw-vote "Hardware-wallet vote delegation submitted through the hardware endpoints" \
+      "construct {vote}, sign, $([ "$BACKEND" = upstream ] && echo 'POST /v2/proxy/transactions' || echo 'POST /v2/wallets/{id}/transaction-submission')" \
+      "accepted, ledger reads Abstain" "$HV_OBSERVED, ledger: $seen" FAIL
+  fi
+
+  if wait_withdrawable "$W4"; then
+    pay RR-pay "$W4"
+    check RR-pay "Payment with the withdrawal once the account is vote-delegated again" \
+      "payment, $(build_of "$BACKEND")" "accepted, rewards withdrawn" "$PAY_OBSERVED" \
+      '[ "$PAY_ACCEPTED" = yes ] && [ "$PAY_WITHDRAWAL" -gt 0 ]'
+  else
+    result RR-pay "Payment with the withdrawal once the account is vote-delegated again" \
+      "payment, $(build_of "$BACKEND")" "accepted, rewards withdrawn" "reward $(reward_of "$W4")" PRECONDITION
+  fi
+
+  # A vote on a wallet whose stake key is not registered: the construct adds
+  # the registration and its deposit. Recorded, not submitted.
+  api RR-registering-key POST "/v2/wallets/$W3/transactions-construct" \
+    "$(jq -n '{encoding: "base16", vote: "abstain"}')"
+  fixture vote-construct-registering-key
+  result RR-registering-key "Vote construct for a wallet whose stake key is not registered" \
+    "transactions-construct {vote: abstain}" "(measurement)" \
+    "$(observed), certificates [$(jq -r '[.coin_selection.certificates[]?.certificate_type] | join(",")' "$R_FILE")], deposits taken $(jq -c '[.coin_selection.deposits_taken[]?.quantity]' "$R_FILE")" NOTE
+}
+
 T0=$(date +%s)
 "$WALLET" version >"$OUT/wallet-version.txt"
 log "backend $BACKEND: $(cat "$OUT/wallet-version.txt")"
@@ -891,6 +1042,7 @@ redelegate
 itn_restore
 undelegation_two_step
 dropped_certificate
-snapshot "end" "$W1" "$W2"
+reregistered_drep
+snapshot "end" "$W1" "$W2" "$W4"
 echo $(($(date +%s) - T0)) >"$OUT/duration-seconds"
 log "backend $BACKEND finished in $(cat "$OUT/duration-seconds") s"

@@ -1,3 +1,4 @@
+import { runInAction } from 'mobx';
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Provider } from 'mobx-react';
@@ -19,6 +20,7 @@ import '@testing-library/jest-dom';
 import translations from '../../i18n/locales/en-US.json';
 import { daedalusTheme } from '../../themes/daedalus';
 import { themeOverrides } from '../../themes/overrides';
+import WalletApprovalStore from '../../stores/WalletApprovalStore';
 import { ROUTES } from '../../routes-config';
 import { logger } from '../../utils/logging';
 import { GovernanceRefreshState } from '../../stores/GovernanceStore';
@@ -108,21 +110,30 @@ const currentVoteForValidDRep = {
 const votingSoftwareWallet = {
   ...softwareWallet,
   currentDRep: currentVoteForValidDRep,
+  votingTarget: currentVoteForValidDRep,
 };
 
 type StoreOverrides = {
   wallets?: any[];
+  favoriteDRepIds?: Set<string>;
+  walletApproval?: unknown;
   delegationNavState?: DelegationNavState | null;
 };
 
 const buildStores = ({
   wallets = [softwareWallet],
   delegationNavState = null,
+  favoriteDRepIds = new Set<string>(),
+  walletApproval = { dismissResult: jest.fn(), clearResultInPlace: jest.fn() },
 }: StoreOverrides = {}) => {
   const governance = {
     error: null,
-    favoriteDRepIds: new Set<string>(),
+    favoriteDRepIds,
     fetchDRep: jest.fn().mockResolvedValue(drepDetail),
+    resolveDRep: jest.fn().mockResolvedValue(drepDetail),
+    drepLookup: jest
+      .fn()
+      .mockReturnValue({ status: 'found', entry: drepDetail }),
     lastFetchedAt: Date.now() - 60_000,
     loadAllDReps: jest.fn(),
     refresh: jest.fn(),
@@ -170,6 +181,7 @@ const buildStores = ({
       syncProgress: 100,
     },
     staking: { getStakePoolById: jest.fn(), stakePools: [] },
+    walletApproval,
     voting: {
       initializeVPDelegationTx: jest.fn(async () => ({
         success: true as const,
@@ -182,7 +194,12 @@ const buildStores = ({
     },
     // allWallets is the Shelley-only collection the governance pages read:
     // a Byron wallet cannot delegate voting power.
-    wallets: { all: wallets, allWallets: wallets },
+    wallets: {
+      all: wallets,
+      allWallets: wallets,
+      active: wallets[0] ?? null,
+      getWalletById: (id: string) => wallets.find((w) => w.id === id) ?? null,
+    },
   };
 };
 
@@ -195,7 +212,10 @@ const renderFlow = (
   const history = createMemoryHistory({ initialEntries });
   const pushSpy = jest.spyOn(history, 'push');
   const stores = buildStores(storeOverrides);
-  const actions = { router: { goToRoute: { trigger: jest.fn() } } };
+  const actions = {
+    router: { goToRoute: { trigger: jest.fn() } },
+    dialogs: { closeActiveDialog: { trigger: jest.fn() } },
+  };
   const tree = (currentStores: ReturnType<typeof buildStores>) => (
     <Provider stores={currentStores as any} actions={actions as any}>
       <ThemeProvider
@@ -497,8 +517,8 @@ describe('Auto-favorite current delegation DRep', () => {
   it('does not call toggleFavorite when the delegated DRep is already in favorites', async () => {
     const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
       wallets: [votingSoftwareWallet],
+      favoriteDRepIds: new Set([VALID_DREP_ID]),
     });
-    stores.governance.favoriteDRepIds.add(VALID_DREP_ID);
 
     fireEvent.click(screen.getByTestId(`wallets-dropdown-option-${WALLET_ID}`));
     await act(async () => {});
@@ -544,7 +564,7 @@ describe('Current-vote enrichment in the delegation form', () => {
       wallets: [
         {
           ...softwareWallet,
-          currentDRep: {
+          votingTarget: {
             ...currentVoteForValidDRep,
             drep: { ...currentVoteForValidDRep.drep, raw: CIP105_DREP_ID },
           },
@@ -684,5 +704,255 @@ describe('upstream governance confirmation workflow', () => {
     );
     expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
     expect(stores.governance.toggleFavorite).not.toHaveBeenCalled();
+  });
+});
+
+describe('Opening the delegation form from a send error', () => {
+  afterEach(cleanup);
+
+  it('preselects the active wallet when no state came with the link', () => {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }]);
+
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
+    expect(
+      screen.getByText(/Choose Abstain, No Confidence or a DRep\./)
+    ).toBeInTheDocument();
+  });
+
+  it('preselects no wallet when the active wallet is a legacy wallet', () => {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [{ ...softwareWallet, isLegacy: true }],
+    });
+
+    expect(
+      screen.queryByText(/Choose Abstain, No Confidence or a DRep\./)
+    ).not.toBeInTheDocument();
+  });
+
+  it('prefers the wallet the link carried', () => {
+    const second = { ...softwareWallet, id: 'wallet-2', name: 'Second' };
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [softwareWallet, second],
+      delegationNavState: { selectedWalletId: 'wallet-2', voteType: 'drep' },
+    });
+
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(
+      'wallet-2'
+    );
+  });
+
+  it('closes the dialog that showed the link and dismisses an approval result', () => {
+    const { actions, stores } = renderFlow([
+      { pathname: ROUTES.GOVERNANCE.DELEGATE },
+    ]);
+
+    expect(actions.dialogs.closeActiveDialog.trigger).toHaveBeenCalledTimes(1);
+    expect(
+      (stores.walletApproval as { clearResultInPlace: jest.Mock })
+        .clearResultInPlace
+    ).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe.each([
+  ['Loading', GovernanceRefreshState.Loading],
+  ['Failed', GovernanceRefreshState.Failed],
+])(
+  'The choices on the delegation form while the DRep list is %s',
+  (_s, refreshState) => {
+    afterEach(cleanup);
+
+    it('offers Abstain, and submits it without the list', async () => {
+      const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }]);
+      (stores.governance as any).refreshState = refreshState;
+      expect(stores.governance.refreshState).toBe(refreshState);
+
+      expect(
+        screen.getByRole('button', { name: 'Browse DReps' })
+      ).toBeVisible();
+      fireEvent.click(screen.getAllByRole('button', { name: 'Select' })[0]);
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+      await waitFor(() =>
+        expect(stores.voting.delegateVotes).toHaveBeenCalledWith({
+          chosenOption: 'abstain',
+          wallet: expect.objectContaining({ id: WALLET_ID }),
+        })
+      );
+    });
+  }
+);
+
+describe('Opening the delegation form from a refused native send', () => {
+  const originalCapability = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+  afterEach(() => {
+    cleanup();
+    global.cip30Enabled = originalCapability;
+  });
+
+  // The real store, holding a finished native-transaction result for a wallet
+  // that is not the active one.
+  const refusedSend = (walletId: string) => {
+    const method = jest.fn();
+    const namespace = new Proxy({}, { get: () => method });
+    const api = new Proxy({}, { get: () => namespace }) as any;
+    const goToRoute = jest.fn();
+    const store = new WalletApprovalStore(
+      api,
+      { router: { goToRoute: { trigger: goToRoute } } } as any,
+      undefined as any
+    );
+    store.stores = {
+      transactions: { dismissReceipt: jest.fn() },
+      wallets: { getWalletRoute: () => `/wallets/${walletId}/transactions` },
+    } as any;
+    runInAction(() => {
+      store.current = {
+        requestId: 'native',
+        walletId,
+        kind: 'native-transaction',
+      } as any;
+      store.result = { status: 'rejected', errorCode: 'failed' } as any;
+    });
+    return { store, goToRoute };
+  };
+
+  it('clears the result without routing away and preselects its wallet', () => {
+    const other = { ...softwareWallet, id: 'wallet-2', name: 'Second' };
+    const { store, goToRoute } = refusedSend('wallet-2');
+    const { history } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [softwareWallet, other],
+      walletApproval: store,
+    });
+
+    expect(store.current).toBeNull();
+    expect(store.result).toBeUndefined();
+    expect(goToRoute).not.toHaveBeenCalled();
+    expect(history.location.pathname).toBe(ROUTES.GOVERNANCE.DELEGATE);
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(
+      'wallet-2'
+    );
+  });
+
+  it("prefers the open result's wallet to a handoff left for another wallet", () => {
+    const other = { ...softwareWallet, id: 'wallet-2', name: 'Second' };
+    const { store } = refusedSend('wallet-2');
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [softwareWallet, other],
+      walletApproval: store,
+      delegationNavState: {
+        selectedWalletId: WALLET_ID,
+        selectedDRepId: VALID_DREP_ID,
+        voteType: 'drep',
+      },
+    });
+
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(
+      'wallet-2'
+    );
+    // No DRep choice carried over: the choices are offered.
+    expect(
+      screen.getByText(/Choose Abstain, No Confidence or a DRep\./)
+    ).toBeInTheDocument();
+  });
+
+  it('falls back to the active wallet when no result is open', () => {
+    const other = { ...softwareWallet, id: 'wallet-2', name: 'Second' };
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [softwareWallet, other],
+    });
+
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
+  });
+});
+
+describe('The delegation form consumes the handoff that opened it', () => {
+  afterEach(cleanup);
+
+  it('clears the handoff in the store once the form has mounted', () => {
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' },
+    });
+
+    expect(stores.governance.delegationNavState).toBeNull();
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
+  });
+
+  it('opens on the active wallet with no DRep choice once an earlier handoff was consumed', () => {
+    const second = { ...softwareWallet, id: 'wallet-2', name: 'Second' };
+    const { stores } = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [softwareWallet, second],
+      delegationNavState: {
+        selectedWalletId: 'wallet-2',
+        selectedDRepId: VALID_DREP_ID,
+        voteType: 'drep',
+      },
+    });
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(
+      'wallet-2'
+    );
+    expect(stores.governance.delegationNavState).toBeNull();
+
+    // A later link with no handoff of its own.
+    cleanup();
+    const next = renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [softwareWallet, second],
+      delegationNavState: stores.governance.delegationNavState,
+    });
+
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
+    expect(
+      screen.getByText(/Choose Abstain, No Confidence or a DRep\./)
+    ).toBeInTheDocument();
+    expect(next.stores.governance.delegationNavState).toBeNull();
+  });
+
+  it('returns from Browse DReps with the wallet and the chosen DRep', () => {
+    const { stores, history } = renderFlow(
+      [{ pathname: ROUTES.GOVERNANCE.DELEGATE }],
+      {
+        delegationNavState: { selectedWalletId: WALLET_ID, voteType: 'drep' },
+      }
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Browse DReps' }));
+    expect(history.location.pathname).toBe(ROUTES.GOVERNANCE.DREPS);
+    expect(stores.governance.delegationNavState).toMatchObject({
+      selectedWalletId: WALLET_ID,
+      voteType: 'drep',
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delegate' }));
+    expect(history.location.pathname).toBe(ROUTES.GOVERNANCE.DELEGATE);
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
+  });
+});
+
+describe('A handoff that names a DRep but no wallet', () => {
+  afterEach(cleanup);
+
+  it('opens the form with the DRep and the active wallet', () => {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      delegationNavState: { selectedDRepId: VALID_DREP_ID, voteType: 'drep' },
+    });
+
+    expect(screen.getByTestId('wallets-dropdown')).toHaveTextContent(WALLET_ID);
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
+  });
+
+  it('keeps the DRep and selects no wallet when the active wallet is legacy', () => {
+    renderFlow([{ pathname: ROUTES.GOVERNANCE.DELEGATE }], {
+      wallets: [{ ...softwareWallet, isLegacy: true }],
+      delegationNavState: { selectedDRepId: VALID_DREP_ID, voteType: 'drep' },
+    });
+
+    expect(screen.getByTestId('wallets-dropdown')).not.toHaveTextContent(
+      WALLET_ID
+    );
+    expect(screen.queryByRole('button', { name: 'Submit' })).toBeNull();
   });
 });

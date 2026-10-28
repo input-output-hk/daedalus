@@ -17,6 +17,8 @@ type Props = {
   isActive: boolean;
   onClick: (...args: Array<any>) => any;
   content?: React.ReactNode;
+  // Draws a dot beside the icon, for a category that has something to read.
+  hasNotification?: boolean;
 };
 
 function SidebarCategory({
@@ -25,6 +27,7 @@ function SidebarCategory({
   isActive,
   onClick,
   content,
+  hasNotification = false,
 }: Props) {
   const { name, icon, route, tooltipTextId } = category;
   const className = camelCase(name);
@@ -44,6 +47,9 @@ function SidebarCategory({
     >
       <button className={componentStyles} onClick={() => onClick(route)}>
         <SVGInline svg={icon} className={iconClassName} />
+        {hasNotification && (
+          <span className={styles.notificationDot} aria-hidden="true" />
+        )}
         {content}
       </button>
     </PopOver>

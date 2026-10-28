@@ -8,7 +8,13 @@ import GovernanceShell from './_utils/GovernanceShell';
 import { ROUTES } from '../../../source/renderer/app/routes-config';
 import GovernanceWallets from '../../../source/renderer/app/components/governance/wallets/GovernanceWallets';
 import type { WalletDelegationSummary } from '../../../source/renderer/app/components/governance/wallets/GovernanceWallets';
+import type { EndedDelegation } from '../../../source/renderer/app/components/governance/wallets/EndedDelegationNotice';
 import type { AppDRepDirectoryEntry } from '../../../source/renderer/app/stores/GovernanceStore';
+import type {
+  DRepLookup,
+  VoteDelegationState,
+} from '../../../source/renderer/app/utils/governance/voteDelegationState';
+import type { DRepIdentity } from '../../../source/common/types/governance.types';
 
 const TOTAL_DREP_STAKE = new BigNumber('5257000000000000');
 
@@ -28,63 +34,121 @@ const drep = (
   ...overrides,
 });
 
+const identity = (suffix: number): DRepIdentity => {
+  const id = drep(suffix).drepId;
+  return {
+    raw: id,
+    cip129: id,
+    cip105: id,
+    credentialHex: '00'.repeat(28),
+    credentialType: 'key',
+  };
+};
+
+const found = (entry: AppDRepDirectoryEntry): DRepLookup => ({
+  status: 'found',
+  entry,
+});
+
+const current = (suffix: number): VoteDelegationState => ({
+  kind: 'current',
+  voting: { kind: 'drep', drep: identity(suffix), source: 'ledger' },
+  source: 'ledger',
+});
+
 // One row per wallet: the question this page answers is which wallets are
 // delegated and to whom, which a column of cards answered badly.
-const wallets: WalletDelegationSummary[] = [
+const delegated: WalletDelegationSummary[] = [
   {
     walletId: 'wallet-1',
     walletName: 'Daily spending',
-    currentDRep: {
-      kind: 'drep',
-      drep: { raw: drep(1).drepId } as any,
-      source: 'onchain',
-    },
-    drepEntry: drep(1),
+    state: current(1),
+    lookup: found(drep(1)),
   },
   {
     walletId: 'wallet-2',
     walletName: 'Long-term savings',
-    currentDRep: { kind: 'abstain' },
-    drepEntry: null,
+    state: {
+      kind: 'current',
+      voting: { kind: 'abstain' },
+      source: 'ledger',
+    },
+    lookup: { status: 'idle' },
   },
   {
     walletId: 'wallet-3',
     walletName: 'Cold storage',
-    currentDRep: null,
-    drepEntry: null,
+    state: { kind: 'none' },
+    lookup: { status: 'idle' },
   },
   {
     walletId: 'wallet-4',
     walletName: 'Delegated to a lapsing DRep',
-    currentDRep: {
-      kind: 'drep',
-      drep: { raw: drep(4).drepId } as any,
-      source: 'onchain',
-    },
-    drepEntry: drep(4, { drepActivity: 3, verifiedName: null }),
+    state: current(4),
+    lookup: found(drep(4, { drepActivity: 3, verifiedName: null })),
   },
   {
     walletId: 'wallet-5',
     walletName: 'Delegated to an inactive DRep',
-    currentDRep: {
-      kind: 'drep',
-      drep: { raw: drep(5).drepId } as any,
-      source: 'onchain',
-    },
-    drepEntry: drep(5, { status: 'inactive', drepActivity: 0 }),
+    state: current(5),
+    lookup: found(drep(5, { status: 'inactive', drepActivity: 0 })),
   },
   {
     walletId: 'wallet-6',
     walletName: 'No confidence',
-    currentDRep: { kind: 'no_confidence' },
-    drepEntry: null,
+    state: {
+      kind: 'current',
+      voting: { kind: 'no_confidence' },
+      source: 'ledger',
+    },
+    lookup: { status: 'idle' },
   },
 ];
 
-const render = (walletList: WalletDelegationSummary[]) => (
+const retired: WalletDelegationSummary = {
+  walletId: 'wallet-7',
+  walletName: 'Delegated to a retired DRep',
+  state: { kind: 'ended', drep: identity(7), registeredAgain: false },
+  lookup: { status: 'not_found' },
+};
+
+const retiredRegisteredAgain: WalletDelegationSummary = {
+  walletId: 'wallet-8',
+  walletName: 'DRep retired and registered again',
+  state: { kind: 'ended', drep: identity(8), registeredAgain: true },
+  lookup: found(drep(8)),
+};
+
+const notInRegistry: WalletDelegationSummary = {
+  walletId: 'wallet-9',
+  walletName: 'DRep missing from the registry',
+  state: { kind: 'not_in_registry', drep: identity(9) },
+  lookup: { status: 'not_found' },
+};
+
+const unavailable: WalletDelegationSummary = {
+  walletId: 'wallet-10',
+  walletName: 'DRep lookup failed',
+  state: current(10),
+  lookup: { status: 'failed' },
+};
+
+const wallets: WalletDelegationSummary[] = [
+  ...delegated,
+  retired,
+  retiredRegisteredAgain,
+  notInRegistry,
+  unavailable,
+];
+
+const render = (
+  walletList: WalletDelegationSummary[],
+  endedDelegations: Array<EndedDelegation> = []
+) => (
   <GovernanceShell activeTab={ROUTES.GOVERNANCE.DASHBOARD}>
     <GovernanceWallets
       wallets={walletList}
+      endedDelegations={endedDelegations}
       favoriteDRepIds={new Set<string>()}
       totalDRepStake={TOTAL_DREP_STAKE}
       onToggleFavorite={action('onToggleFavorite')}
@@ -103,6 +167,25 @@ storiesOf('Governance / Governance Center', module)
   ))
   .add('Every delegation state', () => render(wallets))
   .add('Nothing delegated yet', () =>
-    render(wallets.filter((w) => w.currentDRep == null))
+    render(wallets.filter((w) => w.state.kind === 'none'))
+  )
+  .add('Delegation ended: DRep retired', () => render([retired]))
+  .add('Delegation ended: DRep retired and registered again', () =>
+    render([retiredRegisteredAgain])
+  )
+  .add('DRep not in the registry', () => render([notInRegistry]))
+  .add('DRep data unavailable', () => render([unavailable]))
+  .add('Ended delegation notice', () =>
+    render(
+      [retired, retiredRegisteredAgain, notInRegistry],
+      [retired, retiredRegisteredAgain, notInRegistry].map(
+        ({ walletId, walletName, state }, index) => ({
+          walletId,
+          walletName,
+          state,
+          heldReward: new BigNumber(index === 0 ? 3754.573734 : 0),
+        })
+      )
+    )
   )
   .add('No wallets', () => render([]));

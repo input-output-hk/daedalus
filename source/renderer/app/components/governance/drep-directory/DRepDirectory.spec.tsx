@@ -124,6 +124,8 @@ const renderComponent = ({
   locale = 'en-US',
   onSelectForDelegation = jest.fn(),
   onViewDetails = jest.fn(),
+  onRefresh = jest.fn(),
+  onOpenDelegationForm = undefined as jest.Mock | undefined,
   syncProgress = 100,
 }: {
   suggestedDReps?: AppDRepDirectoryEntry[];
@@ -147,6 +149,8 @@ const renderComponent = ({
   locale?: string;
   onSelectForDelegation?: jest.Mock;
   onViewDetails?: jest.Mock;
+  onRefresh?: jest.Mock;
+  onOpenDelegationForm?: jest.Mock;
   syncProgress?: number | null;
 } = {}) => {
   const messages = locale === 'ja-JP' ? jaTranslations : translations;
@@ -177,7 +181,8 @@ const renderComponent = ({
           onCohortCriteriaChange={onCohortCriteriaChange}
           relaxedCohortCriteria={relaxedCohortCriteria}
           lastFetchedAt={Date.now() - 60_000}
-          onRefresh={jest.fn()}
+          onRefresh={onRefresh}
+          onOpenDelegationForm={onOpenDelegationForm}
           onSelectForDelegation={onSelectForDelegation}
           onViewDetails={onViewDetails}
           refreshState={refreshState}
@@ -286,6 +291,59 @@ describe('DRepDirectory', () => {
     expect(
       screen.getByText('Cardano node socket path is not available.')
     ).toBeInTheDocument();
+  });
+
+  describe('when the list does not return in time', () => {
+    const timeout = { message: '', type: 'TIMEOUT' };
+
+    it('says the delegation form does not need the list, with the time limit', () => {
+      renderComponent({
+        suggestedDReps: [],
+        error: timeout,
+        refreshState: GovernanceRefreshState.Failed,
+      });
+
+      expect(
+        screen.getByText(
+          /The wallet has not returned the DRep list after 30 seconds\./
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/The delegation form does not need the list\./)
+      ).toBeInTheDocument();
+    });
+
+    it('offers Retry, which refreshes, and a way to the delegation form', () => {
+      const onRefresh = jest.fn();
+      const onOpenDelegationForm = jest.fn();
+      renderComponent({
+        suggestedDReps: [],
+        error: timeout,
+        refreshState: GovernanceRefreshState.Failed,
+        onRefresh,
+        onOpenDelegationForm,
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+      expect(onRefresh).toHaveBeenCalledTimes(1);
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Open the delegation form' })
+      );
+      expect(onOpenDelegationForm).toHaveBeenCalledTimes(1);
+    });
+
+    it('offers no delegation form button for another failure', () => {
+      renderComponent({
+        suggestedDReps: [],
+        error: { message: 'Query failed.', type: 'QUERY_FAILED' },
+        refreshState: GovernanceRefreshState.Failed,
+        onOpenDelegationForm: jest.fn(),
+      });
+
+      expect(
+        screen.queryByRole('button', { name: 'Open the delegation form' })
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('renders the actionable error details in the blocking error state', () => {
@@ -1156,9 +1214,12 @@ describe('DRepDirectory', () => {
       // directory that must name what Abstain and No Confidence do. Every
       // other string stays clear of the labels so a DRep search can never
       // appear to have matched one of them.
+      // The timeout message is the other: it points to the delegation form,
+      // where those two are chosen without the list.
       const sentinelOwnCopy = [
         'governance.drepDirectory.abstain.description',
         'governance.drepDirectory.noConfidence.description',
+        'governance.drepDirectory.error.timeout',
       ];
 
       catalogs.forEach((catalog) => {

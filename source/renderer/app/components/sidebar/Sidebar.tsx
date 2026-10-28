@@ -22,6 +22,8 @@ type Props = {
   onActivateCategory: (...args: Array<any>) => any;
   onAddWallet: (...args: Array<any>) => any;
   isShelleyActivated: boolean;
+  // Whether a wallet's vote delegation ended and awaits a new one.
+  hasGovernanceNotification?: boolean;
 };
 
 const getCategoryContent = (categoryName: string, network) =>
@@ -39,6 +41,7 @@ function Sidebar({
   isShelleyActivated,
   onActivateCategory,
   network,
+  hasGovernanceNotification = false,
 }: Props) {
   const hasSubMenu = shouldShowWalletSubMenu({
     activeSidebarCategory,
@@ -63,6 +66,10 @@ function Sidebar({
               isActive={isActive}
               onClick={onActivateCategory}
               content={content}
+              hasNotification={
+                hasGovernanceNotification &&
+                category.name === CATEGORIES_BY_NAME.GOVERNANCE.name
+              }
             />
           );
         })}

@@ -149,6 +149,7 @@ function mountFlow(
       recentStakePools: [],
       maxDelegationFunds: new BigNumber(1000),
       getStakePoolById: () => pool,
+      acquireStakePools: () => () => undefined,
       isDelegationTransactionPending: false,
       _joinStakePool: unifiedJoin,
     },

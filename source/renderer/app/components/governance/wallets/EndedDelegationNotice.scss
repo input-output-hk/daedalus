@@ -1,0 +1,57 @@
+@import '../governanceConfig';
+
+.component {
+  @extend %contentBorderAndBackground;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 20px;
+  max-width: 720px;
+  padding: 20px;
+}
+
+.title {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 16px;
+  margin: 0;
+}
+
+.wallet {
+  border-top: 1px solid var(--theme-gov-content-border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+
+  &:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+
+.walletName {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 14px;
+}
+
+.description {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  margin-top: 4px;
+
+  button {
+    height: 36px;
+    line-height: 36px;
+    padding: 0 20px;
+    white-space: nowrap;
+    width: auto;
+  }
+}

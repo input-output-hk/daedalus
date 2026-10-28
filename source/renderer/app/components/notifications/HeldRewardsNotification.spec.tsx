@@ -15,7 +15,10 @@ import HeldRewardsNotification from './HeldRewardsNotification';
 
 const HELD_REWARD = new BigNumber('3754573734').dividedBy(1000000);
 
-const renderNotification = (onDelegate = jest.fn()) => {
+const renderNotification = (
+  onDelegate = jest.fn(),
+  isDelegationSubmitted = false
+) => {
   render(
     <IntlProvider locale="en-US" messages={translations}>
       <AnalyticsProvider tracker={noopAnalyticsTracker}>
@@ -27,6 +30,7 @@ const renderNotification = (onDelegate = jest.fn()) => {
                 <HeldRewardsNotification
                   heldReward={HELD_REWARD}
                   onDelegate={onDelegate}
+                  isDelegationSubmitted={isDelegationSubmitted}
                 />
               </div>
             </>
@@ -71,5 +75,17 @@ describe('HeldRewardsNotification', () => {
       screen.getByRole('button', { name: 'Delegate voting power' })
     );
     expect(onDelegate).toHaveBeenCalledTimes(1);
+  });
+
+  it('says the delegation was submitted and offers no button after one', () => {
+    renderNotification(jest.fn(), true);
+    const notification = screen.getByTestId('notification');
+    expect(notification).toHaveTextContent('Staking rewards on hold');
+    expect(notification).toHaveTextContent(
+      'The voting power delegation has been submitted. Once it is confirmed, 3,754.573734 ADA of staking rewards can be withdrawn.'
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Delegate voting power' })
+    ).not.toBeInTheDocument();
   });
 });

@@ -9,11 +9,22 @@
   display: flex;
   height: $sidebar-button-height;
   justify-content: center;
+  position: relative;
   width: 100%;
 
   &:hover {
     background-color: var(--theme-sidebar-category-background-color-hover);
   }
+}
+
+.notificationDot {
+  background: var(--theme-button-attention-background-color);
+  border-radius: 50%;
+  height: 8px;
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  width: 8px;
 }
 
 .active {

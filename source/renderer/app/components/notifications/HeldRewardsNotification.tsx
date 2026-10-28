@@ -7,7 +7,7 @@ import type BigNumber from 'bignumber.js';
 import styles from './HeldRewardsNotification.scss';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   title: {
     id: 'wallet.heldRewards.notification.title',
     defaultMessage: '!!!Staking rewards on hold',
@@ -21,6 +21,13 @@ const messages = defineMessages({
     description:
       'Body of that notification. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode',
   },
+  pendingDescription: {
+    id: 'wallet.heldRewards.notification.pendingDescription',
+    defaultMessage:
+      '!!!The voting power delegation has been submitted. Once it is confirmed, {rewardsAmount} of staking rewards can be withdrawn.',
+    description:
+      'Body of that notification after a delegation was submitted and before the ledger shows it. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode',
+  },
   delegateButton: {
     id: 'wallet.heldRewards.notification.delegateButton',
     defaultMessage: '!!!Delegate voting power',
@@ -32,6 +39,9 @@ const messages = defineMessages({
 type Props = {
   heldReward: BigNumber;
   onDelegate: (...args: Array<any>) => any;
+  // A delegation was submitted and the ledger does not show it yet: there is
+  // nothing left to ask for.
+  isDelegationSubmitted?: boolean;
 };
 
 @observer
@@ -42,26 +52,34 @@ class HeldRewardsNotification extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { heldReward, onDelegate } = this.props;
+    const {
+      heldReward,
+      onDelegate,
+      isDelegationSubmitted = false,
+    } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.title}>{intl.formatMessage(messages.title)}</div>
         <div className={styles.description}>
           <FormattedMessage
-            {...messages.description}
+            {...(isDelegationSubmitted
+              ? messages.pendingDescription
+              : messages.description)}
             values={{
               rewardsAmount: <DiscreetWalletAmount amount={heldReward} />,
             }}
           />
         </div>
-        <div className={styles.actions}>
-          <Button
-            className={styles.actionDelegate}
-            label={intl.formatMessage(messages.delegateButton)}
-            onClick={onDelegate}
-            skin={ButtonSkin}
-          />
-        </div>
+        {!isDelegationSubmitted && (
+          <div className={styles.actions}>
+            <Button
+              className={styles.actionDelegate}
+              label={intl.formatMessage(messages.delegateButton)}
+              onClick={onDelegate}
+              skin={ButtonSkin}
+            />
+          </div>
+        )}
       </div>
     );
   }

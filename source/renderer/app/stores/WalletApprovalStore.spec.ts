@@ -401,6 +401,28 @@ describe('WalletApprovalStore', () => {
     expect(store.current).toBeNull();
   });
 
+  it('clears a native result in place and leaves the route alone', async () => {
+    const store = createStore();
+    const pathname = store.stores.router.location.pathname;
+    const decision = store.receive({ type: 'present', request: nativeRequest });
+    store.approve();
+    await decision;
+    const terminal = store.receive({
+      type: 'terminal',
+      requestId: nativeRequest.requestId,
+      result: { status: 'rejected', errorCode: 'failed' },
+    });
+    await Promise.resolve();
+    expect(store.result).toBeDefined();
+
+    store.clearResultInPlace();
+
+    await expect(terminal).resolves.toBeUndefined();
+    expect(store.current).toBeNull();
+    expect(store.result).toBeUndefined();
+    expect(store.stores.router.location.pathname).toBe(pathname);
+  });
+
   it('routes a dismissed native receipt to its wallet history and releases teardown waits', async () => {
     const store = createStore();
     const decision = store.receive({ type: 'present', request: nativeRequest });

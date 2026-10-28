@@ -335,6 +335,19 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
         thrown && typeof thrown.id === 'string'
           ? thrown
           : apiErrorMessages.walletInternalError;
+      // These messages link to the delegation form. The registration's wallet
+      // need not be the active one, so the form is told which wallet to open
+      // with.
+      if (
+        error.id === apiErrorMessages.notEnoughFundsRewardsHeld.id ||
+        error.id ===
+          apiErrorMessages.notEnoughFundsRewardsHeldRegistration.id ||
+        error.id === apiErrorMessages.withdrawalNotPossibleWithoutVote.id
+      ) {
+        this.props.stores.governance.setDelegationNavState({
+          selectedWalletId: walletId,
+        });
+      }
       const errorHasLink = !!get(error, ['values', 'linkLabel']);
       const transactionFeeError = errorHasLink ? (
         <FormattedHTMLMessageWithLink

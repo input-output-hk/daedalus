@@ -1462,6 +1462,11 @@
         "id": "wallet.heldRewards.notification.description"
       },
       {
+        "defaultMessage": "!!!The voting power delegation has been submitted. Once it is confirmed, {rewardsAmount} of staking rewards can be withdrawn.",
+        "description": "Body of that notification after a delegation was submitted and before the ledger shows it. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
+        "id": "wallet.heldRewards.notification.pendingDescription"
+      },
+      {
         "defaultMessage": "!!!Delegate voting power",
         "description": "Button on that notification; opens the voting power delegation form with this wallet selected",
         "id": "wallet.heldRewards.notification.delegateButton"
@@ -4145,6 +4150,16 @@
         "defaultMessage": "!!!Select",
         "description": "CTA on the Abstain / No Confidence sentinel cards",
         "id": "governance.drepDirectory.sentinelCard.select"
+      },
+      {
+        "defaultMessage": "!!!The wallet has not returned the DRep list after {seconds} seconds. It may be busy with its stake pool data, which can take several minutes, and the list appears here once it answers. The delegation form does not need the list. There you can choose Abstain or No Confidence, or paste a DRep ID.",
+        "description": "Directory state when the list request times out. {seconds} is the time limit",
+        "id": "governance.drepDirectory.error.timeout"
+      },
+      {
+        "defaultMessage": "!!!Open the delegation form",
+        "description": "Button beside Retry in that state",
+        "id": "governance.drepDirectory.error.openDelegationForm"
       }
     ],
     "path": "source/renderer/app/components/governance/drep-directory/DRepDirectory.tsx"
@@ -4232,6 +4247,16 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Voting power no longer delegated",
+        "description": "Title of the notice listing wallets whose vote delegation ended",
+        "id": "governance.dashboard.endedDelegation.title"
+      }
+    ],
+    "path": "source/renderer/app/components/governance/wallets/EndedDelegationNotice.tsx"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Delegated to",
         "description": "Column heading for the current governance delegation",
         "id": "governance.dashboard.column.delegatedTo"
@@ -4255,6 +4280,31 @@
         "defaultMessage": "!!!Cardano Governance",
         "description": "Text of the intro link out to the governance documentation",
         "id": "voting.governance.paragraph1LinkText"
+      },
+      {
+        "defaultMessage": "!!!Last delegated to",
+        "description": "Wallets table, under \"Not delegated\", before the DRep ID of a delegation that ended",
+        "id": "governance.dashboard.target.lastDelegatedTo"
+      },
+      {
+        "defaultMessage": "!!!DRep retired",
+        "description": "Status column: the wallet's DRep retired, which ended its delegation",
+        "id": "governance.dashboard.status.retired"
+      },
+      {
+        "defaultMessage": "!!!DRep retired and registered again",
+        "description": "Status column: the wallet's DRep retired and registered again; the delegation was not restored",
+        "id": "governance.dashboard.status.retiredRegisteredAgain"
+      },
+      {
+        "defaultMessage": "!!!Not in the DRep registry",
+        "description": "Status column: the wallet's DRep is not in the wallet's DRep registry, on a build that cannot read the ledger's delegation",
+        "id": "governance.dashboard.status.notInRegistry"
+      },
+      {
+        "defaultMessage": "!!!DRep data unavailable",
+        "description": "Status column: the lookup of the wallet's DRep failed",
+        "id": "governance.dashboard.status.unavailable"
       },
       {
         "defaultMessage": "!!!Create or restore a wallet to participate in Cardano governance.",
@@ -7227,9 +7277,34 @@
         "id": "voting.governance.currentVote.headerCurrent"
       },
       {
-        "defaultMessage": "!!!Could not load this DRep's data. It may have retired.",
-        "description": "Neutral caption shown when the DRep directory has no record for the delegated DRep yet",
-        "id": "voting.governance.currentVote.status.unavailable"
+        "defaultMessage": "!!!Voting power not delegated",
+        "description": "Heading of the current-delegation panel when the delegation ended",
+        "id": "voting.governance.currentVote.headerEnded"
+      },
+      {
+        "defaultMessage": "!!!This wallet last delegated its voting power to this DRep. The DRep retired, which ended the delegation.",
+        "description": "Panel and notice text when the wallet's DRep retired",
+        "id": "voting.governance.currentVote.endedRetired"
+      },
+      {
+        "defaultMessage": "!!!This wallet last delegated its voting power to this DRep. The DRep retired, which ended the delegation, and has since registered again. A new registration does not restore earlier delegations.",
+        "description": "Panel and notice text when the wallet's DRep retired and registered again",
+        "id": "voting.governance.currentVote.endedRetiredRegisteredAgain"
+      },
+      {
+        "defaultMessage": "!!!{rewardsAmount} of staking rewards cannot be withdrawn until the voting power is delegated to any DRep, Abstain or No Confidence.",
+        "description": "Added when the wallet holds rewards. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
+        "id": "voting.governance.currentVote.heldRewards"
+      },
+      {
+        "defaultMessage": "!!!This DRep is not in the wallet's DRep registry.",
+        "description": "Panel and notice text when the lookup of the wallet's DRep answered not found, on a build that cannot read the ledger's delegation",
+        "id": "voting.governance.currentVote.notInRegistry"
+      },
+      {
+        "defaultMessage": "!!!Could not load this DRep's data.",
+        "description": "Panel text when the lookup of the wallet's DRep failed",
+        "id": "voting.governance.currentVote.status.lookupFailed"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/CurrentDRepSummary.messages.ts"
@@ -7265,6 +7340,26 @@
         "defaultMessage": "!!!Browse DReps",
         "description": "Button that opens the DRep directory to pick a DRep",
         "id": "voting.governance.browseDRepsButton"
+      },
+      {
+        "defaultMessage": "!!!Choose Abstain, No Confidence or a DRep. Find a DRep in the Directory, or paste its ID.",
+        "description": "Shown on the delegation form before anything is chosen",
+        "id": "voting.governance.chooseDelegation.prompt"
+      },
+      {
+        "defaultMessage": "!!!Paste a DRep ID",
+        "description": "Label and placeholder of the DRep ID field",
+        "id": "voting.governance.pasteDRepId.placeholder"
+      },
+      {
+        "defaultMessage": "!!!This is not a valid DRep ID.",
+        "description": "Shown under the field when the pasted value is not a DRep ID",
+        "id": "voting.governance.pasteDRepId.invalid"
+      },
+      {
+        "defaultMessage": "!!!Use this DRep ID",
+        "description": "Button that makes the pasted ID the choice",
+        "id": "voting.governance.pasteDRepId.use"
       }
     ],
     "path": "source/renderer/app/components/voting/voting-governance/VotingPowerDelegation.messages.ts"

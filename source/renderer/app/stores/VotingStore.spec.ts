@@ -1,5 +1,6 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
+import { observable, runInAction } from 'mobx';
 import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
@@ -118,9 +119,16 @@ const buildAnalytics = () => ({
   sendPageNavigationEvent: jest.fn(),
 });
 
+// The vote path asks the stake pool list for nothing: reading it throws.
+const noStakePools = () => ({
+  get stakePools(): never {
+    throw new Error('the vote path read the stake pool list');
+  },
+});
+
 const buildHardwareWallets = (overrides: Record<string, unknown> = {}) => ({
-  selectDelegationCoins: jest.fn(async () => ({
-    certificates: [],
+  selectVoteCoins: jest.fn(async () => ({
+    coinSelection: { certificates: [] },
     fee: new BigNumber('0.180989'),
   })),
   updateTxSignRequest: jest.fn(),
@@ -140,7 +148,7 @@ const buildStore = (
   const store = new VotingStore(api as any, {} as any, analytics as any);
   store.configure({
     hardwareWallets,
-    staking: { stakePools: [{ id: 'pool-1' }] },
+    staking: noStakePools(),
   } as any);
   return { analytics, api, store };
 };
@@ -359,7 +367,7 @@ describe('upstream governance store dispatch', () => {
     }
   );
 
-  it('uses legacy certificate selection and hardware submission without exact approval', async () => {
+  it('prepares a hardware vote with a vote-only construct and submits it through the proxy', async () => {
     const hardwareWallets = buildHardwareWallets();
     const { store } = buildStore(hardwareWallets);
     await expect(
@@ -368,17 +376,14 @@ describe('upstream governance store dispatch', () => {
         wallet: hwWallet,
       })
     ).resolves.toEqual({ success: true, fees: new BigNumber('0.180989') });
-    expect(hardwareWallets.updateTxSignRequest).toHaveBeenCalledWith(
-      expect.objectContaining({
-        certificates: [
-          {
-            certificateType: 'cast_vote',
-            rewardAccountPath: REWARD_ACCOUNT_PATH,
-            vote: CIP129_KEY,
-          },
-        ],
-      })
-    );
+    expect(hardwareWallets.selectVoteCoins).toHaveBeenCalledWith({
+      walletId: hwWallet.id,
+      vote: CIP129_KEY,
+    });
+    expect(hardwareWallets.initiateTransaction).toHaveBeenCalledWith({
+      walletId: hwWallet.id,
+    });
+    expect(hardwareWallets.updateTxSignRequest).not.toHaveBeenCalled();
     await expect(
       store.delegateVotes({
         chosenOption: CIP129_KEY,
@@ -392,6 +397,34 @@ describe('upstream governance store dispatch', () => {
     expect(
       hardwareWallets.submitConstructedNativeTransaction
     ).not.toHaveBeenCalled();
+  });
+
+  it('prices a software vote with a vote-only construct and no stake pool or join selection', async () => {
+    const constructTransaction = jest
+      .fn()
+      .mockResolvedValue({ fee: new BigNumber('0.173245') });
+    const selectCoins = jest.fn();
+    const api = { ada: { constructTransaction, selectCoins } };
+    const store = new VotingStore(
+      api as unknown as Api,
+      {} as ActionsMap,
+      noopAnalyticsTracker
+    );
+    store.configure({
+      hardwareWallets: {},
+      staking: noStakePools(),
+    } as unknown as Parameters<VotingStore['configure']>[0]);
+    await expect(
+      store.initializeVPDelegationTx({
+        chosenOption: 'abstain',
+        wallet: softwareWallet,
+      })
+    ).resolves.toEqual({ success: true, fees: new BigNumber('0.173245') });
+    expect(constructTransaction).toHaveBeenCalledWith({
+      walletId: softwareWallet.id,
+      data: { encoding: 'base16', vote: 'abstain' },
+    });
+    expect(selectCoins).not.toHaveBeenCalled();
   });
 });
 
@@ -435,8 +468,8 @@ describe('vote error codes from recorded wallet answers', () => {
   describe('initializeVPDelegationTx on the mainnet build', () => {
     const run = async (error: unknown, wallet: any) => {
       global.cip30Enabled = false;
-      const selectCoins = jest.fn().mockRejectedValue(error);
-      const api = { ada: { selectCoins } };
+      const constructTransaction = jest.fn().mockRejectedValue(error);
+      const api = { ada: { constructTransaction } };
       const store = new VotingStore(
         api as any,
         {} as any,
@@ -444,7 +477,7 @@ describe('vote error codes from recorded wallet answers', () => {
       );
       store.configure({
         hardwareWallets: {},
-        staking: { stakePools: [{ id: 'pool-1' }] },
+        staking: noStakePools(),
       } as any);
       return store.initializeVPDelegationTx({
         chosenOption: 'abstain',
@@ -456,7 +489,7 @@ describe('vote error codes from recorded wallet answers', () => {
       const wallet = lockedWallet();
       expect(wallet.hasFundsHeldByPendingTransaction).toBe(true);
       await expect(
-        run(answer('upstream', 'vote-fee-funds-held'), wallet)
+        run(answer('upstream', 'vote-construct-funds-held'), wallet)
       ).resolves.toEqual({ success: false, errorCode: 'pending_transaction' });
     });
 
@@ -464,8 +497,20 @@ describe('vote error codes from recorded wallet answers', () => {
       const wallet = freeWallet();
       expect(wallet.hasFundsHeldByPendingTransaction).toBe(false);
       await expect(
-        run(answer('upstream', 'vote-fee-funds-held'), wallet)
+        run(answer('upstream', 'vote-construct-funds-held'), wallet)
       ).resolves.toEqual({ success: false, errorCode: 'no_utxos_available' });
+    });
+
+    it('gives same_vote when the pinned wallet already records the vote for a DRep that registered again', async () => {
+      await expect(
+        run(answer('upstream', 'vote-construct-reregistered'), freeWallet())
+      ).resolves.toEqual({ success: false, errorCode: 'same_vote' });
+    });
+
+    it('gives not_found when the wallet registry does not hold the DRep', async () => {
+      await expect(
+        run(answer('ledger-vote', 'vote-construct-retired'), freeWallet())
+      ).resolves.toEqual({ success: false, errorCode: 'not_found' });
     });
   });
 
@@ -607,5 +652,94 @@ describe('vote error codes from recorded wallet answers', () => {
         ).resolves.toEqual({ success: false, errorCode: expected });
       }
     );
+  });
+});
+
+describe('delegations submitted for rewards held back', () => {
+  const originalCapability = global.cip30Enabled;
+  beforeEach(() => {
+    global.cip30Enabled = true;
+  });
+  afterEach(() => {
+    global.cip30Enabled = originalCapability;
+  });
+
+  const build = (ledgerVote: { status: string }) => {
+    const wallet: any = observable({
+      id: 'sw-wallet-1',
+      isHardwareWallet: false,
+      ledgerVote,
+    });
+    const recent = observable({
+      transactions: [] as Array<{ id: string; state: string }>,
+    });
+    const api = { ada: {} };
+    const store = new VotingStore(
+      api as unknown as Api,
+      {} as ActionsMap,
+      noopAnalyticsTracker
+    );
+    store.configure({
+      wallets: {
+        getWalletById: () => wallet,
+        submitConstructedNativeTransaction: jest
+          .fn()
+          .mockResolvedValue({ id: 'vote-tx' }),
+      },
+      transactions: {
+        _getTransactionsRecentRequest: () => ({ result: recent }),
+      },
+    } as unknown as Parameters<VotingStore['configure']>[0]);
+    return { store, wallet, recent };
+  };
+
+  it('records a submitted delegation for a wallet the ledger holds none for', async () => {
+    const { store, wallet } = build({ status: 'not_delegated' });
+    await store.delegateVotes({ chosenOption: 'abstain', wallet });
+    expect(store.hasSubmittedVoteDelegation(wallet.id)).toBe(true);
+  });
+
+  it.each([['delegated'], ['unknown']])(
+    'records nothing for a wallet whose ledger delegation is %s',
+    async (status) => {
+      const { store, wallet } = build({ status });
+      await store.delegateVotes({ chosenOption: 'abstain', wallet });
+      expect(store.hasSubmittedVoteDelegation(wallet.id)).toBe(false);
+    }
+  );
+
+  it('forgets the delegation once the ledger shows one', async () => {
+    const { store, wallet } = build({ status: 'not_delegated' });
+    await store.delegateVotes({ chosenOption: 'abstain', wallet });
+    store._clearSubmittedVoteDelegations();
+    expect(store.hasSubmittedVoteDelegation(wallet.id)).toBe(true);
+    runInAction(() => {
+      wallet.ledgerVote = { status: 'delegated' };
+    });
+    store._clearSubmittedVoteDelegations();
+    expect(store.hasSubmittedVoteDelegation(wallet.id)).toBe(false);
+  });
+
+  it.each(['failed', 'expired'])(
+    'forgets the delegation when its transaction %s',
+    async (state) => {
+      const { store, wallet, recent } = build({ status: 'not_delegated' });
+      await store.delegateVotes({ chosenOption: 'abstain', wallet });
+      runInAction(() => {
+        recent.transactions.push({ id: 'vote-tx', state });
+      });
+      store._clearSubmittedVoteDelegations();
+      expect(store.hasSubmittedVoteDelegation(wallet.id)).toBe(false);
+    }
+  );
+
+  it('keeps the delegation while its transaction is pending', async () => {
+    const { store, wallet, recent } = build({ status: 'not_delegated' });
+    await store.delegateVotes({ chosenOption: 'abstain', wallet });
+    runInAction(() => {
+      recent.transactions.push({ id: 'vote-tx', state: 'pending' });
+    });
+    store._clearSubmittedVoteDelegations();
+    expect(store.hasSubmittedVoteDelegation(wallet.id)).toBe(true);
   });
 });

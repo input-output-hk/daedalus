@@ -268,6 +268,7 @@ JEST_SPECS=(
   tests/jest/api/paymentWithdrawalBody.spec.ts
   tests/jest/api/withdrawalRefusalMessages.spec.ts
   tests/jest/governance/retiredDRep.spec.ts
+  tests/jest/governance/remedyPreparation.spec.ts
   source/renderer/app/domains/ApiError.spec.ts
 )
 

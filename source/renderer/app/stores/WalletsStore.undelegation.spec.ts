@@ -4,6 +4,7 @@ import WalletsStore from './WalletsStore';
 import type { UndelegationVoteStep } from './WalletsStore';
 import type Wallet from '../domains/Wallet';
 import type { LedgerVoteDelegation } from '../api/wallets/types';
+import VotingStore from './VotingStore';
 
 const deepStub: any = new Proxy(() => undefined, {
   get: () => deepStub,
@@ -273,5 +274,37 @@ describe('WalletsStore undelegation vote step', () => {
     await store.prepareUndelegationVote('wallet-a');
     expect(voting.initializeVPDelegationTx).toHaveBeenCalledTimes(1);
     expect(store.undelegationVoteStepFor('wallet-a')).toEqual(before);
+  });
+
+  it('prepares step 1 with the real vote preparation and no stake pool list', async () => {
+    global.cip30Enabled = false;
+    const { store, wallet } = create();
+    const constructTransaction = jest
+      .fn()
+      .mockResolvedValue({ fee: new BigNumber('0.17') });
+    const voting = new VotingStore(
+      { ada: { constructTransaction } } as any,
+      deepStub,
+      deepStub
+    );
+    const stakePoolList = () => {
+      throw new Error('step 1 read the stake pool list');
+    };
+    voting.configure({
+      hardwareWallets: {},
+      staking: Object.defineProperty({}, 'stakePools', { get: stakePoolList }),
+    } as any);
+    store.stores.voting = voting;
+
+    await store.prepareUndelegationVote('wallet-a');
+
+    expect(constructTransaction).toHaveBeenCalledWith({
+      walletId: wallet.id,
+      data: { encoding: 'base16', vote: 'abstain' },
+    });
+    expect(store.undelegationVoteStepFor('wallet-a')).toEqual({
+      status: 'ready',
+      fee: new BigNumber('0.17'),
+    });
   });
 });

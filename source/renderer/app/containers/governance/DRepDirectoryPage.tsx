@@ -12,6 +12,10 @@ import type { StoresMap } from '../../stores';
 import { ROUTES } from '../../routes-config';
 import { pickDelegationFormReturnState } from './delegationFormState';
 import { isSameDRep } from '../../utils/governance/isSameDRep';
+import {
+  effectiveCurrentVote,
+  voteDelegationState,
+} from '../../utils/governance/voteDelegationState';
 
 interface Props extends RouteComponentProps {
   stores?: StoresMap;
@@ -76,6 +80,17 @@ class DRepDirectoryPage extends React.Component<Props> {
     this.props.history.push(inherited?.from ?? ROUTES.GOVERNANCE.DELEGATE);
   };
 
+  // For a list the wallet has not returned: the form needs no list.
+  handleOpenDelegationForm = () => {
+    const governanceStore = this.props.stores?.governance;
+    governanceStore?.setDelegationNavState({
+      selectedWalletId:
+        governanceStore.delegationNavState?.selectedWalletId ?? null,
+      voteType: 'drep',
+    });
+    this.props.history.push(ROUTES.GOVERNANCE.DELEGATE);
+  };
+
   handleViewDetails = (drepId: string) => {
     this.props.history.push(`${ROUTES.GOVERNANCE.DREPS}/${drepId}`);
   };
@@ -101,7 +116,16 @@ class DRepDirectoryPage extends React.Component<Props> {
       ? (stores?.wallets?.allWallets?.find((w) => w.id === selectedWalletId) ??
         null)
       : null;
-    const currentDRep = selectedWallet?.currentDRep ?? null;
+    // The ledger's delegation, not the wallet's history: after a DRep retires
+    // the history still names it, and a DRep that registered again must be
+    // choosable.
+    const currentDRep = selectedWallet
+      ? effectiveCurrentVote(
+          voteDelegationState(selectedWallet, (id) =>
+            governanceStore.drepLookup(id)
+          )
+        )
+      : null;
     const isCurrentDRep =
       currentDRep?.kind === 'drep'
         ? (entry: { drepId: string }) => isSameDRep(entry.drepId, currentDRep)
@@ -143,6 +167,7 @@ class DRepDirectoryPage extends React.Component<Props> {
         isCurrentDRep={isCurrentDRep}
         canDelegate={canDelegate}
         onSelectForDelegation={this.handleSelectForDelegation}
+        onOpenDelegationForm={this.handleOpenDelegationForm}
         onViewDetails={this.handleViewDetails}
       />
     );

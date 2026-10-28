@@ -1,5 +1,6 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
+import { bech32 } from 'bech32';
 import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
@@ -13,9 +14,16 @@ import VotingPowerDelegation from './VotingPowerDelegation';
 import { BrowserLocalStorageBridge } from '../../../features/local-storage';
 import { DiscreetModeFeatureProvider } from '../../../features/discreet-mode';
 import Wallet, { WalletSyncStateStatuses } from '../../../domains/Wallet';
+import { normalizeDRepIdentity } from '../../../utils/governance/normalizeDRepIdentity';
 
-const buildWallet = (id: string, name: string, isLegacy: boolean): Wallet =>
+const buildWallet = (
+  id: string,
+  name: string,
+  isLegacy: boolean,
+  vote: Partial<Pick<Wallet, 'votingTarget' | 'ledgerVote'>> = {}
+): Wallet =>
   new Wallet({
+    ...vote,
     id,
     name,
     isLegacy,
@@ -43,7 +51,8 @@ const renderForm = (
   onCancel: () => void = () => undefined,
   submitTransaction: React.ComponentProps<
     typeof VotingPowerDelegation
-  >['submitTransaction'] = async () => ({ success: true })
+  >['submitTransaction'] = async () => ({ success: true }),
+  onFetchDRep?: jest.Mock
 ) =>
   render(
     <ThemeProvider
@@ -69,6 +78,7 @@ const renderForm = (
               }
               getStakePoolById={() => null}
               submitTransaction={submitTransaction}
+              onFetchDRep={onFetchDRep}
               onBrowseDRepsClick={() => undefined}
               onCancel={onCancel}
               onExternalLinkClick={() => undefined}
@@ -164,6 +174,154 @@ describe('VotingPowerDelegation', () => {
         'Your stake is recorded on chain as not participating in governance.'
       )
     ).not.toBeInTheDocument();
+  });
+
+  describe('without the Directory', () => {
+    const typeId = (value: string) =>
+      fireEvent.change(screen.getByPlaceholderText('Paste a DRep ID'), {
+        target: { value },
+      });
+
+    it('offers Abstain, No Confidence, a DRep ID field and Browse DReps before anything is chosen', () => {
+      renderForm([SHELLEY], 'shelley-1');
+
+      expect(
+        screen.getByText(/Choose Abstain, No Confidence or a DRep\./)
+      ).toBeInTheDocument();
+      expect(screen.getByText('Abstain')).toBeInTheDocument();
+      expect(screen.getByText('No Confidence')).toBeInTheDocument();
+      expect(screen.getAllByRole('button', { name: 'Select' })).toHaveLength(2);
+      expect(
+        screen.getByPlaceholderText('Paste a DRep ID')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Browse DReps' })
+      ).toBeInTheDocument();
+    });
+
+    it('makes Abstain the choice, and Change returns to the choices', () => {
+      renderForm([SHELLEY], 'shelley-1');
+
+      fireEvent.click(screen.getAllByRole('button', { name: 'Select' })[0]);
+      expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
+      expect(
+        screen.queryByText(/Choose Abstain, No Confidence or a DRep\./)
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Change' }));
+      expect(
+        screen.getByText(/Choose Abstain, No Confidence or a DRep\./)
+      ).toBeInTheDocument();
+    });
+
+    it('makes a pasted DRep ID the choice in its CIP-129 form', () => {
+      renderForm([SHELLEY], 'shelley-1');
+      // The earlier encoding: the 28 credential bytes under the `drep` prefix.
+      const legacy = bech32.encode(
+        'drep',
+        bech32.toWords(
+          Buffer.from(
+            normalizeDRepIdentity(
+              'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras'
+            )!.credentialHex!,
+            'hex'
+          )
+        )
+      );
+
+      typeId(`  ${legacy}  `);
+      fireEvent.click(screen.getByRole('button', { name: 'Use this DRep ID' }));
+
+      expect(
+        screen.getByLabelText(
+          'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras'
+        )
+      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
+    });
+
+    it('looks nothing up for Abstain or No Confidence', () => {
+      const onFetchDRep = jest.fn().mockResolvedValue(null);
+      renderForm(
+        [SHELLEY],
+        'shelley-1',
+        undefined,
+        undefined,
+        undefined,
+        onFetchDRep
+      );
+
+      fireEvent.click(screen.getAllByRole('button', { name: 'Select' })[0]);
+      fireEvent.click(screen.getByRole('button', { name: 'Change' }));
+      fireEvent.click(screen.getAllByRole('button', { name: 'Select' })[1]);
+
+      expect(onFetchDRep).not.toHaveBeenCalled();
+    });
+
+    it('refuses a pasted value that is not a DRep ID', () => {
+      renderForm([SHELLEY], 'shelley-1');
+
+      typeId('drep1notanid');
+      fireEvent.click(screen.getByRole('button', { name: 'Use this DRep ID' }));
+
+      expect(
+        screen.getByText('This is not a valid DRep ID.')
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Submit' })
+      ).not.toBeInTheDocument();
+    });
+
+    describe('with the cip30 submission path', () => {
+      const originalCapability = global.cip30Enabled;
+      beforeEach(() => {
+        global.cip30Enabled = true;
+      });
+      afterEach(() => {
+        global.cip30Enabled = originalCapability;
+      });
+
+      it('submits a choice while no lookup has answered', () => {
+        const submit = jest.fn(async () => ({ success: true as const }));
+        renderForm([SHELLEY], 'shelley-1', undefined, undefined, submit);
+
+        fireEvent.click(screen.getAllByRole('button', { name: 'Select' })[1]);
+        fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+
+        expect(submit).toHaveBeenCalledWith({
+          chosenOption: 'no_confidence',
+          wallet: SHELLEY,
+        });
+      });
+    });
+  });
+
+  describe('when the DRep of the wallet retired', () => {
+    const DREP_ID =
+      'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras';
+    const drep = normalizeDRepIdentity(DREP_ID)!;
+    const voting = { kind: 'drep' as const, drep, source: 'ledger' as const };
+    const submit = () => screen.getByRole('button', { name: 'Submit' });
+
+    it('lets the wallet delegate back to the DRep once the ledger holds no delegation', () => {
+      const ended = buildWallet('shelley-1', 'Shelley wallet', false, {
+        votingTarget: voting,
+        ledgerVote: { status: 'not_delegated' },
+      });
+      renderForm([ended], 'shelley-1', DREP_ID);
+
+      expect(submit()).toBeEnabled();
+    });
+
+    it('refuses to delegate to the DRep the ledger already delegates to', () => {
+      const delegated = buildWallet('shelley-1', 'Shelley wallet', false, {
+        votingTarget: voting,
+        ledgerVote: { status: 'delegated', voting },
+      });
+      renderForm([delegated], 'shelley-1', DREP_ID);
+
+      expect(submit()).toBeDisabled();
+    });
   });
 
   describe('when the wallet refuses the delegation', () => {

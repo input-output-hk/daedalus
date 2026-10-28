@@ -1,52 +1,77 @@
 import React from 'react';
-import { injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import type BigNumber from 'bignumber.js';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
 import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
-import type { DRepDelegation } from '../../../api/wallets/types';
-import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import { DiscreetWalletAmount } from '../../../features/discreet-mode';
+import type {
+  DRepLookup,
+  VoteDelegationState,
+} from '../../../utils/governance/voteDelegationState';
 import { messages } from './CurrentDRepSummary.messages';
 import { sharedGovernanceMessages } from './shared-messages';
 import styles from './CurrentVoteSummary.scss';
 import { governanceSharedMessages } from '../../governance/_shared/governanceSharedMessages';
 
 type Props = {
-  currentDRep: DRepDelegation | null;
-  drepEntry?: AppDRepDirectoryEntry | null;
-  // Whether the lookup for this DRep is still outstanding. Without it, a DRep
-  // that has retired and one whose data has not arrived yet are the same
-  // absence, and the panel called both of them loading: a wallet delegated to
-  // a retired DRep said "loading" for as long as it was open.
-  isLookingUpDRep?: boolean;
+  state: VoteDelegationState;
+  // The lookup of the DRep the state names. A lookup that has not answered is
+  // loading; one that answered not found or failed says so, so a DRep that
+  // retired and one whose data has not arrived are never the same absence.
+  lookup?: DRepLookup;
+  // The reward balance the ledger holds back while there is no delegation.
+  heldReward?: BigNumber | null;
   intl: intlShape.isRequired;
 };
 
-// Whether the DRep's directory entry arrived, and nothing more. Classifying
-// how close that DRep is to inactive belongs to the badge, which does it for
-// the directory and the detail view too; deriving it a second time here is
-// how the two screens came to disagree about the same DRep on the same day.
-
-type CurrentVoteLookupState = 'loading' | 'unavailable' | 'resolved';
-
-function deriveLookupState(
-  drepEntry: AppDRepDirectoryEntry | null | undefined,
-  isLookingUpDRep: boolean
-): CurrentVoteLookupState {
-  if (drepEntry != null) return 'resolved';
-  return isLookingUpDRep ? 'loading' : 'unavailable';
-}
-
 function CurrentDRepSummary({
-  currentDRep,
-  drepEntry,
-  isLookingUpDRep = false,
+  state,
+  lookup = { status: 'idle' },
+  heldReward = null,
   intl,
 }: Props) {
-  if (currentDRep == null) {
+  if (state.kind === 'none') {
     return null;
   }
 
+  if (state.kind === 'ended' || state.kind === 'not_in_registry') {
+    const ended = state.kind === 'ended';
+    const hasHeldReward = ended && heldReward != null && heldReward.gt(0);
+    let text = messages.notInRegistry;
+    if (ended) {
+      text = state.registeredAgain
+        ? messages.endedRetiredRegisteredAgain
+        : messages.endedRetired;
+    }
+    const header = ended ? messages.headerEnded : messages.headerCurrent;
+    return (
+      <section
+        className={styles.component}
+        aria-label={intl.formatMessage(header)}
+      >
+        <h3 className={styles.header}>{intl.formatMessage(header)}</h3>
+        <div className={styles.idRow}>
+          <DRepIdDisplay drepId={state.drep.raw} />
+        </div>
+        <p className={styles.caption}>{intl.formatMessage(text)}</p>
+        {hasHeldReward && (
+          <p className={styles.caption}>
+            <FormattedMessage
+              {...messages.heldRewards}
+              values={{
+                rewardsAmount: <DiscreetWalletAmount amount={heldReward} />,
+              }}
+            />
+          </p>
+        )}
+      </section>
+    );
+  }
+
+  const currentDRep = state.voting;
+  const drepEntry = lookup.status === 'found' ? lookup.entry : null;
+
   if (currentDRep.kind === 'drep') {
-    const lookupState = deriveLookupState(drepEntry, isLookingUpDRep);
     return (
       <section
         className={styles.component}
@@ -85,12 +110,12 @@ function CurrentDRepSummary({
             redelegating tells them to do what they are already doing. What is
             left is the case the badge cannot show, because there is no entry
             to draw one from. */}
-        {lookupState !== 'resolved' && (
+        {drepEntry == null && (
           <p className={styles.caption}>
             {intl.formatMessage(
-              lookupState === 'loading'
+              lookup.status === 'idle' || lookup.status === 'pending'
                 ? governanceSharedMessages.loadingDRepData
-                : messages.statusUnavailable
+                : messages.lookupFailed
             )}
           </p>
         )}

@@ -5,12 +5,15 @@ import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import { cleanup, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import BigNumber from 'bignumber.js';
 import translations from '../../../i18n/locales/en-US.json';
 import { daedalusTheme } from '../../../themes/daedalus';
 import { themeOverrides } from '../../../themes/overrides';
 import CurrentDRepSummary from './CurrentDRepSummary';
 import type { DRepDelegation } from '../../../api/wallets/types';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import { BrowserLocalStorageBridge } from '../../../features/local-storage';
+import { DiscreetModeFeatureProvider } from '../../../features/discreet-mode';
 
 const KEY_CIP129 = 'drep1y2sm9s75uhmqwxpf8f94cmt737g2rvkr6njlvpcc9yaykhq23nmjy';
 const KEY_CIP105 =
@@ -38,10 +41,7 @@ const ACTIVE_ENTRY: AppDRepDirectoryEntry = {
   doNotList: false,
 };
 
-const renderSummary = (
-  currentDRep: DRepDelegation | null,
-  drepEntry?: AppDRepDirectoryEntry | null
-) =>
+const renderState = (props: React.ComponentProps<typeof CurrentDRepSummary>) =>
   render(
     <ThemeProvider
       theme={daedalusTheme}
@@ -50,10 +50,30 @@ const renderSummary = (
       themeOverrides={themeOverrides}
     >
       <IntlProvider locale="en-US" messages={translations}>
-        <CurrentDRepSummary currentDRep={currentDRep} drepEntry={drepEntry} />
+        <BrowserLocalStorageBridge>
+          <DiscreetModeFeatureProvider>
+            <CurrentDRepSummary {...props} />
+          </DiscreetModeFeatureProvider>
+        </BrowserLocalStorageBridge>
       </IntlProvider>
     </ThemeProvider>
   );
+
+// A delegation the ledger holds, with the lookup of its DRep as given: an
+// entry that arrived, or none after the lookup failed.
+const renderSummary = (
+  currentDRep: DRepDelegation | null,
+  drepEntry?: AppDRepDirectoryEntry | null
+) =>
+  renderState({
+    state:
+      currentDRep == null
+        ? { kind: 'none' }
+        : { kind: 'current', voting: currentDRep, source: 'ledger' },
+    lookup: drepEntry
+      ? { status: 'found', entry: drepEntry }
+      : { status: 'failed' },
+  });
 
 describe('CurrentDRepSummary core states', () => {
   afterEach(cleanup);
@@ -68,7 +88,7 @@ describe('CurrentDRepSummary core states', () => {
     // DRepIdDisplay truncates the visible text but exposes the full raw id.
     expect(screen.getByLabelText(KEY_CIP129)).toBeInTheDocument();
     expect(
-      screen.getByText("Could not load this DRep's data. It may have retired.")
+      screen.getByText("Could not load this DRep's data.")
     ).toBeInTheDocument();
     expect(screen.queryByText('Active')).not.toBeInTheDocument();
     expect(screen.queryByText('Inactive')).not.toBeInTheDocument();
@@ -168,5 +188,64 @@ describe('CurrentDRepSummary DRep status badge', () => {
     expect(
       screen.queryByText(/lapse in|currently inactive|status is loading/)
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('CurrentDRepSummary after the delegation ended', () => {
+  afterEach(cleanup);
+
+  const ended = (registeredAgain: boolean) =>
+    ({ kind: 'ended', drep: DREP_VOTE.drep, registeredAgain }) as const;
+
+  it('names the DRep and says the retirement ended the delegation', () => {
+    renderState({
+      state: ended(false),
+      lookup: { status: 'not_found' },
+      heldReward: new BigNumber(0),
+    });
+    expect(screen.getByText('Voting power not delegated')).toBeInTheDocument();
+    expect(screen.getByLabelText(KEY_CIP129)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'This wallet last delegated its voting power to this DRep. The DRep retired, which ended the delegation.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/staking rewards/)).not.toBeInTheDocument();
+  });
+
+  it('says a new registration does not restore the delegation', () => {
+    renderState({
+      state: ended(true),
+      lookup: { status: 'found', entry: ACTIVE_ENTRY },
+    });
+    expect(
+      screen.getByText(
+        /has since registered again\. A new registration does not restore earlier delegations\./
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('adds the held reward when the wallet holds one', () => {
+    renderState({
+      state: ended(false),
+      lookup: { status: 'idle' },
+      heldReward: new BigNumber(12.5),
+    });
+    expect(
+      screen.getByText(
+        /of staking rewards cannot be withdrawn until the voting power is delegated to any DRep, Abstain or No Confidence\./
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('says the wallet registry does not hold a DRep it cannot find', () => {
+    renderState({
+      state: { kind: 'not_in_registry', drep: DREP_VOTE.drep },
+      lookup: { status: 'not_found' },
+    });
+    expect(screen.getByText('Currently Delegated To')).toBeInTheDocument();
+    expect(
+      screen.getByText("This DRep is not in the wallet's DRep registry.")
+    ).toBeInTheDocument();
   });
 });

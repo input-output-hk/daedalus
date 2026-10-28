@@ -1605,6 +1605,50 @@ export default class HardwareWalletsStore extends Store {
       throw e;
     }
   };
+  // The vote-only transaction a hardware wallet signs to delegate its voting
+  // power: the wallet constructs it, and its coin selection (inputs, change and
+  // the vote certificate, with the stake key's registration when it is not
+  // registered yet) becomes the request for the device. Holds the wallet's send
+  // lease until the transaction is submitted or cancelled.
+  selectVoteCoins = async ({
+    walletId,
+    vote,
+  }: {
+    walletId: string;
+    vote: string;
+  }) => {
+    this.votingTransactionOwner?.cancel();
+    const wallet = this.stores.wallets.getWalletById(walletId);
+    if (!wallet)
+      throw new Error('Active wallet required before coins selections.');
+    const generation = this.transactionGeneration;
+    if (!(await this.acquireWalletSendLease(walletId, generation)))
+      throw new Error('Hardware transaction cancelled');
+    try {
+      const constructed = await this.api.ada.constructTransaction({
+        walletId,
+        data: { encoding: 'base16', vote },
+      });
+      if (generation !== this.transactionGeneration)
+        throw new Error('Hardware transaction cancelled');
+      runInAction('HardwareWalletsStore:: set vote coin selection', () => {
+        this.txSignRequest = {
+          coinSelection: constructed.coinSelection,
+        };
+      });
+      return constructed;
+    } catch (e) {
+      if (generation !== this.transactionGeneration) throw e;
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
+      this.releaseWalletSendLease();
+      throw e;
+    }
+  };
   @action
   establishHardwareWalletConnection = async () => {
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {

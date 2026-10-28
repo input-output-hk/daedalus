@@ -9,6 +9,7 @@ import GovernanceShell, { GOVERNANCE_TABS } from './_utils/GovernanceShell';
 import StoryDecorator from '../_support/StoryDecorator';
 import StoryProvider from '../_support/StoryProvider';
 import GovernanceWallets from '../../../source/renderer/app/components/governance/wallets/GovernanceWallets';
+import type { WalletDelegationSummary } from '../../../source/renderer/app/components/governance/wallets/GovernanceWallets';
 import DRepDirectory from '../../../source/renderer/app/components/governance/drep-directory/DRepDirectory';
 import DRepDirectoryList from '../../../source/renderer/app/components/governance/drep-directory/DRepDirectoryList';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
@@ -107,22 +108,26 @@ const baseEntries: AppDRepDirectoryEntry[] = [
   },
 ];
 
-const CONNECTED_FLOW_WALLETS = [
+const CONNECTED_FLOW_WALLETS: WalletDelegationSummary[] = [
   {
     walletId: 'wallet-1',
     walletName: 'Daily spending',
-    currentDRep: {
-      kind: 'drep' as const,
-      drep: { raw: baseEntries[0].drepId } as any,
-      source: 'onchain' as const,
+    state: {
+      kind: 'current',
+      voting: {
+        kind: 'drep',
+        drep: { raw: baseEntries[0].drepId } as any,
+        source: 'onchain',
+      },
+      source: 'ledger',
     },
-    drepEntry: baseEntries[0],
+    lookup: { status: 'found', entry: baseEntries[0] },
   },
   {
     walletId: 'wallet-2',
     walletName: 'Long-term savings',
-    currentDRep: null,
-    drepEntry: null,
+    state: { kind: 'none' },
+    lookup: { status: 'idle' },
   },
 ];
 
@@ -273,6 +278,7 @@ const renderDirectory = (
     onReroll={favorites.onReroll ?? action('onReroll')}
     onLoadAllDReps={action('onLoadAllDReps')}
     onSelectForDelegation={action('onSelectForDelegation')}
+    onOpenDelegationForm={action('onOpenDelegationForm')}
     onViewDetails={action('onViewDetails')}
     refreshState={refreshState}
     syncProgress={syncState.syncProgress}
@@ -539,6 +545,9 @@ storiesOf('Governance / DRep Directory', module)
   .add('Empty', () => renderCentered(GovernanceRefreshState.Loaded, []))
   .add('Error', () =>
     renderCentered(GovernanceRefreshState.Failed, [], SOCKET_ERROR)
+  )
+  .add('List not returned in time', () =>
+    renderCentered(GovernanceRefreshState.Failed, [], TIMEOUT_ERROR)
   )
   .add('Loading', () => renderCentered(GovernanceRefreshState.Loading, []))
   .add('Refreshing', () =>

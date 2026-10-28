@@ -16,10 +16,18 @@ import { Separator } from '../../widgets/separator/Separator';
 import { InitializeVPDelegationTxError } from '../../../stores/VotingStore';
 import CurrentDRepSummary from './CurrentDRepSummary';
 import globalMessages from '../../../i18n/global-messages';
-import { messages as currentDRepMessages } from './CurrentDRepSummary.messages';
 import { sharedGovernanceMessages } from './shared-messages';
 import { isSameDRep } from '../../../utils/governance/isSameDRep';
+import { canonicalizeDRepId } from '../../governance/drep-directory/helpers';
+import { messages as drepDirectoryMessages } from '../../governance/drep-directory/DRepDirectory';
 import type { AppDRepDirectoryEntry } from '../../../stores/GovernanceStore';
+import {
+  drepLookupKey,
+  drepOfState,
+  effectiveCurrentVote,
+  voteDelegationState,
+} from '../../../utils/governance/voteDelegationState';
+import type { DRepLookup } from '../../../utils/governance/voteDelegationState';
 import DRepIdDisplay from '../../governance/_shared/DRepIdDisplay';
 import DRepStatusBadge from '../../governance/_shared/DRepStatusBadge';
 
@@ -58,7 +66,9 @@ type Props = {
     voteType: 'drep';
   }) => void;
   onCancel: () => void;
-  onFetchDRep?: (drepId: string) => Promise<AppDRepDirectoryEntry>;
+  onFetchDRep?: (drepId: string) => Promise<AppDRepDirectoryEntry | null>;
+  // What the store knows of a DRep's lookup, read while rendering.
+  onLookupDRep?: (drepId: string) => DRepLookup;
   onEnsureFavorited?: (drepId: string) => void;
 };
 
@@ -110,6 +120,7 @@ function VotingPowerDelegation({
   onCancel,
   onExternalLinkClick,
   onFetchDRep,
+  onLookupDRep,
   onSuccess,
   wallets,
   stakePools,
@@ -136,22 +147,25 @@ function VotingPowerDelegation({
     return { status: 'form', selectedWalletId: initialWallet?.id ?? null };
   });
 
-  const selectedDRepId = initialFormState?.selectedDRepId ?? null;
+  // The choice lives here: it starts from what the Directory handed over, and
+  // the form can make it without the Directory.
+  const [selectedDRepId, setSelectedDRepId] = useState<string | null>(
+    initialFormState?.selectedDRepId ?? null
+  );
+  const [pastedDRepId, setPastedDRepId] = useState('');
+  const [pasteIsInvalid, setPasteIsInvalid] = useState(false);
 
   const selectedWallet =
     delegatableWallets.find((w) => w.id === state.selectedWalletId) ?? null;
 
-  const currentDRep = selectedWallet?.currentDRep ?? null;
-  const currentDRepId =
-    currentDRep?.kind === 'drep' ? currentDRep.drep.raw : null;
-
-  // Auto-favorite the current delegation DRep when a wallet is selected, so
-  // DReps delegated to before the auto-favorite feature was introduced get
-  // added to favorites without needing to re-select them.
-  useEffect(() => {
-    if (currentDRep?.kind !== 'drep' || !onEnsureFavorited) return;
-    onEnsureFavorited(currentDRep.drep.cip129 ?? currentDRep.drep.raw);
-  }, [currentDRepId, onEnsureFavorited]);
+  // The DRep whose entry the current-delegation panel shows: the one the
+  // ledger delegates to, or the one an ended delegation named.
+  const drepToResolve = selectedWallet
+    ? drepOfState(
+        voteDelegationState(selectedWallet, () => ({ status: 'idle' }))
+      )
+    : null;
+  const drepToResolveId = drepToResolve ? drepLookupKey(drepToResolve) : null;
 
   const [currentDRepEntry, setCurrentDRepEntry] =
     useState<AppDRepDirectoryEntry | null>(null);
@@ -160,16 +174,15 @@ function VotingPowerDelegation({
   const [isLookingUpDRep, setIsLookingUpDRep] = useState(false);
 
   useEffect(() => {
-    if (currentDRep?.kind !== 'drep' || !onFetchDRep) {
+    if (drepToResolveId == null || !onFetchDRep) {
       setCurrentDRepEntry(null);
       setIsLookingUpDRep(false);
       return undefined;
     }
-    const drepIdToFetch = currentDRep.drep.cip129 ?? currentDRep.drep.raw;
     let cancelled = false;
     setCurrentDRepEntry(null);
     setIsLookingUpDRep(true);
-    onFetchDRep(drepIdToFetch).then(
+    onFetchDRep(drepToResolveId).then(
       (entry) => {
         if (cancelled) return;
         setCurrentDRepEntry(entry);
@@ -184,13 +197,48 @@ function VotingPowerDelegation({
     return () => {
       cancelled = true;
     };
-  }, [currentDRepId, onFetchDRep]);
+  }, [drepToResolveId, onFetchDRep]);
+
+  const lookupDRep = (drepId: string): DRepLookup => {
+    if (onLookupDRep) return onLookupDRep(drepId);
+    if (drepId !== drepToResolveId) return { status: 'idle' };
+    if (currentDRepEntry != null) {
+      return { status: 'found', entry: currentDRepEntry };
+    }
+    return { status: isLookingUpDRep ? 'pending' : 'failed' };
+  };
+  const delegationState = selectedWallet
+    ? voteDelegationState(selectedWallet, lookupDRep)
+    : ({ kind: 'none' } as const);
+  // What a new choice is compared against: the ledger's delegation, never the
+  // history of a delegation that has ended.
+  const currentDRep = effectiveCurrentVote(delegationState);
+  const currentDRepId =
+    currentDRep?.kind === 'drep' ? currentDRep.drep.raw : null;
+
+  // Auto-favorite the current delegation DRep when a wallet is selected, so
+  // DReps delegated to before the auto-favorite feature was introduced get
+  // added to favorites without needing to re-select them.
+  useEffect(() => {
+    if (currentDRep?.kind !== 'drep' || !onEnsureFavorited) return;
+    onEnsureFavorited(currentDRep.drep.cip129 ?? currentDRep.drep.raw);
+  }, [currentDRepId, onEnsureFavorited]);
+
+  // Abstain and No Confidence arrive in the same field as a DRep id, because
+  // the directory offers all three as things to delegate to. They are not
+  // identifiers though: there is no credential behind them, nothing to copy,
+  // and no registration to report a status for.
+  const selectedSentinel =
+    selectedDRepId === 'abstain' || selectedDRepId === 'no_confidence'
+      ? selectedDRepId
+      : null;
 
   const [selectedDRepEntry, setSelectedDRepEntry] =
     useState<AppDRepDirectoryEntry | null>(null);
 
   useEffect(() => {
-    if (!selectedDRepId || !onFetchDRep) {
+    // Abstain and No Confidence are not DReps: there is nothing to look up.
+    if (!selectedDRepId || selectedSentinel !== null || !onFetchDRep) {
       setSelectedDRepEntry(null);
       return undefined;
     }
@@ -206,19 +254,10 @@ function VotingPowerDelegation({
     return () => {
       cancelled = true;
     };
-  }, [selectedDRepId, onFetchDRep]);
+  }, [selectedDRepId, selectedSentinel, onFetchDRep]);
 
   const isSameAsCurrent =
     !!selectedDRepId && isSameDRep(selectedDRepId, currentDRep);
-
-  // Abstain and No Confidence arrive in the same field as a DRep id, because
-  // the directory offers all three as things to delegate to. They are not
-  // identifiers though: there is no credential behind them, nothing to copy,
-  // and no registration to report a status for.
-  const selectedSentinel =
-    selectedDRepId === 'abstain' || selectedDRepId === 'no_confidence'
-      ? selectedDRepId
-      : null;
 
   const formIsValid = !!selectedWallet && !!selectedDRepId;
 
@@ -286,8 +325,27 @@ function VotingPowerDelegation({
 
   const displayName =
     selectedDRepEntry?.verifiedName ??
-    initialFormState?.selectedDRepVerifiedName ??
+    (selectedDRepId === initialFormState?.selectedDRepId
+      ? initialFormState?.selectedDRepVerifiedName
+      : null) ??
     null;
+
+  const handleUsePastedDRepId = () => {
+    const canonical = canonicalizeDRepId(pastedDRepId);
+    if (canonical == null) {
+      setPasteIsInvalid(true);
+      return;
+    }
+    setPasteIsInvalid(false);
+    setPastedDRepId('');
+    setSelectedDRepId(canonical);
+  };
+
+  const chooseAgain = () => {
+    setSelectedDRepId(null);
+    setPastedDRepId('');
+    setPasteIsInvalid(false);
+  };
 
   const browseDReps = () =>
     onBrowseDRepsClick({
@@ -325,9 +383,13 @@ function VotingPowerDelegation({
 
           {selectedWallet && (
             <CurrentDRepSummary
-              currentDRep={currentDRep}
-              drepEntry={currentDRepEntry}
-              isLookingUpDRep={isLookingUpDRep}
+              state={delegationState}
+              lookup={
+                drepToResolveId
+                  ? lookupDRep(drepToResolveId)
+                  : { status: 'idle' }
+              }
+              heldReward={selectedWallet.heldReward}
             />
           )}
 
@@ -340,7 +402,7 @@ function VotingPowerDelegation({
                 <Button
                   className={styles.selectedDRepChange}
                   label={intl.formatMessage(globalMessages.change)}
-                  onClick={browseDReps}
+                  onClick={chooseAgain}
                 />
               </div>
               {selectedSentinel ? (
@@ -377,6 +439,81 @@ function VotingPowerDelegation({
                     </div>
                   )}
                 </>
+              )}
+            </div>
+          )}
+          {selectedWallet && !selectedDRepId && (
+            <div className={styles.choices}>
+              <p className={styles.choicesPrompt}>
+                {intl.formatMessage(messages.choosePrompt)}
+              </p>
+              <div className={styles.choiceCards}>
+                <div className={styles.choiceCard}>
+                  <p className={styles.choiceTitle}>
+                    {intl.formatMessage(sharedGovernanceMessages.abstain)}
+                  </p>
+                  <p className={styles.choiceDescription}>
+                    {intl.formatMessage(
+                      governanceSharedMessages.abstainDescription
+                    )}
+                  </p>
+                  <Button
+                    className="flat"
+                    label={intl.formatMessage(
+                      drepDirectoryMessages.selectOption
+                    )}
+                    onClick={() => setSelectedDRepId('abstain')}
+                  />
+                </div>
+                <div className={styles.choiceCard}>
+                  <p className={styles.choiceTitle}>
+                    {intl.formatMessage(sharedGovernanceMessages.noConfidence)}
+                  </p>
+                  <p className={styles.choiceDescription}>
+                    {intl.formatMessage(
+                      governanceSharedMessages.noConfidenceDescription
+                    )}
+                  </p>
+                  <Button
+                    className="flat"
+                    label={intl.formatMessage(
+                      drepDirectoryMessages.selectOption
+                    )}
+                    onClick={() => setSelectedDRepId('no_confidence')}
+                  />
+                </div>
+              </div>
+              <div className={styles.pasteRow}>
+                <input
+                  className={styles.pasteInput}
+                  type="text"
+                  spellCheck={false}
+                  aria-label={intl.formatMessage(
+                    messages.pasteDRepIdPlaceholder
+                  )}
+                  placeholder={intl.formatMessage(
+                    messages.pasteDRepIdPlaceholder
+                  )}
+                  value={pastedDRepId}
+                  onChange={(event) => {
+                    setPastedDRepId(event.target.value);
+                    setPasteIsInvalid(false);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') handleUsePastedDRepId();
+                  }}
+                />
+                <Button
+                  className="flat"
+                  label={intl.formatMessage(messages.pasteDRepIdUse)}
+                  disabled={pastedDRepId.trim() === ''}
+                  onClick={handleUsePastedDRepId}
+                />
+              </div>
+              {pasteIsInvalid && (
+                <p className={styles.generalError}>
+                  {intl.formatMessage(messages.pasteDRepIdInvalid)}
+                </p>
               )}
             </div>
           )}

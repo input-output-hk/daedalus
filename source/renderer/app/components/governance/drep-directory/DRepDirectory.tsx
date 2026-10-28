@@ -48,8 +48,9 @@ import styles from './DRepDirectory.scss';
 import type { ListViewMode } from '../../../types/listViewTypes';
 import { DEFAULT_LIST_VIEW_MODE } from '../../../types/listViewTypes';
 import { governanceSharedMessages } from '../_shared/governanceSharedMessages';
+import { DREP_LIST_TIMEOUT } from '../../../config/governanceConfig';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   empty: {
     id: 'governance.drepDirectory.empty',
     defaultMessage: '!!!No DReps found on-chain.',
@@ -158,6 +159,18 @@ const messages = defineMessages({
     defaultMessage: '!!!Select',
     description: 'CTA on the Abstain / No Confidence sentinel cards',
   },
+  errorTimeout: {
+    id: 'governance.drepDirectory.error.timeout',
+    defaultMessage:
+      '!!!The wallet has not returned the DRep list after {seconds} seconds. It may be busy with its stake pool data, which can take several minutes, and the list appears here once it answers. The delegation form does not need the list. There you can choose Abstain or No Confidence, or paste a DRep ID.',
+    description:
+      'Directory state when the list request times out. {seconds} is the time limit',
+  },
+  openDelegationForm: {
+    id: 'governance.drepDirectory.error.openDelegationForm',
+    defaultMessage: '!!!Open the delegation form',
+    description: 'Button beside Retry in that state',
+  },
 });
 
 const criterionMessages: Record<
@@ -206,6 +219,9 @@ interface Props {
   epochLength?: number | null;
   slotLength?: number | null;
   onSelectForDelegation: (drepId: string) => void;
+  // Opens the delegation form without the list, for a list that has not
+  // returned.
+  onOpenDelegationForm?: () => void;
   onViewDetails: (drepId: string) => void;
   intl: intlShape.isRequired;
 }
@@ -239,6 +255,7 @@ function DRepDirectory({
   epochLength = null,
   slotLength = null,
   onSelectForDelegation,
+  onOpenDelegationForm,
   onViewDetails,
   intl,
 }: Props) {
@@ -506,15 +523,37 @@ function DRepDirectory({
             <p className={styles.errorMessage}>
               {intl.formatMessage(messages.error)}
             </p>
-            {error && <p className={styles.errorDetails}>{error.message}</p>}
-            {error?.details && (
-              <p className={styles.errorDetails}>{error.details}</p>
+            {error?.type === 'TIMEOUT' ? (
+              <p className={styles.errorDetails}>
+                {intl.formatMessage(messages.errorTimeout, {
+                  seconds: DREP_LIST_TIMEOUT / 1000,
+                })}
+              </p>
+            ) : (
+              <>
+                {error && (
+                  <p className={styles.errorDetails}>{error.message}</p>
+                )}
+                {error?.details && (
+                  <p className={styles.errorDetails}>{error.details}</p>
+                )}
+              </>
             )}
-            <Button
-              label={intl.formatMessage(globalMessages.retry)}
-              onClick={onRefresh}
-              skin={ButtonSkin}
-            />
+            <div className={styles.errorActions}>
+              <Button
+                label={intl.formatMessage(globalMessages.retry)}
+                onClick={onRefresh}
+                skin={ButtonSkin}
+              />
+              {error?.type === 'TIMEOUT' && onOpenDelegationForm && (
+                <Button
+                  className="flat"
+                  label={intl.formatMessage(messages.openDelegationForm)}
+                  onClick={onOpenDelegationForm}
+                  skin={ButtonSkin}
+                />
+              )}
+            </div>
           </div>
         );
 

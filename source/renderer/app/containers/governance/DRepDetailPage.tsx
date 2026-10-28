@@ -13,6 +13,10 @@ import type { StoresMap } from '../../stores';
 import { ROUTES } from '../../routes-config';
 import { pickDelegationFormReturnState } from './delegationFormState';
 import { isSameDRep } from '../../utils/governance/isSameDRep';
+import {
+  effectiveCurrentVote,
+  voteDelegationState,
+} from '../../utils/governance/voteDelegationState';
 
 interface Props extends RouteComponentProps<{ drepId: string }> {
   stores?: StoresMap;
@@ -106,9 +110,16 @@ class DRepDetailPage extends React.Component<Props, State> {
       ? (stores.wallets?.allWallets?.find((w) => w.id === selectedWalletId) ??
         null)
       : null;
+    const currentVote = selectedWallet
+      ? effectiveCurrentVote(
+          voteDelegationState(selectedWallet, (id) =>
+            stores.governance.drepLookup(id)
+          )
+        )
+      : null;
     const isCurrentDRep =
-      detail != null && selectedWallet?.currentDRep != null
-        ? isSameDRep(detail.drepId, selectedWallet.currentDRep)
+      detail != null && currentVote != null
+        ? isSameDRep(detail.drepId, currentVote)
         : false;
 
     return (

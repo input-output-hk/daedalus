@@ -42,4 +42,25 @@ export const messages = defineMessages({
     defaultMessage: '!!!Browse DReps',
     description: 'Button that opens the DRep directory to pick a DRep',
   },
+  choosePrompt: {
+    id: 'voting.governance.chooseDelegation.prompt',
+    defaultMessage:
+      '!!!Choose Abstain, No Confidence or a DRep. Find a DRep in the Directory, or paste its ID.',
+    description: 'Shown on the delegation form before anything is chosen',
+  },
+  pasteDRepIdPlaceholder: {
+    id: 'voting.governance.pasteDRepId.placeholder',
+    defaultMessage: '!!!Paste a DRep ID',
+    description: 'Label and placeholder of the DRep ID field',
+  },
+  pasteDRepIdInvalid: {
+    id: 'voting.governance.pasteDRepId.invalid',
+    defaultMessage: '!!!This is not a valid DRep ID.',
+    description: 'Shown under the field when the pasted value is not a DRep ID',
+  },
+  pasteDRepIdUse: {
+    id: 'voting.governance.pasteDRepId.use',
+    defaultMessage: '!!!Use this DRep ID',
+    description: 'Button that makes the pasted ID the choice',
+  },
 });

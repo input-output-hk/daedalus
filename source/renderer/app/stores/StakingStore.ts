@@ -103,6 +103,11 @@ export default class StakingStore extends Store {
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   stakePoolsFetchTrackerInterval: IntervalID | null | undefined = null;
   _delegationFeeCalculationWalletId: string | null | undefined = null;
+  // How many screens are showing the stake pool list. The wallet reads its
+  // stake pool database to answer GET /v2/stake-pools, and holds a lock on it
+  // while it does, so the list is fetched and polled only while a screen asks.
+  @observable
+  _stakePoolDemand = 0;
 
   setup() {
     const {
@@ -110,10 +115,6 @@ export default class StakingStore extends Store {
       networkStatus: networkStatusActions,
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     } = this.actions;
-    this.refreshPolling = setInterval(
-      this.getStakePoolsData,
-      STAKE_POOLS_FAST_INTERVAL
-    );
     // Redeem ITN Rewards actions
     stakingActions.onRedeemStart.listen(this._onRedeemStart);
     stakingActions.onConfigurationContinue.listen(
@@ -144,9 +145,7 @@ export default class StakingStore extends Store {
     networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
     // ========== MOBX REACTIONS =========== //
     // @ts-ignore ts-migrate(2339) FIXME: Property 'registerReactions' does not exist on typ... Remove this comment to see the full error message
-    this.registerReactions([this._pollOnSync]);
-
-    this._startStakePoolsFetchTracker();
+    this.registerReactions([this._pollOnDemand]);
 
     this._getStakingInfoWasOpen();
     this._getStakePoolsListViewTooltip();
@@ -259,11 +258,15 @@ export default class StakingStore extends Store {
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
         // Resets the Stake Pools list request
         this.stakePoolsRequest.reset();
-        // Refreshes the Stake Pools list
-        this.getStakePoolsData();
 
-        // Starts the SPs fetch tracker
-        this._startStakePoolsFetchTracker();
+        // Refreshes the Stake Pools list for the screens that show it. With
+        // none showing, the next one to ask fetches it.
+        if (this._hasStakePoolDemand) {
+          this.getStakePoolsData();
+
+          // Starts the SPs fetch tracker
+          this._startStakePoolsFetchTracker();
+        }
 
         // Updates the Smash Server URL
         runInAction(() => {
@@ -772,7 +775,8 @@ export default class StakingStore extends Store {
         this.pollingStakePoolsInterval = null;
       }
 
-      if (!this.refreshPolling) {
+      // An answer that arrives after the last screen left arms nothing.
+      if (!this.refreshPolling && this._hasStakePoolDemand) {
         this.refreshPolling = setInterval(
           this.getStakePoolsData,
           STAKE_POOLS_FAST_INTERVAL
@@ -787,6 +791,8 @@ export default class StakingStore extends Store {
       }
 
       clearInterval(this.pollingStakePoolsInterval);
+      this.pollingStakePoolsInterval = null;
+      if (!this._hasStakePoolDemand) return;
       const isSmash = type === 'smash';
       const interval = isSmash
         ? STAKE_POOLS_FETCH_TRACKER_INTERVAL
@@ -1035,16 +1041,73 @@ export default class StakingStore extends Store {
     this.redeemStep = null;
   };
   // ================= REACTIONS ==================
-  _pollOnSync = () => {
+  @computed
+  get _hasStakePoolDemand(): boolean {
+    return this._stakePoolDemand > 0;
+  }
+
+  /**
+   * Asks for the stake pool list while a screen shows it. Returns the
+   * function that withdraws the ask; calling it twice withdraws it once.
+   */
+  acquireStakePools = (): (() => void) => {
+    let released = false;
+    runInAction('StakingStore::acquireStakePools', () => {
+      this._stakePoolDemand += 1;
+    });
+    return () => {
+      if (released) return;
+      released = true;
+      runInAction('StakingStore::releaseStakePools', () => {
+        this._stakePoolDemand -= 1;
+      });
+    };
+  };
+
+  _stopStakePoolPolling = () => {
+    if (this.pollingStakePoolsInterval) {
+      clearInterval(this.pollingStakePoolsInterval);
+      this.pollingStakePoolsInterval = null;
+    }
+    if (this.refreshPolling) {
+      clearInterval(this.refreshPolling);
+      this.refreshPolling = null;
+    }
+    if (this.stakePoolsFetchTrackerInterval) {
+      clearInterval(this.stakePoolsFetchTrackerInterval);
+      this.stakePoolsFetchTrackerInterval = null;
+      runInAction(() => {
+        this.numberOfStakePoolsFetched = 0;
+        this.cyclesWithoutIncreasingStakePools = 0;
+        this.isFetchingStakePools = false;
+      });
+    }
+  };
+
+  // An action, so that what it reads is not a dependency of the reaction
+  // that calls it: a list that arrives must not fetch the list again.
+  @action
+  _fetchForDemand = () => {
+    if (this.stakePools.length === 0) {
+      // Never loaded, or reset by a change of SMASH server: the list can
+      // arrive in pieces, so it is followed until it stops growing.
+      this._startStakePoolsFetchTracker();
+    } else {
+      this.getStakePoolsData();
+    }
+  };
+
+  // Fetches the list when a screen asks for it and the node is synced, and
+  // stops fetching when none does. A request already sent is not cancelled.
+  _pollOnDemand = () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
     const { isSynced, isShelleyActivated } = this.stores.networkStatus;
 
-    if (isSynced && isShelleyActivated) {
-      this.getStakePoolsData();
+    if (this._hasStakePoolDemand && isSynced && isShelleyActivated) {
+      this._fetchForDemand();
     } else {
       this._resetIsRanking();
-
-      this._resetPolling('kill');
+      this._stopStakePoolPolling();
     }
   };
 

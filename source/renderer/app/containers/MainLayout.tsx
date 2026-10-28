@@ -44,6 +44,7 @@ class MainLayout extends Component<InjectedContainerProps> {
       app,
       wallets: walletsStore,
       networkStatus,
+      governance,
     } = stores;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
@@ -100,6 +101,7 @@ class MainLayout extends Component<InjectedContainerProps> {
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}
+        hasGovernanceNotification={governance.endedDelegations.length > 0}
       />
     );
     return (

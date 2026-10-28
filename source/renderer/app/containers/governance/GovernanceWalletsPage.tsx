@@ -6,10 +6,18 @@ import GovernanceWallets from '../../components/governance/wallets/GovernanceWal
 import type { WalletDelegationSummary } from '../../components/governance/wallets/GovernanceWallets';
 import type { StoresMap } from '../../stores';
 import { ROUTES } from '../../routes-config';
+import {
+  drepLookupKey,
+  drepOfState,
+  voteDelegationState,
+} from '../../utils/governance/voteDelegationState';
+import type { DRepLookup } from '../../utils/governance/voteDelegationState';
 
 interface Props extends RouteComponentProps {
   stores?: StoresMap;
 }
+
+const IDLE: DRepLookup = { status: 'idle' };
 
 @inject('stores')
 @observer
@@ -21,11 +29,10 @@ class GovernanceWalletsPage extends React.Component<Props> {
     // cannot delegate voting power at all, and listing it here offered an
     // action that could never be completed.
     for (const wallet of wallets?.allWallets ?? []) {
-      if (wallet.currentDRep?.kind === 'drep') {
-        const drepId =
-          wallet.currentDRep.drep.cip129 ?? wallet.currentDRep.drep.raw;
-        governance.ensureDRep(drepId);
-      }
+      const drep = drepOfState(voteDelegationState(wallet, () => IDLE));
+      // Lookups go through the store, which sends one per DRep and remembers
+      // the answer, so a screen that updates often adds no request.
+      if (drep) governance.resolveDRep(drepLookupKey(drep));
     }
   }
 
@@ -43,7 +50,7 @@ class GovernanceWalletsPage extends React.Component<Props> {
       selectedWalletId: walletId,
       voteType: 'drep',
     });
-    this.props.history.push(ROUTES.GOVERNANCE.DREPS);
+    this.props.history.push(ROUTES.GOVERNANCE.DELEGATE);
   };
 
   handleViewDetails = (drepId: string, walletId: string) => {
@@ -55,24 +62,25 @@ class GovernanceWalletsPage extends React.Component<Props> {
   render() {
     const { app, wallets, governance } = this.props.stores ?? {};
 
+    const lookupOf = (drepId: string): DRepLookup =>
+      governance?.drepLookup(drepId) ?? IDLE;
     const allWallets: WalletDelegationSummary[] = (
       wallets?.allWallets ?? []
     ).map((w) => {
-      const drepId =
-        w.currentDRep?.kind === 'drep'
-          ? (w.currentDRep.drep.cip129 ?? w.currentDRep.drep.raw)
-          : null;
+      const state = voteDelegationState(w, lookupOf);
+      const drep = drepOfState(state);
       return {
         walletId: w.id,
         walletName: w.name,
-        currentDRep: w.currentDRep,
-        drepEntry: drepId ? (governance?.lookupDRep(drepId) ?? null) : null,
+        state,
+        lookup: drep ? lookupOf(drepLookupKey(drep)) : IDLE,
       };
     });
 
     return (
       <GovernanceWallets
         wallets={allWallets}
+        endedDelegations={governance?.endedDelegations ?? []}
         favoriteDRepIds={governance?.favoriteDRepIds ?? new Set()}
         totalDRepStake={governance?.drepSummary?.totalDRepStake ?? null}
         onToggleFavorite={(drepId) => governance?.toggleFavorite(drepId)}

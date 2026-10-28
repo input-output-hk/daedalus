@@ -88,6 +88,7 @@ const renderContainer = () => {
     appUpdate: { displayAppUpdateNewsItem: false },
     staking: { stakingInfoWasOpen: true },
     governance: { setDelegationNavState },
+    voting: { hasSubmittedVoteDelegation: () => false },
   };
   const actions = {
     router: { goToRoute },

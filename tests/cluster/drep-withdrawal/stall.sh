@@ -14,6 +14,12 @@
 #   gc          the garbage collection of a pool retired on chain, run when
 #               the wallet reaches the second epoch after the retirement
 #
+# A funded wallet and two registered DReps then stand in for a user who cannot
+# use the Directory: while GET /v2/stake-pools holds the database, the vote
+# preparation and submission Daedalus sends for a remedy delegation (Abstain,
+# No Confidence, a DRep, and the hardware wallet's) are sent and must complete
+# while the settings, DRep list and stake-pool requests are still unanswered.
+#
 # pool_production has no index on pool_id, so the count and the deletion of
 # a pool's rows both read the whole table. The cold cases drop the database
 # file's pages from the OS page cache first, as a reboot does.
@@ -29,7 +35,7 @@
 #
 # Started by harness.sh --scenario stall, which sets the binaries, ports, OUT
 # and STATE.
-# shellcheck disable=SC2034
+# shellcheck disable=SC2016,SC2034
 set -euo pipefail
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # shellcheck source=lib.sh
@@ -53,6 +59,9 @@ LOOP_MAX=900
 SYNTHETIC_POOLS=2000
 RETIRED_POOL_ROWS=2000
 MISSING_DREP=''
+SW='' SW_ADDR=''
+PASS=Secret-passphrase-1
+DREP_A_LEGACY='' DREP_A_CIP129='' DREP_A_HEX='' DREP_B_LEGACY='' DREP_B_CIP129='' DREP_B_HEX=''
 POOL2_HEX=''
 GHOST_HEX=''
 
@@ -240,6 +249,40 @@ setup() {
   MISSING_DREP=$("$CLI" conway governance drep id \
     --drep-verification-key-file "$STATE/missing-drep/drep.vkey" --output-cip129)
 
+  # A wallet with funds, and two registered DReps, for the remedy cases.
+  local mnemonic d vkey
+  mnemonic=$("$WALLET" recovery-phrase generate --size 24)
+  api create-sw POST /v2/wallets "$(jq -n --arg n SW --arg m "$mnemonic" --arg p "$PASS" \
+    '{name: $n, mnemonic_sentence: ($m | split(" ")), passphrase: $p}')"
+  SW=$(jq -r .id "$R_FILE")
+  [ -n "$SW" ] && [ "$SW" != null ] || die "the wallet was not created: $(observed)"
+  wait_ready "$SW"
+  SW_ADDR=$(unused_address_of "$SW")
+  local certs=()
+  for d in A B; do
+    mkdir -p "$STATE/drep$d"
+    vkey="$STATE/drep$d/drep.vkey"
+    "$CLI" conway governance drep key-gen --verification-key-file "$vkey" \
+      --signing-key-file "$STATE/drep$d/drep.skey"
+    "$CLI" conway governance drep registration-certificate --drep-verification-key-file "$vkey" \
+      --key-reg-deposit-amt 500000000 --out-file "$STATE/drep$d/reg.cert"
+    printf -v "DREP_${d}_LEGACY" '%s' "$("$CLI" conway governance drep id --drep-verification-key-file "$vkey" --output-bech32)"
+    printf -v "DREP_${d}_CIP129" '%s' "$("$CLI" conway governance drep id --drep-verification-key-file "$vkey" --output-cip129)"
+    printf -v "DREP_${d}_HEX" '%s' "$("$CLI" conway governance drep id --drep-verification-key-file "$vkey" --output-hex)"
+    certs+=(--certificate-file "$STATE/drep$d/reg.cert")
+  done
+  cli_tx fund-sw-and-register-dreps 1 --tx-out "$SW_ADDR+10000000000" "${certs[@]}" \
+    --witness-override 3 -- "$STATE/drepA/drep.skey" "$STATE/drepB/drep.skey" ||
+    die "funding the wallet and registering the DReps: $CLI_RESULT"
+  local _s
+  for _s in $(seq 1 60); do
+    [ "$(available_of "$SW")" -gt 0 ] && break
+    sleep 2
+  done
+  [ "$(available_of "$SW")" -gt 0 ] || die "the wallet was not funded"
+  result S-wallet "Wallet and DReps for the remedy cases" "cardano-cli transaction" "(setup)" \
+    "wallet funded with $(available_of "$SW") lovelace; DReps A and B registered" NOTE
+
   local pool2 _ n=0
   pool2=$("$CLI" conway stake-pool id --cold-verification-key-file "$k/cold.vkey" --output-bech32)
   for _ in $(seq 1 60); do
@@ -323,6 +366,106 @@ pools_cold() {
     "stake-pools $(sstats pools-cold-stakepools); list $(sstats pools-cold-list); lookups $(sstats pools-cold-lookup); summary $(sstats pools-cold-summary)" NOTE
 }
 
+# remedy_hold KIND: starts GET /v2/stake-pools with the database file not
+# cached, polls GET /v2/settings with a 2 s limit until one goes unanswered,
+# and then sends a settings probe and a list probe that wait for the hold.
+# Returns non-zero when no settings request went unanswered within 30 s.
+remedy_hold() {
+  local kind="$1" t0 _
+  wait_sprobes
+  evict_pool_db
+  sprobe "$kind-stakepools" 1 "/v2/stake-pools?stake=1000000000"
+  t0=$(date +%s)
+  while [ $(($(date +%s) - t0)) -lt 30 ]; do
+    if ! curl -s -o /dev/null --max-time 2 "$API/v2/settings"; then
+      sprobe "$kind-settings" 1 /v2/settings
+      sprobe "$kind-list" 1 /v2/dreps
+      return 0
+    fi
+    sleep 0.5
+  done
+  return 1
+}
+
+# remedy_answered KIND: how many of the hold's three requests have been answered.
+remedy_answered() {
+  local kind="$1"
+  awk -F'\t' -v k="$kind" '$1 == k "-stakepools" || $1 == k "-settings" || $1 == k "-list" { n++ } END { print n + 0 }' "$LAT"
+}
+
+# remedy KIND TARGET EXPECTED SCENARIO: the vote preparation and submission of
+# a software wallet while the hold lasts, as the mainnet build sends them:
+# transactions-construct {vote}, then PUT /v2/dreps/{target}/wallets/{id}.
+remedy() {
+  local kind="$1" target="$2" expected="$3" scenario="$4" seen answered fee=''
+  local what="Remedy vote delegation to $scenario while GET /v2/stake-pools holds the database"
+  local req="transactions-construct {vote}, PUT /v2/dreps/{target}/wallets/{id}"
+  local want="construct 202, PUT 202, in the ledger, ledger reads $expected; settings, list and stake-pool requests unanswered"
+  if ! remedy_hold "$kind"; then
+    result "S-remedy-$kind" "$what" "$req" "$want" "no settings request went unanswered within 30 s" PRECONDITION
+    return 0
+  fi
+  api "S-remedy-$kind-construct" POST "/v2/wallets/$SW/transactions-construct" \
+    "$(jq -n --arg d "$target" '{encoding: "base16", vote: $d}')"
+  seen="construct $(observed)"
+  if is_accepted; then
+    fee=$(jq -r '.fee.quantity' "$R_FILE")
+    api "S-remedy-$kind-put" PUT "/v2/dreps/$target/wallets/$SW" "$(jq -n --arg p "$PASS" '{passphrase: $p}')"
+    seen="$seen (fee $fee), PUT $(observed)"
+    if is_accepted && wait_last_tx "$SW"; then
+      wait_ledger_vote "$SW" "$expected" || true
+    fi
+  fi
+  answered=$(remedy_answered "$kind")
+  seen="$seen, ledger: $(ledger_vote "$SW"), $answered of 3 hold requests answered by then"
+  check "S-remedy-$kind" "$what" "$req" "$want" "$seen" \
+    '[ "$R_STATUS" = 202 ] && [ "$(ledger_vote "$SW")" = "$expected" ] && [ "$answered" = 0 ]'
+  wait_sprobes
+}
+
+# remedy_hardware: the hardware wallet's path while the hold lasts:
+# transactions-construct {vote} for a registered DRep, the construct's own body
+# signed by transactions-sign (standing in for the device), posted to
+# /v2/proxy/transactions.
+remedy_hardware() {
+  local kind=hw seen answered signed
+  local what="Hardware-wallet remedy vote delegation to a DRep while GET /v2/stake-pools holds the database"
+  local req="transactions-construct {vote}, transactions-sign, POST /v2/proxy/transactions"
+  local want="construct 202, proxy 202, in the ledger, ledger reads drep:B; settings, list and stake-pool requests unanswered"
+  if ! remedy_hold "$kind"; then
+    result S-remedy-hw "$what" "$req" "$want" "no settings request went unanswered within 30 s" PRECONDITION
+    return 0
+  fi
+  api S-remedy-hw-construct POST "/v2/wallets/$SW/transactions-construct" \
+    "$(jq -n --arg d "$DREP_B_CIP129" '{encoding: "base16", vote: $d}')"
+  seen="construct $(observed)"
+  if is_accepted; then
+    api S-remedy-hw-sign POST "/v2/wallets/$SW/transactions-sign" \
+      "$(jq -n --arg t "$(jq -r .transaction "$R_FILE")" --arg p "$PASS" '{transaction: $t, passphrase: $p, encoding: "base16"}')"
+    seen="$seen, sign $(observed)"
+    if is_accepted; then
+      signed=$(jq -r .transaction "$R_FILE")
+      echo "$signed" | xxd -r -p >"$STATE/s-remedy-hw.signed.cbor"
+      api_octets S-remedy-hw-proxy /v2/proxy/transactions "$STATE/s-remedy-hw.signed.cbor"
+      seen="$seen, proxy $(observed)"
+      if is_accepted; then wait_ledger_vote "$SW" drep:B || true; fi
+    fi
+  fi
+  answered=$(remedy_answered "$kind")
+  seen="$seen, ledger: $(ledger_vote "$SW"), $answered of 3 hold requests answered by then"
+  check S-remedy-hw "$what" "$req" "$want" "$seen" \
+    '[ "$R_STATUS" = 202 ] && [ "$(ledger_vote "$SW")" = drep:B ] && [ "$answered" = 0 ]'
+  wait_sprobes
+}
+
+remedies() {
+  wait_ready "$SW"
+  remedy drep "$DREP_A_CIP129" drep:A "a registered DRep"
+  remedy noconf no_confidence no_confidence "No Confidence"
+  remedy abstain abstain abstain "Abstain"
+  remedy_hardware
+}
+
 gc() {
   local k="$STATE/data/pools-keys/pool2" epoch boundary wait_s t0
   epoch=$(($(current_epoch) + 2))
@@ -352,6 +495,7 @@ startup
 idle
 pools_warm
 pools_cold
+remedies
 gc
 echo $(($(date +%s) - T0)) >"$OUT/duration-seconds"
 log "backend $BACKEND finished in $(cat "$OUT/duration-seconds") s"

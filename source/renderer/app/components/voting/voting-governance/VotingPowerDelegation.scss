@@ -163,3 +163,85 @@ span.link {
   padding: 0 12px;
   width: auto;
 }
+
+// The choices offered before anything is chosen. They need no DRep list: the
+// two predefined options and a pasted ID are checked here, and the wallet's
+// own registration check answers for the ID.
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.choicesPrompt {
+  color: var(--theme-gov-font-color-regular);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.choiceCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.choiceCard {
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  display: flex;
+  flex: 1 1 240px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+
+  button {
+    align-self: flex-start;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 16px;
+    width: auto;
+  }
+}
+
+.choiceTitle {
+  color: var(--theme-gov-font-color-accent);
+  font-family: var(--font-semibold);
+  font-size: 16px;
+  margin: 0;
+}
+
+.choiceDescription {
+  color: var(--theme-gov-font-color-regular);
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pasteRow {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+
+  button {
+    flex-shrink: 0;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 16px;
+    width: auto;
+  }
+}
+
+.pasteInput {
+  background: transparent;
+  border: 1px solid var(--theme-gov-content-border-color);
+  border-radius: 4px;
+  color: var(--theme-gov-font-color-accent);
+  flex: 1;
+  font-size: 14px;
+  height: 36px;
+  min-width: 0;
+  padding: 0 12px;
+}

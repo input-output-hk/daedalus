@@ -22,6 +22,7 @@ import { themeOverrides } from '../../themes/overrides';
 import { ROUTES } from '../../routes-config';
 import { GovernanceRefreshState } from '../../stores/GovernanceStore';
 import { DEFAULT_DREP_COHORT_CRITERIA } from '../../components/governance/_shared/drepCohort';
+import { normalizeDRepIdentity } from '../../utils/governance/normalizeDRepIdentity';
 import DRepDirectoryPage from './DRepDirectoryPage';
 
 const drepEntry = {
@@ -74,6 +75,7 @@ const renderPage = ({
   entry = drepEntry,
   favoriteDRepIds = new Set<string>(),
   governanceOverrides = {},
+  wallets = [{ id: 'wallet-1' }],
 }: {
   isNodeInSync?: boolean;
   syncProgress?: number | null;
@@ -81,6 +83,7 @@ const renderPage = ({
   entry?: typeof drepEntry;
   favoriteDRepIds?: Set<string>;
   governanceOverrides?: Record<string, unknown>;
+  wallets?: Array<Record<string, unknown>>;
 } = {}) => {
   // Observable so the container's reaction sees the flip like the real store.
   const networkStatus = observable({ isNodeInSync, syncProgress });
@@ -99,8 +102,8 @@ const renderPage = ({
           governance,
           networkStatus,
           wallets: {
-            all: [{ id: 'wallet-1' }],
-            allWallets: [{ id: 'wallet-1' }],
+            all: wallets,
+            allWallets: wallets,
           },
         } as any
       }
@@ -254,5 +257,40 @@ describe('DRepDirectoryPage', () => {
     fireEvent.click(sentinelButton);
 
     expect(governance.toggleFavorite).not.toHaveBeenCalled();
+  });
+});
+
+describe('DRepDirectoryPage current delegation marker', () => {
+  afterEach(cleanup);
+
+  const drepId = 'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras';
+  const entry = { ...drepEntry, drepId };
+  const voting = {
+    kind: 'drep' as const,
+    drep: normalizeDRepIdentity(drepId)!,
+    source: 'ledger' as const,
+  };
+  const renderFor = (ledgerVote: Record<string, unknown>) =>
+    renderPage({
+      entry,
+      wallets: [
+        { id: 'wallet-1', isLegacy: false, votingTarget: voting, ledgerVote },
+      ],
+      governanceOverrides: {
+        delegationNavState: { selectedWalletId: 'wallet-1' },
+        drepLookup: jest.fn().mockReturnValue({ status: 'found', entry }),
+      },
+    });
+
+  it('offers Delegate for a DRep that retired and registered again', () => {
+    renderFor({ status: 'not_delegated' });
+    expect(
+      screen.getByRole('button', { name: 'Delegate' })
+    ).toBeInTheDocument();
+  });
+
+  it('does not offer Delegate for the DRep the ledger delegates to', () => {
+    renderFor({ status: 'delegated', voting });
+    expect(screen.queryByRole('button', { name: 'Delegate' })).toBeNull();
   });
 });

@@ -199,6 +199,7 @@ function mountRegistration(
     networkStatus: { absoluteSlotNumber: 123 },
     staking: { stakePools: [], getStakePoolById: jest.fn() },
     app: { openExternalLink: jest.fn() },
+    governance: { setDelegationNavState: jest.fn() },
     profile: { currentNumberFormat: NUMBER_OPTIONS[0].value },
     assets: { all: [], getAsset: jest.fn(), favorites: {} },
   } as unknown as StoresMap;
@@ -294,6 +295,7 @@ function mountRegistration(
     voting,
     hardwareWallets,
     transactions,
+    stores,
     nativeRun,
     nativeTransactions,
     selectCoins,
@@ -1033,6 +1035,11 @@ describe('VotingRegistrationDialogContainer reward withdrawal', () => {
     expect(
       screen.queryByText(/count for this payment/)
     ).not.toBeInTheDocument();
+    expect(
+      fixture.stores.governance.setDelegationNavState
+    ).toHaveBeenCalledWith({
+      selectedWalletId: expect.any(String),
+    });
     fixture.unmount();
   });
 

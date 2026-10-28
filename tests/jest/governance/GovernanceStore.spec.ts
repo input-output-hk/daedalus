@@ -5,6 +5,8 @@ import GovernanceStore, {
 } from '../../../source/renderer/app/stores/GovernanceStore';
 import type { ApiDRepInfo } from '../../../source/renderer/app/api/governance/types';
 import { logger } from '../../../source/renderer/app/utils/logging';
+import { normalizeDRepIdentity } from '../../../source/renderer/app/utils/governance/normalizeDRepIdentity';
+import { DREP_LIST_TIMEOUT } from '../../../source/renderer/app/config/governanceConfig';
 
 jest.mock('../../../source/renderer/app/utils/logging', () => ({
   logger: {
@@ -146,6 +148,136 @@ describe('GovernanceStore', () => {
 
     expect(api.ada.listDReps).toHaveBeenCalledTimes(1);
     expect(store.isLoading).toBe(true);
+  });
+
+  describe('when the list does not return in time', () => {
+    beforeEach(() => jest.useFakeTimers('modern'));
+    afterEach(() => jest.useRealTimers());
+
+    it('sets Failed with a TIMEOUT error when the first load does not answer', async () => {
+      const api = makeApi(
+        jest.fn().mockImplementation(() => new Promise(() => {}))
+      );
+      const store = makeStore(api);
+      void store.fetchAllDReps();
+      jest.advanceTimersByTime(DREP_LIST_TIMEOUT);
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(store.refreshState).toBe(GovernanceRefreshState.Failed);
+      expect(store.error).toEqual({ type: 'TIMEOUT', message: '' });
+    });
+
+    it('keeps Loaded with the TIMEOUT error when a refresh does not answer', async () => {
+      const api = makeApi(jest.fn().mockResolvedValueOnce([buildApiDRep(0)]));
+      const store = makeStore(api);
+      await store.fetchAllDReps();
+      (api.ada.listDReps as jest.Mock).mockImplementation(
+        () => new Promise(() => {})
+      );
+      void store.fetchAllDReps();
+      expect(store.refreshState).toBe(GovernanceRefreshState.Refreshing);
+      jest.advanceTimersByTime(DREP_LIST_TIMEOUT);
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(store.refreshState).toBe(GovernanceRefreshState.Loaded);
+      expect(store.error).toEqual({ type: 'TIMEOUT', message: '' });
+      expect(store.suggestedDReps).toHaveLength(1);
+    });
+
+    it('does not start a second load within the time limit', () => {
+      const api = makeApi(
+        jest.fn().mockImplementation(() => new Promise(() => {}))
+      );
+      const store = makeStore(api);
+      void store.fetchAllDReps();
+      jest.advanceTimersByTime(DREP_LIST_TIMEOUT - 1);
+      void store.fetchAllDReps();
+      expect(api.ada.listDReps).toHaveBeenCalledTimes(1);
+    });
+
+    it('starts a new load after the time limit', async () => {
+      const api = makeApi(
+        jest.fn().mockImplementation(() => new Promise(() => {}))
+      );
+      const store = makeStore(api);
+      void store.fetchAllDReps();
+      jest.advanceTimersByTime(DREP_LIST_TIMEOUT);
+      await Promise.resolve();
+      await Promise.resolve();
+      void store.fetchAllDReps();
+      expect(api.ada.listDReps).toHaveBeenCalledTimes(2);
+    });
+
+    it('clears the timer when the load answers', async () => {
+      const api = makeApi(jest.fn().mockResolvedValue([buildApiDRep(0)]));
+      const store = makeStore(api);
+      await store.fetchAllDReps();
+      expect(jest.getTimerCount()).toBe(0);
+      expect(store.refreshState).toBe(GovernanceRefreshState.Loaded);
+    });
+
+    it('keeps the state of a newer outstanding load when an older one times out', async () => {
+      const listDReps = jest
+        .fn()
+        .mockImplementation(() => new Promise(() => {}));
+      const store = makeStore(makeApi(listDReps));
+      void store.fetchAllDReps();
+      // Leaving Governance resets the state while the first load is out.
+      (store as any)._clearGovernanceState();
+      jest.advanceTimersByTime(DREP_LIST_TIMEOUT - 1000);
+      void store.fetchAllDReps();
+      expect(listDReps).toHaveBeenCalledTimes(2);
+      jest.advanceTimersByTime(1000);
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(store.refreshState).toBe(GovernanceRefreshState.Loading);
+      expect(store.error).toBeNull();
+    });
+
+    it('keeps the list shown when a newer load fails after an older one applied', async () => {
+      let answerOld: (value: unknown) => void = () => {};
+      const listDReps = jest
+        .fn()
+        .mockReturnValueOnce(
+          new Promise((resolve) => {
+            answerOld = resolve;
+          })
+        )
+        .mockRejectedValueOnce(new Error('Network error'));
+      const store = makeStore(makeApi(listDReps));
+      void store.fetchAllDReps();
+      (store as any)._clearGovernanceState();
+      const second = store.fetchAllDReps();
+      answerOld([buildApiDRep(1)]);
+      await second;
+      await Promise.resolve();
+      expect(store.allDReps).toHaveLength(1);
+      expect(store.refreshState).toBe(GovernanceRefreshState.Loaded);
+      expect(store.error).toMatchObject({ type: 'UNKNOWN' });
+    });
+
+    it('ignores an answer from an older load once a newer one has applied', async () => {
+      let answerOld: (value: unknown) => void = () => {};
+      const listDReps = jest
+        .fn()
+        .mockReturnValueOnce(
+          new Promise((resolve) => {
+            answerOld = resolve;
+          })
+        )
+        .mockResolvedValueOnce([buildApiDRep(1), buildApiDRep(2)]);
+      const store = makeStore(makeApi(listDReps));
+      void store.fetchAllDReps();
+      jest.advanceTimersByTime(DREP_LIST_TIMEOUT);
+      await Promise.resolve();
+      await Promise.resolve();
+      await store.fetchAllDReps();
+      expect(store.allDReps).toHaveLength(2);
+      answerOld([buildApiDRep(0)]);
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(store.allDReps).toHaveLength(2);
+    });
   });
 
   it('transitions through Refreshing on a second fetchAllDReps when data already exists', async () => {
@@ -666,6 +798,36 @@ describe('GovernanceStore route reaction', () => {
     expect(store.suggestedDReps).toHaveLength(0);
     expect(store.refreshState).toBe(GovernanceRefreshState.Idle);
   });
+
+  const routedWithHandoff = (pathname: string) => {
+    const router = observable<{ location: { pathname: string } | null }>({
+      location: { pathname },
+    });
+    const store = makeRoutedStore(router);
+    store.setup();
+    store.setDelegationNavState({ selectedWalletId: 'wallet-1' });
+    const go = (next: string) =>
+      runInAction(() => {
+        router.location = { pathname: next };
+      });
+    return { store, go };
+  };
+
+  it('clears the delegation handoff on leaving Governance', () => {
+    const { store, go } = routedWithHandoff('/governance/dreps');
+    go('/wallets');
+    expect(store.delegationNavState).toBeNull();
+  });
+
+  it.each([
+    ['/governance/delegate', '/governance/dreps'],
+    ['/governance/dreps', '/governance/dreps/drep1abc'],
+    ['/governance/dreps/drep1abc', '/governance/delegate'],
+  ])('keeps the handoff when the route moves from %s to %s', (from, to) => {
+    const { store, go } = routedWithHandoff(from);
+    go(to);
+    expect(store.delegationNavState).toEqual({ selectedWalletId: 'wallet-1' });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -841,5 +1003,62 @@ describe('GovernanceStore favorite entries', () => {
 
   it('is empty when nothing is favourited', () => {
     expect(makeStore().favoriteEntries).toEqual([]);
+  });
+});
+
+describe('GovernanceStore endedDelegations', () => {
+  const drep = normalizeDRepIdentity(
+    'drep1yg7svuv02gh9j2q574jv06l4xnzwyp63effljze28qe993caj8ras'
+  )!;
+  const voting = { kind: 'drep' as const, drep, source: 'onchain' as const };
+  const walletWith = (
+    id: string,
+    ledgerVote: { status: string },
+    heldReward = new BigNumber(0)
+  ) => ({
+    id,
+    name: `Wallet ${id}`,
+    isLegacy: false,
+    votingTarget: voting,
+    ledgerVote,
+    heldReward,
+  });
+
+  const storeWith = (wallets: Array<Record<string, unknown>>) => {
+    const store = new GovernanceStore(makeApi() as any, {} as any, {} as any);
+    store.configure({
+      ...makeStores(),
+      wallets: { allWallets: wallets },
+    } as any);
+    return store;
+  };
+
+  it('lists the wallets whose delegation ended, with the reward each holds', () => {
+    const store = storeWith([
+      walletWith('a', { status: 'not_delegated' }, new BigNumber(5)),
+      walletWith('b', { status: 'delegated' }),
+    ]);
+    expect(
+      store.endedDelegations.map(({ walletId, state, heldReward }) => ({
+        walletId,
+        kind: state.kind,
+        heldReward: heldReward.toString(),
+      }))
+    ).toEqual([{ walletId: 'a', kind: 'ended', heldReward: '5' }]);
+  });
+
+  it('lists a wallet whose DRep the registry lacks when the field is unknown', async () => {
+    const api = makeApi();
+    api.ada.getDRep.mockRejectedValue({ code: 'not_found', message: 'gone' });
+    const store = new GovernanceStore(api as any, {} as any, {} as any);
+    store.configure({
+      ...makeStores(),
+      wallets: { allWallets: [walletWith('a', { status: 'unknown' })] },
+    } as any);
+    expect(store.endedDelegations).toEqual([]);
+    await store.resolveDRep(drep.cip129!);
+    expect(store.endedDelegations.map(({ state }) => state.kind)).toEqual([
+      'not_in_registry',
+    ]);
   });
 });

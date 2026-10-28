@@ -31,6 +31,13 @@
   max-width: 480px;
 }
 
+.errorActions {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
 .syncingBanner {
   align-items: flex-start;
   background: var(--theme-gov-badge-warning-background);

@@ -317,7 +317,7 @@ exports[`CurrentDRepSummary core states renders the DRep id row with the on-chai
   <p
     class="caption"
   >
-    Could not load this DRep's data. It may have retired.
+    Could not load this DRep's data.
   </p>
 </section>
 `;

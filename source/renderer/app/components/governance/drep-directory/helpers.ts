@@ -67,6 +67,24 @@ export function getDRepQueryKind(raw: string): DRepQueryKind {
   return 'prefix';
 }
 
+/**
+ * A pasted DRep ID in the canonical CIP-129 form, or null when what was pasted
+ * is not a checksum-valid DRep ID of either encoding. Runs in the renderer; it
+ * says nothing about whether the DRep is registered.
+ */
+export function canonicalizeDRepId(raw: string): string | null {
+  if (getDRepQueryKind(raw) !== 'exactValid') return null;
+  try {
+    return String(
+      Cardano.DRepID.toCip129DRepID(
+        Cardano.DRepID(normalizeDRepQuery(raw).full)
+      )
+    );
+  } catch (_error) {
+    return null;
+  }
+}
+
 export interface DRepSearchIndexEntry {
   entry: AppDRepDirectoryEntry;
   cip129: string;
@@ -167,16 +185,8 @@ export function resolveExactDRepMatch<T>(
   rawQuery: string,
   drepIndex: ReadonlyMap<string, T>
 ): T | null {
-  const { full } = normalizeDRepQuery(rawQuery);
-  if (!Cardano.DRepID.isValid(full)) return null;
-  try {
-    const canonical = String(
-      Cardano.DRepID.toCip129DRepID(Cardano.DRepID(full))
-    );
-    return drepIndex.get(canonical) ?? null;
-  } catch (_error) {
-    return null;
-  }
+  const canonical = canonicalizeDRepId(rawQuery);
+  return canonical == null ? null : (drepIndex.get(canonical) ?? null);
 }
 
 /**

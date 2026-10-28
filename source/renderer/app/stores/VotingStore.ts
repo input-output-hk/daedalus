@@ -67,6 +67,7 @@ export const expectedInitializeVPDelegationTxErrors = [
   'same_vote',
   'no_utxos_available',
   'not_enough_money',
+  'not_found',
 ] as const;
 
 export type DelegateVotesError =
@@ -115,6 +116,12 @@ const parseApiCode = <ErrorCode extends string>(
 export default class VotingStore extends Store {
   @observable
   registrationStep = 1;
+  // Delegations submitted for wallets the ledger holds no vote delegation for,
+  // until the ledger shows the delegation or its transaction fails or expires.
+  // Kept for the session, like the undelegation steps.
+  @observable
+  _submittedVoteDelegations: Record<string, { transactionId: string | null }> =
+    {};
   @observable
   selectedWalletId: string | null | undefined = null;
   @observable
@@ -155,6 +162,7 @@ export default class VotingStore extends Store {
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
 
     this._setupFund();
+    this.registerReactions([this._clearSubmittedVoteDelegations]);
   }
 
   @action
@@ -306,51 +314,24 @@ export default class VotingStore extends Store {
     if (global.cip30Enabled)
       throw new Error('Upstream governance preparation is unavailable');
     try {
-      const currentPoolId =
-        wallet.lastDelegatedStakePoolId || wallet.delegatedStakePoolId;
-      const pool = this.stores.staking.stakePools.find(
-        (candidate) => !wallet.isDelegating || candidate.id !== currentPoolId
-      );
-      if (!pool)
-        throw new Error('Stake pool required for governance selection');
-      const coinSelection = wallet.isHardwareWallet
-        ? await this.stores.hardwareWallets.selectDelegationCoins({
-            walletId: wallet.id,
-            delegationAction: 'join',
-            poolId: pool.id,
-          })
-        : await this.api.ada.selectCoins({
-            walletId: wallet.id,
-            walletBalance: wallet.amount,
-            availableBalance: wallet.availableAmount.plus(wallet.reward),
-            rewardsBalance: wallet.reward,
-            delegation: {
-              walletId: wallet.id,
-              poolId: pool.id,
-              delegationAction: 'join',
-            },
-          });
+      // A vote-only transaction: no stake pool is chosen or read, and the
+      // wallet builds it without the stake pool database. A hardware wallet
+      // signs its coin selection, certificates included.
       if (wallet.isHardwareWallet) {
-        const certificates = [
-          ...coinSelection.certificates.filter(
-            (certificate) =>
-              certificate.certificateType === 'register_reward_account'
-          ),
-          {
-            certificateType: 'cast_vote',
-            rewardAccountPath: ['1852H', '1815H', '0H', '2', '0'],
-            vote: chosenOption,
-          },
-        ];
-        this.stores.hardwareWallets.updateTxSignRequest({
-          ...coinSelection,
-          certificates,
+        const { fee } = await this.stores.hardwareWallets.selectVoteCoins({
+          walletId: wallet.id,
+          vote: chosenOption,
         });
         this.stores.hardwareWallets.initiateTransaction({
           walletId: wallet.id,
         });
+        return { success: true as const, fees: fee };
       }
-      return { success: true as const, fees: coinSelection.fee };
+      const { fee } = await this.api.ada.constructTransaction({
+        walletId: wallet.id,
+        data: { encoding: 'base16', vote: chosenOption },
+      });
+      return { success: true as const, fees: fee };
     } catch (error) {
       return {
         success: false as const,
@@ -360,6 +341,56 @@ export default class VotingStore extends Store {
         ),
       };
     }
+  };
+
+  hasSubmittedVoteDelegation = (walletId: string): boolean =>
+    walletId in this._submittedVoteDelegations;
+
+  _recordSubmittedVoteDelegation = (
+    wallet: Wallet,
+    transactionId: string | null
+  ) => {
+    if (wallet.ledgerVote?.status !== 'not_delegated') return;
+    runInAction('VotingStore::_recordSubmittedVoteDelegation', () => {
+      this._submittedVoteDelegations = {
+        ...this._submittedVoteDelegations,
+        [wallet.id]: { transactionId },
+      };
+    });
+  };
+
+  _forgetSubmittedVoteDelegation = (walletId: string) => {
+    runInAction('VotingStore::_forgetSubmittedVoteDelegation', () => {
+      const { [walletId]: _forgotten, ...others } =
+        this._submittedVoteDelegations;
+      this._submittedVoteDelegations = others;
+    });
+  };
+
+  // Ends the wait when the wallet reads the vote delegation, and when the
+  // delegation transaction failed or expired.
+  _clearSubmittedVoteDelegations = () => {
+    Object.keys(this._submittedVoteDelegations).forEach((walletId) => {
+      const wallet = this.stores.wallets.getWalletById(walletId);
+      if (!wallet || wallet.ledgerVote?.status === 'delegated') {
+        this._forgetSubmittedVoteDelegation(walletId);
+        return;
+      }
+      const { transactionId } = this._submittedVoteDelegations[walletId];
+      if (transactionId == null) return;
+      const recent =
+        this.stores.transactions._getTransactionsRecentRequest(walletId).result;
+      const transaction = (recent ? recent.transactions : []).find(
+        ({ id }) => id === transactionId
+      );
+      if (
+        transaction &&
+        (transaction.state === TransactionStates.FAILED ||
+          transaction.state === TransactionStates.EXPIRED)
+      ) {
+        this._forgetSubmittedVoteDelegation(walletId);
+      }
+    });
   };
 
   delegateVotes = async ({
@@ -394,6 +425,7 @@ export default class VotingStore extends Store {
           );
           transactionId = sent?.id ?? null;
         }
+        this._recordSubmittedVoteDelegation(wallet, transactionId);
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
@@ -421,6 +453,7 @@ export default class VotingStore extends Store {
               vote: chosenOption,
             },
           });
+        this._recordSubmittedVoteDelegation(wallet, submitted?.id ?? null);
         this.analytics.sendEvent(
           EventCategories.VOTING,
           'Casted governance vote',
@@ -452,6 +485,7 @@ export default class VotingStore extends Store {
           },
         });
 
+      this._recordSubmittedVoteDelegation(wallet, submitted?.id ?? null);
       this.analytics.sendEvent(
         EventCategories.VOTING,
         'Casted governance vote',

@@ -33,6 +33,7 @@ function TopBarContainer(
     appUpdate,
     staking,
     governance,
+    voting,
   } = stores;
   const {
     isSynced,
@@ -101,6 +102,9 @@ function TopBarContainer(
       hasRewardsWallets={hasRewardsWallets}
       onWalletAdd={onWalletAdd}
       onDelegateHeldRewards={onDelegateHeldRewards}
+      isHeldRewardsDelegationSubmitted={
+        active != null && voting.hasSubmittedVoteDelegation(active.id)
+      }
       onLearnMore={openExternalLink}
       isShelleyActivated={isShelleyActivated}
     >

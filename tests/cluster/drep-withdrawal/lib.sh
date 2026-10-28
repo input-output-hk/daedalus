@@ -543,6 +543,58 @@ selection_body() {
   jq -r .cborHex "$out.json" >"$out"
 }
 
+# vote_selection_body SELECTION-FILE CERT-FILE OUT-FILE: as selection_body for
+# the coin selection of a vote-only transaction. The selection must carry
+# exactly one certificate, a cast_vote, which CERT-FILE (a vote delegation
+# certificate for the wallet's stake key) stands for, and no withdrawal or
+# asset. The body expires 7,200 slots after the tip, as Daedalus's TTL does.
+vote_selection_body() {
+  local sel="$1" cert="$2" out="$3" args=() line tip
+  if jq -e '[.inputs[], .outputs[], .change[]] | any(.assets | length > 0)
+      or ((.withdrawals // []) | length > 0)
+      or ((.certificates // []) | map(.certificate_type) != ["cast_vote"])' "$sel" >/dev/null; then
+    return 1
+  fi
+  while IFS= read -r line; do args+=(--tx-in "$line"); done \
+    < <(jq -r '.inputs[] | "\(.id)#\(.index)"' "$sel")
+  while IFS= read -r line; do args+=(--tx-out "$line"); done \
+    < <(jq -r '(.outputs[], .change[]) | "\(.address)+\(.amount.quantity)"' "$sel")
+  tip=$("$CLI" conway query tip | jq -r .slot)
+  "$CLI" conway transaction build-raw "${args[@]}" --certificate-file "$cert" \
+    --fee "$(selection_fee "$sel")" --invalid-hereafter $((tip + 7200)) \
+    --out-file "$out.json" >"$out.build.txt" 2>&1 || return 1
+  jq -r .cborHex "$out.json" >"$out"
+}
+
+# derive_stake_keys MNEMONIC-FILE DIR WID: the wallet's stake key (DIR/stake.skey
+# and stake.vkey), for a transaction built by cardano-cli alone. Fails the run
+# when the key is not the wallet's.
+derive_stake_keys() {
+  local words="$1" keys="$2" id="$3"
+  mkdir -p "$keys"
+  "$ADDRESS" key from-recovery-phrase Shelley <"$words" >"$keys/root.xsk"
+  "$ADDRESS" key child 1852H/1815H/0H/2/0 <"$keys/root.xsk" >"$keys/stake.xsk"
+  "$CLI" conway key convert-cardano-address-key --shelley-stake-key \
+    --signing-key-file "$keys/stake.xsk" --out-file "$keys/stake.skey"
+  "$CLI" conway key verification-key --signing-key-file "$keys/stake.skey" \
+    --verification-key-file "$keys/stake.evkey"
+  "$CLI" conway key non-extended-key --extended-verification-key-file "$keys/stake.evkey" \
+    --verification-key-file "$keys/stake.vkey"
+  [ "$("$CLI" conway stake-address build --stake-verification-key-file "$keys/stake.vkey")" = "$(stake_address_of "$id")" ] ||
+    die "the stake key derived from the recovery phrase in $words is not wallet $id's"
+}
+
+# wait_ledger_vote WID VALUE: until the ledger reads VALUE for the wallet's
+# reward account, for up to 90 s.
+wait_ledger_vote() {
+  local _
+  for _ in $(seq 1 45); do
+    [ "$(ledger_vote "$1")" != "$2" ] || return 0
+    sleep 2
+  done
+  return 1
+}
+
 # fee_within_estimate ESTIMATE-FILE TRANSACTION-FILE: the transaction's fee lies
 # within the payment-fees response's estimated_min to estimated_max.
 fee_within_estimate() {

@@ -14,7 +14,27 @@ const REVIEWED_JA_JP_EXCEPTIONS = [
 // Governance strings whose English is final and whose Japanese has not yet
 // come back from the translator. Each keeps its ja-JP marker until then, and
 // the list has to be empty before a release; nothing else is exempt.
-const PENDING_TRANSLATION = ['voting.governance.transactionError.sameVote'];
+const PENDING_TRANSLATION = [
+  'voting.governance.transactionError.sameVote',
+  'governance.dashboard.target.lastDelegatedTo',
+  'governance.dashboard.status.retired',
+  'governance.dashboard.status.retiredRegisteredAgain',
+  'governance.dashboard.status.notInRegistry',
+  'governance.dashboard.status.unavailable',
+  'governance.dashboard.endedDelegation.title',
+  'voting.governance.currentVote.headerEnded',
+  'voting.governance.currentVote.endedRetired',
+  'voting.governance.currentVote.endedRetiredRegisteredAgain',
+  'voting.governance.currentVote.heldRewards',
+  'voting.governance.currentVote.notInRegistry',
+  'voting.governance.currentVote.status.lookupFailed',
+  'voting.governance.chooseDelegation.prompt',
+  'voting.governance.pasteDRepId.placeholder',
+  'voting.governance.pasteDRepId.invalid',
+  'voting.governance.pasteDRepId.use',
+  'governance.drepDirectory.error.timeout',
+  'governance.drepDirectory.error.openDelegationForm',
+];
 
 const GOVERNANCE_NAMESPACES = ['governance.', 'voting.governance.'];
 

@@ -7,6 +7,7 @@ import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/number
 import type {
   WalletSyncState,
   DRepDelegation,
+  LedgerVoteDelegation,
 } from '../../../../source/renderer/app/api/wallets/types';
 import type { DRepIdentity } from '../../../../source/common/types/governance.types';
 import type { AppDRepDirectoryEntry } from '../../../../source/renderer/app/stores/GovernanceStore';
@@ -17,6 +18,7 @@ export type CurrentVoteOption =
   | 'drepUnverified'
   | 'drepInactive'
   | 'drepUnknown'
+  | 'drepRetired'
   | 'abstain'
   | 'noConfidence';
 
@@ -30,6 +32,7 @@ export const currentVoteOptions: Record<string, CurrentVoteOption> = {
   'DRep — unverified anchor': 'drepUnverified',
   'DRep — inactive': 'drepInactive',
   'DRep — not in directory': 'drepUnknown',
+  'DRep — retired (delegation ended)': 'drepRetired',
   Abstain: 'abstain',
   'No Confidence': 'noConfidence',
 };
@@ -102,6 +105,18 @@ const UNKNOWN_DREP: DRepIdentity = {
   credentialType: 'key',
 };
 
+// A DRep that retired after the wallet delegated to it: no directory entry, and
+// its own credential.
+const RETIRED_CIP129 =
+  'drep1y2dj76k5cyl8qkrdnf8jrw88cq6k6x5lsn3v0vaqtk8xracce999s';
+const RETIRED_DREP: DRepIdentity = {
+  raw: RETIRED_CIP129,
+  cip129: RETIRED_CIP129,
+  cip105: 'drep_vkh1nvhk44xp8ec9smv6fusm3e7qx4k348uyutrm8gza3eslwaxs98g',
+  credentialHex: '9b2f6ad4c13e70586d9a4f21b8e7c0356d1a9f84e2c7b3a05d8e61f7',
+  credentialType: 'key',
+};
+
 export function resolveCurrentVote(
   option: CurrentVoteOption
 ): DRepDelegation | null {
@@ -114,6 +129,8 @@ export function resolveCurrentVote(
       return { kind: 'drep', drep: INACTIVE_DREP, source: 'onchain' };
     case 'drepUnknown':
       return { kind: 'drep', drep: UNKNOWN_DREP, source: 'onchain' };
+    case 'drepRetired':
+      return { kind: 'drep', drep: RETIRED_DREP, source: 'onchain' };
     case 'abstain':
       return { kind: 'abstain' };
     case 'noConfidence':
@@ -133,11 +150,15 @@ type WalletSeed = {
   isLegacy?: boolean;
   syncState: WalletSyncState;
   votingTarget: DRepDelegation | null;
+  ledgerVote?: LedgerVoteDelegation;
+  // Staking rewards in lovelace; none by default.
+  reward?: string;
 };
 
 const buildWallet = ({
   lovelace,
   isLegacy = false,
+  reward = '0',
   ...rest
 }: WalletSeed): Wallet =>
   new Wallet({
@@ -147,7 +168,7 @@ const buildWallet = ({
     singleAddressMode: !isLegacy,
     amount: new BigNumber(lovelace).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(lovelace).dividedBy(LOVELACES_PER_ADA),
-    reward: new BigNumber(0),
+    reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
     assets: { available: [], total: [] },
     passwordUpdateDate: new Date(),
     discovery: 'random',
@@ -164,6 +185,14 @@ export function makeGovernanceWallets(option: CurrentVoteOption): Wallet[] {
       isHardwareWallet: false,
       syncState: { status: WalletSyncStateStatuses.READY },
       votingTarget: resolveCurrentVote(option),
+      // A retired DRep ended the delegation in the ledger, and the rewards
+      // stay held back until a new one.
+      ...(option === 'drepRetired'
+        ? {
+            ledgerVote: { status: 'not_delegated' as const },
+            reward: '3754573734',
+          }
+        : {}),
     }),
     buildWallet({
       id: 'governance-wallet-2',

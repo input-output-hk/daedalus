@@ -157,13 +157,24 @@ export default class WalletApprovalStore extends Store {
   }
   @action.bound
   dismissResult(): void {
+    this.clearResult(true);
+  }
+
+  // Clears a finished result and its receipt without leaving the screen the
+  // reader is on, for a screen that is itself where the result pointed.
+  @action.bound
+  clearResultInPlace(): void {
+    this.clearResult(false);
+  }
+
+  private clearResult(route: boolean): void {
     if (!global.cip30Enabled) return;
     if (!this.result || !this.current) return;
     const { walletId, kind } = this.current;
     if (this.isSubmissionRequest)
       this.stores.transactions.dismissReceipt(walletId, this.receiptIds);
     this.clear();
-    if (kind === 'native-transaction')
+    if (route && kind === 'native-transaction')
       this.actions.router.goToRoute.trigger({
         route: this.stores.wallets.getWalletRoute(walletId, 'transactions'),
       });

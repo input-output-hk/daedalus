@@ -87,6 +87,8 @@ const createFixture = ({
     deposits: new BigNumber(0),
     depositsReclaimed: new BigNumber(0),
   });
+  const releaseStakePools = jest.fn();
+  const acquireStakePools = jest.fn(() => releaseStakePools);
   const trigger = jest.fn();
   const close = jest.fn();
   const resetHardware = jest.fn();
@@ -109,6 +111,7 @@ const createFixture = ({
         quitStakePoolRequest: request,
         isDelegationTransactionPending: false,
         getStakePoolById: () => ({ name: 'Pool', ticker: 'POOL' }),
+        acquireStakePools,
       },
       networkStatus: { futureEpoch: {} },
       profile: { currentLocale: 'en-US' },
@@ -168,6 +171,8 @@ const createFixture = ({
     trigger,
     close,
     resetHardware,
+    acquireStakePools,
+    releaseStakePools,
     calculateDelegationFee,
     undelegateWallet,
     prepareUndelegationVote,
@@ -183,6 +188,14 @@ describe('upstream undelegation confirmation', () => {
     global.cip30Enabled = false;
   });
   afterEach(cleanup);
+
+  it('asks for the stake pool list while it is open and withdraws the ask when it closes', () => {
+    const fixture = createFixture();
+    expect(fixture.acquireStakePools).toHaveBeenCalledTimes(1);
+    expect(fixture.releaseStakePools).not.toHaveBeenCalled();
+    fixture.unmount();
+    expect(fixture.releaseStakePools).toHaveBeenCalledTimes(1);
+  });
 
   it('shows the fixed upstream deposit refund and fee before any submission', async () => {
     const fixture = createFixture();

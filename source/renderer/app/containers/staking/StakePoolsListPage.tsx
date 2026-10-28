@@ -20,6 +20,16 @@ class StakePoolsListPage extends Component<Props> {
     actions: null,
     stores: null,
   };
+  // The page's content is the stake pool list: it is fetched while the page is
+  // open and not otherwise.
+  releaseStakePools: (() => void) | null = null;
+  componentDidMount() {
+    this.releaseStakePools = this.props.stores.staking.acquireStakePools();
+  }
+  componentWillUnmount() {
+    this.releaseStakePools?.();
+    this.releaseStakePools = null;
+  }
   handleDelegate = (poolId: string) => {
     const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
