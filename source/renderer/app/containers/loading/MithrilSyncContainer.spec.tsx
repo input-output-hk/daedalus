@@ -24,6 +24,7 @@ const makeBackend = (overrides = {}) => ({
   lastErrorCode: 'PROBE_FAILED',
   startMithril: jest.fn(),
   retryMithril: jest.fn(),
+  replayMithrilLedger: jest.fn(),
   startNode: jest.fn(),
   showBootstrapDecision: jest.fn(),
   rebuildChain: jest.fn(),
@@ -76,6 +77,48 @@ const renderContainer = (
       </IntlProvider>
     </ThemeProvider>
   );
+
+describe('MithrilSyncContainer ledger replay recovery', () => {
+  afterEach(cleanup);
+
+  it.each([false, true])(
+    'offers replay after conversion fails (rebuild: %s)',
+    (rebuildPending) => {
+      const backend = makeBackend({
+        lastErrorCode: 'PARTIAL_SYNC_CONVERSION_FAILED',
+        lastError: 'converter failed',
+        rebuildPending,
+        lastErrorRebuild: rebuildPending,
+      });
+      renderContainer(backend, {
+        [messages.errorReplayLedger.id]: 'Keep blocks and replay ledger',
+        [messages.errorReplayLedgerHint.id]:
+          'Replay uses the downloaded blocks.',
+      });
+      expect(
+        screen.getByText('Replay uses the downloaded blocks.')
+      ).toBeInTheDocument();
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Keep blocks and replay ledger' })
+      );
+      expect(backend.replayMithrilLedger).toHaveBeenCalledTimes(1);
+      expect(backend.retryMithril).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each([
+    'PARTIAL_SYNC_DOWNLOAD_COMMAND_FAILED',
+    'PARTIAL_SYNC_STAGED_DB_INVALID',
+    'INSTALL_FAILED',
+  ])('does not offer replay for %s', (lastErrorCode) => {
+    renderContainer(makeBackend({ lastErrorCode }), {
+      [messages.errorReplayLedger.id]: 'Keep blocks and replay ledger',
+    });
+    expect(
+      screen.queryByRole('button', { name: 'Keep blocks and replay ledger' })
+    ).toBeNull();
+  });
+});
 
 describe('MithrilSyncContainer progress view', () => {
   afterEach(cleanup);

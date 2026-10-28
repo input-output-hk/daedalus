@@ -1,4 +1,6 @@
 {
+  "loading.mithrilBootstrap.error.replayLedger": "ブロックを保持して台帳を再構築",
+  "loading.mithrilBootstrap.error.replayLedgerHint": "台帳スナップショットの変換に失敗しました。ダウンロードして検証済みのブロックデータを保持したまま、このコンピューター上で台帳を再構築できます。この処理には長い時間がかかる場合がありますが、ブロックを再度ダウンロードする必要はありません。",
   "ImageUploadWidget.clickToUploadLabel": "!!!or click to upload",
   "ImageUploadWidget.dropFileHint": "!!!Drop file here",
   "analytics.dialog.collapseButton": "詳細を隠す",

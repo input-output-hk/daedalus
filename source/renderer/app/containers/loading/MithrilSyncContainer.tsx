@@ -70,6 +70,7 @@ class MithrilSyncContainer extends Component<InjectedProps> {
     // After a failed install the watchdog starts no node until a Mithril sync
     // installs a database, so Retry is the only action.
     const retryOnly = backend.installRetryRequired;
+    const canReplayLedger = lastErrorCode === 'PARTIAL_SYNC_CONVERSION_FAILED';
     // Without a chain, skipping Mithril starts a sync from genesis, which the
     // user must choose knowingly: the sync choice names it, Skip does not.
     // This covers a refused first bootstrap and a rebuild refused in a new
@@ -87,6 +88,14 @@ class MithrilSyncContainer extends Component<InjectedProps> {
         variant: 'primary',
       },
     ];
+    if (canReplayLedger) {
+      errorActions[0].variant = 'secondary';
+      errorActions.unshift({
+        label: intl.formatMessage(messages.errorReplayLedger),
+        onClick: () => backend.replayMithrilLedger(),
+        variant: 'primary',
+      });
+    }
     if (backend.canChooseAnotherLocation) {
       errorActions.push({
         label: intl.formatMessage(messages.errorChooseLocation),
@@ -155,6 +164,11 @@ class MithrilSyncContainer extends Component<InjectedProps> {
       return (
         <div className={styles.card}>
           <MithrilErrorView
+            hint={
+              canReplayLedger
+                ? intl.formatMessage(messages.errorReplayLedgerHint)
+                : undefined
+            }
             error={
               lastError
                 ? { code: lastErrorCode ?? 'mithril_error', message: lastError }
