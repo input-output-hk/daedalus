@@ -1,0 +1,28 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-28T03:36:35Z",
+  "chain": {
+    "epoch": 7,
+    "slot": 1086
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/675323f8a3ef1ad61b2c7c824c0d83cf3184e3bc/payment-fees",
+    "body": {
+      "payments": [
+        {
+          "address": "addr_test1vraxreg3h0tjqd89zjslrjmvxxvv6jtmtdxrj43fcfczr3gq6k5zr",
+          "amount": {
+            "quantity": 111155408947,
+            "unit": "lovelace"
+          }
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": "{\"code\":\"not_enough_money\",\"info\":{\"shortfall\":{\"ada\":{\"quantity\":2274387753,\"unit\":\"lovelace\"},\"assets\":[]}},\"message\":\"I can't process this payment as there are not enough funds available in the wallet.\"}"
+  }
+}

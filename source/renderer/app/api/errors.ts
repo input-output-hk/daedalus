@@ -86,6 +86,34 @@ export const messages = defineMessages({
     description:
       '"Not enough ada . Try sending a smaller amount." error message',
   },
+  notEnoughFundsRewardsHeld: {
+    id: 'api.errors.notEnoughFundsRewardsHeld',
+    defaultMessage:
+      '!!!Not enough ada. Only funds other than this wallet\'s staking rewards count for this payment. The rewards cannot be withdrawn while the wallet\'s voting power is not delegated, for example because its DRep retired. Send a smaller amount, or delegate the voting power to any DRep, Abstain or No Confidence in the <a href="#/governance/delegate">Governance Center</a>. Once the delegation is confirmed, the rewards can be withdrawn and spent.',
+    description:
+      "Shown when a payment needs more than the wallet's funds other than its staking rewards, and the rewards cannot be withdrawn because the wallet's voting power is not delegated. HTML. The link opens the voting power delegation form.",
+  },
+  notEnoughFundsRewardsHeldRegistration: {
+    id: 'api.errors.notEnoughFundsRewardsHeldRegistration',
+    defaultMessage:
+      '!!!Not enough ada. Only funds other than this wallet\'s staking rewards count for this registration. The rewards cannot be withdrawn while the wallet\'s voting power is not delegated, for example because its DRep retired. Delegate the voting power to any DRep, Abstain or No Confidence in the <a href="#/governance/delegate">Governance Center</a>. Once the delegation is confirmed, a payment from this wallet withdraws the rewards, and they then count for the registration.',
+    description:
+      "Shown on the Catalyst voting registration step when the wallet's funds other than its staking rewards do not cover the registration, and the rewards cannot be withdrawn because the wallet's voting power is not delegated. HTML. The link opens the voting power delegation form.",
+  },
+  fundsHeldByPendingTransaction: {
+    id: 'api.errors.fundsHeldByPendingTransaction',
+    defaultMessage:
+      '!!!This wallet\'s funds are held by a pending transaction, so a new transaction cannot be built until that one is confirmed or removed. A pending transaction that is never confirmed expires two hours after it was sent. Once it has been pending for 10 minutes, it can be cancelled in the <a href="#/wallets/{walletId}/transactions">wallet\'s transaction list</a>.',
+    description:
+      "Shown when a transaction cannot be built because a pending transaction holds the wallet's funds. HTML. {walletId} is the wallet's id and the link opens its transaction list.",
+  },
+  drepNotRegistered: {
+    id: 'api.errors.drepNotRegistered',
+    defaultMessage:
+      '!!!This DRep is not registered, and the Cardano ledger refuses a delegation to a DRep that is not registered. A retired DRep is no longer registered. Choose another DRep, Abstain or No Confidence.',
+    description:
+      'Shown when the wallet refuses a vote delegation because the chosen DRep is not registered on the ledger.',
+  },
   invalidAddress: {
     id: 'api.errors.invalidAddress',
     defaultMessage: '!!!Please enter a valid address.',
@@ -115,12 +143,12 @@ export const messages = defineMessages({
     description:
       '"Balance after transaction would not leave enough ada in the wallet to support tokens remaining in wallet',
   },
-  conwayWalletNotDelegatedToDRep: {
-    id: 'api.errors.conwayWalletNotDelegatedToDRep',
+  withdrawalNotPossibleWithoutVote: {
+    id: 'api.errors.withdrawalNotPossibleWithoutVote',
     defaultMessage:
-      '!!!Daedalus cannot process this transaction because staking rewards withdrawals are blocked. To unblock your rewards go to the <a href="#/governance/dashboard">Governance Center</a> and delegate your voting power.',
+      '!!!This transaction withdraws this wallet\'s staking rewards. They cannot be withdrawn while the wallet\'s voting power is not delegated, for example because its DRep retired. Delegate the voting power to any DRep, Abstain or No Confidence in the <a href="#/governance/delegate">Governance Center</a>. The rewards can be withdrawn once the delegation is confirmed.',
     description:
-      'Error message shown when conway era wallet has staking rewards but has not participated in governance yet.',
+      "Shown when a transaction that withdraws staking rewards is refused, by the wallet before submission or by the node, because the wallet's reward account has no vote delegation. HTML. The link opens the voting power delegation form.",
   },
 });
 
@@ -128,6 +156,8 @@ export type Balances = {
   walletBalance: BigNumber;
   availableBalance: BigNumber;
   rewardsBalance: BigNumber;
+  // Rewards the ledger refuses to release; absent means none.
+  heldRewardsBalance?: BigNumber;
 };
 
 export const handleNotEnoughMoneyError = (
@@ -136,7 +166,12 @@ export const handleNotEnoughMoneyError = (
 ) => {
   let notEnoughMoneyError;
 
-  const { walletBalance, availableBalance, rewardsBalance } = balance;
+  const {
+    walletBalance,
+    availableBalance,
+    rewardsBalance,
+    heldRewardsBalance,
+  } = balance;
 
   if (walletBalance.gt(availableBalance)) {
     // 1. Amount exceeds availableBalance due to pending transactions:
@@ -151,8 +186,13 @@ export const handleNotEnoughMoneyError = (
     // - walletBalance === rewardsBalance
     // = show "Cannot send from a wallet that contains only rewards balances."
     notEnoughMoneyError = 'inputsDepleted';
+  } else if (heldRewardsBalance?.gt(0)) {
+    // 3. The only further funds are staking rewards the ledger holds back:
+    // - heldRewardsBalance > 0
+    // = show "Not enough ada. Only funds other than this wallet's staking rewards count..."
+    notEnoughMoneyError = 'notEnoughFundsRewardsHeld';
   } else {
-    // 3. Amount exceeds walletBalance:
+    // 4. Amount exceeds walletBalance:
     // - walletBalance === availableBalance
     // = show "Not enough Ada. Try sending a smaller amount."
     notEnoughMoneyError = 'notEnoughFundsForTransaction';

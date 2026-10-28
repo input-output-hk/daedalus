@@ -7,6 +7,9 @@ import type { DelegationCalculateFeeResponse } from '../../../../api/staking/typ
 import UndelegateWalletConfirmationDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletVoteFirstDialog from '../../../../components/wallet/settings/UndelegateWalletVoteFirstDialog';
 import UndelegateWalletSuccessDialog from '../../../../components/wallet/settings/UndelegateWalletSuccessDialog';
+import UndelegateWalletErrorDialog from '../../../../components/wallet/settings/UndelegateWalletErrorDialog';
+import LocalizableError from '../../../../i18n/LocalizableError';
+import ApiError from '../../../../domains/ApiError';
 import {
   DELEGATION_ACTIONS,
   DELEGATION_DEPOSIT,
@@ -17,6 +20,7 @@ type Props = InjectedProps & {
 };
 type State = {
   stakePoolQuitFee: DelegationCalculateFeeResponse | null | undefined;
+  submitError: LocalizableError | ApiError | null;
 };
 
 @inject('actions', 'stores')
@@ -26,8 +30,9 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     actions: null,
     stores: null,
   };
-  state = {
+  state: State = {
     stakePoolQuitFee: null,
+    submitError: null,
   };
   _isMounted = false;
   _ownsHardwareTransaction = false;
@@ -129,9 +134,16 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
         passphrase: '',
         isHardwareWallet: wallet.isHardwareWallet,
       });
-    } catch {
-      if (this._isMounted)
-        this.props.actions.dialogs.closeActiveDialog.trigger();
+    } catch (error) {
+      if (!this._isMounted) return;
+      // A failure with a message id was raised before the approval dialog
+      // opened and is shown here; any other failure is an outcome the approval
+      // dialog has already shown.
+      if (typeof (error as { id?: unknown })?.id === 'string')
+        this.setState({
+          submitError: error as LocalizableError | ApiError,
+        });
+      else this.props.actions.dialogs.closeActiveDialog.trigger();
     }
   };
 
@@ -237,6 +249,7 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
     if (this.needsVoteDelegationFirst && !this._undelegationStarted) {
       return (
         <UndelegateWalletVoteFirstDialog
+          walletId={walletToBeUndelegated.id}
           walletName={walletName}
           heldReward={walletToBeUndelegated.reward}
           isHardwareWallet={walletToBeUndelegated.isHardwareWallet}
@@ -258,7 +271,15 @@ class UndelegateWalletDialogContainer extends Component<Props, State> {
       );
     }
 
-    if (global.cip30Enabled) return null;
+    if (global.cip30Enabled) {
+      const { submitError } = this.state;
+      return submitError ? (
+        <UndelegateWalletErrorDialog
+          error={submitError}
+          onClose={() => actions.dialogs.closeActiveDialog.trigger()}
+        />
+      ) : null;
+    }
 
     const delegatedStakePool = getStakePoolById(stakePoolId);
     const stakePoolName = get(delegatedStakePool, 'name', '');

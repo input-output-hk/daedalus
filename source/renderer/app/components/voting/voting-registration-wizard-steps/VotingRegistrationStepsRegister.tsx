@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { get } from 'lodash';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -240,7 +240,9 @@ class VotingRegistrationStepsRegister extends Component<Props> {
 
         {transactionError ? (
           <div className={styles.errorMessage}>
-            <p>{intl.formatMessage(transactionError)}</p>
+            <p>
+              <FormattedHTMLMessage {...transactionError} />
+            </p>
           </div>
         ) : null}
       </VotingRegistrationDialog>

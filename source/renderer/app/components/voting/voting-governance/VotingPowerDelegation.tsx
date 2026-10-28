@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import BigNumber from 'bignumber.js';
 import { governanceSharedMessages } from '../../governance/_shared/governanceSharedMessages';
 import BorderedBox from '../../widgets/BorderedBox';
 import { messages } from './VotingPowerDelegation.messages';
+import { messages as apiErrorMessages } from '../../../api/errors';
 import styles from './VotingPowerDelegation.scss';
 import type { Intl } from '../../../types/i18nTypes';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -70,21 +71,29 @@ type State = {
     | 'confirmation';
   fees?: BigNumber;
   selectedWalletId: string | null;
-  txInitError?: InitializeVPDelegationTxError;
+  txInitError?: TxErrorCode;
 };
 
+// The codes of the fee step, plus the one the submit step adds when the wallet
+// refuses a delegation to a DRep that is not registered.
+type TxErrorCode = InitializeVPDelegationTxError | 'not_found';
+
 const mapOfTxErrorCodeToIntl: Record<
-  InitializeVPDelegationTxError,
+  TxErrorCode,
   (typeof messages)[keyof typeof messages]
 > = {
   generic: messages.initializeTxErrorGeneric,
-  same_vote: messages.initializeTxErrorSameVote,
+  same_vote: messages.transactionErrorSameVote,
   // Deliberately the same message. Having no spendable outputs and holding
   // less than the minimum are one condition to a reader: there is not enough
   // in this wallet to build the transaction, and the wallet may simply still
   // be syncing. Splitting them would name a distinction only the node makes.
   no_utxos_available: messages.initializeNotEnoughMoney,
   not_enough_money: messages.initializeNotEnoughMoney,
+  // no_utxos_available while a pending transaction holds the inputs: the
+  // wallet is not short of funds, they are not free yet.
+  pending_transaction: apiErrorMessages.fundsHeldByPendingTransaction,
+  not_found: apiErrorMessages.drepNotRegistered,
 };
 
 const SAME_VOTE_HINT_ID = 'votingPowerDelegationSameVoteHint';
@@ -259,7 +268,7 @@ function VotingPowerDelegation({
           selectedWalletId: selectedWallet.id,
           txInitError:
             result.errorCode in mapOfTxErrorCodeToIntl
-              ? (result.errorCode as InitializeVPDelegationTxError)
+              ? (result.errorCode as TxErrorCode)
               : 'generic',
           status: 'form-with-error',
         });
@@ -375,9 +384,10 @@ function VotingPowerDelegation({
             <>
               {state.status === 'form-with-error' && state.txInitError && (
                 <p className={styles.generalError}>
-                  {intl.formatMessage(
-                    mapOfTxErrorCodeToIntl[state.txInitError]
-                  )}
+                  <FormattedHTMLMessage
+                    {...mapOfTxErrorCodeToIntl[state.txInitError]}
+                    values={{ walletId: selectedWallet.id }}
+                  />
                 </p>
               )}
 
@@ -387,7 +397,7 @@ function VotingPowerDelegation({
                   quiet grey said the opposite of what it does. */}
               {isSameAsCurrent && (
                 <p className={styles.generalError} id={SAME_VOTE_HINT_ID}>
-                  {intl.formatMessage(messages.initializeTxErrorSameVote)}
+                  {intl.formatMessage(messages.transactionErrorSameVote)}
                 </p>
               )}
 

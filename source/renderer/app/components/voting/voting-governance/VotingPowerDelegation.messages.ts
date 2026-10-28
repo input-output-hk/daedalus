@@ -23,12 +23,12 @@ export const messages = defineMessages({
     description:
       'Shown when a delegation transaction fails to build or to submit',
   },
-  initializeTxErrorSameVote: {
-    id: 'voting.governance.initializeTxError.sameVote',
+  transactionErrorSameVote: {
+    id: 'voting.governance.transactionError.sameVote',
     defaultMessage:
-      '!!!This wallet already delegates to this choice. Please change delegation in order to proceed.',
+      '!!!This wallet already records a delegation of its voting power to this choice, so it will not send the same delegation again. If that delegation has ended, for example because the DRep retired, choose another DRep, Abstain or No Confidence.',
     description:
-      'Shown when the wallet is already delegated to the chosen option',
+      'Shown when the chosen DRep, Abstain or No Confidence is the delegation the wallet already records, before submission or when the wallet refuses it as the same vote. The second sentence is the way out when that record outlived the delegation',
   },
   initializeNotEnoughMoney: {
     id: 'voting.governance.initializeTxError.notEnoughMoney',

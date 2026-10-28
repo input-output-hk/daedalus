@@ -528,7 +528,9 @@ describe('Current-vote enrichment in the delegation form', () => {
     expect(screen.getByText('Inactive Soon')).toBeInTheDocument();
     expect(screen.getByText('Delegate To')).toBeInTheDocument();
     expect(
-      screen.getByText(/already delegates to this choice/)
+      screen.getByText(
+        /already records a delegation of its voting power to this choice/
+      )
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
     expect(stores.voting.delegateVotes).not.toHaveBeenCalled();
@@ -568,7 +570,9 @@ describe('Current-vote enrichment in the delegation form', () => {
     });
 
     expect(
-      screen.getByText(/already delegates to this choice/)
+      screen.getByText(
+        /already records a delegation of its voting power to this choice/
+      )
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
   });

@@ -126,7 +126,7 @@ describe('WalletsStore undelegation vote step', () => {
       transactionId: 'vote-tx',
     });
     runInAction('test', () => {
-      wallet.ledgerVote = { status: 'delegated', voting: { abstain: true } };
+      wallet.ledgerVote = { status: 'delegated', voting: { kind: 'abstain' } };
     });
     expect(store.undelegationVoteStepFor('wallet-a')).toBeNull();
   });

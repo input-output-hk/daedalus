@@ -265,6 +265,7 @@ import { getAccountPublicKey } from './wallets/requests/getAccountPublicKey';
 import { doesWalletRequireAdaToRemainToSupportTokens } from './utils/apiHelpers';
 import { AssetLocalData } from '../types/localDataTypes';
 import { handleNotEnoughMoneyError } from './errors';
+import { LEDGER_REFUSES_WITHDRAWAL } from './utils/submissionFailure';
 import { constructTransaction } from './transactions/requests/constructTransaction';
 import { signTransaction as signFrozenTransaction } from './transactions/requests/signTransaction';
 import { submitTransaction as submitFrozenTransaction } from './transactions/requests/submitTransaction';
@@ -1082,13 +1083,15 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
-        .set('conwayWalletNotDelegatedToDRep')
+        .set('withdrawalNotPossibleWithoutVote')
         .where('code', 'created_invalid_transaction')
-        .inc('message', 'ConwayWdrlNotDelegatedToDRep')
-        .set('conwayWalletNotDelegatedToDRep')
-        .where('code', 'withdrawal_not_possible_without_vote')
+        .inc('message', LEDGER_REFUSES_WITHDRAWAL)
         .set('transactionIsTooBig', true)
-        .where('code', 'transaction_is_too_big');
+        .where('code', 'transaction_is_too_big')
+        // The fee estimate of the same payment found inputs, so a send refused
+        // for lack of them means a pending transaction has taken them since.
+        .set('fundsHeldByPendingTransaction', false, { walletId })
+        .where('code', 'no_utxos_available');
 
       const { requiresAdaToRemainToSupportNativeTokens, adaToProceed } =
         doesWalletRequireAdaToRemainToSupportTokens(
@@ -1209,6 +1212,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       rewardsBalance,
+      heldRewardsBalance,
       isLegacy,
       withdrawal,
     } = request;
@@ -1254,7 +1258,11 @@ export default class AdaApi {
       if (!isRewardsRedemptionRequest && amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
-        throw new ApiError().result('cannotCoverFee');
+        throw new ApiError().result(
+          heldRewardsBalance?.gt(0)
+            ? 'notEnoughFundsRewardsHeld'
+            : 'cannotCoverFee'
+        );
       }
 
       logger.debug('AdaApi::calculateTransactionFee success', {
@@ -1269,6 +1277,7 @@ export default class AdaApi {
         walletBalance,
         availableBalance,
         rewardsBalance,
+        heldRewardsBalance,
       });
     }
   };
@@ -1278,6 +1287,7 @@ export default class AdaApi {
     walletBalance: BigNumber;
     availableBalance: BigNumber;
     rewardsBalance: BigNumber;
+    heldRewardsBalance?: BigNumber;
     payments?: CoinSelectionsPaymentRequestType;
     delegation?: CoinSelectionsDelegationRequestType;
     metadata?: VotingMetadataType;
@@ -1292,6 +1302,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       rewardsBalance,
+      heldRewardsBalance,
       metadata,
     } = request;
 
@@ -1349,6 +1360,7 @@ export default class AdaApi {
         walletBalance,
         availableBalance,
         rewardsBalance,
+        heldRewardsBalance,
       });
     }
   };
@@ -1425,9 +1437,9 @@ export default class AdaApi {
       });
 
       const apiError = new ApiError(error)
-        .set('conwayWalletNotDelegatedToDRep')
+        .set('withdrawalNotPossibleWithoutVote')
         .where('code', 'created_invalid_transaction')
-        .inc('message', 'ConwayWdrlNotDelegatedToDRep');
+        .inc('message', LEDGER_REFUSES_WITHDRAWAL);
 
       throw apiError.result();
     }
@@ -2303,6 +2315,9 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
+        .set('withdrawalNotPossibleWithoutVote')
+        .where('code', 'created_invalid_transaction')
+        .inc('message', LEDGER_REFUSES_WITHDRAWAL)
         .result();
     }
   };

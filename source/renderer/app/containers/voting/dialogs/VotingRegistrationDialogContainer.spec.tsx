@@ -46,6 +46,7 @@ import type {
 } from '../../../api/transactions/types';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { GenericApiError } from '../../../api/common/errors';
+import { messages as apiErrorMessages } from '../../../api/errors';
 
 jest.mock('../../../components/analytics/withAnalytics', () => ({
   withAnalytics: (component: React.ComponentType) => component,
@@ -952,7 +953,7 @@ describe('VotingRegistrationDialogContainer reward withdrawal', () => {
   const delegated = {
     ledgerVote: {
       status: 'delegated' as const,
-      voting: { status: 'abstain' } as never,
+      voting: { kind: 'abstain' as const },
     },
     reward: 5,
   };
@@ -1008,6 +1009,44 @@ describe('VotingRegistrationDialogContainer reward withdrawal', () => {
       fixture.unmount();
     }
   );
+  it('shows the registration wording of the held-rewards error as text with a link to the delegation form', async () => {
+    const fixture = mountRegistration(false, false, held);
+    fixture.calculateFee.mockRejectedValue({
+      ...apiErrorMessages.notEnoughFundsRewardsHeld,
+      values: {},
+    });
+    fixture.start();
+    expect(
+      await screen.findByText(
+        /Only funds other than this wallet's staking rewards count for this registration\./
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Governance Center' })
+    ).toHaveAttribute('href', '#/governance/delegate');
+    expect(
+      screen.getByText(
+        /a payment from this wallet withdraws the rewards, and they then count for the registration\./
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/<a href/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/count for this payment/)
+    ).not.toBeInTheDocument();
+    fixture.unmount();
+  });
+
+  it('shows the internal error message when the fee step throws a value with no message id', async () => {
+    const fixture = mountRegistration(false, false, held);
+    fixture.calculateFee.mockRejectedValue(new Error('socket hang up'));
+    fixture.start();
+    expect(
+      await screen.findByText(
+        /The wallet service encountered an internal error/
+      )
+    ).toBeInTheDocument();
+    fixture.unmount();
+  });
 });
 
 it('does not replace a newer registration key after cancelled key generation resumes', async () => {

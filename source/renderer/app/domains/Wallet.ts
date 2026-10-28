@@ -249,6 +249,16 @@ export default class Wallet {
     return this.reward;
   }
 
+  // A pending transaction holds the inputs it spends, so the wallet's total
+  // exceeds what is available plus the reward, which the available amount never
+  // includes.
+  @computed
+  get hasFundsHeldByPendingTransaction(): boolean {
+    return this.amount.gt(
+      this.availableAmount.plus(this.reward ?? new BigNumber(0))
+    );
+  }
+
   @computed
   get hasHeldRewards(): boolean {
     return this.heldReward.gt(0);

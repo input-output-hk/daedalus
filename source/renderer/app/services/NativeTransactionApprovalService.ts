@@ -13,6 +13,7 @@ import {
   reportWalletApprovalProgress,
   requestNativeTransactionApproval,
 } from '../ipc/nativeTransactionApproval';
+import { definiteSubmissionFailure } from '../api/utils/submissionFailure';
 
 type Execute = (
   passphrase: string | undefined,
@@ -70,6 +71,12 @@ const executeNativeTransaction = async (
     );
   } catch (error) {
     if (submitting) {
+      const definiteFailure = definiteSubmissionFailure(error);
+      if (definiteFailure)
+        return Object.freeze({
+          status: 'rejected',
+          errorCode: definiteFailure,
+        });
       const transactionIds: string[] = [];
       for (const item of attempt.prepared.items)
         if (item.kind === 'exact-cbor')

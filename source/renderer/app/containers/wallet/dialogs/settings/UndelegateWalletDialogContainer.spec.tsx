@@ -20,6 +20,7 @@ import { BrowserLocalStorageBridge } from '../../../../features/local-storage';
 import { DiscreetModeFeatureProvider } from '../../../../features/discreet-mode';
 import { AnalyticsProvider } from '../../../../components/analytics';
 import { noopAnalyticsTracker } from '../../../../analytics';
+import { messages as errorMessages } from '../../../../api/errors';
 import UndelegateWalletDialogContainer from './UndelegateWalletDialogContainer';
 
 jest.mock('../../../../components/widgets/Dialog', () => ({
@@ -52,10 +53,12 @@ const createFixture = ({
   decision = 'withdraw',
   isHardwareWallet = false,
   step = null,
+  undelegateError,
 }: {
   decision?: string;
   isHardwareWallet?: boolean;
   step?: Step;
+  undelegateError?: unknown;
 } = {}) => {
   const wallet = {
     id: 'wallet',
@@ -65,7 +68,10 @@ const createFixture = ({
     reward: new BigNumber(5),
   };
   const state = { decision, step };
-  const undelegateWallet = jest.fn().mockResolvedValue(undefined);
+  const undelegateWallet = jest.fn();
+  if (undelegateError === undefined)
+    undelegateWallet.mockResolvedValue(undefined);
+  else undelegateWallet.mockRejectedValue(undelegateError);
   const prepareUndelegationVote = jest.fn().mockResolvedValue(undefined);
   const submitUndelegationVote = jest.fn().mockResolvedValue(undefined);
   const cancelUndelegationVote = jest.fn();
@@ -215,6 +221,34 @@ describe('upstream undelegation confirmation', () => {
     );
     expect(fixture.prepareUndelegationVote).not.toHaveBeenCalled();
     expect(fixture.calculateDelegationFee).not.toHaveBeenCalled();
+  });
+
+  it('shows a construct refusal that carries a message in an error dialog instead of closing', async () => {
+    global.cip30Enabled = true;
+    const fixture = createFixture({
+      undelegateError: {
+        ...errorMessages.withdrawalNotPossibleWithoutVote,
+        values: {},
+      },
+    });
+    expect(
+      await screen.findByText(
+        /This transaction withdraws this wallet's staking rewards\./
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Governance Center' })
+    ).toHaveAttribute('href', '#/governance/delegate');
+    expect(fixture.close).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(fixture.close).toHaveBeenCalledTimes(1);
+  });
+
+  it('closes the dialog when the failure is an approval outcome with no message', async () => {
+    global.cip30Enabled = true;
+    const fixture = createFixture({ undelegateError: new Error('cancelled') });
+    await waitFor(() => expect(fixture.close).toHaveBeenCalledTimes(1));
+    expect(screen.queryByText(/staking rewards\./)).not.toBeInTheDocument();
   });
 
   it("runs today's flow when the decision omits the withdrawal at a zero reward", async () => {

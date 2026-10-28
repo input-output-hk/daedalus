@@ -40,7 +40,10 @@ const renderForm = (
   wallets: Wallet[],
   selectedWalletId?: string,
   selectedDRepId?: string,
-  onCancel: () => void = () => undefined
+  onCancel: () => void = () => undefined,
+  submitTransaction: React.ComponentProps<
+    typeof VotingPowerDelegation
+  >['submitTransaction'] = async () => ({ success: true })
 ) =>
   render(
     <ThemeProvider
@@ -65,7 +68,7 @@ const renderForm = (
                   : undefined
               }
               getStakePoolById={() => null}
-              submitTransaction={async () => ({ success: true })}
+              submitTransaction={submitTransaction}
               onBrowseDRepsClick={() => undefined}
               onCancel={onCancel}
               onExternalLinkClick={() => undefined}
@@ -161,5 +164,50 @@ describe('VotingPowerDelegation', () => {
         'Your stake is recorded on chain as not participating in governance.'
       )
     ).not.toBeInTheDocument();
+  });
+
+  describe('when the wallet refuses the delegation', () => {
+    const originalCapability = global.cip30Enabled;
+    beforeEach(() => {
+      global.cip30Enabled = true;
+    });
+    afterEach(() => {
+      global.cip30Enabled = originalCapability;
+    });
+    const DREP_ID =
+      'drep1ygqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq7vlc9n';
+    const refuse = async (errorCode: string) => {
+      renderForm([SHELLEY], SHELLEY.id, DREP_ID, undefined, async () => ({
+        success: false,
+        errorCode,
+      }));
+      fireEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    };
+
+    it('names another DRep, Abstain and No Confidence as the way out of same_vote', async () => {
+      await refuse('same_vote');
+      expect(
+        await screen.findByText(
+          translations['voting.governance.transactionError.sameVote']
+        )
+      ).toBeInTheDocument();
+    });
+
+    it('links the wallet transactions when a pending transaction holds the funds', async () => {
+      await refuse('pending_transaction');
+      expect(
+        await screen.findByText(/held by a pending transaction/)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: "wallet's transaction list" })
+      ).toHaveAttribute('href', '#/wallets/shelley-1/transactions');
+    });
+
+    it('says the DRep is not registered for not_found', async () => {
+      await refuse('not_found');
+      expect(
+        await screen.findByText(translations['api.errors.drepNotRegistered'])
+      ).toBeInTheDocument();
+    });
   });
 });

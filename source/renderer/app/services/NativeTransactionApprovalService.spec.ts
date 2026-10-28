@@ -1,6 +1,8 @@
 /** @jest-environment node */
 import { nativeApprovalBindingDigest } from '../../../common/transactions/nativePlan';
 import NativeTransactionApprovalService from './NativeTransactionApprovalService';
+import { GenericApiError } from '../api/common/errors';
+import { loadRecordedExchange } from '../../../../tests/jest/support/walletReplay';
 import type { WalletTransactionApprovalMainResponse } from '../../../common/ipc/api';
 import {
   bindNativeTransactionExecutor,
@@ -125,6 +127,70 @@ test('preserves explicit signing failures without mistaking a lost submission re
         throw new Error('Connection closed before submission response');
       })
     ).resolves.toEqual({ status: 'submission-unknown', transactionIds: [] });
+  } finally {
+    service.dispose();
+  }
+});
+
+test('reports a refusal the wallet gives as final after submission started as rejected, not unknown', async () => {
+  const request = requestNativeTransactionApproval as jest.MockedFunction<
+    typeof requestNativeTransactionApproval
+  >;
+  request.mockImplementation(async (attemptId) => {
+    const bind = bindNativeTransactionExecutor as jest.MockedFunction<
+      typeof bindNativeTransactionExecutor
+    >;
+    const execute = bind.mock.calls[bind.mock.calls.length - 1][0];
+    return {
+      status: 'accepted',
+      bindingDigest: nativeApprovalBindingDigest(prepared),
+      result: await execute({
+        type: 'execute',
+        attemptId,
+        requestId: 'request',
+        bindingDigest: nativeApprovalBindingDigest(prepared),
+      }),
+    };
+  });
+  const service = new NativeTransactionApprovalService();
+  const run = (
+    execute: Parameters<NativeTransactionApprovalService['request']>[1]
+  ) => service.request(prepared, execute, new AbortController().signal);
+  const refused = new GenericApiError(
+    JSON.parse(loadRecordedExchange('cip30', 'submit-refused').response.body)
+  );
+  try {
+    await expect(
+      run(async (_passphrase, _signal, markSubmitting) => {
+        await markSubmitting();
+        throw refused;
+      })
+    ).resolves.toEqual({
+      status: 'rejected',
+      errorCode: 'withdrawal_not_possible_without_vote',
+    });
+    await expect(
+      run(async (_passphrase, _signal, markSubmitting) => {
+        await markSubmitting();
+        throw Object.assign(new Error('Transaction submission failed'), {
+          code: 'dapp_submission_failed',
+        });
+      })
+    ).resolves.toEqual({
+      status: 'rejected',
+      errorCode: 'dapp_submission_failed',
+    });
+    await expect(
+      run(async (_passphrase, _signal, markSubmitting) => {
+        await markSubmitting();
+        throw new Error('Connection closed before submission response');
+      })
+    ).resolves.toEqual({ status: 'submission-unknown', transactionIds: [] });
+    await expect(
+      run(async () => {
+        throw refused;
+      })
+    ).resolves.toEqual({ status: 'rejected', errorCode: 'failed' });
   } finally {
     service.dispose();
   }

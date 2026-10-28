@@ -215,4 +215,14 @@ describe('balancesFor', () => {
     const idle = balancesFor(wallet, null);
     expect(idle.walletBalance.gt(idle.availableBalance)).toBe(false);
   });
+
+  it('reports the held reward as held when the request omits it', () => {
+    const held = { ...wallet, heldReward: new BigNumber(30) };
+    expect(balancesFor(held, null).heldRewardsBalance?.toString()).toBe('30');
+  });
+
+  it('reports no held reward when the request withdraws', () => {
+    const held = { ...wallet, heldReward: new BigNumber(30) };
+    expect(balancesFor(held, 'self').heldRewardsBalance?.toString()).toBe('0');
+  });
 });

@@ -294,6 +294,43 @@ const selectedAsset = {
   update: () => {},
 };
 
+const submitError = (message: { id: string; defaultMessage: string }) =>
+  new LocalizableError({
+    id: message.id,
+    defaultMessage: message.defaultMessage,
+    values: { walletId: 'storybook-wallet' },
+  });
+
+const renderSendFormWithSubmitError = (error: LocalizableError) => (
+  <WalletSendForm
+    currencyMaxFractionalDigits={6}
+    currencyMaxIntegerDigits={11}
+    currentNumberFormat={NUMBER_OPTIONS[0].value}
+    validateAmount={promise(true)}
+    validateAssetAmount={promise(true)}
+    calculateTransactionFee={promise(true)}
+    walletAmount={new BigNumber(123)}
+    addressValidator={() => true}
+    onSubmit={action('onSubmit')}
+    isRestoreActive={false}
+    hwDeviceStatus={HwDeviceStatuses.READY}
+    isDialogOpen={() => false}
+    hasAssets={false}
+    selectedAsset={null}
+    assets={[]}
+    isLoadingAssets={false}
+    onExternalLinkClick={action('onExternalLinkClick')}
+    onUnsetActiveAsset={() => {}}
+    isAddressFromSameWallet={false}
+    tokenFavorites={{}}
+    walletName="My wallet"
+    onTokenPickerDialogClose={action('onTokenPickerDialogClose')}
+    onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
+    analyticsTracker={analyticsTracker}
+    submitError={error}
+  />
+);
+
 storiesOf('Wallets / Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send - Send screen', () => (
@@ -325,4 +362,19 @@ storiesOf('Wallets / Send', module)
       analyticsTracker={analyticsTracker}
       confirmationDialogData={formData}
     />
-  ));
+  ))
+  .add('Send - refused: voting power not delegated', () =>
+    renderSendFormWithSubmitError(
+      submitError(messages.withdrawalNotPossibleWithoutVote)
+    )
+  )
+  .add('Send - not enough ada, rewards held', () =>
+    renderSendFormWithSubmitError(
+      submitError(messages.notEnoughFundsRewardsHeld)
+    )
+  )
+  .add('Send - funds held by a pending transaction', () =>
+    renderSendFormWithSubmitError(
+      submitError(messages.fundsHeldByPendingTransaction)
+    )
+  );

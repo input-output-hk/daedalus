@@ -126,6 +126,7 @@ export type GetTransactionFeeRequest = {
   walletBalance: BigNumber;
   availableBalance: BigNumber;
   rewardsBalance: BigNumber;
+  heldRewardsBalance?: BigNumber;
   isLegacy: boolean;
   withdrawal: TransactionWithdrawalType | null;
 };

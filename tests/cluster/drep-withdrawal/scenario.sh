@@ -54,6 +54,7 @@ trap cluster_stop EXIT
 PASS='' W1='' W2='' W3='' W1_ADDR='' W2_ADDR='' W3_ADDR='' POOL1='' POOL2=''
 DREP_A_LEGACY='' DREP_A_CIP129='' DREP_A_HEX='' DREP_B_LEGACY='' DREP_B_CIP129='' DREP_B_HEX=''
 DEST=''
+HELD_SUBMIT_OBSERVED=''
 PROBE_T0=0
 PROBES=()
 
@@ -123,7 +124,20 @@ vote() {
       "$(jq -n --arg p "$other" '{delegation_action: {action: "join", pool: $p}}')"
     VOTE_OBSERVED="fee step $(observed)"
     if ! is_accepted; then
-      [ "$R_CODE" != no_utxos_available ] || fixture vote-fee-funds-held
+      if [ "$R_CODE" = no_utxos_available ]; then
+        fixture vote-fee-funds-held
+        if [ "$label" = H-held ]; then
+          # The submission the confirmation dialog would send next, and the
+          # wallet's balances while the lock holds.
+          api "$label-submit" PUT "/v2/dreps/$target/wallets/$id" "$(jq -n --arg p "$PASS" '{passphrase: $p}')"
+          fixture vote-submit-funds-held
+          HELD_SUBMIT_OBSERVED=$(observed)
+          if is_accepted; then wait_last_tx "$id" || true; fi
+          api "$label-wallet" GET "/v2/wallets/$id"
+          fixture wallet-funds-held
+          HELD_SUBMIT_OBSERVED="$HELD_SUBMIT_OBSERVED; available $(jq -r '.balance.available.quantity' "$R_FILE"), reward $(jq -r '.balance.reward.quantity' "$R_FILE"), total $(jq -r '.balance.total.quantity' "$R_FILE")"
+        fi
+      fi
       return 0
     fi
     api "$label" PUT "/v2/dreps/$target/wallets/$id" "$(jq -n --arg p "$PASS" '{passphrase: $p}')"
@@ -411,6 +425,20 @@ after_retirement() {
     "HTTP 202" "$(observed)" '[ "$R_STATUS" = 202 ]'
   cp "$R_FILE" "$STATE/p-fee.res.json"
 
+  # An amount the funds other than the reward cannot cover but the total
+  # could: the held reward is not spendable.
+  local total reward spendable
+  total=$(wallet_json "$W1" | jq -r '.balance.total.quantity')
+  reward=$(reward_of "$W1")
+  spendable=$((total - reward))
+  api N-held POST "/v2/wallets/$W1/payment-fees" \
+    "$(jq -n --arg a "$DEST" --argjson q $(((spendable + total) / 2)) \
+      '{payments: [{address: $a, amount: {quantity: $q, unit: "lovelace"}}]}')"
+  fixture payment-fee-held-not-enough
+  check N-held "Payment fee estimate above the funds other than the reward, no withdrawal" \
+    "payment-fees, amount between spendable ($spendable) and total ($total)" \
+    "HTTP 403 not_enough_money" "$(observed)" '[ "$R_STATUS" = 403 ] && [ "$R_CODE" = not_enough_money ]'
+
   api F-pay-nowdrl POST "/v2/wallets/$W1/transactions" \
     "$(jq -n --argjson p "$payments" --arg pw "$PASS" '{payments: $p, passphrase: $pw}')"
   fixture payment-nowdrl
@@ -466,8 +494,10 @@ after_retirement() {
   before=$(available_of "$W1")
   construct_flow F-construct "$W1" \
     "$(jq -n --argjson p "$payments" '{encoding: "base16", payments: $p, withdrawal: "self"}')"
-  if [ "$CF_CONSTRUCT_STATUS" = 202 ]; then
-    R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+  R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+  if [ "$CF_CONSTRUCT_STATUS" != 202 ]; then
+    [ "$CF_CONSTRUCT_STATUS" != 403 ] || fixture construct-payment-refused
+  else
     fixture construct-payment
     if [ -n "$CF_SUBMIT_FILE" ]; then
       R_BASE=${CF_SUBMIT_FILE%.res.json}
@@ -484,6 +514,23 @@ after_retirement() {
     "available unchanged, no pending transaction" "$(funds_seen "$before" "$W1")" \
     'funds_unchanged "$before" "$W1"'
   release_pending "$W1" F-construct
+
+  if [ "$BACKEND" = cip30 ]; then
+    before=$(available_of "$W1")
+    if [ -s "$OUT/F-construct.signed.cbor.hex" ] && dapp_submit F-dapp-submit "$W1" "$OUT/F-construct.signed.cbor.hex"; then
+      fixture dapp-submission-refused
+      check F-dapp-submit "Hardware-wallet submission of the signed payment with the withdrawal" \
+        "POST /v2/wallets/{id}/transaction-submission, cip30 builds" \
+        "HTTP 409 dapp_submission_failed, nothing submitted (available unchanged, no pending transaction)" \
+        "$(observed); $(funds_seen "$before" "$W1")" \
+        '[ "$R_STATUS" = 409 ] && [ "$R_CODE" = dapp_submission_failed ] && funds_unchanged "$before" "$W1"'
+      release_pending "$W1" F-dapp-submit
+    else
+      result F-dapp-submit "Hardware-wallet submission of the signed payment with the withdrawal" \
+        "POST /v2/wallets/{id}/transaction-submission, cip30 builds" \
+        "HTTP 409 dapp_submission_failed" "no request sent: ${DAPP_SUBMIT_WHY:-no signed payment}" PRECONDITION
+    fi
+  fi
 
   construct_flow P-construct "$W1" "$(jq -n --argjson p "$payments" '{encoding: "base16", payments: $p}')"
   if [ "$CF_CONSTRUCT_STATUS" = 202 ]; then
@@ -548,6 +595,13 @@ after_retirement() {
     '{"encoding": "base16", "delegations": [{"quit": {"stake_key_index": "0H"}}], "withdrawal": "self"}'
   check F-quit-construct "Undelegation (always withdraws)" "construct, cip30 builds" \
     "$GATE (at construct)" "$(construct_observed)" construct_refused_before_submission
+  if [ "$CF_CONSTRUCT_STATUS" = 403 ]; then
+    R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+    fixture quit-construct-refused
+  elif [ -n "$CF_SUBMIT_FILE" ]; then
+    R_BASE=${CF_SUBMIT_FILE%.res.json}
+    fixture quit-construct-submit-refused
+  fi
   release_pending "$W1" F-quit-construct
 
   # A pool change, and straight back within the epoch, so W1 keeps earning
@@ -672,6 +726,7 @@ redelegate() {
   if wait_withdrawable "$W1"; then
     before=$(available_of "$W1")
     api F-quit DELETE "/v2/stake-pools/*/wallets/$W1" "$(jq -n --arg p "$PASS" '{passphrase: $p}')"
+    fixture quit-refused
     check F-quit "Undelegation (always withdraws)" "DELETE /v2/stake-pools/*, mainnet build" \
       "$GATE" "$(observed)" is_refused_before_submission
     check F-quit-funds "Funds available after the refused undelegation" "GET /v2/wallets/{id}" \
@@ -685,6 +740,11 @@ redelegate() {
   vote H-held "$W1" "$DREP_B_CIP129"
   check H-held "Vote delegation right after the refused undelegation" "vote, $(build_of "$BACKEND")" \
     "accepted" "$VOTE_OBSERVED" '[ "$VOTE_ACCEPTED" = yes ]'
+  if [ -n "$HELD_SUBMIT_OBSERVED" ]; then
+    result H-held-submit "Vote submission while the refused undelegation's funds are held" \
+      "PUT /v2/dreps/{B}/wallets/{id}, then GET /v2/wallets/{id}, mainnet build" \
+      "(measurement)" "$HELD_SUBMIT_OBSERVED" NOTE
+  fi
   if [ "$VOTE_ACCEPTED" != yes ]; then
     release_pending "$W1" H-held
     vote H-vote "$W1" "$DREP_B_CIP129"

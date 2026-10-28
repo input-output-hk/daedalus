@@ -20,6 +20,13 @@ import translations from '../i18n/locales/en-US.json';
 import { daedalusTheme } from '../themes/daedalus';
 import { themeOverrides } from '../themes/overrides';
 import VotingPowerDelegation from '../components/voting/voting-governance/VotingPowerDelegation';
+import { GenericApiError } from '../api/common/errors';
+import { _createWalletFromServerData } from '../api/api';
+import { loadRecordedExchange } from '../../../../tests/jest/support/walletReplay';
+
+// api.ts builds a global.https agent when request.ts loads; these specs never
+// send a request.
+jest.mock('../api/utils/request', () => ({ request: jest.fn() }));
 
 beforeEach(() => {
   global.cip30Enabled = true;
@@ -255,7 +262,7 @@ describe('same-vote server error in the delegation form', () => {
 
     expect(
       await screen.findByText(
-        'This wallet already delegates to this choice. Please change delegation in order to proceed.'
+        translations['voting.governance.transactionError.sameVote']
       )
     ).toBeInTheDocument();
     expect(submitTransaction).toHaveBeenCalledWith(
@@ -385,5 +392,220 @@ describe('upstream governance store dispatch', () => {
     expect(
       hardwareWallets.submitConstructedNativeTransaction
     ).not.toHaveBeenCalled();
+  });
+});
+
+describe('vote error codes from recorded wallet answers', () => {
+  const originalCapability = global.cip30Enabled;
+  beforeEach(() => {
+    jest.spyOn(logger, 'error').mockImplementation(() => undefined);
+    jest.spyOn(logger, 'debug').mockImplementation(() => undefined);
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+    global.cip30Enabled = originalCapability;
+  });
+
+  const answer = (
+    backend: 'upstream' | 'cip30' | 'ledger-vote',
+    name: string
+  ) =>
+    new GenericApiError(
+      JSON.parse(loadRecordedExchange(backend, name).response.body)
+    );
+  const walletFrom = (backend: 'upstream', name: string) => {
+    const capability = global.cip30Enabled;
+    global.cip30Enabled = false;
+    try {
+      return _createWalletFromServerData(
+        JSON.parse(loadRecordedExchange(backend, name).response.body)
+      );
+    } finally {
+      global.cip30Enabled = capability;
+    }
+  };
+  const lockedWallet = () => walletFrom('upstream', 'wallet-funds-held');
+  const freeWallet = () => walletFrom('upstream', 'wallet-retired-drep');
+  const notEnoughMoney = () =>
+    new ApiError({
+      code: 'not_enough_money',
+      message: 'constructed from the wallet error shape',
+    }).result();
+
+  describe('initializeVPDelegationTx on the mainnet build', () => {
+    const run = async (error: unknown, wallet: any) => {
+      global.cip30Enabled = false;
+      const selectCoins = jest.fn().mockRejectedValue(error);
+      const api = { ada: { selectCoins } };
+      const store = new VotingStore(
+        api as any,
+        {} as any,
+        buildAnalytics() as any
+      );
+      store.configure({
+        hardwareWallets: {},
+        staking: { stakePools: [{ id: 'pool-1' }] },
+      } as any);
+      return store.initializeVPDelegationTx({
+        chosenOption: 'abstain',
+        wallet,
+      });
+    };
+
+    it('gives pending_transaction when a pending transaction holds the inputs', async () => {
+      const wallet = lockedWallet();
+      expect(wallet.hasFundsHeldByPendingTransaction).toBe(true);
+      await expect(
+        run(answer('upstream', 'vote-fee-funds-held'), wallet)
+      ).resolves.toEqual({ success: false, errorCode: 'pending_transaction' });
+    });
+
+    it('keeps no_utxos_available when nothing is pending', async () => {
+      const wallet = freeWallet();
+      expect(wallet.hasFundsHeldByPendingTransaction).toBe(false);
+      await expect(
+        run(answer('upstream', 'vote-fee-funds-held'), wallet)
+      ).resolves.toEqual({ success: false, errorCode: 'no_utxos_available' });
+    });
+  });
+
+  describe('delegateVotes', () => {
+    const submit = async ({
+      cip30,
+      hardware,
+      error,
+      wallet,
+    }: {
+      cip30: boolean;
+      hardware?: boolean;
+      error: unknown;
+      wallet: any;
+    }) => {
+      global.cip30Enabled = cip30;
+      const delegateVotes = jest.fn().mockRejectedValue(error);
+      const api = { ada: { delegateVotes } };
+      const store = new VotingStore(
+        api as any,
+        {} as any,
+        buildAnalytics() as any
+      );
+      const reject = jest.fn().mockRejectedValue(error);
+      store.configure({
+        hardwareWallets: {
+          _sendMoney: reject,
+          submitConstructedNativeTransaction: reject,
+        },
+        wallets: { submitConstructedNativeTransaction: reject },
+        transactions: {
+          withWalletSendLock: (_id: string, work: () => Promise<unknown>) =>
+            work(),
+        },
+      } as any);
+      const target = { ...wallet, isHardwareWallet: !!hardware };
+      return store.delegateVotes({
+        chosenOption: 'abstain',
+        passphrase: 'Secret-passphrase-1',
+        wallet: Object.assign(
+          Object.create(Object.getPrototypeOf(wallet)),
+          wallet,
+          target
+        ),
+      });
+    };
+
+    const cases: Array<
+      [string, boolean, boolean, () => unknown, string, boolean]
+    > = [
+      [
+        'mainnet submit, same_vote',
+        false,
+        false,
+        () => answer('upstream', 'vote-same-drep'),
+        'same_vote',
+        false,
+      ],
+      [
+        'mainnet submit, no_utxos_available while pending',
+        false,
+        false,
+        () => answer('upstream', 'vote-submit-funds-held'),
+        'pending_transaction',
+        true,
+      ],
+      [
+        'mainnet submit, no_utxos_available with nothing pending',
+        false,
+        false,
+        () => answer('upstream', 'vote-submit-funds-held'),
+        'no_utxos_available',
+        false,
+      ],
+      [
+        'mainnet submit, not_found',
+        false,
+        false,
+        () => answer('ledger-vote', 'vote-retired-drep'),
+        'not_found',
+        false,
+      ],
+      [
+        'mainnet submit, not_enough_money',
+        false,
+        false,
+        notEnoughMoney,
+        'not_enough_money',
+        false,
+      ],
+      [
+        'mainnet hardware, same_vote',
+        false,
+        true,
+        () => answer('upstream', 'vote-same-drep'),
+        'same_vote',
+        false,
+      ],
+      [
+        'cip30 software, same_vote at construct',
+        true,
+        false,
+        () => answer('cip30', 'vote-construct-retired'),
+        'same_vote',
+        false,
+      ],
+      [
+        'cip30 software, not_found at construct',
+        true,
+        false,
+        () => answer('ledger-vote', 'vote-construct-retired'),
+        'not_found',
+        false,
+      ],
+      [
+        'cip30 hardware, same_vote at construct',
+        true,
+        true,
+        () => answer('cip30', 'vote-construct-retired'),
+        'same_vote',
+        false,
+      ],
+      [
+        'cip30 hardware, not_found at construct',
+        true,
+        true,
+        () => answer('ledger-vote', 'vote-construct-retired'),
+        'not_found',
+        false,
+      ],
+    ];
+
+    it.each(cases)(
+      '%s',
+      async (_label, cip30, hardware, error, expected, locked) => {
+        const wallet = locked ? lockedWallet() : freeWallet();
+        await expect(
+          submit({ cip30, hardware, error: error(), wallet })
+        ).resolves.toEqual({ success: false, errorCode: expected });
+      }
+    );
   });
 });

@@ -72,3 +72,36 @@ describe('Wallet held rewards', () => {
     expect(current.ledgerVote).toEqual({ status: 'unknown' });
   });
 });
+
+describe('Wallet funds held by a pending transaction', () => {
+  it('is false when the total is the available amount plus the reward', () => {
+    expect(wallet().hasFundsHeldByPendingTransaction).toBe(false);
+  });
+
+  it('is true when the total exceeds the available amount plus the reward', () => {
+    const locked = wallet({
+      amount: new BigNumber(110),
+      availableAmount: new BigNumber(60),
+      reward: new BigNumber(40),
+    });
+    expect(locked.hasFundsHeldByPendingTransaction).toBe(true);
+  });
+
+  it('is true for a wallet with no reward when funds are held', () => {
+    const locked = wallet({
+      amount: new BigNumber(100),
+      availableAmount: new BigNumber(60),
+      reward: new BigNumber(0),
+    });
+    expect(locked.hasFundsHeldByPendingTransaction).toBe(true);
+  });
+
+  it('is false for a wallet with no reward and nothing held', () => {
+    const free = wallet({
+      amount: new BigNumber(100),
+      availableAmount: new BigNumber(100),
+      reward: new BigNumber(0),
+    });
+    expect(free.hasFundsHeldByPendingTransaction).toBe(false);
+  });
+});

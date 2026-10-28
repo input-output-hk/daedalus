@@ -39,6 +39,7 @@ import type { StoresMap } from '../../stores';
 import type { CoinSelectionsResponse } from '../../api/transactions/types';
 import type { LedgerVoteDelegation } from '../../api/wallets/types';
 import { decideWithdrawal } from '../../utils/governance/rewardWithdrawal';
+import { messages as errorMessages } from '../../api/errors';
 
 jest.mock('../../components/analytics/withAnalytics', () => ({
   withAnalytics: (component: React.ComponentType) => component,
@@ -453,7 +454,7 @@ describe('WalletSendPage reward withdrawal', () => {
       {
         ledgerVote: {
           status: 'delegated' as const,
-          voting: { status: 'abstain' } as never,
+          voting: { kind: 'abstain' as const },
         },
         reward: 5,
       },
@@ -566,7 +567,7 @@ describe('WalletSendPage confirmation note on held rewards', () => {
   const delegated = {
     ledgerVote: {
       status: 'delegated' as const,
-      voting: { status: 'abstain' } as never,
+      voting: { kind: 'abstain' as const },
     },
     reward: 5,
   };
@@ -705,5 +706,49 @@ describe('WalletSendPage spendable amount', () => {
       reward: 5,
     });
     expect(text).toContain('20');
+  });
+});
+
+describe('WalletSendPage failure before the approval dialog', () => {
+  const MESSAGE =
+    /This transaction withdraws this wallet's staking rewards\. They cannot be withdrawn/;
+  const refusal = () => ({
+    ...errorMessages.withdrawalNotPossibleWithoutVote,
+    values: {},
+  });
+
+  it('shows a refused construct beside the Send button on a cip30 software send', async () => {
+    global.cip30Enabled = true;
+    global.isFlight = false;
+    const fixture = mountSend(false);
+    fixture.softwareSend.mockRejectedValue(refusal());
+    await clickSend();
+    expect(await screen.findByText(MESSAGE)).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Governance Center' })
+    ).toHaveAttribute('href', '#/governance/delegate');
+  });
+
+  it('shows a refused construct beside the Send button on a cip30 hardware send', async () => {
+    global.cip30Enabled = true;
+    global.isFlight = false;
+    const fixture = mountSend(true);
+    fixture.actions.hardwareWallets.sendMoney.removeAll();
+    fixture.actions.hardwareWallets.sendMoney.listen(() =>
+      Promise.reject(refusal())
+    );
+    await clickSend();
+    expect(await screen.findByText(MESSAGE)).toBeInTheDocument();
+  });
+
+  it('shows nothing for an approval outcome that carries no message', async () => {
+    global.cip30Enabled = true;
+    global.isFlight = false;
+    const fixture = mountSend(false);
+    fixture.softwareSend.mockRejectedValue(new Error('cancelled'));
+    await clickSend();
+    await waitFor(() => expect(fixture.softwareSend).toHaveBeenCalled());
+    expect(screen.queryByText(MESSAGE)).not.toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });

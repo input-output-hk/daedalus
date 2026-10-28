@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { injectIntl } from 'react-intl';
+import { FormattedHTMLMessage, injectIntl } from 'react-intl';
 import type {
   TransactionReviewAsset,
   TransactionReviewEntry,
@@ -16,6 +16,7 @@ import { CollapsibleSection } from '../widgets/collapsible-section/CollapsibleSe
 import Dialog from '../widgets/Dialog';
 import { MonospaceTextBlock } from '../widgets/monospace-text-block/MonospaceTextBlock';
 import { messages } from './TransactionApprovalDialog.messages';
+import { messages as apiErrorMessages } from '../../api/errors';
 import type {
   TransactionApprovalDialogProps,
   TransactionApprovalItem,
@@ -736,6 +737,18 @@ function ResultSummary({
     title = messages.deviceRejectedTitle;
     message = messages.deviceRejectedMessage;
   }
+  // A refusal the wallet gives as final is explained when the cause is the
+  // withdrawal rule; the generic failure text covers every other refusal.
+  const withdrawsWalletRewards = request.items.some(({ display }) =>
+    display.withdrawals.some(({ ownership }) => ownership === 'wallet')
+  );
+  let htmlMessage: { id: string; defaultMessage: string } | undefined;
+  if (message === messages.rejectedMessage) {
+    if (errorCode === 'withdrawal_not_possible_without_vote')
+      htmlMessage = apiErrorMessages.withdrawalNotPossibleWithoutVote;
+    else if (errorCode === 'dapp_submission_failed' && withdrawsWalletRewards)
+      htmlMessage = messages.submissionFailedWithdrawalMessage;
+  }
   const failure = variant === styles.resultFailure;
   const stateMessages = {
     pending: messages.awaitingConfirmation,
@@ -753,9 +766,13 @@ function ResultSummary({
     >
       <h2>{intl.formatMessage(title)}</h2>
       <p>
-        {intl.formatMessage(
-          message,
-          failedItem === undefined ? undefined : { failedItem }
+        {htmlMessage ? (
+          <FormattedHTMLMessage {...htmlMessage} />
+        ) : (
+          intl.formatMessage(
+            message,
+            failedItem === undefined ? undefined : { failedItem }
+          )
         )}
       </p>
       {transactionIds.length > 0 && (

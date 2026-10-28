@@ -1,5 +1,4 @@
 import type AdaApiClass from '../../../source/renderer/app/api/api';
-import { knownDefect } from '../support/knownDefect';
 import {
   loadRecordedExchange,
   provideRequestGlobals,
@@ -27,7 +26,7 @@ const AdaApi = require('../../../source/renderer/app/api/api')
 const refusedPayment = loadRecordedExchange('upstream', 'payment-refused');
 const refusedSubmission = loadRecordedExchange('upstream', 'proxy-refused');
 
-const DREP_MESSAGE = 'api.errors.conwayWalletNotDelegatedToDRep';
+const DREP_MESSAGE = 'api.errors.withdrawalNotPossibleWithoutVote';
 
 const paymentRequest = () => {
   const { request } = refusedPayment;
@@ -78,17 +77,11 @@ describe('AdaApi', () => {
     });
   });
 
-  knownDefect(
-    'createTransaction reports the refused withdrawal with the DRep delegation message',
-    'the mapping chain resolves to GenericApiError ("An error occurred.")',
-    async () => {
-      const api = await replayRefusals();
-      const error = await api
-        .createTransaction(paymentRequest())
-        .catch((e) => e);
-      expect(error.id).toBe(DREP_MESSAGE);
-    }
-  );
+  it('createTransaction reports the refused withdrawal with the DRep delegation message', async () => {
+    const api = await replayRefusals();
+    const error = await api.createTransaction(paymentRequest()).catch((e) => e);
+    expect(error.id).toBe(DREP_MESSAGE);
+  });
 
   it('createExternalTransaction reports the refused withdrawal with the DRep delegation message', async () => {
     expect(refusedSubmission.response.status).toBe(500);

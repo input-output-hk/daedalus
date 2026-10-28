@@ -88,6 +88,7 @@ export const balancesFor = (
     amount: BigNumber;
     availableAmount: BigNumber;
     reward: BigNumber;
+    heldReward?: BigNumber;
   }>,
   withdrawal: 'self' | null
 ): Balances =>
@@ -96,9 +97,11 @@ export const balancesFor = (
         walletBalance: wallet.amount,
         availableBalance: wallet.availableAmount.plus(wallet.reward),
         rewardsBalance: wallet.reward,
+        heldRewardsBalance: new BigNumber(0),
       }
     : {
         walletBalance: wallet.amount.minus(wallet.reward),
         availableBalance: wallet.availableAmount,
         rewardsBalance: new BigNumber(0),
+        heldRewardsBalance: wallet.heldReward ?? new BigNumber(0),
       };

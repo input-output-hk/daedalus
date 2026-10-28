@@ -192,6 +192,84 @@ describe('TransactionApprovalDialog', () => {
     expect(onViewTransaction).toHaveBeenCalledWith(review.transactionId);
   });
 
+  describe('after a refusal the wallet gives as final', () => {
+    const withWithdrawal = (ownership: 'wallet' | 'other') => {
+      const withdrawalDisplay = {
+        ...display,
+        withdrawals: [{ account: 'e0'.repeat(29), coin: '5000000', ownership }],
+      };
+      return {
+        ...request,
+        items: [{ ...request.items[0], display: withdrawalDisplay }],
+      };
+    };
+
+    it('explains the withdrawal rule and links the delegation form when the ledger refused the withdrawal', () => {
+      renderDialog({
+        request: withWithdrawal('wallet'),
+        result: {
+          status: 'rejected',
+          errorCode: 'withdrawal_not_possible_without_vote',
+        },
+      });
+      const alert = screen.getByRole('alert');
+      expect(within(alert).getByRole('heading')).toHaveTextContent(
+        '!!!Transaction failed'
+      );
+      expect(alert).toHaveTextContent(
+        /This transaction withdraws this wallet's staking rewards\./
+      );
+      expect(
+        within(alert).getByRole('link', { name: 'Governance Center' })
+      ).toHaveAttribute('href', '#/governance/delegate');
+    });
+
+    it('says the wallet gave no reason when a hardware submission that withdraws failed', () => {
+      renderDialog({
+        request: withWithdrawal('wallet'),
+        result: { status: 'rejected', errorCode: 'dapp_submission_failed' },
+      });
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveTextContent(
+        /The wallet reports that this transaction failed and gives no reason\./
+      );
+      expect(
+        within(alert).getByRole('link', { name: 'Governance Center' })
+      ).toHaveAttribute('href', '#/governance/delegate');
+    });
+
+    it.each([
+      ['a request that withdraws nothing owned', withWithdrawal('other')],
+      ['a request with no withdrawal', request],
+    ])(
+      'shows the generic failure text for dapp_submission_failed on %s',
+      (_label, plain) => {
+        renderDialog({
+          request: plain,
+          result: { status: 'rejected', errorCode: 'dapp_submission_failed' },
+        });
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent(
+          '!!!The transaction could not be completed.'
+        );
+        expect(within(alert).queryByRole('link')).not.toBeInTheDocument();
+      }
+    );
+
+    it('shows the generic failure text for any other node refusal', () => {
+      renderDialog({
+        request: withWithdrawal('wallet'),
+        result: {
+          status: 'rejected',
+          errorCode: 'created_invalid_transaction',
+        },
+      });
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        '!!!The transaction could not be completed.'
+      );
+    });
+  });
+
   it('shows wallet impact, fee, readable entries, and collapsed exact bytes', async () => {
     renderDialog();
     await waitFor(() =>

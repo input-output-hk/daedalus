@@ -265,7 +265,7 @@ class UndelegateWalletConfirmationDialog extends Component<Props> {
         onExternalLinkClick={onExternalLinkClick}
       />
     ) : (
-      this.context.intl.formatMessage(error)
+      <FormattedHTMLMessage {...error} />
     );
     return result;
   };

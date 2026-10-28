@@ -233,7 +233,9 @@ const renderPrefilledPanel = (
 // story rather than by a knob. The current delegation and the chosen DRep are
 // deliberately different, so the message is read against a screen that does
 // not contradict it.
-const renderErrorPanel = (errorCode: InitializeVPDelegationTxError) => (
+const renderErrorPanel = (
+  errorCode: InitializeVPDelegationTxError | 'not_found'
+) => (
   <div style={CENTERED_STORY_STYLE}>
     <GovernanceWrapper option="drepVerified">
       {({ wallets, drepIndex }) => (
@@ -477,6 +479,12 @@ storiesOf('Governance / Delegation', module)
   )
   .add('Initialization error - not enough money', () =>
     renderErrorPanel('not_enough_money')
+  )
+  .add('Initialization error - pending transaction', () =>
+    renderErrorPanel('pending_transaction')
+  )
+  .add('Submission error - DRep not registered', () =>
+    renderErrorPanel('not_found')
   )
   // A wallet with no delegation at all. The current-delegation panel renders
   // nothing here by design, so the form runs straight from the wallet select

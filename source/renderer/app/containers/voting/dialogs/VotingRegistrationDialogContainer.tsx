@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 // @ts-ignore ts-migrate(2305) FIXME: Module '"react"' has no exported member 'Node'.
 import type { Node } from 'react';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { messages as apiErrorMessages } from '../../../api/errors';
 import {
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
   VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT,
@@ -326,8 +327,14 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
           votingData,
         });
       }
-    } catch (error) {
+    } catch (thrown) {
       if (!isCurrent()) return;
+      // Only errors that carry a message id can be drawn; anything else
+      // thrown while preparing the registration reads as an internal error.
+      const error =
+        thrown && typeof thrown.id === 'string'
+          ? thrown
+          : apiErrorMessages.walletInternalError;
       const errorHasLink = !!get(error, ['values', 'linkLabel']);
       const transactionFeeError = errorHasLink ? (
         <FormattedHTMLMessageWithLink
@@ -335,7 +342,14 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
           onExternalLinkClick={app.openExternalLink}
         />
       ) : (
-        this.context.intl.formatMessage(error)
+        <FormattedHTMLMessage
+          {...(error.id === apiErrorMessages.notEnoughFundsRewardsHeld.id
+            ? {
+                ...error,
+                ...apiErrorMessages.notEnoughFundsRewardsHeldRegistration,
+              }
+            : error)}
+        />
       );
 
       if (this._isMounted) {

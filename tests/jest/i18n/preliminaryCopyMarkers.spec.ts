@@ -11,6 +11,11 @@ const REVIEWED_JA_JP_EXCEPTIONS = [
   'wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement',
 ];
 
+// Governance strings whose English is final and whose Japanese has not yet
+// come back from the translator. Each keeps its ja-JP marker until then, and
+// the list has to be empty before a release; nothing else is exempt.
+const PENDING_TRANSLATION = ['voting.governance.transactionError.sameVote'];
+
 const GOVERNANCE_NAMESPACES = ['governance.', 'voting.governance.'];
 
 const en: Record<string, string> = enUS;
@@ -49,7 +54,15 @@ describe('preliminary copy markers', () => {
     // translator's pass and went out with drafted Japanese behind it.
     const marked = Object.keys(en)
       .filter((key) => GOVERNANCE_NAMESPACES.some((ns) => key.startsWith(ns)))
-      .filter((key) => key in ja && ja[key].startsWith('!!!'));
+      .filter((key) => key in ja && ja[key].startsWith('!!!'))
+      .filter((key) => !PENDING_TRANSLATION.includes(key));
     expect(marked).toEqual([]);
+  });
+
+  it('lists as pending only keys whose Japanese still carries the marker', () => {
+    const stale = PENDING_TRANSLATION.filter(
+      (key) => !(key in ja) || !ja[key].startsWith('!!!')
+    );
+    expect(stale).toEqual([]);
   });
 });

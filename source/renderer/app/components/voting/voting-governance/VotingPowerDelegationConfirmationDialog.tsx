@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedHTMLMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import Dialog from '../../widgets/Dialog';
@@ -15,6 +15,7 @@ import { DelegateVotesError } from '../../../stores/VotingStore';
 import type { Intl, ReactIntlMessage } from '../../../types/i18nTypes';
 import globalMessages from '../../../i18n/global-messages';
 import { messages } from './VotingPowerDelegationConfirmationDialog.messages';
+import { messages as delegationMessages } from './VotingPowerDelegation.messages';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { VoteType } from './types';
 import { sharedGovernanceMessages } from './shared-messages';
@@ -27,6 +28,13 @@ const mapOfTxErrorCodeToIntl: Record<
 > = {
   generic: messages.errorGeneric,
   wrong_encryption_passphrase: apiErrorMessage.wrongEncryptionPassphrase,
+  same_vote: delegationMessages.transactionErrorSameVote,
+  // Having no spendable outputs and holding less than the minimum are one
+  // condition to a reader, as in the delegation form.
+  no_utxos_available: delegationMessages.initializeNotEnoughMoney,
+  not_enough_money: delegationMessages.initializeNotEnoughMoney,
+  pending_transaction: apiErrorMessage.fundsHeldByPendingTransaction,
+  not_found: apiErrorMessage.drepNotRegistered,
 };
 
 // Reached only for the two sentinels: a DRep delegation renders its name and
@@ -243,7 +251,10 @@ function VotingPowerDelegationConfirmationDialog({
 
         {'error' in state && (
           <p className={styles.error}>
-            {intl.formatMessage(mapOfTxErrorCodeToIntl[state.error])}
+            <FormattedHTMLMessage
+              {...mapOfTxErrorCodeToIntl[state.error]}
+              values={{ walletId: selectedWallet.id }}
+            />
           </p>
         )}
       </div>

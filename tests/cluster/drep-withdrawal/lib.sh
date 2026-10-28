@@ -468,6 +468,25 @@ construct_flow() {
   R_STATUS=$CF_SUBMIT_STATUS R_CODE=$CF_SUBMIT_CODE R_FILE=$CF_SUBMIT_FILE
 }
 
+# dapp_submit LABEL WID FILE: posts the signed transaction in FILE (base16) to
+# the fork's POST /v2/wallets/{id}/transaction-submission, as the cip30
+# hardware-wallet path does. The network object is the one the wallet compares
+# against its own: network id 0 (a test network), the run's protocol magic and
+# the genesis block hash its network parameters report. Returns 1 and sets
+# DAPP_SUBMIT_WHY when the hash cannot be read.
+dapp_submit() {
+  local label="$1" id="$2" file="$3" hash
+  DAPP_SUBMIT_WHY=''
+  hash=$(curl -s --max-time 60 "$API/v2/network/parameters" | jq -r '.genesis_block_hash // empty')
+  if ! [[ "$hash" =~ ^[0-9a-f]{64}$ ]]; then
+    DAPP_SUBMIT_WHY="genesis block hash unavailable ('$hash')"
+    return 1
+  fi
+  api "$label" POST "/v2/wallets/$id/transaction-submission" \
+    "$(jq -n --arg h "$hash" --arg t "$(cat "$file")" --argjson m "$MAGIC" \
+      '{revision: 1, network: {network_id: 0, network_magic: $m, genesis_hash: $h}, transaction: $t}')"
+}
+
 # Describes a construct_flow outcome on one line.
 construct_observed() {
   if [ "$CF_CONSTRUCT_STATUS" != 202 ]; then

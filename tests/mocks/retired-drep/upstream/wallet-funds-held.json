@@ -1,0 +1,18 @@
+{
+  "backend": "upstream",
+  "wallet": "v2026-10-07 (git revision: f293d922f1930714aca7ede3cbb5ebf3fb710af6)",
+  "recorded": "2026-10-28T03:48:02Z",
+  "chain": {
+    "epoch": 11,
+    "slot": 1718
+  },
+  "request": {
+    "method": "GET",
+    "path": "/v2/wallets/7bcedb8b93a3d5f1707ae194c54dd88b11c61621",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"address_pool_gap\":20,\"assets\":{\"available\":[],\"total\":[]},\"balance\":{\"available\":{\"quantity\":0,\"unit\":\"lovelace\"},\"reward\":{\"quantity\":21715458378,\"unit\":\"lovelace\"},\"total\":{\"quantity\":130009009767,\"unit\":\"lovelace\"}},\"delegation\":{\"active\":{\"status\":\"voting_and_delegating\",\"target\":\"pool1k8jqlemysf8gzc3yspt6yrj6ne9zlw2pa6hqce868acckunw20d\",\"voting\":\"drep1yfkps0aa005m6ak3emghpy89k5c0j6zhtjg9mr7kwhlst9cz4tjtv\"},\"next\":[]},\"id\":\"7bcedb8b93a3d5f1707ae194c54dd88b11c61621\",\"name\":\"W1\",\"passphrase\":{\"encryption_method\":\"argon2id-v2\",\"last_updated_at\":\"2026-10-28T03:42:24.470272482Z\"},\"state\":{\"status\":\"ready\"},\"tip\":{\"absolute_slot_number\":1718,\"epoch_number\":11,\"height\":{\"quantity\":186,\"unit\":\"block\"},\"slot_number\":68,\"time\":\"2026-10-28T03:47:59.6Z\"}}"
+  }
+}

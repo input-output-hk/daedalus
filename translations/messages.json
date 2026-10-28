@@ -67,6 +67,26 @@
         "id": "api.errors.NotEnoughFundsForTransactionError"
       },
       {
+        "defaultMessage": "!!!Not enough ada. Only funds other than this wallet's staking rewards count for this payment. The rewards cannot be withdrawn while the wallet's voting power is not delegated, for example because its DRep retired. Send a smaller amount, or delegate the voting power to any DRep, Abstain or No Confidence in the <a href=\"#/governance/delegate\">Governance Center</a>. Once the delegation is confirmed, the rewards can be withdrawn and spent.",
+        "description": "Shown when a payment needs more than the wallet's funds other than its staking rewards, and the rewards cannot be withdrawn because the wallet's voting power is not delegated. HTML. The link opens the voting power delegation form.",
+        "id": "api.errors.notEnoughFundsRewardsHeld"
+      },
+      {
+        "defaultMessage": "!!!Not enough ada. Only funds other than this wallet's staking rewards count for this registration. The rewards cannot be withdrawn while the wallet's voting power is not delegated, for example because its DRep retired. Delegate the voting power to any DRep, Abstain or No Confidence in the <a href=\"#/governance/delegate\">Governance Center</a>. Once the delegation is confirmed, a payment from this wallet withdraws the rewards, and they then count for the registration.",
+        "description": "Shown on the Catalyst voting registration step when the wallet's funds other than its staking rewards do not cover the registration, and the rewards cannot be withdrawn because the wallet's voting power is not delegated. HTML. The link opens the voting power delegation form.",
+        "id": "api.errors.notEnoughFundsRewardsHeldRegistration"
+      },
+      {
+        "defaultMessage": "!!!This wallet's funds are held by a pending transaction, so a new transaction cannot be built until that one is confirmed or removed. A pending transaction that is never confirmed expires two hours after it was sent. Once it has been pending for 10 minutes, it can be cancelled in the <a href=\"#/wallets/{walletId}/transactions\">wallet's transaction list</a>.",
+        "description": "Shown when a transaction cannot be built because a pending transaction holds the wallet's funds. HTML. {walletId} is the wallet's id and the link opens its transaction list.",
+        "id": "api.errors.fundsHeldByPendingTransaction"
+      },
+      {
+        "defaultMessage": "!!!This DRep is not registered, and the Cardano ledger refuses a delegation to a DRep that is not registered. A retired DRep is no longer registered. Choose another DRep, Abstain or No Confidence.",
+        "description": "Shown when the wallet refuses a vote delegation because the chosen DRep is not registered on the ledger.",
+        "id": "api.errors.drepNotRegistered"
+      },
+      {
         "defaultMessage": "!!!Please enter a valid address.",
         "description": "Error message shown when invalid address was entered.",
         "id": "api.errors.invalidAddress"
@@ -92,9 +112,9 @@
         "id": "api.errors.NotEnoughFundsForTransactionFeesErrorWithTokens"
       },
       {
-        "defaultMessage": "!!!Daedalus cannot process this transaction because staking rewards withdrawals are blocked. To unblock your rewards go to the <a href=\"#/governance/dashboard\">Governance Center</a> and delegate your voting power.",
-        "description": "Error message shown when conway era wallet has staking rewards but has not participated in governance yet.",
-        "id": "api.errors.conwayWalletNotDelegatedToDRep"
+        "defaultMessage": "!!!This transaction withdraws this wallet's staking rewards. They cannot be withdrawn while the wallet's voting power is not delegated, for example because its DRep retired. Delegate the voting power to any DRep, Abstain or No Confidence in the <a href=\"#/governance/delegate\">Governance Center</a>. The rewards can be withdrawn once the delegation is confirmed.",
+        "description": "Shown when a transaction that withdraws staking rewards is refused, by the wallet before submission or by the node, because the wallet's reward account has no vote delegation. HTML. The link opens the voting power delegation form.",
+        "id": "api.errors.withdrawalNotPossibleWithoutVote"
       }
     ],
     "path": "source/renderer/app/api/errors.ts"
@@ -2590,6 +2610,11 @@
         "defaultMessage": "!!!The transaction could not be completed. Check your transaction history before trying again.",
         "description": "Generic failure copy that does not attribute the failure to the user.",
         "id": "transaction.approval.result.rejectedMessage"
+      },
+      {
+        "defaultMessage": "!!!The wallet reports that this transaction failed and gives no reason. The transaction withdraws this wallet's staking rewards, which cannot be withdrawn while the wallet's voting power is not delegated, for example because its DRep retired. If that is the cause, delegate the voting power to any DRep, Abstain or No Confidence in the <a href=\"#/governance/delegate\">Governance Center</a>. The rewards can be withdrawn once the delegation is confirmed.",
+        "description": "Shown after a hardware-wallet transaction that withdraws staking rewards fails at submission and the wallet gives no reason. HTML. The link opens the voting power delegation form.",
+        "id": "transaction.approval.result.submissionFailedWithdrawalMessage"
       },
       {
         "defaultMessage": "!!!Transaction declined on device",
@@ -7227,9 +7252,9 @@
         "id": "voting.governance.selectWalletPlaceholder"
       },
       {
-        "defaultMessage": "!!!This wallet already delegates to this choice. Please change delegation in order to proceed.",
-        "description": "Shown when the wallet is already delegated to the chosen option",
-        "id": "voting.governance.initializeTxError.sameVote"
+        "defaultMessage": "!!!This wallet already records a delegation of its voting power to this choice, so it will not send the same delegation again. If that delegation has ended, for example because the DRep retired, choose another DRep, Abstain or No Confidence.",
+        "description": "Shown when the chosen DRep, Abstain or No Confidence is the delegation the wallet already records, before submission or when the wallet refuses it as the same vote. The second sentence is the way out when that record outlived the delegation",
+        "id": "voting.governance.transactionError.sameVote"
       },
       {
         "defaultMessage": "!!!This wallet does not contain the minimum required amount of ADA. The wallet might still be syncing. Please try again later or choose another wallet.",

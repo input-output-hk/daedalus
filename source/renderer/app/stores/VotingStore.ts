@@ -55,9 +55,13 @@ export enum FundPhase {
 }
 
 type GenericErrorCode = 'generic';
+// Not a wallet code: the wallet reports lack of inputs while a pending
+// transaction holds them, and Daedalus tells the two apart from the balances.
+type PendingTransactionCode = 'pending_transaction';
 
 export type InitializeVPDelegationTxError =
   | GenericErrorCode
+  | PendingTransactionCode
   | (typeof expectedInitializeVPDelegationTxErrors)[number];
 export const expectedInitializeVPDelegationTxErrors = [
   'same_vote',
@@ -67,10 +71,23 @@ export const expectedInitializeVPDelegationTxErrors = [
 
 export type DelegateVotesError =
   | GenericErrorCode
+  | PendingTransactionCode
   | (typeof expectedDelegateVotesErrors)[number];
 export const expectedDelegateVotesErrors = [
   'wrong_encryption_passphrase',
+  'same_vote',
+  'no_utxos_available',
+  'not_enough_money',
+  'not_found',
 ] as const;
+
+const asPendingTransaction = <ErrorCode extends string>(
+  errorCode: ErrorCode | GenericErrorCode,
+  wallet: Pick<Wallet, 'hasFundsHeldByPendingTransaction'>
+): ErrorCode | GenericErrorCode | PendingTransactionCode =>
+  errorCode === 'no_utxos_available' && wallet.hasFundsHeldByPendingTransaction
+    ? 'pending_transaction'
+    : errorCode;
 
 const parseApiCode = <ErrorCode extends string>(
   expectedCodes: readonly ErrorCode[],
@@ -337,7 +354,10 @@ export default class VotingStore extends Store {
     } catch (error) {
       return {
         success: false as const,
-        errorCode: parseApiCode(expectedInitializeVPDelegationTxErrors, error),
+        errorCode: asPendingTransaction(
+          parseApiCode(expectedInitializeVPDelegationTxErrors, error),
+          wallet
+        ),
       };
     }
   };
@@ -383,7 +403,10 @@ export default class VotingStore extends Store {
       } catch (error) {
         return {
           success: false as const,
-          errorCode: parseApiCode(expectedDelegateVotesErrors, error),
+          errorCode: asPendingTransaction(
+            parseApiCode(expectedDelegateVotesErrors, error),
+            wallet
+          ),
         };
       }
     }
@@ -407,8 +430,11 @@ export default class VotingStore extends Store {
           success: true as const,
           transactionId: submitted?.id ?? null,
         };
-      } catch {
-        const errorCode: GenericErrorCode = 'generic';
+      } catch (error) {
+        const errorCode = asPendingTransaction(
+          parseApiCode(expectedDelegateVotesErrors, error),
+          wallet
+        );
         logger.error('VotingStore: error while delegating vote with HW', {
           errorCode,
         });
@@ -439,7 +465,10 @@ export default class VotingStore extends Store {
     } catch (error) {
       return {
         success: false as const,
-        errorCode: parseApiCode(expectedDelegateVotesErrors, error),
+        errorCode: asPendingTransaction(
+          parseApiCode(expectedDelegateVotesErrors, error),
+          wallet
+        ),
       };
     }
   };

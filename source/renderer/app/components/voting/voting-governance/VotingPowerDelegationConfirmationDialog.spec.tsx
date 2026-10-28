@@ -115,6 +115,47 @@ describe('governance confirmation authorization', () => {
     expect(onSubmit).toHaveBeenLastCalledWith('correct-password');
   });
 
+  const refuse = async (errorCode: string) => {
+    const onSubmit = jest.fn().mockResolvedValue({ success: false, errorCode });
+    renderDialog({ onSubmit });
+    fireEvent.change(document.querySelector('input[type="password"]'), {
+      target: { value: 'real-password' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+  };
+
+  it.each([
+    ['same_vote', translations['voting.governance.transactionError.sameVote']],
+    [
+      'no_utxos_available',
+      translations['voting.governance.initializeTxError.notEnoughMoney'],
+    ],
+    [
+      'not_enough_money',
+      translations['voting.governance.initializeTxError.notEnoughMoney'],
+    ],
+    ['not_found', translations['api.errors.drepNotRegistered']],
+  ])(
+    'shows the message for %s and lets the user try again',
+    async (code, text) => {
+      await refuse(code);
+      expect(await screen.findByText(text)).toBeInTheDocument();
+      await waitFor(() =>
+        expect(screen.getByRole('button', { name: 'Confirm' })).toBeEnabled()
+      );
+    }
+  );
+
+  it('links the wallet transactions when a pending transaction holds the funds', async () => {
+    await refuse('pending_transaction');
+    expect(
+      await screen.findByText(/held by a pending transaction/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: "wallet's transaction list" })
+    ).toHaveAttribute('href', '#/wallets/wallet-1/transactions');
+  });
+
   it('cancels without authorizing a transaction', () => {
     const onClose = jest.fn();
     const onSubmit = jest.fn();

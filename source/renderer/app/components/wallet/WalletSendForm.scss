@@ -302,6 +302,12 @@
   width: 100%;
 }
 
+.submitError {
+  @include error-message;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .buttonsContainer {
   align-items: center;
   display: flex;

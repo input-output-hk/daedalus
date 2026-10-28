@@ -20,10 +20,14 @@ import {
   WithAnalyticsTrackerProps,
 } from '../../components/analytics/withAnalytics';
 import { CoinSelectionsResponse } from '../../api/transactions/types';
+import LocalizableError from '../../i18n/LocalizableError';
+import ApiError from '../../domains/ApiError';
+import { logger } from '../../utils/logging';
 
 type Props = InjectedProps & WithAnalyticsTrackerProps;
 type State = {
   confirmationDialogData: Omit<FormData, 'coinSelection'> | null;
+  submitError: LocalizableError | ApiError | null;
 };
 
 @inject('stores', 'actions')
@@ -34,7 +38,7 @@ class WalletSendPage extends Component<Props, State> {
     stores: null,
   };
 
-  state: State = { confirmationDialogData: null };
+  state: State = { confirmationDialogData: null, submitError: null };
 
   calculateTransactionFee = async (params: {
     walletId: string;
@@ -45,6 +49,7 @@ class WalletSendPage extends Component<Props, State> {
   }) => {
     const { walletId, address, amount, isHardwareWallet, selectedAssets } =
       params;
+    if (this.state.submitError) this.setState({ submitError: null });
     const withdrawalDecision = this.props.stores.wallets.withdrawalDecisionFor(
       walletId,
       'payment'
@@ -83,7 +88,22 @@ class WalletSendPage extends Component<Props, State> {
     };
   };
 
-  submit = (
+  // A failure that carries a message id was raised before the approval dialog
+  // opened, so nothing else shows it. Any other failure is an outcome the
+  // approval dialog has already shown.
+  showSubmitError = (error: unknown) => {
+    if (
+      error != null &&
+      typeof error === 'object' &&
+      typeof (error as { id?: unknown }).id === 'string'
+    ) {
+      this.setState({ submitError: error as LocalizableError | ApiError });
+      return;
+    }
+    logger.debug('WalletSendPage::submit approval outcome', { error });
+  };
+
+  submit = async (
     isHardwareWallet: boolean,
     walletId: string,
     { coinSelection, withdrawalDecision, ...data }: FormData
@@ -111,24 +131,29 @@ class WalletSendPage extends Component<Props, State> {
           )
         )
       : wallet.assets.total.length > 0;
-    if (isHardwareWallet) {
-      this.props.stores.hardwareWallets.updateTxSignRequest(
-        coinSelection,
-        !!data.isCollateralPreparation,
-        { address: data.receiver, amount }
-      );
-      this.props.actions.hardwareWallets.sendMoney.trigger();
-      return;
+    if (this.state.submitError) this.setState({ submitError: null });
+    try {
+      if (isHardwareWallet) {
+        this.props.stores.hardwareWallets.updateTxSignRequest(
+          coinSelection,
+          !!data.isCollateralPreparation,
+          { address: data.receiver, amount }
+        );
+        await this.props.actions.hardwareWallets.sendMoney.trigger();
+        return;
+      }
+      await this.props.actions.wallets.sendMoney.trigger({
+        receiver: data.receiver,
+        amount,
+        assets: data.selectedAssets,
+        assetsAmounts: data.assetsAmounts,
+        hasAssetsRemainingAfterTransaction,
+        isCollateralPreparation: data.isCollateralPreparation,
+        withdrawal: withdrawalDecision.withdrawal,
+      });
+    } catch (error) {
+      this.showSubmitError(error);
     }
-    this.props.actions.wallets.sendMoney.trigger({
-      receiver: data.receiver,
-      amount,
-      assets: data.selectedAssets,
-      assetsAmounts: data.assetsAmounts,
-      hasAssetsRemainingAfterTransaction,
-      isCollateralPreparation: data.isCollateralPreparation,
-      withdrawal: withdrawalDecision.withdrawal,
-    });
   };
 
   openTokenPickerDialog = () => {
@@ -224,6 +249,7 @@ class WalletSendPage extends Component<Props, State> {
         onTokenPickerDialogClose={this.closeTokenPickerDialog}
         analyticsTracker={this.props.analyticsTracker}
         confirmationDialogData={this.state.confirmationDialogData}
+        submitError={this.state.submitError}
         initialReceiver={
           isCollateralPreparation ? preparationAddress : undefined
         }

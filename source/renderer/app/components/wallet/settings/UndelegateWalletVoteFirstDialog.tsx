@@ -64,7 +64,9 @@ const errorMessageFor = (
     case 'vote_not_confirmed':
       return voteFirstMessages.voteNotConfirmed;
     case 'same_vote':
-      return governanceMessages.initializeTxErrorSameVote;
+      return governanceMessages.transactionErrorSameVote;
+    case 'pending_transaction':
+      return apiErrorMessages.fundsHeldByPendingTransaction;
     case 'no_utxos_available':
     case 'not_enough_money':
       return governanceMessages.initializeNotEnoughMoney;
@@ -76,6 +78,7 @@ const errorMessageFor = (
 };
 
 type Props = {
+  walletId: string;
   walletName: string;
   heldReward: BigNumber;
   isHardwareWallet: boolean;
@@ -330,7 +333,10 @@ class UndelegateWalletVoteFirstDialog extends Component<Props & InjectedProps> {
         )}
         {step && step.status === 'failed' && (
           <p className={styles.error}>
-            {intl.formatMessage(errorMessageFor(step.errorCode))}
+            <FormattedHTMLMessage
+              {...errorMessageFor(step.errorCode)}
+              values={{ walletId: this.props.walletId }}
+            />
           </p>
         )}
       </Dialog>

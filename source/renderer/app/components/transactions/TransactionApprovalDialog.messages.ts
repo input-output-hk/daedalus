@@ -289,6 +289,13 @@ export const messages = defineMessages({
     description:
       'Generic failure copy that does not attribute the failure to the user.',
   },
+  submissionFailedWithdrawalMessage: {
+    id: 'transaction.approval.result.submissionFailedWithdrawalMessage',
+    defaultMessage:
+      '!!!The wallet reports that this transaction failed and gives no reason. The transaction withdraws this wallet\'s staking rewards, which cannot be withdrawn while the wallet\'s voting power is not delegated, for example because its DRep retired. If that is the cause, delegate the voting power to any DRep, Abstain or No Confidence in the <a href="#/governance/delegate">Governance Center</a>. The rewards can be withdrawn once the delegation is confirmed.',
+    description:
+      'Shown after a hardware-wallet transaction that withdraws staking rewards fails at submission and the wallet gives no reason. HTML. The link opens the voting power delegation form.',
+  },
   deviceRejectedTitle: {
     id: 'transaction.approval.result.deviceRejectedTitle',
     defaultMessage: '!!!Transaction declined on device',

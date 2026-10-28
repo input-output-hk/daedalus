@@ -48,6 +48,7 @@ type KnownErrorType =
   | 'utxo_too_small'
   | 'invalid_smash_server'
   | 'cannot_cover_fee'
+  | 'withdrawal_not_possible_without_vote'
   | 'wallet_internal_error';
 
 type LoggingType = {
@@ -65,6 +66,8 @@ export default class ApiError {
   clause: boolean;
   @observable
   forceSet = false;
+  @observable
+  resolved = false;
   @observable
   additionalValues: Record<string, any> = {};
   isFinalError = false;
@@ -111,6 +114,15 @@ export default class ApiError {
     force = false,
     values?: Record<string, any>
   ) {
+    // A clause that is still open here matched in full, so the first matching
+    // clause wins and later clauses are ignored.
+    if (this.clause) this.resolved = true;
+
+    if (this.resolved) {
+      this.clause = false;
+      return this;
+    }
+
     if (
       predefinedError &&
       !this.clause &&

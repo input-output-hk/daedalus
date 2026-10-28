@@ -1331,6 +1331,7 @@ describe('HardwareWalletsStore upstream payment lifetime', () => {
       walletBalance: new BigNumber(10),
       availableBalance: new BigNumber(9),
       rewardsBalance: new BigNumber(1),
+      heldRewardsBalance: new BigNumber(0),
       payments: {
         address: payment.address,
         amount: payment.amount,

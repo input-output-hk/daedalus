@@ -24,7 +24,10 @@ import {
   NoWalletsDialogDialogStory,
   RedemptionUnavailableDialogDialogStory,
 } from './RedeemItnWallets.stories';
-import { StakingUndelegateConfirmationResultStory } from './Undelegate.stories';
+import {
+  StakingUndelegateConfirmationResultStory,
+  StakingUndelegateRefusedBeforeApprovalStory,
+} from './Undelegate.stories';
 import { StakePoolsTableStory } from './StakePoolsTable.stories';
 
 const defaultPercentage = 10;
@@ -247,6 +250,13 @@ storiesOf('Decentralization / Staking', module)
     (_, props) => <StakingUndelegateConfirmationResultStory {...props} />,
     {
       id: 'undelegate-confirmation-result',
+    }
+  )
+  .add(
+    'Undelegate - refused before approval',
+    () => <StakingUndelegateRefusedBeforeApprovalStory />,
+    {
+      id: 'undelegate-refused-before-approval',
     }
   );
 storiesOf('Decentralization / Redeem ITN Rewards', module)

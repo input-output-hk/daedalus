@@ -426,6 +426,22 @@ const selfTransferReceipt = {
   amountIsKnown: true,
 };
 
+const withdrawalDisplay: TransactionReviewDisplay = {
+  ...display,
+  withdrawals: [
+    {
+      account: 'e0'.repeat(29),
+      coin: '5000000',
+      ownership: 'wallet',
+    },
+  ],
+};
+const withdrawalRequest: TransactionApprovalRequest = {
+  ...request,
+  requestId: 'storybook-withdrawal',
+  items: [{ ...request.items[0], display: withdrawalDisplay }],
+};
+
 storiesOf('Common / Transaction approval', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
@@ -532,6 +548,39 @@ storiesOf('Common / Transaction approval', module)
       {...commonProps}
       assetDetails={liqwidAssetDetails}
       request={unavailableRequest}
+    />
+  ))
+  .add('Refused: voting power not delegated', () => (
+    <TransactionApprovalDialog
+      {...commonProps}
+      request={withdrawalRequest}
+      result={{
+        status: 'rejected',
+        errorCode: 'withdrawal_not_possible_without_vote',
+      }}
+      onDismiss={action('dismiss refusal')}
+    />
+  ))
+  .add('Failed without a reason: rewards withdrawal', () => (
+    <TransactionApprovalDialog
+      {...commonProps}
+      request={{
+        ...withdrawalRequest,
+        authorization: { kind: 'hardware', vendor: 'ledger' },
+      }}
+      result={{ status: 'rejected', errorCode: 'dapp_submission_failed' }}
+      onDismiss={action('dismiss failure')}
+    />
+  ))
+  .add('Failed without a reason', () => (
+    <TransactionApprovalDialog
+      {...commonProps}
+      request={{
+        ...request,
+        authorization: { kind: 'hardware', vendor: 'ledger' },
+      }}
+      result={{ status: 'rejected', errorCode: 'dapp_submission_failed' }}
+      onDismiss={action('dismiss failure')}
     />
   ))
   .add('Submission error', () => (

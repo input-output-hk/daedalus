@@ -81,6 +81,7 @@ const renderDialog = ({
               <>
                 <DiscreetModeToggle />
                 <UndelegateWalletVoteFirstDialog
+                  walletId="wallet-1"
                   walletName="Wallet"
                   heldReward={new BigNumber(5)}
                   isHardwareWallet={isHardwareWallet}
@@ -244,8 +245,22 @@ describe('UndelegateWalletVoteFirstDialog', () => {
   it('shows the governance form message for an error code', () => {
     renderDialog({ step: { status: 'failed', errorCode: 'same_vote' } });
     expect(
-      screen.getByText(/This wallet already delegates to this choice/)
+      screen.getByText(
+        /This wallet already records a delegation of its voting power to this choice/
+      )
     ).toBeInTheDocument();
+  });
+
+  it('shows the pending transaction message with a link to the wallet transactions', () => {
+    renderDialog({
+      step: { status: 'failed', errorCode: 'pending_transaction' },
+    });
+    expect(
+      screen.getByText(/This wallet's funds are held by a pending transaction/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: "wallet's transaction list" })
+    ).toHaveAttribute('href', '#/wallets/wallet-1/transactions');
   });
 
   it('shows the incorrect password message for a wrong passphrase', () => {

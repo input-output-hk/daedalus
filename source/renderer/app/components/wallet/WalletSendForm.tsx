@@ -17,6 +17,8 @@ import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
+import LocalizableError from '../../i18n/LocalizableError';
+import ApiError from '../../domains/ApiError';
 import questionMarkIcon from '../../assets/images/question-mark.inline.svg';
 import globalMessages from '../../i18n/global-messages';
 import messages from './send-form/messages';
@@ -80,6 +82,10 @@ export interface FormData {
   spendsPreferredCollateral?: boolean;
 }
 
+type LinkMessage = React.ComponentProps<
+  typeof FormattedHTMLMessageWithLink
+>['message'];
+
 type Props = {
   currencyMaxIntegerDigits: number;
   currencyMaxFractionalDigits: number;
@@ -120,6 +126,7 @@ type Props = {
   initialAmount?: string;
   isCollateralPreparation?: boolean;
   confirmationDialogData?: Omit<FormData, 'coinSelection'>;
+  submitError?: LocalizableError | ApiError | null;
   validationDebounceWait?: number;
 };
 
@@ -1269,6 +1276,7 @@ class WalletSendForm extends Component<Props, State> {
       walletName,
       onTokenPickerDialogClose,
       confirmationDialogData,
+      submitError,
       isHardwareWallet,
       hwDeviceStatus,
     } = this.props;
@@ -1342,6 +1350,18 @@ class WalletSendForm extends Component<Props, State> {
                   minimumAda: minimumAdaValue,
                   adaAmount: adaAmountField.value,
                 })}
+              {submitError && (
+                <div className={styles.submitError} role="alert">
+                  {get(submitError, ['values', 'linkLabel']) ? (
+                    <FormattedHTMLMessageWithLink
+                      message={submitError as unknown as LinkMessage}
+                      onExternalLinkClick={this.props.onExternalLinkClick}
+                    />
+                  ) : (
+                    <FormattedHTMLMessage {...submitError} />
+                  )}
+                </div>
+              )}
               <div className={styles.buttonsContainer}>
                 <Button
                   className="flat"
