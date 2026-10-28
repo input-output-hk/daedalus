@@ -197,9 +197,7 @@
             cargoExtraArgs = "--bin cardano-watchdog";
           };
 
-      inherit (walletBackends.cip30.flake.legacyPackages.${pkgs.stdenv.hostPlatform.system}.pkgs) cardanoLib;
-
-      inherit (walletBackends.cip30.packages) cardano-address;
+      inherit (walletBackends.upstream.packages) cardano-address;
       inherit (nodePackages) cardano-node cardano-cli snapshot-converter;
       mithril-client = mithrilPackages.${targetSystem};
 
@@ -1136,7 +1134,6 @@
         nodePackages
         mithrilPackages
         cardano-watchdog
-        cardanoLib
         cardano-address
         cardano-node
         cardano-cli
