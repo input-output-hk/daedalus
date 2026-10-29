@@ -4,6 +4,8 @@ mod fetch;
 mod hash;
 mod installers;
 mod linux_repo_cmd;
+mod linux_repo_publish;
+mod linux_repo_state;
 mod newsfeed_cmd;
 mod provenance;
 mod s3;
@@ -134,6 +136,9 @@ async fn main() -> Result<()> {
 
         Commands::PublishLinuxRepos {
             installers_dir,
+            state_dir,
+            initialize,
+            gc_grace_days,
             bucket,
             bucket_url,
             gpg_user,
@@ -146,6 +151,9 @@ async fn main() -> Result<()> {
         } => {
             linux_repo_cmd::cmd_publish_linux_repos(linux_repo_cmd::PublishLinuxReposOpts {
                 installers_dir: &installers_dir,
+                state_dir: &state_dir,
+                initialize,
+                gc_grace_days,
                 bucket: &bucket,
                 bucket_url: &bucket_url,
                 endpoint_url,

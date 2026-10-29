@@ -146,13 +146,12 @@ pub enum Commands {
     /// Build and publish APT, YUM, and Arch Linux package repositories
     /// to a Cloudflare R2 (or any S3-compatible) bucket.
     ///
-    /// Scans INSTALLERS_DIR for .deb, .rpm, and .pkg.tar.zst files, reads
-    /// their package metadata, uploads them to structured repo paths, then
-    /// generates and GPG-signs the repository index metadata (APT Release /
-    /// InRelease, YUM repomd.xml, Arch daedalus.db.tar.gz).
+    /// Imports INSTALLERS_DIR into persistent deployment-host state. Rebuilds
+    /// signed indexes from the current and previous release of each native
+    /// package identity, then automatically collects expired older releases.
     ///
-    /// Credentials are read from the standard AWS SDK chain:
-    ///   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ENDPOINT_URL
+    /// REPO_ACCESS_KEY_ID and REPO_SECRET_ACCESS_KEY override the standard
+    /// AWS SDK credential chain. REPO_ENDPOINT_URL overrides --endpoint-url.
     ///
     /// For Cloudflare R2, set AWS_ENDPOINT_URL to your R2 endpoint and
     /// pass --no-acl (R2 buckets manage public access at the bucket level).
@@ -160,6 +159,18 @@ pub enum Commands {
         /// Directory containing .deb, .rpm, and/or .pkg.tar.zst files.
         #[arg(default_value = "installers")]
         installers_dir: PathBuf,
+
+        /// Persistent inventory on the sole publishing host; back this up.
+        #[arg(long, env = "REPO_STATE_DIR")]
+        state_dir: PathBuf,
+
+        /// Initialize new state from the COMPLETE existing package set.
+        #[arg(long)]
+        initialize: bool,
+
+        /// Days to retain withdrawn package files before automatic deletion.
+        #[arg(long, default_value_t = 7)]
+        gc_grace_days: u64,
 
         /// S3/R2 bucket name.
         #[arg(long, env = "REPO_BUCKET")]
@@ -184,7 +195,7 @@ pub enum Commands {
         #[arg(long)]
         no_acl: bool,
 
-        /// Print what would happen without uploading anything.
+        /// Preview imports, retention and GC without changing state or contacting S3.
         #[arg(long)]
         dry_run: bool,
 

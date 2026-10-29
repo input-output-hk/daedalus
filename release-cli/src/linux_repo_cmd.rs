@@ -56,7 +56,6 @@ use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::arch_repo::{self, Signing};
-use crate::s3::S3Client;
 use crate::sign;
 
 // ── Serve entry point (disk) ──────────────────────────────────────────────────
@@ -94,10 +93,10 @@ pub fn write_linux_repos_to_dir(
         .collect();
 
     if !debs.is_empty() {
-        write_apt_to_dir(&debs, effective_gpg, now_ts, &dest.join("apt"))?;
+        write_apt_to_dir(&debs, effective_gpg, now_ts, &dest.join("apt"), false)?;
     }
     if !rpms.is_empty() {
-        write_yum_to_dir(&rpms, effective_gpg, now_ts, &dest.join("yum"))?;
+        write_yum_to_dir(&rpms, effective_gpg, now_ts, &dest.join("yum"), false)?;
     }
     if !archs.is_empty() {
         write_arch_to_dir(&archs, effective_gpg, &dest.join("arch"))?;
@@ -113,7 +112,7 @@ fn link_into(src: &Path, dest: &Path) -> Result<()> {
     if let Some(parent) = dest.parent() {
         std::fs::create_dir_all(parent)?;
     }
-    std::os::unix::fs::symlink(src, dest)
+    std::os::unix::fs::symlink(std::fs::canonicalize(src)?, dest)
         .with_context(|| format!("symlinking {} → {}", src.display(), dest.display()))
 }
 
@@ -122,6 +121,7 @@ fn write_apt_to_dir(
     gpg_user: Option<&str>,
     now_ts: u64,
     apt_dir: &Path,
+    require_signing: bool,
 ) -> Result<()> {
     let mut entries: Vec<String> = Vec::new();
 
@@ -152,15 +152,21 @@ fn write_apt_to_dir(
     std::fs::write(binary.join("Packages.gz"), &packages_gz)?;
     std::fs::write(dists.join("Release"), release_bytes)?;
 
-    if let Ok(sig) = sign::sign_data(release_bytes, gpg_user) {
-        std::fs::write(dists.join("Release.gpg"), sig)?;
-        if let Ok(inrelease) = sign::clearsign_data(release_bytes, gpg_user) {
-            std::fs::write(dists.join("InRelease"), inrelease)?;
-        }
-    }
-    if let Ok(pubkey) = sign::export_public_key(gpg_user) {
-        std::fs::write(apt_dir.join("daedalus-release.gpg"), pubkey)?;
-    }
+    write_signature(
+        &dists.join("Release.gpg"),
+        sign::sign_data(release_bytes, gpg_user),
+        require_signing,
+    )?;
+    write_signature(
+        &dists.join("InRelease"),
+        sign::clearsign_data(release_bytes, gpg_user),
+        require_signing,
+    )?;
+    write_signature(
+        &apt_dir.join("daedalus-release.gpg"),
+        sign::export_public_key(gpg_user),
+        require_signing,
+    )?;
 
     Ok(())
 }
@@ -170,6 +176,7 @@ fn write_yum_to_dir(
     gpg_user: Option<&str>,
     now_ts: u64,
     yum_dir: &Path,
+    require_signing: bool,
 ) -> Result<()> {
     let mut rpm_data: Vec<(RpmInfo, String, u64, String)> = Vec::new();
 
@@ -207,12 +214,16 @@ fn write_yum_to_dir(
     std::fs::write(repodata.join("primary.xml.gz"), &primary_gz)?;
     std::fs::write(repodata.join("repomd.xml"), repomd_bytes)?;
 
-    if let Ok(sig) = sign::sign_data(repomd_bytes, gpg_user) {
-        std::fs::write(repodata.join("repomd.xml.asc"), sig)?;
-    }
-    if let Ok(pubkey) = sign::export_public_key(gpg_user) {
-        std::fs::write(yum_dir.join("daedalus-release.gpg"), pubkey)?;
-    }
+    write_signature(
+        &repodata.join("repomd.xml.asc"),
+        sign::sign_data(repomd_bytes, gpg_user),
+        require_signing,
+    )?;
+    write_signature(
+        &yum_dir.join("daedalus-release.gpg"),
+        sign::export_public_key(gpg_user),
+        require_signing,
+    )?;
 
     Ok(())
 }
@@ -234,6 +245,9 @@ fn write_arch_to_dir(
 
 pub struct PublishLinuxReposOpts<'a> {
     pub installers_dir: &'a Path,
+    pub state_dir: &'a Path,
+    pub initialize: bool,
+    pub gc_grace_days: u64,
     pub bucket: &'a str,
     pub bucket_url: &'a str,
     pub endpoint_url: Option<String>,
@@ -245,155 +259,57 @@ pub struct PublishLinuxReposOpts<'a> {
     pub skip_arch: bool,
 }
 
-pub async fn cmd_publish_linux_repos(opts: PublishLinuxReposOpts<'_>) -> Result<()> {
-    let PublishLinuxReposOpts {
-        installers_dir,
-        bucket,
-        bucket_url,
-        endpoint_url,
-        gpg_user,
-        no_acl,
-        dry_run,
-        skip_apt,
-        skip_yum,
-        skip_arch,
-    } = opts;
-
-    // ── Resolve GPG user ──────────────────────────────────────────────────────
-    let gpg_user_env = std::env::var("GPG_USER").ok();
-    let effective_gpg_user: Option<&str> = gpg_user.or(gpg_user_env.as_deref());
-
-    // ── Scan directory ────────────────────────────────────────────────────────
-    println!("Scanning {} for Linux packages…", installers_dir.display());
-    let pkgs = scan_linux_packages(installers_dir)?;
-
-    if pkgs.is_empty() {
-        anyhow::bail!(
-            "no Linux packages (.deb, .rpm, .pkg.tar.zst) found in {}",
-            installers_dir.display()
-        );
+fn write_signature(path: &Path, result: Result<Vec<u8>>, required: bool) -> Result<()> {
+    match result {
+        Ok(bytes) => {
+            std::fs::write(path, bytes).with_context(|| format!("writing {}", path.display()))
+        }
+        Err(error) if required => Err(error).with_context(|| format!("signing {}", path.display())),
+        Err(_) => Ok(()),
     }
+}
 
-    let debs: Vec<_> = pkgs.iter().filter(|p| p.format == Format::Deb).collect();
-    let rpms: Vec<_> = pkgs.iter().filter(|p| p.format == Format::Rpm).collect();
-    let archs: Vec<_> = pkgs
+/// Production preparation is fail-closed and completes all signing before S3.
+pub(crate) fn prepare_publication(
+    packages: &[LinuxPackage],
+    gpg_user: Option<&str>,
+    dest: &Path,
+    now: u64,
+) -> Result<()> {
+    let debs: Vec<_> = packages
+        .iter()
+        .filter(|p| p.format == Format::Deb)
+        .collect();
+    let rpms: Vec<_> = packages
+        .iter()
+        .filter(|p| p.format == Format::Rpm)
+        .collect();
+    let archs: Vec<_> = packages
         .iter()
         .filter(|p| p.format == Format::ArchPkg)
+        .map(|p| (p.path.as_path(), p.filename.as_str()))
         .collect();
-
-    for p in &pkgs {
-        println!("  {} [{}]", p.filename, p.format.label());
+    if !debs.is_empty() {
+        write_apt_to_dir(&debs, gpg_user, now, &dest.join("apt"), true)?;
     }
-    println!();
-
-    if dry_run {
-        println!("=== Dry run — no uploads will occur ===");
-        if !skip_apt && !debs.is_empty() {
-            println!("\n[APT] would publish {} package(s)", debs.len());
-        }
-        if !skip_yum && !rpms.is_empty() {
-            println!("[YUM] would publish {} package(s)", rpms.len());
-        }
-        if !skip_arch && !archs.is_empty() {
-            println!("[Arch] would publish {} package(s)", archs.len());
-        }
-        return Ok(());
+    if !rpms.is_empty() {
+        write_yum_to_dir(&rpms, gpg_user, now, &dest.join("yum"), true)?;
     }
-
-    // ── S3 client ─────────────────────────────────────────────────────────────
-    // REPO_ACCESS_KEY_ID / REPO_SECRET_ACCESS_KEY are read explicitly so they don't
-    // collide with the AWS_* vars used by `drt release` for the S3 update bucket.
-    let r2_key = std::env::var("REPO_ACCESS_KEY_ID").ok();
-    let r2_secret = std::env::var("REPO_SECRET_ACCESS_KEY").ok();
-    let r2_credentials = match (r2_key, r2_secret) {
-        (Some(k), Some(s)) => Some((k, s)),
-        _ => None,
-    };
-    // REPO_ENDPOINT_URL takes priority over --endpoint-url.
-    let resolved_endpoint = std::env::var("REPO_ENDPOINT_URL")
-        .ok()
-        .or(endpoint_url.map(|s| s.to_string()));
-    let s3 = S3Client::new(
-        bucket.to_string(),
-        bucket_url.to_string(),
-        resolved_endpoint,
-        !no_acl,
-        r2_credentials,
-    )
-    .await?;
-
-    let now_ts = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap_or_default()
-        .as_secs();
-
-    // ── APT ───────────────────────────────────────────────────────────────────
-    if !skip_apt {
-        if debs.is_empty() {
-            println!("=== APT: no .deb packages found, skipping ===\n");
-        } else {
-            publish_apt(&s3, &debs, effective_gpg_user, now_ts).await?;
-        }
+    if !archs.is_empty() {
+        arch_repo::prepare(&archs, Signing::Iohk(gpg_user))?.write_to(&dest.join("arch"))?;
     }
-
-    // ── YUM ───────────────────────────────────────────────────────────────────
-    if !skip_yum {
-        if rpms.is_empty() {
-            println!("=== YUM: no .rpm packages found, skipping ===\n");
-        } else {
-            publish_yum(&s3, &rpms, effective_gpg_user, now_ts).await?;
-        }
-    }
-
-    // ── Arch ──────────────────────────────────────────────────────────────────
-    if !skip_arch {
-        if archs.is_empty() {
-            println!("=== Arch: no .pkg.tar.zst packages found, skipping ===\n");
-        } else {
-            publish_arch(&s3, &archs, effective_gpg_user, now_ts).await?;
-        }
-    }
-
-    println!("=== Done ===");
-    if !skip_apt && !debs.is_empty() {
-        println!();
-        println!("APT setup:");
-        println!(
-            "  curl https://{bucket_url}/apt/daedalus-release.gpg | gpg --dearmor \\\n    | sudo tee /etc/apt/keyrings/daedalus.gpg"
-        );
-        println!(
-            "  echo 'deb [signed-by=/etc/apt/keyrings/daedalus.gpg] https://{bucket_url}/apt stable main' \\\n    | sudo tee /etc/apt/sources.list.d/daedalus.list"
-        );
-    }
-    if !skip_yum && !rpms.is_empty() {
-        println!();
-        println!("YUM/DNF setup:");
-        println!("  sudo rpm --import https://{bucket_url}/yum/daedalus-release.gpg");
-        println!(
-            "  sudo tee /etc/yum.repos.d/daedalus.repo <<'EOF'\n\
-             [daedalus]\n\
-             name=Daedalus\n\
-             baseurl=https://{bucket_url}/yum\n\
-             enabled=1\n\
-             gpgcheck=1\n\
-             gpgkey=https://{bucket_url}/yum/daedalus-release.gpg\n\
-             EOF"
-        );
-    }
-    if !skip_arch && !archs.is_empty() {
-        println!();
-        println!("Arch setup (add to /etc/pacman.conf):");
-        println!("  [daedalus]");
-        println!("  Server = https://{bucket_url}/arch");
-        println!("  SigLevel = Required");
-    }
-
     Ok(())
+}
+
+pub async fn cmd_publish_linux_repos(opts: PublishLinuxReposOpts<'_>) -> Result<()> {
+    crate::linux_repo_publish::publish(opts).await
 }
 
 // ── Package scanning ──────────────────────────────────────────────────────────
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize,
+)]
 pub enum Format {
     Deb,
     Rpm,
@@ -401,7 +317,7 @@ pub enum Format {
 }
 
 impl Format {
-    fn from_filename(name: &str) -> Option<Self> {
+    pub(crate) fn from_filename(name: &str) -> Option<Self> {
         let lc = name.to_ascii_lowercase();
         if lc.ends_with(".deb") {
             Some(Self::Deb)
@@ -413,14 +329,6 @@ impl Format {
             None
         }
     }
-
-    fn label(self) -> &'static str {
-        match self {
-            Self::Deb => "DEB",
-            Self::Rpm => "RPM",
-            Self::ArchPkg => "Arch",
-        }
-    }
 }
 
 pub struct LinuxPackage {
@@ -430,23 +338,27 @@ pub struct LinuxPackage {
 }
 
 pub fn scan_linux_packages(dir: &Path) -> Result<Vec<LinuxPackage>> {
-    let mut pkgs: Vec<LinuxPackage> = std::fs::read_dir(dir)
-        .with_context(|| format!("reading directory {}", dir.display()))?
-        .filter_map(|entry| {
-            let entry = entry.ok()?;
-            let path = entry.path();
-            if !path.is_file() {
-                return None;
-            }
-            let filename = path.file_name()?.to_str()?.to_string();
-            let format = Format::from_filename(&filename)?;
-            Some(LinuxPackage {
+    let mut pkgs = Vec::new();
+    for entry in
+        std::fs::read_dir(dir).with_context(|| format!("reading directory {}", dir.display()))?
+    {
+        let path = entry?.path();
+        if !path.is_file() {
+            continue;
+        }
+        let filename = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .context("non-UTF-8 incoming filename")?
+            .to_owned();
+        if let Some(format) = Format::from_filename(&filename) {
+            pkgs.push(LinuxPackage {
                 path,
                 filename,
                 format,
-            })
-        })
-        .collect();
+            });
+        }
+    }
     pkgs.sort_by(|a, b| a.filename.cmp(&b.filename));
     Ok(pkgs)
 }
@@ -489,7 +401,7 @@ fn apt_hash_file(path: &Path) -> Result<AptHashes> {
     })
 }
 
-fn sha256_file(path: &Path) -> Result<(String, u64)> {
+pub(crate) fn sha256_file(path: &Path) -> Result<(String, u64)> {
     let mut file =
         std::fs::File::open(path).with_context(|| format!("opening {}", path.display()))?;
     let mut h = Sha256::new();
@@ -680,112 +592,6 @@ fn build_release_file(packages: &[u8], packages_gz: &[u8], now_ts: u64) -> Strin
     r
 }
 
-async fn publish_apt(
-    s3: &S3Client,
-    debs: &[&LinuxPackage],
-    gpg_user: Option<&str>,
-    now_ts: u64,
-) -> Result<()> {
-    println!("=== APT repository ===");
-
-    // ── Read metadata and compute hashes ─────────────────────────────────────
-    let mut entries: Vec<String> = Vec::new();
-    for pkg in debs {
-        print!("  [DEB] {} … ", pkg.filename);
-        let info = read_deb_info(&pkg.path)?;
-        let hashes = apt_hash_file(&pkg.path)?;
-        let pool_path = format!("pool/main/d/{}/{}", info.package_name, pkg.filename);
-        entries.push(build_packages_entry(&info, &pool_path, &hashes));
-        println!("{}", info.package_name);
-
-        // Upload package
-        let s3_key = format!("apt/{pool_path}");
-        println!("    → {s3_key}");
-        s3.upload_repo_bytes(
-            &s3_key,
-            &std::fs::read(&pkg.path)?,
-            "application/octet-stream",
-            None,
-        )
-        .await?;
-
-        // Upload .asc if present
-        let sig_path = pkg.path.with_file_name(format!("{}.asc", pkg.filename));
-        if sig_path.exists() {
-            let sig_key = format!("{s3_key}.asc");
-            s3.upload_repo_bytes(&sig_key, &std::fs::read(&sig_path)?, "text/plain", None)
-                .await?;
-        }
-    }
-
-    // ── Build Packages and Packages.gz ────────────────────────────────────────
-    println!("  Generating Packages index…");
-    let packages_content: String = entries.join("\n");
-    let packages_bytes = packages_content.as_bytes();
-    let packages_gz = gzip_compress(packages_bytes)?;
-
-    // ── Build Release ─────────────────────────────────────────────────────────
-    println!("  Generating Release…");
-    let release = build_release_file(packages_bytes, &packages_gz, now_ts);
-    let release_bytes = release.as_bytes();
-
-    // ── GPG sign ──────────────────────────────────────────────────────────────
-    println!("  Signing Release.gpg…");
-    let release_gpg =
-        sign::sign_data(release_bytes, gpg_user).context("signing apt/dists/stable/Release")?;
-    println!("  Signing InRelease (clearsign)…");
-    let in_release = sign::clearsign_data(release_bytes, gpg_user)
-        .context("clearsigning apt/dists/stable/InRelease")?;
-
-    // ── Upload ────────────────────────────────────────────────────────────────
-    s3.upload_repo_bytes(
-        "apt/dists/stable/main/binary-amd64/Packages",
-        packages_bytes,
-        "text/plain",
-        Some("no-store"),
-    )
-    .await?;
-    s3.upload_repo_bytes(
-        "apt/dists/stable/main/binary-amd64/Packages.gz",
-        &packages_gz,
-        "application/gzip",
-        Some("no-store"),
-    )
-    .await?;
-    s3.upload_repo_bytes(
-        "apt/dists/stable/Release",
-        release_bytes,
-        "text/plain",
-        Some("no-store"),
-    )
-    .await?;
-    s3.upload_repo_bytes(
-        "apt/dists/stable/Release.gpg",
-        &release_gpg,
-        "text/plain",
-        Some("no-store"),
-    )
-    .await?;
-    s3.upload_repo_bytes(
-        "apt/dists/stable/InRelease",
-        &in_release,
-        "text/plain",
-        Some("no-store"),
-    )
-    .await?;
-
-    // ── Public key ────────────────────────────────────────────────────────────
-    println!("  Uploading public key…");
-    let pubkey = sign::export_public_key(gpg_user)?;
-    s3.upload_repo_bytes("apt/daedalus-release.gpg", &pubkey, "text/plain", None)
-        .await?;
-
-    println!();
-    Ok(())
-}
-
-// ── YUM repository ────────────────────────────────────────────────────────────
-
 struct RpmInfo {
     name: String,
     version: String,
@@ -957,142 +763,4 @@ fn build_repomd_xml(
         gz_sz = primary_gz_size,
         open_sz = primary_size,
     )
-}
-
-async fn publish_yum(
-    s3: &S3Client,
-    rpms: &[&LinuxPackage],
-    gpg_user: Option<&str>,
-    now_ts: u64,
-) -> Result<()> {
-    println!("=== YUM repository ===");
-
-    let mut rpm_data: Vec<(RpmInfo, String, u64, String)> = Vec::new();
-    for pkg in rpms {
-        print!("  [RPM] {} … ", pkg.filename);
-        let info = read_rpm_info(&pkg.path)?;
-        let (sha256, pkg_size) = sha256_file(&pkg.path)?;
-        println!("{}-{}-{}", info.name, info.version, info.release);
-
-        // Upload package
-        let s3_key = format!("yum/packages/{}", pkg.filename);
-        println!("    → {s3_key}");
-        s3.upload_repo_bytes(
-            &s3_key,
-            &std::fs::read(&pkg.path)?,
-            "application/octet-stream",
-            None,
-        )
-        .await?;
-
-        // Upload .asc if present
-        let sig_path = pkg.path.with_file_name(format!("{}.asc", pkg.filename));
-        if sig_path.exists() {
-            s3.upload_repo_bytes(
-                &format!("{s3_key}.asc"),
-                &std::fs::read(&sig_path)?,
-                "text/plain",
-                None,
-            )
-            .await?;
-        }
-
-        rpm_data.push((info, sha256, pkg_size, pkg.filename.clone()));
-    }
-
-    // ── Build primary.xml ─────────────────────────────────────────────────────
-    println!("  Generating primary.xml…");
-    let primary_xml = build_primary_xml(&rpm_data);
-    let primary_bytes = primary_xml.as_bytes();
-    let primary_gz = gzip_compress(primary_bytes)?;
-
-    let primary_sha256 = sha256_bytes(primary_bytes);
-    let primary_gz_sha256 = sha256_bytes(&primary_gz);
-
-    // ── Build repomd.xml ──────────────────────────────────────────────────────
-    println!("  Generating repomd.xml…");
-    let repomd = build_repomd_xml(
-        &primary_gz_sha256,
-        primary_gz.len() as u64,
-        &primary_sha256,
-        primary_bytes.len() as u64,
-        now_ts,
-    );
-    let repomd_bytes = repomd.as_bytes();
-
-    // ── GPG sign repomd.xml ───────────────────────────────────────────────────
-    println!("  Signing repomd.xml.asc…");
-    let repomd_asc =
-        sign::sign_data(repomd_bytes, gpg_user).context("signing yum/repodata/repomd.xml")?;
-
-    // ── Upload ────────────────────────────────────────────────────────────────
-    s3.upload_repo_bytes(
-        "yum/repodata/primary.xml.gz",
-        &primary_gz,
-        "application/gzip",
-        Some("no-store"),
-    )
-    .await?;
-    s3.upload_repo_bytes(
-        "yum/repodata/repomd.xml",
-        repomd_bytes,
-        "application/xml",
-        Some("no-store"),
-    )
-    .await?;
-    s3.upload_repo_bytes(
-        "yum/repodata/repomd.xml.asc",
-        &repomd_asc,
-        "text/plain",
-        Some("no-store"),
-    )
-    .await?;
-
-    // ── Public key ────────────────────────────────────────────────────────────
-    println!("  Uploading public key…");
-    let pubkey = sign::export_public_key(gpg_user)?;
-    s3.upload_repo_bytes("yum/daedalus-release.gpg", &pubkey, "text/plain", None)
-        .await?;
-
-    println!();
-    Ok(())
-}
-
-// ── Arch repository ───────────────────────────────────────────────────────────
-
-async fn publish_arch(
-    s3: &S3Client,
-    pkgs: &[&LinuxPackage],
-    gpg_user: Option<&str>,
-    _now_ts: u64,
-) -> Result<()> {
-    println!("=== Arch repository ===");
-    let packages: Vec<_> = pkgs
-        .iter()
-        .map(|pkg| (pkg.path.as_path(), pkg.filename.as_str()))
-        .collect();
-    let repo = arch_repo::prepare(&packages, Signing::Iohk(gpg_user))?;
-
-    // All signatures have been verified before the first upload. Retain older
-    // packages for clients holding previous databases. The public aliases hold
-    // actual bytes, never an object-store representation of a symlink.
-    // Separate S3 writes are not atomic: use atomic deployment-side generation
-    // routing or a maintenance window when a zero-mismatch cutover is required.
-    for name in repo.packages.iter().chain(&repo.metadata) {
-        let content_type = if name.ends_with(".sig") {
-            "application/pgp-signature"
-        } else if name.ends_with(".gpg") {
-            "application/pgp-keys"
-        } else {
-            "application/octet-stream"
-        };
-        s3.upload_repo_bytes(
-            &format!("arch/{name}"),
-            &std::fs::read(repo.path(name))?,
-            content_type,
-            Some(arch_repo::NO_CACHE),
-        )
-        .await?;
-    }
-    Ok(())
 }
