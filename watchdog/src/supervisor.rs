@@ -58,6 +58,13 @@ fn unix_ms() -> u64 {
         .as_millis() as u64
 }
 
+/// Whole milliseconds since `start` on the monotonic clock. Durations are
+/// measured with this, never as a difference of `unix_ms()` readings, because
+/// a step of the wall clock would shorten the result or make it wrap.
+fn elapsed_ms(start: Instant) -> u64 {
+    start.elapsed().as_millis() as u64
+}
+
 fn extract_exit(status: Option<std::process::ExitStatus>) -> ExitInfo {
     let Some(s) = status else {
         return (None, None);
@@ -426,7 +433,7 @@ async fn stop_node(
 ) -> HeldRequests {
     info!("stopping node ({reason})");
     let bound = Duration::from_secs(settings.config.node.stop_timeout_secs);
-    let shutdown_start = unix_ms();
+    let shutdown_start = Instant::now();
     shutdown_pipe.close_write();
     let mut held = HeldRequests::default();
     let exited = wait_for_node_exit(node_rx, kill_tx, bound);
@@ -440,7 +447,7 @@ async fn stop_node(
     while let Ok(cmd) = cmd_rx.try_recv() {
         held.take(cmd, settings).await;
     }
-    let shutdown_ms = unix_ms() - shutdown_start;
+    let shutdown_ms = elapsed_ms(shutdown_start);
     info!("node shut down in {shutdown_ms}ms (force_killed={force_killed})");
     emit(&Event::NodeShutdownMs {
         ms: shutdown_ms,
@@ -1875,7 +1882,7 @@ async fn run_node_wallet(
     info!("waiting for chainDbReady: {}", config.node.socket_path);
     let mut node_rx_socket = node_rx.clone();
 
-    let socket_wait_start = unix_ms();
+    let socket_wait_start = Instant::now();
 
     // Race guard: on a multi-threaded runtime the watch task may have sent
     // Some(...) before the clone above.  clone() initialises the receiver's
@@ -1940,7 +1947,7 @@ async fn run_node_wallet(
                     // openedLedgerDb can follow either OpeningLedgerDb (no replay) or ReplayingLedger
                     (NodeStartupState::OpeningLedgerDb | NodeStartupState::ReplayingLedger, "openedLedgerDb") => NodeStartupState::OpenedLedgerDb,
                     (NodeStartupState::OpenedLedgerDb,   "chainDbReady") => {
-                        emit(&Event::NodeSocketReady { waited_ms: unix_ms() - socket_wait_start });
+                        emit(&Event::NodeSocketReady { waited_ms: elapsed_ms(socket_wait_start) });
                         break 'node_starting;
                     }
                     (state, phase) => {
@@ -2274,7 +2281,7 @@ async fn run_node_wallet(
             None,
         ));
 
-        let wallet_wait_start = unix_ms();
+        let wallet_wait_start = Instant::now();
 
         // Phase 1: wait for API ready OR early exit / node-death / stop.
         // Loop so that stale commands (e.g. a CancelMithril that arrived after
@@ -2458,7 +2465,7 @@ async fn run_node_wallet(
 
         emit(&Event::WalletReady {
             port: wallet_port,
-            waited_ms: unix_ms() - wallet_wait_start,
+            waited_ms: elapsed_ms(wallet_wait_start),
         });
         info!("wallet API ready on port {wallet_port}");
 
