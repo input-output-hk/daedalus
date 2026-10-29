@@ -129,6 +129,51 @@ describe('WatchdogManager requested restart', () => {
   });
 });
 
+describe('WatchdogManager wallet no-response', () => {
+  const unresponsive = (willRestart: boolean) => ({
+    event: 'wallet_unresponsive',
+    failed_probes: 4,
+    unresponsive_ms: 61_000,
+    answered_once: true,
+    last_error: 'connect: connection refused',
+    restart_attempt: 1,
+    will_restart: willRestart,
+  });
+
+  it('starts with no restarts for no response', () => {
+    const { manager } = makeManager();
+    expect(manager.getState().walletUnresponsiveRestarts).toBe(0);
+    expect(manager.getState().lastWalletUnresponsive).toBeNull();
+  });
+
+  it('counts a restart and keeps the last error', () => {
+    const { manager, emit } = makeManager();
+    emit(unresponsive(true));
+    emit(unresponsive(true));
+    const state = manager.getState();
+    expect(state.walletUnresponsiveRestarts).toBe(2);
+    expect(state.lastWalletUnresponsive).toMatchObject({
+      lastError: 'connect: connection refused',
+      willRestart: true,
+    });
+    expect(state.lastWalletUnresponsive?.at).toBeGreaterThan(0);
+  });
+
+  it('does not count the verdict that stops the automatic restarts', () => {
+    const { manager, emit } = makeManager();
+    emit(unresponsive(true));
+    emit(unresponsive(false));
+    expect(manager.getState().walletUnresponsiveRestarts).toBe(1);
+    expect(manager.getState().lastWalletUnresponsive?.willRestart).toBe(false);
+  });
+
+  it('leaves the wallet restart count alone', () => {
+    const { manager, emit } = makeManager();
+    emit(unresponsive(true));
+    expect(manager.getState().walletRestartCount).toBe(0);
+  });
+});
+
 describe('WatchdogManager unrecoverable state', () => {
   it('records node_unrecoverable', () => {
     const { manager, emit } = makeManager();

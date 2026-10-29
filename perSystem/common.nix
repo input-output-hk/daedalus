@@ -626,6 +626,9 @@
                     daedalusConfig.metadataUrl
                   ];
                 state_dir = wStateDir;
+                # Restart a wallet whose API stops answering while its process
+                # stays alive. Every threshold is the watchdog's default.
+                health = {};
               };
               electron = {
                 exe = wElectronBin;

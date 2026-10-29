@@ -241,6 +241,7 @@ struct Cfg<'a> {
     wallet_stop_timeout_secs: Option<u64>,
     node_crash_window: Option<(u32, u64)>,
     wallet_crash_window: Option<(u32, u64)>,
+    wallet_health: Option<Value>,
     startup_silence_secs: Option<u64>,
     with_mithril: bool,
     mithril_stall: Option<(u64, u64)>,
@@ -268,6 +269,7 @@ impl<'a> Cfg<'a> {
             wallet_stop_timeout_secs: None,
             node_crash_window: None,
             wallet_crash_window: None,
+            wallet_health: None,
             startup_silence_secs: None,
             with_mithril: false,
             mithril_stall: None,
@@ -313,6 +315,25 @@ impl<'a> Cfg<'a> {
 
     fn wallet_crash_window(mut self, max: u32, secs: u64) -> Self {
         self.wallet_crash_window = Some((max, secs));
+        self
+    }
+
+    /// Turns the wallet health check on, with `overrides` laid over thresholds
+    /// of tens of milliseconds, so a test sees a verdict in a second or two.
+    fn wallet_health(mut self, overrides: Value) -> Self {
+        let mut health = json!({
+            "probe_interval_ms": 50,
+            "probe_timeout_ms": 200,
+            "failure_threshold": 3,
+            "startup_grace_ms": 60_000,
+            "max_restarts": 5,
+            "restart_window_ms": 600_000,
+            "stop_timeout_secs": 5
+        });
+        for (k, v) in overrides.as_object().expect("an object") {
+            health[k] = v.clone();
+        }
+        self.wallet_health = Some(health);
         self
     }
 
@@ -378,6 +399,9 @@ impl<'a> Cfg<'a> {
         }
         if let Some(secs) = self.startup_silence_secs {
             cfg["node"]["startup_silence_secs"] = json!(secs);
+        }
+        if let Some(health) = self.wallet_health {
+            cfg["wallet"]["health"] = health;
         }
         if let Some((max, secs)) = self.node_crash_window {
             cfg["node"]["max_crashes_in_window"] = json!(max);
@@ -3580,6 +3604,353 @@ fn wallet_restart_stops_the_wallet_cleanly() {
     assert_ne!(first["pid"], second["pid"]);
     assert_eq!(std::fs::read_to_string(&exit_file).unwrap(), "stdin-eof");
     expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+// ── Tests: wallet health check ───────────────────────────────────────────────
+
+// The mock wallet binds at once, but the watchdog notices only at its next
+// 500 ms poll of the port. A fault scheduled for 1,200 ms therefore always
+// follows `wallet_ready`.
+const FAULT_AFTER_MS: &str = "1200";
+
+fn watchdog_log(dir: &TempDir) -> String {
+    std::fs::read_to_string(dir.path().join("logs").join("watchdog.log")).unwrap_or_default()
+}
+
+/// A wallet whose server goes away while its process stays alive is stopped
+/// cleanly and replaced; the replacement answers.
+#[test]
+fn wallet_with_a_closed_listener_is_restarted() {
+    let dir = TempDir::new("health-closed");
+    dir.populate_chain();
+    let sentinel = dir.path().join("healthy");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({}))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_CLOSE_AFTER_MS", FAULT_AFTER_MS),
+            ("MOCK_WALLET_HEALTHY_SENTINEL", sentinel.to_str().unwrap()),
+        ],
+    );
+
+    let first = expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+    let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+    assert_eq!(verdict["answered_once"], true, "{verdict}");
+    assert_eq!(verdict["will_restart"], true, "{verdict}");
+    assert_eq!(verdict["restart_attempt"], 1, "{verdict}");
+    assert_eq!(verdict["failed_probes"], 3, "{verdict}");
+    assert!(
+        verdict["last_error"]
+            .as_str()
+            .unwrap()
+            .contains("connection refused"),
+        "{verdict}"
+    );
+    let second = expect(&rx, "wallet_started");
+    assert_ne!(first["pid"], second["pid"]);
+    expect(&rx, "wallet_ready");
+    expect_none_of(&rx, &["wallet_unresponsive", "wallet_exited"], 1_500);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    let log = watchdog_log(&dir);
+    assert!(
+        log.contains("stopping wallet (no response)"),
+        "stop not logged:\n{log}"
+    );
+    assert!(
+        log.contains("force_killed=false, code=Some(0)"),
+        "the wallet's exit code not logged:\n{log}"
+    );
+}
+
+/// A wallet that holds its listener but answers nothing, and ignores the
+/// stdin close, is killed at the health stop bound and replaced.
+#[test]
+fn wallet_with_a_hung_server_is_killed_and_restarted() {
+    let dir = TempDir::new("health-hung");
+    dir.populate_chain();
+    let sentinel = dir.path().join("healthy");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({"stop_timeout_secs": 1}))
+        .wallet_stop_timeout_secs(1)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_MUTE_AFTER_MS", FAULT_AFTER_MS),
+            ("MOCK_WALLET_IGNORE_STDIN", "1"),
+            ("MOCK_WALLET_HEALTHY_SENTINEL", sentinel.to_str().unwrap()),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+    assert_eq!(verdict["answered_once"], true, "{verdict}");
+    assert!(
+        verdict["last_error"].as_str().unwrap().contains("timeout"),
+        "{verdict}"
+    );
+    expect(&rx, "wallet_started");
+    expect(&rx, "wallet_ready");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    let log = watchdog_log(&dir);
+    assert!(
+        stop_line_after(&log, "stopping wallet (no response)").contains("force_killed=true"),
+        "the hung wallet was not killed at the stop that follows the verdict:\n{log}"
+    );
+}
+
+/// The first `wallet stopped in` line after the first line containing `marker`.
+fn stop_line_after(log: &str, marker: &str) -> String {
+    log.lines()
+        .skip_while(|l| !l.contains(marker))
+        .find(|l| l.contains("wallet stopped in"))
+        .unwrap_or_else(|| panic!("no stop line after '{marker}':\n{log}"))
+        .to_string()
+}
+
+/// The stop that follows a node exit precedes an automatic restart, so it uses
+/// the short bound and not the 60 s bound of a requested stop.
+#[test]
+fn wallet_stop_after_a_node_exit_uses_the_restart_bound() {
+    let dir = TempDir::new("health-node-exit");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({"stop_timeout_secs": 1}))
+        .wallet_stop_timeout_secs(6)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_IGNORE_STDIN", "1"),
+            ("MOCK_NODE_CRASH_AFTER_READY_MS", "1500"),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    expect(&rx, "node_exited");
+    expect(&rx, "node_started");
+
+    stop(&mut stdin);
+    drop(stdin);
+    let _ = child.wait();
+
+    let log = watchdog_log(&dir);
+    let line = stop_line_after(&log, "stopping wallet (node exited)");
+    assert!(line.contains("force_killed=true"), "{line}");
+    // The restart bound is 1 s; the requested-stop bound here is 6 s.
+    let ms: u64 = line
+        .split("stopped in ")
+        .nth(1)
+        .and_then(|r| r.split("ms").next())
+        .and_then(|n| n.parse().ok())
+        .unwrap_or_else(|| panic!("no duration in {line}"));
+    assert!(ms < 4_000, "the stop took {ms} ms: {line}");
+}
+
+/// After `max_restarts` verdicts the wallet is left stopped with the existing
+/// unrecoverable state, and a user restart starts the count again.
+#[test]
+fn wallet_health_restarts_are_capped_and_a_retry_clears_the_cap() {
+    let dir = TempDir::new("health-cap");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({"max_restarts": 2, "failure_threshold": 2}))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_CLOSE_AFTER_MS", FAULT_AFTER_MS),
+        ],
+    );
+
+    for (attempt, will_restart) in [(1, true), (2, true), (3, false)] {
+        expect(&rx, "wallet_ready");
+        let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+        assert_eq!(verdict["restart_attempt"], attempt, "{verdict}");
+        assert_eq!(verdict["will_restart"], will_restart, "{verdict}");
+    }
+    let unrec = expect_within(&rx, "wallet_unrecoverable", Duration::from_secs(10));
+    assert_eq!(unrec["attempt"], 3, "{unrec}");
+    expect_none_of(&rx, &["wallet_started", "stopped"], 700);
+
+    // The retry clears the budget: the next verdict is attempt 1 again.
+    send(&mut stdin, json!({"cmd": "restart_wallet"}));
+    expect(&rx, "wallet_ready");
+    let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+    assert_eq!(verdict["restart_attempt"], 1, "{verdict}");
+    assert_eq!(verdict["will_restart"], true, "{verdict}");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A wallet that answers is left alone.
+#[test]
+fn healthy_wallet_is_not_restarted() {
+    let dir = TempDir::new("health-ok");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({}))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(&cfg, &[("MOCK_WALLET_HTTP", "1")]);
+
+    expect(&rx, "wallet_ready");
+    // Twenty probe intervals.
+    expect_none_of(&rx, &["wallet_unresponsive", "wallet_exited"], 1_000);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Timeouts before the first answer are not failures; the startup grace ends
+/// the wait, with a verdict that says the wallet never answered.
+#[test]
+fn wallet_that_never_answers_gets_a_verdict_when_the_grace_ends() {
+    let dir = TempDir::new("health-grace");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({"startup_grace_ms": 1_000}))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_MUTE_AFTER_MS", "0"),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+    assert_eq!(verdict["answered_once"], false, "{verdict}");
+    assert_eq!(verdict["failed_probes"], 0, "{verdict}");
+    assert!(
+        verdict["unresponsive_ms"].as_u64().unwrap() >= 1_000,
+        "{verdict}"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Refusals count from the first probe: a listener that closes before any
+/// answer gives a verdict after the threshold, long before the grace.
+#[test]
+fn refusals_before_the_first_answer_give_a_verdict_before_the_grace() {
+    let dir = TempDir::new("health-refused");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({}))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_MUTE_AFTER_MS", "0"),
+            ("MOCK_WALLET_CLOSE_AFTER_MS", FAULT_AFTER_MS),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+    assert_eq!(verdict["answered_once"], false, "{verdict}");
+    assert_eq!(verdict["failed_probes"], 3, "{verdict}");
+    assert!(
+        verdict["last_error"]
+            .as_str()
+            .unwrap()
+            .contains("connection refused"),
+        "{verdict}"
+    );
+    assert!(
+        verdict["unresponsive_ms"].as_u64().unwrap() < 30_000,
+        "{verdict}"
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A restart the user asks for between two verdicts starts the count again.
+#[test]
+fn user_wallet_restart_clears_the_health_budget() {
+    let dir = TempDir::new("health-user-restart");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .wallet_health(json!({"max_restarts": 1}))
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog_with_env(
+        &cfg,
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_CLOSE_AFTER_MS", FAULT_AFTER_MS),
+        ],
+    );
+
+    expect(&rx, "wallet_ready");
+    let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+    assert_eq!(verdict["restart_attempt"], 1, "{verdict}");
+    assert_eq!(verdict["will_restart"], true, "{verdict}");
+
+    // The replacement closes its listener 1,200 ms after it binds, and
+    // becomes ready after about 500 ms, so the command lands before that.
+    expect(&rx, "wallet_ready");
+    send(&mut stdin, json!({"cmd": "restart_wallet"}));
+    expect(&rx, "wallet_restarting");
+    expect(&rx, "wallet_ready");
+    let verdict = expect_within(&rx, "wallet_unresponsive", Duration::from_secs(10));
+    assert_eq!(
+        verdict["restart_attempt"], 1,
+        "the budget was not cleared: {verdict}"
+    );
+    assert_eq!(verdict["will_restart"], true, "{verdict}");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Without a `wallet.health` section the check is off: a wallet that drops
+/// every connection is left alone.
+#[test]
+fn wallet_health_is_off_without_its_section() {
+    let dir = TempDir::new("health-off");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "wallet_ready");
+    expect_none_of(&rx, &["wallet_unresponsive", "wallet_exited"], 1_000);
 
     stop(&mut stdin);
     expect(&rx, "stopped");

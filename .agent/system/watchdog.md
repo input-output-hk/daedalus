@@ -133,6 +133,10 @@ The watchdog **does restart** the wallet automatically. The supervisor loop (`'s
 
 **Circuit breaker**: after `max_restart_attempts` (default 10) cumulative failures, the watchdog emits `wallet_unrecoverable` and breaks out of the supervisor loop, triggering a full node shutdown.
 
+**Health check**: when `wallet.health` is present in the config, the watchdog asks a ready wallet for `GET /v2/network/information` on a new connection every `probe_interval_ms` (default 15 s) and restarts a wallet whose process is alive but whose API has stopped answering. Any HTTP status counts as an answer. A wallet with `tls_dir` set is probed over mutual TLS with the generated client certificate; a certificate failure turns the check off for that wallet process instead of restarting it. The check acts after `failure_threshold` (default 4) consecutive failed probes of any kind. Before the wallet's first answer, timeouts are ignored, because the first request waits for the wallet's first connection to the node, and refused connections count; a wallet that has not answered after `startup_grace_ms` (default 5 minutes) is also acted on. The verdict emits `wallet_unresponsive`, stops the wallet with `wallet.health.stop_timeout_secs` (default 15 s) and starts a new one on the same port. Restarts for no response are counted apart from crashes, on a sliding window: at most `max_restarts` (default 5) in any `restart_window_ms` (default one hour). The next verdict leaves the wallet stopped with `wallet_unrecoverable`, and each restart in the window doubles `failure_threshold` for the next wallet. A restart or retry requested by the user clears the count. An absent `wallet.health` section turns the check off.
+
+Requested stops (quit, restarts the user asks for, Mithril, update install) wait `wallet.stop_timeout_secs` (default 60 s) for the wallet to exit after its stdin closes, then kill it. A restart for no response and the stop that follows a node exit, which precedes an automatic restart, wait `wallet.health.stop_timeout_secs` (default 15 s). Every stop writes the wallet's exit code to `watchdog.log`.
+
 The exit info (`code`, `signal`) and the phase (`"pre_ready"` / `"post_ready"`) are included in the `wallet_exited` event so Daedalus can show a meaningful error.
 
 ---
@@ -190,6 +194,7 @@ All events have an `"event"` discriminant field (snake_case):
 | `wallet_ready` | `port`, `waited_ms` | Wallet API is accepting connections → promise resolves |
 | `wallet_exited` | `code`, `signal`, `phase` | Wallet process exited (`phase`: `pre_ready` or `post_ready`) |
 | `wallet_restarting` | `attempt`, `last_exit_code`, `last_exit_signal` | Watchdog is restarting the wallet |
+| `wallet_unresponsive` | `failed_probes`, `unresponsive_ms`, `answered_once`, `last_error`, `restart_attempt`, `will_restart` | The wallet process is alive but its API stopped answering; the watchdog stops it, and starts a new one when `will_restart` |
 | `wallet_unrecoverable` | `attempt` | Circuit breaker tripped; node shutdown follows |
 | `node_force_killed` | — | Node didn't exit within 30 s; was SIGKILLed |
 | `node_shutdown_ms` | `ms`, `force_killed` | Time taken from shutdown-pipe close to node exit |

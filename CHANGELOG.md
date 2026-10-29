@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Restart cardano-wallet when its API stops answering while its process stays alive: the watchdog checks the API every 15 seconds and restarts a wallet that fails 4 checks in a row, at most 5 times in any hour. Requested wallet stops (quit, restarts you ask for, Mithril and update install) now wait up to 60 seconds before the wallet is killed; a restart for no response and the stop after a node exit wait 15 seconds. Diagnostics shows the number of these restarts and the latest one ([PR #3443](https://github.com/input-output-hk/daedalus/pull/3443)).
+
 ### Chores
 
 - Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).

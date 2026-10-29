@@ -1,3 +1,5 @@
+import type { WalletUnresponsive } from '../../../common/types/watchdog.types';
+
 export type CoreSystemInfo = {
   daedalusVersion: string;
   daedalusBuildNumber: string;
@@ -24,4 +26,8 @@ export type CoreSystemInfo = {
   walletReadyWaitMs?: number;
   /** Exit code from the most recent cardano-wallet crash before the watchdog restarted it */
   lastWalletExitCode?: number | null;
+  /** Times the watchdog restarted cardano-wallet because its API stopped answering */
+  walletUnresponsiveRestarts?: number;
+  /** The latest time the wallet API stopped answering */
+  lastWalletUnresponsive?: WalletUnresponsive | null;
 };

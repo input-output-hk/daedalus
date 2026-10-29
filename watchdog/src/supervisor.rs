@@ -20,8 +20,11 @@ use nix::sys::signal::Signal;
 
 use crate::chain_damage::{ChainDamageDetector, Detection, SharedDetector};
 use crate::chain_validation;
-use crate::config::WatchdogConfig;
+use crate::config::{DEFAULT_RESTART_STOP_TIMEOUT_SECS, WatchdogConfig};
 use crate::crash_window::CrashWindow;
+use crate::health::budget::RestartBudget;
+use crate::health::monitor::{self, Monitor, MonitorSettings};
+use crate::health::probe::{self, HttpProbe, Outcome};
 use crate::ledger_point::{self, Verdict};
 use crate::mithril;
 use crate::protocol::{ChainDamageKind, Command as Cmd, ElectronRestartPayload, Event, emit};
@@ -230,29 +233,38 @@ fn stop_progress_ticks() -> tokio::time::Interval {
 
 // Asks cardano-wallet to stop by closing its stdin, waits at most `bound` for
 // it to exit, then kills it. Emits stop progress once a second while waiting.
-async fn stop_wallet(wallet: &mut Child, wallet_stdin: &mut Option<ChildStdin>, bound: Duration) {
+// Returns how the process ended, which is also written to the log: a crash on
+// a requested stop is otherwise invisible.
+async fn stop_wallet(
+    wallet: &mut Child,
+    wallet_stdin: &mut Option<ChildStdin>,
+    bound: Duration,
+) -> ExitInfo {
     let started = Instant::now();
     emit_stop_progress(STAGE_STOPPING_WALLET, started, bound);
     drop(wallet_stdin.take());
     let deadline = sleep(bound);
     tokio::pin!(deadline);
     let mut tick = stop_progress_ticks();
-    let force_killed = loop {
+    let (force_killed, status) = loop {
         tokio::select! {
-            _ = wallet.wait() => break false,
+            status = wallet.wait() => break (false, status.ok()),
             _ = tick.tick() => emit_stop_progress(STAGE_STOPPING_WALLET, started, bound),
             _ = &mut deadline => {
                 warn!("cardano-wallet did not exit within {}s; killing it", bound.as_secs());
                 let _ = wallet.start_kill();
-                let _ = wallet.wait().await;
-                break true;
+                break (true, wallet.wait().await.ok());
             }
         }
     };
+    let exit = extract_exit(status);
     info!(
-        "wallet stopped in {}ms (force_killed={force_killed})",
-        started.elapsed().as_millis()
+        "wallet stopped in {}ms (force_killed={force_killed}, code={:?}, signal={:?})",
+        started.elapsed().as_millis(),
+        exit.0,
+        exit.1
     );
+    exit
 }
 
 // Waits for the node-watcher channel to report that cardano-node has exited,
@@ -455,6 +467,10 @@ struct CrashCounters {
     node_consecutive: u32,
     node_window: CrashWindow,
     wallet_window: CrashWindow,
+    // Restarts of a wallet that stopped answering. It is kept apart from
+    // `wallet_window` because such a wallet has not exited, and the two limits
+    // stay readable on their own.
+    wallet_health: RestartBudget,
 }
 
 impl CrashCounters {
@@ -469,6 +485,13 @@ impl CrashCounters {
                 config.wallet.max_crashes_in_window,
                 Duration::from_secs(config.wallet.crash_window_secs),
             ),
+            wallet_health: {
+                let health = config.wallet.health.clone().unwrap_or_default();
+                RestartBudget::new(
+                    health.max_restarts,
+                    Duration::from_millis(health.restart_window_ms),
+                )
+            },
         }
     }
 
@@ -477,6 +500,7 @@ impl CrashCounters {
         self.node_consecutive = 0;
         self.node_window.clear();
         self.wallet_window.clear();
+        self.wallet_health.clear();
     }
 }
 
@@ -1751,6 +1775,15 @@ async fn run_node_wallet(
         .unwrap_or(&config.node.state_dir);
     let node_log = open_log(&format!("{logs_dir}/node.log"));
     let wallet_stop_bound = Duration::from_secs(config.wallet.stop_timeout_secs);
+    // The stop that precedes an automatic restart, which is shorter than a
+    // requested stop: a restart for no response and the stop after a node exit.
+    let restart_stop_bound = Duration::from_secs(
+        config
+            .wallet
+            .health
+            .as_ref()
+            .map_or(DEFAULT_RESTART_STOP_TIMEOUT_SECS, |h| h.stop_timeout_secs),
+    );
 
     let mut shutdown_pipe = match ShutdownPipe::new() {
         Ok(p) => p,
@@ -2154,6 +2187,7 @@ async fn run_node_wallet(
                         info!("retrying cardano-wallet after it was unrecoverable");
                         attempt = 0;
                         crashes.wallet_window.clear();
+                        crashes.wallet_health.clear();
                         wallet_failed = false;
                     }
                     Some(Cmd::RestartNode | Cmd::StartNode) => {
@@ -2303,7 +2337,7 @@ async fn run_node_wallet(
                     warn!("cardano-node exited during wallet startup (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
-                    stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
+                    stop_wallet(&mut wallet, &mut wallet_stdin, restart_stop_bound).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
@@ -2381,6 +2415,7 @@ async fn run_node_wallet(
                             // A user restart is not a failure.
                             attempt = 0;
                             crashes.wallet_window.clear();
+                            crashes.wallet_health.clear();
                             emit(&Event::WalletRestarting {
                                 attempt,
                                 last_exit_code: None,
@@ -2467,11 +2502,46 @@ async fn run_node_wallet(
         // day) must not accumulate into WalletUnrecoverable.
         attempt = 0;
 
+        // Probes the wallet API for as long as this wallet process runs in
+        // phase 2; dropped, and so stopped, with the iteration.
+        let mut health = start_wallet_health(config, wallet_port, &crashes.wallet_health);
+
         // Phase 2: wallet is ready — wait for exit, node death, or stop.
         // Loop so that stale commands are ignored instead of falling through
         // to the outer 'supervisor loop (which would restart the wallet).
         loop {
             tokio::select! {
+                report = next_wallet_verdict(&mut health) => {
+                    let grant = crashes.wallet_health.record(std::time::Instant::now());
+                    warn!(
+                        "wallet unresponsive: {} failed probes, {}ms without an answer, last error: {} (restart {} of {})",
+                        report.failed_probes,
+                        report.unresponsive_for.as_millis(),
+                        report.last_error,
+                        grant.attempt,
+                        wallet_cfg.health.as_ref().map_or(0, |h| h.max_restarts)
+                    );
+                    emit(&Event::WalletUnresponsive {
+                        failed_probes: report.failed_probes,
+                        unresponsive_ms: report.unresponsive_for.as_millis() as u64,
+                        answered_once: report.answered_once,
+                        last_error: report.last_error.clone(),
+                        restart_attempt: grant.attempt,
+                        will_restart: grant.will_restart,
+                    });
+                    info!("stopping wallet (no response)");
+                    drop(health.take());
+                    stop_wallet(&mut wallet, &mut wallet_stdin, restart_stop_bound).await;
+                    if !grant.will_restart {
+                        warn!("wallet unrecoverable: {} restarts for no response", grant.attempt - 1);
+                        emit(&Event::WalletUnrecoverable { attempt: grant.attempt });
+                        wallet_failed = true;
+                        continue 'supervisor;
+                    }
+                    info!("wallet restarting after no response (restart {})", grant.attempt);
+                    sleep(Duration::from_millis(wallet_cfg.restart_delay_ms)).await;
+                    continue 'supervisor;
+                }
                 status = wallet.wait() => {
                     let exit = extract_exit(status.ok());
                     warn!("wallet exited (code={:?}, signal={:?})", exit.0, exit.1);
@@ -2492,7 +2562,7 @@ async fn run_node_wallet(
                     warn!("cardano-node exited (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
-                    stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
+                    stop_wallet(&mut wallet, &mut wallet_stdin, restart_stop_bound).await;
                     return Ok(RunResult::NodeCrashed);
                 }
                 Some(cmd) = cmd_rx.recv() => {
@@ -2570,6 +2640,7 @@ async fn run_node_wallet(
                             // A user restart is not a failure.
                             attempt = 0;
                             crashes.wallet_window.clear();
+                            crashes.wallet_health.clear();
                             emit(&Event::WalletRestarting {
                                 attempt,
                                 last_exit_code: None,
@@ -2662,6 +2733,137 @@ async fn run_node_wallet(
 
     Ok(RunResult::Stopped)
 }
+
+/// The monitor of one wallet process. It ends with the process: dropping it
+/// stops the probing task.
+struct WalletHealth {
+    verdict: watch::Receiver<Option<monitor::Report>>,
+    task: tokio::task::JoinHandle<()>,
+}
+
+impl Drop for WalletHealth {
+    fn drop(&mut self) {
+        self.task.abort();
+    }
+}
+
+/// Waits for the wallet health verdict. Never completes when the check is off,
+/// or when its task ended without a verdict because the probe cannot judge
+/// this wallet.
+async fn next_wallet_verdict(health: &mut Option<WalletHealth>) -> monitor::Report {
+    if let Some(h) = health {
+        if h.verdict.changed().await.is_ok() {
+            if let Some(report) = h.verdict.borrow_and_update().clone() {
+                return report;
+            }
+        }
+    }
+    std::future::pending().await
+}
+
+/// Starts probing the wallet API, when `wallet.health` is configured and the
+/// probe can be built.
+fn start_wallet_health(
+    config: &WatchdogConfig,
+    port: u16,
+    budget: &RestartBudget,
+) -> Option<WalletHealth> {
+    let cfg = config.wallet.health.as_ref()?;
+    let tls = if config.tls_dir.is_some() {
+        let Some(material) = config.wallet_client_tls.as_ref() else {
+            warn!(
+                "wallet health check off: tls_dir is set but no client certificate was generated"
+            );
+            return None;
+        };
+        match probe::client_config(material) {
+            Ok(c) => Some(c),
+            Err(e) => {
+                warn!("wallet health check off: {e:#}");
+                return None;
+            }
+        }
+    } else {
+        None
+    };
+    let timeout = Duration::from_millis(cfg.probe_timeout_ms.max(1));
+    let probe = HttpProbe::new(
+        std::net::SocketAddr::from(([127, 0, 0, 1], port)),
+        WALLET_HEALTH_PATH,
+        timeout,
+        tls,
+    );
+    let settings = MonitorSettings {
+        probe_interval: Duration::from_millis(cfg.probe_interval_ms.max(1)),
+        probe_timeout: timeout,
+        failure_threshold: budget
+            .failure_threshold(cfg.failure_threshold, std::time::Instant::now()),
+        startup_grace: Duration::from_millis(cfg.startup_grace_ms),
+    };
+    info!(
+        "wallet health check on: every {}ms, {} failed probes, {}s grace",
+        settings.probe_interval.as_millis(),
+        settings.failure_threshold,
+        settings.startup_grace.as_secs()
+    );
+    let (tx, rx) = watch::channel(None);
+    let task = tokio::spawn(run_wallet_health(probe, settings, tx));
+    Some(WalletHealth { verdict: rx, task })
+}
+
+/// Probes on an interval and reports the monitor's verdict, once.
+async fn run_wallet_health(
+    probe: HttpProbe,
+    settings: MonitorSettings,
+    verdict: watch::Sender<Option<monitor::Report>>,
+) {
+    let threshold = settings.failure_threshold;
+    let mut monitor = Monitor::new(
+        settings.clone(),
+        std::time::Instant::now(),
+        SystemTime::now(),
+    );
+    let mut tick = interval_at(
+        Instant::now() + settings.probe_interval,
+        settings.probe_interval,
+    );
+    tick.set_missed_tick_behavior(MissedTickBehavior::Delay);
+    loop {
+        tick.tick().await;
+        let outcome = probe.run().await;
+        let before = monitor.state();
+        let result = monitor.on_probe(&outcome, std::time::Instant::now(), SystemTime::now());
+        match &outcome {
+            Outcome::Answered { status } => {
+                if before != monitor::State::Healthy {
+                    info!("wallet health: answered with status {status}");
+                }
+            }
+            failed => {
+                let why = failed.describe(probe.timeout()).unwrap_or_default();
+                warn!(
+                    "wallet health probe failed ({}/{threshold}): {why}",
+                    monitor.consecutive_failures()
+                );
+            }
+        }
+        match result {
+            monitor::Verdict::Continue => {}
+            monitor::Verdict::Disabled(why) => {
+                warn!("wallet health check off for this wallet process: {why}");
+                return;
+            }
+            monitor::Verdict::Unresponsive(report) => {
+                let _ = verdict.send(Some(report));
+                return;
+            }
+        }
+    }
+}
+
+/// The wallet API route the health probe asks for. It reads the node's tip
+/// and era from memory and touches no wallet database.
+const WALLET_HEALTH_PATH: &str = "/v2/network/information";
 
 #[cfg(test)]
 mod tests {

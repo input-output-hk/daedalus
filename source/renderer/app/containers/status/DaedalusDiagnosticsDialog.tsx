@@ -79,6 +79,8 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       walletPort,
       nodeForceKilled,
       lastWalletExitCode,
+      walletUnresponsiveRestarts,
+      lastWalletUnresponsive,
       nodeSocketWaitMs,
       walletReadyWaitMs,
     } = backend;
@@ -121,6 +123,8 @@ export class DaedalusDiagnosticsDialog extends Component<Props> {
       watchdogPid,
       nodeForceKilled,
       lastWalletExitCode,
+      walletUnresponsiveRestarts,
+      lastWalletUnresponsive,
       nodeSocketWaitMs,
       walletReadyWaitMs,
     };
