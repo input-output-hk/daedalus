@@ -1872,6 +1872,26 @@
         "id": "daedalus.diagnostics.dialog.cardanoWalletRestartCount"
       },
       {
+        "defaultMessage": "!!!Wallet restarts after no response",
+        "description": "Number of times the watchdog restarted cardano-wallet because its API stopped answering while the process was still running",
+        "id": "daedalus.diagnostics.dialog.walletUnresponsiveRestarts"
+      },
+      {
+        "defaultMessage": "!!!Last wallet no-response",
+        "description": "When the watchdog last found that cardano-wallet's API had stopped answering, and the last error it saw",
+        "id": "daedalus.diagnostics.dialog.lastWalletUnresponsive"
+      },
+      {
+        "defaultMessage": "!!!{time}: {error}",
+        "description": "Time and last error of the most recent wallet no-response",
+        "id": "daedalus.diagnostics.dialog.lastWalletUnresponsiveValue"
+      },
+      {
+        "defaultMessage": "!!!{time}: {error}. Automatic restarts have stopped.",
+        "description": "Time and last error of the most recent wallet no-response, when the watchdog has stopped restarting the wallet by itself",
+        "id": "daedalus.diagnostics.dialog.lastWalletUnresponsiveStopped"
+      },
+      {
         "defaultMessage": "!!!Watchdog process ID",
         "description": "PID of the cardano-watchdog supervisor process",
         "id": "daedalus.diagnostics.dialog.watchdogPid"

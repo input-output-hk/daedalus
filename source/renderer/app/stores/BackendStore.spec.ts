@@ -1219,6 +1219,46 @@ describe('BackendStore unrecoverable backend', () => {
   });
 });
 
+describe('BackendStore wallet no-response', () => {
+  const polled = (overrides: Record<string, unknown>) => ({
+    hasChain: true,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+    mithrilPhase: null,
+    walletUnrecoverable: false,
+    nodeUnrecoverable: false,
+    ...overrides,
+  });
+
+  it('mirrors the count and the last event from the poll', async () => {
+    const store = makeStore();
+    const last = {
+      at: 1000,
+      lastError: 'timeout after 10000 ms',
+      willRestart: true,
+    };
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({ walletUnresponsiveRestarts: 2, lastWalletUnresponsive: last })
+    );
+    await store._pollBackendStatus();
+    expect(store.walletUnresponsiveRestarts).toBe(2);
+    expect(store.lastWalletUnresponsive).toEqual(last);
+  });
+
+  it('reads a poll from a state without the fields as none', async () => {
+    const store = makeStore();
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled({})
+    );
+    await store._pollBackendStatus();
+    expect(store.walletUnresponsiveRestarts).toBe(0);
+    expect(store.lastWalletUnresponsive).toBeNull();
+  });
+});
+
 describe('BackendStore Mithril run after the backend was given up on', () => {
   const polled = (overrides: Record<string, unknown>) => ({
     hasChain: true,

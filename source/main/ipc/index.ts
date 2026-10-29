@@ -107,6 +107,8 @@ export default (window: BrowserWindow) => {
         nodeForceKilled: false,
         lastWalletExitCode: null,
         lastWalletExitSignal: null,
+        walletUnresponsiveRestarts: 0,
+        lastWalletUnresponsive: null,
         defaultChainPath: null,
         customChainPath: null,
         nodeExtraArgs: [],

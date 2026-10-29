@@ -44,6 +44,14 @@ impl CrashWindow {
         self.crashes.len() as u32
     }
 
+    /// Crashes inside the window as of `now`, without recording one.
+    pub fn in_window(&self, now: Instant) -> u32 {
+        self.crashes
+            .iter()
+            .filter(|&&t| now.saturating_duration_since(t) < self.window)
+            .count() as u32
+    }
+
     /// Forgets every recorded crash, after the user asks for a retry.
     pub fn clear(&mut self) {
         self.crashes.clear();
@@ -53,6 +61,19 @@ impl CrashWindow {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn in_window_counts_only_recent_crashes() {
+        let mut w = CrashWindow::new(5, Duration::from_secs(60));
+        let t = Instant::now();
+        w.record(t);
+        w.record(t + Duration::from_secs(30));
+        assert_eq!(w.in_window(t + Duration::from_secs(40)), 2);
+        assert_eq!(w.in_window(t + Duration::from_secs(70)), 1);
+        assert_eq!(w.in_window(t + Duration::from_secs(100)), 0);
+        // Asking does not record.
+        assert_eq!(w.count(), 2);
+    }
 
     const MIN: Duration = Duration::from_secs(60);
 

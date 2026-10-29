@@ -145,6 +145,23 @@ pub enum Event {
     WalletUnrecoverable {
         attempt: u32,
     },
+    /// The wallet's process is alive but its API has stopped answering. The
+    /// watchdog stops the wallet; it starts a new one when `will_restart`,
+    /// and otherwise follows with `wallet_unrecoverable`.
+    WalletUnresponsive {
+        /// Consecutive failed probes at the verdict; 0 if the startup grace
+        /// expired without an answer.
+        failed_probes: u32,
+        /// Milliseconds since the last answer, or since the wallet became
+        /// ready if it never answered.
+        unresponsive_ms: u64,
+        /// Whether this wallet process ever answered a probe.
+        answered_once: bool,
+        last_error: String,
+        /// Restarts for no response in the window, this one included.
+        restart_attempt: u32,
+        will_restart: bool,
+    },
     NodeExited {
         code: Option<i32>,
         signal: Option<String>,
@@ -484,6 +501,25 @@ mod tests {
         let j = to_json(&Event::WalletUnrecoverable { attempt: 10 });
         assert_eq!(j["event"], "wallet_unrecoverable");
         assert_eq!(j["attempt"], 10);
+    }
+
+    #[test]
+    fn wallet_unresponsive() {
+        let j = to_json(&Event::WalletUnresponsive {
+            failed_probes: 4,
+            unresponsive_ms: 61_000,
+            answered_once: true,
+            last_error: "connect: connection refused".to_string(),
+            restart_attempt: 2,
+            will_restart: false,
+        });
+        assert_eq!(j["event"], "wallet_unresponsive");
+        assert_eq!(j["failed_probes"], 4);
+        assert_eq!(j["unresponsive_ms"], 61_000);
+        assert_eq!(j["answered_once"], true);
+        assert_eq!(j["last_error"], "connect: connection refused");
+        assert_eq!(j["restart_attempt"], 2);
+        assert_eq!(j["will_restart"], false);
     }
 
     #[test]

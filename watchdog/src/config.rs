@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
+use crate::tls::TlsClientMaterial;
+
 #[derive(Debug, Deserialize)]
 pub struct WatchdogConfig {
     pub node: NodeConfig,
@@ -13,6 +15,10 @@ pub struct WatchdogConfig {
     #[serde(default)]
     pub tls_dir: Option<String>,
     pub electron: Option<ElectronConfig>,
+    /// The generated client certificate and CA, set at startup when
+    /// `tls_dir` is set, for the wallet health probe.
+    #[serde(skip)]
+    pub wallet_client_tls: Option<TlsClientMaterial>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -150,6 +156,9 @@ pub struct WalletConfig {
     /// before killing it.
     #[serde(default = "default_wallet_stop_timeout_secs")]
     pub stop_timeout_secs: u64,
+    /// The wallet health check. Absent, the check is off.
+    #[serde(default)]
+    pub health: Option<WalletHealthConfig>,
     /// Unexpected wallet exits within `crash_window_secs` that make the
     /// wallet unrecoverable, whether or not it became ready in between. 0
     /// disables this limit.
@@ -164,8 +173,101 @@ fn default_restart_delay_ms() -> u64 {
     1000
 }
 
+/// Upper bound on a requested cardano-wallet stop (quit, restarts the user
+/// asks for, Mithril, update install), in seconds. A restart for no response
+/// and the stop that follows a node exit use `wallet.health.stop_timeout_secs`
+/// (15 s) instead. A stop with nothing running
+/// against the wallet takes milliseconds, but a wallet that closes its
+/// databases while queries are in flight can need much longer, and a kill
+/// mid-close costs time on the next start. The bound matches the node's.
+pub const DEFAULT_WALLET_STOP_TIMEOUT_SECS: u64 = 60;
+
 fn default_wallet_stop_timeout_secs() -> u64 {
-    10
+    DEFAULT_WALLET_STOP_TIMEOUT_SECS
+}
+
+/// Settings of the wallet health check: the watchdog asks the wallet API for
+/// the network information on a new connection every `probe_interval_ms`,
+/// and restarts a wallet whose API stops answering while its process stays
+/// alive. Every field has a default, so `"health": {}` turns the check on.
+#[derive(Debug, Deserialize, Clone)]
+pub struct WalletHealthConfig {
+    /// Time between probes. A probe is a request and a reply in the wallet's
+    /// log, so this sets how many lines the check adds.
+    #[serde(default = "default_probe_interval_ms")]
+    pub probe_interval_ms: u64,
+    /// How long one probe may take, from connect to the status line.
+    #[serde(default = "default_probe_timeout_ms")]
+    pub probe_timeout_ms: u64,
+    /// Consecutive failed probes that make a verdict. Doubled for each health
+    /// restart already in `restart_window_ms`.
+    #[serde(default = "default_failure_threshold")]
+    pub failure_threshold: u32,
+    /// How long a wallet may go without answering for the first time. The
+    /// first request waits for the wallet's first connection to the node, so
+    /// timeouts are ignored until it answers; refused connections are not.
+    #[serde(default = "default_startup_grace_ms")]
+    pub startup_grace_ms: u64,
+    /// Most health restarts in any `restart_window_ms`; the next verdict
+    /// leaves the wallet stopped and offers the user a retry.
+    #[serde(default = "default_health_max_restarts")]
+    pub max_restarts: u32,
+    /// The sliding window `max_restarts` is counted over.
+    #[serde(default = "default_health_restart_window_ms")]
+    pub restart_window_ms: u64,
+    /// Seconds a stop that precedes an automatic restart waits for the wallet
+    /// to exit after its stdin is closed, before killing it: the restart for
+    /// no response, and the stop that follows a node exit. Shorter than
+    /// `wallet.stop_timeout_secs`, because every second of grace is a second
+    /// of outage.
+    #[serde(default = "default_health_stop_timeout_secs")]
+    pub stop_timeout_secs: u64,
+}
+
+impl Default for WalletHealthConfig {
+    fn default() -> Self {
+        Self {
+            probe_interval_ms: default_probe_interval_ms(),
+            probe_timeout_ms: default_probe_timeout_ms(),
+            failure_threshold: default_failure_threshold(),
+            startup_grace_ms: default_startup_grace_ms(),
+            max_restarts: default_health_max_restarts(),
+            restart_window_ms: default_health_restart_window_ms(),
+            stop_timeout_secs: default_health_stop_timeout_secs(),
+        }
+    }
+}
+
+fn default_probe_interval_ms() -> u64 {
+    15_000
+}
+
+fn default_probe_timeout_ms() -> u64 {
+    10_000
+}
+
+fn default_failure_threshold() -> u32 {
+    4
+}
+
+fn default_startup_grace_ms() -> u64 {
+    300_000
+}
+
+fn default_health_max_restarts() -> u32 {
+    5
+}
+
+fn default_health_restart_window_ms() -> u64 {
+    3_600_000
+}
+
+/// Default bound, in seconds, on a wallet stop that precedes an automatic
+/// restart.
+pub const DEFAULT_RESTART_STOP_TIMEOUT_SECS: u64 = 15;
+
+fn default_health_stop_timeout_secs() -> u64 {
+    DEFAULT_RESTART_STOP_TIMEOUT_SECS
 }
 
 fn default_max_restart_attempts() -> u32 {
@@ -514,9 +616,48 @@ mod tests {
     }
 
     #[test]
-    fn wallet_stop_timeout_defaults_to_10s() {
+    fn wallet_stop_timeout_defaults_to_named_constant() {
         let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
-        assert_eq!(c.wallet.stop_timeout_secs, 10);
+        assert_eq!(c.wallet.stop_timeout_secs, DEFAULT_WALLET_STOP_TIMEOUT_SECS);
+        assert_eq!(c.wallet.stop_timeout_secs, 60);
+    }
+
+    #[test]
+    fn backend_stop_limit_defaults_cover_both_default_bounds() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert_eq!(c.backend_stop_limit(), Duration::from_secs(150));
+    }
+
+    #[test]
+    fn wallet_health_is_off_when_the_section_is_absent() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert!(c.wallet.health.is_none());
+    }
+
+    #[test]
+    fn wallet_health_empty_section_turns_the_check_on_with_defaults() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json(r#","health":{}"#)).unwrap();
+        let h = c.wallet.health.expect("check is on");
+        assert_eq!(h.probe_interval_ms, 15_000);
+        assert_eq!(h.probe_timeout_ms, 10_000);
+        assert_eq!(h.failure_threshold, 4);
+        assert_eq!(h.startup_grace_ms, 300_000);
+        assert_eq!(h.max_restarts, 5);
+        assert_eq!(h.restart_window_ms, 3_600_000);
+        assert_eq!(h.stop_timeout_secs, 15);
+    }
+
+    #[test]
+    fn wallet_health_fields_override_defaults() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json(
+            r#","health":{"probe_interval_ms":50,"failure_threshold":2,"stop_timeout_secs":1}"#,
+        ))
+        .unwrap();
+        let h = c.wallet.health.unwrap();
+        assert_eq!(h.probe_interval_ms, 50);
+        assert_eq!(h.failure_threshold, 2);
+        assert_eq!(h.stop_timeout_secs, 1);
+        assert_eq!(h.max_restarts, 5);
     }
 
     #[test]

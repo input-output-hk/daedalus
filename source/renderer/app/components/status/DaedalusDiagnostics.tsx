@@ -23,7 +23,10 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { formattedNumber, formattedSize } from '../../utils/formatters';
 import { formatDiagnosticsText } from '../../utils/formatDiagnosticsText';
 import type { DiagnosticsTextSection } from '../../utils/formatDiagnosticsText';
-import type { ChainDamage } from '../../../../common/types/watchdog.types';
+import type {
+  ChainDamage,
+  WalletUnresponsive,
+} from '../../../../common/types/watchdog.types';
 import { getSupportUrl } from '../../../../common/utils/reporting';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -172,6 +175,29 @@ export const messages = defineMessages({
     defaultMessage: '!!!Cardano wallet restarts',
     description:
       'Number of times cardano-wallet has been restarted by the watchdog',
+  },
+  walletUnresponsiveRestarts: {
+    id: 'daedalus.diagnostics.dialog.walletUnresponsiveRestarts',
+    defaultMessage: '!!!Wallet restarts after no response',
+    description:
+      'Number of times the watchdog restarted cardano-wallet because its API stopped answering while the process was still running',
+  },
+  lastWalletUnresponsive: {
+    id: 'daedalus.diagnostics.dialog.lastWalletUnresponsive',
+    defaultMessage: '!!!Last wallet no-response',
+    description:
+      "When the watchdog last found that cardano-wallet's API had stopped answering, and the last error it saw",
+  },
+  lastWalletUnresponsiveValue: {
+    id: 'daedalus.diagnostics.dialog.lastWalletUnresponsiveValue',
+    defaultMessage: '!!!{time}: {error}',
+    description: 'Time and last error of the most recent wallet no-response',
+  },
+  lastWalletUnresponsiveStopped: {
+    id: 'daedalus.diagnostics.dialog.lastWalletUnresponsiveStopped',
+    defaultMessage: '!!!{time}: {error}. Automatic restarts have stopped.',
+    description:
+      'Time and last error of the most recent wallet no-response, when the watchdog has stopped restarting the wallet by itself',
   },
   watchdogPid: {
     id: 'daedalus.diagnostics.dialog.watchdogPid',
@@ -491,6 +517,19 @@ export const messages = defineMessages({
     description: 'slot',
   },
 });
+// The latest wallet no-response as one line: when it happened, the last error
+// the watchdog saw, and whether it has stopped restarting the wallet.
+const formatLastUnresponsive = (
+  formatMessage: (message: any, values?: Record<string, any>) => string,
+  value: WalletUnresponsive
+): string =>
+  formatMessage(
+    value.willRestart
+      ? messages.lastWalletUnresponsiveValue
+      : messages.lastWalletUnresponsiveStopped,
+    { time: new Date(value.at).toISOString(), error: value.lastError }
+  );
+
 type Props = {
   systemInfo: SystemInfo;
   coreInfo: CoreSystemInfo;
@@ -746,6 +785,8 @@ class DaedalusDiagnostics extends Component<Props, State> {
       watchdogPid,
       nodeForceKilled,
       lastWalletExitCode,
+      walletUnresponsiveRestarts,
+      lastWalletUnresponsive,
       nodeSocketWaitMs,
       walletReadyWaitMs,
     } = coreInfo;
@@ -903,6 +944,20 @@ class DaedalusDiagnostics extends Component<Props, State> {
               {cardanoWalletRestartCount > 0 &&
                 lastWalletExitCode != null &&
                 getRow('cardanoWalletLastExitCode', String(lastWalletExitCode))}
+              {walletUnresponsiveRestarts != null &&
+                walletUnresponsiveRestarts > 0 &&
+                getRow(
+                  'walletUnresponsiveRestarts',
+                  walletUnresponsiveRestarts
+                )}
+              {lastWalletUnresponsive != null &&
+                getRow(
+                  'lastWalletUnresponsive',
+                  formatLastUnresponsive(
+                    intl.formatMessage,
+                    lastWalletUnresponsive
+                  )
+                )}
               {nodeSocketWaitMs != null &&
                 getRow('nodeSocketWaitMs', `${nodeSocketWaitMs}ms`)}
               {walletReadyWaitMs != null &&
@@ -1273,6 +1328,26 @@ class DaedalusDiagnostics extends Component<Props, State> {
                 row(
                   'cardanoWalletLastExitCode',
                   String(coreInfo.lastWalletExitCode)
+                ),
+              ]
+            : []),
+          ...(coreInfo.walletUnresponsiveRestarts != null &&
+          coreInfo.walletUnresponsiveRestarts > 0
+            ? [
+                row(
+                  'walletUnresponsiveRestarts',
+                  coreInfo.walletUnresponsiveRestarts
+                ),
+              ]
+            : []),
+          ...(coreInfo.lastWalletUnresponsive != null
+            ? [
+                row(
+                  'lastWalletUnresponsive',
+                  formatLastUnresponsive(
+                    formatMessage,
+                    coreInfo.lastWalletUnresponsive
+                  )
                 ),
               ]
             : []),

@@ -9,6 +9,7 @@ mod chain_damage;
 mod chain_validation;
 mod config;
 mod crash_window;
+mod health;
 mod installer;
 mod instance;
 mod ledger_point;
@@ -294,6 +295,7 @@ async fn main() -> Result<()> {
     if let Some(ref tls_dir_str) = config.tls_dir.clone() {
         let tls_dir = std::path::Path::new(tls_dir_str);
         let tls = tls::generate_certs(tls_dir)?;
+        config.wallet_client_tls = Some(tls.client.clone());
         config.wallet.args.extend([
             "--tls-ca-cert".to_string(),
             tls.server_ca.to_string_lossy().into_owned(),
