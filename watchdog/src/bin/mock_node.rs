@@ -15,6 +15,9 @@
 // newline, and hangs there until the shutdown pipe closes, so a test can
 // leave a line unterminated while the node runs. Once a file named
 // <socket_path>.finish exists, it writes the newline and keeps hanging.
+//
+// Given --topology <file>, it prints the path and, on one line, the contents of
+// that file, so a test can assert on the topology the node was started with.
 use std::io::Write as _;
 
 fn main() {
@@ -28,6 +31,7 @@ fn main() {
         "TRACE_DISPATCHER_LOGGING_HOSTNAME={}",
         std::env::var("TRACE_DISPATCHER_LOGGING_HOSTNAME").unwrap_or_default()
     );
+    echo_topology();
     println!("StartedOpeningDB");
     println!("StartedOpeningImmutableDB");
     println!("OpenedImmutableDB");
@@ -71,6 +75,22 @@ fn main() {
             std::thread::sleep(std::time::Duration::from_secs(3600));
         }
     }
+}
+
+/// Print the path given as `--topology` and the compact JSON in that file.
+fn echo_topology() {
+    let args: Vec<String> = std::env::args().collect();
+    let Some(path) = args
+        .windows(2)
+        .find(|w| w[0] == "--topology")
+        .map(|w| &w[1])
+    else {
+        return;
+    };
+    println!("MOCK_NODE_TOPOLOGY_PATH={path}");
+    let contents = std::fs::read_to_string(path).expect("read the topology file");
+    let value: serde_json::Value = serde_json::from_str(&contents).expect("parse the topology");
+    println!("MOCK_NODE_TOPOLOGY={value}");
 }
 
 /// Write `file` to stderr without its final newline, write the newline once

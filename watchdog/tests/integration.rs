@@ -246,6 +246,7 @@ struct Cfg<'a> {
     mithril_stall: Option<(u64, u64)>,
     mithril_bin: Option<&'a str>,
     converter_bin: Option<&'a str>,
+    resolve_topology: bool,
 }
 
 impl<'a> Cfg<'a> {
@@ -273,7 +274,17 @@ impl<'a> Cfg<'a> {
             mithril_stall: None,
             mithril_bin: None,
             converter_bin: None,
+            resolve_topology: false,
         }
+    }
+
+    /// Start the node with `--topology <file>` and, when `resolve`, with
+    /// `node.resolve_topology` set.
+    fn topology(mut self, file: &Path, resolve: bool) -> Self {
+        self.node_args
+            .extend(["--topology".to_string(), file.to_str().unwrap().to_string()]);
+        self.resolve_topology = resolve;
+        self
     }
 
     fn max_restarts(mut self, n: u32) -> Self {
@@ -370,6 +381,9 @@ impl<'a> Cfg<'a> {
             },
             "pub_logs_dir": logs.to_str().unwrap()
         });
+        if self.resolve_topology {
+            cfg["node"]["resolve_topology"] = json!(true);
+        }
         if let Some(secs) = self.node_stop_timeout_secs {
             cfg["node"]["stop_timeout_secs"] = json!(secs);
         }
@@ -1644,6 +1658,85 @@ fn node_trace_hostname_overrides_inherited() {
         node_trace_hostname("trace-host-inherited", Some("J\u{fc}rgen-PC")),
         "daedalus"
     );
+}
+
+/// Run the mock node with a topology that names `localhost`, and return the
+/// path and the contents of the topology file the node was started with, as
+/// the mock echoes them to its log.
+fn node_topology(label: &str, resolve: bool) -> (PathBuf, PathBuf, Value, Value) {
+    let dir = TempDir::new(label);
+    dir.populate_chain();
+    let topology = dir.path().join("topology.yaml");
+    std::fs::write(
+        &topology,
+        json!({
+            "bootstrapPeers": [{"address": "localhost", "port": 3001}],
+            "publicRoots": [{
+                "accessPoints": [{"address": "localhost", "port": 3001}],
+                "advertise": false
+            }],
+            "useLedgerAfterSlot": -1
+        })
+        .to_string(),
+    )
+    .unwrap();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET)
+        .topology(&topology, resolve)
+        .build();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "watchdog_started");
+    expect(&rx, "node_started");
+    expect_with(&rx, "node_startup_status", |v| v["phase"] == "chainDbReady");
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+
+    let shipped_contents: Value =
+        serde_json::from_slice(&std::fs::read(&topology).unwrap()).unwrap();
+    let log = std::fs::read(dir.path().join("logs").join("node.log")).unwrap();
+    let log = String::from_utf8_lossy(&log).into_owned();
+    let echoed = |prefix: &str| {
+        log.lines()
+            .find_map(|l| l.strip_prefix(prefix))
+            .unwrap_or_else(|| panic!("mock node did not echo {prefix}: {log}"))
+            .to_string()
+    };
+    let path = PathBuf::from(echoed("MOCK_NODE_TOPOLOGY_PATH="));
+    let contents: Value = serde_json::from_str(&echoed("MOCK_NODE_TOPOLOGY=")).unwrap();
+    (topology, path, contents, shipped_contents)
+}
+
+/// With `node.resolve_topology`, the node is started with a copy of the
+/// topology in which `localhost` is an address, and the shipped file is
+/// unchanged.
+#[test]
+fn node_gets_the_resolved_topology() {
+    let (shipped, given, contents, shipped_contents) = node_topology("topology-resolved", true);
+    assert_ne!(given, shipped);
+    assert_eq!(given.file_name().unwrap(), "topology-resolved.json");
+    assert_eq!(contents["bootstrapPeers"][0]["address"], "127.0.0.1");
+    assert_eq!(contents["bootstrapPeers"][0]["port"], 3001);
+    assert_eq!(
+        contents["publicRoots"][0]["accessPoints"][0]["address"],
+        "127.0.0.1"
+    );
+    assert_eq!(contents["useLedgerAfterSlot"], -1);
+    assert_eq!(
+        shipped_contents["bootstrapPeers"][0]["address"],
+        "localhost"
+    );
+}
+
+/// Without the flag, the node is started with the configured path and the file
+/// is not touched.
+#[test]
+fn node_gets_the_configured_topology_without_the_flag() {
+    let (shipped, given, contents, _) = node_topology("topology-unresolved", false);
+    assert_eq!(given, shipped);
+    assert_eq!(contents["bootstrapPeers"][0]["address"], "localhost");
 }
 
 // ── Tests: protocol robustness ────────────────────────────────────────────────

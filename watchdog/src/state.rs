@@ -209,14 +209,29 @@ pub fn apply_to_config(config: &mut WatchdogConfig, base_args: &[String], state:
 /// Replace the value that follows `--database-path` in `args` with `new_path`.
 /// If `--database-path` is absent, appends both flag and value.
 fn patch_database_path(args: &mut Vec<String>, new_path: &str) {
+    if !replace_flag_value(args, "--database-path", new_path) {
+        args.push("--database-path".to_string());
+        args.push(new_path.to_string());
+    }
+}
+
+/// The value that follows `flag` in `args`, if the flag has one.
+pub fn flag_value<'a>(args: &'a [String], flag: &str) -> Option<&'a str> {
+    args.windows(2)
+        .find(|w| w[0] == flag)
+        .map(|w| w[1].as_str())
+}
+
+/// Replace the value that follows `flag` in `args` with `value`. Returns false,
+/// and leaves `args` as it was, when the flag is absent or has no value.
+pub fn replace_flag_value(args: &mut [String], flag: &str, value: &str) -> bool {
     for i in 0..args.len().saturating_sub(1) {
-        if args[i] == "--database-path" {
-            args[i + 1] = new_path.to_string();
-            return;
+        if args[i] == flag {
+            args[i + 1] = value.to_string();
+            return true;
         }
     }
-    args.push("--database-path".to_string());
-    args.push(new_path.to_string());
+    false
 }
 
 #[cfg(test)]
@@ -252,6 +267,28 @@ mod tests {
         // saturating_sub(1) = 0, so loop doesn't run → appends
         assert!(args.contains(&"--database-path".to_string()));
         assert!(args.contains(&"/x".to_string()));
+    }
+
+    #[test]
+    fn flag_value_reads_the_value_after_the_flag() {
+        let args: Vec<String> = ["run", "--topology", "t.json", "--config", "c.json"]
+            .map(String::from)
+            .to_vec();
+        assert_eq!(flag_value(&args, "--topology"), Some("t.json"));
+        assert_eq!(flag_value(&args, "--socket-path"), None);
+        assert_eq!(flag_value(&["--topology".to_string()], "--topology"), None);
+    }
+
+    #[test]
+    fn replace_flag_value_changes_only_a_present_flag() {
+        let mut args: Vec<String> = ["--topology", "t.json", "--config", "c.json"]
+            .map(String::from)
+            .to_vec();
+        assert!(replace_flag_value(&mut args, "--topology", "r.json"));
+        assert_eq!(args, ["--topology", "r.json", "--config", "c.json"]);
+        let before = args.clone();
+        assert!(!replace_flag_value(&mut args, "--socket-path", "s"));
+        assert_eq!(args, before);
     }
 
     #[test]
