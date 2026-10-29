@@ -2,6 +2,7 @@ import { action, computed, observable, reaction, runInAction } from 'mobx';
 import Store from './lib/Store';
 import { logger } from '../utils/logging';
 import { getCachedBackendStatusChannel } from '../ipc/backendStatusChannel';
+import { getWalletConnectionChannel } from '../ipc/walletConnectionChannel';
 import { mithrilCommandChannel } from '../ipc/mithrilCommandChannel';
 import {
   mithrilProgressChannel,
@@ -165,6 +166,12 @@ export default class BackendStore extends Store {
   // survives watchdog restarts so we skip the picker on the second chain_status.
   @observable chainPathConfirmed = false;
 
+  // The port the API client is configured for, and a count of the pushes that
+  // configured it, so a request answered after a newer push is dropped.
+  _configuredWalletPort: number | null = null;
+  _walletPushCount = 0;
+  _walletConnectionRequestPending = false;
+
   setup() {
     // ========== POLL INTERVAL =========== //
     this._backendStatusPollingInterval = setInterval(
@@ -180,6 +187,9 @@ export default class BackendStore extends Store {
     nodeBlockSyncProgressChannel.onReceive(this._onNodeBlockSyncProgress);
     watchdogStoppedChannel.onReceive(this._onWatchdogStopped);
     backendStopStatusChannel.onReceive(this._onBackendStopStatus);
+
+    // The push may have been sent before this listener existed.
+    this._syncWalletConnection(true);
 
     // ========== ACTION LISTENERS =========== //
     this.actions.networkStatus.restartNode.listen(this._restartNode);
@@ -288,6 +298,50 @@ export default class BackendStore extends Store {
         this.requestedRestart = state.requestedRestart ?? null;
       });
     } catch (error) {} // eslint-disable-line
+    await this._syncWalletConnection();
+  };
+
+  // Asks main for the wallet connection when the API client is not configured
+  // for the port the wallet reported (or at setup, before any port is known),
+  // and configures it from the answer.
+  _syncWalletConnection = async (atSetup = false): Promise<void> => {
+    const port = this.walletPort;
+    if (
+      this._walletConnectionRequestPending ||
+      (!atSetup && port == null) ||
+      (port != null && port === this._configuredWalletPort)
+    ) {
+      return;
+    }
+    this._walletConnectionRequestPending = true;
+    const pushCount = this._walletPushCount;
+    try {
+      const connection = await getWalletConnectionChannel.request();
+      if (connection && pushCount === this._walletPushCount) {
+        this._configureWalletConnection(connection);
+      }
+    } catch (error) {} // eslint-disable-line
+    this._walletConnectionRequestPending = false;
+  };
+
+  _configureWalletConnection = (connection: {
+    port: number;
+    ca: number[];
+    cert: number[];
+    key: number[];
+  }): void => {
+    runInAction('update walletPort from wallet connection', () => {
+      this.walletPort = connection.port;
+    });
+    // Reconfigure AdaApi so it connects to the correct port with the right TLS certs.
+    this.api.ada.setRequestConfig({
+      hostname: '127.0.0.1',
+      port: connection.port,
+      ca: Uint8Array.from(connection.ca),
+      cert: Uint8Array.from(connection.cert),
+      key: Uint8Array.from(connection.key),
+    });
+    this._configuredWalletPort = connection.port;
   };
 
   // =============== PUSH HANDLERS ===============
@@ -322,17 +376,8 @@ export default class BackendStore extends Store {
     cert: number[];
     key: number[];
   }): Promise<void> => {
-    runInAction('update walletPort from push', () => {
-      this.walletPort = event.port;
-    });
-    // Reconfigure AdaApi so it connects to the correct port with the right TLS certs.
-    this.api.ada.setRequestConfig({
-      hostname: '127.0.0.1',
-      port: event.port,
-      ca: Uint8Array.from(event.ca),
-      cert: Uint8Array.from(event.cert),
-      key: Uint8Array.from(event.key),
-    });
+    this._walletPushCount += 1;
+    this._configureWalletConnection(event);
   };
 
   @action

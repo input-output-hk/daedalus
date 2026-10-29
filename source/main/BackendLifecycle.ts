@@ -9,7 +9,10 @@ import type {
   MithrilProgress,
   WatchdogState,
 } from '../common/types/watchdog.types';
-import type { MithrilStatusMainRequest } from '../common/ipc/api';
+import type {
+  MithrilStatusMainRequest,
+  WalletPortMainRequest,
+} from '../common/ipc/api';
 import {
   mithrilProgressChannel,
   mithrilStatusChannel,
@@ -48,6 +51,31 @@ const STOP_STATUS_EVENTS = new Set([
   'chain_status',
 ]);
 
+const readWalletCerts = (): {
+  ca: number[];
+  cert: number[];
+  key: number[];
+} => {
+  let ca: number[] = [];
+  let cert: number[] = [];
+  let key: number[] = [];
+  try {
+    const caPath = process.env.TLS_CA_CERT;
+    const certPath = process.env.TLS_CLIENT_CERT;
+    const keyPath = process.env.TLS_CLIENT_KEY;
+    if (caPath && certPath && keyPath) {
+      ca = Array.from(readFileSync(caPath));
+      cert = Array.from(readFileSync(certPath));
+      key = Array.from(readFileSync(keyPath));
+    }
+  } catch (e) {
+    logger.error('BackendLifecycle: failed to read TLS certs', {
+      error: e,
+    });
+  }
+  return { ca, cert, key };
+};
+
 class BackendLifecycle {
   private manager: WatchdogManager | null = null;
   private eventHandlers: EventHandler[] = [];
@@ -84,26 +112,9 @@ class BackendLifecycle {
     }
 
     const sendWalletPort = (port: number) => {
-      let ca: number[] = [];
-      let cert: number[] = [];
-      let key: number[] = [];
-      try {
-        const caPath = process.env.TLS_CA_CERT;
-        const certPath = process.env.TLS_CLIENT_CERT;
-        const keyPath = process.env.TLS_CLIENT_KEY;
-        if (caPath && certPath && keyPath) {
-          ca = Array.from(readFileSync(caPath));
-          cert = Array.from(readFileSync(certPath));
-          key = Array.from(readFileSync(keyPath));
-        }
-      } catch (e) {
-        logger.error('BackendLifecycle: failed to read TLS certs', {
-          error: e,
-        });
-      }
       consumeIpcResponse(
         walletPortChannel.send(
-          { port, ca, cert, key },
+          { port, ...readWalletCerts() },
           currentWindowSender.sender
         ),
         'WALLET_PORT_CHANNEL'
@@ -296,6 +307,15 @@ class BackendLifecycle {
       defaultChainPath: this._defaultChainPath,
       customChainPath: this._customChainPath,
     };
+  }
+
+  // The connection details of the wallet that last reported ready, or null
+  // if none has reported ready since the node last started.
+  // Answers a renderer that missed the wallet_ready push.
+  getWalletConnection(): WalletPortMainRequest | null {
+    const port = this.manager?.getState().walletPort ?? null;
+    if (port === null) return null;
+    return { port, ...readWalletCerts() };
   }
 
   sendMithrilCommand(cmd: object): void {

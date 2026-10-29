@@ -10,6 +10,7 @@ import {
   validateChainStorageChannel,
 } from '../ipc/chainStorageChannel';
 import { getCachedBackendStatusChannel } from '../ipc/backendStatusChannel';
+import { getWalletConnectionChannel } from '../ipc/walletConnectionChannel';
 
 // The real logger sends its arguments through ipcRenderer, which clones them
 // and throws on a MobX observable. The mock serializes its arguments too.
@@ -34,6 +35,23 @@ jest.mock('../ipc/mithrilCommandChannel', () => ({
 
 jest.mock('../ipc/backendStatusChannel', () => ({
   getCachedBackendStatusChannel: { request: jest.fn() },
+}));
+
+jest.mock('../ipc/walletConnectionChannel', () => ({
+  getWalletConnectionChannel: { request: jest.fn() },
+}));
+
+jest.mock('../ipc/mithrilPushChannel', () => ({
+  mithrilProgressChannel: { onReceive: jest.fn() },
+  mithrilStatusChannel: { onReceive: jest.fn() },
+  walletPortChannel: { onReceive: jest.fn() },
+}));
+
+jest.mock('../ipc/nodePushChannel', () => ({
+  nodeStartupStatusChannel: { onReceive: jest.fn() },
+  nodeBlockSyncProgressChannel: { onReceive: jest.fn() },
+  watchdogStoppedChannel: { onReceive: jest.fn() },
+  backendStopStatusChannel: { onReceive: jest.fn() },
 }));
 
 jest.mock('../ipc/chainStorageChannel', () => ({
@@ -1465,5 +1483,149 @@ describe('BackendStore.checkCustomChainPath', () => {
 
     expect(request).not.toHaveBeenCalled();
     expect(store.customChainPathValidation).toBeNull();
+  });
+});
+
+// ── Wallet connection ─────────────────────────────────────────────────────────
+
+describe('BackendStore wallet connection', () => {
+  const connection = { port: 8090, ca: [1], cert: [2], key: [3] };
+  const pollState = {
+    hasChain: true,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+  };
+  const setRequestConfig = jest.fn();
+  const requestConnection = getWalletConnectionChannel.request as jest.Mock;
+  const requestStatus = getCachedBackendStatusChannel.request as jest.Mock;
+
+  const makeConnectedStore = () => {
+    const api = { ada: { setRequestConfig }, localStorage: jest.fn() };
+    const listen = { listen: jest.fn() };
+    const actions = {
+      networkStatus: { restartNode: listen, restartWallet: listen },
+    };
+    return new BackendStore(
+      api as unknown as Api,
+      actions as unknown as ActionsMap,
+      noopAnalyticsTracker
+    );
+  };
+
+  const configuredFor = (port: number) => ({
+    hostname: '127.0.0.1',
+    port,
+    ca: Uint8Array.from([1]),
+    cert: Uint8Array.from([2]),
+    key: Uint8Array.from([3]),
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    requestConnection.mockResolvedValue(null);
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: null });
+  });
+
+  it('configures the client from the push', async () => {
+    const store = makeConnectedStore();
+    await (store as any)._onWalletPort(connection);
+    expect(setRequestConfig).toHaveBeenCalledTimes(1);
+    expect(setRequestConfig).toHaveBeenCalledWith(configuredFor(8090));
+    expect(store.walletPort).toBe(8090);
+  });
+
+  it('requests no connection for a poll that matches the pushed port', async () => {
+    const store = makeConnectedStore();
+    await (store as any)._onWalletPort(connection);
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8090 });
+    await (store as any)._pollBackendStatus();
+    await (store as any)._pollBackendStatus();
+    expect(requestConnection).not.toHaveBeenCalled();
+    expect(setRequestConfig).toHaveBeenCalledTimes(1);
+  });
+
+  it('configures the client at setup when the push was sent before the listener', async () => {
+    requestConnection.mockResolvedValue(connection);
+    const store = makeConnectedStore();
+    store.setup();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    store.teardown();
+    expect(setRequestConfig).toHaveBeenCalledWith(configuredFor(8090));
+    expect(store.walletPort).toBe(8090);
+  });
+
+  it('configures the client from the poll when setup found no wallet ready', async () => {
+    const store = makeConnectedStore();
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8090 });
+    await (store as any)._pollBackendStatus();
+    expect(setRequestConfig).not.toHaveBeenCalled();
+
+    requestConnection.mockResolvedValue(connection);
+    await (store as any)._pollBackendStatus();
+    expect(setRequestConfig).toHaveBeenCalledTimes(1);
+    expect(setRequestConfig).toHaveBeenCalledWith(configuredFor(8090));
+  });
+
+  it('configures a reloaded renderer that receives no push', async () => {
+    requestConnection.mockResolvedValue(connection);
+    const reloaded = makeConnectedStore();
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8090 });
+    await (reloaded as any)._pollBackendStatus();
+    expect(setRequestConfig).toHaveBeenCalledWith(configuredFor(8090));
+  });
+
+  it('requests the connection once while the configured port is unchanged', async () => {
+    requestConnection.mockResolvedValue(connection);
+    const store = makeConnectedStore();
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8090 });
+    await (store as any)._pollBackendStatus();
+    await (store as any)._pollBackendStatus();
+    await (store as any)._pollBackendStatus();
+    expect(requestConnection).toHaveBeenCalledTimes(1);
+    expect(setRequestConfig).toHaveBeenCalledTimes(1);
+  });
+
+  it('requests the connection again when the polled port changes', async () => {
+    requestConnection.mockResolvedValue(connection);
+    const store = makeConnectedStore();
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8090 });
+    await (store as any)._pollBackendStatus();
+
+    requestConnection.mockResolvedValue({ ...connection, port: 8091 });
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8091 });
+    await (store as any)._pollBackendStatus();
+    expect(setRequestConfig).toHaveBeenLastCalledWith(configuredFor(8091));
+  });
+
+  it('drops an answer that arrives after a newer push', async () => {
+    let answer: (value: typeof connection) => void = () => {};
+    requestConnection.mockReturnValue(
+      new Promise((resolve) => {
+        answer = resolve;
+      })
+    );
+    const store = makeConnectedStore();
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8091 });
+    const polled = (store as any)._pollBackendStatus();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await (store as any)._onWalletPort({ ...connection, port: 8091 });
+    answer(connection);
+    await polled;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(setRequestConfig).toHaveBeenCalledTimes(1);
+    expect(setRequestConfig).toHaveBeenCalledWith(configuredFor(8091));
+  });
+
+  it('retries after a failed request', async () => {
+    const store = makeConnectedStore();
+    requestStatus.mockResolvedValue({ ...pollState, walletPort: 8090 });
+    requestConnection.mockRejectedValueOnce(new Error('ipc'));
+    await (store as any)._pollBackendStatus();
+    requestConnection.mockResolvedValue(connection);
+    await (store as any)._pollBackendStatus();
+    expect(setRequestConfig).toHaveBeenCalledWith(configuredFor(8090));
   });
 });

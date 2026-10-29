@@ -373,6 +373,12 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
     registrationOwner: 'source/main/ipc/index.ts',
     capability: 'cardano-state',
   }),
+  ...entries(['GET_WALLET_CONNECTION_CHANNEL'], {
+    constructorOwner: 'source/main/ipc/walletConnectionChannel.ts',
+    rendererOwner: 'source/renderer/app/ipc/walletConnectionChannel.ts',
+    registrationOwner: 'source/main/ipc/index.ts',
+    capability: 'cardano-state',
+  }),
   ...entries(['MITHRIL_COMMAND_CHANNEL'], {
     constructorOwner: 'source/main/ipc/mithrilCommandChannel.ts',
     rendererOwner: 'source/renderer/app/ipc/mithrilCommandChannel.ts',

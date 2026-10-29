@@ -1,3 +1,6 @@
+import { mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { IPC_REQUEST_CANCELLED_MESSAGE } from '../common/ipc/lib/IpcChannel';
 import BackendLifecycle from './BackendLifecycle';
 import { revokeCip30Sessions } from './cip30/runtime';
@@ -115,6 +118,53 @@ describe('BackendLifecycle', () => {
       expect.anything()
     );
     expect(revokeCip30Sessions).not.toHaveBeenCalled();
+  });
+
+  describe('getWalletConnection', () => {
+    it('returns null before the watchdog starts', () => {
+      expect(new BackendLifecycle().getWalletConnection()).toBeNull();
+    });
+
+    it('returns null when no wallet has reported ready', () => {
+      manager.getState.mockReturnValue({ walletPort: null });
+      const lifecycle = new BackendLifecycle();
+      lifecycle.start();
+      expect(lifecycle.getWalletConnection()).toBeNull();
+    });
+
+    it('returns the port of the latest ready wallet with the certificates', () => {
+      const dir = mkdtempSync(join(tmpdir(), 'wallet-tls-'));
+      try {
+        writeFileSync(join(dir, 'ca'), Buffer.from([1, 2]));
+        writeFileSync(join(dir, 'cert'), Buffer.from([3]));
+        writeFileSync(join(dir, 'key'), Buffer.from([4, 5, 6]));
+        process.env.TLS_CA_CERT = join(dir, 'ca');
+        process.env.TLS_CLIENT_CERT = join(dir, 'cert');
+        process.env.TLS_CLIENT_KEY = join(dir, 'key');
+        manager.getState.mockReturnValue({ walletPort: 8091 });
+        const lifecycle = new BackendLifecycle();
+        lifecycle.start();
+        expect(lifecycle.getWalletConnection()).toEqual({
+          port: 8091,
+          ca: [1, 2],
+          cert: [3],
+          key: [4, 5, 6],
+        });
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    });
+
+    it('reads no certificate file until it is asked', () => {
+      process.env.TLS_CA_CERT = join(tmpdir(), 'missing-ca');
+      process.env.TLS_CLIENT_CERT = join(tmpdir(), 'missing-cert');
+      process.env.TLS_CLIENT_KEY = join(tmpdir(), 'missing-key');
+      const lifecycle = new BackendLifecycle();
+      lifecycle.start();
+      expect(logger.error).not.toHaveBeenCalled();
+      lifecycle.getWalletConnection();
+      expect(logger.error).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('revokes sessions when wallet startup fails', async () => {
