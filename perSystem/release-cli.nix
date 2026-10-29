@@ -46,7 +46,7 @@
         strictDeps = true;
         pname = "drt";
         version = "0.1.0";
-        nativeCheckInputs = [pkgs.gnupg pkgs.pacman pkgs.libarchive];
+        nativeCheckInputs = [pkgs.gnupg pkgs.pacman pkgs.libarchive pkgs.dpkg pkgs.rpm];
       };
       cargoArtifacts = craneLib.buildDepsOnly commonArgs;
     in {

@@ -307,6 +307,39 @@ impl S3Client {
             .await
     }
 
+    /// Verify the origin's size and checksum against the prepared metadata.
+    pub async fn verify_repo_bytes(&self, key: &str, bytes: &[u8]) -> Result<()> {
+        let prefixed = self.prefixed_key(key);
+        let head = self
+            .client
+            .head_object()
+            .bucket(&self.bucket)
+            .key(&prefixed)
+            .send()
+            .await
+            .with_context(|| format!("verifying S3 HeadObject {prefixed}"))?;
+        anyhow::ensure!(
+            repo_content_matches(&head, bytes, &hex::encode(Sha256::digest(bytes))),
+            "published repository checksum mismatch: {prefixed}"
+        );
+        Ok(())
+    }
+
+    /// Delete only an explicitly owned inventory object; callers never enumerate
+    /// the bucket or use broad prefix deletion. Missing objects are idempotent.
+    pub async fn delete_repo_object(&self, key: &str) -> Result<()> {
+        let prefixed = self.prefixed_key(key);
+        println!("  [collect] {prefixed}");
+        self.client
+            .delete_object()
+            .bucket(&self.bucket)
+            .key(&prefixed)
+            .send()
+            .await
+            .with_context(|| format!("S3 DeleteObject {prefixed}"))?;
+        Ok(())
+    }
+
     /// Upload arbitrary bytes under `key` (prefixed).
     /// Pass `cache_control = Some("no-store")` to prevent CDN caching.
     pub async fn upload_bytes(
@@ -419,6 +452,7 @@ mod tests {
         requests: Vec<(String, String, axum::http::HeaderMap, usize)>,
         head_forbidden: bool,
         copy_conflict: bool,
+        delete_forbidden: bool,
     }
 
     struct Fixture {
@@ -529,6 +563,19 @@ mod tests {
             }
             return response.body(Body::empty()).unwrap();
         }
+        if parts.method == "DELETE" {
+            if store.delete_forbidden {
+                return Response::builder()
+                    .status(StatusCode::FORBIDDEN)
+                    .body(Body::from("<Error><Code>AccessDenied</Code></Error>"))
+                    .unwrap();
+            }
+            store.object = None;
+            return Response::builder()
+                .status(StatusCode::NO_CONTENT)
+                .body(Body::empty())
+                .unwrap();
+        }
         assert_eq!(parts.method, "PUT");
         let copying = parts.headers.contains_key("x-amz-copy-source");
         if copying && store.copy_conflict {
@@ -615,6 +662,81 @@ mod tests {
             object.metadata["sha256"],
             hex::encode(Sha256::digest(b"package"))
         );
+    }
+
+    #[tokio::test]
+    async fn origin_verification_rejects_changed_or_missing_metadata() {
+        let fixture = Fixture::new(Some(Object::new(b"metadata", true))).await;
+        fixture
+            .client
+            .verify_repo_bytes("apt/dists/stable/InRelease", b"metadata")
+            .await
+            .unwrap();
+        assert!(
+            fixture
+                .client
+                .verify_repo_bytes("apt/dists/stable/InRelease", b"changed!")
+                .await
+                .is_err()
+        );
+        fixture.state.lock().unwrap().object = None;
+        assert!(
+            fixture
+                .client
+                .verify_repo_bytes("apt/dists/stable/InRelease", b"metadata")
+                .await
+                .is_err()
+        );
+        assert_eq!(fixture.methods(), ["HEAD", "HEAD", "HEAD"]);
+        assert!(
+            fixture
+                .state
+                .lock()
+                .unwrap()
+                .requests
+                .iter()
+                .all(|request| request.1 == "/test-bucket/prefix/apt/dists/stable/InRelease")
+        );
+    }
+
+    #[tokio::test]
+    async fn garbage_collection_honors_prefix_and_retries_missing_objects() {
+        let fixture = Fixture::new(Some(Object::new(b"old package", true))).await;
+        fixture
+            .client
+            .delete_repo_object("yum/packages/old.rpm")
+            .await
+            .unwrap();
+        fixture
+            .client
+            .delete_repo_object("yum/packages/old.rpm")
+            .await
+            .unwrap();
+        assert_eq!(fixture.methods(), ["DELETE", "DELETE"]);
+        assert!(fixture.state.lock().unwrap().object.is_none());
+        assert!(
+            fixture
+                .state
+                .lock()
+                .unwrap()
+                .requests
+                .iter()
+                .all(|request| request.1 == "/test-bucket/prefix/yum/packages/old.rpm")
+        );
+    }
+
+    #[tokio::test]
+    async fn garbage_collection_propagates_permission_errors() {
+        let fixture = Fixture::new(Some(Object::new(b"old package", true))).await;
+        fixture.state.lock().unwrap().delete_forbidden = true;
+        assert!(
+            fixture
+                .client
+                .delete_repo_object("arch/old.pkg.tar.zst")
+                .await
+                .is_err()
+        );
+        assert!(fixture.state.lock().unwrap().object.is_some());
     }
 
     #[tokio::test]
