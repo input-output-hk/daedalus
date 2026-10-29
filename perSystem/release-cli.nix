@@ -86,8 +86,6 @@
               pkgs.rpm # rpm --qf          (RPM header metadata)
               pkgs.libarchive # bsdtar            (Arch .PKGINFO extraction)
               pkgs.pacman # repo-add + signed Arch client validation
-              pkgs.minio # local S3-compatible server for testing
-              pkgs.minio-client # mc — bucket setup / verification
             ];
             shellHook = ''
               echo "drt release-cli devShell"
