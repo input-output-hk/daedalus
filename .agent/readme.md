@@ -196,7 +196,7 @@ Available workflows:
 
 | Layer                 | Technology            | Location                                      |
 |-----------------------|-----------------------|-----------------------------------------------|
-| **Desktop Framework** | Electron 42.11.14      | Root package.json                             |
+| **Desktop Framework** | Electron 42.11.18      | Root package.json                             |
 | **UI Library**        | React 16.14.0         | source/renderer/                              |
 | **State Management**  | MobX 5.15.7           | source/renderer/app/stores/                   |
 | **Component Library** | react-polymorph 1.0.4 | Widgets and forms                             |

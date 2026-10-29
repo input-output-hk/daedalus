@@ -68,14 +68,14 @@
       windowsSources = {
         electron = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-win32-x64.zip";
-          hash = "sha256-FyQ3G710BA8n4riN2Vk2GrviFS8AAn5yrx54Z7Zcd64=";
+          hash = "sha256-ldsunNvmHSkvKLpC6GNRi2BRFaeeauuzwh1ambKPNbo=";
         };
 
         # XXX: normally, node-gyp would download it only for Windows
         node-lib = pkgs.fetchurl {
           name = "node.lib-${electronVersion}";
           url = "https://electronjs.org/headers/v${electronVersion}/win-x64/node.lib";
-          hash = "sha256-eQr3KxZFlBjVYtwHiscfZXrESgGrgRFdLLlVXnyXA8k=";
+          hash = "sha256-UiDWLo47jEXsoaAIb8Y2W9sDEFjFlWB9/JFFkvSqsQc=";
         };
       };
 

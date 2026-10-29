@@ -8498,10 +8498,10 @@ electron-to-chromium@^1.5.459:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.459.tgz#98f4b60fc757b882c387c4fb884625d084dca8b3"
   integrity sha512-4SC9HHSFjO/liAhifpdOL5hG9b4BP7/5G3y3UPZVO8trlAXr1CaUEEJL0gWK3kOcYcZrOA5rkwG45Gra/lTIgg==
 
-electron@42.11.14:
-  version "42.11.14"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-42.11.14.tgz#b5101becd0cfaa582a77f7e75345a5b43e4120cd"
-  integrity sha512-EHX0gpd/mV58ah08NOLCp5QbwoCWwAz+hlkdjHRX55lzoVJncUWJcy/gpIErE6T6HdViMaNAiO98f1IBtdvvaA==
+electron@42.11.18:
+  version "42.11.18"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-42.11.18.tgz#2785cfd76815006df8ab2f392da9daa8f0dfc09b"
+  integrity sha512-hbzodG06x/l7uq+oeyob5ugv6qZBmJRWC7Uto5QEE99xSHUARz6d+++Rz+79T/ssTYTQkONW4ciTTcJuAbXKIQ==
   dependencies:
     "@electron-internal/extract-zip" "^1.0.1"
     "@electron/get" "^5.0.0"

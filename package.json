@@ -227,7 +227,7 @@
     "chroma-js": "2.1.0",
     "classnames": "2.5.1",
     "csv-stringify": "5.6.5",
-    "electron": "42.11.14",
+    "electron": "42.11.18",
     "electron-log-daedalus": "2.2.21",
     "electron-store": "8.2.0",
     "es6-error": "4.1.1",
