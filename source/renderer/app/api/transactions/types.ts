@@ -80,7 +80,7 @@ export type TransactionWithdrawals = {
   stake_address: string;
   amount: TransactionAmount;
 };
-export type TransactionWithdrawalType = 'self' | Array<string>;
+export type TransactionWithdrawalType = 'self';
 export type TransactionState =
   | 'pending'
   | 'in_ledger'

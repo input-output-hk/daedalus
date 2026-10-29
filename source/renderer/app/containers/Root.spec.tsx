@@ -16,10 +16,6 @@ jest.mock('./splash/SplashNetworkPage', () => ({
   __esModule: true,
   default: () => <div>splash page</div>,
 }));
-jest.mock('./staking/RedeemItnRewardsContainer', () => ({
-  __esModule: true,
-  default: () => <div>redeem page</div>,
-}));
 jest.mock('./appUpdate/AppUpdateContainer', () => ({
   __esModule: true,
   default: () => <div>app update page</div>,
@@ -71,7 +67,7 @@ const makeStores = (
     isCurrentLocaleSet: true,
     areTermsOfUseAccepted: true,
   },
-  staking: { isStakingPage: page === 'staking', redeemStep: null },
+  staking: { isStakingPage: page === 'staking' },
   voting: { isVotingPage: page === 'voting' },
   governance: { isGovernancePage: page === 'governance' },
   uiDialogs: { isOpen: () => false },

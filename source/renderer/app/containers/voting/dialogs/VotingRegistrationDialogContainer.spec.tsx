@@ -1093,7 +1093,7 @@ describe('VotingRegistrationDialogContainer reward withdrawal', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         fixture.stores.governance.setDelegationNavState
-      ).toHaveBeenCalledWith({ selectedWalletId: expect.any(String) });
+      ).toHaveBeenCalledWith({ selectedWalletId: 'wallet' });
       fixture.unmount();
     }
   );

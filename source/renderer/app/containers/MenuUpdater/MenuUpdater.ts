@@ -4,14 +4,13 @@ import type { MenuUpdaterProps } from './types';
 import useMenuUpdater from './useMenuUpdater';
 
 function MenuUpdaterComponent({
-  stores: { app, profile, router, staking, uiDialogs },
+  stores: { app, profile, router, uiDialogs },
 }: MenuUpdaterProps) {
   useMenuUpdater({
     stores: {
       app,
       profile,
       router,
-      staking,
       uiDialogs,
     },
     rebuildApplicationMenu,

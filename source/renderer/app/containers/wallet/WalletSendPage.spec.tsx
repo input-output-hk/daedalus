@@ -914,7 +914,9 @@ describe('WalletSendPage withdraw rewards control', () => {
     global.cip30Enabled = true;
     const fixture = mountSend(true, false, delegated);
     fixture.actions.hardwareWallets.sendMoney.removeAll();
-    const sent = jest.fn(async () => undefined);
+    const sent = jest.fn(async () => {
+      fixture.hardwareWallets.setTransactionPendingState(true);
+    });
     fixture.actions.hardwareWallets.sendMoney.listen(sent);
     await enterPayment();
     fireEvent.click(checkbox()!);
@@ -925,6 +927,24 @@ describe('WalletSendPage withdraw rewards control', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Send' }));
     await waitFor(() => expect(sent).toHaveBeenCalled());
     await waitFor(() => expect(checkbox()?.checked).toBe(true));
+  });
+
+  it('keeps the choice after a cip30 hardware payment that is cancelled or refused', async () => {
+    global.cip30Enabled = true;
+    const fixture = mountSend(true, false, delegated);
+    fixture.actions.hardwareWallets.sendMoney.removeAll();
+    const sent = jest.fn(async () => undefined);
+    fixture.actions.hardwareWallets.sendMoney.listen(sent);
+    await enterPayment();
+    fireEvent.click(checkbox()!);
+    expect(checkbox()?.checked).toBe(false);
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Send' })).not.toBeDisabled()
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    await waitFor(() => expect(sent).toHaveBeenCalled());
+    await act(async () => undefined);
+    expect(checkbox()?.checked).toBe(false);
   });
 
   it('carries the changed choice to the confirmation and the submit', async () => {

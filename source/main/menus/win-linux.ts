@@ -46,19 +46,6 @@ export const winLinuxMenu = (
         type: 'separator',
       },
       {
-        label: translation('daedalus.redeemItnRewards'),
-        accelerator: 'Ctrl+T',
-
-        click() {
-          actions.openItnRewardsRedemptionDialog();
-        },
-
-        enabled: isNavigationEnabled,
-      },
-      {
-        type: 'separator',
-      },
-      {
         label: translation('daedalus.close'),
         accelerator: 'Ctrl+W',
 

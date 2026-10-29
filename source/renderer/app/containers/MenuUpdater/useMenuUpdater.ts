@@ -8,7 +8,7 @@ import { AnalyticsAcceptanceStatus } from '../../analytics';
 const walletRoutes = Object.values(ROUTES.WALLETS);
 
 const useMenuUpdater = ({
-  stores: { app, profile, router, staking, uiDialogs },
+  stores: { app, profile, router, uiDialogs },
   rebuildApplicationMenu,
 }: UseMenuUpdaterArgs) => {
   useEffect(() => {
@@ -24,8 +24,7 @@ const useMenuUpdater = ({
       const itIsTheWalletSettingsPage = matchPath(router.location?.pathname, {
         path: ROUTES.WALLETS.SETTINGS,
       })?.isExact;
-      const anyDialogOpen =
-        uiDialogs.activeDialog || app.activeDialog || staking.redeemStep;
+      const anyDialogOpen = uiDialogs.activeDialog || app.activeDialog;
       walletSettingsState =
         anyDialogOpen || itIsTheWalletSettingsPage
           ? WalletSettingsStateEnum.disabled
@@ -44,7 +43,6 @@ const useMenuUpdater = ({
     profile.areTermsOfUseAccepted,
     profile.currentLocale,
     router.location?.pathname,
-    staking.redeemStep,
     uiDialogs.activeDialog,
   ]);
 };

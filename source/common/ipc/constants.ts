@@ -3,7 +3,6 @@ import { ApplicationDialog } from '../../renderer/app/types/applicationDialogTyp
 export const DIALOGS: Record<string, ApplicationDialog> = {
   ABOUT: 'ABOUT_DIALOG',
   DAEDALUS_DIAGNOSTICS: 'DAEDALUS_DIAGNOSTICS_DIALOG',
-  ITN_REWARDS_REDEMPTION: 'ITN_REWARDS_REDEMPTION_DIALOG',
   TOGGLE_RTS_FLAGS_MODE: 'TOGGLE_RTS_FLAGS_MODE_DIALOG',
 };
 export const NOTIFICATIONS = {

@@ -1,5 +1,4 @@
 import AddressesStore from './AddressesStore';
-import StakingStore from './StakingStore';
 import VotingStore from './VotingStore';
 import WalletAddress from '../domains/WalletAddress';
 import { noopAnalyticsTracker } from '../analytics';
@@ -51,42 +50,6 @@ describe('upstream receiving compatibility', () => {
     expect(
       (await fixture.store.getAutomaticReceivingAddress('wallet')).id
     ).toBe(fixture.first.id);
-  });
-
-  it('uses cached baseline reward addresses for both fee calculation and redemption', async () => {
-    const getAddressesByWalletId = jest
-      .fn()
-      .mockResolvedValue([{ id: 'baseline' }]);
-    const getAutomaticReceivingAddress = jest
-      .fn()
-      .mockRejectedValue(new Error('pilot only'));
-    const getRedeemItnRewardsFee = jest.fn().mockResolvedValue(1);
-    const requestRedeemItnRewards = jest.fn().mockResolvedValue(5);
-    const store = new StakingStore(
-      { ada: { getRedeemItnRewardsFee, requestRedeemItnRewards } } as never,
-      null as never,
-      noopAnalyticsTracker
-    );
-    store.configure({
-      wallets: { getWalletById: () => ({ id: 'wallet' }) },
-      addresses: { getAddressesByWalletId, getAutomaticReceivingAddress },
-    } as never);
-    await store._onCalculateRedeemWalletFees({
-      walletId: 'wallet',
-      recoveryPhrase: ['word'],
-    });
-    await store._onConfirmationContinue({ spendingPassword: 'password' });
-    expect(getRedeemItnRewardsFee).toHaveBeenCalledWith(
-      expect.objectContaining({ address: 'baseline' })
-    );
-    expect(requestRedeemItnRewards).toHaveBeenCalledWith(
-      expect.objectContaining({
-        address: 'baseline',
-        spendingPassword: 'password',
-      })
-    );
-    expect(store.redeemSuccess).toBe(true);
-    expect(getAutomaticReceivingAddress).not.toHaveBeenCalled();
   });
 
   it.each([false, true])(

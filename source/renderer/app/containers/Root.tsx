@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
 import SplashNetworkPage from './splash/SplashNetworkPage';
-import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import AppUpdateContainer from './appUpdate/AppUpdateContainer';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
@@ -44,7 +43,7 @@ class Root extends Component<Props> {
       wallets,
     } = stores;
     const { isVotingPage } = voting;
-    const { isStakingPage, redeemStep } = staking;
+    const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { isGovernancePage } = stores.governance;
     const { displayAppUpdateOverlay } = appUpdate;
@@ -82,10 +81,6 @@ class Root extends Component<Props> {
       isSplashShown
     ) {
       return <SplashNetworkPage />;
-    }
-
-    if (!isNodeInStoppingSequence && redeemStep !== null) {
-      return <RedeemItnRewardsContainer />;
     }
 
     if (!isNodeInStoppingSequence && displayAppUpdateOverlay) {

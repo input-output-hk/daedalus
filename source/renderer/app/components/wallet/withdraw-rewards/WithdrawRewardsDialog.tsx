@@ -15,7 +15,6 @@ import { HwDeviceStatuses } from '../../../domains/Wallet';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import type { RewardWithdrawalStep } from '../../../stores/WalletsStore';
 import globalMessages from '../../../i18n/global-messages';
-import { messages as apiErrorMessages } from '../../../api/errors';
 import { messages as sendMessages } from '../../../containers/wallet/dialogs/send-confirmation/messages';
 import sendFormMessages from '../send-form/messages';
 import { withDiscreetMode } from '../../../features/discreet-mode';
@@ -161,15 +160,10 @@ class WithdrawRewardsDialog extends Component<Props & InjectedProps> {
     ];
     const ready = step && (step.status === 'ready' ? step : null);
     const showForm = status === 'ready' || isSubmitting;
-    const stepError =
+    const error =
       step && (step.status === 'failed' || step.status === 'ready')
         ? step.error
         : null;
-    // A message needs an id to be drawn; anything else is an internal error.
-    const error =
-      stepError && typeof stepError.id !== 'string'
-        ? apiErrorMessages.walletInternalError
-        : stepError;
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}

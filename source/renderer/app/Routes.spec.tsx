@@ -176,13 +176,6 @@ jest.mock(
     }
 );
 jest.mock(
-  './containers/staking/RedeemItnRewardsContainer',
-  () =>
-    function () {
-      return null;
-    }
-);
-jest.mock(
   './containers/wallet/WalletAddPage',
   () =>
     function () {

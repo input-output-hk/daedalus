@@ -210,7 +210,9 @@ class WalletSendPage extends Component<Props, State> {
           { address: data.receiver, amount }
         );
         await this.props.actions.hardwareWallets.sendMoney.trigger();
-        this.clearWithdrawRewardsChoice();
+        if (this.props.stores.hardwareWallets.isTransactionPending) {
+          this.clearWithdrawRewardsChoice();
+        }
         return;
       }
       await this.props.actions.wallets.sendMoney.trigger({

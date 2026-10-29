@@ -219,14 +219,7 @@ describe('WithdrawRewardsDialog', () => {
     expect(screen.getByPlaceholderText(PASSWORD)).toBeInTheDocument();
   });
 
-  it('draws an error without a message id as an internal error', () => {
-    renderDialog({
-      step: { status: 'failed', error: new Error('boom') as never },
-    });
-    expect(screen.getByRole('alert')).toHaveTextContent(/internal error/i);
-  });
-
-  it('offers no Cancel and no Withdraw while a hardware submission runs', () => {
+  it('offers no Cancel and a disabled Withdraw while a hardware submission runs', () => {
     renderDialog({
       step: ready(),
       isHardwareWallet: true,

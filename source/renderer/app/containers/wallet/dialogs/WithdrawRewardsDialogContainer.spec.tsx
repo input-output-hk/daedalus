@@ -77,9 +77,22 @@ const mount = ({
     }),
     submitRewardWithdrawal: jest.fn(async () => undefined),
     cancelRewardWithdrawal: jest.fn(() => runInAction(() => state.set(null))),
+    // The store maps an error without a message id to the internal error.
     _setRewardWithdrawal: jest.fn(
       (_id: string, step: RewardWithdrawalStep | null) =>
-        runInAction(() => state.set(step))
+        runInAction(() =>
+          state.set(
+            step &&
+              (step.status === 'failed' || step.status === 'ready') &&
+              step.error != null &&
+              typeof step.error.id !== 'string'
+              ? {
+                  ...step,
+                  error: apiErrorMessages.walletInternalError as never,
+                }
+              : step
+          )
+        )
     ),
   };
   const hardwareWallets = observable({
@@ -230,10 +243,12 @@ describe('WithdrawRewardsDialogContainer', () => {
         outcome: READY,
         initiateError: new Error('Signing device not recognized!'),
       });
-      expect(hardwareWallets.initiateTransaction).toBeDefined();
       expect(await screen.findByRole('alert')).toHaveTextContent(
         /internal error/i
       );
+      expect(hardwareWallets.initiateTransaction).toHaveBeenCalledWith({
+        walletId: 'wallet',
+      });
     });
 
     it('starts no device flow when the wallet left the rewards out', async () => {

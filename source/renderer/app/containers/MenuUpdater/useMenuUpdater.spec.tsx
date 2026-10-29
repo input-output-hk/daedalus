@@ -2,7 +2,6 @@ import { render } from '@testing-library/react';
 import { RouterStore } from 'mobx-react-router';
 import React from 'react';
 import { WalletSettingsStateEnum } from '../../../../common/ipc/api';
-import { REDEEM_ITN_REWARDS_STEPS } from '../../config/stakingConfig';
 import type { RebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import AppStore from '../../stores/AppStore';
 import ProfileStore from '../../stores/ProfileStore';
@@ -10,7 +9,6 @@ import UiDialogsStore from '../../stores/UiDialogsStore';
 import useMenuUpdater from './useMenuUpdater';
 import { ROUTES } from '../../routes-config';
 import type { UseMenuUpdaterArgs } from './types';
-import StakingStore from '../../stores/StakingStore';
 
 const makeApp = ({ activeDialog = false } = {}): AppStore =>
   ({
@@ -31,11 +29,6 @@ const makeRouter = ({ pathname = ROUTES.WALLETS.ROOT } = {}): RouterStore =>
     location: {
       pathname,
     },
-  }) as any;
-
-const makeStaking = ({ redeemOpen = false } = {}): StakingStore =>
-  ({
-    redeemStep: redeemOpen ? REDEEM_ITN_REWARDS_STEPS.CONFIGURATION : null,
   }) as any;
 
 const makeUiDialogs = ({ activeDialog = false } = {}): UiDialogsStore =>
@@ -67,7 +60,6 @@ const defaultArgs: UseMenuUpdaterArgs = {
     app: makeApp(),
     profile: makeProfile(),
     router: makeRouter(),
-    staking: makeStaking(),
     uiDialogs: makeUiDialogs(),
   },
   rebuildApplicationMenu: makeRebuildApplicationMenu(),
@@ -187,14 +179,6 @@ describe('useMenuUpdater', () => {
       storesOverride: {
         app: makeApp({
           activeDialog: true,
-        }),
-      },
-    },
-    {
-      name: 'Redeem Rewards',
-      storesOverride: {
-        staking: makeStaking({
-          redeemOpen: true,
         }),
       },
     },

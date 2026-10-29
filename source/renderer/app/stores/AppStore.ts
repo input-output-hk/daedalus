@@ -144,15 +144,6 @@ export default class AppStore extends Store {
         );
         break;
 
-      case DIALOGS.ITN_REWARDS_REDEMPTION:
-        // @ts-ignore ts-migrate(2554) FIXME: Expected 1 arguments, but got 0.
-        this.actions.staking.onRedeemStart.trigger();
-        this.analytics.sendEvent(
-          EventCategories.SYSTEM_MENU,
-          'Showed ITN rewards redemption dialog'
-        );
-        break;
-
       case NOTIFICATIONS.DOWNLOAD_LOGS:
         this._downloadLogs();
         this.analytics.sendEvent(

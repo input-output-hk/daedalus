@@ -131,8 +131,6 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   SMASH_SERVER_STATUSES,
   SMASH_SERVERS_LIST,
-  MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
-  REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
   DELEGATION_DEPOSIT,
   DELEGATION_ACTIONS,
 } from '../config/stakingConfig';
@@ -230,10 +228,6 @@ import type {
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
-  GetRedeemItnRewardsFeeRequest,
-  GetRedeemItnRewardsFeeResponse,
-  RequestRedeemItnRewardsRequest,
-  RequestRedeemItnRewardsResponse,
   GetSmashSettingsApiResponse,
   CheckSmashServerHealthApiResponse,
   PoolMetadataSource,
@@ -252,7 +246,6 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError, { ErrorType } from '../domains/ApiError';
-import { formattedAmountToLovelace } from '../utils/formatters';
 import type {
   GetAssetsRequest,
   GetAssetsResponse,
@@ -1252,10 +1245,8 @@ export default class AdaApi {
       const { fee, minimumAda } = _createTransactionFeeFromServerData(response);
 
       const amountWithFee = formattedTxAmount.plus(fee);
-      // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'Array'.
-      const isRewardsRedemptionRequest = Array.isArray(withdrawal);
 
-      if (!isRewardsRedemptionRequest && amountWithFee.gt(walletBalance)) {
+      if (amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
         throw new ApiError().result(
@@ -2403,94 +2394,6 @@ export default class AdaApi {
       }
 
       logger.error('AdaApi::updateSmashSettings error', {
-        error,
-      });
-      throw new ApiError(error);
-    }
-  };
-  getRedeemItnRewardsFee = async (
-    request: GetRedeemItnRewardsFeeRequest
-  ): Promise<GetRedeemItnRewardsFeeResponse> => {
-    const { address, wallet, recoveryPhrase: withdrawal } = request;
-    const {
-      id: walletId,
-      amount: walletBalance,
-      availableAmount,
-      reward: rewardsBalance,
-    } = wallet;
-    const minRewardsReceiverBalance = new BigNumber(
-      MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
-    );
-    // Amount is set to either wallet's balance in case balance is less than 3 ADA or 1 ADA in order to avoid min UTXO affecting transaction fees calculation
-    const amount = walletBalance.isLessThan(
-      minRewardsReceiverBalance.times(
-        MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3
-      )
-    )
-      ? formattedAmountToLovelace(walletBalance.toString())
-      : REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT;
-    const payload = {
-      address,
-      walletId,
-      walletBalance,
-      availableBalance: availableAmount.plus(rewardsBalance),
-      rewardsBalance,
-      amount,
-      withdrawal,
-      isLegacy: false,
-    };
-
-    try {
-      const { fee } = await this.calculateTransactionFee(payload);
-      logger.debug('AdaApi::getRedeemItnRewardsFee success', {
-        fee,
-      });
-      return fee;
-    } catch (error) {
-      logger.error('AdaApi::getRedeemItnRewardsFee error', {
-        error,
-      });
-      throw new ApiError(error);
-    }
-  };
-  requestRedeemItnRewards = async (
-    request: RequestRedeemItnRewardsRequest
-  ): Promise<RequestRedeemItnRewardsResponse> => {
-    const {
-      address,
-      walletId,
-      spendingPassword: passphrase,
-      recoveryPhrase: withdrawal,
-    } = request;
-    const amount = REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT;
-
-    try {
-      const data = {
-        payments: [
-          {
-            address,
-            amount: {
-              quantity: amount,
-              unit: WalletUnits.LOVELACE as const,
-            },
-          },
-        ],
-        passphrase,
-        withdrawal,
-      };
-      const transaction = await createTransaction(this.config, {
-        walletId,
-        data,
-      });
-
-      const response = _createRedeemItnRewardsFromServerData(transaction);
-
-      logger.debug('AdaApi::requestRedeemItnRewards success', {
-        response,
-      });
-      return response;
-    } catch (error) {
-      logger.error('AdaApi::requestRedeemItnRewards error', {
         error,
       });
       throw new ApiError(error);
@@ -3688,15 +3591,5 @@ const _createStakePoolFromServerData = action(
       retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
     });
-  }
-);
-
-const _createRedeemItnRewardsFromServerData = action(
-  'AdaApi::_createRedeemItnRewardsFromServerData',
-  (transaction: Transaction) => {
-    const { quantity, unit } = get(transaction, 'withdrawals[0].amount');
-    return unit === WalletUnits.LOVELACE
-      ? new BigNumber(quantity.toString()).dividedBy(LOVELACES_PER_ADA)
-      : new BigNumber(quantity.toString());
   }
 );

@@ -1,8 +1,4 @@
-import type {
-  RedeemItnRewardsStep,
-  SmashServerType,
-  DelegationAction,
-} from '../types/stakingTypes';
+import type { SmashServerType, DelegationAction } from '../types/stakingTypes';
 import type { SmashServerStatuses } from '../api/staking/types';
 
 // @ts-ignore ts-migrate(2339) FIXME: Property 'smashUrl' does not exist on type 'typeof... Remove this comment to see the full error message
@@ -82,16 +78,6 @@ export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseco
 export const STAKE_POOLS_FETCH_TRACKER_INTERVAL = 30 * 1000; // 30 seconds | unit: milliseconds
 
 export const STAKE_POOLS_FETCH_TRACKER_CYCLES = 6;
-// Redeem ITN Rewards
-export const MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE = 1; // 1 ADA | unit: ADA
-
-export const REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT = 1 * 1000000; // 1 ADA | unit: lovelace
-
-export const REDEEM_ITN_REWARDS_STEPS: Record<string, RedeemItnRewardsStep> = {
-  CONFIGURATION: 'configuration',
-  CONFIRMATION: 'confirmation',
-  RESULT: 'result',
-};
 export const DELEGATION_DEPOSIT = 2; // 2 ADA | unit: lovelace
 
 export const DELEGATION_ACTIONS: Record<string, DelegationAction> = {

@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import StakePool from '../../domains/StakePool';
-import Wallet from '../../domains/Wallet';
 
 export type DelegationAction =
   | 'changeDelegation'
@@ -95,19 +94,6 @@ export type QuitStakePoolRequest = {
   passphrase: string;
   isHardwareWallet?: boolean;
 };
-export type GetRedeemItnRewardsFeeRequest = {
-  address: string;
-  wallet: Wallet;
-  recoveryPhrase: Array<string>;
-};
-export type GetRedeemItnRewardsFeeResponse = BigNumber;
-export type RequestRedeemItnRewardsRequest = {
-  address: string;
-  walletId: string;
-  spendingPassword: string;
-  recoveryPhrase: Array<string>;
-};
-export type RequestRedeemItnRewardsResponse = BigNumber;
 export type PoolMetadataSource = 'none' | 'direct' | string;
 export type UpdateSmashSettingsRequest = {
   settings: {

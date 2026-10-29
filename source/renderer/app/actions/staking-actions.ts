@@ -24,17 +24,5 @@ export default class StakingActions {
   }> = new Action();
   resetSmashServerError: Action<any> = new Action();
 
-  /* ----------  Redeem ITN Rewards  ---------- */
-  onRedeemStart: Action<any> = new Action();
-  onConfigurationContinue: Action<any> = new Action();
-  onCalculateRedeemWalletFees: Action<{
-    walletId: string;
-    recoveryPhrase: Array<string>;
-  }> = new Action();
-  onConfirmationContinue: Action<{
-    spendingPassword: string;
-  }> = new Action();
-  onResultContinue: Action<any> = new Action();
-  closeRedeemDialog: Action<any> = new Action();
   setStakingInfoWasOpen: Action<any> = new Action();
 }

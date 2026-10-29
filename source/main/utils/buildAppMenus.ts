@@ -23,12 +23,7 @@ export const buildAppMenus = async (
   locale: string,
   { isNavigationEnabled, walletSettingsState, rtsEnabled = false }: Data
 ) => {
-  const {
-    ABOUT,
-    DAEDALUS_DIAGNOSTICS,
-    ITN_REWARDS_REDEMPTION,
-    TOGGLE_RTS_FLAGS_MODE,
-  } = DIALOGS;
+  const { ABOUT, DAEDALUS_DIAGNOSTICS, TOGGLE_RTS_FLAGS_MODE } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
   const { isMacOS, isBlankScreenFixActive } = environment;
 
@@ -46,10 +41,6 @@ export const buildAppMenus = async (
 
   const openDaedalusDiagnosticsDialog = () => {
     showUiPart(DAEDALUS_DIAGNOSTICS);
-  };
-
-  const openItnRewardsRedemptionDialog = () => {
-    showUiPart(ITN_REWARDS_REDEMPTION);
   };
 
   const openSettingsPage = () => {
@@ -121,7 +112,6 @@ export const buildAppMenus = async (
   const menuActions = {
     openAboutDialog,
     openDaedalusDiagnosticsDialog,
-    openItnRewardsRedemptionDialog,
     openSettingsPage,
     openWalletSettingsPage,
     toggleBlankScreenFix,

@@ -25,7 +25,6 @@ export const NATIVE_TRANSACTION_ACTIONS = [
   'undelegate',
   'drep-delegation',
   'catalyst-registration',
-  'itn-redemption',
   'reward-withdrawal',
 ] as const;
 

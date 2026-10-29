@@ -17,14 +17,6 @@ import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
 import {
-  Step1ConfigurationDialogStory,
-  Step2ConfirmationDialogStory,
-  Step3SuccessDialogStory,
-  Step3FailureDialogStory,
-  NoWalletsDialogDialogStory,
-  RedemptionUnavailableDialogDialogStory,
-} from './RedeemItnWallets.stories';
-import {
   StakingUndelegateConfirmationResultStory,
   StakingUndelegateRefusedBeforeApprovalStory,
 } from './Undelegate.stories';
@@ -259,23 +251,3 @@ storiesOf('Decentralization / Staking', module)
       id: 'undelegate-refused-before-approval',
     }
   );
-storiesOf('Decentralization / Redeem ITN Rewards', module)
-  .addDecorator(decorator) // ====== Stories ======
-  .add('Step 1', Step1ConfigurationDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Step 2', Step2ConfirmationDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Step 3 - Success', Step3SuccessDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Step 3 - Failure', Step3FailureDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('No Wallets', NoWalletsDialogDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  })
-  .add('Redemption Unavailable', RedemptionUnavailableDialogDialogStory, {
-    id: 'redeem-itn-wallets-story',
-  });

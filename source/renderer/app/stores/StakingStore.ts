@@ -13,7 +13,6 @@ import {
   STAKE_POOLS_FAST_INTERVAL,
   STAKE_POOLS_FETCH_TRACKER_INTERVAL,
   STAKE_POOLS_FETCH_TRACKER_CYCLES,
-  REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
   SMASH_SERVERS_LIST,
   SMASH_SERVER_TYPES,
@@ -35,7 +34,6 @@ import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import { EventCategories } from '../analytics';
 
@@ -58,30 +56,6 @@ export default class StakingStore extends Store {
   smashServerLoading = false;
   @observable
   stakePoolsListViewTooltipVisible = true;
-
-  /* ----------  Redeem ITN Rewards  ---------- */
-  @observable
-  redeemStep: RedeemItnRewardsStep | null | undefined = null;
-  @observable
-  redeemRecoveryPhrase: Array<string> | null | undefined = null;
-  @observable
-  redeemWallet: Wallet | null | undefined = null;
-  @observable
-  walletName: string | null | undefined = null;
-  @observable
-  transactionFees: BigNumber | null | undefined = null;
-  @observable
-  redeemedRewards: BigNumber | null | undefined = null;
-  @observable
-  isSubmittingReedem = false;
-  @observable
-  isCalculatingReedemFees = false;
-  @observable
-  redeemSuccess: boolean | null | undefined = null;
-  @observable
-  configurationStepError: LocalizableError | null | undefined = null;
-  @observable
-  confirmationStepError: LocalizableError | null | undefined = null;
 
   /* ----------  Stake Pools Fetching Tracker  ---------- */
   @observable
@@ -115,17 +89,6 @@ export default class StakingStore extends Store {
       networkStatus: networkStatusActions,
       // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     } = this.actions;
-    // Redeem ITN Rewards actions
-    stakingActions.onRedeemStart.listen(this._onRedeemStart);
-    stakingActions.onConfigurationContinue.listen(
-      this._onConfigurationContinue
-    );
-    stakingActions.onCalculateRedeemWalletFees.listen(
-      this._onCalculateRedeemWalletFees
-    );
-    stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
-    stakingActions.onResultContinue.listen(this._onResultContinue);
-    stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
     stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
     stakingActions.goToStakingDelegationCenterPage.listen(
       this._goToStakingDelegationCenterPage
@@ -173,17 +136,6 @@ export default class StakingStore extends Store {
       // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
       this.api.ada.calculateDelegationFee
     );
-  // @REDEEM TODO: Proper type it when the API endpoint is implemented.
-  @observable
-  getRedeemItnRewardsFeeRequest: Request<any> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-    this.api.ada.getRedeemItnRewardsFee
-  );
-  @observable
-  requestRedeemItnRewardsRequest: Request<any> = new Request(
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
-    this.api.ada.requestRedeemItnRewards
-  );
   @observable
   getSmashSettingsRequest: Request<any> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
@@ -874,172 +826,6 @@ export default class StakingStore extends Store {
     }
   };
 
-  /* =================================================
-  =            Redeem ITN Rewards - Begin            =
-  ================================================= */
-  get nextStep() {
-    return {
-      configuration: steps.CONFIRMATION,
-      confirmation: steps.RESULT,
-      result: steps.RESULT,
-    };
-  }
-
-  get prevStep() {
-    return {
-      configuration: steps.CONFIRMATION,
-      confirmation: steps.CONFIGURATION,
-      result: steps.CONFIGURATION,
-    };
-  }
-
-  get redeemActions() {
-    return {
-      configuration: this._goToConfigurationStep,
-      confirmation: this._goToConfirmationStep,
-      result: this._goToResultStep,
-    };
-  }
-
-  @action
-  _goToConfigurationStep = () => {
-    this.redeemStep = steps.CONFIGURATION;
-  };
-  @action
-  _goToConfirmationStep = () => {
-    this.redeemStep = steps.CONFIRMATION;
-  };
-  @action
-  _goToResultStep = () => {
-    this.redeemStep = steps.RESULT;
-  };
-  @action
-  _onCalculateRedeemWalletFees = async ({
-    walletId,
-    recoveryPhrase,
-  }: {
-    walletId: string;
-    recoveryPhrase: Array<string>;
-  }) => {
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-    this.redeemWallet = this.stores.wallets.getWalletById(walletId);
-    this.redeemRecoveryPhrase = recoveryPhrase;
-    this.isCalculatingReedemFees = true;
-
-    try {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const address = global.cip30Enabled
-        ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
-        : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
-      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
-        wallet: this.redeemWallet,
-        recoveryPhrase,
-        address: address.id,
-      });
-      runInAction(() => {
-        this.confirmationStepError = null;
-        this.transactionFees = transactionFees;
-        this.isCalculatingReedemFees = false;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.configurationStepError = error;
-        this.transactionFees = null;
-        this.isCalculatingReedemFees = false;
-      });
-    }
-  };
-  @action
-  _onRedeemStart = () => {
-    this.configurationStepError = null;
-    this.confirmationStepError = null;
-    this.redeemStep = steps.CONFIGURATION;
-  };
-  @action
-  _onConfigurationContinue = () => {
-    if (this.transactionFees && this.redeemRecoveryPhrase) {
-      this.redeemStep = steps.CONFIRMATION;
-      this.confirmationStepError = null;
-      this.configurationStepError = null;
-    } else {
-      this.redeemSuccess = false;
-      this.redeemStep = steps.RESULT;
-    }
-  };
-  @action
-  _onConfirmationContinue = async ({
-    spendingPassword,
-  }: {
-    spendingPassword: string;
-  }) => {
-    const { redeemRecoveryPhrase: recoveryPhrase, redeemWallet } = this;
-    this.isSubmittingReedem = true;
-    if (!redeemWallet) throw new Error('Redeem wallet required');
-    if (!recoveryPhrase) throw new Error('RecoveryPhrase required');
-    const { id: walletId } = redeemWallet;
-
-    try {
-      // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-      const address = global.cip30Enabled
-        ? await this.stores.addresses.getAutomaticReceivingAddress(walletId)
-        : (await this.stores.addresses.getAddressesByWalletId(walletId))[0];
-      // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-      const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
-        {
-          address: address.id,
-          walletId,
-          spendingPassword,
-          recoveryPhrase,
-        }
-      );
-      runInAction(() => {
-        this.redeemedRewards = redeemedRewards;
-        this.redeemSuccess = true;
-        this.redeemStep = steps.RESULT;
-        this.confirmationStepError = null;
-        this.isSubmittingReedem = false;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.confirmationStepError = error;
-        this.isSubmittingReedem = false;
-
-        if (error.id !== 'api.errors.IncorrectPasswordError') {
-          this.redeemSuccess = false;
-          this.redeemStep = steps.RESULT;
-        }
-      });
-    }
-  };
-  @action
-  _onResultContinue = () => {
-    if (!this.redeemWallet) throw new Error('Redeem wallet require');
-    const { id } = this.redeemWallet;
-    // @ts-ignore ts-migrate(2339) FIXME: Property 'stores' does not exist on type 'StakingS... Remove this comment to see the full error message
-    this.stores.wallets.goToWalletRoute(id);
-    this.redeemStep = null;
-
-    this._resetRedeemItnRewards();
-  };
-  @action
-  _resetRedeemItnRewards = () => {
-    this.isSubmittingReedem = false;
-    this.isCalculatingReedemFees = false;
-    this.redeemSuccess = null;
-    this.redeemWallet = null;
-    this.transactionFees = null;
-    this.redeemedRewards = null;
-    this.redeemRecoveryPhrase = null;
-    this.configurationStepError = null;
-    this.confirmationStepError = null;
-  };
-  @action
-  _closeRedeemDialog = () => {
-    this._resetRedeemItnRewards();
-
-    this.redeemStep = null;
-  };
   // ================= REACTIONS ==================
   @computed
   get _hasStakePoolDemand(): boolean {
@@ -1111,7 +897,6 @@ export default class StakingStore extends Store {
     }
   };
 
-  /* ====  End of Redeem ITN Rewards  ===== */
   _goToStakingInfoPage = () => {
     // @ts-ignore ts-migrate(2339) FIXME: Property 'actions' does not exist on type 'Staking... Remove this comment to see the full error message
     this.actions.router.goToRoute.trigger({

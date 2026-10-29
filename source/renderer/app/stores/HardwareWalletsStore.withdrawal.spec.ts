@@ -168,7 +168,7 @@ describe.each(['ledger-vote', 'upstream', 'cip30'] as const)(
 
     it('gives the Trezor one withdrawal with its path', async () => {
       const { store, walletId } = await build(construct);
-      await store.selectWithdrawalCoins({ walletId });
+      const { coinSelection } = await store.selectWithdrawalCoins({ walletId });
       const request = jest
         .spyOn(signTransactionTrezorChannel, 'request')
         .mockRejectedValue(new Error('device stopped'));
@@ -180,7 +180,8 @@ describe.each(['ledger-vote', 'upstream', 'cip30'] as const)(
       const sent = request.mock.calls[0][0];
       expect(sent.withdrawals).toHaveLength(1);
       expect(sent.withdrawals[0]).toMatchObject({
-        path: expect.anything(),
+        path: "m/1852'/1815'/0'/2/0",
+        amount: String(coinSelection.withdrawals[0].amount.quantity),
       });
       expect(sent.certificates).toEqual([]);
     });

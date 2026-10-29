@@ -5,7 +5,6 @@ export type StoresOfInterest = {
   app: StoresMap['app'];
   profile: StoresMap['profile'];
   router: StoresMap['router'];
-  staking: StoresMap['staking'];
   uiDialogs: StoresMap['uiDialogs'];
 };
 export type UseMenuUpdaterArgs = {

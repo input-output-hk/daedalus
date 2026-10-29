@@ -25,7 +25,6 @@
 #                     POST /v2/proxy/transactions with the signed CBOR of a body built from its coin selection
 #     pool            PUT /v2/stake-pools/{pool}/wallets/{id} {passphrase}
 #     undelegation    DELETE /v2/stake-pools/*/wallets/{id} {passphrase}
-#     ITN redemption  payment-fees, then transactions, with withdrawal: <recovery phrase>
 #     payment, rewards left in place   payment-fees and transactions without the withdrawal key
 #     withdraw rewards  POST /v2/wallets/{id}/transactions-construct {encoding: "base16", withdrawal: "self"}, then
 #                       transactions-sign and transactions-submit
@@ -38,6 +37,7 @@
 #     undelegation    {encoding, delegations: [{quit}], withdrawal: "self"}
 #     withdraw rewards  {encoding, withdrawal: "self"}
 #     hardware wallet   the same construct, signed, then POST /v2/wallets/{id}/transaction-submission
+#   not sent by Daedalus: recovery-phrase withdrawal  payment-fees, then transactions, with withdrawal: <recovery phrase>
 # Withdrawal-carrying requests are sent in both shapes on both backends, since
 # the wallet API serves both to any client.
 #
@@ -974,6 +974,26 @@ itn_restore() {
       '[ "$PAY_ACCEPTED" = yes ] && [ "$PAY_WITHDRAWAL" -gt 0 ]'
   else
     result I-pay "Restored wallet withdraws once vote-delegated" "payment, $(build_of "$BACKEND")" \
+      "accepted, rewards withdrawn" "reward $(reward_of "$W2")" PRECONDITION
+  fi
+
+  # The withdrawal-only transaction on the restored wallet after its vote delegation.
+  if wait_withdrawable "$W2"; then
+    reward=$(reward_of "$W2")
+    before=$(available_of "$W2")
+    construct_flow I-withdraw "$W2" '{"encoding": "base16", "withdrawal": "self"}'
+    fee=$(jq -r '.fee.quantity // 0' "$CF_CONSTRUCT_FILE")
+    after=$(available_of "$W2")
+    expected=$((before + CF_WITHDRAWAL - fee))
+    check I-withdraw "Restored wallet withdraws its rewards alone once vote-delegated" \
+      "construct {withdrawal: self}, sign, submit" \
+      "construct 202 with one withdrawal equal to the reward and no payment outputs, submit 202, available up by the withdrawal less the fee" \
+      "$(construct_observed), withdrawal $CF_WITHDRAWAL of reward $reward, outputs $(jq -r '.coin_selection.outputs | length' "$CF_CONSTRUCT_FILE" 2>/dev/null), withdrawals $(jq -r '.coin_selection.withdrawals | length' "$CF_CONSTRUCT_FILE" 2>/dev/null), available $before to $after, fee $fee" \
+      '[ "$CF_CONSTRUCT_STATUS" = 202 ] && [ "$CF_SUBMIT_STATUS" = 202 ] && [ "$CF_WITHDRAWAL" = "$reward" ] &&
+       [ "$(jq -r ".coin_selection.outputs | length" "$CF_CONSTRUCT_FILE")" = 0 ] &&
+       [ "$(jq -r ".coin_selection.withdrawals | length" "$CF_CONSTRUCT_FILE")" = 1 ] && [ "$after" = "$expected" ]'
+  else
+    result I-withdraw "Restored wallet withdraws its rewards alone once vote-delegated" "construct {withdrawal: self}, sign, submit" \
       "accepted, rewards withdrawn" "reward $(reward_of "$W2")" PRECONDITION
   fi
 }
