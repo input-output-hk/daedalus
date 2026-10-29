@@ -26,6 +26,7 @@ use crate::ledger_point::{self, Verdict};
 use crate::mithril;
 use crate::protocol::{ChainDamageKind, Command as Cmd, ElectronRestartPayload, Event, emit};
 use crate::state;
+use crate::topology;
 
 type ExitInfo = (Option<i32>, Option<String>);
 
@@ -51,7 +52,7 @@ enum AfterMithril {
     NotNeeded,
 }
 
-fn unix_ms() -> u64 {
+pub(crate) fn unix_ms() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap_or_default()
@@ -1768,10 +1769,15 @@ async fn run_node_wallet(
         }
     }
 
+    // The arguments for this start. With `node.resolve_topology`, the names in
+    // the topology are resolved here and the node is given a copy that holds
+    // addresses for every name that resolves now or has resolved before.
+    let node_args = topology::node_args_for_start(&config.node).await;
+
     // Spawn cardano-node
     let mut node_cmd = Command::new(&config.node.exe);
     node_cmd
-        .args(&config.node.args)
+        .args(&node_args)
         .args(["--shutdown-ipc", &shutdown_pipe.ipc_arg])
         .current_dir(&config.node.state_dir)
         .stdout(std::process::Stdio::piped())

@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Windows: the watchdog resolves the names in cardano-node's topology itself, with its own time limit, and starts the node with addresses. A name lookup that never returns no longer stops the node from shutting down when asked, except for a name that has never resolved and an access point without a port ([PR #3442](https://github.com/input-output-hk/daedalus/pull/3442)).
+
 ### Chores
 
 - Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).

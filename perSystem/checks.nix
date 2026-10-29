@@ -554,10 +554,13 @@
             touch $out
           '';
         # Ledger peers are off in the Windows topology only, with the bootstrap
-        # relays added as public roots (see `disableLedgerPeers` in common.nix).
-        # This asserts, for every installer cluster, that the Windows topology
-        # differs from upstream in exactly those keys, and that Linux and both
-        # macOS targets ship upstream unchanged.
+        # relays added as public roots (see `disableLedgerPeers` in common.nix),
+        # and the watchdog resolves the names in that topology before each node
+        # start (`node.resolve_topology`). This asserts, for every installer
+        # cluster, that the Windows topology differs from upstream in exactly
+        # those keys, that only the Windows watchdog configuration enables the
+        # resolution, and that Linux and both macOS targets ship upstream
+        # unchanged.
         node-topology-ledger-peers = let
           topology = target: cluster: "${(mkCommon target).daedalusConfigs.${cluster}.configFiles}/topology.yaml";
           upstream = cluster: let
@@ -567,6 +570,7 @@
               else cluster;
           in "${inputs.cardano-playground}/docs/environments-pre/${env}/topology.json";
           normalised = "jq -S 'del(.useLedgerAfterSlot, .peerSnapshotFile, .publicRoots)'";
+          watchdogConfig = target: cluster: "${(mkCommon target).daedalusConfigs.${cluster}.configFiles}/daedalus-config.json";
         in
           pkgs.runCommand "node-topology-ledger-peers" {
             nativeBuildInputs = [pkgs.jq pkgs.diffutils];
@@ -584,8 +588,12 @@
                 ' ${topology "x86_64-windows" cluster} >/dev/null
                 cmp <(${normalised} ${upstream cluster}) \
                   <(${normalised} ${topology "x86_64-windows" cluster})
+                jq -e '.node.resolve_topology == true' \
+                  ${watchdogConfig "x86_64-windows" cluster} >/dev/null
                 ${lib.concatMapStringsSep "\n" (target: ''
                   cmp ${upstream cluster} ${topology target cluster}
+                  jq -e '.node | has("resolve_topology") | not' \
+                    ${watchdogConfig target cluster} >/dev/null
                 '') ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"]}
               '')
               common.sourceLib.installerClusters}

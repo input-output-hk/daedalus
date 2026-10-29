@@ -520,6 +520,25 @@
           nodeImplementation = "cardano";
         };
 
+        # Windows only: ledger peers off. On Windows a DNS lookup for a
+        # ledger relay can block indefinitely, and while it does,
+        # cardano-node does not shut down when asked to: it runs until it is
+        # killed and leaves the ChainDB unclean, so the next start validates
+        # the whole database. With ledger peers off, the only names the node
+        # resolves are the bootstrap relays'. The peer snapshot serves only
+        # ledger peers, so the topology stops referring to it; the file still
+        # ships.
+        #
+        # Bootstrap peers are requested only while the ledger state is too
+        # old. Once the node is caught up, and from the start when it was
+        # caught up when it last stopped, root peers come from the ledger
+        # and the public roots instead. The bootstrap relays are therefore
+        # added as public roots too, so a caught-up node still has peers.
+        #
+        # Setting this to false restores the upstream topology and turns off the
+        # watchdog's resolution of its names (`resolve_topology`).
+        disableLedgerPeers = os == "windows";
+
         mkConfigFiles = nodeConfigFiles: daedalusConfig: installerConfig: dappRuntimeConfig: let
           isLinux = os == "linux";
           isWindows = os == "windows";
@@ -592,22 +611,28 @@
                 dappSandboxPackageCluster
                 dappNetwork
                 ;
-              node = {
-                exe = wNodeBin;
-                args = [
-                  "run"
-                  "--config"
-                  wConfigYaml
-                  "--topology"
-                  wTopologyYaml
-                  "--database-path"
-                  wChainPath
-                  "--socket-path"
-                  wSocketPath
-                ];
-                state_dir = wStateDir;
-                socket_path = wSocketPath;
-              };
+              node =
+                {
+                  exe = wNodeBin;
+                  args = [
+                    "run"
+                    "--config"
+                    wConfigYaml
+                    "--topology"
+                    wTopologyYaml
+                    "--database-path"
+                    wChainPath
+                    "--socket-path"
+                    wSocketPath
+                  ];
+                  state_dir = wStateDir;
+                  socket_path = wSocketPath;
+                }
+                # Windows only, with the topology that disables ledger peers: the
+                # watchdog resolves the names in it before each node start and
+                # gives the node addresses for every name that resolves now or
+                # has resolved before.
+                // lib.optionalAttrs disableLedgerPeers {resolve_topology = true;};
               wallet = {
                 exe = wWalletBin;
                 args =
@@ -754,23 +779,6 @@
             if envCfg ? topologyFile
             then envCfg.topologyFile
             else throw "no topologyFile in envCfg";
-          # Windows only: ledger peers off. On Windows a DNS lookup for a
-          # ledger relay can block indefinitely, and while it does,
-          # cardano-node does not shut down when asked to: it runs until it is
-          # killed and leaves the ChainDB unclean, so the next start validates
-          # the whole database. With ledger peers off, the only names the node
-          # resolves are the bootstrap relays'. The peer snapshot serves only
-          # ledger peers, so the topology stops referring to it; the file still
-          # ships.
-          #
-          # Bootstrap peers are requested only while the ledger state is too
-          # old. Once the node is caught up, and from the start when it was
-          # caught up when it last stopped, root peers come from the ledger
-          # and the public roots instead. The bootstrap relays are therefore
-          # added as public roots too, so a caught-up node still has peers.
-          #
-          # Setting this to false restores the upstream topology.
-          disableLedgerPeers = os == "windows";
           nodeConfigFiles =
             pkgs.runCommand "node-cfg-files" {
               inherit nodeConfig topologyFile;
