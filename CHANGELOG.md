@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Fix the watchdog reporting a wrong or wrapped node shutdown time, node socket wait or wallet ready wait when the system clock is adjusted while the backend starts or stops ([PR #3441](https://github.com/input-output-hk/daedalus/pull/3441)).
+
 ### Chores
 
 - Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
