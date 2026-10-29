@@ -226,3 +226,48 @@ describe('balancesFor', () => {
     expect(balancesFor(held, 'self').heldRewardsBalance?.toString()).toBe('0');
   });
 });
+
+describe('decideWithdrawal for the Withdraw rewards action', () => {
+  it.each(
+    allLedgerValues.filter(
+      ([, ledgerVote]) => ledgerVote.status !== 'not_delegated'
+    )
+  )(
+    'withdraws with the ledger value %s, whatever the payment choice',
+    (_name, ledgerVote) => {
+      expect(
+        decideWithdrawal(
+          input({
+            purpose: 'reward_withdrawal',
+            ledgerVote,
+            withdrawRewards: false,
+          })
+        )
+      ).toMatchObject({ kind: 'withdraw', withdrawal: 'self' });
+    }
+  );
+
+  it('omits for held rewards, for the control to be disabled', () => {
+    expect(
+      decideWithdrawal(
+        input({ purpose: 'reward_withdrawal', ledgerVote: notDelegated })
+      )
+    ).toEqual({
+      kind: 'omit',
+      withdrawal: null,
+      reason: 'ledger_not_delegated',
+    });
+  });
+
+  it('hides the action for a legacy wallet and for no reward', () => {
+    expect(
+      decideWithdrawal(input({ purpose: 'reward_withdrawal', isLegacy: true }))
+        .reason
+    ).toBe('legacy_wallet');
+    expect(
+      decideWithdrawal(
+        input({ purpose: 'reward_withdrawal', reward: new BigNumber(0) })
+      ).reason
+    ).toBe('no_reward');
+  });
+});

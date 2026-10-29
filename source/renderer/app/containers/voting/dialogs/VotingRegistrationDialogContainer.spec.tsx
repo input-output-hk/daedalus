@@ -99,7 +99,12 @@ let dispose = () => {};
 function mountRegistration(
   hardware = true,
   pilot = false,
-  ledger: { ledgerVote: LedgerVoteDelegation; reward: number } = {
+  ledger: {
+    ledgerVote: LedgerVoteDelegation;
+    reward: number;
+    // The wallet's effective withdraw-rewards setting.
+    withdrawRewards?: boolean;
+  } = {
     ledgerVote: { status: 'unknown' },
     reward: 0,
   }
@@ -190,6 +195,7 @@ function mountRegistration(
           isLegacy: wallet.isLegacy,
           ledgerVote: wallet.ledgerVote,
           reward: wallet.reward,
+          withdrawRewards: ledger.withdrawRewards,
         }),
       refreshWalletsData: jest.fn(),
     },
@@ -995,6 +1001,25 @@ describe('VotingRegistrationDialogContainer reward withdrawal', () => {
   );
 
   it.each([
+    ['on', true, 'self'],
+    ['off', false, null],
+  ])(
+    'selects the hardware registration of a delegated wallet whose effective setting is %s',
+    async (_name, withdrawRewards, expected) => {
+      const fixture = mountRegistration(true, false, {
+        ...delegated,
+        withdrawRewards,
+      });
+      fixture.start();
+      await waitFor(() => expect(fixture.selectCoins).toHaveBeenCalledTimes(1));
+      expect(fixture.selectCoins.mock.calls[0][0].payments.withdrawal).toBe(
+        expected
+      );
+      fixture.unmount();
+    }
+  );
+
+  it.each([
     ['delegated', delegated, true],
     ['held', held, false],
   ])(
@@ -1037,10 +1062,54 @@ describe('VotingRegistrationDialogContainer reward withdrawal', () => {
     ).not.toBeInTheDocument();
     expect(
       fixture.stores.governance.setDelegationNavState
-    ).toHaveBeenCalledWith({
-      selectedWalletId: expect.any(String),
-    });
+    ).not.toHaveBeenCalled();
     fixture.unmount();
+  });
+
+  it.each([
+    ['the held-rewards error', apiErrorMessages.notEnoughFundsRewardsHeld],
+    [
+      'the registration wording of the held-rewards error',
+      apiErrorMessages.notEnoughFundsRewardsHeldRegistration,
+    ],
+    [
+      'the vote-delegation error',
+      apiErrorMessages.withdrawalNotPossibleWithoutVote,
+    ],
+  ])(
+    'writes the registration wallet for the delegation form only when the link of %s is followed',
+    async (_name, message) => {
+      const fixture = mountRegistration(false, false, held);
+      fixture.calculateFee.mockRejectedValue({ ...message, values: {} });
+      fixture.start();
+      const link = await screen.findByRole('link');
+      expect(link).toHaveAttribute('href', '#/governance/delegate');
+      expect(
+        fixture.stores.governance.setDelegationNavState
+      ).not.toHaveBeenCalled();
+      fireEvent.click(link);
+      expect(
+        fixture.stores.governance.setDelegationNavState
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        fixture.stores.governance.setDelegationNavState
+      ).toHaveBeenCalledWith({ selectedWalletId: expect.any(String) });
+      fixture.unmount();
+    }
+  );
+
+  it('leaves the delegation handoff unwritten when the dialog closes without the link', async () => {
+    const fixture = mountRegistration(false, false, held);
+    fixture.calculateFee.mockRejectedValue({
+      ...apiErrorMessages.notEnoughFundsRewardsHeld,
+      values: {},
+    });
+    fixture.start();
+    await screen.findByRole('link');
+    fixture.unmount();
+    expect(
+      fixture.stores.governance.setDelegationNavState
+    ).not.toHaveBeenCalled();
   });
 
   it('shows the internal error message when the fee step throws a value with no message id', async () => {

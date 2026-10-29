@@ -96,6 +96,7 @@ class WalletSettingsPage extends Component<Props> {
       updateWalletField,
       recoveryPhraseVerificationContinue,
       setSingleAddressMode,
+      setWalletWithdrawRewards,
     } = actions.walletSettings;
     const {
       creationDate,
@@ -147,6 +148,17 @@ class WalletSettingsPage extends Component<Props> {
             setSingleAddressMode.trigger({
               walletId: activeWallet.id,
               enabled,
+            })
+          }
+          withdrawRewardsOverride={
+            walletSettings.getLocalWalletDataById(activeWallet.id)
+              ?.withdrawRewards ?? null
+          }
+          withdrawRewardsDefault={walletSettings.withdrawRewardsDefault}
+          onWithdrawRewardsChange={(value) =>
+            setWalletWithdrawRewards.trigger({
+              walletId: activeWallet.id,
+              value,
             })
           }
           isInvalid={

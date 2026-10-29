@@ -1,4 +1,5 @@
 @import '../../../themes/mixins/animations';
+@import '../../../themes/mixins/error-message';
 
 %smallText {
   color: var(--theme-bordered-box-text-color);
@@ -53,6 +54,31 @@
 .rewards {
   @extend %smallText;
   height: auto;
+}
+
+.rewardsAction {
+  margin-top: 6px;
+
+  button {
+    margin: 0;
+  }
+}
+
+.rewardsActionReason {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-light);
+  font-size: 14px;
+  line-height: 1.38;
+  margin-top: 8px;
+
+  button {
+    margin: 0 0 0 10px;
+  }
+}
+
+.rewardsActionError {
+  @include error-message;
+  margin-top: 8px;
 }
 
 .rewardsAmount {

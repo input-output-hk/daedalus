@@ -3,13 +3,15 @@ import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import type { Field } from 'mobx-react-form';
 import { observer } from 'mobx-react';
-import { intlShape, FormattedHTMLMessage } from 'react-intl';
+import { intlShape, FormattedHTMLMessage, FormattedMessage } from 'react-intl';
 import { filter, get, indexOf, omit, map, without, last } from 'lodash';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Button } from 'react-polymorph/lib/components/Button';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -41,6 +43,7 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { AssetToken, ApiTokens } from '../../api/assets/types';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import { DiscreetWalletAmount } from '../../features/discreet-mode';
+import { messages as heldRewardsMessages } from '../notifications/HeldRewardsNotification';
 import WalletTokenPicker from './tokens/wallet-token-picker/WalletTokenPicker';
 import { ClearButton } from './widgets/ClearButton';
 import { VerticalSeparator } from './widgets/VerticalSeparator';
@@ -86,6 +89,13 @@ type LinkMessage = React.ComponentProps<
   typeof FormattedHTMLMessageWithLink
 >['message'];
 
+export type RewardsControl = {
+  checked: boolean;
+  disabled: boolean;
+  reward: BigNumber;
+  reason?: 'ledger_not_delegated';
+};
+
 type Props = {
   currencyMaxIntegerDigits: number;
   currencyMaxFractionalDigits: number;
@@ -101,6 +111,12 @@ type Props = {
     withdrawalDecision: WithdrawalDecision;
   }>;
   walletAmount: BigNumber;
+  // The per-payment choice to withdraw the wallet's staking rewards; null
+  // hides it.
+  rewardsControl?: RewardsControl | null;
+  onRewardsChange?: (checked: boolean) => void;
+  onDelegateRewards?: () => void;
+  onReset?: () => void;
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>;
   validateAssetAmount: (amountInNaturalUnits: string) => Promise<boolean>;
   addressValidator: (...args: Array<any>) => any;
@@ -229,6 +245,16 @@ class WalletSendForm extends Component<Props, State> {
     if (initialAmount) this.form.$('adaAmount').onChange(initialAmount);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    // A different choice prices a different transaction: estimate again, and
+    // let the new request supersede any estimate still running.
+    if (
+      prevProps.rewardsControl?.checked !== this.props.rewardsControl?.checked
+    ) {
+      this.estimateAgain();
+    }
+  }
+
   componentWillUnmount() {
     this._isMounted = false;
     this.props.onUnsetActiveAsset();
@@ -321,6 +347,7 @@ class WalletSendForm extends Component<Props, State> {
     );
 
   handleOnReset = () => {
+    this.props.onReset?.();
     // Cancel all debounced field validations
     this.form.each((field) => {
       field.debouncedValidation.cancel();
@@ -863,6 +890,21 @@ class WalletSendForm extends Component<Props, State> {
     this.resetTransactionFee();
     this._isAutoFocusEnabled = true;
   };
+  estimateAgain = () => {
+    const adaAmountField = this.form.$('adaAmount');
+    if (
+      !this.state.isReceiverAddressValid ||
+      !adaAmountField.value ||
+      !adaAmountField.isValid
+    ) {
+      return;
+    }
+    const requestToken = this.createRequestToken();
+    this.calculateTransactionFee({
+      ...this.getTransactionFeePayload(),
+      requestToken,
+    }).finally(requestToken.release);
+  };
   removeAssetRow = (uniqueId: string) => {
     const { formFields, selectedAssetUniqueIds } = this.state;
     const { receiver } = formFields;
@@ -1256,6 +1298,44 @@ class WalletSendForm extends Component<Props, State> {
     );
   };
 
+  renderRewardsControl = () => {
+    const { rewardsControl, onRewardsChange, onDelegateRewards } = this.props;
+    if (!rewardsControl) return null;
+    const { intl } = this.context;
+    const { checked, disabled, reward } = rewardsControl;
+    return (
+      <div className={styles.rewardsControl}>
+        <Checkbox
+          className={styles.rewardsCheckbox}
+          checked={checked}
+          disabled={disabled}
+          label={
+            <FormattedMessage
+              {...messages.withdrawRewardsLabel}
+              values={{
+                rewardsAmount: <DiscreetWalletAmount amount={reward} />,
+              }}
+            />
+          }
+          skin={CheckboxSkin}
+          onChange={(value: boolean) => onRewardsChange?.(value)}
+        />
+        {disabled && (
+          <div className={styles.rewardsDisabledReason} role="note">
+            <span>
+              {intl.formatMessage(messages.withdrawRewardsNotDelegated)}
+            </span>
+            <Button
+              className="flat"
+              label={intl.formatMessage(heldRewardsMessages.delegateButton)}
+              onClick={() => onDelegateRewards?.()}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -1350,6 +1430,7 @@ class WalletSendForm extends Component<Props, State> {
                   minimumAda: minimumAdaValue,
                   adaAmount: adaAmountField.value,
                 })}
+              {this.renderRewardsControl()}
               {submitError && (
                 <div className={styles.submitError} role="alert">
                   {get(submitError, ['values', 'linkLabel']) ? (

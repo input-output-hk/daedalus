@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js';
 import Wallet from './Wallet';
 import type { WalletProps } from './Wallet';
+import {
+  balancesFor,
+  decideWithdrawal,
+} from '../utils/governance/rewardWithdrawal';
+import type { LedgerVoteDelegation } from '../api/wallets/types';
 
 const wallet = (overrides: Partial<WalletProps> = {}) =>
   new Wallet({
@@ -104,4 +109,54 @@ describe('Wallet funds held by a pending transaction', () => {
     });
     expect(free.hasFundsHeldByPendingTransaction).toBe(false);
   });
+});
+
+describe('Wallet spendableAmount and the amount a request can spend', () => {
+  const ledgerValues: Array<[string, LedgerVoteDelegation]> = [
+    ['unknown', { status: 'unknown' }],
+    ['not delegated', { status: 'not_delegated' }],
+    ['a DRep', { status: 'delegated', voting: { kind: 'abstain' } }],
+  ];
+
+  it.each(ledgerValues)(
+    'agree for a payment with the ledger value %s unless the user declined',
+    (_name, ledgerVote) => {
+      [
+        wallet({ ledgerVote }),
+        wallet({ ledgerVote, reward: new BigNumber(0) }),
+        // A legacy wallet's reward always parses as zero.
+        wallet({ ledgerVote, isLegacy: true, reward: new BigNumber(0) }),
+      ].forEach((w) => {
+        const decision = decideWithdrawal({
+          purpose: 'payment',
+          isLegacy: w.isLegacy,
+          ledgerVote: w.ledgerVote,
+          reward: w.reward,
+        });
+        expect(
+          balancesFor(w, decision.withdrawal).walletBalance.toString()
+        ).toBe(w.spendableAmount.toString());
+      });
+    }
+  );
+
+  it.each(ledgerValues)(
+    'take the reward out of the request amount for a declined payment, and out of spendableAmount only when the ledger holds it, with the ledger value %s',
+    (_name, ledgerVote) => {
+      const w = wallet({ ledgerVote });
+      const decision = decideWithdrawal({
+        purpose: 'payment',
+        isLegacy: w.isLegacy,
+        ledgerVote: w.ledgerVote,
+        reward: w.reward,
+        withdrawRewards: false,
+      });
+      const spendable = balancesFor(w, decision.withdrawal).walletBalance;
+      expect(spendable.toString()).toBe('60');
+      // Held rewards are already out of the figure, so only a decision that
+      // declines the reward leaves the two apart.
+      const declined = decision.reason === 'declined';
+      expect(w.spendableAmount.toString()).toBe(declined ? '100' : '60');
+    }
+  );
 });

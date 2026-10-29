@@ -1,0 +1,21 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-28T21:53:54Z",
+  "chain": {
+    "epoch": 7,
+    "slot": 1107
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/6fcec64660548c04bbcc780a229ab9ed5a111f96/transactions-construct",
+    "body": {
+      "encoding": "base16",
+      "withdrawal": "self"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"coin_selection\":{\"change\":[{\"address\":\"addr_test1qpeske0s0e64yqxxfs73tuhr923h9p2vq8lthwqyl52ernhx2yh2aflvnd60gsags4u9gy25hjr8na6usvzuxl22ujfs8hu9xx\",\"amount\":{\"quantity\":999834499,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"1\",\"0\"]}],\"collateral\":[],\"deposits_returned\":[],\"deposits_taken\":[],\"inputs\":[{\"address\":\"addr_test1qpne2xrf2l70s30zqakm542yx9c8rrh9pw9wr76xuffmnyhx2yh2aflvnd60gsags4u9gy25hjr8na6usvzuxl22ujfstganrt\",\"amount\":{\"quantity\":1000000000,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"0\",\"0\"],\"id\":\"4b325ebd427cfd3f1533b59040066893dba38aa35ef1e0f681d1dffb3cff1c3e\",\"index\":2}],\"outputs\":[],\"withdrawals\":[]},\"fee\":{\"quantity\":165501,\"unit\":\"lovelace\"},\"transaction\":\"84a500d90102818258204b325ebd427cfd3f1533b59040066893dba38aa35ef1e0f681d1dffb3cff1c3e02018182583900730b65f07e755200c64c3d15f2e32aa372854c01febbb804fd1591cee6512eaea7ec9b74f443a88578541154bc8679f75c8305c37d4ae4931a3b984383021a0002867d031990f70800a0f5f6\"}"
+  }
+}

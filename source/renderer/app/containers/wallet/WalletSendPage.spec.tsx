@@ -40,6 +40,7 @@ import type { CoinSelectionsResponse } from '../../api/transactions/types';
 import type { LedgerVoteDelegation } from '../../api/wallets/types';
 import { decideWithdrawal } from '../../utils/governance/rewardWithdrawal';
 import { messages as errorMessages } from '../../api/errors';
+import ApiError from '../../domains/ApiError';
 
 jest.mock('../../components/analytics/withAnalytics', () => ({
   withAnalytics: (component: React.ComponentType) => component,
@@ -63,10 +64,19 @@ const originalPilot = global.cip30Enabled;
 const originalFlight = global.isFlight;
 let dispose: () => Promise<void> = async () => undefined;
 
+type Ledger = {
+  ledgerVote: LedgerVoteDelegation;
+  reward: number;
+  // The global withdraw-rewards setting; on when absent.
+  withdrawRewardsDefault?: boolean;
+  // The wallet's own choice; absent follows the global setting.
+  withdrawRewardsOverride?: boolean;
+};
+
 function mountSend(
   isHardwareWallet: boolean,
   isLegacy = false,
-  ledger: { ledgerVote: LedgerVoteDelegation; reward: number } = {
+  ledger: Ledger = {
     ledgerVote: { status: 'unknown' },
     reward: 0,
   }
@@ -83,6 +93,11 @@ function mountSend(
       ledger.ledgerVote.status === 'not_delegated' && !isLegacy
         ? 20 - ledger.reward
         : 20
+    ),
+    heldReward: new BigNumber(
+      ledger.ledgerVote.status === 'not_delegated' && !isLegacy
+        ? ledger.reward
+        : 0
     ),
     ledgerVote: ledger.ledgerVote,
     assets: { total: [] },
@@ -116,7 +131,10 @@ function mountSend(
     localStorage: {},
   } as unknown as Api;
   const softwareSend = jest.fn();
+  const setDelegationNavState = jest.fn();
+  const goToRoute = jest.fn();
   const actions = {
+    router: { goToRoute: { trigger: goToRoute } },
     dialogs: new DialogsActions(),
     assets: { onCopyAssetParam: new Action() },
     wallets: {
@@ -142,12 +160,17 @@ function mountSend(
     wallets: {
       active: wallet,
       getWalletById: () => wallet,
-      withdrawalDecisionFor: (_walletId: string, purpose: 'payment') =>
+      withdrawalDecisionFor: (
+        _walletId: string,
+        purpose: 'payment',
+        options?: { withdrawRewards?: boolean }
+      ) =>
         decideWithdrawal({
           purpose,
           isLegacy: wallet.isLegacy,
           ledgerVote: wallet.ledgerVote,
           reward: wallet.reward,
+          withdrawRewards: options?.withdrawRewards,
         }),
       isValidAddress: () => true,
       isAddressFromSameWallet: true,
@@ -160,6 +183,11 @@ function mountSend(
       validateAssetAmount: async () => true,
       calculateTransactionFee: calculateFee,
     },
+    walletSettings: {
+      withdrawRewardsFor: () =>
+        ledger.withdrawRewardsOverride ?? ledger.withdrawRewardsDefault ?? true,
+    },
+    governance: { setDelegationNavState },
     app: { openExternalLink: jest.fn() },
     profile: { currentNumberFormat: NUMBER_OPTIONS[0].value },
     assets: { all: [], getAsset: jest.fn(), favorites: {} },
@@ -219,6 +247,8 @@ function mountSend(
     calculateFee,
     submitExternal,
     softwareSend,
+    setDelegationNavState,
+    goToRoute,
     actions,
   };
 }
@@ -441,13 +471,7 @@ describe('WalletSendPage reward withdrawal', () => {
     ledgerVote: { status: 'not_delegated' as const },
     reward: 5,
   };
-  const cases: Array<
-    [
-      string,
-      { ledgerVote: LedgerVoteDelegation; reward: number },
-      'self' | null,
-    ]
-  > = [
+  const cases: Array<[string, Ledger, 'self' | null]> = [
     ['held rewards and no vote delegation', heldRewards, null],
     [
       'a delegated vote and rewards',
@@ -468,6 +492,30 @@ describe('WalletSendPage reward withdrawal', () => {
     [
       'a zero reward',
       { ledgerVote: { status: 'unknown' as const }, reward: 0 },
+      null,
+    ],
+    [
+      'a delegated vote, rewards and the wallet choice off',
+      {
+        ledgerVote: {
+          status: 'delegated' as const,
+          voting: { kind: 'abstain' as const },
+        },
+        reward: 5,
+        withdrawRewardsOverride: false,
+      },
+      null,
+    ],
+    [
+      'a delegated vote, rewards and the global setting off',
+      {
+        ledgerVote: {
+          status: 'delegated' as const,
+          voting: { kind: 'abstain' as const },
+        },
+        reward: 5,
+        withdrawRewardsDefault: false,
+      },
       null,
     ],
   ];
@@ -571,9 +619,7 @@ describe('WalletSendPage confirmation note on held rewards', () => {
     },
     reward: 5,
   };
-  const cases: Array<
-    [string, { ledgerVote: LedgerVoteDelegation; reward: number }, boolean]
-  > = [
+  const cases: Array<[string, Ledger, boolean]> = [
     [
       'held rewards and no vote delegation',
       { ...delegated, ledgerVote: { status: 'not_delegated' } },
@@ -750,5 +796,308 @@ describe('WalletSendPage failure before the approval dialog', () => {
     await waitFor(() => expect(fixture.softwareSend).toHaveBeenCalled());
     expect(screen.queryByText(MESSAGE)).not.toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+});
+
+describe('WalletSendPage withdraw rewards control', () => {
+  const delegated: Ledger = {
+    ledgerVote: {
+      status: 'delegated' as const,
+      voting: { kind: 'abstain' as const },
+    },
+    reward: 5,
+  };
+  const CHECKBOX = /Withdraw this wallet's staking rewards/;
+  const checkbox = () =>
+    screen
+      .getByText(CHECKBOX)
+      .closest('[class*="SimpleCheckbox_root"], [class*="Checkbox"]')
+      ?.querySelector('input[type="checkbox"]') as HTMLInputElement | null;
+  const enterPayment = async () => {
+    fireEvent.change(screen.getByPlaceholderText('Paste an address'), {
+      target: { value: receiver },
+    });
+    fireEvent.change(await screen.findByLabelText('Ada'), {
+      target: { value: '5' },
+    });
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Send' })).not.toBeDisabled()
+    );
+  };
+
+  beforeEach(() => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+  });
+
+  it.each([
+    ['global setting on', delegated, true, 'self'],
+    [
+      'global setting off',
+      { ...delegated, withdrawRewardsDefault: false },
+      false,
+      null,
+    ],
+    [
+      'global setting off and the wallet choice on',
+      {
+        ...delegated,
+        withdrawRewardsDefault: false,
+        withdrawRewardsOverride: true,
+      },
+      true,
+      'self',
+    ],
+    [
+      'global setting on and the wallet choice off',
+      { ...delegated, withdrawRewardsOverride: false },
+      false,
+      null,
+    ],
+  ] as Array<[string, Ledger, boolean, 'self' | null]>)(
+    'starts from the effective value with the %s',
+    async (_name, ledger, checked, withdrawal) => {
+      const fixture = mountSend(false, false, ledger);
+      expect(checkbox()?.checked).toBe(checked);
+      await enterPayment();
+      expect(fixture.calculateFee).toHaveBeenLastCalledWith(
+        expect.objectContaining({ withdrawal })
+      );
+    }
+  );
+
+  it.each([
+    ['a legacy wallet', true, delegated],
+    ['a wallet with no reward', false, { ...delegated, reward: 0 }],
+  ] as Array<[string, boolean, Ledger]>)(
+    'draws no control for %s',
+    (_n, legacy, ledger) => {
+      mountSend(false, legacy, ledger);
+      expect(screen.queryByText(CHECKBOX)).toBeNull();
+    }
+  );
+
+  it('prices the payment again when the control changes and supersedes the old estimate', async () => {
+    const fixture = mountSend(false, false, delegated);
+    await enterPayment();
+    let answerOld!: (value: { fee: BigNumber }) => void;
+    fixture.calculateFee.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          answerOld = resolve;
+        })
+    );
+    // The first change starts an estimate that stays unanswered.
+    fireEvent.click(checkbox()!);
+    await waitFor(() => expect(answerOld).toBeDefined());
+    expect(fixture.calculateFee).toHaveBeenLastCalledWith(
+      expect.objectContaining({ withdrawal: null })
+    );
+    expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
+    // The second change supersedes it.
+    const before = fixture.calculateFee.mock.calls.length;
+    fireEvent.click(checkbox()!);
+    await waitFor(() =>
+      expect(fixture.calculateFee).toHaveBeenCalledTimes(before + 1)
+    );
+    expect(fixture.calculateFee).toHaveBeenLastCalledWith(
+      expect.objectContaining({ withdrawal: 'self' })
+    );
+    await act(async () => answerOld({ fee: new BigNumber('9') }));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Send' })).not.toBeDisabled()
+    );
+    expect(screen.queryByDisplayValue(/^9\.0+ ADA$/)).toBeNull();
+  });
+
+  it('starts the next payment from the effective value after a cip30 hardware payment', async () => {
+    global.cip30Enabled = true;
+    const fixture = mountSend(true, false, delegated);
+    fixture.actions.hardwareWallets.sendMoney.removeAll();
+    const sent = jest.fn(async () => undefined);
+    fixture.actions.hardwareWallets.sendMoney.listen(sent);
+    await enterPayment();
+    fireEvent.click(checkbox()!);
+    expect(checkbox()?.checked).toBe(false);
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Send' })).not.toBeDisabled()
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    await waitFor(() => expect(sent).toHaveBeenCalled());
+    await waitFor(() => expect(checkbox()?.checked).toBe(true));
+  });
+
+  it('carries the changed choice to the confirmation and the submit', async () => {
+    const fixture = mountSend(false, false, delegated);
+    await enterPayment();
+    fireEvent.click(checkbox()!);
+    await waitFor(() =>
+      expect(fixture.calculateFee).toHaveBeenLastCalledWith(
+        expect.objectContaining({ withdrawal: null })
+      )
+    );
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Send' })).not.toBeDisabled()
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    const dialog = await screen.findByLabelText('Modal Dialog');
+    expect(dialog).toHaveTextContent(
+      "This payment does not withdraw this wallet's 5.000000 ADA of staking rewards."
+    );
+    fireEvent.change(dialog.querySelector('input[type="password"]')!, {
+      target: { value: 'fixture-password' },
+    });
+    const approve = within(dialog).getByRole('button', { name: 'Send' });
+    await waitFor(() => expect(approve).not.toBeDisabled());
+    fireEvent.click(approve);
+    await waitFor(() => expect(fixture.softwareSend).toHaveBeenCalled());
+    expect(fixture.softwareSend.mock.calls[0][0].withdrawal).toBeNull();
+  });
+
+  it('is off and disabled with a reason while the ledger holds no vote delegation, whatever the setting', () => {
+    mountSend(false, false, {
+      ledgerVote: { status: 'not_delegated' },
+      reward: 5,
+      withdrawRewardsOverride: true,
+    });
+    expect(checkbox()?.checked).toBe(false);
+    expect(checkbox()?.disabled).toBe(true);
+    expect(
+      screen.getByText(
+        "Staking rewards cannot be withdrawn while this wallet's voting power is not delegated."
+      )
+    ).toBeVisible();
+  });
+
+  it('opens the delegation form for this wallet from the disabled control', () => {
+    const fixture = mountSend(false, false, {
+      ledgerVote: { status: 'not_delegated' },
+      reward: 5,
+    });
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Delegate voting power' })
+    );
+    expect(fixture.setDelegationNavState).toHaveBeenCalledWith({
+      selectedWalletId: 'wallet',
+    });
+    expect(fixture.goToRoute).toHaveBeenCalledWith({
+      route: '/governance/delegate',
+    });
+  });
+
+  it('shows the amount the request can spend when the withdrawal is declined', async () => {
+    mountSend(false, false, { ...delegated, withdrawRewardsDefault: false });
+    fireEvent.change(screen.getByPlaceholderText('Paste an address'), {
+      target: { value: receiver },
+    });
+    const text = (await screen.findByText(/^of\b/)).textContent;
+    expect(text).toContain('15');
+    expect(text).not.toContain('20');
+  });
+
+  it('words a shortfall of a declined payment apart from an ordinary one', async () => {
+    const fixture = mountSend(false, false, {
+      ...delegated,
+      withdrawRewardsDefault: false,
+    });
+    fixture.calculateFee.mockRejectedValue(
+      new ApiError().result('notEnoughFundsForTransaction')
+    );
+    fireEvent.change(screen.getByPlaceholderText('Paste an address'), {
+      target: { value: receiver },
+    });
+    fireEvent.change(await screen.findByLabelText('Ada'), {
+      target: { value: '5' },
+    });
+    fireEvent.mouseEnter(screen.getByLabelText('Ada'));
+    expect(
+      await screen.findByText(
+        /This payment does not withdraw this wallet's staking rewards, so they do not count for it/
+      )
+    ).toBeVisible();
+  });
+
+  it('leaves an ordinary shortfall alone when the payment withdraws', async () => {
+    const fixture = mountSend(false, false, delegated);
+    fixture.calculateFee.mockRejectedValue(
+      new ApiError().result('notEnoughFundsForTransaction')
+    );
+    fireEvent.change(screen.getByPlaceholderText('Paste an address'), {
+      target: { value: receiver },
+    });
+    fireEvent.change(await screen.findByLabelText('Ada'), {
+      target: { value: '5' },
+    });
+    fireEvent.mouseEnter(screen.getByLabelText('Ada'));
+    expect(
+      await screen.findByText('Not enough ada. Try sending a smaller amount.')
+    ).toBeVisible();
+  });
+});
+
+describe('WalletSendPage confirmation note on withdrawn rewards', () => {
+  const NOTE = /also withdraws .* of staking rewards into this wallet/;
+  const withdrawing = (): CoinSelectionsResponse => ({
+    inputs: [],
+    outputs: [],
+    certificates: [],
+    withdrawals: [
+      {
+        stakeAddress: 'stake1',
+        derivationPath: [],
+        amount: { quantity: new BigNumber(5000000), unit: 'lovelace' },
+      },
+    ] as unknown as CoinSelectionsResponse['withdrawals'],
+    metadata: null,
+    deposits: new BigNumber(0),
+    depositsReclaimed: new BigNumber(0),
+    fee: new BigNumber('0.17'),
+  });
+  const hold = () => {
+    jest
+      .spyOn(getHardwareWalletTransportChannel, 'request')
+      .mockImplementation(() => new Promise(() => undefined));
+    jest
+      .spyOn(resetTrezorActionChannel, 'request')
+      .mockResolvedValue(undefined);
+  };
+  const delegated: Ledger = {
+    ledgerVote: {
+      status: 'delegated' as const,
+      voting: { kind: 'abstain' as const },
+    },
+    reward: 5,
+  };
+
+  it('shows the amount the selection withdraws on a hardware wallet', async () => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+    hold();
+    const fixture = mountSend(true, false, delegated);
+    fixture.selectCoins.mockResolvedValue(withdrawing());
+    await clickSend();
+    const dialog = await screen.findByLabelText('Modal Dialog');
+    expect(dialog).toHaveTextContent(
+      'This payment also withdraws 5.000000 ADA of staking rewards into this wallet.'
+    );
+  });
+
+  it('shows no such note when the selection withdraws nothing', async () => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+    hold();
+    mountSend(true, false, delegated);
+    await clickSend();
+    const dialog = await screen.findByLabelText('Modal Dialog');
+    expect(NOTE.test(dialog.textContent ?? '')).toBe(false);
+  });
+
+  it('shows no such note on a software wallet', async () => {
+    global.cip30Enabled = false;
+    global.isFlight = false;
+    mountSend(false, false, delegated);
+    await clickSend();
+    const dialog = await screen.findByLabelText('Modal Dialog');
+    expect(NOTE.test(dialog.textContent ?? '')).toBe(false);
   });
 });

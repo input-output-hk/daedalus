@@ -336,20 +336,17 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
           ? thrown
           : apiErrorMessages.walletInternalError;
       // These messages link to the delegation form. The registration's wallet
-      // need not be the active one, so the form is told which wallet to open
-      // with.
-      if (
+      // need not be the active one, so following the link tells the form which
+      // wallet to open with. Nothing is written when the message is drawn: a
+      // dialog closed without the link leaves no wallet behind for the next
+      // way into the form.
+      const linksToDelegationForm =
         error.id === apiErrorMessages.notEnoughFundsRewardsHeld.id ||
         error.id ===
           apiErrorMessages.notEnoughFundsRewardsHeldRegistration.id ||
-        error.id === apiErrorMessages.withdrawalNotPossibleWithoutVote.id
-      ) {
-        this.props.stores.governance.setDelegationNavState({
-          selectedWalletId: walletId,
-        });
-      }
+        error.id === apiErrorMessages.withdrawalNotPossibleWithoutVote.id;
       const errorHasLink = !!get(error, ['values', 'linkLabel']);
-      const transactionFeeError = errorHasLink ? (
+      const feeErrorMessage = errorHasLink ? (
         <FormattedHTMLMessageWithLink
           message={error}
           onExternalLinkClick={app.openExternalLink}
@@ -363,6 +360,22 @@ class VotingRegistrationDialogContainer extends Component<Props, State> {
               }
             : error)}
         />
+      );
+      const transactionFeeError = linksToDelegationForm ? (
+        <span
+          onClickCapture={(event) => {
+            const target = event.target as HTMLElement;
+            if (target.closest('a[href="#/governance/delegate"]')) {
+              this.props.stores.governance.setDelegationNavState({
+                selectedWalletId: walletId,
+              });
+            }
+          }}
+        >
+          {feeErrorMessage}
+        </span>
+      ) : (
+        feeErrorMessage
       );
 
       if (this._isMounted) {

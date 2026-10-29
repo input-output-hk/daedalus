@@ -45,6 +45,20 @@ const messages = defineMessages({
       'currencyPoweredByLabel for the Currency settings in the Wallets settings page.',
   },
 });
+const withdrawRewardsMessages = defineMessages({
+  titleLabel: {
+    id: 'settings.wallets.withdrawRewards.titleLabel',
+    defaultMessage: '!!!Withdraw staking rewards with transactions',
+    description:
+      "Title of the setting that decides whether payments also withdraw the sending wallet's staking rewards, in the Wallets settings page",
+  },
+  description: {
+    id: 'settings.wallets.withdrawRewards.description',
+    defaultMessage:
+      "!!!When this is on, each payment from a wallet also withdraws that wallet's staking rewards into it. A wallet can use its own choice in its settings, and the send form can change it for one payment. Rewards cannot be withdrawn while a wallet's voting power is not delegated, whatever this setting says.",
+    description: 'Description of that setting',
+  },
+});
 type Props = {
   currencySelected: LocalizedCurrency | null | undefined;
   currencyList: Array<any>;
@@ -52,6 +66,8 @@ type Props = {
   onSelectCurrency: (...args: Array<any>) => any;
   onToggleCurrencyIsActive: (...args: Array<any>) => any;
   onOpenExternalLink: (...args: Array<any>) => any;
+  withdrawRewardsDefault: boolean;
+  onToggleWithdrawRewardsDefault: (value: boolean) => void;
 };
 
 @observer
@@ -69,6 +85,8 @@ class WalletSettings extends Component<Props> {
       onSelectCurrency,
       onToggleCurrencyIsActive,
       onOpenExternalLink,
+      withdrawRewardsDefault,
+      onToggleWithdrawRewardsDefault,
     } = this.props;
 
     const currencyOptions = [];
@@ -128,6 +146,19 @@ class WalletSettings extends Component<Props> {
             )}
           </div>
         )}
+        <Separator className={styles.separator} />
+        <div className={styles.label}>
+          {intl.formatMessage(withdrawRewardsMessages.titleLabel)}
+        </div>
+        <div className={styles.description}>
+          <p>{intl.formatMessage(withdrawRewardsMessages.description)}</p>
+          <NormalSwitch
+            checked={withdrawRewardsDefault}
+            onChange={() =>
+              onToggleWithdrawRewardsDefault(!withdrawRewardsDefault)
+            }
+          />
+        </div>
       </div>
     );
   }

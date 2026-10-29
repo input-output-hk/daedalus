@@ -22,6 +22,8 @@ import Request from './lib/LocalizedRequest';
 import type { WalletSendLease } from './TransactionsStore';
 import Wallet, { HwDeviceStatuses, WalletUnits } from '../domains/Wallet';
 import { GenericApiError } from '../api/common/errors';
+import ApiError from '../domains/ApiError';
+import type { Api } from '../api/index';
 import WalletAddress from '../domains/WalletAddress';
 import { toJS } from '../../../common/utils/helper';
 import { isLedgerUserRejection } from '../../../common/utils/ledgerErrors';
@@ -1061,10 +1063,13 @@ export default class HardwareWalletsStore extends Store {
     walletId,
     data,
     action: nativeAction,
+    requireWithdrawal = false,
   }: {
     walletId: string;
     data: ConstructTransactionData['data'];
     action: NativeTransactionAction;
+    // Refuse, before anything is shown, a construct that left the rewards out.
+    requireWithdrawal?: boolean;
   }): Promise<{ id: string }> => {
     if (!global.cip30Enabled)
       throw new Error('Exact hardware transaction is unavailable');
@@ -1080,6 +1085,11 @@ export default class HardwareWalletsStore extends Store {
           walletId,
           data,
         });
+        if (
+          requireWithdrawal &&
+          constructed.coinSelection.withdrawals.length === 0
+        )
+          throw new ApiError().result('rewardWithdrawalNotBuilt');
         const network = this.dappNetwork();
         const rawContext = await this.api.ada.getDappTransactionContext({
           walletId,
@@ -1618,25 +1628,42 @@ export default class HardwareWalletsStore extends Store {
     vote: string;
   }) => {
     this.votingTransactionOwner?.cancel();
+    return this.selectConstructedCoins(walletId, {
+      encoding: 'base16',
+      vote,
+    });
+  };
+  // The withdrawal-only transaction a hardware wallet signs to move its
+  // staking rewards into the wallet: the wallet constructs it, and its coin
+  // selection (inputs, change and the withdrawal) becomes the request for the
+  // device. The wallet leaves the rewards out when they are worth less than
+  // twice the fee for withdrawing them, or before it has read them; nothing is
+  // then left to sign, so the lease is released and the selection is refused.
+  selectWithdrawalCoins = async ({ walletId }: { walletId: string }) =>
+    this.selectConstructedCoins(
+      walletId,
+      { encoding: 'base16', withdrawal: 'self' },
+      true
+    );
+  private selectConstructedCoins = async (
+    walletId: string,
+    data: ConstructTransactionData['data'],
+    requireWithdrawal = false
+  ) => {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
     const generation = this.transactionGeneration;
     if (!(await this.acquireWalletSendLease(walletId, generation)))
       throw new Error('Hardware transaction cancelled');
+    let constructed: Awaited<ReturnType<Api['ada']['constructTransaction']>>;
     try {
-      const constructed = await this.api.ada.constructTransaction({
+      constructed = await this.api.ada.constructTransaction({
         walletId,
-        data: { encoding: 'base16', vote },
+        data,
       });
       if (generation !== this.transactionGeneration)
         throw new Error('Hardware transaction cancelled');
-      runInAction('HardwareWalletsStore:: set vote coin selection', () => {
-        this.txSignRequest = {
-          coinSelection: constructed.coinSelection,
-        };
-      });
-      return constructed;
     } catch (e) {
       if (generation !== this.transactionGeneration) throw e;
       runInAction(
@@ -1648,6 +1675,19 @@ export default class HardwareWalletsStore extends Store {
       this.releaseWalletSendLease();
       throw e;
     }
+    if (
+      requireWithdrawal &&
+      constructed.coinSelection.withdrawals.length === 0
+    ) {
+      this.releaseWalletSendLease();
+      throw new ApiError().result('rewardWithdrawalNotBuilt');
+    }
+    runInAction('HardwareWalletsStore:: set constructed coin selection', () => {
+      this.txSignRequest = {
+        coinSelection: constructed.coinSelection,
+      };
+    });
+    return constructed;
   };
   @action
   establishHardwareWalletConnection = async () => {

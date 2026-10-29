@@ -39,4 +39,13 @@ export default class WalletSettingsActions {
   }> = new Action();
   recoveryPhraseVerificationClose: Action<any> = new Action();
   toggleShowUsedAddresses: Action<any> = new Action();
+
+  /* ----------  Withdraw rewards with transactions  ---------- */
+  setWithdrawRewardsDefault: Action<{
+    value: boolean;
+  }> = new Action();
+  setWalletWithdrawRewards: Action<{
+    walletId: string;
+    value: boolean | null;
+  }> = new Action();
 }

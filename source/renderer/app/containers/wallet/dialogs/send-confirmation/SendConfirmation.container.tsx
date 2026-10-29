@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import { inject, observer } from 'mobx-react';
 import compose from 'lodash/fp/compose';
+import BigNumber from 'bignumber.js';
+import { LOVELACES_PER_ADA } from '../../../../config/numbersConfig';
 import { getNonZeroAssetTokens } from '../../../../utils/assets';
 import { ContainerProps as Props, SubmitPayload } from './types';
 import { WalletSendConfirmationDialogView } from './SendConfirmation.view';
@@ -62,6 +64,24 @@ export function Containter({
     (!isHardwareWallet ||
       (txSignRequest?.coinSelection?.withdrawals ?? []).length === 0);
   const heldReward = leavesRewardsInPlace ? activeWallet.reward : null;
+  // The user chose to leave the rewards in place.
+  const declinedReward =
+    withdrawalDecision?.reason === 'declined' &&
+    (!isHardwareWallet ||
+      (txSignRequest?.coinSelection?.withdrawals ?? []).length === 0)
+      ? activeWallet.reward
+      : null;
+  // Only a hardware wallet's coin selection reports what it withdraws; its
+  // amounts are in lovelace.
+  const selectionWithdrawn = isHardwareWallet
+    ? (txSignRequest?.coinSelection?.withdrawals ?? [])
+        .reduce(
+          (sum, { amount }) => sum.plus(amount?.quantity ?? 0),
+          new BigNumber(0)
+        )
+        .dividedBy(LOVELACES_PER_ADA)
+    : new BigNumber(0);
+  const withdrawnReward = selectionWithdrawn.gt(0) ? selectionWithdrawn : null;
 
   const [areTermsAccepted, setAreTermsAccepted] = useState(false);
   const ownsHardwareTransaction = useRef(false);
@@ -153,6 +173,8 @@ export function Containter({
       transactionFee={transactionFee}
       withdrawal={withdrawal}
       heldReward={heldReward}
+      declinedReward={declinedReward}
+      withdrawnReward={withdrawnReward}
       wallet={activeWallet}
       isFlight={isFlight}
       isSubmitting={isSubmitting}

@@ -15,14 +15,22 @@ const wallet = (id: string) =>
     isNotResponding: false,
   }) as Wallet;
 
-const createStore = (wallets: Wallet[], currentRoute: string) => {
+const createStore = (
+  wallets: Wallet[],
+  currentRoute: string,
+  withdrawRewardsFor: (walletId: string) => boolean = () => true
+) => {
   const apiMethod = jest.fn();
   const apiNamespace = new Proxy({}, { get: () => apiMethod });
   const api = new Proxy({}, { get: () => apiNamespace });
   const store = new WalletsStore(api as any, {} as any, {} as any);
   const app = { currentRoute };
 
-  store.configure({ app, addresses: { lastGeneratedAddress: null } } as any);
+  store.configure({
+    app,
+    addresses: { lastGeneratedAddress: null },
+    walletSettings: { withdrawRewardsFor },
+  } as any);
   store.walletsRequest.result = wallets;
   store._setActiveWallet = jest.fn(({ walletId }) => {
     store.active = wallets.find(({ id }) => id === walletId) || null;
@@ -149,6 +157,8 @@ describe('WalletsStore dApp routes', () => {
     expect(store.all.map(({ id }) => id)).toEqual(['wallet-a']);
     await store._deleteWallet({ walletId: 'wallet-a', isLegacy: false });
     expect(store.all).toEqual([]);
+    // The wallet's local data, which holds its withdraw-rewards choice, goes.
+    expect(trigger).toHaveBeenCalledWith({ walletId: 'wallet-a' });
     expect(store.isDeleting).toBe(false);
     expect(store.active).toBeNull();
   });
@@ -194,6 +204,54 @@ describe('WalletsStore withdrawalDecisionFor', () => {
         withdrawRewards: false,
       })
     ).toMatchObject({ kind: 'omit', reason: 'declined' });
+  });
+
+  it('takes the withdraw choice from the wallet settings when none is passed', () => {
+    const { store } = createStore(
+      [
+        withReward('off', { status: 'unknown' }),
+        withReward('on', { status: 'unknown' }),
+      ],
+      '/wallets/on/summary',
+      (walletId) => walletId === 'on'
+    );
+    expect(store.withdrawalDecisionFor('off', 'payment')).toMatchObject({
+      kind: 'omit',
+      reason: 'declined',
+    });
+    expect(store.withdrawalDecisionFor('on', 'payment')).toMatchObject({
+      kind: 'withdraw',
+      withdrawal: 'self',
+    });
+  });
+
+  it('lets an explicit choice win over the wallet settings', () => {
+    const { store } = createStore(
+      [
+        withReward('off', { status: 'unknown' }),
+        withReward('on', { status: 'unknown' }),
+      ],
+      '/wallets/on/summary',
+      (walletId) => walletId === 'on'
+    );
+    expect(
+      store.withdrawalDecisionFor('off', 'payment', { withdrawRewards: true })
+        .kind
+    ).toBe('withdraw');
+    expect(
+      store.withdrawalDecisionFor('on', 'payment', { withdrawRewards: false })
+    ).toMatchObject({ kind: 'omit', reason: 'declined' });
+  });
+
+  it('ignores the wallet settings for an undelegation', () => {
+    const { store } = createStore(
+      [withReward('free', { status: 'unknown' })],
+      '/wallets/free/summary',
+      () => false
+    );
+    expect(store.withdrawalDecisionFor('free', 'undelegation').kind).toBe(
+      'withdraw'
+    );
   });
 
   it('throws for a wallet the store does not hold', () => {

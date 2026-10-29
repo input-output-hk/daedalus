@@ -19,6 +19,9 @@ import {
   WithAnalyticsTrackerProps,
 } from '../../components/analytics/withAnalytics';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import type { RewardsAction } from '../../components/wallet/summary/WalletSummaryHeader';
+import WithdrawRewardsDialogContainer from './dialogs/WithdrawRewardsDialogContainer';
+import type LocalizableError from '../../i18n/LocalizableError';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -74,6 +77,51 @@ class WalletSummaryPage extends Component<Props> {
     dialogs.open.trigger({
       dialog: AssetSettingsDialog,
     });
+  };
+
+  // The action that withdraws the wallet's staking rewards: hidden for a
+  // legacy wallet and for one with no reward, disabled while the ledger holds
+  // no vote delegation.
+  rewardsActionFor = (walletId: string): RewardsAction | null => {
+    const { stores, actions } = this.props;
+    const { wallets } = stores;
+    const decision = wallets.withdrawalDecisionFor(
+      walletId,
+      'reward_withdrawal'
+    );
+    if (decision.reason === 'legacy_wallet' || decision.reason === 'no_reward')
+      return null;
+    const step = wallets.rewardWithdrawalFor(walletId);
+    const nativeStep = global.cip30Enabled ? step : null;
+    return {
+      disabled: decision.kind !== 'withdraw',
+      reason:
+        decision.reason === 'ledger_not_delegated'
+          ? 'ledger_not_delegated'
+          : undefined,
+      isSubmitting: nativeStep?.status === 'submitting',
+      error:
+        nativeStep?.status === 'failed'
+          ? (nativeStep.error as LocalizableError)
+          : null,
+      onWithdraw: () => {
+        if (global.cip30Enabled) {
+          wallets.submitRewardWithdrawalNative(walletId).catch(() => {
+            // The step records its own failure.
+          });
+          return;
+        }
+        actions.dialogs.open.trigger({
+          dialog: WithdrawRewardsDialogContainer,
+        });
+      },
+      onDelegate: () => {
+        stores.governance.setDelegationNavState({ selectedWalletId: walletId });
+        actions.router.goToRoute.trigger({
+          route: ROUTES.GOVERNANCE.DELEGATE,
+        });
+      },
+    };
   };
 
   get assetSettingsDialogWasOpened() {
@@ -173,6 +221,7 @@ class WalletSummaryPage extends Component<Props> {
     return (
       <VerticalFlexContainer>
         <WalletSummary
+          rewardsAction={this.rewardsActionFor(wallet.id)}
           wallet={wallet}
           reward={staking.getRewardForWallet(wallet)}
           numberOfRecentTransactions={recent.length}
@@ -200,6 +249,13 @@ class WalletSummaryPage extends Component<Props> {
           onToggleFavorite={onToggleFavorite.trigger}
         />
         {walletTransactions}
+        {!global.cip30Enabled &&
+          stores.uiDialogs.isOpen(WithdrawRewardsDialogContainer) && (
+            <WithdrawRewardsDialogContainer
+              walletId={wallet.id}
+              onExternalLinkClick={openExternalLink}
+            />
+          )}
       </VerticalFlexContainer>
     );
   }

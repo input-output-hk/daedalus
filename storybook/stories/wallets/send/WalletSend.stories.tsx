@@ -18,6 +18,7 @@ import Wallet, {
 import { messages } from '../../../../source/renderer/app/api/errors';
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
+import type { RewardsControl } from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import type { WalletTokens } from '../../../../source/renderer/app/api/assets/types';
 import { noopAnalyticsTracker as analyticsTracker } from '../../../../source/renderer/app/analytics';
 import LocalizableError from '../../../../source/renderer/app/i18n/LocalizableError';
@@ -301,14 +302,22 @@ const submitError = (message: { id: string; defaultMessage: string }) =>
     values: { walletId: 'storybook-wallet' },
   });
 
-const renderSendFormWithSubmitError = (error: LocalizableError) => (
+const renderSendFormWithSubmitError = (
+  error: LocalizableError | null,
+  rewardsControl: RewardsControl | null = null,
+  feeError: LocalizableError | null = null
+) => (
   <WalletSendForm
     currencyMaxFractionalDigits={6}
     currencyMaxIntegerDigits={11}
     currentNumberFormat={NUMBER_OPTIONS[0].value}
     validateAmount={promise(true)}
     validateAssetAmount={promise(true)}
-    calculateTransactionFee={promise(true)}
+    calculateTransactionFee={
+      feeError ? () => Promise.reject(feeError) : promise(true)
+    }
+    initialReceiver={feeError ? formData.receiver : undefined}
+    initialAmount={feeError ? '500' : undefined}
     walletAmount={new BigNumber(123)}
     addressValidator={() => true}
     onSubmit={action('onSubmit')}
@@ -328,6 +337,9 @@ const renderSendFormWithSubmitError = (error: LocalizableError) => (
     onTokenPickerDialogOpen={action('onTokenPickerDialogOpen')}
     analyticsTracker={analyticsTracker}
     submitError={error}
+    rewardsControl={rewardsControl}
+    onRewardsChange={action('onRewardsChange')}
+    onDelegateRewards={action('onDelegateRewards')}
   />
 );
 
@@ -376,5 +388,34 @@ storiesOf('Wallets / Send', module)
   .add('Send - funds held by a pending transaction', () =>
     renderSendFormWithSubmitError(
       submitError(messages.fundsHeldByPendingTransaction)
+    )
+  )
+  .add('Send - withdraw rewards on', () =>
+    renderSendFormWithSubmitError(null, {
+      checked: true,
+      disabled: false,
+      reward: new BigNumber(36.5),
+    })
+  )
+  .add('Send - withdraw rewards off', () =>
+    renderSendFormWithSubmitError(null, {
+      checked: false,
+      disabled: false,
+      reward: new BigNumber(36.5),
+    })
+  )
+  .add('Send - rewards held, control disabled', () =>
+    renderSendFormWithSubmitError(null, {
+      checked: false,
+      disabled: true,
+      reward: new BigNumber(36.5),
+      reason: 'ledger_not_delegated',
+    })
+  )
+  .add('Send - not enough ada, rewards not withdrawn', () =>
+    renderSendFormWithSubmitError(
+      null,
+      { checked: false, disabled: false, reward: new BigNumber(36.5) },
+      submitError(messages.notEnoughFundsRewardsNotWithdrawn)
     )
   );

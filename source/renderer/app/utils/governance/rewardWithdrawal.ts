@@ -2,7 +2,10 @@ import BigNumber from 'bignumber.js';
 import type { LedgerVoteDelegation } from '../../api/wallets/types';
 import type { Balances } from '../../api/errors';
 
-export type WithdrawalPurpose = 'payment' | 'undelegation';
+export type WithdrawalPurpose =
+  | 'payment'
+  | 'undelegation'
+  | 'reward_withdrawal';
 
 export type WithdrawalDecisionInput = Readonly<{
   purpose: WithdrawalPurpose;
@@ -82,6 +85,12 @@ export const decideWithdrawal = ({
  * the available balance; the three cases of the not-enough-money handler stay
  * consistent because the wallet balance never exceeds the available balance
  * by the reward alone.
+ *
+ * `Wallet.spendableAmount` is this wallet balance for every decision except
+ * `declined`: a payment the user chose to send without the rewards cannot
+ * spend them even when the ledger would release them. Whatever shows the
+ * amount a request can spend takes it from here with the request's own
+ * withdrawal.
  */
 export const balancesFor = (
   wallet: Readonly<{

@@ -20,6 +20,7 @@ import currenciesList from '../../../../source/renderer/app/config/currenciesLis
 import { getLocalizedCurrenciesList } from '../../../../source/renderer/app/config/currencyConfig';
 
 const mockedWalletsState = {
+  withdrawRewardsDefault: true,
   currencyIsActive: true,
   currencySelected: {
     id: 'uniswap-state-dollar',
@@ -70,6 +71,9 @@ storiesOf('Settings / General', module)
           store.set({ currencyIsActive: value })
         }
         onOpenExternalLink={action('onOpenExternalLink')}
+        onToggleWithdrawRewardsDefault={(value) =>
+          store.set({ withdrawRewardsDefault: value })
+        }
         {...store.state}
       />
     ))

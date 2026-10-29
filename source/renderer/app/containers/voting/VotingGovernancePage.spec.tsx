@@ -950,6 +950,7 @@ describe('A handoff that names a DRep but no wallet', () => {
       delegationNavState: { selectedDRepId: VALID_DREP_ID, voteType: 'drep' },
     });
 
+    expect(screen.getByLabelText(VALID_DREP_ID)).toBeInTheDocument();
     expect(screen.getByTestId('wallets-dropdown')).not.toHaveTextContent(
       WALLET_ID
     );

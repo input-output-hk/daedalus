@@ -26,11 +26,18 @@
 #     pool            PUT /v2/stake-pools/{pool}/wallets/{id} {passphrase}
 #     undelegation    DELETE /v2/stake-pools/*/wallets/{id} {passphrase}
 #     ITN redemption  payment-fees, then transactions, with withdrawal: <recovery phrase>
+#     payment, rewards left in place   payment-fees and transactions without the withdrawal key
+#     withdraw rewards  POST /v2/wallets/{id}/transactions-construct {encoding: "base16", withdrawal: "self"}, then
+#                       transactions-sign and transactions-submit
+#     hardware wallet   the same construct, then POST /v2/proxy/transactions with the signed CBOR of a body built
+#                       from its coin selection
 #   mainnet-flight, preprod and preview builds (BACKEND=cip30)
 #     transactions-construct, then transactions-sign, then transactions-submit
 #     payment         {encoding, payments, withdrawal: "self"}
 #     vote            {encoding, vote}
 #     undelegation    {encoding, delegations: [{quit}], withdrawal: "self"}
+#     withdraw rewards  {encoding, withdrawal: "self"}
+#     hardware wallet   the same construct, signed, then POST /v2/wallets/{id}/transaction-submission
 # Withdrawal-carrying requests are sent in both shapes on both backends, since
 # the wallet API serves both to any client.
 #
@@ -75,21 +82,24 @@ payments_to() {
 
 # Request flows ---------------------------------------------------------------------
 
-# pay LABEL WID [SHAPE [FEE-FIXTURE]]: a payment that requests the reward
-# withdrawal, in the shape the Daedalus build for SHAPE (default: this backend)
-# sends; FEE-FIXTURE names the fee estimate's recorded exchange. Sets
+# pay LABEL WID [SHAPE [FEE-FIXTURE [nowdrl]]]: a payment that requests the
+# reward withdrawal, in the shape the Daedalus build for SHAPE (default: this
+# backend) sends; FEE-FIXTURE names the fee estimate's recorded exchange. With
+# nowdrl the requests leave the withdrawal key out, as a payment whose control
+# is off does. Sets
 # PAY_ACCEPTED (yes or no), PAY_WITHDRAWAL (lovelace withdrawn) and
 # PAY_OBSERVED.
 pay() {
-  local label="$1" id="$2" shape="${3:-$BACKEND}" fee_fixture="${4:-}" payments
+  local label="$1" id="$2" shape="${3:-$BACKEND}" fee_fixture="${4:-}" payments wdrl=self
+  [ "${5:-}" != nowdrl ] || wdrl=''
   payments=$(payments_to "$DEST")
   PAY_ACCEPTED=no PAY_WITHDRAWAL=0
   if [ "$shape" = upstream ]; then
     api "$label-fee" POST "/v2/wallets/$id/payment-fees" \
-      "$(jq -n --argjson p "$payments" '{payments: $p, withdrawal: "self"}')"
+      "$(jq -n --argjson p "$payments" --arg w "$wdrl" '{payments: $p} + (if $w == "" then {} else {withdrawal: $w} end)')"
     [ -z "$fee_fixture" ] || fixture "$fee_fixture"
     api "$label" POST "/v2/wallets/$id/transactions" \
-      "$(jq -n --argjson p "$payments" --arg pw "$PASS" '{payments: $p, passphrase: $pw, withdrawal: "self"}')"
+      "$(jq -n --argjson p "$payments" --arg pw "$PASS" --arg w "$wdrl" '{payments: $p, passphrase: $pw} + (if $w == "" then {} else {withdrawal: $w} end)')"
     PAY_OBSERVED=$(observed)
     if is_accepted; then
       PAY_ACCEPTED=yes
@@ -98,7 +108,7 @@ pay() {
     fi
   else
     construct_flow "$label" "$id" \
-      "$(jq -n --argjson p "$payments" '{encoding: "base16", payments: $p, withdrawal: "self"}')"
+      "$(jq -n --argjson p "$payments" --arg w "$wdrl" '{encoding: "base16", payments: $p} + (if $w == "" then {} else {withdrawal: $w} end)')"
     PAY_OBSERVED=$(construct_observed)
     if [ "$CF_SUBMIT_STATUS" = 202 ]; then
       PAY_ACCEPTED=yes
@@ -288,6 +298,141 @@ setup() {
   snapshot "setup: W1, W2 and W4 delegated to DRep A" "$W1" "$W2" "$W4"
 }
 
+# Rows for the control that leaves the reward in place and for the
+# withdrawal-only transaction, on the wallet that is delegated to DRep A.
+withdrawal_rows() {
+  local shape tag before reward after expected fee seen withdraws
+  for shape in upstream cip30; do
+    tag=${shape/upstream/mainnet}
+    if ! wait_withdrawable "$W1"; then
+      result "D-pay-$tag" "Payment without the withdrawal while delegated to DRep A" "payment, $(build_of "$shape")" \
+        "accepted, nothing withdrawn, reward not lower" "reward $(reward_of "$W1")" PRECONDITION
+      continue
+    fi
+    reward=$(reward_of "$W1")
+    pay "D-pay-$tag" "$W1" "$shape" "" nowdrl
+    after=$(reward_of "$W1")
+    check "D-pay-$tag" "Payment without the withdrawal while delegated to DRep A" "payment, $(build_of "$shape")" \
+      "accepted, nothing withdrawn, reward not lower" "$PAY_OBSERVED, reward $reward before and $after after" \
+      '[ "$PAY_ACCEPTED" = yes ] && [ "$PAY_WITHDRAWAL" = 0 ] && [ "$after" -ge "$reward" ]'
+  done
+
+  # The withdrawal-only transaction.
+  if wait_withdrawable "$W1"; then
+    reward=$(reward_of "$W1")
+    before=$(available_of "$W1")
+    construct_flow W-only "$W1" '{"encoding": "base16", "withdrawal": "self"}'
+    R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+    if [ "$CF_CONSTRUCT_STATUS" = 202 ]; then
+      fixture withdrawal-only-construct
+    fi
+    fee=$(jq -r '.fee.quantity // 0' "$CF_CONSTRUCT_FILE")
+    after=$(available_of "$W1")
+    expected=$((before + CF_WITHDRAWAL - fee))
+    check W-only "Withdrawal-only transaction while delegated to DRep A" \
+      "construct {withdrawal: self}, sign, submit" \
+      "construct 202 with one withdrawal equal to the reward and no payment outputs, submit 202, available up by the withdrawal less the fee" \
+      "$(construct_observed), withdrawal $CF_WITHDRAWAL of reward $reward, outputs $(jq -r '.coin_selection.outputs | length' "$CF_CONSTRUCT_FILE" 2>/dev/null), withdrawals $(jq -r '.coin_selection.withdrawals | length' "$CF_CONSTRUCT_FILE" 2>/dev/null), available $before to $after, fee $fee" \
+      '[ "$CF_CONSTRUCT_STATUS" = 202 ] && [ "$CF_SUBMIT_STATUS" = 202 ] && [ "$CF_WITHDRAWAL" = "$reward" ] &&
+       [ "$(jq -r ".coin_selection.outputs | length" "$CF_CONSTRUCT_FILE")" = 0 ] &&
+       [ "$(jq -r ".coin_selection.withdrawals | length" "$CF_CONSTRUCT_FILE")" = 1 ] && [ "$after" = "$expected" ]'
+  else
+    result W-only "Withdrawal-only transaction while delegated to DRep A" "construct {withdrawal: self}, sign, submit" \
+      "accepted, rewards withdrawn" "reward $(reward_of "$W1")" PRECONDITION
+  fi
+
+  # The hardware-wallet submission of the same transaction: the selection is
+  # built into a body outside the wallet, signed by transactions-sign (standing
+  # in for the device) and submitted through the build's hardware endpoint.
+  hardware_withdrawal_only "$W1"
+
+  # A wallet with nothing to withdraw: the construct still answers, without a
+  # withdrawal.
+  api W-only-none-construct POST "/v2/wallets/$W3/transactions-construct" '{"encoding": "base16", "withdrawal": "self"}'
+  fixture withdrawal-only-none
+  seen=$(observed)
+  withdraws=$(jq -r '[.coin_selection.withdrawals[]?] | length' "$R_FILE" 2>/dev/null || echo '?')
+  result W-only-none "Withdrawal-only construct for a wallet with no reward" "construct {withdrawal: self}, not submitted" \
+    "HTTP 202, no withdrawals" "$seen, withdrawals $withdraws" \
+    "$([ "$R_STATUS" = 202 ] && [ "$withdraws" = 0 ] && echo PASS || echo FAIL)"
+
+  # Measurement: the payment forms with an empty payments list.
+  api W-forms-transactions POST "/v2/wallets/$W1/transactions" \
+    "$(jq -n --arg pw "$PASS" '{payments: [], passphrase: $pw, withdrawal: "self"}')"
+  seen="transactions $(observed)"
+  api W-forms-fees POST "/v2/wallets/$W1/payment-fees" '{"payments": [], "withdrawal": "self"}'
+  seen="$seen; payment-fees $(observed)"
+  api W-forms-selection POST "/v2/wallets/$W1/coin-selections/random" '{"payments": [], "withdrawal": "self"}'
+  seen="$seen; coin-selections $(observed)"
+  release_pending "$W1" W-forms
+  result W-forms "Payment forms with an empty payments list" "payments: [], withdrawal: self" "(measurement)" "$seen" NOTE
+}
+
+# hardware_withdrawal_only WID: W-hw. The withdrawal-only construct, its coin
+# selection built into a body with cardano-cli, signed by transactions-sign and
+# submitted through the hardware endpoint of this backend.
+hardware_withdrawal_only() {
+  local id="$1" seen what="Hardware-wallet withdrawal-only transaction" reward withdrawn txid body="$STATE/w-hw.body.cbor.hex" signed note=''
+  local req
+  req="construct {withdrawal: self}, sign, $([ "$BACKEND" = upstream ] && echo 'POST /v2/proxy/transactions' || echo 'POST /v2/wallets/{id}/transaction-submission')"
+  local want="accepted, in the ledger, withdraws the reward"
+  if ! wait_withdrawable "$id"; then
+    result W-hw "$what" "$req" "$want" "reward $(reward_of "$id")" PRECONDITION
+    return 0
+  fi
+  reward=$(reward_of "$id")
+  api W-hw-construct POST "/v2/wallets/$id/transactions-construct" '{"encoding": "base16", "withdrawal": "self"}'
+  if ! is_accepted; then
+    result W-hw "$what" "$req" "$want" "construct $(observed)" FAIL
+    return 0
+  fi
+  jq '.coin_selection' "$R_FILE" >"$STATE/w-hw.selection.json"
+  local unsigned
+  unsigned=$(jq -r .transaction "$R_FILE")
+  if ! withdrawal_selection_body "$STATE/w-hw.selection.json" "$body"; then
+    result W-hw "$what" "$req" "$want" \
+      "the selection could not be built into a body ($(head -c 200 "$body.build.txt" 2>/dev/null))" PRECONDITION
+    return 0
+  fi
+  api W-hw-sign POST "/v2/wallets/$id/transactions-sign" \
+    "$(jq -n --arg t "$(cat "$body")" --arg p "$PASS" '{transaction: $t, passphrase: $p, encoding: "base16"}')"
+  if ! is_accepted; then
+    note="transactions-sign refused the cardano-cli body ($(observed): $(jq -r '.message // ""' "$R_FILE" | head -c 300)); the construct's own CBOR is sent instead"
+    api W-hw-sign-own POST "/v2/wallets/$id/transactions-sign" \
+      "$(jq -n --arg t "$unsigned" --arg p "$PASS" '{transaction: $t, passphrase: $p, encoding: "base16"}')"
+    if ! is_accepted; then
+      result W-hw "$what" "$req" "$want" "$note; and its own CBOR refused: $(observed)" PRECONDITION
+      return 0
+    fi
+  fi
+  signed=$(jq -r .transaction "$R_FILE")
+  echo "$signed" >"$STATE/w-hw.signed.cbor.hex"
+  if [ "$BACKEND" = upstream ]; then
+    echo "$signed" | xxd -r -p >"$STATE/w-hw.signed.cbor"
+    api_octets W-hw /v2/proxy/transactions "$STATE/w-hw.signed.cbor"
+    txid=$(jq -r '.id // empty' "$R_FILE")
+  else
+    if ! dapp_submit W-hw "$id" "$STATE/w-hw.signed.cbor.hex"; then
+      result W-hw "$what" "$req" "$want" "no request sent: $DAPP_SUBMIT_WHY" PRECONDITION
+      return 0
+    fi
+    txid=$(jq -r '.transaction_id // empty' "$R_FILE")
+  fi
+  seen=$(observed)
+  if is_accepted && [ -n "$txid" ] && wait_tx "$id" "$txid"; then
+    withdrawn=$(curl -s "$API/v2/wallets/$id/transactions/$txid" | jq -r '[.withdrawals[]?.amount.quantity] | add // 0')
+    seen="$seen, in ledger, withdrew $withdrawn of reward $reward"
+    [ -z "$note" ] || seen="$note; $seen"
+    if [ -n "$note" ]; then
+      result W-hw "$what" "$req" "$want" "$seen" PRECONDITION
+    else
+      check W-hw "$what" "$req" "$want" "$seen" '[ "$withdrawn" = "$reward" ]'
+    fi
+  else
+    result W-hw "$what" "$req" "$want" "$seen, not in the ledger" FAIL
+  fi
+}
+
 # Control: DRep A registered ----------------------------------------------------------
 
 control() {
@@ -309,6 +454,7 @@ control() {
       '[ "$PAY_ACCEPTED" = yes ] && [ "$PAY_WITHDRAWAL" -gt 0 ]'
   done
 
+  withdrawal_rows
   seen=$(wallet_ledger_field "$W1")
   check C-field "Ledger vote delegation reported by the wallet" \
     "GET /v2/wallets/{id} .$LEDGER_VOTE_FIELD" "drep:A" "$seen" '[ "$seen" = drep:A ]'
@@ -528,6 +674,19 @@ after_retirement() {
         "HTTP 409 dapp_submission_failed" "no request sent: ${DAPP_SUBMIT_WHY:-no signed payment}" PRECONDITION
     fi
   fi
+
+  construct_flow W-only-gate "$W1" '{"encoding": "base16", "withdrawal": "self"}'
+  if [ "$CF_CONSTRUCT_STATUS" = 403 ]; then
+    R_BASE=${CF_CONSTRUCT_FILE%.res.json}
+    fixture withdrawal-only-refused
+  elif [ -n "$CF_SUBMIT_FILE" ] && [ "$CF_SUBMIT_STATUS" != 202 ]; then
+    R_BASE=${CF_SUBMIT_FILE%.res.json}
+    fixture withdrawal-only-submit-refused
+  fi
+  check W-only-gate "Withdrawal-only transaction while the account has no vote delegation" \
+    "construct {withdrawal: self}, sign, submit" "$GATE (at construct)" "$(construct_observed)" \
+    construct_refused_before_submission
+  release_pending "$W1" W-only-gate
 
   construct_flow P-construct "$W1" "$(jq -n --argjson p "$payments" '{encoding: "base16", payments: $p}')"
   if [ "$CF_CONSTRUCT_STATUS" = 202 ]; then

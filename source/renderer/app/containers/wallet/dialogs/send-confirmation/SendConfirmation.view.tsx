@@ -38,6 +38,8 @@ function View({
   transactionFee,
   withdrawal,
   heldReward,
+  declinedReward,
+  withdrawnReward,
   hwDeviceStatus,
   formattedTotalAmount,
   wallet,
@@ -149,6 +151,28 @@ function View({
             {intl.formatMessage(messages.rewardsNotWithdrawn, {
               rewardsAmount: discreetModeFeature.discreetValue({
                 replacer: discreetWalletAmount({ amount: heldReward }),
+              }),
+            })}
+          </p>
+        </div>
+      )}
+      {declinedReward != null && (
+        <div className={styles.warning} role="note">
+          <p>
+            {intl.formatMessage(messages.rewardsDeclined, {
+              rewardsAmount: discreetModeFeature.discreetValue({
+                replacer: discreetWalletAmount({ amount: declinedReward }),
+              }),
+            })}
+          </p>
+        </div>
+      )}
+      {withdrawnReward != null && (
+        <div className={styles.warning} role="note">
+          <p>
+            {intl.formatMessage(messages.rewardsWithdrawn, {
+              rewardsAmount: discreetModeFeature.discreetValue({
+                replacer: discreetWalletAmount({ amount: withdrawnReward }),
               }),
             })}
           </p>

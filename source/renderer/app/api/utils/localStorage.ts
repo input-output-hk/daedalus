@@ -361,6 +361,12 @@ export default class LocalStorageApi {
   };
   unsetWalletLocalData = (walletId: string): Promise<void> =>
     LocalStorageApi.unset(keys.WALLETS, walletId);
+  getWithdrawRewardsDefault = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.WITHDRAW_REWARDS_DEFAULT, true);
+  setWithdrawRewardsDefault = (value: boolean): Promise<void> =>
+    LocalStorageApi.set(keys.WITHDRAW_REWARDS_DEFAULT, value);
+  unsetWithdrawRewardsDefault = (): Promise<void> =>
+    LocalStorageApi.unset(keys.WITHDRAW_REWARDS_DEFAULT);
   getReadNews = (): Promise<NewsTimestamp[]> =>
     LocalStorageApi.get(keys.READ_NEWS, []);
   markNewsAsRead = async (

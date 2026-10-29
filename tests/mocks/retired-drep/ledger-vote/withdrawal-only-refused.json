@@ -1,0 +1,21 @@
+{
+  "backend": "ledger-vote",
+  "wallet": "v2026-10-07 (git revision: 528b5713b8ea6a73c4fbbea7650f800109001e8e)",
+  "recorded": "2026-10-28T21:54:25Z",
+  "chain": {
+    "epoch": 8,
+    "slot": 1252
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/8f7665524efe227a76a70f862a89cb0e64633bb3/transactions-construct",
+    "body": {
+      "encoding": "base16",
+      "withdrawal": "self"
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": "{\"code\":\"withdrawal_not_possible_without_vote\",\"message\":\"I cannot build a transaction that withdraws rewards, because the ledger holds no vote delegation for the wallet's reward account. This is the case for a wallet that never voted, and for a wallet whose DRep has retired. Please delegate the vote to a DRep, to 'abstain' or to 'no_confidence', and wait until that transaction is in the ledger before withdrawing.\"}"
+  }
+}

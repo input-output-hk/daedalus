@@ -234,6 +234,22 @@ export default function (props: { locale: Locale }) {
         basicSettingsId
       )}
       onSingleAddressModeChange={action('onSingleAddressModeChange')}
+      withdrawRewardsOverride={
+        { follow: null, withdraw: true, doNotWithdraw: false }[
+          select(
+            'Withdraw rewards choice',
+            ['follow', 'withdraw', 'doNotWithdraw'],
+            'follow',
+            basicSettingsId
+          )
+        ]
+      }
+      withdrawRewardsDefault={boolean(
+        'Withdraw rewards setting in Settings > Wallets',
+        true,
+        basicSettingsId
+      )}
+      onWithdrawRewardsChange={action('onWithdrawRewardsChange')}
       lastUpdatedField={null}
       nameValidator={() => true}
       onCancel={() => {}}

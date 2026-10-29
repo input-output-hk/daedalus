@@ -566,6 +566,29 @@ vote_selection_body() {
   jq -r .cborHex "$out.json" >"$out"
 }
 
+# withdrawal_selection_body SELECTION-FILE OUT-FILE: as selection_body for the
+# coin selection of a withdrawal-only transaction. The selection must carry
+# exactly one withdrawal and no certificate or asset; the body states the
+# withdrawal and expires 7,200 slots after the tip, as Daedalus's TTL does.
+withdrawal_selection_body() {
+  local sel="$1" out="$2" args=() line tip
+  if jq -e '[.inputs[], .outputs[], .change[]] | any(.assets | length > 0)
+      or ((.withdrawals // []) | length != 1)
+      or ((.certificates // []) | length > 0)' "$sel" >/dev/null; then
+    return 1
+  fi
+  while IFS= read -r line; do args+=(--tx-in "$line"); done \
+    < <(jq -r '.inputs[] | "\(.id)#\(.index)"' "$sel")
+  while IFS= read -r line; do args+=(--tx-out "$line"); done \
+    < <(jq -r '(.outputs[], .change[]) | "\(.address)+\(.amount.quantity)"' "$sel")
+  tip=$("$CLI" conway query tip | jq -r .slot)
+  "$CLI" conway transaction build-raw "${args[@]}" \
+    --withdrawal "$(jq -r '.withdrawals[0] | "\(.stake_address)+\(.amount.quantity)"' "$sel")" \
+    --fee "$(selection_fee "$sel")" --invalid-hereafter $((tip + 7200)) \
+    --out-file "$out.json" >"$out.build.txt" 2>&1 || return 1
+  jq -r .cborHex "$out.json" >"$out"
+}
+
 # derive_stake_keys MNEMONIC-FILE DIR WID: the wallet's stake key (DIR/stake.skey
 # and stake.vkey), for a transaction built by cardano-cli alone. Fails the run
 # when the key is not the wallet's.

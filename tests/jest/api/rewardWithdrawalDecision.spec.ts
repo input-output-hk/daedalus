@@ -55,7 +55,8 @@ describe('Requests built from a recorded wallet response', () => {
   // choose the withdrawal and the balances the payment is checked against.
   const readWallet = async (
     walletName: string,
-    extraRoutes: Array<ReplayRoute> = []
+    extraRoutes: Array<ReplayRoute> = [],
+    withdrawRewards?: boolean
   ) => {
     const walletExchange = load(walletName);
     replay = await startWalletReplay([
@@ -76,6 +77,7 @@ describe('Requests built from a recorded wallet response', () => {
       isLegacy: wallet.isLegacy,
       ledgerVote: wallet.ledgerVote,
       reward: wallet.reward,
+      withdrawRewards,
     });
     replay.received.length = 0;
     return {
@@ -196,6 +198,91 @@ describe('Requests built from a recorded wallet response', () => {
       });
     }
   );
+
+  describe('a wallet whose vote is delegated, with the control off', () => {
+    it('decides to leave the rewards out and counts only the other funds', async () => {
+      const { decision, wallet, balances } = await readWallet(
+        'wallet-drep',
+        [],
+        false
+      );
+      expect(decision).toEqual({
+        kind: 'omit',
+        withdrawal: null,
+        reason: 'declined',
+      });
+      expect(balances.walletBalance.toString()).toBe(
+        wallet.amount.minus(wallet.reward).toString()
+      );
+    });
+
+    it('prices the payment with the body the wallet accepted without a withdrawal', async () => {
+      const fee = load('payment-fee-nowdrl');
+      const { api, wallet, decision, balances } = await readWallet(
+        'wallet-drep',
+        [{ method: 'POST', path: /\/payment-fees$/, reply: fee }],
+        false
+      );
+      await api.calculateTransactionFee({
+        walletId: wallet.id,
+        ...payment(fee),
+        ...balances,
+        isLegacy: wallet.isLegacy,
+        withdrawal: decision.withdrawal,
+      });
+      expect(replay.received).toHaveLength(1);
+      expect(replay.received[0].body).toEqual(fee.request.body);
+      expect(replay.received[0].body).not.toHaveProperty('withdrawal');
+    });
+
+    it('sends the payment with the body the wallet accepted without a withdrawal', async () => {
+      const sent = load('payment-nowdrl');
+      const { api, wallet, decision } = await readWallet(
+        'wallet-drep',
+        [{ method: 'POST', path: /\/transactions\/?$/, reply: sent }],
+        false
+      );
+      await api.createTransaction({
+        walletId: wallet.id,
+        ...payment(sent),
+        passphrase: PASSPHRASE,
+        isLegacy: wallet.isLegacy,
+        hasAssetsRemainingAfterTransaction: false,
+        withdrawal: decision.withdrawal,
+      });
+      expect(replay.received[0].body).toEqual({
+        ...(sent.request.body as object),
+        passphrase: PASSPHRASE,
+      });
+      expect(replay.received[0].body).not.toHaveProperty('withdrawal');
+    });
+
+    it('selects hardware payment coins with the body the wallet accepted without a withdrawal', async () => {
+      const selection = load('hardware-selection-nowdrl');
+      const { api, wallet, decision, balances } = await readWallet(
+        'wallet-drep',
+        [
+          {
+            method: 'POST',
+            path: /\/coin-selections\/random$/,
+            reply: selection,
+          },
+        ],
+        false
+      );
+      await api.selectCoins({
+        walletId: wallet.id,
+        ...balances,
+        payments: {
+          walletId: wallet.id,
+          ...payment(selection),
+          withdrawal: decision.withdrawal,
+        },
+      });
+      expect(replay.received[0].body).toEqual(selection.request.body);
+      expect(replay.received[0].body).not.toHaveProperty('withdrawal');
+    });
+  });
 
   describe('the two undelegation steps', () => {
     it('delegates the vote to Abstain with the body the wallet accepted', async () => {

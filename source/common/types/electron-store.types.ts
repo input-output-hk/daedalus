@@ -65,6 +65,7 @@ export type StorageKey =
   | 'ANALYTICS-ACCEPTANCE'
   | 'USER-ID'
   | 'WINDOW-BOUNDS'
+  | 'WITHDRAW-REWARDS-DEFAULT'
   | 'CUSTOM-CHAIN-PATH';
 export type StoreMessage = {
   type: StorageType;

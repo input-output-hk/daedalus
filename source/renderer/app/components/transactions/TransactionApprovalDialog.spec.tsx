@@ -459,3 +459,39 @@ describe('TransactionApprovalDialog', () => {
     expect(approve).toBeEnabled();
   });
 });
+
+describe('TransactionApprovalDialog reward withdrawals before approval', () => {
+  afterEach(cleanup);
+
+  it('lists the withdrawal and its amount for the user to review', () => {
+    const withdrawalDisplay = {
+      ...display,
+      withdrawals: [
+        {
+          account: 'e0'.repeat(29),
+          coin: '5000000',
+          ownership: 'wallet' as const,
+        },
+      ],
+    };
+    renderDialog({
+      request: {
+        ...request,
+        items: [{ ...request.items[0], display: withdrawalDisplay }],
+      },
+    });
+    expect(
+      screen.getByRole('heading', { name: /Reward withdrawals/ })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/5\.0+/, { selector: 'p' })).toHaveTextContent(
+      'wallet'
+    );
+  });
+
+  it('lists no withdrawal for a transaction that withdraws nothing', () => {
+    renderDialog();
+    expect(
+      screen.queryByRole('heading', { name: /Reward withdrawals/ })
+    ).toBeNull();
+  });
+});

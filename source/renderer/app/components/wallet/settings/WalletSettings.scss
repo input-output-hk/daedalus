@@ -23,7 +23,13 @@
     margin-top: 20px;
   }
 
+  .withdrawRewardsSelect {
+    flex-shrink: 0;
+    width: 320px;
+  }
+
   .singleAddressModeBox,
+  .withdrawRewardsBox,
   .undelegateWalletBox,
   .deleteWalletBox,
   .unpairWalletBox {

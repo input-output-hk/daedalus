@@ -23,11 +23,26 @@ import { CoinSelectionsResponse } from '../../api/transactions/types';
 import LocalizableError from '../../i18n/LocalizableError';
 import ApiError from '../../domains/ApiError';
 import { logger } from '../../utils/logging';
+import { balancesFor } from '../../utils/governance/rewardWithdrawal';
+import type { WithdrawalDecision } from '../../utils/governance/rewardWithdrawal';
+import { messages as apiErrorMessages } from '../../api/errors';
+import { ROUTES } from '../../routes-config';
+import type { RewardsControl } from '../../components/wallet/WalletSendForm';
+
+// The ids of the errors a payment short of funds raises.
+const NOT_ENOUGH_FUNDS_ERROR_IDS: Array<string> = [
+  apiErrorMessages.notEnoughFundsForTransaction.id,
+  apiErrorMessages.cannotCoverFee.id,
+  apiErrorMessages.notEnoughMoney.id,
+];
 
 type Props = InjectedProps & WithAnalyticsTrackerProps;
 type State = {
   confirmationDialogData: Omit<FormData, 'coinSelection'> | null;
   submitError: LocalizableError | ApiError | null;
+  // The user's choice for the transaction being prepared; it holds for one
+  // wallet and one transaction.
+  withdrawRewardsChoice: { walletId: string; value: boolean } | null;
 };
 
 @inject('stores', 'actions')
@@ -38,7 +53,35 @@ class WalletSendPage extends Component<Props, State> {
     stores: null,
   };
 
-  state: State = { confirmationDialogData: null, submitError: null };
+  state: State = {
+    confirmationDialogData: null,
+    submitError: null,
+    withdrawRewardsChoice: null,
+  };
+
+  // The control's value: this transaction's choice when it names the wallet,
+  // otherwise the wallet's effective setting.
+  withdrawRewardsFor = (walletId: string): boolean => {
+    const { withdrawRewardsChoice } = this.state;
+    return withdrawRewardsChoice?.walletId === walletId
+      ? withdrawRewardsChoice.value
+      : this.props.stores.walletSettings.withdrawRewardsFor(walletId);
+  };
+
+  setWithdrawRewardsChoice = (walletId: string, value: boolean) =>
+    this.setState({ withdrawRewardsChoice: { walletId, value } });
+
+  clearWithdrawRewardsChoice = () => {
+    if (this.state.withdrawRewardsChoice) {
+      this.setState({ withdrawRewardsChoice: null });
+    }
+  };
+
+  delegateRewards = (walletId: string) => {
+    const { stores, actions } = this.props;
+    stores.governance.setDelegationNavState({ selectedWalletId: walletId });
+    actions.router.goToRoute.trigger({ route: ROUTES.GOVERNANCE.DELEGATE });
+  };
 
   calculateTransactionFee = async (params: {
     walletId: string;
@@ -47,13 +90,40 @@ class WalletSendPage extends Component<Props, State> {
     isHardwareWallet: boolean;
     selectedAssets?: ApiTokens;
   }) => {
+    const withdrawalDecision = this.props.stores.wallets.withdrawalDecisionFor(
+      params.walletId,
+      'payment',
+      { withdrawRewards: this.withdrawRewardsFor(params.walletId) }
+    );
+    try {
+      return await this.estimate(params, withdrawalDecision);
+    } catch (error) {
+      // A payment the user chose to send without the rewards cannot count
+      // them, so a shortfall reads differently from an ordinary one.
+      if (
+        withdrawalDecision.reason === 'declined' &&
+        error != null &&
+        NOT_ENOUGH_FUNDS_ERROR_IDS.includes((error as { id?: string }).id)
+      ) {
+        throw new ApiError().result('notEnoughFundsRewardsNotWithdrawn');
+      }
+      throw error;
+    }
+  };
+
+  estimate = async (
+    params: {
+      walletId: string;
+      address: string;
+      amount: number;
+      isHardwareWallet: boolean;
+      selectedAssets?: ApiTokens;
+    },
+    withdrawalDecision: WithdrawalDecision
+  ) => {
     const { walletId, address, amount, isHardwareWallet, selectedAssets } =
       params;
     if (this.state.submitError) this.setState({ submitError: null });
-    const withdrawalDecision = this.props.stores.wallets.withdrawalDecisionFor(
-      walletId,
-      'payment'
-    );
     const { withdrawal } = withdrawalDecision;
 
     if (isHardwareWallet) {
@@ -140,6 +210,7 @@ class WalletSendPage extends Component<Props, State> {
           { address: data.receiver, amount }
         );
         await this.props.actions.hardwareWallets.sendMoney.trigger();
+        this.clearWithdrawRewardsChoice();
         return;
       }
       await this.props.actions.wallets.sendMoney.trigger({
@@ -151,6 +222,7 @@ class WalletSendPage extends Component<Props, State> {
         isCollateralPreparation: data.isCollateralPreparation,
         withdrawal: withdrawalDecision.withdrawal,
       });
+      this.clearWithdrawRewardsChoice();
     } catch (error) {
       this.showSubmitError(error);
     }
@@ -208,6 +280,28 @@ class WalletSendPage extends Component<Props, State> {
       global.cip30Enabled &&
       collateral.preparationFormActive &&
       collateral.preparation?.walletId === wallet.id;
+    const effectiveWithdrawRewards = this.withdrawRewardsFor(wallet.id);
+    const decision = wallets.withdrawalDecisionFor(wallet.id, 'payment', {
+      withdrawRewards: effectiveWithdrawRewards,
+    });
+    let rewardsControl: RewardsControl | null = null;
+    if (decision.reason === 'ledger_not_delegated') {
+      rewardsControl = {
+        checked: false,
+        disabled: true,
+        reward: wallet.reward,
+        reason: 'ledger_not_delegated',
+      };
+    } else if (
+      decision.reason !== 'legacy_wallet' &&
+      decision.reason !== 'no_reward'
+    ) {
+      rewardsControl = {
+        checked: decision.kind === 'withdraw',
+        disabled: false,
+        reward: wallet.reward,
+      };
+    }
     const preparationAddress = singleAddressMode
       ? addresses.active?.id
       : (addresses.active?.id ?? addresses.all[0]?.id);
@@ -225,7 +319,13 @@ class WalletSendPage extends Component<Props, State> {
             selectedAssets,
           })
         }
-        walletAmount={wallet.spendableAmount}
+        walletAmount={balancesFor(wallet, decision.withdrawal).walletBalance}
+        rewardsControl={rewardsControl}
+        onRewardsChange={(checked) =>
+          this.setWithdrawRewardsChoice(wallet.id, checked)
+        }
+        onDelegateRewards={() => this.delegateRewards(wallet.id)}
+        onReset={this.clearWithdrawRewardsChoice}
         validateAmount={validateAmount}
         validateAssetAmount={validateAssetAmount}
         addressValidator={isValidAddress}

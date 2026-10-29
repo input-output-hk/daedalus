@@ -149,6 +149,20 @@ export default defineMessages({
       '!!!<b>Note:</b> the ada field was automatically updated because this transaction requires a minimum of {minimumAda} ADA.',
     description: 'Minimum amount update notice',
   },
+  withdrawRewardsLabel: {
+    id: 'wallet.send.form.withdrawRewards.label',
+    defaultMessage:
+      "!!!Withdraw this wallet's staking rewards ({rewardsAmount}) with this payment",
+    description:
+      'Checkbox on the send form. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode',
+  },
+  withdrawRewardsNotDelegated: {
+    id: 'wallet.send.form.withdrawRewards.notDelegated',
+    defaultMessage:
+      "!!!Staking rewards cannot be withdrawn while this wallet's voting power is not delegated.",
+    description:
+      "Shown when the checkbox and the Withdraw rewards button are disabled because the wallet's voting power is not delegated; followed by a button that opens the delegation form",
+  },
   restoredAdaAmount: {
     id: 'wallet.send.form.restoredAdaAmount',
     defaultMessage:

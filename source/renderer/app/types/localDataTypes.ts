@@ -10,6 +10,9 @@ export type WalletLocalData = {
   recoveryPhraseVerificationDate?: Date | null | undefined;
   creationDate: Date;
   showUsedAddresses: boolean;
+  // The wallet's own answer to the withdraw-rewards setting; absent or null
+  // follows the global setting.
+  withdrawRewards?: boolean | null;
 };
 
 export type WalletsLocalData = Record<StorageKey, WalletLocalData>;

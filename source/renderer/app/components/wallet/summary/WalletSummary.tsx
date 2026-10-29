@@ -5,6 +5,7 @@ import type { Reward } from '../../../api/staking/types';
 import Wallet from '../../../domains/Wallet';
 import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
+import type { RewardsAction } from './WalletSummaryHeader';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
 import type { AssetToken } from '../../../api/assets/types';
 import WalletTokensList from '../tokens/wallet-tokens-list/WalletTokensList';
@@ -18,6 +19,7 @@ const messages = defineMessages({
   },
 });
 type Props = {
+  rewardsAction?: RewardsAction | null;
   wallet: Wallet;
   reward: Reward;
   numberOfRecentTransactions: number;
@@ -74,12 +76,14 @@ class WalletSummary extends Component<Props> {
       onViewAllButtonClick,
       onToggleFavorite,
       tokenFavorites,
+      rewardsAction,
     } = this.props;
     const { intl } = this.context;
     const { isRestoring } = wallet;
     return (
       <>
         <WalletSummaryHeader
+          rewardsAction={rewardsAction}
           wallet={wallet}
           reward={reward}
           numberOfRecentTransactions={numberOfRecentTransactions}

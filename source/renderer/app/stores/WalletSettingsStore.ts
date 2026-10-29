@@ -38,6 +38,10 @@ export default class WalletSettingsStore extends Store {
   walletUtxos: WalletUtxos | null | undefined = null;
   @observable
   recoveryPhraseStep = 0;
+  // Whether a payment also withdraws the sending wallet's staking rewards,
+  // for wallets with no choice of their own.
+  @observable
+  withdrawRewardsDefault = true;
   // @ts-ignore ts-migrate(2304) FIXME: Cannot find name 'IntervalID'.
   pollingApiInterval: IntervalID | null | undefined = null;
 
@@ -79,7 +83,14 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.toggleShowUsedAddresses.listen(
       this._toggleShowUsedAddressesStatuses
     );
+    walletSettingsActions.setWithdrawRewardsDefault.listen(
+      this._setWithdrawRewardsDefault
+    );
+    walletSettingsActions.setWalletWithdrawRewards.listen(
+      this._setWalletWithdrawRewards
+    );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
+    this._loadWithdrawRewardsDefault();
   }
 
   // =================== PUBLIC API ==================== //
@@ -89,6 +100,11 @@ export default class WalletSettingsStore extends Store {
   getLocalWalletDataById = (id: any): WalletLocalData | null | undefined => {
     const { all: walletsLocalData } = this.stores.walletsLocal;
     return walletsLocalData[id];
+  };
+  // The wallet's own choice when it has one, otherwise the global setting.
+  withdrawRewardsFor = (walletId: string): boolean => {
+    const own = this.getLocalWalletDataById(walletId)?.withdrawRewards;
+    return own != null ? own : this.withdrawRewardsDefault;
   };
 
   @computed
@@ -363,6 +379,32 @@ export default class WalletSettingsStore extends Store {
   };
 
   /* ====  End of Wallet Recovery Phrase Verification  ===== */
+  _loadWithdrawRewardsDefault = async () => {
+    const value = await this.api.localStorage.getWithdrawRewardsDefault();
+    runInAction('WalletSettingsStore::_loadWithdrawRewardsDefault', () => {
+      this.withdrawRewardsDefault = value;
+    });
+  };
+  _setWithdrawRewardsDefault = async ({ value }: { value: boolean }) => {
+    await this.api.localStorage.setWithdrawRewardsDefault(value);
+    runInAction('WalletSettingsStore::_setWithdrawRewardsDefault', () => {
+      this.withdrawRewardsDefault = value;
+    });
+  };
+  _setWalletWithdrawRewards = async ({
+    walletId,
+    value,
+  }: {
+    walletId: string;
+    value: boolean | null;
+  }) => {
+    await this.actions.walletsLocal.setWalletLocalData.trigger({
+      walletId,
+      updatedWalletData: {
+        withdrawRewards: value,
+      },
+    });
+  };
   @action
   _toggleShowUsedAddressesStatuses = async () => {
     const activeWallet = this.stores.wallets.active;

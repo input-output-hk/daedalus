@@ -1,0 +1,62 @@
+@import '../../../themes/mixins/animations';
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.dialog {
+  font-family: var(--font-light);
+
+  .description {
+    font-weight: 300;
+    line-height: 1.38;
+    margin-bottom: 20px;
+  }
+
+  .calculating {
+    @include animated-ellipsis($duration: 1500, $width: 20px);
+    --webkit-backface-visibility: hidden;
+    font-family: var(--font-medium);
+    line-height: 1.38;
+    margin-bottom: 20px;
+  }
+
+  .amounts {
+    border-top: 1px solid
+      var(--theme-settings-undelegate-wallet-divider-border-color);
+    margin-bottom: 20px;
+    padding-top: 20px;
+  }
+
+  .amountRow {
+    font-family: var(--font-medium);
+    font-weight: 500;
+    line-height: 1.38;
+    margin-bottom: 14px;
+
+    .label {
+      color: var(--theme-delegation-steps-confirmation-fees-label-color);
+      margin-bottom: 6px;
+    }
+
+    .amount {
+      color: var(--theme-settings-undelegate-wallet-fees-amount-color);
+      user-select: text;
+    }
+  }
+
+  .hardwareWalletStatusWrapper {
+    margin-top: 20px;
+    max-width: 640px;
+    width: 100%;
+  }
+
+  .error {
+    @include error-message;
+    margin-top: 27px;
+    text-align: center;
+  }
+
+  .isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
+  }
+}

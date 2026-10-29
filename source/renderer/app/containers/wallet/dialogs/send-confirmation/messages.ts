@@ -58,6 +58,20 @@ export const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Note on the send confirmation when a payment leaves held staking rewards in place. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode',
   },
+  rewardsDeclined: {
+    id: 'wallet.send.confirmationDialog.rewardsDeclined',
+    defaultMessage:
+      "!!!This payment does not withdraw this wallet's {rewardsAmount} of staking rewards.",
+    description:
+      'Note on the send confirmation when the user chose to leave the rewards in place. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode',
+  },
+  rewardsWithdrawn: {
+    id: 'wallet.send.confirmationDialog.rewardsWithdrawn',
+    defaultMessage:
+      '!!!This payment also withdraws {rewardsAmount} of staking rewards into this wallet.',
+    description:
+      'Note on the hardware-wallet send confirmation, from the coin selection the device signs. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode',
+  },
   addressToLabel: {
     id: 'wallet.send.confirmationDialog.addressToLabel',
     defaultMessage: '!!!To',

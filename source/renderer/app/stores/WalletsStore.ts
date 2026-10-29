@@ -23,6 +23,9 @@ import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadCsv } from '../utils/csvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { logger } from '../utils/logging';
+import ApiError from '../domains/ApiError';
+import { messages as apiErrorMessages } from '../api/errors';
+import { definiteSubmissionFailure } from '../api/utils/submissionFailure';
 import { ROUTES } from '../routes-config';
 import { decideWithdrawal } from '../utils/governance/rewardWithdrawal';
 import type {
@@ -104,12 +107,41 @@ export type UndelegationVoteStep =
         | 'vote_not_confirmed';
     };
 
+// The transaction that withdraws a wallet's staking rewards and makes no
+// payment. It lives for the session, per wallet.
+export type RewardWithdrawalStep =
+  | { status: 'preparing' }
+  | {
+      status: 'ready';
+      amount: BigNumber;
+      fee: BigNumber;
+      // A failure before anything was sent, such as a wrong spending
+      // password; the transaction shown can still be signed.
+      error?: LocalizableError;
+    }
+  | { status: 'submitting' }
+  | { status: 'failed'; error: LocalizableError };
+
+// The reward a construct's coin selection withdraws, in ada. The amounts are
+// in lovelace.
+const withdrawnAmount = (
+  withdrawals: ReadonlyArray<{ amount: { quantity: number | BigNumber } }>
+): BigNumber =>
+  withdrawals
+    .reduce((sum, { amount }) => sum.plus(amount.quantity), new BigNumber(0))
+    .dividedBy(LOVELACES_PER_ADA);
+
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
   @observable
   undelegateWalletSubmissionSuccess: boolean | null | undefined = null;
   @observable
   _undelegationVoteSteps: Record<string, UndelegationVoteStep> = {};
+  @observable
+  _rewardWithdrawals: Record<string, RewardWithdrawalStep> = {};
+  // The unsigned transaction the withdraw-rewards dialog showed, per wallet:
+  // the user signs what the dialog showed.
+  _preparedWithdrawals: Map<string, string> = new Map();
   @observable
   isAddressFromSameWallet = false;
   // REQUESTS
@@ -778,6 +810,168 @@ export default class WalletsStore extends Store {
     quitStakePoolRequest.reset();
     this.refreshWalletsData();
   };
+  rewardWithdrawalFor = (walletId: string): RewardWithdrawalStep | null =>
+    this._rewardWithdrawals[walletId] ?? null;
+  _setRewardWithdrawal = (
+    walletId: string,
+    step: RewardWithdrawalStep | null
+  ) => {
+    // An error with no message id cannot be drawn: it reads as an internal
+    // error.
+    const hasError = step?.status === 'failed' || step?.status === 'ready';
+    const drawable =
+      hasError && step.error != null && typeof step.error.id !== 'string'
+        ? { ...step, error: apiErrorMessages.walletInternalError }
+        : step;
+    runInAction('WalletsStore::_setRewardWithdrawal', () => {
+      const { [walletId]: _previous, ...others } = this._rewardWithdrawals;
+      this._rewardWithdrawals = drawable
+        ? { ...others, [walletId]: drawable as RewardWithdrawalStep }
+        : others;
+    });
+  };
+  // Prices the transaction that withdraws the wallet's rewards, on the mainnet
+  // build. The wallet builds one even when it leaves the rewards out (they are
+  // worth less than twice the fee for withdrawing them, or it has not read
+  // them yet): nothing is then sent.
+  prepareRewardWithdrawal = async (walletId: string) => {
+    const wallet = this.getWalletById(walletId);
+    if (!wallet) return;
+    this._preparedWithdrawals.delete(walletId);
+    this._setRewardWithdrawal(walletId, { status: 'preparing' });
+    try {
+      if (wallet.isHardwareWallet) {
+        const constructed =
+          await this.stores.hardwareWallets.selectWithdrawalCoins({ walletId });
+        if (this.rewardWithdrawalFor(walletId)?.status !== 'preparing') return;
+        this._setRewardWithdrawal(walletId, {
+          status: 'ready',
+          amount: withdrawnAmount(constructed.coinSelection.withdrawals),
+          fee: constructed.fee,
+        });
+        return;
+      }
+      const constructed = await this.api.ada.constructTransaction({
+        walletId,
+        data: { encoding: 'base16', withdrawal: 'self' },
+      });
+      // A cancel or a retry during the construct supersedes this result.
+      if (this.rewardWithdrawalFor(walletId)?.status !== 'preparing') return;
+      if (constructed.coinSelection.withdrawals.length === 0)
+        throw new ApiError().result('rewardWithdrawalNotBuilt');
+      this._preparedWithdrawals.set(walletId, constructed.transaction);
+      this._setRewardWithdrawal(walletId, {
+        status: 'ready',
+        amount: withdrawnAmount(constructed.coinSelection.withdrawals),
+        fee: constructed.fee,
+      });
+    } catch (error) {
+      if (this.rewardWithdrawalFor(walletId)?.status !== 'preparing') return;
+      this._setRewardWithdrawal(walletId, {
+        status: 'failed',
+        error: error as LocalizableError,
+      });
+    }
+  };
+  // Signs and submits the transaction the dialog showed, on the mainnet build's
+  // software wallets. A hardware wallet submits through the hardware wallets
+  // store.
+  submitRewardWithdrawal = async (walletId: string, passphrase?: string) => {
+    const ready = this.rewardWithdrawalFor(walletId);
+    if (ready?.status !== 'ready') return;
+    const wallet = this.getWalletById(walletId);
+    const unsigned = this._preparedWithdrawals.get(walletId);
+    if (!wallet || unsigned == null) return;
+    this._setRewardWithdrawal(walletId, { status: 'submitting' });
+    try {
+      await this.stores.transactions.withWalletSendLock(walletId, async () => {
+        const signed = await this.api.ada.signTransaction({
+          walletId,
+          transaction: unsigned,
+          passphrase: passphrase || '',
+        });
+        const verified = verifySignedNativeTransaction(
+          unsigned,
+          signed.transaction
+        );
+        try {
+          await this.api.ada.submitTransaction({
+            walletId,
+            transaction: verified,
+          });
+        } catch (error) {
+          // A node refusal of the withdrawal reads as the ledger's rule.
+          const failure = definiteSubmissionFailure(error);
+          throw Object.assign(
+            failure === 'withdrawal_not_possible_without_vote'
+              ? new ApiError().result('withdrawalNotPossibleWithoutVote')
+              : error,
+            { submissionAttempted: true }
+          );
+        }
+      });
+    } catch (error) {
+      const attempted = (error as { submissionAttempted?: boolean })
+        .submissionAttempted;
+      this._setRewardWithdrawal(
+        walletId,
+        attempted
+          ? { status: 'failed', error: error as LocalizableError }
+          : { ...ready, error: error as LocalizableError }
+      );
+      return;
+    }
+    this._preparedWithdrawals.delete(walletId);
+    this._setRewardWithdrawal(walletId, null);
+    this.analytics.sendEvent(
+      EventCategories.WALLETS,
+      'Rewards withdrawn',
+      'Software wallet'
+    );
+    this.refreshWalletsData();
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.goToWalletRoute(walletId);
+  };
+  cancelRewardWithdrawal = (walletId: string) => {
+    this._preparedWithdrawals.delete(walletId);
+    this._setRewardWithdrawal(walletId, null);
+  };
+  // The cip30 builds: the wallet's own approval dialog shows the withdrawal and
+  // the fee, so Daedalus opens none. A message that carries an id is shown
+  // under the button; an approval outcome without one belongs to the approval
+  // dialog.
+  submitRewardWithdrawalNative = async (walletId: string) => {
+    const wallet = this.getWalletById(walletId);
+    if (!wallet) return;
+    this._setRewardWithdrawal(walletId, { status: 'submitting' });
+    const submission = {
+      walletId,
+      data: { encoding: 'base16', withdrawal: 'self' } as const,
+      action: 'reward-withdrawal' as const,
+      requireWithdrawal: true,
+    };
+    try {
+      if (wallet.isHardwareWallet) {
+        await this.stores.hardwareWallets.submitConstructedNativeTransaction(
+          submission
+        );
+      } else {
+        await this.submitConstructedNativeTransaction(submission);
+      }
+    } catch (error) {
+      const hasMessage =
+        error != null && typeof (error as { id?: unknown }).id === 'string';
+      this._setRewardWithdrawal(
+        walletId,
+        hasMessage
+          ? { status: 'failed', error: error as LocalizableError }
+          : null
+      );
+      return;
+    }
+    this._setRewardWithdrawal(walletId, null);
+    this.refreshWalletsData();
+  };
   undelegationVoteStepFor = (walletId: string): UndelegationVoteStep | null =>
     this._undelegationVoteSteps[walletId] ?? null;
   _setUndelegationVoteStep = (
@@ -938,10 +1132,13 @@ export default class WalletsStore extends Store {
     walletId,
     data,
     action: nativeAction,
+    requireWithdrawal = false,
   }: {
     walletId: string;
     data: ConstructTransactionData['data'];
     action: NativeTransactionAction;
+    // Refuse, before anything is shown, a construct that left the rewards out.
+    requireWithdrawal?: boolean;
   }): Promise<{ id: string }> => {
     if (!global.cip30Enabled)
       throw new Error('Exact native transactions are unavailable');
@@ -976,6 +1173,11 @@ export default class WalletsStore extends Store {
           walletId,
           data,
         });
+        if (
+          requireWithdrawal &&
+          constructed.coinSelection.withdrawals.length === 0
+        )
+          throw new ApiError().result('rewardWithdrawalNotBuilt');
         const rawContext = await this.api.ada.getDappTransactionContext({
           walletId,
           request: {
@@ -1424,7 +1626,9 @@ export default class WalletsStore extends Store {
       isLegacy: wallet.isLegacy,
       ledgerVote: wallet.ledgerVote,
       reward: wallet.reward,
-      withdrawRewards: options?.withdrawRewards,
+      withdrawRewards:
+        options?.withdrawRewards ??
+        this.stores.walletSettings.withdrawRewardsFor(walletId),
     });
   };
   getWalletByName = (name: string): Wallet | null | undefined =>

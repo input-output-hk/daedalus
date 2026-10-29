@@ -265,6 +265,7 @@ write_report() {
 JEST_SPECS=(
   tests/jest/api/rewardWithdrawalRefusal.spec.ts
   tests/jest/api/rewardWithdrawalDecision.spec.ts
+  tests/jest/api/rewardWithdrawalOnly.spec.ts
   tests/jest/api/paymentWithdrawalBody.spec.ts
   tests/jest/api/withdrawalRefusalMessages.spec.ts
   tests/jest/governance/retiredDRep.spec.ts

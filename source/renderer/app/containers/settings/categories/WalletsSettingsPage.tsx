@@ -18,6 +18,11 @@ class WalletsSettingsPage extends Component<InjectedProps> {
   handleToggleCurrencyIsActive = () =>
     this.props.actions.currency.toggleCurrencyIsActive.trigger();
 
+  handleToggleWithdrawRewardsDefault = (value: boolean) =>
+    this.props.actions.walletSettings.setWithdrawRewardsDefault.trigger({
+      value,
+    });
+
   render() {
     const { stores } = this.props;
     const {
@@ -39,6 +44,8 @@ class WalletsSettingsPage extends Component<InjectedProps> {
         onSelectCurrency={this.handleSelectCurrency}
         onToggleCurrencyIsActive={this.handleToggleCurrencyIsActive}
         onOpenExternalLink={openExternalLink}
+        withdrawRewardsDefault={stores.walletSettings.withdrawRewardsDefault}
+        onToggleWithdrawRewardsDefault={this.handleToggleWithdrawRewardsDefault}
       />
     );
   }

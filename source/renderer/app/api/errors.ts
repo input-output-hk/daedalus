@@ -150,6 +150,20 @@ export const messages = defineMessages({
     description:
       "Shown when a transaction that withdraws staking rewards is refused, by the wallet before submission or by the node, because the wallet's reward account has no vote delegation. HTML. The link opens the voting power delegation form.",
   },
+  notEnoughFundsRewardsNotWithdrawn: {
+    id: 'api.errors.notEnoughFundsRewardsNotWithdrawn',
+    defaultMessage:
+      "!!!Not enough ada. This payment does not withdraw this wallet's staking rewards, so they do not count for it. Withdraw the rewards with this payment, or send a smaller amount.",
+    description:
+      "Shown on the send form when a payment the user chose to send without the staking rewards needs more than the wallet's other funds",
+  },
+  rewardWithdrawalNotBuilt: {
+    id: 'api.errors.rewardWithdrawalNotBuilt',
+    defaultMessage:
+      '!!!The wallet did not include the staking rewards in this transaction, so nothing was sent. It leaves rewards out when they are worth less than twice the fee for withdrawing them, and for a short time after it starts, before it has read them.',
+    description:
+      'Shown when the wallet builds the withdrawal transaction without the rewards; Daedalus then sends nothing',
+  },
 });
 
 export type Balances = {

@@ -1,0 +1,21 @@
+{
+  "backend": "cip30",
+  "wallet": "v2026-09-16 (git revision: d408e4f29e46dc34454b160b3994ee9974b5cde2)",
+  "recorded": "2026-10-28T22:24:08Z",
+  "chain": {
+    "epoch": 7,
+    "slot": 1069
+  },
+  "request": {
+    "method": "POST",
+    "path": "/v2/wallets/ab5eee5c53cc85d8ab57198e50ac9906211aa97f/transactions-construct",
+    "body": {
+      "encoding": "base16",
+      "withdrawal": "self"
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": "{\"coin_selection\":{\"change\":[{\"address\":\"addr_test1qpe7ta5uj56tfym3yx2nj06ptuymqt23l8q55ttm8tfm04j92d8dnnetgj3ftrhj9u6dyutaqf78rvmph0n76ntws7qqpsdtlz\",\"amount\":{\"quantity\":999834499,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"0\",\"0\"]}],\"collateral\":[],\"deposits_returned\":[],\"deposits_taken\":[],\"inputs\":[{\"address\":\"addr_test1qpe7ta5uj56tfym3yx2nj06ptuymqt23l8q55ttm8tfm04j92d8dnnetgj3ftrhj9u6dyutaqf78rvmph0n76ntws7qqpsdtlz\",\"amount\":{\"quantity\":1000000000,\"unit\":\"lovelace\"},\"assets\":[],\"derivation_path\":[\"1852H\",\"1815H\",\"0H\",\"0\",\"0\"],\"id\":\"91c0d969ba30e1a8e7a0935c302a88e42052968b27fee435d55145db4d7cc160\",\"index\":2}],\"outputs\":[],\"withdrawals\":[]},\"fee\":{\"quantity\":165501,\"unit\":\"lovelace\"},\"transaction\":\"84a500d901028182582091c0d969ba30e1a8e7a0935c302a88e42052968b27fee435d55145db4d7cc1600201818258390073e5f69c9534b493712195393f415f09b02d51f9c14a2d7b3ad3b7d645534ed9cf2b44a2958ef22f34d2717d027c71b361bbe7ed4d6e87801a3b984383021a0002867d031990db0800a0f5f6\"}"
+  }
+}

@@ -2,6 +2,7 @@
 import type { Node } from 'react';
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { Select } from 'react-polymorph/lib/components/Select';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -97,6 +98,36 @@ export const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: "!!!You still don't have password",
     description: "You still don't have password set message.",
   },
+  withdrawRewardsLabel: {
+    id: 'wallet.settings.withdrawRewards.label',
+    defaultMessage: '!!!Withdraw staking rewards with transactions',
+    description:
+      "Title of the wallet's own withdraw-rewards choice in its settings",
+  },
+  withdrawRewardsDescription: {
+    id: 'wallet.settings.withdrawRewards.description',
+    defaultMessage:
+      '!!!Whether each payment from this wallet also withdraws its staking rewards. The send form can still change this for one payment.',
+    description: 'Description of that choice',
+  },
+  withdrawRewardsFollowSetting: {
+    id: 'wallet.settings.withdrawRewards.followSetting',
+    defaultMessage: '!!!As in Settings > Wallets ({choice})',
+    description:
+      'Option that follows the global setting. {choice} is the Withdraw or Do not withdraw option, whichever the global setting says now',
+  },
+  withdrawRewardsWithdraw: {
+    id: 'wallet.settings.withdrawRewards.withdraw',
+    defaultMessage: '!!!Withdraw',
+    description:
+      'Option: payments from this wallet withdraw its staking rewards',
+  },
+  withdrawRewardsDoNotWithdraw: {
+    id: 'wallet.settings.withdrawRewards.doNotWithdraw',
+    defaultMessage: '!!!Do not withdraw',
+    description:
+      'Option: payments from this wallet leave its staking rewards in place',
+  },
   singleAddressModeLabel: {
     id: 'wallet.settings.singleAddressMode.label',
     defaultMessage: '!!!Single-address mode',
@@ -115,6 +146,17 @@ export const messages: Record<string, ReactIntlMessage> = defineMessages({
     description: 'Privacy warning for the single-address mode wallet setting.',
   },
 });
+const WITHDRAW_REWARDS_FOLLOW = 'follow';
+const WITHDRAW_REWARDS_ON = 'withdraw';
+const WITHDRAW_REWARDS_OFF = 'doNotWithdraw';
+
+const withdrawRewardsOptionOf = (override: boolean | null): string => {
+  if (override == null) return WITHDRAW_REWARDS_FOLLOW;
+  return override ? WITHDRAW_REWARDS_ON : WITHDRAW_REWARDS_OFF;
+};
+const withdrawRewardsOverrideOf = (option: string): boolean | null =>
+  option === WITHDRAW_REWARDS_FOLLOW ? null : option === WITHDRAW_REWARDS_ON;
+
 type Props = {
   walletId: string;
   walletName: string;
@@ -158,6 +200,9 @@ type Props = {
   singleAddressMode: boolean;
   isSingleAddressModeDisabled: boolean;
   onSingleAddressModeChange: (enabled: boolean) => void;
+  withdrawRewardsOverride: boolean | null;
+  withdrawRewardsDefault: boolean;
+  onWithdrawRewardsChange: (value: boolean | null) => void;
 };
 type State = {
   isFormBlocked: boolean;
@@ -310,6 +355,9 @@ class WalletSettings extends Component<Props, State> {
       singleAddressMode,
       isSingleAddressModeDisabled,
       onSingleAddressModeChange,
+      withdrawRewardsOverride,
+      withdrawRewardsDefault,
+      onWithdrawRewardsChange,
     } = this.props;
     const { isFormBlocked } = this.state;
     // Set Japanese locale to moment. Default is en-US
@@ -395,6 +443,50 @@ class WalletSettings extends Component<Props, State> {
                 disabled={isSingleAddressModeDisabled}
                 label={intl.formatMessage(messages.singleAddressModeLabel)}
                 onChange={onSingleAddressModeChange}
+              />
+            </div>
+          </BorderedBox>
+        )}
+
+        {!isLegacy && (
+          <BorderedBox className={styles.withdrawRewardsBox}>
+            <div className={styles.title}>
+              {intl.formatMessage(messages.withdrawRewardsLabel)}
+            </div>
+            <div className={styles.contentBox}>
+              <p>{intl.formatMessage(messages.withdrawRewardsDescription)}</p>
+              <Select
+                className={styles.withdrawRewardsSelect}
+                value={withdrawRewardsOptionOf(withdrawRewardsOverride)}
+                options={[
+                  {
+                    value: WITHDRAW_REWARDS_FOLLOW,
+                    label: intl.formatMessage(
+                      messages.withdrawRewardsFollowSetting,
+                      {
+                        choice: intl.formatMessage(
+                          withdrawRewardsDefault
+                            ? messages.withdrawRewardsWithdraw
+                            : messages.withdrawRewardsDoNotWithdraw
+                        ),
+                      }
+                    ),
+                  },
+                  {
+                    value: WITHDRAW_REWARDS_ON,
+                    label: intl.formatMessage(messages.withdrawRewardsWithdraw),
+                  },
+                  {
+                    value: WITHDRAW_REWARDS_OFF,
+                    label: intl.formatMessage(
+                      messages.withdrawRewardsDoNotWithdraw
+                    ),
+                  },
+                ]}
+                onChange={(value: string) =>
+                  onWithdrawRewardsChange(withdrawRewardsOverrideOf(value))
+                }
+                optionHeight={50}
               />
             </div>
           </BorderedBox>

@@ -44,6 +44,12 @@ export type ViewProps = Omit<CommonProps, 'withdrawalDecision'> & {
   intl: Intl;
   // The reward balance this payment leaves in place, or null when it does not.
   heldReward: BigNumber | null;
+  // The reward balance a payment the user chose not to withdraw leaves in
+  // place, or null.
+  declinedReward: BigNumber | null;
+  // The amount the coin selection a hardware wallet signs withdraws, or null
+  // when it withdraws nothing.
+  withdrawnReward: BigNumber | null;
   assetTokens: Array<AssetToken>;
   areTermsAccepted: boolean;
   wallet: Wallet;

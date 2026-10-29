@@ -26,6 +26,7 @@ export const NATIVE_TRANSACTION_ACTIONS = [
   'drep-delegation',
   'catalyst-registration',
   'itn-redemption',
+  'reward-withdrawal',
 ] as const;
 
 export type NativeTransactionAction =

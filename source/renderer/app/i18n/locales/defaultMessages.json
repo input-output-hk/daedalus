@@ -115,6 +115,16 @@
         "defaultMessage": "!!!This transaction withdraws this wallet's staking rewards. They cannot be withdrawn while the wallet's voting power is not delegated, for example because its DRep retired. Delegate the voting power to any DRep, Abstain or No Confidence in the <a href=\"#/governance/delegate\">Governance Center</a>. The rewards can be withdrawn once the delegation is confirmed.",
         "description": "Shown when a transaction that withdraws staking rewards is refused, by the wallet before submission or by the node, because the wallet's reward account has no vote delegation. HTML. The link opens the voting power delegation form.",
         "id": "api.errors.withdrawalNotPossibleWithoutVote"
+      },
+      {
+        "defaultMessage": "!!!Not enough ada. This payment does not withdraw this wallet's staking rewards, so they do not count for it. Withdraw the rewards with this payment, or send a smaller amount.",
+        "description": "Shown on the send form when a payment the user chose to send without the staking rewards needs more than the wallet's other funds",
+        "id": "api.errors.notEnoughFundsRewardsNotWithdrawn"
+      },
+      {
+        "defaultMessage": "!!!The wallet did not include the staking rewards in this transaction, so nothing was sent. It leaves rewards out when they are worth less than twice the fee for withdrawing them, and for a short time after it starts, before it has read them.",
+        "description": "Shown when the wallet builds the withdrawal transaction without the rewards; Daedalus then sends nothing",
+        "id": "api.errors.rewardWithdrawalNotBuilt"
       }
     ],
     "path": "source/renderer/app/api/errors.ts"
@@ -5950,6 +5960,16 @@
         "defaultMessage": "!!!Powered by",
         "description": "currencyPoweredByLabel for the Currency settings in the Wallets settings page.",
         "id": "settings.wallets.currency.poweredBy.label"
+      },
+      {
+        "defaultMessage": "!!!Withdraw staking rewards with transactions",
+        "description": "Title of the setting that decides whether payments also withdraw the sending wallet's staking rewards, in the Wallets settings page",
+        "id": "settings.wallets.withdrawRewards.titleLabel"
+      },
+      {
+        "defaultMessage": "!!!When this is on, each payment from a wallet also withdraws that wallet's staking rewards into it. A wallet can use its own choice in its settings, and the send form can change it for one payment. Rewards cannot be withdrawn while a wallet's voting power is not delegated, whatever this setting says.",
+        "description": "Description of that setting",
+        "id": "settings.wallets.withdrawRewards.description"
       }
     ],
     "path": "source/renderer/app/components/settings/categories/WalletsSettings.tsx"
@@ -8572,6 +8592,16 @@
         "id": "wallet.send.form.minimumAmountNote"
       },
       {
+        "defaultMessage": "!!!Withdraw this wallet's staking rewards ({rewardsAmount}) with this payment",
+        "description": "Checkbox on the send form. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
+        "id": "wallet.send.form.withdrawRewards.label"
+      },
+      {
+        "defaultMessage": "!!!Staking rewards cannot be withdrawn while this wallet's voting power is not delegated.",
+        "description": "Shown when the checkbox and the Withdraw rewards button are disabled because the wallet's voting power is not delegated; followed by a button that opens the delegation form",
+        "id": "wallet.send.form.withdrawRewards.notDelegated"
+      },
+      {
         "defaultMessage": "!!!<b>Note:</b> the ada field was automatically updated to {adaAmount} ADA because now it fulfills the minimum amount of {minimumAda} ADA for the transaction.",
         "description": "Restored ada amount to original user input",
         "id": "wallet.send.form.restoredAdaAmount"
@@ -9237,6 +9267,31 @@
         "id": "wallet.settings.passwordNotSet"
       },
       {
+        "defaultMessage": "!!!Withdraw staking rewards with transactions",
+        "description": "Title of the wallet's own withdraw-rewards choice in its settings",
+        "id": "wallet.settings.withdrawRewards.label"
+      },
+      {
+        "defaultMessage": "!!!Whether each payment from this wallet also withdraws its staking rewards. The send form can still change this for one payment.",
+        "description": "Description of that choice",
+        "id": "wallet.settings.withdrawRewards.description"
+      },
+      {
+        "defaultMessage": "!!!As in Settings > Wallets ({choice})",
+        "description": "Option that follows the global setting. {choice} is the Withdraw or Do not withdraw option, whichever the global setting says now",
+        "id": "wallet.settings.withdrawRewards.followSetting"
+      },
+      {
+        "defaultMessage": "!!!Withdraw",
+        "description": "Option: payments from this wallet withdraw its staking rewards",
+        "id": "wallet.settings.withdrawRewards.withdraw"
+      },
+      {
+        "defaultMessage": "!!!Do not withdraw",
+        "description": "Option: payments from this wallet leave its staking rewards in place",
+        "id": "wallet.settings.withdrawRewards.doNotWithdraw"
+      },
+      {
         "defaultMessage": "!!!Single-address mode",
         "description": "Label for the single-address mode wallet setting.",
         "id": "wallet.settings.singleAddressMode.label"
@@ -9321,6 +9376,11 @@
   },
   {
     "descriptors": [
+      {
+        "defaultMessage": "!!!Withdraw rewards",
+        "description": "Button beside the wallet's rewards that opens a transaction withdrawing them",
+        "id": "wallet.summary.header.withdrawRewards"
+      },
       {
         "defaultMessage": "!!!{total} transactions, {pending} pending",
         "description": "\"Number of transactions\" label on Wallet summary header page",
@@ -10247,6 +10307,31 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Withdraw staking rewards",
+        "description": "Title of the dialog",
+        "id": "wallet.withdrawRewards.dialog.title"
+      },
+      {
+        "defaultMessage": "!!!This transaction moves this wallet's staking rewards into the wallet and makes no payment.",
+        "description": "Text at the top of the dialog",
+        "id": "wallet.withdrawRewards.dialog.description"
+      },
+      {
+        "defaultMessage": "!!!Staking rewards",
+        "description": "Label of the amount the transaction withdraws",
+        "id": "wallet.withdrawRewards.dialog.amountLabel"
+      },
+      {
+        "defaultMessage": "!!!Withdraw",
+        "description": "Submit button of the dialog",
+        "id": "wallet.withdrawRewards.dialog.submit"
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/withdraw-rewards/WithdrawRewardsDialog.messages.ts"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Drop file here",
         "description": "Label \"Drop file here\" on the file upload widget.",
         "id": "ImageUploadWidget.dropFileHint"
@@ -10660,6 +10745,16 @@
         "defaultMessage": "!!!This transaction leaves this wallet's {rewardsAmount} of staking rewards in place: they cannot be withdrawn until its voting power is delegated.",
         "description": "Note on the send confirmation when a payment leaves held staking rewards in place. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
         "id": "wallet.send.confirmationDialog.rewardsNotWithdrawn"
+      },
+      {
+        "defaultMessage": "!!!This payment does not withdraw this wallet's {rewardsAmount} of staking rewards.",
+        "description": "Note on the send confirmation when the user chose to leave the rewards in place. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
+        "id": "wallet.send.confirmationDialog.rewardsDeclined"
+      },
+      {
+        "defaultMessage": "!!!This payment also withdraws {rewardsAmount} of staking rewards into this wallet.",
+        "description": "Note on the hardware-wallet send confirmation, from the coin selection the device signs. {rewardsAmount} is the reward balance with its unit, hidden in discreet mode",
+        "id": "wallet.send.confirmationDialog.rewardsWithdrawn"
       },
       {
         "defaultMessage": "!!!To",
