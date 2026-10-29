@@ -17,6 +17,7 @@ mod protocol;
 mod state;
 mod supervisor;
 mod tls;
+mod topology;
 
 use anyhow::Result;
 use clap::Parser;

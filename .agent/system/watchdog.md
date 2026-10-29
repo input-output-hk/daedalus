@@ -123,6 +123,16 @@ The watchdog **does not restart** cardano-node. It monitors it with a watch chan
 
 The watchdog waits for `chainDbReady` from the node log parser before starting the wallet (see state machine above).
 
+#### Topology names (Windows)
+
+On Windows, a DNS lookup made by cardano-node can wait for a reply that never comes, and while it does the node does not stop when asked to ([ouroboros-network#5448](https://github.com/IntersectMBO/ouroboros-network/issues/5448)). With `node.resolve_topology` set, which the generator does for Windows only, the watchdog resolves the names in the topology file given by `--topology` before every node start and gives the node a copy that holds addresses.
+
+- Every access point with a `port` whose `address` is not an IP literal is a name; an access point without a `port` is left to the node. Each distinct name is resolved by the operating system resolver on a thread of its own, in parallel, within `node.resolve_timeout_ms` (default 5000). A lookup that has not returned by then is abandoned.
+- Each name becomes one access point per address, with the same port, in the same list. Unspecified addresses (`0.0.0.0`, `::`) are dropped, because the node rejects a topology that holds one, and an answer with only those counts as no answer. A name that has IPv4 addresses gets only those; IPv6 addresses are used only for a name that has no IPv4 address.
+- The copy is written atomically to `<state_dir>/topology-resolved.json`, and `--topology` is replaced in the arguments for that start only. `node.args` and the persisted arguments are not changed.
+- Every name that resolves is recorded in `<state_dir>/resolved-relays.json` with the time. A name that does not resolve uses its recorded addresses, which do not expire, and a name with none stays a name. The start goes ahead in every case.
+- `watchdog.log` has one line per name with its addresses and how long the lookup took, or the reason it failed and which fallback was used.
+
 ### cardano-wallet
 
 The watchdog **does restart** the wallet automatically. The supervisor loop (`'supervisor` in `supervisor.rs`) has two phases:
@@ -316,6 +326,7 @@ The rejection is **deferred to process exit** (not fired immediately on `wallet_
 | Wallet/node signal | SIGTERM | `GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT)` |
 | Process group | Default | `CREATE_NEW_PROCESS_GROUP` (so CTRL_BREAK targets only that process) |
 | Log rotation | `file-rotate` 0.8, cross-platform | Same |
+| Topology names | Left to the node | Resolved by the watchdog before each node start (`node.resolve_topology`) |
 
 ---
 
@@ -371,6 +382,7 @@ The probe is triggered two ways:
 | `watchdog/src/supervisor.rs` | All supervisor logic: spawn, monitor, restart, shutdown, log rotation, block sync parsing, Mithril command routing |
 | `watchdog/src/mithril.rs` | Full Mithril lifecycle: probe, download, install, cancellation |
 | `watchdog/src/protocol.rs` | `Event` and `Command` serde types; `emit()` helper |
+| `watchdog/src/topology.rs` | Resolves the names in the node's topology and writes the copy the node is started with |
 | `watchdog/src/config.rs` | `WatchdogConfig` / `NodeConfig` / `WalletConfig` / `MithrilConfig` serde types |
 | `source/main/cardano/CardanoWatchdog.ts` | TypeScript wrapper: builds args, spawns watchdog, parses events, exposes `WatchdogHandle` |
 | `source/main/cardano/CardanoNode.ts` | State machine that owns `WatchdogHandle`; surfaces status via IPC |
