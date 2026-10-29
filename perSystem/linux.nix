@@ -14,6 +14,12 @@
       inherit (common) sourceLib daedalusConfigs;
       inherit (linuxBuild) originalPackageJson daedalusJs newPackage;
       genClusters = lib.genAttrs clusters;
+      pilotProfiles = common.installerProducts.pilot.profiles;
+      pilotLaunchers = import ../packaging/linux/pilot-launchers.nix {
+        inherit lib daedalusConfigs;
+        profiles = pilotProfiles;
+      };
+      legacyPilotPackages = map (profile: "daedalus-${profile}") pilotProfiles;
 
       commonPackagingArgs = cluster: {
         inherit pkgs lib cluster;
@@ -47,6 +53,23 @@
             rm -f $out/libexec/update-runner
           '';
         });
+
+      # Materialize the large payload once. Only small configuration trees are
+      # repeated, and every profile uses the same checked wallet backend revision.
+      pilotBundle = pkgs.runCommand "daedalus-pilot-system-package-bundle" {} ''
+        mkdir -p "$out"
+        cp -a ${systemPackageBundle.${common.installerProducts.pilot.payloadProfile}}/. "$out/"
+        chmod -R u+w "$out"
+        rm -rf "$out/config"
+        mkdir -p "$out/config"
+        cp -a ${config.packages.pilot-profile-configs}/. "$out/config/"
+      '';
+      pilotPackagingArgs =
+        (commonPackagingArgs common.installerProducts.pilot.payloadProfile)
+        // {
+          cluster = "pilot";
+          bundle = pilotBundle;
+        };
 
       # ---------------------------------------------------------------------------
       # Inlined packaging/linux/deb.nix as a local function
@@ -181,6 +204,11 @@
           EOF
           install -m 0644 ${icon} "$stage/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
 
+          ${lib.optionalString (cluster == "pilot") ''
+            desktop_root="$stage"
+            ${pilotLaunchers}
+          ''}
+
           for script in preinst postinst prerm postrm; do
             sed \
               -e 's|@CLUSTER@|${cluster}|g' \
@@ -213,6 +241,9 @@
            Root-managed system package prepared for fail-closed Chromium sandbox setup.
           EOF
           dpkg --validate-version '${packageVersion}'
+          ${lib.optionalString (cluster == "pilot") ''
+            printf 'Conflicts: ${lib.concatStringsSep ", " legacyPilotPackages}\n' >> "$stage/DEBIAN/control"
+          ''}
 
           find "$stage" -type d -exec chmod 0755 {} +
           chmod 0755 "$stage/DEBIAN"
@@ -418,6 +449,11 @@
           EOF
           install -m 0644 ${icon} "$payload/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
 
+          ${lib.optionalString (cluster == "pilot") ''
+            desktop_root="$payload"
+            ${pilotLaunchers}
+          ''}
+
           sed \
             -e 's|@ELECTRON_PATH@|${installRoot}/libexec/bundle-electron/lib/electron/electron|g' \
             -e 's|@HELPER_PATH@|${installRoot}/libexec/bundle-electron/lib/electron/chrome-sandbox|g' \
@@ -493,6 +529,7 @@
 
           sed \
             -e 's|@PACKAGE_NAME@|${packageName}|g' \
+            -e 's|@CONFLICTS@|${lib.optionalString (cluster == "pilot") ("Conflicts: " + lib.concatStringsSep ", " legacyPilotPackages)}|g' \
             -e 's|@VERSION@|${version}|g' \
             -e 's|@RELEASE@|${release}|g' \
             -e 's|@CLUSTER@|${cluster}|g' \
@@ -655,6 +692,7 @@
           #!/bin/sh
           set -eu
           electron='${installRoot}/libexec/bundle-electron/lib/electron/electron'
+          ${lib.optionalString (cluster == "pilot") "exec '${installRoot}/bin/refuse-live'"}
           for proc in /proc/[0-9]*; do
             [ -L "$proc/exe" ] || continue
             if [ "$(readlink -f "$proc/exe" 2>/dev/null || true)" = "$electron" ]; then
@@ -689,6 +727,11 @@
           Terminal=false
           EOF
           install -m 0644 ${icon} "$payload/usr/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
+
+          ${lib.optionalString (cluster == "pilot") ''
+            desktop_root="$payload"
+            ${pilotLaunchers}
+          ''}
 
           files_json=$(for item in launcher:bin/daedalus frontend:libexec/daedalus-frontend wrapper:libexec/electron electron:libexec/bundle-electron/lib/electron/electron chromeSandbox:libexec/bundle-electron/lib/electron/chrome-sandbox; do
             name=''${item%%:*}
@@ -728,6 +771,7 @@
           arch=('x86_64')
           url='https://daedaluswallet.io/'
           depends=('jq')
+          ${lib.optionalString (cluster == "pilot") "conflicts=(${lib.concatMapStringsSep " " lib.escapeShellArg legacyPilotPackages})"}
           license=('custom')
           install='${packageName}.install'
           options=('!strip' '!debug')
@@ -869,7 +913,53 @@
           '';
         });
 
-      nixosSandboxSetup = genClusters (cluster:
+      nixosPilot = pkgs.stdenv.mkDerivation {
+        name = "daedalus-nixos-pilot";
+        meta.mainProgram = "daedalus";
+        dontUnpack = true;
+        nativeBuildInputs = [pkgs.jq];
+        buildCommand = ''
+          mkdir -p "$out"/{bin,config,share,libexec/bundle-electron/lib/electron}
+          cp -r ${config.packages.pilot-profile-configs}/. "$out/config/"
+          # Keep one real Electron executable inside the trusted package root.
+          cp -r ${common.electron}/libexec/electron/. "$out/libexec/bundle-electron/lib/electron/"
+          ln -s ${common.daedalus-bridge.${common.installerProducts.pilot.payloadProfile}} "$out/libexec/bundle-daedalus-bridge"
+          (cd "$out/libexec" && ln -s bundle-daedalus-bridge/bin/* ./)
+          ln -s ${daedalusJs.${common.installerProducts.pilot.payloadProfile}}/share/daedalus "$out/libexec/daedalus-js"
+
+          root="$out"
+          desktop_root="$out"
+          ${import ../packaging/linux/pilot-launchers.nix {
+            inherit lib daedalusConfigs;
+            profiles = pilotProfiles;
+            installRoot = "@PILOT_ROOT@";
+            desktopPrefix = "";
+            iconRoot = "@PILOT_ROOT@/share/icons/hicolor/512x512/apps";
+            sandboxHelper = "/var/lib/daedalus/pilot/chrome-sandbox";
+            publicWrappers = false;
+            nativeMaintenance = false;
+            electronLaunch = ''
+              # shellcheck disable=SC2086
+              exec '@PILOT_ROOT@/libexec/bundle-electron/lib/electron/electron' ''${DAEDALUS_ELECTRON_FLAGS-} --class="Daedalus-$CLUSTER" '@PILOT_ROOT@/libexec/daedalus-js' "$@"
+            '';
+          }}
+          substituteInPlace "$out"/bin/* "$out/libexec/daedalus-frontend" \
+            "$out"/share/applications/*.desktop --replace-fail @PILOT_ROOT@ "$out"
+
+          cp ${common.electron}/libexec/electron/chrome-sandbox "$out/share/chrome-sandbox"
+          helper_sha=$(sha256sum "$out/share/chrome-sandbox" | cut -d' ' -f1)
+          jq -n --arg sha "$helper_sha" \
+            --arg electron "$out/libexec/bundle-electron/lib/electron/electron" '{
+              schemaVersion: 2, packageFamily: "nix", cluster: "pilot",
+              matrixRevision: "task-112-matrix-2026-09-11", matrixRow: "nixos-26.05",
+              supportState: "supported", distribution: {id: "nixos", versionId: "26.05"},
+              policy: {kind: "none"}, helper: {mode: "0755", sha256: $sha},
+              launch: {electron: $electron}
+            }' > "$out/share/sandbox-identity.json"
+        '';
+      };
+
+      mkNixosSandboxSetup = cluster: package:
         pkgs.writeShellApplication {
           name = "nixos-sandbox-setup-${cluster}";
           runtimeInputs = [];
@@ -887,19 +977,23 @@
             # Copy chrome-sandbox from package share/ (0555 in store) to mutable
             # location. Write manifest LAST — no window where manifest exists but
             # helper is still 0555 / not yet present.
-            cp -f ${nixosPackage.${cluster}}/share/chrome-sandbox "$varDir/chrome-sandbox.tmp"
+            cp -f ${package}/share/chrome-sandbox "$varDir/chrome-sandbox.tmp"
             chown root:root "$varDir/chrome-sandbox.tmp"
             chmod 0755 "$varDir/chrome-sandbox.tmp"
             mv -f "$varDir/chrome-sandbox.tmp" "$varDir/chrome-sandbox"
 
             install -o root -g root -m 0644 \
-              ${nixosPackage.${cluster}}/share/sandbox-identity.json \
+              ${package}/share/sandbox-identity.json \
               "$varDir/sandbox-identity.json"
 
             echo "Daedalus NixOS sandbox setup complete for cluster: ${cluster}"
           '';
-        });
+        };
+      nixosSandboxSetup = genClusters (cluster: mkNixosSandboxSetup cluster nixosPackage.${cluster});
     in {
+      _module.args.linuxPackaging = {
+        inherit mkDebInstaller mkRpmInstaller mkArchInstaller pilotPackagingArgs pilotLaunchers;
+      };
       packages =
         # Linux-native packages
         lib.listToAttrs (lib.concatMap (cluster: [
@@ -971,6 +1065,22 @@
           ])
           clusters)
         // {
+          nixos-package-pilot = nixosPilot;
+          windows-pilot-configs = windowsBuild.pilotConfigs;
+          daedalus-x86_64-windows-pilot = windowsBuild.package.pilot;
+          installer-x86_64-windows-pilot = windowsBuild.unsignedInstaller.pilot;
+          makeSignedInstaller-x86_64-windows-pilot = windowsBuild.makeSignedInstaller.pilot;
+          nixos-sandbox-setup-pilot = mkNixosSandboxSetup "pilot" nixosPilot;
+          deb-installer-pilot = mkDebInstaller pilotPackagingArgs;
+          deb-dev-installer-pilot = mkDebInstaller (pilotPackagingArgs // {debCompression = "-Zzstd -z1";});
+          rpm-installer-pilot = mkRpmInstaller pilotPackagingArgs;
+          rpm-dev-installer-pilot = mkRpmInstaller (pilotPackagingArgs
+            // {
+              binaryPayload = "w1T16.zstdio";
+              devBuild = true;
+            });
+          arch-installer-pilot = mkArchInstaller pilotPackagingArgs;
+          arch-dev-installer-pilot = mkArchInstaller (pilotPackagingArgs // {zstdLevel = 1;});
           default = newPackage.mainnet;
           nativeModules-x86_64-windows = windowsBuild.nativeModulesZip;
         };

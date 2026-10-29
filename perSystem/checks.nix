@@ -510,6 +510,9 @@
       # is already covered.
       lib.optionalAttrs (system != "x86_64-darwin") {
         jest = mkJsCheck "daedalus-jest" "yarn test:jest --maxWorkers=4";
+        pilot-launch-network = mkJsCheck "pilot-launch-network" ''
+          yarn jest source/main/environment.spec.ts --runInBand --coverage=false
+        '';
         cucumber-unit = mkJsCheck "daedalus-cucumber-unit" "yarn test:unit";
       }
       # The rest are static analysis over the same source, and produce identical

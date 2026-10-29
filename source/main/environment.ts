@@ -34,7 +34,9 @@ export const RECOMMENDED_RAM_IN_BYTES = 7 * 1024 * 1024 * 1024;
 ================================================================== */
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const NETWORK = evaluateNetwork(process.env.NETWORK);
+const NETWORK = evaluateNetwork(
+  process.env.DAEDALUS_NETWORK_NAME || process.env.NETWORK
+);
 const isDev = checkIsDev(CURRENT_NODE_ENV);
 const isTest = checkIsTest(CURRENT_NODE_ENV);
 const isProduction = checkIsProduction(CURRENT_NODE_ENV);
