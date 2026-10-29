@@ -11,6 +11,7 @@ import {
   validateRendererEvidence,
   validateWindowsPackageIdentity,
   validateNixOSProductionPackage,
+  validateLinuxProductionPackage,
 } from './dappSandboxAvailability';
 
 jest.mock('electron', () => ({
@@ -554,6 +555,40 @@ describe('dApp sandbox availability', () => {
   });
 
   test.each([
+    ['preview', 'Daedalus Preview'],
+    ['preprod', 'Daedalus Pre-Prod'],
+    ['mainnet-flight', 'Daedalus Flight'],
+  ])(
+    'accepts only the explicit Pilot Windows %s frontend/configuration',
+    (cluster, appName) => {
+      const installRoot = 'C:\\Program Files\\Daedalus Pilot';
+      const identity = {
+        ...windowsPackage,
+        appName,
+        installRoot,
+        executablePath: `${installRoot}\\Daedalus Pilot.exe`,
+        resourcesPath: `${installRoot}\\resources`,
+        appPath: `${installRoot}\\config\\profiles\\${cluster}\\frontend`,
+        configPath: `${installRoot}\\config\\profiles\\${cluster}\\daedalus-config.json`,
+      };
+      expect(validateWindowsPackageIdentity(identity, cluster)).toBe(true);
+      expect(
+        validateWindowsPackageIdentity(
+          { ...identity, appPath: `${installRoot}\\resources\\shared-app` },
+          cluster
+        )
+      ).toBe(false);
+      expect(
+        validateWindowsPackageIdentity(
+          { ...identity, configPath: `${installRoot}\\daedalus-config.json` },
+          cluster
+        )
+      ).toBe(false);
+      expect(validateWindowsPackageIdentity(identity, 'mainnet')).toBe(false);
+    }
+  );
+
+  test.each([
     ['x64', '/Applications'],
     ['arm64', '/Applications'],
     ['arm64', '/Users/alice/Desktop'],
@@ -826,6 +861,151 @@ describe('dApp sandbox availability', () => {
   });
 });
 
+describe('Linux shared pilot package identity', () => {
+  const execPath = Object.getOwnPropertyDescriptor(process, 'execPath');
+  const originalEntrypoint = process.env.ENTRYPOINT_DIR;
+  const originalConfig = process.env.DAEDALUS_CONFIG_FILE;
+  const posixResolve = path.posix.resolve;
+  const posixJoin = path.posix.join;
+  const helper = Buffer.from('pilot sandbox helper');
+  const helperHash = crypto.createHash('sha256').update(helper).digest('hex');
+
+  const installFixture = (
+    cluster: string,
+    options: {
+      legacy?: boolean;
+      config?: string;
+      uid?: number;
+      mode?: number;
+      symlink?: boolean;
+      helperHash?: string;
+      manifestCluster?: string;
+      host?: string;
+    } = {}
+  ) => {
+    const root = `/opt/daedalus/${options.legacy ? cluster : 'pilot'}`;
+    const config = `${root}/config/${options.legacy ? '' : `profiles/${cluster}/`}daedalus-config.json`;
+    const electron = `${root}/libexec/bundle-electron/lib/electron/electron`;
+    const sandbox = `${root}/libexec/bundle-electron/lib/electron/chrome-sandbox`;
+    const manifest = `${root}/share/daedalus-sandbox-identity.json`;
+    process.env.ENTRYPOINT_DIR = root;
+    process.env.DAEDALUS_CONFIG_FILE = options.config || config;
+    Object.defineProperty(process, 'execPath', {
+      configurable: true,
+      value: electron,
+    });
+    jest.spyOn(path, 'resolve').mockImplementation(posixResolve);
+    jest.spyOn(path, 'join').mockImplementation(posixJoin);
+    jest
+      .spyOn(fs, 'realpathSync')
+      .mockImplementation((value) =>
+        options.symlink && String(value) === config
+          ? '/tmp/substituted.json'
+          : String(value)
+      );
+    jest.spyOn(fs, 'lstatSync').mockImplementation(((value: fs.PathLike) => {
+      const file = String(value);
+      if (![config, electron, sandbox, manifest].includes(file))
+        throw new Error('unknown file');
+      return {
+        uid: file === config ? (options.uid ?? 0) : 0,
+        gid: 0,
+        mode:
+          file === sandbox
+            ? 0o4755
+            : file === config
+              ? (options.mode ?? 0o644)
+              : 0o644,
+        isFile: () => true,
+        isSymbolicLink: () => file === config && options.symlink === true,
+      };
+    }) as typeof fs.lstatSync);
+    jest.spyOn(fs, 'readFileSync').mockImplementation(((
+      value: fs.PathLike | number
+    ) => {
+      const file = String(value);
+      if (file === '/etc/os-release')
+        return options.host || 'ID=debian\nVERSION_ID=13\n';
+      if (file === sandbox) return helper;
+      if (file === manifest)
+        return JSON.stringify({
+          schemaVersion: 2,
+          packageFamily: 'deb',
+          matrixRevision: 'task-108-matrix-2026-08-18',
+          matrixRow: 'debian-13',
+          supportState: 'supported',
+          distribution: { id: 'debian', versionId: '13' },
+          cluster:
+            options.manifestCluster || (options.legacy ? cluster : 'pilot'),
+          helper: { mode: '4755', sha256: options.helperHash || helperHash },
+          policy: { kind: 'none' },
+        });
+      throw new Error('unexpected file read');
+    }) as typeof fs.readFileSync);
+  };
+
+  afterEach(() => {
+    if (originalEntrypoint === undefined) delete process.env.ENTRYPOINT_DIR;
+    else process.env.ENTRYPOINT_DIR = originalEntrypoint;
+    if (originalConfig === undefined) delete process.env.DAEDALUS_CONFIG_FILE;
+    else process.env.DAEDALUS_CONFIG_FILE = originalConfig;
+    if (execPath) Object.defineProperty(process, 'execPath', execPath);
+    jest.restoreAllMocks();
+  });
+
+  test.each(['preview', 'preprod', 'mainnet-flight'])(
+    'accepts the explicit pilot %s configuration',
+    (cluster) => {
+      installFixture(cluster);
+      expect(validateLinuxProductionPackage(cluster)).toEqual({
+        failure: null,
+        usernsOnly: false,
+      });
+    }
+  );
+  test.each(['mainnet', 'preview', 'preprod', 'mainnet-flight'])(
+    'preserves the standalone %s package identity',
+    (cluster) => {
+      installFixture(cluster, { legacy: true });
+      expect(validateLinuxProductionPackage(cluster).failure).toBeNull();
+    }
+  );
+  test.each(['mainnet', 'pilot', 'unknown'])(
+    'rejects %s as a profile under the pilot root',
+    (cluster) => {
+      installFixture(cluster);
+      expect(validateLinuxProductionPackage(cluster).failure).toBe(
+        'unsupported-package'
+      );
+    }
+  );
+  test.each([
+    [
+      'a different profile',
+      {
+        config:
+          '/opt/daedalus/pilot/config/profiles/preview/daedalus-config.json',
+      },
+    ],
+    ['an unowned config', { uid: 1000 }],
+    ['a writable config', { mode: 0o666 }],
+    ['a symlinked config', { symlink: true }],
+    ['a substituted helper', { helperHash: '0'.repeat(64) }],
+    ['an individual-package manifest', { manifestCluster: 'preprod' }],
+  ])('rejects %s', (_name, options) => {
+    installFixture('preprod', options);
+    expect(validateLinuxProductionPackage('preprod').failure).toBe(
+      'unsupported-package'
+    );
+  });
+  test('preserves the supported-host requirement', () => {
+    installFixture('preview', { host: 'ID=debian\nVERSION_ID=99\n' });
+    expect(validateLinuxProductionPackage('preview').failure).toBe(
+      'unsupported-host'
+    );
+  });
+});
+
 describe('NixOS package identity', () => {
   const root = '/nix/store/aaaaaaaa-daedalus';
   const configPath = `${root}/config/daedalus-config.json`;
@@ -844,31 +1024,51 @@ describe('NixOS package identity', () => {
       host?: string;
       helperHash?: string;
       root?: string;
+      pilotProfile?: string;
+      manifestCluster?: string;
+      configUid?: number;
+      configMode?: number;
+      symlinkConfig?: boolean;
+      externalElectron?: boolean;
     } = {}
   ) => {
     const fixtureRoot = options.root || root;
+    const selectedConfig = options.pilotProfile
+      ? `${fixtureRoot}/config/profiles/${options.pilotProfile}/daedalus-config.json`
+      : `${fixtureRoot}/config/daedalus-config.json`;
+    const selectedManifest = options.pilotProfile
+      ? '/var/lib/daedalus/pilot/sandbox-identity.json'
+      : manifestPath;
+    const selectedHelper = options.pilotProfile
+      ? '/var/lib/daedalus/pilot/chrome-sandbox'
+      : helperPath;
+    const selectedElectron = options.externalElectron
+      ? '/nix/store/other-electron/electron'
+      : electronPath;
     // The fixture models Linux, regardless of the Jest host's native paths.
     jest.spyOn(path, 'resolve').mockImplementation(posixResolve);
     jest.spyOn(path, 'join').mockImplementation(posixJoin);
     Object.defineProperty(path, 'sep', { value: path.posix.sep });
     process.env.ENTRYPOINT_DIR = fixtureRoot;
-    process.env.DAEDALUS_CONFIG_FILE = `${fixtureRoot}/config/daedalus-config.json`;
+    process.env.DAEDALUS_CONFIG_FILE = selectedConfig;
     Object.defineProperty(process, 'execPath', {
       configurable: true,
-      value: electronPath,
+      value: selectedElectron,
     });
     jest.spyOn(fs, 'realpathSync').mockImplementation((value) => String(value));
     jest.spyOn(fs, 'lstatSync').mockImplementation(((value: fs.PathLike) => {
       const file = String(value);
       let mode = 0o444;
-      if (file === helperPath) mode = 0o755;
-      else if (file === manifestPath) mode = 0o644;
+      if (file === selectedHelper) mode = 0o755;
+      else if (file === selectedManifest) mode = 0o644;
+      else if (file === selectedConfig) mode = options.configMode ?? mode;
       return {
         gid: 0,
         isFile: () => true,
-        isSymbolicLink: () => false,
+        isSymbolicLink: () =>
+          file === selectedConfig && options.symlinkConfig === true,
         mode,
-        uid: 0,
+        uid: file === selectedConfig ? (options.configUid ?? 0) : 0,
       };
     }) as typeof fs.lstatSync);
     jest.spyOn(fs, 'readFileSync').mockImplementation(((
@@ -877,7 +1077,7 @@ describe('NixOS package identity', () => {
       const file = String(value);
       if (file === '/etc/os-release')
         return options.host || 'ID=nixos\nVERSION_ID=26.05\n';
-      if (file === manifestPath)
+      if (file === selectedManifest)
         return JSON.stringify({
           schemaVersion: 2,
           packageFamily: 'nix',
@@ -885,12 +1085,14 @@ describe('NixOS package identity', () => {
           matrixRow: 'nixos-26.05',
           distribution: { id: 'nixos', versionId: '26.05' },
           supportState: 'supported',
-          cluster: 'preprod',
+          cluster:
+            options.manifestCluster ||
+            (options.pilotProfile ? 'pilot' : 'preprod'),
           policy: { kind: 'none' },
           helper: { mode: '0755', sha256: options.helperHash || helperHash },
-          launch: { electron: electronPath },
+          launch: { electron: selectedElectron },
         });
-      if (file === helperPath) return helper;
+      if (file === selectedHelper) return helper;
       throw new Error(`unexpected read: ${file}`);
     }) as typeof fs.readFileSync);
   };
@@ -927,4 +1129,46 @@ describe('NixOS package identity', () => {
       'unsupported-package'
     );
   });
+
+  test.each(['preview', 'preprod', 'mainnet-flight'])(
+    'accepts the shared Pilot %s configuration with its shared helper and manifest',
+    (profile) => {
+      installFixture({ pilotProfile: profile });
+      expect(validateNixOSProductionPackage(profile)).toEqual({
+        failure: null,
+        usernsOnly: true,
+      });
+    }
+  );
+
+  test.each([
+    ['an individual manifest', { manifestCluster: 'preprod' }],
+    ['an unowned configuration', { configUid: 1000 }],
+    ['a writable configuration', { configMode: 0o666 }],
+    ['a symlinked configuration', { symlinkConfig: true }],
+    ['a helper hash mismatch', { helperHash: '0'.repeat(64) }],
+    ['Electron outside the package root', { externalElectron: true }],
+  ])('rejects shared Pilot with %s', (_name, options) => {
+    installFixture({ ...options, pilotProfile: 'preprod' });
+    expect(validateNixOSProductionPackage('preprod').failure).toBe(
+      'unsupported-package'
+    );
+  });
+
+  test('rejects another profile configuration', () => {
+    installFixture({ pilotProfile: 'preview' });
+    expect(validateNixOSProductionPackage('preprod').failure).toBe(
+      'unsupported-package'
+    );
+  });
+
+  test.each(['mainnet', 'pilot', 'unknown'])(
+    'rejects %s as a Pilot profile',
+    (profile) => {
+      installFixture({ pilotProfile: profile });
+      expect(validateNixOSProductionPackage(profile).failure).toBe(
+        'unsupported-package'
+      );
+    }
+  );
 });

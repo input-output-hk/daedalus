@@ -100,6 +100,13 @@
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
           nativeModules.x86_64-windows = self.packages.x86_64-linux.nativeModules-x86_64-windows;
+          # Explicit test artifacts, separate from the existing release outputs.
+          pilot-tests = {
+            windows = self.packages.x86_64-linux.installer-x86_64-windows-pilot;
+            windows-archive = self.packages.x86_64-linux.windows-pilot-archive-check;
+            darwin-intel = self.packages.x86_64-darwin.installer-pilot-prototype;
+            darwin-arm = self.packages.aarch64-darwin.installer-pilot-prototype;
+          };
           # Every system's checks, not only x86_64-linux. Pinned to one system,
           # a derivation added to `checks.aarch64-darwin` was a flake output
           # Hydra never evaluated and `required` never collected — present
@@ -123,6 +130,7 @@
               ++ lib.collect lib.isDerivation self.hydraJobs.deb-installer
               ++ lib.collect lib.isDerivation self.hydraJobs.rpm-installer
               ++ lib.collect lib.isDerivation self.hydraJobs.arch-installer
+              ++ lib.collect lib.isDerivation self.hydraJobs.pilot-tests
               ++ lib.collect lib.isDerivation self.hydraJobs.devshell
               ++ lib.collect lib.isDerivation
               (removeAttrs self.hydraJobs.checks ["x86_64-linux"]);

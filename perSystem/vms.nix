@@ -17,7 +17,18 @@
         packages, # list of distro package names
         installCmd, # shell command for first install
         reinstallCmd, # shell command for upgrade/reinstall on subsequent boots
-      }:
+      }: let
+        isPilot = cluster == "pilot";
+        profiles =
+          if isPilot
+          then common.installerProducts.pilot.profiles
+          else [cluster];
+        stateDirectory = "/home/tester/.local/share/Daedalus" + lib.optionalString (!isPilot) "/${cluster}";
+        launcher =
+          if isPilot
+          then "daedalus-preview"
+          else "daedalus";
+      in
         pkgs.writeText "user-data-${cluster}" ''
           #cloud-config
           hostname: daedalus-vm
@@ -44,7 +55,7 @@
                 [Desktop Entry]
                 Type=Application
                 Name=Daedalus (${cluster})
-                Exec=env LIBGL_ALWAYS_SOFTWARE=1 /opt/daedalus/${cluster}/bin/daedalus
+                Exec=env LIBGL_ALWAYS_SOFTWARE=1 /opt/daedalus/${cluster}/bin/${launcher}
                 X-GNOME-Autostart-enabled=true
             - path: /usr/local/bin/daedalus-reinstall
               permissions: '0755'
@@ -76,11 +87,11 @@
             - mkdir -p /mnt/daedalus-pkg
             - mount -t 9p -o trans=virtio,version=9p2000.L,ro daedalus-pkg /mnt/daedalus-pkg
             - ${installCmd}
-            - mkdir -p /home/tester/.local/share/Daedalus/${cluster}
+            - mkdir -p ${lib.concatMapStringsSep " " (profile: "/home/tester/.local/share/Daedalus/${profile}") profiles}
             - chown -R tester:tester /home/tester/.local/share /home/tester/.config
             - printf 'daedalus-pkg\t/mnt/daedalus-pkg\t9p\ttrans=virtio,version=9p2000.L,ro,_netdev\t0\t0\n' >> /etc/fstab
-            - printf 'daedalus-state\t/home/tester/.local/share/Daedalus/${cluster}\tvirtiofs\tdefaults,_netdev\t0\t0\n' >> /etc/fstab
-            - mount /home/tester/.local/share/Daedalus/${cluster} || true
+            - printf 'daedalus-state\t${stateDirectory}\tvirtiofs\tdefaults,_netdev\t0\t0\n' >> /etc/fstab
+            - mount ${stateDirectory} || true
             - mount --make-rslave /
             - systemctl enable daedalus-reinstall.service
             - systemctl set-default graphical.target
@@ -136,7 +147,11 @@
             PACKAGE_PATH="${package}"
             VNC_PORT="''${VM_VNC_PORT:-${toString vncPort}}"
             SSH_PORT="''${VM_SSH_PORT:-${toString sshPort}}"
-            VM_DAEDALUS_DIR="''${VM_DAEDALUS_DIR:-''${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus/${cluster}}"
+            VM_DAEDALUS_DIR="''${VM_DAEDALUS_DIR:-${
+              if cluster == "pilot"
+              then ''$(dirname "$VM_DISK")/state/$VM_NAME''
+              else ''''${XDG_DATA_HOME:-$HOME/.local/share}/Daedalus/${cluster}''
+            }}"
             VNC_DISPLAY=$((VNC_PORT - 5900))
 
             mkdir -p "$(dirname "$IMAGE_CACHE")"
@@ -441,7 +456,7 @@
             });
           };
         })
-        clusters;
+        (clusters ++ ["pilot"]);
       # Evidence task tag for this PR's builds (watchdog-as-entrypoint + linux pkgs).
       # Bump when the process tree or sandbox policy changes; re-collect evidence.
       evidenceTask = "task-112";
