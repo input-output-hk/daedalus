@@ -26,6 +26,7 @@ import type {
   BackendStopProgress,
   ChainDamage,
   RequestedRestart,
+  WalletUnresponsive,
 } from '../../../common/types/watchdog.types';
 
 // DEFINE CONSTANTS
@@ -122,6 +123,8 @@ export default class BackendStore extends Store {
   @observable nodeForceKilled = false;
   @observable lastWalletExitCode: number | null = null;
   @observable lastWalletExitSignal: string | null = null;
+  @observable walletUnresponsiveRestarts = 0;
+  @observable lastWalletUnresponsive: WalletUnresponsive | null = null;
   @observable mithrilSignificantlyBehind: {
     localImmutableCount: number;
     latestCertifiedImmutable: number;
@@ -285,6 +288,8 @@ export default class BackendStore extends Store {
         this.nodeForceKilled = state.nodeForceKilled;
         this.lastWalletExitCode = state.lastWalletExitCode;
         this.lastWalletExitSignal = state.lastWalletExitSignal;
+        this.walletUnresponsiveRestarts = state.walletUnresponsiveRestarts ?? 0;
+        this.lastWalletUnresponsive = state.lastWalletUnresponsive ?? null;
         if (!this._mithrilPromptDismissed) {
           this.mithrilSignificantlyBehind = state.mithrilSignificantlyBehind;
         }

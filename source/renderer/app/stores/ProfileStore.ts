@@ -669,6 +669,8 @@ export default class ProfileStore extends Store {
         nodeStartedAt: cardanoNodeStartedAt,
         walletStartedAt: cardanoWalletStartedAt,
         walletRestartCount: cardanoWalletRestartCount,
+        walletUnresponsiveRestarts,
+        lastWalletUnresponsive,
         walletPort,
         loadingPhase: cardanoNodeState,
       } = backend;
@@ -700,6 +702,8 @@ export default class ProfileStore extends Store {
         cardanoWalletPID,
         cardanoWalletUptime: formatUptime(cardanoWalletStartedAt),
         cardanoWalletRestartCount,
+        walletUnresponsiveRestarts,
+        lastWalletUnresponsive,
         cardanoWalletApiPort: walletPort ?? 0,
         cardanoNetwork: network,
         daedalusStateDirectoryPath: stateDirectoryPath,
