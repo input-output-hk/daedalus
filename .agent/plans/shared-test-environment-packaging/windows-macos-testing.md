@@ -110,9 +110,16 @@ nix run .#daedalus-pilot-prototype -- preview
 
 The prototype `.pkg` installs `/Applications/Daedalus Pilot`, containing Preview,
 Pre-Prod and Flight `.app` shells plus one sibling `Shared` payload. Only small
-launch binaries, metadata, icons and configs are repeated. The Electron entry
-executable must be below 2 MiB; frameworks, backends and application code are
-shared. Each shell keeps the existing launcher/Frontend/config/package identity
+launch binaries, helper bundles, metadata, icons and configs are repeated. The
+Electron entry and each helper executable must be below 2 MiB; large framework
+binaries, backends and application code are shared. Each app owns its Frameworks
+directory and four real helper bundles named after its CFBundleName, with distinct
+profile helper IDs. This fixes Electron's `Unable to find helper app` failure
+when renamed app shells used Flight's shared helper names. The Linux
+`pilot-darwin-helper-layout` check exercises all three profiles, helper metadata,
+executable locations and shared framework resolution after relocation, with a
+mock plist editor; it does not run Electron or certify native macOS behavior.
+Each shell keeps the existing launcher/Frontend/config/package identity
 layout, so no macOS TypeScript path or network selector is added.
 
 CI assembles unsigned app shells and an unsigned `.pkg`; it does not sign or
@@ -130,6 +137,8 @@ After a successful native build:
 
 1. Verify all three bundle IDs, displayed names, icons and symlink
    targets. Confirm the installed package contains no `/bin/daedalus` payload.
+   Confirm each app's default, renderer, GPU and plugin helpers have matching
+   profile names and bundle IDs and their executables resolve inside that app.
 2. With legacy profiles stopped, open all three launcher apps through Finder,
    alongside standalone Mainnet. Verify the original settings and data paths.
 3. Inspect the **running Electron** Dock entries: each must have the matching

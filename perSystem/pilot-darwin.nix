@@ -28,7 +28,7 @@
           chmod -R u+w "$shared"
           rm -rf "$shared/_CodeSignature"
           # A real profile app wraps only the small Electron entry executable.
-          # All frameworks, native addons and application code stay in Shared.
+          # Large frameworks, native addons and application code stay in Shared.
           test "$(${pkgs.coreutils}/bin/stat -c %s "$shared/MacOS/Frontend")" -lt 2097152
           ${lib.concatMapStringsSep "\n" (profile: let
               configuration = configurations.${profile};
@@ -42,7 +42,8 @@
               /usr/libexec/PlistBuddy -c 'Set :CFBundleDisplayName ${name}' "$app/Info.plist" || \
                 /usr/libexec/PlistBuddy -c 'Add :CFBundleDisplayName string ${name}' "$app/Info.plist"
               /usr/libexec/PlistBuddy -c 'Set :CFBundleExecutable ${name}' "$app/Info.plist"
-              ln -s ../../Shared/Frameworks "$app/Frameworks"
+              bash ${../packaging/darwin/pilot-frameworks.sh} "$shared" "$app" \
+                '${name}' 'org.daedalus.pilot.${profile}' 'Daedalus Flight'
               for item in "$shared/MacOS"/*; do
                 basename=$(basename "$item")
                 case "$basename" in Frontend|'Daedalus Flight') continue ;; esac
