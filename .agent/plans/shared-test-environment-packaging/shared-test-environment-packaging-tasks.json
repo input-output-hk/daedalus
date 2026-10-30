@@ -1,0 +1,139 @@
+{
+  "feature": "Production Mainnet and unified pilot installers",
+  "tasks": [
+    {
+      "id": "T001",
+      "description": "Preserve draft scope, specify product/profile identities and implementation sequencing",
+      "status": "complete"
+    },
+    {
+      "id": "T010",
+      "description": "Add pure Nix production/pilot product contract and configuration bundle layout",
+      "status": "complete",
+      "depends_on": [
+        "T001"
+      ]
+    },
+    {
+      "id": "T011",
+      "description": "Read existing DAEDALUS_NETWORK_NAME before build-time NETWORK; keep shortcut/configuration selection and existing Mainnet/development fallbacks",
+      "status": "complete",
+      "depends_on": [
+        "T001"
+      ]
+    },
+    {
+      "id": "T012",
+      "description": "Validate product/config contracts and runtime environment selection through Nix and Jest",
+      "status": "complete",
+      "depends_on": [
+        "T010",
+        "T011"
+      ]
+    },
+    {
+      "id": "T020",
+      "description": "Build one shared Linux pilot payload and adapt existing DEB/RPM/Arch builders, sandbox manifests and profile launchers",
+      "status": "complete",
+      "depends_on": [
+        "T012"
+      ]
+    },
+    {
+      "id": "T022",
+      "description": "Prioritize runnable shared NixOS Pilot package, explicit profile launchers, sandbox activation/identity and direct-host test instructions",
+      "status": "complete",
+      "depends_on": [
+        "T012"
+      ]
+    },
+    {
+      "id": "T021",
+      "description": "Validate native Linux migration, concurrent launches, ownership, package upgrades/removal and rollback",
+      "status": "in_progress",
+      "depends_on": [
+        "T020"
+      ]
+    },
+    {
+      "id": "T030",
+      "description": "Prototype three distinct macOS running Dock identities and profile-specific relaunch against one shared payload on a macOS host",
+      "status": "in_progress",
+      "depends_on": [
+        "T012"
+      ]
+    },
+    {
+      "id": "T031",
+      "description": "Integrate signed/notarized shared macOS package, ownership and multi-profile quiescence; record installed platform evidence",
+      "status": "pending",
+      "depends_on": [
+        "T030"
+      ]
+    },
+    {
+      "id": "T040",
+      "description": "Adapt Windows shared pilot installer, shortcut/taskbar identities and safe multi-profile maintenance",
+      "status": "in_progress",
+      "depends_on": [
+        "T012"
+      ]
+    },
+    {
+      "id": "T050",
+      "description": "Coordinate pilot artifact/release metadata and shared updater routing with release-cli in publisher worktree",
+      "status": "in_progress",
+      "depends_on": [
+        "T020",
+        "T031",
+        "T040"
+      ]
+    },
+    {
+      "id": "T060",
+      "description": "Document and validate cross-platform adoption, repair/removal, payload size and unchanged standalone Mainnet",
+      "status": "pending",
+      "depends_on": [
+        "T021",
+        "T031",
+        "T040",
+        "T050"
+      ]
+    },
+    {
+      "id": "T023",
+      "description": "Preserve existing per-profile Electron preferences/consent/session paths in Pilot launch configurations before proceeding to Windows/macOS",
+      "status": "complete",
+      "depends_on": [
+        "T022"
+      ]
+    }
+  ],
+  "validation": {
+    "date": "2026-10-29",
+    "checks": [
+      "pilot-profile-configs: passed",
+      "pilot-launch-network: 7 tests passed",
+      "pilot-linux-launchers: passed",
+      "pilot-linux-package-contract: passed for real-builder fixture DEB/RPM/Arch archives",
+      "compile: passed",
+      "jest: 219 suites passed; 2909 tests passed, 3 skipped; 6 snapshots passed",
+      "changed-file Nix formatter: clean",
+      "pilot-linux-artifacts: full-payload fast DEB, production RPM and fast Arch built and passed archive inspection",
+      "Pilot DEB/RPM/Arch VM helpers: built with generated-script checks; disposable state path verified with spaces",
+      "nixos-package-pilot and nixos-sandbox-setup-pilot: built",
+      "pilot-nixos-package: actual shared package and three generated launchers passed",
+      "NixOS sandbox identity regression tests: passed; total Jest 219 suites, 2922 passed tests, 3 skipped, 6 snapshots",
+      "compile and changed-file formatting after NixOS integration: passed",
+      "native Pilot launcher and fixture archive regression checks after generator reuse: passed",
+      "Consent/preferences regression: explicit original Electron user-data directory; Nix config/launcher checks passed; Sam confirmed on NixOS",
+      "Windows package identity: 3 Pilot cases added; 219 Jest suites, 2925 tests passed, 3 skipped, 6 snapshots; compile passed",
+      "Windows generated bootstrap/configuration/taskbar relaunch checks and NSIS fixture compilation: passed",
+      "macOS generated native build/package script syntax: passed with native payload dependencies stubbed only for syntax",
+      "Changed platform files: formatting and git diff whitespace checks passed",
+      "Full unsigned Windows installer built; actual EXE archive inspection passed (356467930 bytes)",
+      "macOS helper layout: all three profiles and four helper types passed executable ownership, metadata, shared framework and relocation checks with a mock plist editor; generated script syntax passed"
+    ],
+    "remaining": "Native Windows GUI/lifecycle and native Mac unsigned build/Dock/relaunch checks await CI/host testing; see windows-macos-testing.md. Pilot test configs disable applying automatic updates. Final migration/upgrade/race/rollback, release-time production signing/notarization and shared release routing remain pending. CI builds unsigned installers only. Local installer test slice prepared for CI; no push or deployment performed."
+  }
+}

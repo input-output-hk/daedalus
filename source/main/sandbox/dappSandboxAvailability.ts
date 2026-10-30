@@ -177,7 +177,22 @@ export const validateWindowsPackageIdentity = (
 ): boolean => {
   const productName = DAPP_PRODUCT_NAMES[cluster];
   if (!productName) return false;
-  const expectedRoot = path.win32.join(WINDOWS_PROGRAM_FILES, productName);
+  const pilotRoot = path.win32.join(WINDOWS_PROGRAM_FILES, 'Daedalus Pilot');
+  const pilotConfig = path.win32.join(
+    pilotRoot,
+    'config',
+    'profiles',
+    cluster,
+    'daedalus-config.json'
+  );
+  const isPilot =
+    ['preview', 'preprod', 'mainnet-flight'].includes(cluster) &&
+    normalizeWindowsPath(identity.configPath) ===
+      normalizeWindowsPath(pilotConfig);
+  const expectedRoot = isPilot
+    ? pilotRoot
+    : path.win32.join(WINDOWS_PROGRAM_FILES, productName);
+  const executableName = isPilot ? 'Daedalus Pilot' : productName;
   return (
     identity.isPackaged &&
     identity.architecture === 'x64' &&
@@ -186,15 +201,27 @@ export const validateWindowsPackageIdentity = (
       normalizeWindowsPath(expectedRoot) &&
     normalizeWindowsPath(identity.executablePath) ===
       normalizeWindowsPath(
-        path.win32.join(expectedRoot, `${productName}.exe`)
+        path.win32.join(expectedRoot, `${executableName}.exe`)
       ) &&
     normalizeWindowsPath(identity.resourcesPath) ===
       normalizeWindowsPath(path.win32.join(expectedRoot, 'resources')) &&
     normalizeWindowsPath(identity.appPath) ===
-      normalizeWindowsPath(path.win32.join(expectedRoot, 'resources', 'app')) &&
+      normalizeWindowsPath(
+        isPilot
+          ? path.win32.join(
+              expectedRoot,
+              'config',
+              'profiles',
+              cluster,
+              'frontend'
+            )
+          : path.win32.join(expectedRoot, 'resources', 'app')
+      ) &&
     normalizeWindowsPath(identity.configPath) ===
       normalizeWindowsPath(
-        path.win32.join(expectedRoot, 'daedalus-config.json')
+        isPilot
+          ? pilotConfig
+          : path.win32.join(expectedRoot, 'daedalus-config.json')
       )
   );
 };
@@ -737,7 +764,7 @@ export const validatePackageIdentity = (
 const sha256 = (filePath: string): string =>
   crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 
-const validateProductionPackage = (
+export const validateLinuxProductionPackage = (
   cluster: string,
   configuredInstallRoot?: string
 ): PackageValidation => {
@@ -745,15 +772,26 @@ const validateProductionPackage = (
     failure: 'unsupported-package' as const,
     usernsOnly: false,
   };
-  const expectedRoot = `/opt/daedalus/${cluster}`;
   const installRoot = configuredInstallRoot || process.env.ENTRYPOINT_DIR;
+  const isPilot =
+    installRoot === '/opt/daedalus/pilot' &&
+    ['preview', 'preprod', 'mainnet-flight'].includes(cluster);
+  const packageIdentity = isPilot ? 'pilot' : cluster;
+  const expectedRoot = `/opt/daedalus/${packageIdentity}`;
+  if (installRoot === '/opt/daedalus/pilot' && !isPilot)
+    return unsupportedPackage;
   if (!installRoot || path.resolve(installRoot) !== expectedRoot)
     return unsupportedPackage;
 
   try {
     if (fs.realpathSync(installRoot) !== expectedRoot)
       return unsupportedPackage;
-    const configPath = path.join(expectedRoot, 'config/daedalus-config.json');
+    const configPath = path.join(
+      expectedRoot,
+      isPilot
+        ? `config/profiles/${cluster}/daedalus-config.json`
+        : 'config/daedalus-config.json'
+    );
     const configStat = fs.lstatSync(configPath);
     if (
       process.env.DAEDALUS_CONFIG_FILE !== configPath ||
@@ -788,7 +826,7 @@ const validateProductionPackage = (
     const hostContract = supportedHost(host, manifest.packageFamily);
     if (!hostContract)
       return { failure: 'unsupported-host', usernsOnly: false };
-    const contract = validatePackageIdentity(manifest, host, cluster);
+    const contract = validatePackageIdentity(manifest, host, packageIdentity);
     if (!contract) return unsupportedPackage;
 
     const electronPath = path.join(
@@ -841,7 +879,20 @@ export const validateNixOSProductionPackage = (
       !canonicalRoot.startsWith('/nix/store/')
     )
       return unsupportedPackage;
-    const configPath = path.join(canonicalRoot, 'config/daedalus-config.json');
+    const pilotConfigPath = path.join(
+      canonicalRoot,
+      `config/profiles/${cluster}/daedalus-config.json`
+    );
+    const isPilot =
+      ['preview', 'preprod', 'mainnet-flight'].includes(cluster) &&
+      process.env.DAEDALUS_CONFIG_FILE === pilotConfigPath;
+    const packageIdentity = isPilot ? 'pilot' : cluster;
+    // The selected configuration identifies the package layout; it never chooses
+    // the network. Shared packages still require the trusted Pilot manifest.
+    if (cluster === 'pilot') return unsupportedPackage;
+    const configPath = isPilot
+      ? pilotConfigPath
+      : path.join(canonicalRoot, 'config/daedalus-config.json');
     const configStat = fs.lstatSync(configPath);
     if (
       process.env.DAEDALUS_CONFIG_FILE !== configPath ||
@@ -854,7 +905,7 @@ export const validateNixOSProductionPackage = (
     )
       return unsupportedPackage;
 
-    const manifestPath = `/var/lib/daedalus/${cluster}/sandbox-identity.json`;
+    const manifestPath = `/var/lib/daedalus/${packageIdentity}/sandbox-identity.json`;
     const manifestStat = fs.lstatSync(manifestPath);
     if (
       !manifestStat.isFile() ||
@@ -873,7 +924,7 @@ export const validateNixOSProductionPackage = (
     const hostContract = supportedHost(host, manifest.packageFamily);
     if (!hostContract)
       return { failure: 'unsupported-host', usernsOnly: false };
-    const contract = validatePackageIdentity(manifest, host, cluster);
+    const contract = validatePackageIdentity(manifest, host, packageIdentity);
     if (!contract) return unsupportedPackage;
 
     const electronPath =
@@ -886,7 +937,7 @@ export const validateNixOSProductionPackage = (
     )
       return unsupportedPackage;
 
-    const helperPath = `/var/lib/daedalus/${cluster}/chrome-sandbox`;
+    const helperPath = `/var/lib/daedalus/${packageIdentity}/chrome-sandbox`;
     const electronStat = fs.lstatSync(electronPath);
     const helperStat = fs.lstatSync(helperPath);
     const helperMode = Number.parseInt(String(manifest.helper?.mode), 8);
@@ -1293,7 +1344,7 @@ const checkAvailability = async (
       if (host?.id === 'nixos') {
         packageValidation = validateNixOSProductionPackage(options.cluster);
       } else {
-        packageValidation = validateProductionPackage(
+        packageValidation = validateLinuxProductionPackage(
           options.cluster,
           options.installRoot
         );

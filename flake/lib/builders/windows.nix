@@ -28,15 +28,35 @@
 
       # Windows-target items from windows common:
       cardano-watchdog = commonWindows.cardano-watchdog;
-      daedalus-bridge = commonWindows.daedalus-bridge;
-      daedalusConfigs = commonWindows.daedalusConfigs;
+      pilotProfiles = common.installerProducts.pilot.profiles;
+      pilotProfileConfigurations = lib.genAttrs pilotProfiles (cluster:
+        commonWindows.mkDaedalusConfigs {
+          inherit cluster;
+          product = "pilot";
+        });
+      daedalus-bridge = commonWindows.daedalus-bridge // {pilot = commonWindows.daedalus-bridge.mainnet-flight;};
+      daedalusConfigs =
+        commonWindows.daedalusConfigs
+        // {
+          pilot =
+            pilotProfileConfigurations.mainnet-flight
+            // {
+              installerConfig =
+                pilotProfileConfigurations.mainnet-flight.installerConfig
+                // {
+                  spacedName = "Daedalus Pilot";
+                  installDirectory = "Daedalus Pilot";
+                  uglyName = "daedalus-pilot";
+                };
+            };
+        };
       cardanoWalletVersion = commonWindows.cardanoWalletVersion;
       cardanoNodeVersion = commonWindows.cardanoNodeVersion;
       patchElectronRebuild = common.patchElectronRebuild;
       setupCacheAndGypDirs = common.setupCacheAndGypDirs;
       temporaryNodeModulesPatches = common.temporaryNodeModulesPatches;
 
-      genClusters = lib.genAttrs installerClusters;
+      genClusters = lib.genAttrs (installerClusters ++ ["pilot"]);
 
       # node_modules is reused from Linux build
       node_modules = linuxBuild.node_modules;
@@ -410,7 +430,9 @@
       windowsIcons = genClusters (cluster: let
         buildInputs = with pkgs; [imagemagick];
         srcCluster =
-          if builtins.pathExists (../../../installers/icons + "/${cluster}")
+          if cluster == "pilot"
+          then "mainnet-flight"
+          else if builtins.pathExists (../../../installers/icons + "/${cluster}")
           then cluster
           else "mainnet";
       in
@@ -427,199 +449,209 @@
           convert 16x16.png 24x24.png 32x32.png 48x48.png 64x64.png 128x128.png 256x256.png ${cluster}.ico
         '');
 
-      nsisFiles = genClusters (cluster: let
-        ic = daedalusConfigs.${cluster}.installerConfig;
-        ver = originalPackageJson.version;
-        verParts = lib.splitString "." ver;
-        viProductVersion =
-          if builtins.length verParts == 4
-          then ver
-          else "0.0.0.0";
-        versionMajor =
-          if builtins.length verParts == 4
-          then builtins.elemAt verParts 0
-          else "0";
-        versionMinor =
-          if builtins.length verParts == 4
-          then builtins.elemAt verParts 1
-          else "0";
-        packageFileName = "${ic.uglyName}-${ver}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe";
+      nsisFiles = genClusters (cluster:
+        if cluster == "pilot"
+        then
+          import ../../../packaging/windows/pilot-installer.nix {
+            inherit pkgs lib;
+            profiles = pilotProfiles;
+            configurations = pilotProfileConfigurations;
+            version = originalPackageJson.version;
+            filename = "daedalus-${originalPackageJson.version}-${toString sourceLib.buildCounter}-pilot-${sourceLib.buildRevShort}-x86_64-windows.exe";
+          }
+        else let
+          ic = daedalusConfigs.${cluster}.installerConfig;
+          ver = originalPackageJson.version;
+          verParts = lib.splitString "." ver;
+          viProductVersion =
+            if builtins.length verParts == 4
+            then ver
+            else "0.0.0.0";
+          versionMajor =
+            if builtins.length verParts == 4
+            then builtins.elemAt verParts 0
+            else "0";
+          versionMinor =
+            if builtins.length verParts == 4
+            then builtins.elemAt verParts 1
+            else "0";
+          packageFileName = "${ic.uglyName}-${ver}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe";
 
-        uninstallerNsi = pkgs.writeText "uninstaller.nsi" ''
-          Unicode true
-          !addplugindir "nsis_plugins\liteFirewall\bin"
-          SetCompress off
-          Name "${ic.spacedName} Uninstaller ${ver}"
-          OutFile "tempinstaller.exe"
+          uninstallerNsi = pkgs.writeText "uninstaller.nsi" ''
+            Unicode true
+            !addplugindir "nsis_plugins\liteFirewall\bin"
+            SetCompress off
+            Name "${ic.spacedName} Uninstaller ${ver}"
+            OutFile "tempinstaller.exe"
 
-          LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
-          LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
+            LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
+            LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
 
-          Section ""
-            SectionIn RO
-            WriteUninstaller "c:\uninstall.exe"
-          SectionEnd
+            Section ""
+              SectionIn RO
+              WriteUninstaller "c:\uninstall.exe"
+            SectionEnd
 
-          Section "un."
-            DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}"
-            DeleteRegKey HKLM "Software\${ic.spacedName}"
-            RMDir /r /REBOOTOK "$INSTDIR"
-            Delete "$SMPROGRAMS\${ic.spacedName}\*.*"
-            Delete "$DESKTOP\${ic.spacedName}.lnk"
-            liteFirewall::RemoveRule "$INSTDIR\cardano-node.exe" "Cardano Node"
-            Pop $0
-            DetailPrint "liteFirewall::RemoveRule: $0"
-          SectionEnd
-        '';
+            Section "un."
+              DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}"
+              DeleteRegKey HKLM "Software\${ic.spacedName}"
+              RMDir /r /REBOOTOK "$INSTDIR"
+              Delete "$SMPROGRAMS\${ic.spacedName}\*.*"
+              Delete "$DESKTOP\${ic.spacedName}.lnk"
+              liteFirewall::RemoveRule "$INSTDIR\cardano-node.exe" "Cardano Node"
+              Pop $0
+              DetailPrint "liteFirewall::RemoveRule: $0"
+            SectionEnd
+          '';
 
-        installerNsi = pkgs.writeText "daedalus.nsi" ''
-          Unicode true
-          !define MUI_ICON "icons\${cluster}\${cluster}.ico"
-          !define MUI_HEADERIMAGE
-          !define MUI_HEADERIMAGE_BITMAP "icons\installBanner.bmp"
-          !define MUI_HEADERIMAGE_RIGHT
-          !include WinVer.nsh
-          VIProductVersion ${viProductVersion}
-          VIAddVersionKey "ProductVersion" "${ver}"
-          RequestExecutionLevel highest
-          !addplugindir "nsis_plugins\liteFirewall\bin"
+          installerNsi = pkgs.writeText "daedalus.nsi" ''
+            Unicode true
+            !define MUI_ICON "icons\${cluster}\${cluster}.ico"
+            !define MUI_HEADERIMAGE
+            !define MUI_HEADERIMAGE_BITMAP "icons\installBanner.bmp"
+            !define MUI_HEADERIMAGE_RIGHT
+            !include WinVer.nsh
+            VIProductVersion ${viProductVersion}
+            VIAddVersionKey "ProductVersion" "${ver}"
+            RequestExecutionLevel highest
+            !addplugindir "nsis_plugins\liteFirewall\bin"
 
-          Name "${ic.spacedName} (${ver})"
-          OutFile "${packageFileName}"
+            Name "${ic.spacedName} (${ver})"
+            OutFile "${packageFileName}"
 
-          InstallDir "$PROGRAMFILES64\${ic.spacedName}"
-          InstallDirRegKey HKLM "Software\${ic.spacedName}" "Install_Dir"
+            InstallDir "$PROGRAMFILES64\${ic.spacedName}"
+            InstallDirRegKey HKLM "Software\${ic.spacedName}" "Install_Dir"
 
-          LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
-          LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
+            LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
+            LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
 
-          LangString AlreadyRunning ''${LANG_ENGLISH} "is running. It needs to be fully shut down before running the installer!"
-          LangString AlreadyRunning ''${LANG_JAPANESE} "が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！"
-          LangString TooOld ''${LANG_ENGLISH} "This version of Windows is not supported. Windows 8.1 or above required."
-          LangString TooOld ''${LANG_JAPANESE} "このWindowsバージョンはサポートされていません。Windows 8.1以降が必要です。"
+            LangString AlreadyRunning ''${LANG_ENGLISH} "is running. It needs to be fully shut down before running the installer!"
+            LangString AlreadyRunning ''${LANG_JAPANESE} "が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！"
+            LangString TooOld ''${LANG_ENGLISH} "This version of Windows is not supported. Windows 8.1 or above required."
+            LangString TooOld ''${LANG_JAPANESE} "このWindowsバージョンはサポートされていません。Windows 8.1以降が必要です。"
 
-          Var INSTALLEDAT
+            Var INSTALLEDAT
 
-          Function .onInit
-            ''${IfNot} ''${AtLeastWin8.1}
-              MessageBox MB_OK "$(TooOld)"
-              Quit
-            ''${EndIf}
-          FunctionEnd
+            Function .onInit
+              ''${IfNot} ''${AtLeastWin8.1}
+                MessageBox MB_OK "$(TooOld)"
+                Quit
+              ''${EndIf}
+            FunctionEnd
 
-          Function DirectoryPre
-            ReadRegStr $INSTALLEDAT HKLM "Software\${ic.spacedName}" "Install_Dir"
-            StrLen $R0 $INSTALLEDAT
-            IntCmp $R0 0 +2
-            Abort
-          FunctionEnd
+            Function DirectoryPre
+              ReadRegStr $INSTALLEDAT HKLM "Software\${ic.spacedName}" "Install_Dir"
+              StrLen $R0 $INSTALLEDAT
+              IntCmp $R0 0 +2
+              Abort
+            FunctionEnd
 
-          Page directory DirectoryPre
-          Page instfiles
+            Page directory DirectoryPre
+            Page instfiles
 
-          Section ""
-            SectionIn RO
-            SetOutPath "$INSTDIR"
-            AllowSkipFiles off
-            WriteRegStr HKLM "Software\${ic.spacedName}" "Install_Dir" "$INSTDIR"
-            CreateDirectory "$APPDATA\${ic.installDirectory}\Secrets-1.0"
-            CreateDirectory "$APPDATA\${ic.installDirectory}\Logs"
-            CreateDirectory "$APPDATA\${ic.installDirectory}\Logs\pub"
+            Section ""
+              SectionIn RO
+              SetOutPath "$INSTDIR"
+              AllowSkipFiles off
+              WriteRegStr HKLM "Software\${ic.spacedName}" "Install_Dir" "$INSTDIR"
+              CreateDirectory "$APPDATA\${ic.installDirectory}\Secrets-1.0"
+              CreateDirectory "$APPDATA\${ic.installDirectory}\Logs"
+              CreateDirectory "$APPDATA\${ic.installDirectory}\Logs\pub"
 
-            ; Wait up to 30 s for the app to release its lockfile before installing
-            StrCpy $R0 0
-            StrCpy $R1 "false"
-          lockfileLoop:
-            IntCmp $R0 30 lockfileDone 0 lockfileDone
-            StrCmp $R1 "true" lockfileDone 0
-            DetailPrint "Checking if ${ic.spacedName} is not running ($R0/30)..."
-            StrCpy $R1 "true"
-            ClearErrors
-            Delete "$APPDATA\${ic.installDirectory}\${ic.uglyName}_lockfile"
-            IfErrors lockfileNotDeleted lockfileDeleted
-          lockfileNotDeleted:
-            StrCpy $R1 "false"
-          lockfileDeleted:
-            StrCmp $R1 "true" lockfileSkipSleep 0
-            Sleep 1000
-          lockfileSkipSleep:
-            IntOp $R0 $R0 + 1
-            Goto lockfileLoop
-          lockfileDone:
-            StrCmp $R1 "true" lockfileOk 0
-            Abort "${ic.installDirectory} $(AlreadyRunning)"
-          lockfileOk:
+              ; Wait up to 30 s for the app to release its lockfile before installing
+              StrCpy $R0 0
+              StrCpy $R1 "false"
+            lockfileLoop:
+              IntCmp $R0 30 lockfileDone 0 lockfileDone
+              StrCmp $R1 "true" lockfileDone 0
+              DetailPrint "Checking if ${ic.spacedName} is not running ($R0/30)..."
+              StrCpy $R1 "true"
+              ClearErrors
+              Delete "$APPDATA\${ic.installDirectory}\${ic.uglyName}_lockfile"
+              IfErrors lockfileNotDeleted lockfileDeleted
+            lockfileNotDeleted:
+              StrCpy $R1 "false"
+            lockfileDeleted:
+              StrCmp $R1 "true" lockfileSkipSleep 0
+              Sleep 1000
+            lockfileSkipSleep:
+              IntOp $R0 $R0 + 1
+              Goto lockfileLoop
+            lockfileDone:
+              StrCmp $R1 "true" lockfileOk 0
+              Abort "${ic.installDirectory} $(AlreadyRunning)"
+            lockfileOk:
 
-            IfFileExists "$INSTDIR\*.*" 0 +2
-              RMDir /r "$INSTDIR"
+              IfFileExists "$INSTDIR\*.*" 0 +2
+                RMDir /r "$INSTDIR"
 
-            IfFileExists "$APPDATA\${ic.installDirectory}\Wallet-1.0\open\*.*" 0 +2
-              RMDir "$APPDATA\${ic.installDirectory}\Wallet-1.0\open"
+              IfFileExists "$APPDATA\${ic.installDirectory}\Wallet-1.0\open\*.*" 0 +2
+                RMDir "$APPDATA\${ic.installDirectory}\Wallet-1.0\open"
 
-            File "cardano-node.exe"
-            File "cardano-wallet.exe"
-            File "cardano-watchdog.exe"
-            File "cardano-address.exe"
-            File "cardano-cli.exe"
-            File "mithril-client.exe"
-            File "snapshot-converter.exe"
-            File "config.yaml"
-            File "topology.yaml"
-            File "genesis.json"
-            File /nonfatal "genesis-dijkstra.json"
-            File /nonfatal "genesis-conway.json"
-            File /nonfatal "checkpoints.json"
-            File "genesis-byron.json"
-            File "genesis-shelley.json"
-            File "genesis-alonzo.json"
-            File "peer-snapshot.json"
-            File "libsodium-23.dll"
-            File "libsecp256k1-2.dll"
-            File "libffi-8.dll"
-            File "libgmp-10.dll"
-            File "libstdc++-6.dll"
-            File "libmcfgthread-2.dll"
-            File "libmcfgthread-minimal-2.dll"
-            File "libgcc_s_seh-1.dll"
-            File "zlib1.dll"
-            File "libz.dll"
-            File "libsnappy.dll"
-            File "daedalus-config.json"
-            File /r "..\release\win32-x64\${ic.spacedName}-win32-x64\"
+              File "cardano-node.exe"
+              File "cardano-wallet.exe"
+              File "cardano-watchdog.exe"
+              File "cardano-address.exe"
+              File "cardano-cli.exe"
+              File "mithril-client.exe"
+              File "snapshot-converter.exe"
+              File "config.yaml"
+              File "topology.yaml"
+              File "genesis.json"
+              File /nonfatal "genesis-dijkstra.json"
+              File /nonfatal "genesis-conway.json"
+              File /nonfatal "checkpoints.json"
+              File "genesis-byron.json"
+              File "genesis-shelley.json"
+              File "genesis-alonzo.json"
+              File "peer-snapshot.json"
+              File "libsodium-23.dll"
+              File "libsecp256k1-2.dll"
+              File "libffi-8.dll"
+              File "libgmp-10.dll"
+              File "libstdc++-6.dll"
+              File "libmcfgthread-2.dll"
+              File "libmcfgthread-minimal-2.dll"
+              File "libgcc_s_seh-1.dll"
+              File "zlib1.dll"
+              File "libz.dll"
+              File "libsnappy.dll"
+              File "daedalus-config.json"
+              File /r "..\release\win32-x64\${ic.spacedName}-win32-x64\"
 
-            liteFirewall::AddRule "$INSTDIR\cardano-node.exe" "Cardano Node"
-            Pop $0
-            DetailPrint "liteFirewall::AddRule: $0"
+              liteFirewall::AddRule "$INSTDIR\cardano-node.exe" "Cardano Node"
+              Pop $0
+              DetailPrint "liteFirewall::AddRule: $0"
 
-            CreateShortcut "$DESKTOP\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\daedalus-config.json$\"" "$INSTDIR\${ic.spacedName}.exe" 0 SW_SHOWMINIMIZED
+              CreateShortcut "$DESKTOP\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\daedalus-config.json$\"" "$INSTDIR\${ic.spacedName}.exe" 0 SW_SHOWMINIMIZED
 
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "InstallLocation" "$INSTDIR"
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "Publisher" "IOHK"
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "ProductVersion" "${ver}"
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "VersionMajor" "${versionMajor}"
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "VersionMinor" "${versionMinor}"
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "DisplayName" "${ic.spacedName}"
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "DisplayVersion" "${ver}"
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "UninstallString" "$\"$INSTDIR/uninstall.exe$\""
-            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "QuietUninstallString" "$\"$INSTDIR/uninstall.exe$\" /S"
-            WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "NoModify" 1
-            WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "NoRepair" 1
-            File "uninstall.exe"
-          SectionEnd
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "InstallLocation" "$INSTDIR"
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "Publisher" "IOHK"
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "ProductVersion" "${ver}"
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "VersionMajor" "${versionMajor}"
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "VersionMinor" "${versionMinor}"
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "DisplayName" "${ic.spacedName}"
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "DisplayVersion" "${ver}"
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "UninstallString" "$\"$INSTDIR/uninstall.exe$\""
+              WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "QuietUninstallString" "$\"$INSTDIR/uninstall.exe$\" /S"
+              WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "NoModify" 1
+              WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}" "NoRepair" 1
+              File "uninstall.exe"
+            SectionEnd
 
-          Section "Start Menu Shortcuts"
-            CreateDirectory "$SMPROGRAMS\${ic.spacedName}"
-            CreateShortcut "$SMPROGRAMS\${ic.spacedName}\Uninstall ${ic.spacedName}.lnk" "$INSTDIR/uninstall.exe" "" "$INSTDIR/uninstall.exe" 0
-            CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\daedalus-config.json$\"" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
-          SectionEnd
-        '';
-      in
-        pkgs.runCommand "nsis-files" {} ''
-          mkdir $out
-          cp ${uninstallerNsi} $out/uninstaller.nsi
-          cp ${installerNsi} $out/daedalus.nsi
-          cp -v ${daedalusConfigs.${cluster}.configFiles}/* $out/
-        '');
+            Section "Start Menu Shortcuts"
+              CreateDirectory "$SMPROGRAMS\${ic.spacedName}"
+              CreateShortcut "$SMPROGRAMS\${ic.spacedName}\Uninstall ${ic.spacedName}.lnk" "$INSTDIR/uninstall.exe" "" "$INSTDIR/uninstall.exe" 0
+              CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\daedalus-config.json$\"" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
+            SectionEnd
+          '';
+        in
+          pkgs.runCommand "nsis-files" {} ''
+            mkdir $out
+            cp ${uninstallerNsi} $out/uninstaller.nsi
+            cp ${installerNsi} $out/daedalus.nsi
+            cp -v ${daedalusConfigs.${cluster}.configFiles}/* $out/
+          '');
 
       unsignedUninstaller = genClusters (cluster:
         pkgs.runCommand "uninstaller" {buildInputs = [nsis wine];} ''
@@ -656,7 +688,25 @@
           ln -s ${../../../installers/nsis_plugins} nsis_plugins
 
           cp -vr ${daedalus-bridge.${cluster}}/bin/* .
-          cp -v ${nsisFiles.${cluster}}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .
+          ${
+            if cluster == "pilot"
+            then ''
+              cp -r ${nsisFiles.${cluster}}/. ./
+              mkdir -p profile-icons
+              ${lib.concatMapStringsSep "\n" (profile: ''cp ${windowsIcons.${profile}}/${profile}/${profile}.ico profile-icons/${profile}.ico'') pilotProfiles}
+              frontend="../release/win32-x64/${installDir}-win32-x64/resources"
+              mv "$frontend/app" "$frontend/shared-app"
+              mkdir "$frontend/app"
+              cp ${../../../packaging/windows/pilot-bootstrap.cjs} "$frontend/app/launch.cjs"
+              printf '%s\n' '${builtins.toJSON {
+                name = "daedalus-pilot-launcher";
+                productName = "Daedalus Pilot";
+                version = originalPackageJson.version;
+                main = "launch.cjs";
+              }}' > "$frontend/app/package.json"
+            ''
+            else ''cp -v ${nsisFiles.${cluster}}/{*.yaml,*.json,daedalus.nsi,*.key,*.cert} .''
+          }
           cp ${unsignedUninstaller.${cluster}}/uninstall.exe .
           if [ -f ${nsisFiles.${cluster}}/block-0.bin ]; then
             cp -v ${nsisFiles.${cluster}}/block-0.bin .
@@ -717,7 +767,11 @@
             ++ (with pkgs; [pkg-config unzip jq])
             ++ [pkgs.python3];
           buildInputs = [pkgs.libusb1];
-          CARDANO_WALLET_VERSION = cardanoWalletVersion cluster;
+          CARDANO_WALLET_VERSION = cardanoWalletVersion (
+            if cluster == "pilot"
+            then "mainnet-flight"
+            else cluster
+          );
           CARDANO_NODE_VERSION = cardanoNodeVersion;
           CI = "nix";
           NETWORK = daedalusConfigs.${cluster}.daedalusConfig.networkName;
@@ -832,6 +886,7 @@
           '');
 
         inherit nativeModulesZip;
+        pilotConfigs = nsisFiles.pilot;
       };
     in {
       _module.args.windowsBuild = windowsBuild;

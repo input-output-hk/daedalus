@@ -38,6 +38,7 @@
           ./../release-cli/Cargo.toml
           ./../release-cli/Cargo.lock
           ./../release-cli/src
+          ./../release-cli/tests
         ];
       };
       commonArgs = {
@@ -51,6 +52,10 @@
       packages.drt = craneLib.buildPackage (commonArgs
         // {
           inherit cargoArtifacts;
+          # These commands run the repository integration tests. Clippy only
+          # compiles test targets and must not pull Linux-only pacman into the
+          # Darwin checks or the shared dependency artifacts.
+          nativeCheckInputs = [pkgs.gnupg pkgs.pacman pkgs.libarchive pkgs.dpkg pkgs.rpm];
           meta = {
             description = "Daedalus release tool — hash, sign, upload, serve";
             mainProgram = "drt";
@@ -79,6 +84,11 @@
               pkgs.gnupg
               pkgs.awscli2
               pkgs.cargo-watch
+              # publish-linux-repos: metadata extraction from Linux packages
+              pkgs.dpkg # dpkg-deb --field  (DEB control metadata)
+              pkgs.rpm # rpm --qf          (RPM header metadata)
+              pkgs.libarchive # bsdtar            (Arch .PKGINFO extraction)
+              pkgs.pacman # repo-add + signed Arch client validation
             ];
             shellHook = ''
               echo "drt release-cli devShell"

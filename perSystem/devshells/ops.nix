@@ -43,12 +43,23 @@
       printf "  ''${green}3. serve''${reset}    drt serve --installers installers/<cluster>/\n"
       printf "  ''${dim}            test locally before releasing''${reset}\n"
       printf "  ''${green}4. release''${reset}  drt release installers/<cluster>/ --bucket <bucket> --bucket-url <url>\n"
+      printf "  ''${green}5. linux''${reset}    drt publish-linux-repos <incoming-directory>/ --state-dir <persistent-state> --bucket <bucket> --bucket-url <url> --no-acl\n"
+      printf "  ''${dim}            REPO_ACCESS_KEY_ID  REPO_SECRET_ACCESS_KEY  REPO_ENDPOINT_URL (R2)''${reset}\n"
+      printf "  ''${dim}            First use: --initialize with all existing packages. Preview: --dry-run. Automatic GC keeps current + previous per product.''${reset}\n"
       printf "\n"
     '';
   in
     lib.optionalAttrs cargoLockExists {
       devShells.ops = pkgs.mkShell {
-        packages = [config.packages.drt pkgs.gnupg];
+        packages = [
+          config.packages.drt
+          pkgs.gnupg
+          # publish-linux-repos metadata extraction tools
+          pkgs.dpkg
+          pkgs.rpm
+          pkgs.libarchive
+          pkgs.pacman
+        ];
         inherit shellHook;
       };
     };
