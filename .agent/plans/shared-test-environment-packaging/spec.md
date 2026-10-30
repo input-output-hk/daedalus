@@ -203,6 +203,8 @@ procedures; verify data and standalone Mainnet after each operation.
 - **FR-015**: macOS MUST distribute signed launchers and shared executable code
   through one notarized `.pkg` per supported architecture. Runtime selection
   MUST NOT rewrite signed bundles or require user signing/security bypasses.
+  CI MUST build unsigned installers only; signing and notarization occur during
+  the release process, outside CI installer builds.
 - **FR-016**: Release production MUST emit one combined artifact per existing
   supported OS/format/architecture target, with corresponding integrity and
   version metadata. Separate per-environment installers cease to be new-release

@@ -67,8 +67,8 @@
               mkdir -p "${configuration.installerConfig.dataDir}/Secrets-1.0" "${configuration.installerConfig.dataDir}/Logs/pub"
               HELPER
               chmod +x "$app/Resources/helper"
-              /usr/bin/codesign --force --sign - --options runtime --entitlements ${../installers/entitlements.xml} "$product/${name}.app"
-              /usr/bin/codesign --verify --deep --strict "$product/${name}.app"
+              # CI builds the unsigned installer. Bundle signing and notarization
+              # belong to the release process.
             '')
             profiles}
           cat > "$out/bin/daedalus" <<'LAUNCH'
@@ -107,5 +107,6 @@
     in {
       packages.daedalus-pilot-prototype = prototype;
       packages.installer-pilot-prototype = installer;
+      packages.installer-pilot = installer;
     });
 }
