@@ -1088,7 +1088,7 @@
         electronShaSums = pkgs.fetchurl {
           name = "electronShaSums-${electronVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-          hash = "sha256-fX4rsnocCWpGoGFO53n/WQEKHqBt1K2bCNN7tI8bw88=";
+          hash = "sha256-GHF5udNBq5Dv0kgWjWmlY7Am9O28dFeUiVJ+o8wHZsc=";
         };
 
         electronCacheHash =
@@ -1098,7 +1098,7 @@
         electronChromedriverShaSums = pkgs.fetchurl {
           name = "electronChromedriverShaSums-${electronChromedriverVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-          hash = "sha256-fX4rsnocCWpGoGFO53n/WQEKHqBt1K2bCNN7tI8bw88=";
+          hash = "sha256-GHF5udNBq5Dv0kgWjWmlY7Am9O28dFeUiVJ+o8wHZsc=";
         };
 
         electronChromedriverCacheHash =

@@ -590,16 +590,16 @@
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/electron-v${electronVersion}-darwin-${archSuffix}.zip";
           hash =
             if archSuffix == "x64"
-            then "sha256-PFCdPC9Zz+I1uB4mw6SQy17QfEm4ivEQqEz+1WY9tik="
-            else "sha256-FYVjRnk+Tn8/IgComEczebUe2hp66lXGsaMm1YdQutQ=";
+            then "sha256-vLtm0xeXnTk5mjgBhtXMMQRgn4X3y8Z3U1iFjLpG6mo="
+            else "sha256-B7tSBcfmyUzBslTg9xufkkrdWTB8/iDv1drI5QoaNg4=";
         };
 
         electronChromedriver = pkgs.fetchurl {
           url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/chromedriver-v${electronChromedriverVersion}-darwin-${archSuffix}.zip";
           hash =
             if archSuffix == "x64"
-            then "sha256-dKLjg0mNrfqHCLskA0halQ0lWfcdrlvWwuF6NZyOaiY="
-            else "sha256-32AKMYgC6B1wcvg0Btc/KWLRbx2XMfVfRMBwwwwYzRg=";
+            then "sha256-OZg1CT6iPDxnrNN+5jkjFId2rrJtLgCGHmyLv7T9d5s="
+            else "sha256-nJKLyOpsf8/Ga/8v2a5TB8cFcX3RP/qnZHTeCrau5hY=";
         };
       };
 
