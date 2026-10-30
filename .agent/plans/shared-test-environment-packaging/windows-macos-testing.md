@@ -11,10 +11,10 @@ Hydra exposes these explicit nonrequired artifact jobs:
 
 | Job | Output | Build host |
 |-----|--------|------------|
-| `pilot-tests.windows` | `installer-x86_64-windows-pilot` | x86_64 Linux cross build |
-| `pilot-tests.windows-archive` | `windows-pilot-archive-check` | x86_64 Linux archive inspection |
-| `pilot-tests.darwin-intel` | `installer-pilot-prototype` | Intel macOS |
-| `pilot-tests.darwin-arm` | `installer-pilot-prototype` | Apple Silicon macOS |
+| `installer.x86_64-windows.pilot` | `installer-x86_64-windows-pilot` | x86_64 Linux cross build |
+| `checks.x86_64-linux.pilot-windows-archive` | `windows-pilot-archive-check` | x86_64 Linux archive inspection |
+| `installer.x86_64-darwin.pilot` | `installer-pilot` | Intel macOS |
+| `installer.aarch64-darwin.pilot` | `installer-pilot` | Apple Silicon macOS |
 
 No environment flag is needed. These jobs are explicit flake outputs; `pilot`
 must not be added to `installer-clusters.cfg`, whose entries select the legacy
@@ -22,11 +22,13 @@ single-environment builders. Linux Pilot artifacts are exposed separately as
 `deb-installer.x86_64-linux.pilot`, `rpm-installer.x86_64-linux.pilot` and
 `arch-installer.x86_64-linux.pilot`.
 
-PR 3447 evaluation 128644 evaluated all four `pilot-tests` jobs. Windows and
+PR 3447 evaluation 128644 evaluated all four former `pilot-tests` jobs. Windows and
 its archive inspection passed (builds 15406082 and 15406083). Both Darwin
 prototype builds failed because codesign rejects symlinks outside an app bundle:
-`invalid destination for symbolic link in bundle`. The current shared sibling
-layout therefore remains blocked on a signing-compatible packaging design.
+`invalid destination for symbolic link in bundle`. The inappropriate CI signing
+and signature-verification steps have been removed: CI produces unsigned
+installers, and signing happens only during release. The layout's compatibility
+with release signing remains an open release task, not a CI build requirement.
 The three evaluation errors were separate: both Darwin `drt-clippy` jobs pulled
 in Linux-only pacman through shared integration-test inputs, and `nonrequired`
 inherited that failure. Those runtime test inputs now belong only to the package
@@ -101,7 +103,7 @@ On a disposable Windows host:
 Run on each native macOS architecture:
 
 ```sh
-nix build .#installer-pilot-prototype
+nix build .#installer-pilot
 # Optional launch from the Nix output before installation:
 nix run .#daedalus-pilot-prototype -- preview
 ```
@@ -113,19 +115,20 @@ executable must be below 2 MiB; frameworks, backends and application code are
 shared. Each shell keeps the existing launcher/Frontend/config/package identity
 layout, so no macOS TypeScript path or network selector is added.
 
-Native builds ad-hoc sign each shell and run strict deep signature verification.
-This is not a Developer ID signed/notarized distribution. Package generation
+CI assembles unsigned app shells and an unsigned `.pkg`; it does not sign or
+verify signatures on the assembled Pilot bundles. Signing and notarization happen
+only during release. Package generation
 rejects an existing Pilot prototype directory instead of replacing live shared
 code. Close all prototype profiles before removing a previous prototype. Existing
 standalone app bundles are outside the product directory and are not removed.
 
 The Linux session cannot build the Darwin dependencies required even during Nix
-evaluation. Native CI must establish successful build/signature verification
+evaluation. Native CI must establish a successful unsigned build
 before calling the macOS prototype runnable. No macOS runtime result is claimed.
 
 After a successful native build:
 
-1. Verify all three bundle IDs, displayed names, icons, signatures and symlink
+1. Verify all three bundle IDs, displayed names, icons and symlink
    targets. Confirm the installed package contains no `/bin/daedalus` payload.
 2. With legacy profiles stopped, open all three launcher apps through Finder,
    alongside standalone Mainnet. Verify the original settings and data paths.

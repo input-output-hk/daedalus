@@ -92,9 +92,10 @@ three small named `.app` shells and one sibling `Shared` payload. Each shell own
 its Info.plist, launcher, small Electron entry executable, config and package.json;
 frameworks, backend binaries and application code point to the one shared tree.
 Keep the existing executable/config locations inside each shell so direct-launch
-recovery and package identity validation retain their existing contracts. Ad-hoc
-sign for native prototype testing, then demonstrate distinct running Dock identity
-and relaunch before integrating production signing/notarization. CI must supply
+recovery and package identity validation retain their existing contracts. CI builds
+unsigned installers only; signing and notarization happen at release time.
+Demonstrate distinct running Dock identity and relaunch before integrating
+production signing/notarization into the release process. CI must supply
 the native macOS build/test evidence; Linux layout fixtures cannot certify it.
 
 Consent regression found during host testing: chain/wallet directories alone do

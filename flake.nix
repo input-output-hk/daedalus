@@ -84,9 +84,9 @@
         hydraJobs = {
           installer = {
             x86_64-linux = lib.genAttrs installerClusters (cluster: self.packages.x86_64-linux."installer-${cluster}");
-            x86_64-darwin = lib.genAttrs installerClusters (cluster: self.packages.x86_64-darwin."installer-${cluster}");
-            aarch64-darwin = lib.genAttrs installerClusters (cluster: self.packages.aarch64-darwin."installer-${cluster}");
-            x86_64-windows = lib.genAttrs installerClusters (cluster: self.packages.x86_64-linux."installer-x86_64-windows-${cluster}");
+            x86_64-darwin = lib.genAttrs (installerClusters ++ ["pilot"]) (cluster: self.packages.x86_64-darwin."installer-${cluster}");
+            aarch64-darwin = lib.genAttrs (installerClusters ++ ["pilot"]) (cluster: self.packages.aarch64-darwin."installer-${cluster}");
+            x86_64-windows = lib.genAttrs (installerClusters ++ ["pilot"]) (cluster: self.packages.x86_64-linux."installer-x86_64-windows-${cluster}");
           };
           deb-installer.x86_64-linux =
             lib.genAttrs (installerClusters ++ ["pilot"])
@@ -100,18 +100,15 @@
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
           nativeModules.x86_64-windows = self.packages.x86_64-linux.nativeModules-x86_64-windows;
-          # Explicit test artifacts, separate from the existing release outputs.
-          pilot-tests = {
-            windows = self.packages.x86_64-linux.installer-x86_64-windows-pilot;
-            windows-archive = self.packages.x86_64-linux.windows-pilot-archive-check;
-            darwin-intel = self.packages.x86_64-darwin.installer-pilot-prototype;
-            darwin-arm = self.packages.aarch64-darwin.installer-pilot-prototype;
-          };
           # Every system's checks, not only x86_64-linux. Pinned to one system,
           # a derivation added to `checks.aarch64-darwin` was a flake output
           # Hydra never evaluated and `required` never collected — present
           # locally, absent from CI, and silently so.
-          checks = lib.genAttrs supportedSystems (system: self.checks.${system});
+          checks = lib.genAttrs supportedSystems (system:
+            self.checks.${system}
+            // lib.optionalAttrs (system == "x86_64-linux") {
+              pilot-windows-archive = self.packages.x86_64-linux.windows-pilot-archive-check;
+            });
           # Only x86_64-linux gates a merge. The darwin checks are built and
           # reported on every commit, so a failure is visible on the pull
           # request, but a scarce or flaky mac builder does not hold up work —
@@ -120,7 +117,8 @@
             name = "github-required";
             meta.description = "All jobs required to pass CI";
             constituents =
-              lib.collect lib.isDerivation self.hydraJobs.checks.x86_64-linux;
+              # Full cross-built installer inspection remains nonrequired.
+              lib.collect lib.isDerivation self.checks.x86_64-linux;
           };
           nonrequired = inputs.nixpkgs.legacyPackages.x86_64-linux.releaseTools.aggregate {
             name = "github-nonrequired";
@@ -130,7 +128,7 @@
               ++ lib.collect lib.isDerivation self.hydraJobs.deb-installer
               ++ lib.collect lib.isDerivation self.hydraJobs.rpm-installer
               ++ lib.collect lib.isDerivation self.hydraJobs.arch-installer
-              ++ lib.collect lib.isDerivation self.hydraJobs.pilot-tests
+              ++ [self.hydraJobs.checks.x86_64-linux.pilot-windows-archive]
               ++ lib.collect lib.isDerivation self.hydraJobs.devshell
               ++ lib.collect lib.isDerivation
               (removeAttrs self.hydraJobs.checks ["x86_64-linux"]);
