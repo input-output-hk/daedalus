@@ -23,6 +23,13 @@
         (builtins.unsafeDiscardStringContext generated.content.packages.${name}.buildCommand))
       ["daedalus-pilot-prototype" "installer-pilot-prototype"];
     in {
+      checks.pilot-darwin-helper-layout =
+        pkgs.runCommand "pilot-darwin-helper-layout" {
+          nativeBuildInputs = [pkgs.jq];
+        } ''
+          bash ${../packaging/darwin/pilot-frameworks-check.sh} ${../packaging/darwin/pilot-frameworks.sh}
+          touch "$out"
+        '';
       checks.pilot-darwin-script-syntax = pkgs.runCommand "pilot-darwin-script-syntax" {} ''
         set -eu
         for script in ${lib.escapeShellArgs (map toString scripts)}; do

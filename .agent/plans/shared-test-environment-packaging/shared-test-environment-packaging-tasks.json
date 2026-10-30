@@ -131,8 +131,9 @@
       "Windows generated bootstrap/configuration/taskbar relaunch checks and NSIS fixture compilation: passed",
       "macOS generated native build/package script syntax: passed with native payload dependencies stubbed only for syntax",
       "Changed platform files: formatting and git diff whitespace checks passed",
-      "Full unsigned Windows installer built; actual EXE archive inspection passed (356467930 bytes)"
+      "Full unsigned Windows installer built; actual EXE archive inspection passed (356467930 bytes)",
+      "macOS helper layout: all three profiles and four helper types passed executable ownership, metadata, shared framework and relocation checks with a mock plist editor; generated script syntax passed"
     ],
-    "remaining": "Native Windows GUI/lifecycle and native Mac compilation/signature/Dock/relaunch checks await CI/host testing; see windows-macos-testing.md. Pilot test configs disable applying automatic updates. Final migration/upgrade/race/rollback, production signing/notarization and shared release routing remain pending. Local installer test slice prepared for CI; no push or deployment performed."
+    "remaining": "Native Windows GUI/lifecycle and native Mac unsigned build/Dock/relaunch checks await CI/host testing; see windows-macos-testing.md. Pilot test configs disable applying automatic updates. Final migration/upgrade/race/rollback, release-time production signing/notarization and shared release routing remain pending. CI builds unsigned installers only. Local installer test slice prepared for CI; no push or deployment performed."
   }
 }
