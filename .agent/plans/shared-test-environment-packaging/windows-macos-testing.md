@@ -16,6 +16,27 @@ Hydra exposes these explicit nonrequired artifact jobs:
 | `pilot-tests.darwin-intel` | `installer-pilot-prototype` | Intel macOS |
 | `pilot-tests.darwin-arm` | `installer-pilot-prototype` | Apple Silicon macOS |
 
+No environment flag is needed. These jobs are explicit flake outputs; `pilot`
+must not be added to `installer-clusters.cfg`, whose entries select the legacy
+single-environment builders. Linux Pilot artifacts are exposed separately as
+`deb-installer.x86_64-linux.pilot`, `rpm-installer.x86_64-linux.pilot` and
+`arch-installer.x86_64-linux.pilot`.
+
+PR 3447 evaluation 128644 evaluated all four `pilot-tests` jobs. Windows and
+its archive inspection passed (builds 15406082 and 15406083). Both Darwin
+prototype builds failed because codesign rejects symlinks outside an app bundle:
+`invalid destination for symbolic link in bundle`. The current shared sibling
+layout therefore remains blocked on a signing-compatible packaging design.
+The three evaluation errors were separate: both Darwin `drt-clippy` jobs pulled
+in Linux-only pacman through shared integration-test inputs, and `nonrequired`
+inherited that failure. Those runtime test inputs now belong only to the package
+test derivation, leaving Clippy and dependency compilation independent of them.
+After the CI fixes, both Darwin Clippy derivations and all three Linux Pilot
+installer jobs evaluate locally; Linux Clippy, lint and all 219 Jest suites pass
+(2,925 tests passed, three skipped, six snapshots). Evaluating the full
+`nonrequired` aggregate locally still needs a Darwin builder for its Node IFD;
+the next Hydra evaluation must validate that aggregate on CI.
+
 Linux CI also runs `pilot-windows-configs`, which compiles the actual NSIS scripts
 against a tiny payload and executes the packaging bootstrap through mocked
 Electron process/window boundaries. This is separate from the full installer

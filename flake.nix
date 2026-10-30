@@ -89,13 +89,13 @@
             x86_64-windows = lib.genAttrs installerClusters (cluster: self.packages.x86_64-linux."installer-x86_64-windows-${cluster}");
           };
           deb-installer.x86_64-linux =
-            lib.genAttrs installerClusters
+            lib.genAttrs (installerClusters ++ ["pilot"])
             (cluster: self.packages.x86_64-linux."deb-installer-${cluster}");
           rpm-installer.x86_64-linux =
-            lib.genAttrs installerClusters
+            lib.genAttrs (installerClusters ++ ["pilot"])
             (cluster: self.packages.x86_64-linux."rpm-installer-${cluster}");
           arch-installer.x86_64-linux =
-            lib.genAttrs installerClusters
+            lib.genAttrs (installerClusters ++ ["pilot"])
             (cluster: self.packages.x86_64-linux."arch-installer-${cluster}");
           devshell = lib.genAttrs supportedSystems (system: self.devShells.${system}.default);
           # Exposing these DLLs for easier development/debugging on Windows:
