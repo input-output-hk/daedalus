@@ -907,15 +907,13 @@ describe('Linux shared pilot package identity', () => {
       const file = String(value);
       if (![config, electron, sandbox, manifest].includes(file))
         throw new Error('unknown file');
+      let mode = 0o644;
+      if (file === sandbox) mode = 0o4755;
+      else if (file === config) mode = options.mode ?? 0o644;
       return {
         uid: file === config ? (options.uid ?? 0) : 0,
         gid: 0,
-        mode:
-          file === sandbox
-            ? 0o4755
-            : file === config
-              ? (options.mode ?? 0o644)
-              : 0o644,
+        mode,
         isFile: () => true,
         isSymbolicLink: () => file === config && options.symlink === true,
       };
@@ -1008,7 +1006,6 @@ describe('Linux shared pilot package identity', () => {
 
 describe('NixOS package identity', () => {
   const root = '/nix/store/aaaaaaaa-daedalus';
-  const configPath = `${root}/config/daedalus-config.json`;
   const electronPath = `${root}/libexec/bundle-electron/lib/electron/electron`;
   const manifestPath = '/var/lib/daedalus/preprod/sandbox-identity.json';
   const helperPath = '/var/lib/daedalus/preprod/chrome-sandbox';

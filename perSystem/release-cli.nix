@@ -46,13 +46,16 @@
         strictDeps = true;
         pname = "drt";
         version = "0.1.0";
-        nativeCheckInputs = [pkgs.gnupg pkgs.pacman pkgs.libarchive pkgs.dpkg pkgs.rpm];
       };
       cargoArtifacts = craneLib.buildDepsOnly commonArgs;
     in {
       packages.drt = craneLib.buildPackage (commonArgs
         // {
           inherit cargoArtifacts;
+          # These commands run the repository integration tests. Clippy only
+          # compiles test targets and must not pull Linux-only pacman into the
+          # Darwin checks or the shared dependency artifacts.
+          nativeCheckInputs = [pkgs.gnupg pkgs.pacman pkgs.libarchive pkgs.dpkg pkgs.rpm];
           meta = {
             description = "Daedalus release tool — hash, sign, upload, serve";
             mainProgram = "drt";
