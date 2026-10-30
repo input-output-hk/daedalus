@@ -784,7 +784,7 @@ export const MITHRIL_STATUS_CHANNEL = 'MITHRIL_STATUS_CHANNEL';
 export type MithrilStatusMainRequest = { phase: string };
 export type MithrilStatusRendererResponse = void;
 
-// Push (once): main → renderer when wallet port is known
+// Push: main → renderer each time the wallet reports ready
 export const WALLET_PORT_CHANNEL = 'WALLET_PORT_CHANNEL';
 export type WalletPortMainRequest = {
   port: number;
@@ -793,6 +793,12 @@ export type WalletPortMainRequest = {
   key: number[];
 };
 export type WalletPortRendererResponse = void;
+
+// Request: renderer asks for the connection details of a ready wallet.
+// The response is null until a wallet reports ready after the latest node start.
+export const GET_WALLET_CONNECTION_CHANNEL = 'GET_WALLET_CONNECTION_CHANNEL';
+export type GetWalletConnectionRendererRequest = void;
+export type GetWalletConnectionMainResponse = WalletPortMainRequest | null;
 
 // Push: main → renderer node_startup_status events
 export const NODE_STARTUP_STATUS_CHANNEL = 'NODE_STARTUP_STATUS_CHANNEL';

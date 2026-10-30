@@ -1,6 +1,7 @@
 import { BrowserWindow } from 'electron';
 import compressLogsApi from './compress-logs';
 import { getCachedBackendStatusChannel } from './backendStatusChannel';
+import { getWalletConnectionChannel } from './walletConnectionChannel';
 import { mithrilCommandChannel } from './mithrilCommandChannel';
 import { handleChainStorageRequests } from './chainStorageChannel';
 import { backendLifecycle } from '../BackendLifecycle';
@@ -120,6 +121,9 @@ export default (window: BrowserWindow) => {
         chainDamageDismissed: false,
       }
     )
+  );
+  getWalletConnectionChannel.onRequest(() =>
+    Promise.resolve(backendLifecycle.getWalletConnection())
   );
   mithrilCommandChannel.onReceive((cmd) => {
     backendLifecycle.sendMithrilCommand(cmd);

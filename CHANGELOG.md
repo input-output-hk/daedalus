@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Loading: configure the wallet connection when the wallet-ready message arrives before the window is listening or the window reloads, instead of staying on Connecting to network until the wallet restarts ([PR #3446](https://github.com/input-output-hk/daedalus/pull/3446)).
+
 ### Chores
 
 - Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
