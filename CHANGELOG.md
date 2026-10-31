@@ -11,6 +11,8 @@
 - Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
 - Update body-parser from 1.20.8 to 1.20.9 for GHSA-27r3-jxmh-p828 ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
 - Update electron from 42.11.14 to 42.11.18 for GHSA-jr5w-w6x2-84p9 ([PR #3444](https://github.com/input-output-hk/daedalus/pull/3444)).
+- Build the bundled cardano-address tool from the upstream cardano-wallet release used for mainnet instead of the cardano-wallet-cip30 input ([PR #3440](https://github.com/input-output-hk/daedalus/pull/3440)).
+- Build the cardano-wallet bundled in preprod, preview and mainnet-flight packages from tag `integration/20261030-2` of `se7en-labs-inc/cardano-wallet` instead of `cip30-alpha1`. The tag is upstream cardano-wallet master with the open fixes cardano-foundation/cardano-wallet#5469, #5472, #5476 and #5478 and the CIP-30 stack merged in. On Windows, the wallet reconnects to the node after an aborted named pipe read instead of shutting down. Ordinary mainnet packages keep the upstream release ([PR #3440](https://github.com/input-output-hk/daedalus/pull/3440)).
 
 ## 11.6.0
 
