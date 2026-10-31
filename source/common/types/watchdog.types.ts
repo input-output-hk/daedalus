@@ -163,6 +163,7 @@ export type MithrilCommand =
   | { cmd: 'start_mithril'; wipe_chain: true }
   | { cmd: 'start_node' }
   | { cmd: 'cancel_mithril' }
+  | { cmd: 'replay_mithril_ledger' }
   | { cmd: 'probe_mithril' }
   | { cmd: 'restart_node' }
   | { cmd: 'restart_wallet' }

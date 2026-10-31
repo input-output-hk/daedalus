@@ -166,6 +166,14 @@ describe('BackendStore chain damage', () => {
     (mithrilCommandChannel.send as jest.Mock).mockClear();
   });
 
+  it('sends the dedicated ledger replay recovery command', () => {
+    const store = makeStore();
+    store.replayMithrilLedger();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'replay_mithril_ledger',
+    });
+  });
+
   it('returns chain-damaged when a hole was detected while the node starts', () => {
     const store = makeStore();
     (store as any).hasChain = true;

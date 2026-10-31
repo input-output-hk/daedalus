@@ -555,6 +555,8 @@
   "loading.mithrilBootstrap.error.rebuildMarkerFailed.hint": "Daedalus could not record the rebuild in its data folder, so it changed nothing. Check that the data folder is writable and retry.",
   "loading.mithrilBootstrap.error.rebuildMarkerFailed.removedHint": "Daedalus could not record the rebuild in its data folder. Check that the data folder is writable and retry.",
   "loading.mithrilBootstrap.error.retry": "Retry",
+  "loading.mithrilBootstrap.error.replayLedger": "Keep blocks and replay ledger",
+  "loading.mithrilBootstrap.error.replayLedgerHint": "The ledger snapshot could not be converted. You can keep the verified downloaded blocks and rebuild the ledger locally. This can take a long time, but does not download the blocks again.",
   "loading.mithrilBootstrap.error.skip": "Skip to blockchain sync",
   "loading.mithrilBootstrap.error.verify.hint": "Daedalus could not verify the snapshot integrity. Try another snapshot or do a Blockchain Sync from Genesis.",
   "loading.mithrilBootstrap.error.verify.title": "Snapshot verification failed",
