@@ -292,7 +292,15 @@ mod tests {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let addr = listener.local_addr().unwrap();
         drop(listener);
-        assert_eq!(plain(addr).run().await, Outcome::Refused);
+        // Windows answers a connect to a closed port only after its SYN
+        // retransmissions, about two seconds, so the timeout must exceed that.
+        let probe = HttpProbe::new(
+            addr,
+            "/v2/network/information",
+            Duration::from_secs(10),
+            None,
+        );
+        assert_eq!(probe.run().await, Outcome::Refused);
     }
 
     #[tokio::test]
