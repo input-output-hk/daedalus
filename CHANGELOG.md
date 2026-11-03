@@ -17,6 +17,9 @@
 - Update electron from 42.11.14 to 42.11.18 for GHSA-jr5w-w6x2-84p9 ([PR #3444](https://github.com/input-output-hk/daedalus/pull/3444)).
 - Remove the unused process group flag from the watchdog's Windows node and wallet spawns ([PR #3439](https://github.com/input-output-hk/daedalus/pull/3439)).
 - Build the bundled cardano-address tool from the upstream cardano-wallet release used for mainnet instead of the cardano-wallet-cip30 input ([PR #3440](https://github.com/input-output-hk/daedalus/pull/3440)).
+- Update decode-uri-component from 0.5.0 to 0.5.1 for GHSA-qr28-fpjm-wq7f ([PR #3448](https://github.com/input-output-hk/daedalus/pull/3448)).
+- Update follow-redirects from 1.16.1 to 1.16.2 for GHSA-mrwp-f3q8-3g9p ([PR #3448](https://github.com/input-output-hk/daedalus/pull/3448)).
+- Update joi from 18.3.0 to 18.3.1 for GHSA-4528-x5fx-h6hg ([PR #3448](https://github.com/input-output-hk/daedalus/pull/3448)).
 
 ## 11.6.0
 
