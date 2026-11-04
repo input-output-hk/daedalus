@@ -71,16 +71,16 @@
     "cardano-wallet-cip30": {
       "flake": false,
       "locked": {
-        "lastModified": 1790871518,
-        "narHash": "sha256-2qvM3bQm5djgQ7o8ddqkbE8BnclIGOwxyE0jSLdpN8o=",
+        "lastModified": 1793427016,
+        "narHash": "sha256-8TqGy9nvdZO4cUE8seF63jQE4cOwgPs+oxQyFRCEjVU=",
         "owner": "se7en-labs-inc",
         "repo": "cardano-wallet",
-        "rev": "d408e4f29e46dc34454b160b3994ee9974b5cde2",
+        "rev": "d884985e1e756d23c7b087ea4dcf6c82bf5085c5",
         "type": "github"
       },
       "original": {
         "owner": "se7en-labs-inc",
-        "ref": "cip30-alpha1",
+        "ref": "integration/20261030-2",
         "repo": "cardano-wallet",
         "type": "github"
       }

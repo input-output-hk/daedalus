@@ -16,7 +16,7 @@
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
     cardano-wallet.url = "github:cardano-foundation/cardano-wallet/v2026-10-07";
     cardano-wallet.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
-    cardano-wallet-cip30.url = "github:se7en-labs-inc/cardano-wallet/cip30-alpha1";
+    cardano-wallet-cip30.url = "github:se7en-labs-inc/cardano-wallet?ref=integration/20261030-2";
     cardano-wallet-cip30.flake = false;
     cardano-node.url = "github:IntersectMBO/cardano-node/11.1.3";
     cardano-node.flake = false;

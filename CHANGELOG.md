@@ -5,6 +5,7 @@
 ### Fixes
 
 - Loading: configure the wallet connection when the wallet-ready message arrives before the window is listening or the window reloads, instead of staying on Connecting to network until the wallet restarts ([PR #3446](https://github.com/input-output-hk/daedalus/pull/3446)).
+- On Windows, the wallet in preprod, preview and mainnet-flight packages reconnects to the node after an aborted named pipe read instead of shutting down, because it is built from tag `integration/20261030-2` of `se7en-labs-inc/cardano-wallet` ([PR #3440](https://github.com/input-output-hk/daedalus/pull/3440)).
 
 ### Chores
 
@@ -12,6 +13,7 @@
 - Update body-parser from 1.20.8 to 1.20.9 for GHSA-27r3-jxmh-p828 ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
 - Update electron from 42.11.14 to 42.11.18 for GHSA-jr5w-w6x2-84p9 ([PR #3444](https://github.com/input-output-hk/daedalus/pull/3444)).
 - Remove the unused process group flag from the watchdog's Windows node and wallet spawns ([PR #3439](https://github.com/input-output-hk/daedalus/pull/3439)).
+- Build the bundled cardano-address tool from the upstream cardano-wallet release used for mainnet instead of the cardano-wallet-cip30 input ([PR #3440](https://github.com/input-output-hk/daedalus/pull/3440)).
 
 ## 11.6.0
 
