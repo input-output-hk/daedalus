@@ -6,6 +6,7 @@
 
 - Loading: configure the wallet connection when the wallet-ready message arrives before the window is listening or the window reloads, instead of staying on Connecting to network until the wallet restarts ([PR #3446](https://github.com/input-output-hk/daedalus/pull/3446)).
 - On Windows, the wallet in preprod, preview and mainnet-flight packages reconnects to the node after an aborted named pipe read instead of shutting down, because it is built from tag `integration/20261030-2` of `se7en-labs-inc/cardano-wallet` ([PR #3440](https://github.com/input-output-hk/daedalus/pull/3440)).
+- Fix the watchdog reporting a wrong or wrapped node shutdown time, node socket wait or wallet ready wait when the system clock is adjusted while the backend starts or stops ([PR #3441](https://github.com/input-output-hk/daedalus/pull/3441)).
 
 ### Chores
 
