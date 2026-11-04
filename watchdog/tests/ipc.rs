@@ -104,6 +104,10 @@ impl Watchdog {
     }
 
     fn start(config: &str) -> Self {
+        Self::start_with_env(config, &[])
+    }
+
+    fn start_with_env(config: &str, envs: &[(&str, &str)]) -> Self {
         let parsed: Value = serde_json::from_str(config).expect("valid config JSON");
         let state_dir = parsed["node"]["state_dir"]
             .as_str()
@@ -114,6 +118,7 @@ impl Watchdog {
         let mut child = Command::new(env!("CARGO_BIN_EXE_cardano-watchdog"))
             .arg("--config")
             .arg(&config_path)
+            .envs(envs.iter().copied())
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
@@ -248,4 +253,54 @@ fn wallet_restarts_on_crash() {
 
     wdog.wait();
     // dir is cleaned up by TempDir Drop
+}
+
+/// A wallet whose server goes away while its process stays alive is replaced.
+/// The probe meets a refused connection on every platform, which this test
+/// covers on Windows too.
+#[test]
+fn wallet_restarts_when_its_server_goes_away() {
+    let dir = TempDir::new("health");
+    populate_chain(dir.path());
+    let socket = dir.path().join("node.socket");
+    let port = free_port();
+    let sentinel = dir.path().join("healthy");
+
+    let mut config: Value = serde_json::from_str(&config_json(
+        socket.to_str().unwrap(),
+        dir.path().to_str().unwrap(),
+        port,
+        dir.path().to_str().unwrap(),
+    ))
+    .unwrap();
+    config["wallet"]["health"] = serde_json::json!({
+        "probe_interval_ms": 100,
+        // A refused connect to a closed port can take a second or two to
+        // fail on Windows.
+        "probe_timeout_ms": 2000,
+        "failure_threshold": 2,
+        "stop_timeout_secs": 5
+    });
+
+    let mut wdog = Watchdog::start_with_env(
+        &config.to_string(),
+        &[
+            ("MOCK_WALLET_HTTP", "1"),
+            ("MOCK_WALLET_CLOSE_AFTER_MS", "1500"),
+            ("MOCK_WALLET_HEALTHY_SENTINEL", sentinel.to_str().unwrap()),
+        ],
+    );
+
+    let first = wdog.expect("wallet_started");
+    wdog.expect("wallet_ready");
+    let verdict = wdog.expect("wallet_unresponsive");
+    assert_eq!(verdict["will_restart"], true, "{verdict}");
+    assert_eq!(verdict["answered_once"], true, "{verdict}");
+    let second = wdog.expect("wallet_started");
+    assert_ne!(first["pid"], second["pid"]);
+    wdog.expect("wallet_ready");
+
+    wdog.send_stop();
+    wdog.expect("stopped");
+    wdog.wait();
 }

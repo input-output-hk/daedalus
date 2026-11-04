@@ -7,6 +7,7 @@ import type {
   ChainDamage,
   ChainDamageKind,
   RequestedRestart,
+  WalletUnresponsive,
 } from '../common/types/watchdog.types';
 
 // ---------------------------------------------------------------------------
@@ -95,6 +96,9 @@ export interface WatchdogState {
   nodeForceKilled: boolean;
   lastWalletExitCode: number | null;
   lastWalletExitSignal: string | null;
+  // Restarts of cardano-wallet for not answering, and the latest such event
+  walletUnresponsiveRestarts: number;
+  lastWalletUnresponsive: WalletUnresponsive | null;
   // Runtime overrides (from watchdog-state.json)
   nodeExtraArgs: string[];
 
@@ -208,6 +212,8 @@ class WatchdogManager {
       nodeForceKilled: false,
       lastWalletExitCode: null,
       lastWalletExitSignal: null,
+      walletUnresponsiveRestarts: 0,
+      lastWalletUnresponsive: null,
       nodeExtraArgs: [],
       shutdownRequested: false,
       backendStopProgress: null,
@@ -598,6 +604,15 @@ class WatchdogManager {
 
       case 'wallet_restarting':
         s.walletRestartCount = event.attempt as number;
+        break;
+
+      case 'wallet_unresponsive':
+        s.lastWalletUnresponsive = {
+          at: Date.now(),
+          lastError: event.last_error as string,
+          willRestart: event.will_restart === true,
+        };
+        if (event.will_restart === true) s.walletUnresponsiveRestarts += 1;
         break;
 
       case 'wallet_unrecoverable':

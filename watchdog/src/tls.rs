@@ -6,7 +6,29 @@ use rcgen::{
 use std::path::{Path, PathBuf};
 use time::{Duration, OffsetDateTime};
 
+/// The certificate material the watchdog presents when it calls the wallet
+/// API itself, as DER. The root is the generated CA, the identity is the
+/// generated client certificate; the key is PKCS#8.
+#[derive(Clone)]
+pub struct TlsClientMaterial {
+    pub ca_der: Vec<u8>,
+    pub cert_der: Vec<u8>,
+    pub key_der: Vec<u8>,
+}
+
+// The key is secret, so it never reaches a log through `{:?}`.
+impl std::fmt::Debug for TlsClientMaterial {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("TlsClientMaterial")
+            .field("ca_der", &format_args!("{} bytes", self.ca_der.len()))
+            .field("cert_der", &format_args!("{} bytes", self.cert_der.len()))
+            .field("key_der", &"<redacted>")
+            .finish()
+    }
+}
+
 pub struct TlsPaths {
+    pub client: TlsClientMaterial,
     pub server_ca: PathBuf,
     pub server_cert: PathBuf,
     pub server_key: PathBuf,
@@ -44,7 +66,12 @@ pub fn generate_certs(tls_dir: &Path) -> Result<TlsPaths> {
     let server_dir = tls_dir.join("server");
     let client_dir = tls_dir.join("client");
 
-    let paths = TlsPaths {
+    let mut paths = TlsPaths {
+        client: TlsClientMaterial {
+            ca_der: Vec::new(),
+            cert_der: Vec::new(),
+            key_der: Vec::new(),
+        },
         server_ca: server_dir.join("ca.crt"),
         server_cert: server_dir.join("server.crt"),
         server_key: server_dir.join("server.key"),
@@ -112,6 +139,12 @@ pub fn generate_certs(tls_dir: &Path) -> Result<TlsPaths> {
     client_dn.push(DnType::OrganizationName, "Daedalus");
     client_params.distinguished_name = client_dn;
     let client_cert = client_params.signed_by(&client_key, &ca)?;
+
+    paths.client = TlsClientMaterial {
+        ca_der: ca.der().to_vec(),
+        cert_der: client_cert.der().to_vec(),
+        key_der: client_key.serialize_der(),
+    };
 
     let ca_pem = ca.pem();
     std::fs::write(&paths.server_ca, &ca_pem)?;
@@ -196,6 +229,27 @@ mod tests {
                 path.display()
             );
         }
+    }
+
+    #[test]
+    fn generate_returns_client_material() {
+        let tls_dir = tmp_tls_dir("der");
+        let paths = generate_certs(&tls_dir).unwrap();
+        assert!(!paths.client.ca_der.is_empty());
+        assert!(!paths.client.cert_der.is_empty());
+        assert!(!paths.client.key_der.is_empty());
+    }
+
+    #[test]
+    fn client_material_debug_hides_the_key() {
+        let m = TlsClientMaterial {
+            ca_der: vec![1],
+            cert_der: vec![2],
+            key_der: vec![0xAB, 0xCD],
+        };
+        let shown = format!("{m:?}");
+        assert!(shown.contains("redacted"));
+        assert!(!shown.contains("171"));
     }
 
     #[test]

@@ -87,6 +87,10 @@ file-rotate = "0.8"
 clap = { version = "4", features = ["derive"] }
 rcgen = "0.14"
 time = { version = "0.3", features = ["std"] }
+# Wallet health probe client. Default features off so that aws-lc-rs is not
+# built: the ring provider is already compiled for rcgen.
+rustls = { version = "0.23.46", default-features = false, features = ["ring", "std", "tls12"] }
+tokio-rustls = { version = "0.26.6", default-features = false, features = ["ring", "tls12"] }
 
 [target.'cfg(unix)'.dependencies]
 nix = { version = "0.29", features = ["process", "signal"] }

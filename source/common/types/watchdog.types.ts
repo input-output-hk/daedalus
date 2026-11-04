@@ -55,6 +55,12 @@ export interface WatchdogState {
   nodeForceKilled: boolean;
   lastWalletExitCode: number | null;
   lastWalletExitSignal: string | null;
+  // Times the watchdog restarted cardano-wallet because its API stopped
+  // answering while the process was still running
+  walletUnresponsiveRestarts: number;
+  // The latest such event; willRestart is false once the watchdog has stopped
+  // restarting the wallet by itself
+  lastWalletUnresponsive: WalletUnresponsive | null;
   // Set once when probe fires and node is significantly behind certified tip
   mithrilSignificantlyBehind: {
     localImmutableCount: number;
@@ -87,6 +93,14 @@ export interface WatchdogState {
   // the screen again
   chainDamageDismissed: boolean;
 }
+
+// WalletUnresponsive — the latest wallet_unresponsive event, with the time
+// Daedalus received it.
+export type WalletUnresponsive = {
+  at: number;
+  lastError: string;
+  willRestart: boolean;
+};
 
 // BackendStopProgress — from backend_stop_progress events, emitted while the
 // watchdog stops cardano-wallet or cardano-node. elapsedMs counts from the
