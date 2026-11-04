@@ -10,6 +10,7 @@ const { ec: EC } = require('elliptic');
 const braces = require('braces');
 const FormData = require('form-data');
 const { sprintf } = require('sprintf-js');
+const Joi = require('joi');
 const extract = require('extract-zip');
 const vectors = require('./fixtures/elliptic-p521-regressions.json');
 
@@ -143,6 +144,20 @@ describe('dependency security patches', () => {
     expect(
       body.split('\r\n').filter((l) => l.startsWith('X-Injected'))
     ).toEqual([]);
+  });
+
+  test('joi multiple-address email validation handles long whitespace runs in linear time', () => {
+    const schema = Joi.string().email({
+      multiple: true,
+      tlds: { allow: false },
+    });
+    const start = Date.now();
+    const { error } = schema.validate('a' + ' '.repeat(80000) + 'b');
+    expect(Date.now() - start).toBeLessThan(1000);
+    expect(error).toBeDefined();
+    expect(
+      schema.validate('a@example.com, b@example.org').error
+    ).toBeUndefined();
   });
 });
 
