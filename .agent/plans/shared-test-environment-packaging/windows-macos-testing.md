@@ -120,7 +120,22 @@ when renamed app shells used Flight's shared helper names. The Linux
 executable locations and shared framework resolution after relocation, with a
 mock plist editor; it does not run Electron or certify native macOS behavior.
 Each shell keeps the existing launcher/Frontend/config/package identity
-layout, so no macOS TypeScript path or network selector is added.
+layout, so no macOS TypeScript path or network selector is added. Shared regular
+files are hard-linked into real directories in each shell, preserving the normal
+internal framework version symlinks. External framework symlinks caused native
+helper bundle lookup, ICU, pak and V8 resource failures. The
+`pilot-darwin-hardlink-layout` check covers payload inode sharing, internal links,
+profile identity, relocation and reconstruction after a staging copy loses hard
+links. Final package staging prunes the common app payloads and archives Shared
+once as ordinary files. Postinstall creates the hard links using native macOS
+copying, with no Nix dependency on the target system. This also avoids depending
+on Nix archive/cache inode sharing. Archiving the complete hard-linked tree failed
+native extraction: expected symlinks became temporary `.BC.D_*` names despite a
+successful installer exit status. Always verify the installed framework links.
+Each shell contains one profile's configuration files directly in
+`Contents/Resources`. Electron, watchdog, node and wallet use that same directory;
+there is no second configuration copy under `Resources/profiles`. Electron
+resolves `genesis.json` beside its runtime config.
 
 CI assembles unsigned app shells and an unsigned `.pkg`; it does not sign or
 verify signatures on the assembled Pilot bundles. Signing and notarization happen
@@ -129,14 +144,25 @@ rejects an existing Pilot prototype directory instead of replacing live shared
 code. Close all prototype profiles before removing a previous prototype. Existing
 standalone app bundles are outside the product directory and are not removed.
 
-The Linux session cannot build the Darwin dependencies required even during Nix
-evaluation. Native CI must establish a successful unsigned build
-before calling the macOS prototype runnable. No macOS runtime result is claimed.
+Native Apple Silicon verification on 2026-11-04: the rebuilt unsigned package
+(566,576,469 bytes) installed into an empty Pilot directory. All 190 archived
+symlinks matched the package manifest. Each profile had 37,606 common files sharing
+inodes with Shared, real framework directories, intact internal links, correctly
+named helpers and one configuration/genesis directory. All three profiles ran
+concurrently as the desktop user with healthy GPU, network and renderer helpers
+and distinct running LaunchServices bundle identities. Preview reached node
+`chainDbReady` and wallet API readiness. Pre-Prod and Flight reported no existing
+chain and remained at initial setup; their synchronization was not tested. All
+three were stopped cleanly afterward. No installed-file repairs were needed for
+this package. Intel, visual Dock/pin/relaunch, signing and notarization checks
+remain open.
 
 After a successful native build:
 
-1. Verify all three bundle IDs, displayed names, icons and symlink
-   targets. Confirm the installed package contains no `/bin/daedalus` payload.
+1. Verify all three bundle IDs, displayed names and icons. Check shared payload
+   files have matching device/inode numbers in Shared and all three apps; framework
+   directories must be real, with only their standard internal symlinks retained.
+   Confirm the installed package contains no `/bin/daedalus` payload.
    Confirm each app's default, renderer, GPU and plugin helpers have matching
    profile names and bundle IDs and their executables resolve inside that app.
 2. With legacy profiles stopped, open all three launcher apps through Finder,

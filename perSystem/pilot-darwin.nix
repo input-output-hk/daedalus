@@ -35,7 +35,7 @@
               name = configuration.installerConfig.spacedName;
             in ''
               app="$product/${name}.app/Contents"
-              mkdir -p "$app"/{MacOS,Resources/app,Resources/profiles/${profile}}
+              mkdir -p "$app"/{MacOS,Resources/app}
               cp "$shared/Info.plist" "$app/Info.plist"
               /usr/libexec/PlistBuddy -c 'Set :CFBundleIdentifier org.daedalus.pilot.${profile}' "$app/Info.plist"
               /usr/libexec/PlistBuddy -c 'Set :CFBundleName ${name}' "$app/Info.plist"
@@ -51,8 +51,9 @@
               done
               cp "$shared/MacOS/Frontend" "$app/MacOS/Frontend"
               cp ${darwinBuild.darwin-launcher}/bin/darwin-launcher "$app/MacOS/${name}"
-              cp -R ${configuration.configFiles}/. "$app/Resources/profiles/${profile}/"
-              cp "$app/Resources/profiles/${profile}/daedalus-config.json" "$app/Resources/daedalus-config.json"
+              # Each shell selects one profile. Electron and the backends share
+              # the same config/genesis directory beside the launcher config.
+              cp -R ${configuration.configFiles}/. "$app/Resources/"
               # Keep a real app directory and per-profile package identity; its
               # large children link back to the one shared JavaScript payload.
               for item in "$shared/Resources/app"/*; do
@@ -72,6 +73,7 @@
               # belong to the release process.
             '')
             profiles}
+          bash ${../packaging/darwin/pilot-hardlink-payload.sh} "$product"
           cat > "$out/bin/daedalus" <<'LAUNCH'
           #!/bin/sh
           set -eu
@@ -90,7 +92,18 @@
       installer = pkgs.runCommand "daedalus-pilot-prototype-pkg" {} ''
         mkdir -p "$out"
         mkdir -p stage scripts
+        # Archive Shared once, with ordinary files rather than link groups.
+        # Apple's extractor damaged symlinks in the full hard-linked payload.
         cp -R ${prototype}/Applications stage/
+        chmod -R u+w stage
+        bash ${../packaging/darwin/pilot-hardlink-payload.sh} 'stage/Applications/Daedalus Pilot' prune
+        cp ${../packaging/darwin/pilot-hardlink-payload.sh} scripts/hardlink-payload
+        cat > scripts/postinstall <<'POSTINSTALL'
+        #!/bin/bash
+        set -euo pipefail
+        target="''${3:-/}"
+        exec /bin/bash "''${0%/*}/hardlink-payload" "''${target%/}/Applications/Daedalus Pilot"
+        POSTINSTALL
         cat > scripts/preinstall <<'PREINSTALL'
         #!/bin/sh
         if [ -e '/Applications/Daedalus Pilot' ]; then
@@ -98,7 +111,7 @@
           exit 1
         fi
         PREINSTALL
-        chmod +x scripts/preinstall
+        chmod +x scripts/preinstall scripts/postinstall
         /usr/bin/pkgbuild --root stage --scripts scripts --identifier org.daedalus.pilot.prototype \
           --version ${common.originalPackageJson.version} --install-location / \
           "$out/daedalus-pilot-prototype-${system}.pkg"

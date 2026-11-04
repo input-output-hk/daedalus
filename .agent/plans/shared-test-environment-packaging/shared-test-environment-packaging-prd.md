@@ -90,11 +90,19 @@ remains required. Prototype self-updates stay disabled until shared release rout
 macOS first exposes a prototype under `/Applications/Daedalus Pilot`, containing
 three small named `.app` shells and one sibling `Shared` payload. Each shell owns
 its Info.plist, launcher, small Electron entry executable, config and package.json.
+The profile's configuration and genesis files live once in that shell's
+`Contents/Resources`; Electron and the backends all resolve that directory.
 Each shell also owns small helper app bundles named to match its CFBundleName,
 with profile-specific bundle IDs and real executables inside its Frameworks
 directory. Electron resolves helper names and parent app identity through those
 paths; the complete Frameworks directory must not point into Flight's payload.
-Large framework binaries, backends and application code point to the shared tree.
+Large framework binaries, backends and application code use hard links to the
+shared tree, with real directories inside each app. External framework symlinks
+caused helper startup/resource failures on macOS; standard internal framework
+version symlinks are preserved. The package archives Shared once and omits the
+shells' common payload trees; postinstall creates their hard links. This avoids
+depending on Nix archive/cache inode sharing or Apple's extraction of the full
+hard-linked archive, which damaged symlinks in native testing.
 Keep the existing executable/config locations inside each shell so direct-launch
 recovery and package identity validation retain their existing contracts. CI builds
 unsigned installers only; signing and notarization happen at release time.

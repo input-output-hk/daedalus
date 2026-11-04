@@ -367,11 +367,11 @@
           macos64 =
             if devShell
             then configFilesSource
-            else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources${lib.optionalString (product != null) "/profiles/${network}"}";
+            else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
           macos64-arm =
             if devShell
             then configFilesSource
-            else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources${lib.optionalString (product != null) "/profiles/${network}"}";
+            else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
           windows = "\${DAEDALUS_INSTALL_DIRECTORY}${lib.optionalString (product != null) "\\config\\profiles\\${network}"}";
         };
 
