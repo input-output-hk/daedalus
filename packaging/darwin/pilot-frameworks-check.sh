@@ -46,8 +46,7 @@ for profile in preview preprod mainnet-flight; do
   bash "$layout_script" "$shared" "$app" "$name" "org.daedalus.pilot.$profile" 'Daedalus Flight' "$PWD/plist-buddy-fixture"
 done
 
-# Simulate staging/installation at a different root. Relative framework links
-# must still work, while helper executables must resolve inside their own app.
+# The base layout has helpers and no common framework views yet.
 mv 'fixture with spaces' 'installed with spaces'
 product="$PWD/installed with spaces/Daedalus Pilot"
 for profile in preview preprod mainnet-flight; do
@@ -58,8 +57,7 @@ for profile in preview preprod mainnet-flight; do
   esac
   app="$product/$name.app/Contents"
   test -d "$app/Frameworks" && test ! -L "$app/Frameworks"
-  test -L "$app/Frameworks/Electron Framework.framework"
-  test "$(cat "$app/Frameworks/Electron Framework.framework/Versions/A/Electron Framework")" = 'one shared framework'
+  test ! -e "$app/Frameworks/Electron Framework.framework"
   for suffix in '' ' (Renderer)' ' (GPU)' ' (Plugin)'; do
     helper="$name Helper$suffix"
     bundle="$app/Frameworks/$helper.app/Contents"

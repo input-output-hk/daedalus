@@ -134,7 +134,11 @@
       "Full unsigned Windows installer built; actual EXE archive inspection passed (356467930 bytes)",
       "macOS helper layout: all three profiles and four helper types passed executable ownership, metadata, shared framework and relocation checks with a mock plist editor; generated script syntax passed",
       "macOS hard-link layout/prune/reconstruction checks passed on Linux and Apple Silicon; generated config paths, shell lint and formatting passed",
-      "Native Apple Silicon unsigned package built and installed cleanly: all 190 archived symlinks correct; 37,606 shared payload files per profile; three concurrent healthy Electron/GPU/network/renderer processes with distinct bundle IDs; Preview node and wallet ready; all profiles stopped cleanly"
+      "Native Apple Silicon unsigned package built and installed cleanly: all 190 archived symlinks correct; 37,606 shared payload files per profile; three concurrent healthy Electron/GPU/network/renderer processes with distinct bundle IDs; Preview node and wallet ready; all profiles stopped cleanly",
+      "Review refactor: canonical single-payload layout and generated manifest; Linux hard-link/helper/config/script checks, ShellCheck and changed-file formatting passed",
+      "Native Apple Silicon system-Bash fallback fixtures passed for failing and copying-only cp implementations, renamed profiles, repeat runs, missing payloads and conflicts",
+      "Native pilot-darwin-package check passed: actual pkgutil extraction, shipped postinstall with a spaced target path, private file contents, executable bits, shared-file inode identity and symlink verification; runnable prototype also built",
+      "Refactored 566356278-byte package installed into an empty Pilot directory on macOS 26.5.1; independent full layout/content/inode/symlink verification passed with diagnostic bundles retained to prove disabled relocation; apps left stopped"
     ],
     "remaining": "Native Windows GUI/lifecycle evidence and Mac Intel/Dock/pin/relaunch checks remain; see windows-macos-testing.md. Apple Silicon unsigned installation/startup passed; Pre-Prod and Flight chain synchronization was not tested. Pilot test configs disable applying automatic updates. Final migration/upgrade/race/rollback, release-time production signing/notarization and shared release routing remain pending. CI builds unsigned installers only. No push or deployment performed."
   }

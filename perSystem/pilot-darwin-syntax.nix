@@ -21,7 +21,7 @@
       scripts = map (name:
         pkgs.writeText "${name}-syntax.sh"
         (builtins.unsafeDiscardStringContext generated.content.packages.${name}.buildCommand))
-      ["daedalus-pilot-prototype" "installer-pilot-prototype"];
+      ["daedalus-pilot-layout" "daedalus-pilot-prototype" "installer-pilot-prototype"];
       profileConfigs =
         pkgs.writeText "pilot-darwin-profile-configs.json"
         (builtins.unsafeDiscardStringContext (builtins.toJSON
@@ -42,7 +42,11 @@
           ["aarch64-darwin" "x86_64-darwin"])));
     in {
       checks.pilot-darwin-hardlink-layout = pkgs.runCommand "pilot-darwin-hardlink-layout" {} ''
-        bash ${../packaging/darwin/pilot-hardlink-payload-check.sh} ${../packaging/darwin/pilot-hardlink-payload.sh}
+        bash ${../packaging/darwin/pilot-hardlink-payload-check.sh} \
+          ${../packaging/darwin/pilot-hardlink-payload.sh} \
+          ${generated.content.packages.daedalus-pilot-layout.profileManifest} \
+          ${generated.content.packages.installer-pilot.postinstall} \
+          ${../packaging/darwin/pilot-layout-verify.sh}
         touch "$out"
       '';
       checks.pilot-darwin-config-paths =

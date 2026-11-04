@@ -117,19 +117,36 @@ directory and four real helper bundles named after its CFBundleName, with distin
 profile helper IDs. This fixes Electron's `Unable to find helper app` failure
 when renamed app shells used Flight's shared helper names. The Linux
 `pilot-darwin-helper-layout` check exercises all three profiles, helper metadata,
-executable locations and shared framework resolution after relocation, with a
+executable locations and the unmaterialized shells after relocation, with a
 mock plist editor; it does not run Electron or certify native macOS behavior.
 Each shell keeps the existing launcher/Frontend/config/package identity
 layout, so no macOS TypeScript path or network selector is added. Shared regular
 files are hard-linked into real directories in each shell, preserving the normal
 internal framework version symlinks. External framework symlinks caused native
 helper bundle lookup, ICU, pak and V8 resource failures. The
-`pilot-darwin-hardlink-layout` check covers payload inode sharing, internal links,
-profile identity, relocation and reconstruction after a staging copy loses hard
-links. Final package staging prunes the common app payloads and archives Shared
-once as ordinary files. Postinstall creates the hard links using native macOS
-copying, with no Nix dependency on the target system. This also avoids depending
-on Nix archive/cache inode sharing. Archiving the complete hard-linked tree failed
+`daedalus-pilot-layout` is the canonical build output: Shared once, profile-owned
+shell files, and `pilot-layout.tsv`. Nix generates profile names and concrete
+shared paths in that manifest. The installer consumes this output directly;
+the optional runnable prototype separately materializes its app views. There is
+no build/materialize/copy/prune cycle in the installer dependency chain.
+Postinstall probes recursive hard-link copying, including inode identity and
+internal symlinks. If system `cp -l` is broken or silently copies files, it falls
+back to portable `ln`, `mkdir` and `readlink`, with no Nix dependency on the target
+system. Conflicting files are preserved and cause installation to fail.
+`pilot-darwin-hardlink-layout` runs on Linux and both Darwin architectures. It
+executes the generated postinstall wrapper and tests a renamed profile, failing
+and copying-only copy tools, repeated materialization, missing payloads and
+conflicts. Darwin runs these cases with system Bash. The native
+`pilot-darwin-package` check expands the actual installer, checks its unmaterialized
+layout, executes the shipped postinstall against a target path containing spaces,
+then verifies contents, executable bits, private metadata, payload inode sharing
+and symlinks against the original layout. Package components explicitly disable
+bundle relocation, and the check rejects relocation metadata in the actual
+package. Native installation exposed why this matters: Installer moved a Shared
+helper to an old diagnostic extraction with the same bundle ID. All Pilot
+components must remain together inside the product directory.
+These checks avoid depending on Nix
+archive/cache inode sharing. Archiving the complete hard-linked tree failed
 native extraction: expected symlinks became temporary `.BC.D_*` names despite a
 successful installer exit status. Always verify the installed framework links.
 Each shell contains one profile's configuration files directly in
@@ -156,6 +173,18 @@ chain and remained at initial setup; their synchronization was not tested. All
 three were stopped cleanly afterward. No installed-file repairs were needed for
 this package. Intel, visual Dock/pin/relaunch, signing and notarization checks
 remain open.
+
+The subsequent code-quality refactor was also verified on Apple Silicon,
+macOS 26.5.1 with system Bash 3.2.57. Linux packaging checks and native fallback
+fixtures passed, including failing and copying-only `cp` implementations. The
+566,356,278-byte package passed the native extraction/postinstall check and was
+then installed into an empty Pilot directory. Independent verification against
+the canonical layout passed for all private contents, executable bits, Shared
+contents, payload inodes and symlinks. Old diagnostic bundles were left in place
+to verify that disabled relocation keeps the product together. The apps were
+left stopped; this refactor did not repeat the earlier GUI/startup checks. An
+actual older macOS host was not available; fallback failures were injected under
+Apple's system Bash.
 
 After a successful native build:
 

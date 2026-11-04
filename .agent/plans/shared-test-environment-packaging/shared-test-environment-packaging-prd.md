@@ -103,6 +103,12 @@ version symlinks are preserved. The package archives Shared once and omits the
 shells' common payload trees; postinstall creates their hard links. This avoids
 depending on Nix archive/cache inode sharing or Apple's extraction of the full
 hard-linked archive, which damaged symlinks in native testing.
+The canonical build output contains Shared, profile-owned shells and a
+Nix-generated layout manifest. The package consumes it directly; only the optional
+runnable view and postinstall materialize common files. The linker consumes the
+manifest rather than repeating profile names or path exclusions. A capability
+probe selects native recursive copying or a portable hard-link fallback for older
+macOS versions. Native checks exercise the actual package and shipped postinstall.
 Keep the existing executable/config locations inside each shell so direct-launch
 recovery and package identity validation retain their existing contracts. CI builds
 unsigned installers only; signing and notarization happen at release time.

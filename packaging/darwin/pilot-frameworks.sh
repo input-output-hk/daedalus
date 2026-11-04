@@ -10,7 +10,8 @@ plist_buddy=${6:-/usr/libexec/PlistBuddy}
 
 # Helpers must be real, profile-named bundles below this app's Contents:
 # Electron derives both its helper name and parent app from that location.
-# Keep the large framework binaries in the shared payload.
+# This constructs profile-owned helpers only. The common frameworks are listed
+# in the generated layout manifest and materialized separately when needed.
 mkdir -p "$app/Frameworks"
 for item in "$shared/Frameworks"/*; do
   base=$(basename "$item")
@@ -36,7 +37,6 @@ for item in "$shared/Frameworks"/*; do
         "$plist_buddy" -c "Add :CFBundleDisplayName string $helper" "$destination/Info.plist"
       "$plist_buddy" -c "Set :CFBundleExecutable $helper" "$destination/Info.plist"
       ;;
-    *) ln -s "../../../Shared/Frameworks/$base" "$app/Frameworks/$base" ;;
   esac
 done
 
