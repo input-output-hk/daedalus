@@ -56,6 +56,16 @@ pub struct NodeConfig {
     /// with `node_silent`. 0 turns the report off.
     #[serde(default = "default_startup_silence_secs")]
     pub startup_silence_secs: u64,
+    /// Resolve the names in the topology file given by `--topology` before
+    /// every node start and give the node a copy that holds addresses for
+    /// every name that resolves now or has resolved before, so the node looks
+    /// up only a name that has never resolved (`topology`).
+    #[serde(default)]
+    pub resolve_topology: bool,
+    /// Milliseconds each name may take to resolve; a name that has not
+    /// resolved by then is treated as not resolving.
+    #[serde(default = "default_resolve_timeout_ms")]
+    pub resolve_timeout_ms: u64,
     /// Network magic of the cluster, which cardano-node writes to a new
     /// database's `protocolMagicId` file and requires of an existing one.
     /// Set by `WatchdogConfig::set_network_magic`; None when it is unknown.
@@ -66,6 +76,12 @@ pub struct NodeConfig {
     /// then the ledger point check before a node start is skipped.
     #[serde(skip)]
     pub storage: Option<NodeStorage>,
+}
+
+pub const DEFAULT_RESOLVE_TIMEOUT_MS: u64 = 5_000;
+
+fn default_resolve_timeout_ms() -> u64 {
+    DEFAULT_RESOLVE_TIMEOUT_MS
 }
 
 fn default_node_crash_restart_delay_ms() -> u64 {
@@ -482,6 +498,26 @@ mod tests {
             c.backend_stop_limit(),
             Duration::from_secs(130) + BACKEND_STOP_MARGIN
         );
+    }
+
+    #[test]
+    fn topology_resolution_is_off_by_default() {
+        let c: WatchdogConfig = serde_json::from_str(&minimal_json("")).unwrap();
+        assert!(!c.node.resolve_topology);
+        assert_eq!(c.node.resolve_timeout_ms, DEFAULT_RESOLVE_TIMEOUT_MS);
+        assert_eq!(DEFAULT_RESOLVE_TIMEOUT_MS, 5_000);
+    }
+
+    #[test]
+    fn explicit_topology_resolution_settings_are_read() {
+        let json = r#"{
+            "node": {"exe":"n","args":[],"state_dir":"/","socket_path":"/s",
+                     "resolve_topology":true,"resolve_timeout_ms":250},
+            "wallet": {"exe":"w","args":[],"state_dir":"/"}
+        }"#;
+        let c: WatchdogConfig = serde_json::from_str(json).unwrap();
+        assert!(c.node.resolve_topology);
+        assert_eq!(c.node.resolve_timeout_ms, 250);
     }
 
     #[test]
