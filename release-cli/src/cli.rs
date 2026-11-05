@@ -8,6 +8,26 @@ pub struct Cli {
     pub command: Commands,
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn serve_is_loopback_by_default_and_accepts_an_explicit_lan_address() {
+        for (args, expected) in [
+            (vec!["drt", "serve"], "127.0.0.1"),
+            (vec!["drt", "serve", "--host", "192.0.2.10"], "192.0.2.10"),
+        ] {
+            let Cli {
+                command: Commands::Serve { host, .. },
+            } = Cli::try_parse_from(args).unwrap()
+            else {
+                panic!("expected serve");
+            };
+            assert_eq!(host, expected);
+        }
+    }
+}
+
 #[derive(Subcommand)]
 pub enum Commands {
     /// Hash installers, collect existing .asc signatures, upload to S3,
@@ -141,6 +161,75 @@ pub enum Commands {
     Newsfeed {
         #[command(subcommand)]
         command: NewsfeedCommands,
+    },
+
+    /// Build and publish APT, YUM, and Arch Linux package repositories
+    /// to a Cloudflare R2 (or any S3-compatible) bucket.
+    ///
+    /// Imports INSTALLERS_DIR into persistent deployment-host state. Rebuilds
+    /// signed indexes from the current and previous release of each native
+    /// package identity, then automatically collects expired older releases.
+    ///
+    /// REPO_ACCESS_KEY_ID and REPO_SECRET_ACCESS_KEY override the standard
+    /// AWS SDK credential chain. REPO_ENDPOINT_URL overrides --endpoint-url.
+    ///
+    /// For Cloudflare R2, set AWS_ENDPOINT_URL to your R2 endpoint and
+    /// pass --no-acl (R2 buckets manage public access at the bucket level).
+    PublishLinuxRepos {
+        /// Directory containing .deb, .rpm, and/or .pkg.tar.zst files.
+        #[arg(default_value = "installers")]
+        installers_dir: PathBuf,
+
+        /// Persistent inventory on the sole publishing host; back this up.
+        #[arg(long, env = "REPO_STATE_DIR")]
+        state_dir: PathBuf,
+
+        /// Initialize new state from the COMPLETE existing package set.
+        #[arg(long)]
+        initialize: bool,
+
+        /// Days to retain withdrawn package files before automatic deletion.
+        #[arg(long, default_value_t = 7)]
+        gc_grace_days: u64,
+
+        /// S3/R2 bucket name.
+        #[arg(long, env = "REPO_BUCKET")]
+        bucket: String,
+
+        /// Public base URL for the bucket, without protocol
+        /// (e.g. pkgs.daedaluswallet.io).
+        #[arg(long, env = "REPO_BUCKET_URL")]
+        bucket_url: String,
+
+        /// GPG key ID / e-mail for signing (overrides GPG_USER env var).
+        #[arg(long)]
+        gpg_user: Option<String>,
+
+        /// S3-compatible endpoint URL (e.g. https://<id>.r2.cloudflarestorage.com).
+        /// Overrides AWS_ENDPOINT_URL when set.
+        #[arg(long)]
+        endpoint_url: Option<String>,
+
+        /// Skip S3 ACL on all uploads.
+        /// Required when the bucket does not support per-object ACLs (Cloudflare R2 default).
+        #[arg(long)]
+        no_acl: bool,
+
+        /// Preview imports, retention and GC without changing state or contacting S3.
+        #[arg(long)]
+        dry_run: bool,
+
+        /// Skip APT (.deb) repository generation.
+        #[arg(long)]
+        skip_apt: bool,
+
+        /// Skip YUM (.rpm) repository generation.
+        #[arg(long)]
+        skip_yum: bool,
+
+        /// Skip Arch (.pkg.tar.zst) repository generation.
+        #[arg(long)]
+        skip_arch: bool,
     },
 
     /// Run a local HTTP server that emulates the S3 update bucket plus

@@ -5,53 +5,61 @@ use std::path::{Path, PathBuf};
 /// Which OS/arch an installer targets, inferred from the filename.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Platform {
-    Linux,
-    DarwinArm, // aarch64-darwin (Apple Silicon)
-    DarwinX86, // x86_64-darwin  (Intel)
+    LinuxBin,  // self-extracting .bin
+    LinuxDeb,  // Debian/Ubuntu .deb
+    LinuxRpm,  // Fedora/RHEL .rpm
+    LinuxArch, // Arch Linux .pkg.tar.zst
+    MacOsArm,  // aarch64-darwin (Apple Silicon)
+    MacOsX86,  // x86_64-darwin  (Intel)
     Windows,
 }
 
 impl Platform {
     /// Infer platform from the installer filename.
-    /// `.pkg` files must contain `aarch64-darwin` or `x86_64-darwin`.
+    /// `.pkg.tar.zst` is checked before the extension-only match to avoid
+    /// collision with macOS `.pkg` files.
+    /// macOS `.pkg` files must contain `aarch64-darwin` or `x86_64-darwin`.
     pub fn from_filename(filename: &str) -> Option<Self> {
+        if filename.ends_with(".pkg.tar.zst") {
+            return Some(Self::LinuxArch);
+        }
         let ext = Path::new(filename).extension()?.to_str()?;
         match ext {
-            "bin" => Some(Self::Linux),
+            "bin" => Some(Self::LinuxBin),
+            "deb" => Some(Self::LinuxDeb),
+            "rpm" => Some(Self::LinuxRpm),
             "exe" => Some(Self::Windows),
-            "pkg" if filename.contains("aarch64-darwin") => Some(Self::DarwinArm),
-            "pkg" if filename.contains("x86_64-darwin") => Some(Self::DarwinX86),
+            "pkg" if filename.contains("aarch64-darwin") => Some(Self::MacOsArm),
+            "pkg" if filename.contains("x86_64-darwin") => Some(Self::MacOsX86),
             _ => None,
-        }
-    }
-
-    /// Key used in the platforms map of daedalus-latest-version.json.
-    pub fn json_key(self) -> &'static str {
-        match self {
-            Platform::Linux => "linux",
-            Platform::DarwinArm => "darwin-arm",
-            Platform::DarwinX86 => "darwin",
-            Platform::Windows => "windows",
         }
     }
 
     pub fn display_name(self) -> &'static str {
         match self {
-            Platform::Linux => "Linux",
-            Platform::DarwinArm => "macOS (Apple Silicon)",
-            Platform::DarwinX86 => "macOS (Intel)",
+            Platform::LinuxBin => "Linux (self-extracting .bin)",
+            Platform::LinuxDeb => "Linux (Debian .deb)",
+            Platform::LinuxRpm => "Linux (RPM .rpm)",
+            Platform::LinuxArch => "Linux (Arch .pkg.tar.zst)",
+            Platform::MacOsArm => "macOS (Apple Silicon)",
+            Platform::MacOsX86 => "macOS (Intel)",
             Platform::Windows => "Windows",
         }
     }
 
-    /// Key used in the softwareUpdate / platforms fields of newsfeed JSON.
-    /// Note: Windows is "win32" in the newsfeed, not "windows".
-    pub fn newsfeed_key(self) -> &'static str {
+    /// Key for the newsfeed softwareUpdate map, or `None` if this format is
+    /// not surfaced in the newsfeed.  Package-manager formats (deb/rpm/arch)
+    /// appear only in daedalus-latest-version.json; only the .bin
+    /// auto-update installer is included in the newsfeed.
+    pub fn newsfeed_key(self) -> Option<&'static str> {
         match self {
-            Platform::Linux => "linux",
-            Platform::DarwinArm => "darwin-arm",
-            Platform::DarwinX86 => "darwin",
-            Platform::Windows => "win32",
+            Platform::LinuxBin => Some("linux"),
+            Platform::LinuxDeb => None,
+            Platform::LinuxRpm => None,
+            Platform::LinuxArch => None,
+            Platform::MacOsArm => Some("darwin-arm"),
+            Platform::MacOsX86 => Some("darwin"),
+            Platform::Windows => Some("win32"),
         }
     }
 }

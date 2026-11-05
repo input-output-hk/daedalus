@@ -4,7 +4,7 @@
 //! * `code_sign_remote`   — macOS / Windows code signing via an SSH host
 
 use anyhow::{Context, Result, bail};
-use std::io::Read;
+use std::io::{Read, Write};
 use std::path::Path;
 use std::process::{Command, Stdio};
 
@@ -14,6 +14,72 @@ pub struct NotaryCreds {
     pub apple_id: String,
     pub password: String,
     pub team_id: String,
+}
+
+/// GPG-sign `data` bytes, returning the armored detached signature.
+///
+/// Writes `data` to a temp file under `std::env::temp_dir()`, calls
+/// `sign_file`, reads back the `.asc`, then removes the temp dir.
+pub fn sign_data(data: &[u8], gpg_user: Option<&str>) -> Result<Vec<u8>> {
+    use std::time::SystemTime;
+    let nanos = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap_or_default()
+        .subsec_nanos();
+    let tmp = std::env::temp_dir().join(format!("drt-sign-{nanos}"));
+    std::fs::create_dir_all(&tmp)?;
+    let data_path = tmp.join("data");
+    std::fs::write(&data_path, data)?;
+    sign_file(&data_path, gpg_user)?;
+    let sig_path = tmp.join("data.asc");
+    let sig = std::fs::read(&sig_path).context("reading detached signature")?;
+    let _ = std::fs::remove_dir_all(&tmp);
+    Ok(sig)
+}
+
+/// GPG clearsign `data` bytes, returning the signed message (armored).
+///
+/// Used to produce APT `InRelease` files, which are clearsigned `Release` files.
+pub fn clearsign_data(data: &[u8], gpg_user: Option<&str>) -> Result<Vec<u8>> {
+    let mut cmd = Command::new("gpg2");
+    cmd.args(["--clearsign", "--armor"]);
+    if let Some(user) = gpg_user {
+        cmd.arg("--local-user").arg(user);
+    }
+    let mut child = cmd
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .map_err(|e| anyhow::anyhow!("failed to spawn gpg2 --clearsign: {e}"))?;
+    child.stdin.as_mut().unwrap().write_all(data)?;
+    drop(child.stdin.take());
+    let output = child.wait_with_output().context("gpg2 --clearsign wait")?;
+    if !output.status.success() {
+        anyhow::bail!("gpg2 --clearsign exited with {}", output.status);
+    }
+    Ok(output.stdout)
+}
+
+/// Export the armored GPG public key for `gpg_user` (or the default key if None).
+pub fn export_public_key(gpg_user: Option<&str>) -> Result<Vec<u8>> {
+    let mut cmd = Command::new("gpg2");
+    cmd.args(["--armor", "--export"]);
+    if let Some(user) = gpg_user {
+        cmd.arg(user);
+    }
+    let output = cmd
+        .output()
+        .map_err(|e| anyhow::anyhow!("failed to spawn gpg2 --export: {e}"))?;
+    if !output.status.success() {
+        anyhow::bail!("gpg2 --export exited with {}", output.status);
+    }
+    if output.stdout.is_empty() {
+        anyhow::bail!(
+            "gpg2 --export produced no output — is the key in the keyring?\n\
+             Hint: gpg2 --list-secret-keys"
+        );
+    }
+    Ok(output.stdout)
 }
 
 /// GPG-sign `path`, producing `<path>.asc`.
@@ -104,15 +170,7 @@ fn code_sign_macos(
     notary_creds: Option<&NotaryCreds>,
     verbose: bool,
 ) -> Result<()> {
-    let gitrev = meta.gitrev.as_deref().ok_or_else(|| {
-        anyhow::anyhow!("gitrev not available in meta.json — re-fetch with: drt fetch-installers")
-    })?;
-
-    let (arch, env) = parse_darwin_installer_filename(filename)?;
-
-    let flake_ref = format!(
-        "github:input-output-hk/daedalus/{gitrev}#packages.{arch}-darwin.makeSignedInstaller-{env}"
-    );
+    let flake_ref = signing_flake_ref(filename, meta)?;
 
     if skip_upload {
         println!("    --skip-upload has no effect for macOS (nix run builds from store)");
@@ -261,18 +319,7 @@ fn code_sign_windows(
     meta: &crate::installers::Meta,
     verbose: bool,
 ) -> Result<()> {
-    let gitrev = meta.gitrev.as_deref().ok_or_else(|| {
-        anyhow::anyhow!("gitrev not available in meta.json — re-fetch with: drt fetch-installers")
-    })?;
-
-    let cluster = parse_windows_installer_cluster(filename)?;
-
-    // The makeSignedInstaller for Windows is exposed under x86_64-linux packages
-    // (with the -x86_64-windows suffix) because it is a Linux shell script that
-    // cross-compiles and signs for Windows.
-    let flake_ref = format!(
-        "github:input-output-hk/daedalus/{gitrev}#packages.x86_64-linux.makeSignedInstaller-{cluster}-x86_64-windows"
-    );
+    let flake_ref = signing_flake_ref(filename, meta)?;
 
     println!("    nix run  → {flake_ref}");
     println!("    signing all .exe/.dll/.node via {host}, then installer…");
@@ -365,36 +412,31 @@ fn code_sign_windows(
     Ok(())
 }
 
-/// Parse the cluster/network name from a Windows installer filename.
-/// `daedalus-8.0.0-12345-mainnet-abc1234-x86_64-windows.exe` → `"mainnet"`
-fn parse_windows_installer_cluster(filename: &str) -> Result<String> {
-    let suffix = "-x86_64-windows.exe";
-    if let Some(stem) = filename.strip_suffix(suffix) {
-        // stem: daedalus-8.0.0-12345-mainnet[-abc1234]
-        // idx:  0        1     2     3        [4]
-        let parts: Vec<&str> = stem.split('-').collect();
-        if parts.len() >= 4 {
-            return Ok(parts[3].to_string());
-        }
-    }
-    bail!("cannot determine cluster from Windows installer filename: {filename}")
-}
-
-/// Parse `arch` and `env` from a Darwin installer filename.
-/// `daedalus-7.3.0-83575-mainnet-fbb43f32c-aarch64-darwin.pkg` → `("aarch64", "mainnet")`
-fn parse_darwin_installer_filename(filename: &str) -> Result<(String, String)> {
-    for arch in &["aarch64", "x86_64"] {
-        let suffix = format!("-{arch}-darwin.pkg");
-        if let Some(stem) = filename.strip_suffix(&suffix) {
-            // stem: daedalus-7.3.0-83575-mainnet-fbb43f32c
-            // idx:  0        1     2     3       4
-            let parts: Vec<&str> = stem.split('-').collect();
-            if parts.len() >= 4 {
-                return Ok((arch.to_string(), parts[3].to_string()));
-            }
-        }
-    }
-    bail!("cannot determine arch/env from Darwin installer filename: {filename}")
+/// Release metadata selects the environment; hyphenated names cannot be parsed
+/// by a fixed filename field. Architecture is a property of the installer.
+fn signing_flake_ref(filename: &str, meta: &crate::installers::Meta) -> Result<String> {
+    use crate::installers::Platform;
+    let gitrev = meta
+        .gitrev
+        .as_deref()
+        .context("gitrev missing from meta.json; re-fetch installers")?;
+    let env = meta
+        .env
+        .as_deref()
+        .context("env missing from meta.json; re-fetch installers")?;
+    anyhow::ensure!(
+        !env.is_empty() && env.bytes().all(|c| c.is_ascii_lowercase() || c == b'-'),
+        "invalid signing environment in meta.json"
+    );
+    let attribute = match Platform::from_filename(filename) {
+        Some(Platform::MacOsArm) => format!("aarch64-darwin.makeSignedInstaller-{env}"),
+        Some(Platform::MacOsX86) => format!("x86_64-darwin.makeSignedInstaller-{env}"),
+        Some(Platform::Windows) => format!("x86_64-linux.makeSignedInstaller-x86_64-windows-{env}"),
+        _ => bail!("unsupported code-signing installer: {filename}"),
+    };
+    Ok(format!(
+        "github:input-output-hk/daedalus/{gitrev}#packages.{attribute}"
+    ))
 }
 
 /// Rename `foo.pkg` → `foo-unsigned.pkg` (preserves extension).
@@ -402,5 +444,46 @@ fn unsigned_filename(filename: &str) -> String {
     match filename.rsplit_once('.') {
         Some((stem, ext)) => format!("{stem}-unsigned.{ext}"),
         None => format!("{filename}-unsigned"),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn signing_attributes_keep_the_metadata_environment_on_both_platforms() {
+        for env in ["mainnet", "mainnet-flight", "preview", "preprod", "pilot"] {
+            let meta = crate::installers::Meta {
+                version: "11.6.0".into(),
+                gitrev: Some("abc1234".into()),
+                env: Some(env.into()),
+                nar_hash: None,
+                eval_url: None,
+            };
+            for (suffix, attribute) in [
+                (
+                    "x86_64-windows.exe",
+                    format!("x86_64-linux.makeSignedInstaller-x86_64-windows-{env}"),
+                ),
+                (
+                    "aarch64-darwin.pkg",
+                    format!("aarch64-darwin.makeSignedInstaller-{env}"),
+                ),
+                (
+                    "x86_64-darwin.pkg",
+                    format!("x86_64-darwin.makeSignedInstaller-{env}"),
+                ),
+            ] {
+                let filename = format!("daedalus-11.6.0-123-{env}-abc1234-{suffix}");
+                assert_eq!(
+                    signing_flake_ref(&filename, &meta).unwrap(),
+                    format!("github:input-output-hk/daedalus/abc1234#packages.{attribute}")
+                );
+                let mut missing = meta.clone();
+                missing.env = None;
+                assert!(signing_flake_ref(&filename, &missing).is_err());
+            }
+        }
     }
 }

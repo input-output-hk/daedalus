@@ -9,6 +9,7 @@ License: Apache-2.0
 URL: https://daedaluswallet.io/
 BuildArch: x86_64
 AutoReqProv: no
+@CONFLICTS@
 Requires(pre): coreutils
 Requires(pre): grep
 Requires(pre): policycoreutils
@@ -30,6 +31,9 @@ mkdir -p %{buildroot}
 
 %pre
 set -eu
+if [ '@CLUSTER@' = pilot ] && [ -x '/opt/daedalus/pilot/bin/refuse-live' ]; then
+  /opt/daedalus/pilot/bin/refuse-live
+fi
 marker='/var/lib/daedalus-package/@CLUSTER@/rpm-policy-owner'
 if /usr/sbin/semodule -lfull | /usr/bin/grep -Eq '^[[:space:]]*[0-9]+[[:space:]]+@MODULE_NAME@([[:space:]]|$)'; then
   [ -f "$marker" ]
@@ -71,6 +75,9 @@ trap '/usr/bin/rm -rf "$module_tmp"' EXIT
 
 %preun
 set -eu
+if [ '@CLUSTER@' = pilot ]; then
+  /opt/daedalus/pilot/bin/refuse-live
+fi
 if [ "$1" -eq 0 ]; then
   marker='/var/lib/daedalus-package/@CLUSTER@/rpm-policy-owner'
   [ -f "$marker" ]
@@ -86,7 +93,7 @@ fi
 %files
 %defattr(-,root,root,-)
 @PAYLOAD_TARBALL@
-/usr/bin/daedalus-@CLUSTER@
-/usr/share/applications/Daedalus-@CLUSTER@.desktop
-/usr/share/icons/hicolor/512x512/apps/daedalus-@CLUSTER@.png
+/usr/bin/daedalus-*
+/usr/share/applications/Daedalus-*.desktop
+/usr/share/icons/hicolor/512x512/apps/daedalus-*.png
 @POLICY_PATH@

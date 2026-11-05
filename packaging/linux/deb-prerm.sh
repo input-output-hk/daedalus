@@ -3,6 +3,9 @@
 . "$(dirname "$0")/linux-deb-common.sh"
 
 lock
+if [ "$cluster" = pilot ] && [ -x "$install_root/bin/refuse-live" ]; then
+  "$install_root/bin/refuse-live"
+fi
 case "${1:-}" in
   upgrade|failed-upgrade|deconfigure) exit 0 ;;
   remove)

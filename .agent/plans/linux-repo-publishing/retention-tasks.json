@@ -1,0 +1,51 @@
+{
+  "feature": "Persistent production/pilot Linux repositories and automatic GC",
+  "tasks": [
+    {
+      "id": "T001",
+      "description": "Specify production/pilot retention, lifecycle, contracts and validation",
+      "status": "complete"
+    },
+    {
+      "id": "T002",
+      "description": "Implement locked persistent inventory, immutable import, native version retention and grace planning in release-cli/src/linux_repo_state.rs",
+      "status": "complete",
+      "depends_on": [
+        "T001"
+      ]
+    },
+    {
+      "id": "T003",
+      "description": "Integrate state and automatic retention with publish-linux-repos CLI and staged signed repository publication",
+      "status": "complete",
+      "depends_on": [
+        "T002"
+      ]
+    },
+    {
+      "id": "T004",
+      "description": "Verify origin metadata and add retryable, prefix-aware S3 and local package collection after successful publication",
+      "status": "complete",
+      "depends_on": [
+        "T003"
+      ]
+    },
+    {
+      "id": "T005",
+      "description": "Exercise sequential product deployments, native ordering, dry run, grace, locking and failure recovery through Nix tests; run formatting and Clippy",
+      "status": "complete",
+      "depends_on": [
+        "T004"
+      ]
+    },
+    {
+      "id": "T006",
+      "description": "Document bootstrap, backups, sole publishing host, automatic collection and sibling pilot-package naming contract",
+      "status": "complete",
+      "depends_on": [
+        "T005"
+      ]
+    }
+  ],
+  "validation": "2026-11-04 review follow-up: sandboxed Nix drt build passed 45 unit tests and one signing CLI integration test; one existing privileged pacman test ignored. Nix Clippy passed with warnings denied. Both macOS architectures evaluate drt and ops/release-cli shells. Signing fixtures verify APT/YUM signatures, export only the selected key from a multi-key keyring and reject non-IOHK production keys. Empty-directory dry-run and metadata-derived Flight signing regressions passed. See retention-plan.md and shared packaging validation for package checks. No live deployment."
+}

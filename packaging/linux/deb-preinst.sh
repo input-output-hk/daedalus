@@ -3,6 +3,9 @@
 . "$(dirname "$0")/linux-deb-common.sh"
 
 lock
+if [ "$cluster" = pilot ] && [ -x "$install_root/bin/refuse-live" ]; then
+  "$install_root/bin/refuse-live"
+fi
 case "${1:-}" in
   install)
     [ ! -L "$install_root" ] || fail 'refusing symlinked install root'

@@ -65,6 +65,7 @@
     # ---------------------------------------------------------------------------
     mkCommon = targetSystem: let
       sourceLib = mkSourceLib;
+      installerProducts = import ../packaging/installer-products.nix;
 
       flakeLock = builtins.fromJSON (builtins.readFile (inputs.self + "/flake.lock"));
 
@@ -277,6 +278,7 @@
       mkDaedalusConfigsImpl = {
         devShell ? false,
         cluster,
+        product ? null,
       }: let
         network = cluster;
         os =
@@ -361,7 +363,7 @@
           linux =
             if devShell
             then configFilesSource
-            else "\${ENTRYPOINT_DIR}/config";
+            else "\${ENTRYPOINT_DIR}/config${lib.optionalString (product != null) "/profiles/${network}"}";
           macos64 =
             if devShell
             then configFilesSource
@@ -370,7 +372,7 @@
             if devShell
             then configFilesSource
             else "\${DAEDALUS_INSTALL_DIRECTORY}/../Resources";
-          windows = "\${DAEDALUS_INSTALL_DIRECTORY}";
+          windows = "\${DAEDALUS_INSTALL_DIRECTORY}${lib.optionalString (product != null) "\\config\\profiles\\${network}"}";
         };
 
         mkSpacedName = network': "Daedalus ${installDirectorySuffix}";
@@ -378,7 +380,10 @@
 
         frontendBinPath = let
           frontendBin.linux = "daedalus-frontend";
-          frontendBin.windows = "${spacedName}";
+          frontendBin.windows =
+            if product == null
+            then spacedName
+            else installerProducts.${product}.displayName;
           frontendBin.macos64 = "Frontend";
           frontendBin.macos64-arm = "Frontend";
         in
@@ -573,14 +578,8 @@
             then "\${ENTRYPOINT_DIR}/libexec/snapshot-converter"
             else mkBinPath "snapshot-converter";
 
-          wConfigYaml =
-            if isLinux && !devShell
-            then "\${ENTRYPOINT_DIR}/config/config.yaml"
-            else mkConfigPath nodeConfigFiles "config.yaml";
-          wTopologyYaml =
-            if isLinux && !devShell
-            then "\${ENTRYPOINT_DIR}/config/topology.yaml"
-            else mkConfigPath nodeConfigFiles "topology.yaml";
+          wConfigYaml = mkConfigPath nodeConfigFiles "config.yaml";
+          wTopologyYaml = mkConfigPath nodeConfigFiles "topology.yaml";
           wByronGenesisPath = mkConfigPath nodeConfigFiles "genesis-byron.json";
           wNetworkMagicArgs =
             if (envCfg.nodeConfig.RequiresNetworkMagic or "RequiresMagic") == "RequiresNoMagic"
@@ -597,7 +596,17 @@
           wElectronArgs =
             if devShell
             then ["\${DAEDALUS_DEV_ROOT}"]
-            else [];
+            else
+              lib.optional (product != null) (
+                "--user-data-dir="
+                + (
+                  if isLinux
+                  then "\${XDG_CONFIG_HOME}/${spacedName}"
+                  else dataDir
+                )
+              )
+              ++ lib.optional (product != null && isWindows)
+              "\${DAEDALUS_INSTALL_DIRECTORY}\\config\\profiles\\${network}\\frontend";
 
           daedalusConfigJson =
             {
@@ -668,7 +677,7 @@
                       then "true"
                       else "false";
                     DAEDALUS_UPDATE_MODE =
-                      if isLinux
+                      if isLinux || product == "pilot"
                       then "system-package-disabled"
                       else "installer-managed";
                   }
@@ -932,8 +941,12 @@
       mkDaedalusConfigs = {
         devShell ? false,
         cluster,
+        product ? null,
       }:
-        mkDaedalusConfigsImpl {inherit devShell cluster;};
+        assert lib.assertMsg
+        (product == null || (builtins.hasAttr product installerProducts && builtins.elem cluster installerProducts.${product}.profiles))
+        "Unsupported Daedalus installer product/profile combination";
+          mkDaedalusConfigsImpl {inherit devShell cluster product;};
 
       daedalusConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
         mkDaedalusConfigs {
@@ -1137,6 +1150,7 @@
     in {
       inherit
         sourceLib
+        installerProducts
         flakeLock
         flake-compat
         walletBackends

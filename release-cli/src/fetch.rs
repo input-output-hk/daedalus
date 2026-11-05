@@ -115,11 +115,18 @@ pub async fn fetch_installers(eval_url: &str, env: &str, out_dir: &Path) -> Resu
             if product.kind != "file" {
                 continue;
             }
-            let ext = Path::new(&product.name)
-                .extension()
-                .and_then(|e| e.to_str())
-                .unwrap_or("");
-            if !matches!(ext, "bin" | "pkg" | "exe") {
+            let name_lc = product.name.to_ascii_lowercase();
+            let is_installer = matches!(
+                Path::new(&product.name)
+                    .extension()
+                    .and_then(|e| e.to_str())
+                    .unwrap_or(""),
+                "bin" | "pkg" | "exe"
+            ) || name_lc.ends_with(".deb")
+                || name_lc.ends_with(".rpm")
+                || name_lc.ends_with(".pkg.tar.zst")
+                || name_lc.ends_with(".pkg.tar.gz");
+            if !is_installer {
                 continue;
             }
 
@@ -257,9 +264,15 @@ async fn fetch_build(client: &Client, base_url: &str, build_id: u64) -> Result<H
 }
 
 fn is_installer_for(env: &str, build: &HydraBuild) -> bool {
+    const PREFIXES: &[&str] = &[
+        "installer.",
+        "deb-installer.",
+        "rpm-installer.",
+        "arch-installer.",
+    ];
     build.finished == Some(1)
         && build.buildstatus == Some(0)
-        && build.job.starts_with("installer.")
+        && PREFIXES.iter().any(|p| build.job.starts_with(p))
         && build.job.ends_with(&format!(".{env}"))
 }
 
