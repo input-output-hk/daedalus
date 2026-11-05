@@ -8,6 +8,7 @@ mod linux_repo_publish;
 mod linux_repo_state;
 mod newsfeed_cmd;
 mod provenance;
+mod repo_signing;
 mod s3;
 mod serve;
 mod sign;
@@ -395,13 +396,6 @@ async fn cmd_sign(
         for inst in &installer_dir.installers {
             println!("  {}", inst.filename);
             sign::sign_file(&inst.path, effective_gpg_user)?;
-        }
-
-        // Also GPG-sign any Linux packages (.deb, .rpm, .pkg.tar.zst) in the same dir.
-        let linux_pkgs = linux_repo_cmd::scan_linux_packages(installers_dir).unwrap_or_default();
-        for pkg in &linux_pkgs {
-            println!("  {}", pkg.filename);
-            sign::sign_file(&pkg.path, effective_gpg_user)?;
         }
     }
 

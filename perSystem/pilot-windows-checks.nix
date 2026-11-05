@@ -61,6 +61,7 @@
           mkdir -p '../release/win32-x64/Daedalus Pilot-win32-x64/resources' config profile-icons
           cp -r "$bundle/config"/. config/
           touch '../release/win32-x64/Daedalus Pilot-win32-x64/resources/fixture'
+          printf 'Electron version fixture\n' > '../release/win32-x64/Daedalus Pilot-win32-x64/version'
           touch profile-icons/fixture
           makensis uninstaller.nsi > uninstaller.log
           makensis daedalus.nsi > installer.log

@@ -51,15 +51,16 @@
   in
     lib.optionalAttrs cargoLockExists {
       devShells.ops = pkgs.mkShell {
-        packages = [
-          config.packages.drt
-          pkgs.gnupg
-          # publish-linux-repos metadata extraction tools
-          pkgs.dpkg
-          pkgs.rpm
-          pkgs.libarchive
-          pkgs.pacman
-        ];
+        packages =
+          [
+            config.packages.drt
+            pkgs.gnupg
+            # publish-linux-repos metadata extraction tools
+            pkgs.dpkg
+            pkgs.rpm
+            pkgs.libarchive
+          ]
+          ++ lib.optionals pkgs.stdenv.isLinux [pkgs.pacman];
         inherit shellHook;
       };
     };

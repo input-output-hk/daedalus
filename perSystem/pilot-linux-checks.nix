@@ -23,11 +23,17 @@
           bundle = fixture;
           buildRev = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
           buildRevShort = "aaaaaaaaa";
-          buildCounter = 1;
+          buildCounter = 2;
+          sourceDateEpoch = 1700000000;
         };
       deb = mkDebInstaller (arguments // {debCompression = "-Zzstd -z1";});
       rpm = mkRpmInstaller arguments;
       arch = mkArchInstaller (arguments // {zstdLevel = 1;});
+      nextArch = mkArchInstaller (arguments
+        // {
+          zstdLevel = 1;
+          sourceDateEpoch = arguments.sourceDateEpoch + 1;
+        });
       packageContract = {
         deb,
         rpm,
@@ -99,7 +105,22 @@
           touch "$out"
         '';
 
-      checks.pilot-linux-package-contract = packageContract {inherit deb rpm arch;} "pilot-linux-package-contract";
+      checks.pilot-linux-package-contract =
+        pkgs.runCommand "pilot-linux-package-contract" {
+          nativeBuildInputs = [pkgs.libarchive pkgs.pacman];
+        } ''
+          test -e ${packageContract {inherit deb rpm arch;} "pilot-linux-package-contents"}
+          archive=$(printf '%s\n' ${arch}/*.pkg.tar.zst)
+          bsdtar -xOf "$archive" .PKGINFO > pkginfo
+          grep -Fx 'pkgver = ${arguments.version}-2.1700000000' pkginfo
+          # Build counters are hourly. A second commit in the same hour must
+          # still produce a distinct, ordered native package identity.
+          next_archive=$(printf '%s\n' ${nextArch}/*.pkg.tar.zst)
+          bsdtar -xOf "$next_archive" .PKGINFO > next-pkginfo
+          grep -Fx 'pkgver = ${arguments.version}-2.1700000001' next-pkginfo
+          test "$(vercmp '${arguments.version}-2.1700000000' '${arguments.version}-2.1700000001')" = -1
+          touch "$out"
+        '';
       checks.pilot-linux-artifacts = packageContract {
         deb = config.packages.deb-dev-installer-pilot;
         rpm = config.packages.rpm-installer-pilot;

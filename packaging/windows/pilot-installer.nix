@@ -62,11 +62,12 @@
       Delete "$INSTDIR\*.pak"
       Delete "$INSTDIR\*.dat"
       Delete "$INSTDIR\*.json"
+      Delete "$INSTDIR\version"
       Delete "$INSTDIR\LICENSE*"
       ${lib.concatMapStringsSep "\n" (pattern: ''
       IfFileExists "$INSTDIR\${pattern}" 0 +2
       Abort "Pilot files remain in use. Close all profiles and retry removal."
-    '') ["cardano-*.exe" "mithril-client.exe" "snapshot-converter.exe" "*.dll" "*.bin" "*.pak" "*.dat" "*.json" "LICENSE*"]}
+    '') ["cardano-*.exe" "mithril-client.exe" "snapshot-converter.exe" "*.dll" "*.bin" "*.pak" "*.dat" "*.json" "version" "LICENSE*"]}
       IfFileExists "$INSTDIR\Daedalus Pilot.exe" 0 removed
       Abort "Pilot remains in use. Close all profiles and retry removal."
     removed:

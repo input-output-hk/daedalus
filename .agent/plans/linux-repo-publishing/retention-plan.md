@@ -83,3 +83,29 @@ finding was also corrected without changing the publication design.
 No live bucket operations or deployment credentials were used. Storage-origin
 checks and deletes were tested through the real AWS SDK at a local HTTP fixture;
 signed APT/YUM generations and Arch current-version selection use native tools.
+
+## PR 3447 review follow-up — 2026-11-04
+
+Addressed [Adam's review](https://github.com/input-output-hk/daedalus/pull/3447#pullrequestreview-5775912504)
+in the shared packaging branch. Signing resolves the environment from fetch
+metadata on both desktop platforms, and the GPG pass visits each installer once.
+Arch native releases include the hourly build counter and source timestamp.
+APT/YUM and Arch share one pinned signing policy and isolated verifier; local
+test signing is explicit and production exports only the IOHK primary key.
+
+The smaller release-tool fixes restore loopback serving, correct signed-YUM
+client instructions, guard pacman and native repository tests by platform,
+support initial dry runs in empty pre-created state directories, and remove
+the unconditional final-update claim from both newsfeeds. Windows uninstall
+now removes/checks Electron's extension-less version file before ownership
+metadata is deleted.
+
+Validation: the sandboxed Nix drt build passes 45 unit tests plus the once-only
+signing CLI integration test; one existing privileged pacman test stays ignored.
+Clippy passes with warnings denied. Both macOS architectures evaluate drt and
+both release shells. The actual package fixture checks cover Arch release
+ordering and NSIS compilation with the extension-less file in the payload.
+The sandbox run also exposed RPM fixture paths outside its temporary tree;
+the fixture now follows the production builder's isolated temporary-path setup.
+Native Windows uninstall/reinstall remains a QA check; no live publication,
+signing-host operation or review reply was performed.

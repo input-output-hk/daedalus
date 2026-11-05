@@ -233,7 +233,7 @@ async fn publish_generation(
     Ok(())
 }
 
-#[cfg(test)]
+#[cfg(all(test, target_os = "linux"))]
 mod tests {
     use super::*;
     use crate::linux_repo_state::tests::{fixture, target};
@@ -490,6 +490,28 @@ mod tests {
             "{}",
             String::from_utf8_lossy(&output.stderr)
         );
+        let unrelated = Command::new("gpg2")
+            .arg("--homedir")
+            .arg(home.path())
+            .args([
+                "--batch",
+                "--pinentry-mode",
+                "loopback",
+                "--passphrase",
+                "",
+                "--quick-generate-key",
+                "Unrelated fixture <unrelated@example.invalid>",
+                "ed25519",
+                "sign",
+                "0",
+            ])
+            .output()
+            .unwrap();
+        assert!(
+            unrelated.status.success(),
+            "{}",
+            String::from_utf8_lossy(&unrelated.stderr)
+        );
         let output = Command::new(std::env::current_exe().unwrap())
             .args([
                 "--exact",
@@ -556,8 +578,60 @@ mod tests {
                     })
                     .collect();
                 let generation = tempfile::tempdir().unwrap();
-                linux_repo_cmd::prepare_publication(&packages, Some(KEY), generation.path(), 1000)
+                linux_repo_cmd::prepare_repositories(
+                    &packages,
+                    crate::repo_signing::Signing::Local(KEY),
+                    generation.path(),
+                    1000,
+                )
+                .unwrap();
+                let (root, signature, data) = if format == Format::Deb {
+                    ("apt", "dists/stable/Release.gpg", "dists/stable/Release")
+                } else {
+                    ("yum", "repodata/repomd.xml.asc", "repodata/repomd.xml")
+                };
+                let root = generation.path().join(root);
+                let public_key = root.join("daedalus-release.gpg");
+                let verifier = crate::repo_signing::Verifier::new(&public_key, false).unwrap();
+                verifier
+                    .verify(&root.join(signature), &root.join(data))
                     .unwrap();
+                if format == Format::Deb {
+                    verifier
+                        .verify_clearsigned(&root.join("dists/stable/InRelease"))
+                        .unwrap();
+                }
+                let shown = Command::new("gpg2")
+                    .args(["--batch", "--with-colons", "--show-keys"])
+                    .arg(&public_key)
+                    .output()
+                    .unwrap();
+                assert!(shown.status.success());
+                assert_eq!(
+                    String::from_utf8_lossy(&shown.stdout)
+                        .lines()
+                        .filter(|line| line.starts_with("pub:"))
+                        .count(),
+                    1
+                );
+                let pinned = crate::repo_signing::Verifier::new(&public_key, true).unwrap();
+                assert!(
+                    pinned
+                        .verify(&root.join(signature), &root.join(data))
+                        .is_err()
+                );
+                for key in [None, Some(KEY)] {
+                    let production = tempfile::tempdir().unwrap();
+                    assert!(
+                        linux_repo_cmd::prepare_publication(
+                            &packages,
+                            key,
+                            production.path(),
+                            1000
+                        )
+                        .is_err()
+                    );
+                }
                 publish_generation(&mut inventory, &selection, generation.path(), &store, 1000)
                     .await
                     .unwrap();

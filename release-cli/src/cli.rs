@@ -8,6 +8,26 @@ pub struct Cli {
     pub command: Commands,
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn serve_is_loopback_by_default_and_accepts_an_explicit_lan_address() {
+        for (args, expected) in [
+            (vec!["drt", "serve"], "127.0.0.1"),
+            (vec!["drt", "serve", "--host", "192.0.2.10"], "192.0.2.10"),
+        ] {
+            let Cli {
+                command: Commands::Serve { host, .. },
+            } = Cli::try_parse_from(args).unwrap()
+            else {
+                panic!("expected serve");
+            };
+            assert_eq!(host, expected);
+        }
+    }
+}
+
 #[derive(Subcommand)]
 pub enum Commands {
     /// Hash installers, collect existing .asc signatures, upload to S3,
@@ -223,7 +243,7 @@ pub enum Commands {
         port: u16,
 
         /// Address to bind to.
-        #[arg(long, default_value = "0.0.0.0")]
+        #[arg(long, default_value = "127.0.0.1")]
         host: String,
 
         /// Directory with installer files and a 'meta.json' file.

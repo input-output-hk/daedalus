@@ -64,6 +64,9 @@ without changing the inventory or bucket. `--skip-apt`, `--skip-yum` and
 An existing empty installer directory can trigger reindexing and GC from the
 inventory without supplying another release. Repeated identical imports are safe;
 changed bytes under the same filename or native identity are rejected.
+Arch releases include the build counter and source timestamp in `pkgrel`, so
+same-version builds, including commits within one hourly counter, have distinct
+ordered native identities.
 
 ## Retention and automatic GC
 
@@ -100,6 +103,16 @@ fingerprints. It reuses verified binary package signatures or dearmors existing
 repo-add, signs the final archives, and publishes actual contents at all aliases.
 Missing package signatures are created with the deployment server's signing key.
 
+APT `Release.gpg`/`InRelease` and YUM `repomd.xml.asc` use the same pinned
+production policy as Arch. Each signature is verified in an isolated keyring
+before publication, and only the IOHK primary public key is exported. Selecting a
+different signing key does not bypass fingerprint verification. Local `drt serve`
+uses an explicitly selected test key, or unsigned repositories when no key is
+selected. It binds to `127.0.0.1` by default; use `--host <LAN-IP>` for remote
+testers so advertised URLs contain a reachable address. For signed YUM metadata,
+use `gpgcheck=0 repo_gpgcheck=1`: repository signatures are verified, while the RPM
+headers themselves are not signed.
+
 All package files and signatures are uploaded before repository metadata. Every
 Arch object receives no-store cache headers. Before each APT, YUM or Arch upload,
 the publisher checks object size and checksum using HEAD. Matching SHA-256
@@ -124,6 +137,10 @@ storage mocks. They cover independent production/pilot histories, native orderin
 Arch current-version indexes, signed APT/YUM generations, immutable imports,
 locking, dry runs, publication failures, grace and retryable collection. S3 SDK
 tests cover origin checksums and prefix-aware deletion against a local endpoint.
+Native repository integration tests and pacman dependencies are Linux-only;
+`drt`, `devShells.ops` and `devShells.release-cli` also evaluate on both macOS
+architectures. Initial dry runs accept a pre-created empty state directory
+without creating a lock or inventory; existing initialized state remains locked.
 
 An additional ignored test runs pacman in a temporary installation root using
 sudo. It is optional deployment/client validation, not a prerequisite for building

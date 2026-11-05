@@ -55,7 +55,9 @@
           # These commands run the repository integration tests. Clippy only
           # compiles test targets and must not pull Linux-only pacman into the
           # Darwin checks or the shared dependency artifacts.
-          nativeCheckInputs = [pkgs.gnupg pkgs.pacman pkgs.libarchive pkgs.dpkg pkgs.rpm];
+          nativeCheckInputs =
+            [pkgs.gnupg pkgs.libarchive pkgs.dpkg pkgs.rpm]
+            ++ lib.optionals pkgs.stdenv.isLinux [pkgs.pacman];
           meta = {
             description = "Daedalus release tool — hash, sign, upload, serve";
             mainProgram = "drt";
@@ -78,18 +80,19 @@
         (drtBuild.devShells or {})
         // {
           release-cli = pkgs.mkShell {
-            packages = [
-              toolchain
-              config.treefmt.build.wrapper
-              pkgs.gnupg
-              pkgs.awscli2
-              pkgs.cargo-watch
-              # publish-linux-repos: metadata extraction from Linux packages
-              pkgs.dpkg # dpkg-deb --field  (DEB control metadata)
-              pkgs.rpm # rpm --qf          (RPM header metadata)
-              pkgs.libarchive # bsdtar            (Arch .PKGINFO extraction)
-              pkgs.pacman # repo-add + signed Arch client validation
-            ];
+            packages =
+              [
+                toolchain
+                config.treefmt.build.wrapper
+                pkgs.gnupg
+                pkgs.awscli2
+                pkgs.cargo-watch
+                # publish-linux-repos: metadata extraction from Linux packages
+                pkgs.dpkg # dpkg-deb --field  (DEB control metadata)
+                pkgs.rpm # rpm --qf          (RPM header metadata)
+                pkgs.libarchive # bsdtar            (Arch .PKGINFO extraction)
+              ]
+              ++ lib.optionals pkgs.stdenv.isLinux [pkgs.pacman];
             shellHook = ''
               echo "drt release-cli devShell"
               echo "  build: cargo build --manifest-path release-cli/Cargo.toml"

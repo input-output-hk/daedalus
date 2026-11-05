@@ -94,7 +94,9 @@ On a disposable Windows host:
    executable. Check display names and icon paths.
 6. Try removal with each frontend running, then with only a backend running.
    Verify refusal and successful retry after stopping all profiles. Remove Pilot
-   and confirm profile data and Mainnet remain intact.
+   and confirm profile data and Mainnet remain intact. Confirm the installation
+   root is removed, including Electron's extension-less `version` file, then
+   reinstall Pilot. Removal checks that file before deleting ownership metadata.
 7. Record interrupted install/removal and unknown-file behavior as follow-up
    acceptance; do not mark lifecycle certification complete from a clean test.
 

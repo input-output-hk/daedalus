@@ -171,7 +171,7 @@ pub async fn serve(
                 "APT:  echo 'deb [signed-by=/etc/apt/keyrings/daedalus-local.gpg] {base}/apt stable main' | sudo tee /etc/apt/sources.list.d/daedalus-local.list"
             );
             println!(
-                "YUM:  baseurl={base}/yum  gpgcheck=1  gpgkey={base}/yum/daedalus-release.gpg"
+                "YUM:  baseurl={base}/yum  gpgcheck=0 repo_gpgcheck=1 gpgkey={base}/yum/daedalus-release.gpg"
             );
             println!("Arch: Server = {base}/arch  SigLevel = Required");
         } else {
@@ -233,8 +233,8 @@ pub fn build_newsfeed(
         .unwrap_or_default()
         .as_millis() as u64;
 
-    // Build separate softwareUpdate maps for Linux (.bin only, with deprecation
-    // notice) and non-Linux platforms.  Package-manager formats have no
+    // Build separate softwareUpdate maps for Linux (.bin only, with package-manager
+    // instructions) and non-Linux platforms.  Package-manager formats have no
     // newsfeed key and are skipped by newsfeed_key() returning None.
     let mut linux_sw = serde_json::Map::new();
     let mut other_sw = serde_json::Map::new();
@@ -269,21 +269,21 @@ pub fn build_newsfeed(
     if !linux_platforms.is_empty() {
         items.push(serde_json::json!({
             "title": {
-                "en-US": format!("Daedalus {version} — final Linux binary update"),
-                "ja-JP": format!("Daedalus {version} — Linux バイナリの最終アップデート"),
+                "en-US": format!("Daedalus {version} — Linux update"),
+                "ja-JP": format!("Daedalus {version} — Linux アップデート"),
             },
             "content": {
                 "en-US": format!(
-                    "Daedalus {version} is now available — this is the last automatic update \
-                     for Linux users delivered via the self-extracting binary.\n\n\
-                     Going forward, please install Daedalus using your system package manager \
+                    "Daedalus {version} is now available — Linux users can install this update using \
+                     the self-extracting binary or a system package manager.\n\n\
+                     Alternatively, use your system package manager \
                      (APT, DNF/YUM, or Pacman). Visit daedaluswallet.io/download for \
                      step-by-step installation instructions."
                 ),
                 "ja-JP": format!(
-                    "Daedalus {version} が利用可能になりました — これはセルフ展開バイナリによる \
-                     Linuxユーザー向けの最後の自動アップデートです。\n\n\
-                     今後は、システムのパッケージマネージャー（APT、DNF/YUM、またはPacman）を使用して \
+                    "Daedalus {version} が利用可能になりました — Linuxユーザーはセルフ展開バイナリまたは \
+                     システムのパッケージマネージャーを使用してこのアップデートをインストールできます。\n\n\
+                     システムのパッケージマネージャー（APT、DNF/YUM、またはPacman）を使用して \
                      Daedalusをインストールしてください。インストール手順については \
                      daedaluswallet.io/download をご覧ください。"
                 ),

@@ -170,15 +170,7 @@ fn code_sign_macos(
     notary_creds: Option<&NotaryCreds>,
     verbose: bool,
 ) -> Result<()> {
-    let gitrev = meta.gitrev.as_deref().ok_or_else(|| {
-        anyhow::anyhow!("gitrev not available in meta.json — re-fetch with: drt fetch-installers")
-    })?;
-
-    let (arch, env) = parse_darwin_installer_filename(filename)?;
-
-    let flake_ref = format!(
-        "github:input-output-hk/daedalus/{gitrev}#packages.{arch}-darwin.makeSignedInstaller-{env}"
-    );
+    let flake_ref = signing_flake_ref(filename, meta)?;
 
     if skip_upload {
         println!("    --skip-upload has no effect for macOS (nix run builds from store)");
@@ -327,18 +319,7 @@ fn code_sign_windows(
     meta: &crate::installers::Meta,
     verbose: bool,
 ) -> Result<()> {
-    let gitrev = meta.gitrev.as_deref().ok_or_else(|| {
-        anyhow::anyhow!("gitrev not available in meta.json — re-fetch with: drt fetch-installers")
-    })?;
-
-    let cluster = parse_windows_installer_cluster(filename)?;
-
-    // The makeSignedInstaller for Windows is exposed under x86_64-linux packages
-    // (as makeSignedInstaller-x86_64-windows-<env>) because it is a Linux shell
-    // script that cross-compiles and signs for Windows.
-    let flake_ref = format!(
-        "github:input-output-hk/daedalus/{gitrev}#packages.x86_64-linux.makeSignedInstaller-x86_64-windows-{cluster}"
-    );
+    let flake_ref = signing_flake_ref(filename, meta)?;
 
     println!("    nix run  → {flake_ref}");
     println!("    signing all .exe/.dll/.node via {host}, then installer…");
@@ -431,36 +412,31 @@ fn code_sign_windows(
     Ok(())
 }
 
-/// Parse the cluster/network name from a Windows installer filename.
-/// `daedalus-8.0.0-12345-mainnet-abc1234-x86_64-windows.exe` → `"mainnet"`
-fn parse_windows_installer_cluster(filename: &str) -> Result<String> {
-    let suffix = "-x86_64-windows.exe";
-    if let Some(stem) = filename.strip_suffix(suffix) {
-        // stem: daedalus-8.0.0-12345-mainnet[-abc1234]
-        // idx:  0        1     2     3        [4]
-        let parts: Vec<&str> = stem.split('-').collect();
-        if parts.len() >= 4 {
-            return Ok(parts[3].to_string());
-        }
-    }
-    bail!("cannot determine cluster from Windows installer filename: {filename}")
-}
-
-/// Parse `arch` and `env` from a Darwin installer filename.
-/// `daedalus-7.3.0-83575-mainnet-fbb43f32c-aarch64-darwin.pkg` → `("aarch64", "mainnet")`
-fn parse_darwin_installer_filename(filename: &str) -> Result<(String, String)> {
-    for arch in &["aarch64", "x86_64"] {
-        let suffix = format!("-{arch}-darwin.pkg");
-        if let Some(stem) = filename.strip_suffix(&suffix) {
-            // stem: daedalus-7.3.0-83575-mainnet-fbb43f32c
-            // idx:  0        1     2     3       4
-            let parts: Vec<&str> = stem.split('-').collect();
-            if parts.len() >= 4 {
-                return Ok((arch.to_string(), parts[3].to_string()));
-            }
-        }
-    }
-    bail!("cannot determine arch/env from Darwin installer filename: {filename}")
+/// Release metadata selects the environment; hyphenated names cannot be parsed
+/// by a fixed filename field. Architecture is a property of the installer.
+fn signing_flake_ref(filename: &str, meta: &crate::installers::Meta) -> Result<String> {
+    use crate::installers::Platform;
+    let gitrev = meta
+        .gitrev
+        .as_deref()
+        .context("gitrev missing from meta.json; re-fetch installers")?;
+    let env = meta
+        .env
+        .as_deref()
+        .context("env missing from meta.json; re-fetch installers")?;
+    anyhow::ensure!(
+        !env.is_empty() && env.bytes().all(|c| c.is_ascii_lowercase() || c == b'-'),
+        "invalid signing environment in meta.json"
+    );
+    let attribute = match Platform::from_filename(filename) {
+        Some(Platform::MacOsArm) => format!("aarch64-darwin.makeSignedInstaller-{env}"),
+        Some(Platform::MacOsX86) => format!("x86_64-darwin.makeSignedInstaller-{env}"),
+        Some(Platform::Windows) => format!("x86_64-linux.makeSignedInstaller-x86_64-windows-{env}"),
+        _ => bail!("unsupported code-signing installer: {filename}"),
+    };
+    Ok(format!(
+        "github:input-output-hk/daedalus/{gitrev}#packages.{attribute}"
+    ))
 }
 
 /// Rename `foo.pkg` → `foo-unsigned.pkg` (preserves extension).
@@ -468,5 +444,46 @@ fn unsigned_filename(filename: &str) -> String {
     match filename.rsplit_once('.') {
         Some((stem, ext)) => format!("{stem}-unsigned.{ext}"),
         None => format!("{filename}-unsigned"),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn signing_attributes_keep_the_metadata_environment_on_both_platforms() {
+        for env in ["mainnet", "mainnet-flight", "preview", "preprod", "pilot"] {
+            let meta = crate::installers::Meta {
+                version: "11.6.0".into(),
+                gitrev: Some("abc1234".into()),
+                env: Some(env.into()),
+                nar_hash: None,
+                eval_url: None,
+            };
+            for (suffix, attribute) in [
+                (
+                    "x86_64-windows.exe",
+                    format!("x86_64-linux.makeSignedInstaller-x86_64-windows-{env}"),
+                ),
+                (
+                    "aarch64-darwin.pkg",
+                    format!("aarch64-darwin.makeSignedInstaller-{env}"),
+                ),
+                (
+                    "x86_64-darwin.pkg",
+                    format!("x86_64-darwin.makeSignedInstaller-{env}"),
+                ),
+            ] {
+                let filename = format!("daedalus-11.6.0-123-{env}-abc1234-{suffix}");
+                assert_eq!(
+                    signing_flake_ref(&filename, &meta).unwrap(),
+                    format!("github:input-output-hk/daedalus/abc1234#packages.{attribute}")
+                );
+                let mut missing = meta.clone();
+                missing.env = None;
+                assert!(signing_flake_ref(&filename, &missing).is_err());
+            }
+        }
     }
 }

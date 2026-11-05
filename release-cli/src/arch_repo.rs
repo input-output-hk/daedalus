@@ -8,26 +8,8 @@ use tempfile::TempDir;
 
 use crate::sign;
 
-pub const PRIMARY: &str = "31B3F22FA0CCE2E8382C04A2807F2ACD0171BC90";
-pub const SIGNING_SUBKEY: &str = "CD1F21F62477EB42D7C4F3DEB3AD9541F4DBD0FE";
+use crate::repo_signing::{PRIMARY, Signing, Verifier};
 pub const NO_CACHE: &str = "no-store, no-cache, max-age=0, must-revalidate";
-
-#[derive(Clone, Copy)]
-pub enum Signing<'a> {
-    Unsigned,
-    Local(&'a str),
-    Iohk(Option<&'a str>),
-}
-
-impl Signing<'_> {
-    fn key(self) -> Option<String> {
-        match self {
-            Self::Unsigned => None,
-            Self::Local(key) => Some(key.to_owned()),
-            Self::Iohk(key) => Some(key.unwrap_or(SIGNING_SUBKEY).to_owned()),
-        }
-    }
-}
 
 pub struct PreparedRepo {
     dir: TempDir,
@@ -51,67 +33,6 @@ impl PreparedRepo {
             }
             std::fs::copy(self.path(name), destination)?;
         }
-        Ok(())
-    }
-}
-
-struct Verifier {
-    home: TempDir,
-    iohk: bool,
-}
-
-impl Verifier {
-    fn new(public_key: &Path, iohk: bool) -> Result<Self> {
-        let home = tempfile::tempdir()?;
-        use std::os::unix::fs::PermissionsExt;
-        std::fs::set_permissions(home.path(), std::fs::Permissions::from_mode(0o700))?;
-        let output = Command::new("gpg2")
-            .args(["--no-options", "--batch", "--homedir"])
-            .arg(home.path())
-            .arg("--import")
-            .arg(public_key)
-            .output()
-            .context("importing Arch verification public key")?;
-        ensure!(
-            output.status.success(),
-            "public key import failed: {}",
-            String::from_utf8_lossy(&output.stderr)
-        );
-        Ok(Self { home, iohk })
-    }
-
-    fn verify(&self, signature: &Path, data: &Path) -> Result<()> {
-        let output = Command::new("gpg2")
-            .args([
-                "--no-options",
-                "--batch",
-                "--no-auto-key-retrieve",
-                "--homedir",
-            ])
-            .arg(self.home.path())
-            .args(["--status-fd", "1", "--verify"])
-            .arg(signature)
-            .arg(data)
-            .output()
-            .context("verifying Arch detached signature")?;
-        ensure!(
-            output.status.success(),
-            "signature verification failed for {}: {}",
-            data.display(),
-            String::from_utf8_lossy(&output.stderr)
-        );
-        let status = String::from_utf8_lossy(&output.stdout);
-        let valid = status.lines().any(|line| {
-            let fields: Vec<_> = line.split_whitespace().collect();
-            fields.get(1) == Some(&"VALIDSIG")
-                && (!self.iohk
-                    || (fields.get(2) == Some(&SIGNING_SUBKEY) && fields.get(11) == Some(&PRIMARY)))
-        });
-        ensure!(
-            valid,
-            "signature for {} does not have the required signing identity",
-            data.display()
-        );
         Ok(())
     }
 }
@@ -263,7 +184,7 @@ pub fn prepare(packages: &[(&Path, &str)], signing: Signing<'_>) -> Result<Prepa
     Ok(repo)
 }
 
-#[cfg(test)]
+#[cfg(all(test, target_os = "linux"))]
 mod tests {
     use super::*;
 

@@ -47,5 +47,5 @@
       ]
     }
   ],
-  "validation": "42 Cargo tests passed; 1 pre-existing privileged pacman test ignored. Clippy and changed-file treefmt pass through .#release-cli. No live deployment."
+  "validation": "2026-11-04 review follow-up: sandboxed Nix drt build passed 45 unit tests and one signing CLI integration test; one existing privileged pacman test ignored. Nix Clippy passed with warnings denied. Both macOS architectures evaluate drt and ops/release-cli shells. Signing fixtures verify APT/YUM signatures, export only the selected key from a multi-key keyring and reject non-IOHK production keys. Empty-directory dry-run and metadata-derived Flight signing regressions passed. See retention-plan.md and shared packaging validation for package checks. No live deployment."
 }

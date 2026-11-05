@@ -55,16 +55,16 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::arch_repo::{self, Signing};
+use crate::arch_repo;
+use crate::repo_signing::{PRIMARY, Signing, Verifier};
 use crate::sign;
 
 // ── Serve entry point (disk) ──────────────────────────────────────────────────
 
 /// Generate APT/YUM/Arch repo trees under `dest_dir` from packages in
 /// `installers_dir`.  Package files are symlinked rather than copied.
-/// Arch signing is required when `gpg_user` or `GPG_USER` is set; otherwise
-/// Arch repositories are explicitly unsigned for local development. APT/YUM
-/// retain their existing best-effort local signing behavior.
+/// All repositories are signed and verified when a local key is selected;
+/// otherwise they are explicitly unsigned for local development.
 ///
 /// Returns `true` if any Linux packages were found, `false` otherwise.
 pub fn write_linux_repos_to_dir(
@@ -79,6 +79,7 @@ pub fn write_linux_repos_to_dir(
 
     let gpg_env = std::env::var("GPG_USER").ok();
     let effective_gpg = gpg_user.or(gpg_env.as_deref());
+    let signing = effective_gpg.map_or(Signing::Unsigned, Signing::Local);
 
     let now_ts = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -93,10 +94,10 @@ pub fn write_linux_repos_to_dir(
         .collect();
 
     if !debs.is_empty() {
-        write_apt_to_dir(&debs, effective_gpg, now_ts, &dest.join("apt"), false)?;
+        write_apt_to_dir(&debs, signing, now_ts, &dest.join("apt"))?;
     }
     if !rpms.is_empty() {
-        write_yum_to_dir(&rpms, effective_gpg, now_ts, &dest.join("yum"), false)?;
+        write_yum_to_dir(&rpms, signing, now_ts, &dest.join("yum"))?;
     }
     if !archs.is_empty() {
         write_arch_to_dir(&archs, effective_gpg, &dest.join("arch"))?;
@@ -118,10 +119,9 @@ fn link_into(src: &Path, dest: &Path) -> Result<()> {
 
 fn write_apt_to_dir(
     debs: &[&LinuxPackage],
-    gpg_user: Option<&str>,
+    signing: Signing<'_>,
     now_ts: u64,
     apt_dir: &Path,
-    require_signing: bool,
 ) -> Result<()> {
     let mut entries: Vec<String> = Vec::new();
 
@@ -152,20 +152,13 @@ fn write_apt_to_dir(
     std::fs::write(binary.join("Packages.gz"), &packages_gz)?;
     std::fs::write(dists.join("Release"), release_bytes)?;
 
-    write_signature(
-        &dists.join("Release.gpg"),
-        sign::sign_data(release_bytes, gpg_user),
-        require_signing,
-    )?;
-    write_signature(
-        &dists.join("InRelease"),
-        sign::clearsign_data(release_bytes, gpg_user),
-        require_signing,
-    )?;
-    write_signature(
-        &apt_dir.join("daedalus-release.gpg"),
-        sign::export_public_key(gpg_user),
-        require_signing,
+    sign_metadata(
+        apt_dir,
+        &[
+            ("dists/stable/Release.gpg", "dists/stable/Release", false),
+            ("dists/stable/InRelease", "dists/stable/Release", true),
+        ],
+        signing,
     )?;
 
     Ok(())
@@ -173,10 +166,9 @@ fn write_apt_to_dir(
 
 fn write_yum_to_dir(
     rpms: &[&LinuxPackage],
-    gpg_user: Option<&str>,
+    signing: Signing<'_>,
     now_ts: u64,
     yum_dir: &Path,
-    require_signing: bool,
 ) -> Result<()> {
     let mut rpm_data: Vec<(RpmInfo, String, u64, String)> = Vec::new();
 
@@ -214,15 +206,10 @@ fn write_yum_to_dir(
     std::fs::write(repodata.join("primary.xml.gz"), &primary_gz)?;
     std::fs::write(repodata.join("repomd.xml"), repomd_bytes)?;
 
-    write_signature(
-        &repodata.join("repomd.xml.asc"),
-        sign::sign_data(repomd_bytes, gpg_user),
-        require_signing,
-    )?;
-    write_signature(
-        &yum_dir.join("daedalus-release.gpg"),
-        sign::export_public_key(gpg_user),
-        require_signing,
+    sign_metadata(
+        yum_dir,
+        &[("repodata/repomd.xml.asc", "repodata/repomd.xml", false)],
+        signing,
     )?;
 
     Ok(())
@@ -259,20 +246,55 @@ pub struct PublishLinuxReposOpts<'a> {
     pub skip_arch: bool,
 }
 
-fn write_signature(path: &Path, result: Result<Vec<u8>>, required: bool) -> Result<()> {
-    match result {
-        Ok(bytes) => {
-            std::fs::write(path, bytes).with_context(|| format!("writing {}", path.display()))
+/// Use the same signing identity and isolated verifier as Arch. Verification
+/// finishes before a generation can reach object storage.
+fn sign_metadata(
+    directory: &Path,
+    entries: &[(&str, &str, bool)],
+    signing: Signing<'_>,
+) -> Result<()> {
+    let Some(key) = signing.key() else {
+        return Ok(());
+    };
+    let production = matches!(signing, Signing::Iohk(_));
+    let public_key = directory.join("daedalus-release.gpg");
+    std::fs::write(
+        &public_key,
+        sign::export_public_key(Some(if production { PRIMARY } else { &key }))?,
+    )?;
+    let verifier = Verifier::new(&public_key, production)?;
+    for (signature_name, data_name, clearsign) in entries {
+        let data_path = directory.join(data_name);
+        let data = std::fs::read(&data_path)?;
+        let signature = directory.join(signature_name);
+        let bytes = if *clearsign {
+            sign::clearsign_data(&data, Some(&key))?
+        } else {
+            sign::sign_data(&data, Some(&key))?
+        };
+        std::fs::write(&signature, bytes)?;
+        if *clearsign {
+            verifier.verify_clearsigned(&signature)?;
+        } else {
+            verifier.verify(&signature, &data_path)?;
         }
-        Err(error) if required => Err(error).with_context(|| format!("signing {}", path.display())),
-        Err(_) => Ok(()),
     }
+    Ok(())
 }
 
 /// Production preparation is fail-closed and completes all signing before S3.
 pub(crate) fn prepare_publication(
     packages: &[LinuxPackage],
     gpg_user: Option<&str>,
+    dest: &Path,
+    now: u64,
+) -> Result<()> {
+    prepare_repositories(packages, Signing::Iohk(gpg_user), dest, now)
+}
+
+pub(crate) fn prepare_repositories(
+    packages: &[LinuxPackage],
+    signing: Signing<'_>,
     dest: &Path,
     now: u64,
 ) -> Result<()> {
@@ -290,13 +312,13 @@ pub(crate) fn prepare_publication(
         .map(|p| (p.path.as_path(), p.filename.as_str()))
         .collect();
     if !debs.is_empty() {
-        write_apt_to_dir(&debs, gpg_user, now, &dest.join("apt"), true)?;
+        write_apt_to_dir(&debs, signing, now, &dest.join("apt"))?;
     }
     if !rpms.is_empty() {
-        write_yum_to_dir(&rpms, gpg_user, now, &dest.join("yum"), true)?;
+        write_yum_to_dir(&rpms, signing, now, &dest.join("yum"))?;
     }
     if !archs.is_empty() {
-        arch_repo::prepare(&archs, Signing::Iohk(gpg_user))?.write_to(&dest.join("arch"))?;
+        arch_repo::prepare(&archs, signing)?.write_to(&dest.join("arch"))?;
     }
     Ok(())
 }

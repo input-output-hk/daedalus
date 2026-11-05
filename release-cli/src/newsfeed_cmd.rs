@@ -122,9 +122,8 @@ pub async fn cmd_newsfeed_release(
 
     let (now_ms, updated_at) = timestamps();
 
-    // Build separate softwareUpdate maps for Linux (deprecation notice) and
-    // non-Linux (normal update). Linux .bin is the last auto-update delivery;
-    // future Linux installations use the package manager.
+    // Build separate softwareUpdate maps for Linux (package-manager instructions)
+    // and non-Linux (normal update). Only .bin participates in automatic updates.
     let mut linux_sw_map = serde_json::Map::new();
     let mut other_sw_map = serde_json::Map::new();
     let mut linux_platforms: Vec<String> = Vec::new();
@@ -154,22 +153,22 @@ pub async fn cmd_newsfeed_release(
 
     let linux_update_item = json!({
         "title": {
-            "en-US": format!("Daedalus {version} — final Linux binary update"),
-            "ja-JP": format!("Daedalus {version} — Linux バイナリの最終アップデート"),
+            "en-US": format!("Daedalus {version} — Linux update"),
+            "ja-JP": format!("Daedalus {version} — Linux アップデート"),
         },
         "content": {
             "en-US": format!(
-                "Daedalus {version} is now available — this is the last automatic update \
-                 for Linux users delivered via the self-extracting binary.\n\n\
-                 Going forward, please install Daedalus using your system package manager \
+                "Daedalus {version} is now available — Linux users can install this update using \
+                 the self-extracting binary or a system package manager.\n\n\
+                 Alternatively, use your system package manager \
                  (APT, DNF/YUM, or Pacman). Visit daedaluswallet.io/download for \
                  step-by-step installation instructions.\n\n\
                  Please read the release notes for more information."
             ),
             "ja-JP": format!(
-                "Daedalus {version} が利用可能になりました — これはセルフ展開バイナリによる \
-                 Linuxユーザー向けの最後の自動アップデートです。\n\n\
-                 今後は、システムのパッケージマネージャー（APT、DNF/YUM、またはPacman）を使用して \
+                "Daedalus {version} が利用可能になりました — Linuxユーザーはセルフ展開バイナリまたは \
+                 システムのパッケージマネージャーを使用してこのアップデートをインストールできます。\n\n\
+                 システムのパッケージマネージャー（APT、DNF/YUM、またはPacman）を使用して \
                  Daedalusをインストールしてください。インストール手順については \
                  daedaluswallet.io/download をご覧ください。\n\n\
                  詳細についてはリリースノートをご確認ください。"

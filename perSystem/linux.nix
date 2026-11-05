@@ -766,7 +766,7 @@
           cat >"$work/PKGBUILD" <<EOF
           pkgname=${packageName}
           pkgver=${version}
-          pkgrel=1
+          pkgrel=${toString (lib.max 1 buildCounter)}.${toString sourceDateEpoch}
           pkgdesc='Daedalus full-node cryptocurrency wallet (${cluster})'
           arch=('x86_64')
           url='https://daedaluswallet.io/'

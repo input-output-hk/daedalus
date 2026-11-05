@@ -103,7 +103,10 @@ impl Drop for Inventory {
 impl Inventory {
     pub fn open(root: &Path, target: Target, initialize: bool, dry_run: bool) -> Result<Self> {
         let root = std::path::absolute(root)?;
-        let lock = if dry_run && !root.exists() {
+        let lock = if dry_run
+            && !root.join("publish.lock").exists()
+            && !root.join("inventory.json").exists()
+        {
             None
         } else {
             if !dry_run {
@@ -581,7 +584,7 @@ fn compare_versions(format: Format, left: &str, right: &str) -> Result<Ordering>
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, target_os = "linux"))]
 pub(crate) mod tests {
     use super::*;
 
@@ -634,12 +637,28 @@ pub(crate) mod tests {
             Format::Rpm => {
                 let (epoch, rest) = version.split_once(':').unwrap_or(("0", version));
                 let (ver, release) = rest.rsplit_once('-').unwrap_or((rest, "1"));
+                for directory in [
+                    "BUILD",
+                    "BUILDROOT",
+                    "RPMS",
+                    "SOURCES",
+                    "SPECS",
+                    "SRPMS",
+                    "tmp",
+                    "rpmdb",
+                ] {
+                    std::fs::create_dir(root.path().join(directory)).unwrap();
+                }
                 let spec = root.path().join("fixture.spec");
                 std::fs::write(&spec, format!("Name: {name}\nEpoch: {epoch}\nVersion: {ver}\nRelease: {release}\nSummary: retention fixture\nLicense: MIT\nBuildArch: x86_64\n%description\nretention fixture\n%install\nmkdir -p %{{buildroot}}/usr/share/fixture\necho fixture > %{{buildroot}}/usr/share/fixture/payload\n%files\n/usr/share/fixture/payload\n")).unwrap();
                 output(
                     Command::new("rpmbuild")
-                        .args(["-bb", "--quiet", "--define"])
+                        .args(["-bb", "--quiet", "--nodeps", "--define"])
                         .arg(format!("_topdir {}", root.path().display()))
+                        .arg("--define")
+                        .arg(format!("_tmppath {}/tmp", root.path().display()))
+                        .arg("--define")
+                        .arg(format!("_dbpath {}/rpmdb", root.path().display()))
                         .arg(&spec),
                 )
                 .unwrap();
@@ -723,7 +742,7 @@ pub(crate) mod tests {
                     .map(|(path, name)| (path.as_path(), name.as_str()))
                     .collect();
                 let repo =
-                    crate::arch_repo::prepare(&packages, crate::arch_repo::Signing::Unsigned)
+                    crate::arch_repo::prepare(&packages, crate::repo_signing::Signing::Unsigned)
                         .unwrap();
                 for kind in ["db", "files"] {
                     let listing = output(
@@ -877,6 +896,17 @@ pub(crate) mod tests {
             ["pilot.deb"]
         );
         assert!(!state.exists());
+    }
+
+    #[test]
+    fn dry_run_accepts_a_precreated_directory_without_writing_a_lock() {
+        let state = tempfile::tempdir().unwrap();
+        let inventory = Inventory::open(state.path(), target(), true, true).unwrap();
+        assert!(inventory.packages().is_empty());
+        assert_eq!(std::fs::read_dir(state.path()).unwrap().count(), 0);
+        drop(inventory);
+        let _writer = Inventory::open(state.path(), target(), true, false).unwrap();
+        assert!(Inventory::open(state.path(), target(), true, true).is_err());
     }
 
     #[test]
