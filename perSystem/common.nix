@@ -1093,8 +1093,8 @@
 
       electronVersion = originalPackageJson.dependencies.electron;
       electronChromedriverVersion = electronVersion;
-      electron = assert pkgs.electron_42.version == electronVersion;
-        pkgs.electron_42;
+      electron = assert pkgs.electron_44.version == electronVersion;
+        pkgs.electron_44;
 
       commonSources = let
         electronHeadersTarball = pkgs.runCommand "electron-headers-${electronVersion}.tar.gz" {
@@ -1110,7 +1110,7 @@
         electronShaSums = pkgs.fetchurl {
           name = "electronShaSums-${electronVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronVersion}/SHASUMS256.txt";
-          hash = "sha256-GHF5udNBq5Dv0kgWjWmlY7Am9O28dFeUiVJ+o8wHZsc=";
+          hash = "sha256-cAAoCQFIdY48K5xTvQQDSZyYZxaDAvoU+iis4b/a4wM=";
         };
 
         electronCacheHash =
@@ -1120,7 +1120,7 @@
         electronChromedriverShaSums = pkgs.fetchurl {
           name = "electronChromedriverShaSums-${electronChromedriverVersion}";
           url = "https://github.com/electron/electron/releases/download/v${electronChromedriverVersion}/SHASUMS256.txt";
-          hash = "sha256-GHF5udNBq5Dv0kgWjWmlY7Am9O28dFeUiVJ+o8wHZsc=";
+          hash = "sha256-cAAoCQFIdY48K5xTvQQDSZyYZxaDAvoU+iis4b/a4wM=";
         };
 
         electronChromedriverCacheHash =
