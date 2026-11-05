@@ -1,6 +1,11 @@
 # Changelog
 
-## vNext
+## 11.6.1
+
+### Features
+
+- Add unified Daedalus Pilot installers for Linux, Windows, and macOS, sharing one application payload across Preview, Preprod, and Mainnet Flight. Separate launchers select each environment while preserving its existing wallet and blockchain data directories; production Mainnet remains a standalone installation ([PR #3447](https://github.com/input-output-hk/daedalus/pull/3447)).
+- Release tooling: add `drt publish-linux-repos` to publish signed APT, YUM, and Arch repositories for Linux installers. Persistent repository state retains the current and previous releases separately for Mainnet and Pilot, skips unchanged uploads, and removes expired packages after verified publication and a configurable grace period. Publishing requires `--state-dir` (or `REPO_STATE_DIR`) and first-run initialization with the complete existing package inventory ([PR #3447](https://github.com/input-output-hk/daedalus/pull/3447)).
 
 ### Fixes
 
@@ -14,7 +19,8 @@
 
 - Update form-data from 4.0.5 to 4.0.6 for GHSA-hmw2-7cc7-3qxx ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
 - Update body-parser from 1.20.8 to 1.20.9 for GHSA-27r3-jxmh-p828 ([PR #3436](https://github.com/input-output-hk/daedalus/pull/3436)).
-- Update electron from 42.11.14 to 42.11.18 for GHSA-jr5w-w6x2-84p9 ([PR #3444](https://github.com/input-output-hk/daedalus/pull/3444)).
+- Update electron from 42.11.14 to 42.11.18 for GHSA-jr5w-w6x2-84p9, and update the nixpkgs pin to a nixos-26.05 revision carrying that version ([PR #3444](https://github.com/input-output-hk/daedalus/pull/3444)).
+- Update rustls in the release CLI from 0.23.45 to 0.23.46 for GHSA-c8m5-c952-6cm4, GHSA-h2v8-394m-p7vv, GHSA-w44r-93j7-qv28, and GHSA-vp88-798v-h67f ([PR #3444](https://github.com/input-output-hk/daedalus/pull/3444)).
 - Remove the unused process group flag from the watchdog's Windows node and wallet spawns ([PR #3439](https://github.com/input-output-hk/daedalus/pull/3439)).
 - Build the bundled cardano-address tool from the upstream cardano-wallet release used for mainnet instead of the cardano-wallet-cip30 input ([PR #3440](https://github.com/input-output-hk/daedalus/pull/3440)).
 - Update decode-uri-component from 0.5.0 to 0.5.1 for GHSA-qr28-fpjm-wq7f ([PR #3448](https://github.com/input-output-hk/daedalus/pull/3448)).
