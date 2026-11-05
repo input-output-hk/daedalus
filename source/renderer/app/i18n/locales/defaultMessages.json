@@ -917,41 +917,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Token #{assetNumber}",
-        "description": "\"assetLabel\" item on AssetTransactionConfirmation.",
-        "id": "asset.transactionConfirmation.assetLabel"
-      },
-      {
-        "defaultMessage": "!!!unformatted amount",
-        "description": "\"unformattedAmountLabel\" item on AssetTransactionConfirmation.",
-        "id": "asset.transactionConfirmation.unformattedAmountLabel"
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.",
-        "description": "\"unformattedAmountMessageForHardwareWallets\" item on AssetTransactionConfirmation.",
-        "id": "asset.transactionConfirmation.unformattedAmountMessageForHardwareWallets"
-      },
-      {
-        "defaultMessage": "!!!Native assets may specify a number of decimal places, as defined in the Cardano token registry. Daedalus uses this information to format the amount that is being sent in the transaction.<br /><br />The native token unformatted amount is the amount without these decimal places. Please ensure that you verify both amounts, as some wallet software may not yet use the Cardano token registry.<br /><br />The native token unformatted amount will be displayed on the hardware wallet device during transaction confirmation.",
-        "description": "\"unformattedAmountMessageForSoftwareWallets\" item on AssetTransactionConfirmation.",
-        "id": "asset.transactionConfirmation.unformattedAmountMessageForSoftwareWallets"
-      },
-      {
-        "defaultMessage": "!!!There is no such token in this wallet",
-        "description": "\"missingToken\" item on AssetTransactionConfirmation.",
-        "id": "asset.transactionConfirmation.missingToken"
-      },
-      {
-        "defaultMessage": "!!!Insufficient funds. The balance of the token in this wallet is {formattedBalance} (Unformatted: {unformattedBalance})",
-        "description": "\"insufficientBalance\" item on AssetTransactionConfirmation.",
-        "id": "asset.transactionConfirmation.insufficientBalance"
-      }
-    ],
-    "path": "source/renderer/app/components/assets/AssetTransactionConfirmation.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Select blockchain data location",
         "description": "Headline for the chain storage location picker screen.",
         "id": "chainStorage.locationPicker.title"
@@ -1465,11 +1430,6 @@
         "defaultMessage": "!!!brand new wallet",
         "description": "Legacy notification link label.",
         "id": "wallet.byron.notification.moveFundsDescription.line2.link.label"
-      },
-      {
-        "defaultMessage": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.",
-        "description": "Legacy notification description WithFunds.",
-        "id": "wallet.legacy.notification.descriptionWithFunds"
       },
       {
         "defaultMessage": "!!!\"{activeWalletName}\"\" is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.",
@@ -2988,49 +2948,9 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Create a new wallet",
-        "description": "Title \"Create a new wallet\" in the wallet create dialog.",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
         "id": "wallet.create.dialog.title"
       },
-      {
-        "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step counters in the wallet create dialog.",
-        "id": "wallet.create.dialog.stepsCounter"
-      },
-      {
-        "defaultMessage": "!!!Instructions",
-        "description": "Step \"Instructions\" in the wallet create dialog.",
-        "id": "wallet.create.dialog.instructionsStep"
-      },
-      {
-        "defaultMessage": "!!!Template",
-        "description": "Step \"Template\" in the wallet create dialog.",
-        "id": "wallet.create.dialog.templateStep"
-      },
-      {
-        "defaultMessage": "!!!Mnemonics",
-        "description": "Step \"Mnemonics\" in the wallet create dialog.",
-        "id": "wallet.create.dialog.mnemonicsStep"
-      },
-      {
-        "defaultMessage": "!!!Validate",
-        "description": "Step \"Validate\" in the wallet create dialog.",
-        "id": "wallet.create.dialog.validateStep"
-      },
-      {
-        "defaultMessage": "!!!Hash & Image",
-        "description": "Step \"HashImage\" in the wallet create dialog.",
-        "id": "wallet.create.dialog.hashImageStep"
-      },
-      {
-        "defaultMessage": "!!!Config",
-        "description": "Step \"Config\" in the wallet create dialog.",
-        "id": "wallet.create.dialog.configStep"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/wallet-create/WalletCreateSteps.tsx"
-  },
-  {
-    "descriptors": [
       {
         "defaultMessage": "!!!Wallet name",
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
@@ -6532,31 +6452,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
-        "description": "Headline for the Decentralization progress notification.",
-        "id": "staking.info.heading"
-      },
-      {
-        "defaultMessage": "!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.",
-        "description": "Info description for the Decentralization progress notification.",
-        "id": "staking.info.description"
-      },
-      {
-        "defaultMessage": "!!!Currently, {percentage}% of the blocks are produced by the stake pools.",
-        "description": "Percentage info description for the Decentralization progress notification.",
-        "id": "staking.info.percentage"
-      },
-      {
-        "defaultMessage": "!!!Learn more",
-        "description": "Button Label for the Decentralization progress notification.",
-        "id": "staking.info.buttonLabel"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/info/StakingInfo.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Alonzo upgrade",
         "description": "Headline for the \"Staking Info\" page screen.",
         "id": "staking.infoCountdown.heading"
@@ -6588,41 +6483,6 @@
       }
     ],
     "path": "source/renderer/app/components/staking/info/StakingInfoCountdown.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!slot",
-        "description": "\"slot\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.slot.label"
-      },
-      {
-        "defaultMessage": "!!!transactions",
-        "description": "\"transactions\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.transactions.label"
-      },
-      {
-        "defaultMessage": "!!!MPC phase",
-        "description": "\"MPC phase\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.mpc.phase.label"
-      },
-      {
-        "defaultMessage": "!!!commitments",
-        "description": "\"commitments\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.commitments.label"
-      },
-      {
-        "defaultMessage": "!!!openings",
-        "description": "\"openings\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.openings.label"
-      },
-      {
-        "defaultMessage": "!!!shares",
-        "description": "\"shares\" label on staking chart tooltip.",
-        "id": "staking.chart.tooltip.shares.label"
-      }
-    ],
-    "path": "source/renderer/app/components/staking/legacy/StakingChartTooltip.tsx"
   },
   {
     "descriptors": [
@@ -7037,24 +6897,9 @@
         "id": "staking.stakePools.tableHeader.saturation"
       },
       {
-        "defaultMessage": "!!!Performance",
-        "description": "Table header \"Performance\" label on stake pools list view page",
-        "id": "staking.stakePools.tableHeader.performance"
-      },
-      {
-        "defaultMessage": "!!!Uptime (days)",
-        "description": "Table header \"Uptime\" label on stake pools list view page",
-        "id": "staking.stakePools.tableHeader.uptime"
-      },
-      {
         "defaultMessage": "!!!Margin",
         "description": "Table header \"Margin\" label on stake pools list view page",
         "id": "staking.stakePools.tableHeader.margin"
-      },
-      {
-        "defaultMessage": "!!!Roi",
-        "description": "Table header \"Roi\" label on stake pools list view page",
-        "id": "staking.stakePools.tableHeader.roi"
       },
       {
         "defaultMessage": "!!!Cost (ADA)",
@@ -7763,56 +7608,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Import Wallet",
-        "description": "headline for \"Import wallet from file\" dialog.",
-        "id": "wallet.file.import.dialog.headline"
-      },
-      {
-        "defaultMessage": "!!!Import file",
-        "description": "Label \"Import file\" on the dialog for importing a wallet from a file.",
-        "id": "wallet.file.import.dialog.walletFileLabel"
-      },
-      {
-        "defaultMessage": "!!!Drop file here or click to choose",
-        "description": "Hint for the file upload field on the dialog for importing a wallet from a file.",
-        "id": "wallet.file.import.dialog.walletFileHint"
-      },
-      {
-        "defaultMessage": "!!!Wallet name",
-        "description": "Label for the \"wallet name\" input in the wallet file import dialog.",
-        "id": "wallet.file.import.dialog.wallet.name.input.label"
-      },
-      {
-        "defaultMessage": "!!!e.g: Shopping Wallet",
-        "description": "Hint for the \"Wallet name\" in the wallet file import dialog.",
-        "id": "wallet.file.import.dialog.wallet.name.input.hint"
-      },
-      {
-        "defaultMessage": "!!!Import wallet",
-        "description": "Label \"Import wallet\" submit button on the dialog for importing a wallet from a file.",
-        "id": "wallet.file.import.dialog.submitLabel"
-      },
-      {
-        "defaultMessage": "!!!Wallet password",
-        "description": "Label for the \"Wallet password\" input in the wallet file import dialog.",
-        "id": "wallet.file.import.dialog.spendingPasswordLabel"
-      },
-      {
-        "defaultMessage": "!!!Repeat password",
-        "description": "Label for the \"Repeat password\" input in the wallet file import dialog.",
-        "id": "wallet.file.import.dialog.repeatPasswordLabel"
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Placeholder for the \"Password\" inputs in the wallet file import dialog.",
-        "id": "wallet.file.import.dialog.passwordFieldPlaceholder"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.tsx"
   },
   {
     "descriptors": [
@@ -9032,11 +8827,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transaction assurance security level",
-        "description": "Label for the \"Transaction assurance security level\" dropdown.",
-        "id": "wallet.settings.assurance"
-      },
-      {
         "defaultMessage": "!!!Undelegating your wallet",
         "description": "Undelegate wallet header on the wallet settings page.",
         "id": "wallet.settings.undelegateWallet.header"
@@ -9642,16 +9432,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Search transaction",
-        "description": "Hint in the transactions search box.",
-        "id": "wallet.transactions.search.hint"
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/transactions/WalletTransactionsSearch.tsx"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Transfer funds",
         "description": "Title  in the transfer funds form.",
         "id": "wallet.transferFunds.dialog1.title"
@@ -10093,31 +9873,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Drop file here",
-        "description": "Label \"Drop file here\" on the file upload widget.",
-        "id": "ImageUploadWidget.dropFileHint"
-      },
-      {
-        "defaultMessage": "!!!or click to upload",
-        "description": "Label \"or click to upload\" on the file upload widget.",
-        "id": "ImageUploadWidget.clickToUploadLabel"
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/forms/ImageUploadWidget.tsx"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Your changes have been saved",
-        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Wallet Settings page).",
-        "id": "inline.editing.dropdown.changesSaved"
-      }
-    ],
-    "path": "source/renderer/app/components/widgets/forms/InlineEditingDropdown.tsx"
   },
   {
     "descriptors": [

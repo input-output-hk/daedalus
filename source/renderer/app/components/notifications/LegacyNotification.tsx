@@ -38,12 +38,6 @@ const messages = defineMessages({
     defaultMessage: '!!!brand new wallet',
     description: 'Legacy notification link label.',
   },
-  descriptionWithFunds: {
-    id: 'wallet.legacy.notification.descriptionWithFunds',
-    defaultMessage:
-      '!!!"{transferWalletName}"" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.',
-    description: 'Legacy notification description WithFunds.',
-  },
   addWalletDescriptionLine1: {
     id: 'wallet.byron.notification.addWalletDescription.line1',
     defaultMessage:

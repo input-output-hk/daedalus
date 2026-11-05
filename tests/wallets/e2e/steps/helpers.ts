@@ -14,7 +14,6 @@ import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains
 
 const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';
-const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 const DEFAULT_LANGUAGE = 'en-US';
 let shelleyMnemonicsIndex = 0;
 export const noWalletsErrorMessage = `The byron wallet for funds transferring was already used and has no longer funds.`;

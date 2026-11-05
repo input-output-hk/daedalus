@@ -29,17 +29,6 @@ export const messages = defineMessages({
       '!!!Saturation measures the stake in the pool and indicates the point at which rewards stop increasing with increases in stake. This capping mechanism encourages decentralization by discouraging users from delegating to oversaturated stake pools.',
     description: '"Saturation" tooltip for the Stake Pools Table.',
   },
-  tableHeaderPerformance: {
-    id: 'staking.stakePools.tableHeader.performance',
-    defaultMessage: '!!!Performance',
-    description:
-      'Table header "Performance" label on stake pools list view page',
-  },
-  tableHeaderUptime: {
-    id: 'staking.stakePools.tableHeader.uptime',
-    defaultMessage: '!!!Uptime (days)',
-    description: 'Table header "Uptime" label on stake pools list view page',
-  },
   tableHeaderMargin: {
     id: 'staking.stakePools.tableHeader.margin',
     defaultMessage: '!!!Margin',
@@ -50,11 +39,6 @@ export const messages = defineMessages({
     defaultMessage:
       "!!!The pool's profit, defined as the rewards percentage kept by the pool from the stake that was delegated to it.",
     description: '"Pool margin" tooltip for the Stake Pools Table.',
-  },
-  tableHeaderRoi: {
-    id: 'staking.stakePools.tableHeader.roi',
-    defaultMessage: '!!!Roi',
-    description: 'Table header "Roi" label on stake pools list view page',
   },
   tableHeaderCost: {
     id: 'staking.stakePools.tableHeader.cost',
