@@ -9,6 +9,7 @@
 ### Chores
 
 - Remove renderer components that nothing renders, with their stories, styles and messages: the wallet file import dialog, the legacy staking chart, the decentralization progress panel, the token amount lists in transaction confirmations, unused form widgets, and the step-by-step wallet creation dialogs and store actions ([PR #3453](https://github.com/input-output-hk/daedalus/pull/3453)).
+- Update ws from 8.21.0 to 8.22.1 and remove 14 unneeded dependency resolutions ([PR #3451](https://github.com/input-output-hk/daedalus/pull/3451)).
 
 ## 11.6.2
 
