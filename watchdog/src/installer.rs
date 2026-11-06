@@ -74,12 +74,15 @@ pub async fn start_requested(slot: &InstallerRequest, backend_stopped: bool) -> 
 }
 
 // Windows: CreateProcess with CREATE_BREAKAWAY_FROM_JOB, so the installer
-// leaves the watchdog's kill-on-close job and survives the watchdog's exit
-// (init_job_object allows breakaway; children that do not ask for it stay in
-// the job). The installer asks for elevation (RequestExecutionLevel highest),
-// and CreateProcess cannot elevate: for an administrator it fails with
+// leaves the watchdog's job and survives the watchdog's exit (init_job_object
+// allows breakaway; children that do not ask for it stay in the job). The
+// installer asks for elevation (RequestExecutionLevel highest), and
+// CreateProcess cannot elevate: for an administrator it fails with
 // ERROR_ELEVATION_REQUIRED, and then ShellExecuteEx starts it, which shows the
-// UAC prompt. An elevated process is created outside the job.
+// UAC prompt. Windows puts a process created that way in the caller's job, so
+// once ShellExecuteEx has started the installer the job's kill-on-close limit
+// is cleared; otherwise the installer is killed when the watchdog exits. The
+// limit stays set when ShellExecuteEx fails and on the CreateProcess path.
 #[cfg(windows)]
 async fn launch(installer: &UpdateInstaller) -> std::io::Result<u32> {
     use std::os::windows::process::CommandExt;
@@ -105,9 +108,11 @@ async fn launch(installer: &UpdateInstaller) -> std::io::Result<u32> {
         {
             info!("update installer needs ShellExecute ({e}); starting it that way");
             let installer = installer.clone();
-            tokio::task::spawn_blocking(move || shell_execute(&installer))
+            let pid = tokio::task::spawn_blocking(move || shell_execute(&installer))
                 .await
-                .map_err(std::io::Error::other)?
+                .map_err(std::io::Error::other)??;
+            crate::supervisor::release_job_kill_on_close();
+            Ok(pid)
         }
         Err(e) => Err(e),
     }
