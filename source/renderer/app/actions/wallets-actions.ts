@@ -23,10 +23,6 @@ export default class WalletsActions {
     name: string;
     spendingPassword: string;
   }> = new Action();
-  createWalletBegin: Action<any> = new Action();
-  createWalletChangeStep: Action<any> = new Action();
-  createWalletClose: Action<any> = new Action();
-  createWalletAbort: Action<any> = new Action();
 
   /* ----------  Restore Wallet  ---------- */
   restoreWalletBegin: Action<any> = new Action();

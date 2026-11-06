@@ -5,14 +5,6 @@ import {
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from './cryptoConfig';
 
-export const CREATE_WALLET_STEPS = [
-  'instructions',
-  'template',
-  'mnemonics',
-  'validate',
-  'hashImage',
-  'config',
-];
 export const WALLET_RESTORE_TYPES = {
   REGULAR: 'regular',
   // Shelley wallet

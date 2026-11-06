@@ -8,7 +8,6 @@ import StoryDecorator from '../_support/StoryDecorator';
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 import StakingWithNavigation from '../../../source/renderer/app/components/staking/layouts/StakingWithNavigation';
 import StakingCountdown from '../../../source/renderer/app/components/staking/countdown/StakingCountdown';
-import StakingInfo from '../../../source/renderer/app/components/staking/info/StakingInfo';
 import StakingInfoCountdown from '../../../source/renderer/app/components/staking/info/StakingInfoCountdown';
 import DelegationCenterNoWallets from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets';
 import { StakePoolsStory } from './StakePools.stories';
@@ -27,7 +26,6 @@ import {
 import { StakingUndelegateConfirmationResultStory } from './Undelegate.stories';
 import { StakePoolsTableStory } from './StakePoolsTable.stories';
 
-const defaultPercentage = 10;
 const defaultStartDateTime = new Date();
 defaultStartDateTime.setDate(defaultStartDateTime.getDate() + 2);
 
@@ -44,7 +42,6 @@ const pageNames = {
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
   epochs: 'Epochs',
-  info: 'Info',
   'info-countdown': 'Info Countdown',
 };
 
@@ -169,23 +166,6 @@ storiesOf('Decentralization / Staking', module)
   .add(pageNames.epochs, StakingEpochsStory, {
     id: 'epochs',
   })
-  .add(
-    pageNames.info,
-    () => (
-      <StakingInfo
-        percentage={number('Percentage', defaultPercentage, {
-          min: 0,
-          max: 100,
-          step: 1,
-          range: true,
-        })}
-        onLearnMoreClick={action('onLearnMoreClick')}
-      />
-    ),
-    {
-      id: 'info',
-    }
-  )
   .add(
     pageNames['info-countdown'],
     () => {

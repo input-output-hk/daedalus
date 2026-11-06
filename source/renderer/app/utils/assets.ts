@@ -1,7 +1,6 @@
 import find from 'lodash/find';
 import BigNumber from 'bignumber.js';
 import { filter, escapeRegExp } from 'lodash';
-import Wallet from '../domains/Wallet';
 import Asset from '../domains/Asset';
 import type { Token, Tokens, AssetToken } from '../api/assets/types';
 import { TransactionTypes } from '../domains/WalletTransaction';
@@ -284,20 +283,6 @@ export const searchAssets = (
     return checkList.some((item) => regex.test(item));
   });
 };
-export const isTokenMissingInWallet = (
-  wallet?: Wallet | null | undefined,
-  token?: Token
-) => {
-  if (!wallet || !token || !token.uniqueId) {
-    return false;
-  }
-
-  const { available } = wallet.assets;
-  const { uniqueId } = token;
-  return !available.find((walletToken) => walletToken.uniqueId === uniqueId);
-};
-export const tokenHasBalance = (token: Token, amount: BigNumber) =>
-  token.quantity.isGreaterThanOrEqualTo(amount);
 export const getUniqueId = ({
   assetName,
   policyId,

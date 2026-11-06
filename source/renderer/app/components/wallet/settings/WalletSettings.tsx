@@ -35,12 +35,6 @@ import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
 export const messages: Record<string, ReactIntlMessage> = defineMessages({
-  assuranceLevelLabel: {
-    id: 'wallet.settings.assurance',
-    defaultMessage: '!!!Transaction assurance security level',
-    description:
-      'Label for the "Transaction assurance security level" dropdown.',
-  },
   undelegateWalletHeader: {
     id: 'wallet.settings.undelegateWallet.header',
     defaultMessage: '!!!Undelegating your wallet',

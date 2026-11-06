@@ -170,15 +170,6 @@ export default class WalletsStore extends Store {
   @observable
   icoPublicKey: string | null | undefined = null;
 
-  /* ----------  Create Wallet  ---------- */
-  @observable
-  createWalletStep = null;
-  @observable
-  createWalletShowAbortConfirmation = false;
-  // TODO: Remove once the new wallet creation process is ready
-  @observable
-  createWalletUseNewProcess = false;
-
   /* ----------  Restore Wallet  ---------- */
   @observable
   restoreWalletStep = null;
@@ -283,10 +274,6 @@ export default class WalletsStore extends Store {
     } = this.actions;
     // Create Wallet Actions ---
     walletsActions.createWallet.listen(this._create);
-    walletsActions.createWalletBegin.listen(this._createWalletBegin);
-    walletsActions.createWalletChangeStep.listen(this._createWalletChangeStep);
-    walletsActions.createWalletAbort.listen(this._createWalletAbort);
-    walletsActions.createWalletClose.listen(this._createWalletClose);
     walletsActions.createHardwareWallet.listen(this._createHardwareWallet);
     // ---
     // Restore Wallet Actions ---
@@ -431,34 +418,6 @@ export default class WalletsStore extends Store {
     } catch (error) {
       throw error;
     }
-  };
-  // TODO: Remove once the new wallet creation process is ready
-  @action
-  _togglecreateWalletUseNewProcess = () => {
-    this.createWalletUseNewProcess = !this.createWalletUseNewProcess;
-  };
-  @action
-  _createWalletBegin = () => {
-    this.createWalletStep = 0;
-    this.createWalletShowAbortConfirmation = false;
-  };
-  @action
-  _createWalletChangeStep = (isBack = false) => {
-    const currentCreateWalletStep = this.createWalletStep || 0;
-    this.createWalletStep =
-      isBack === true
-        ? currentCreateWalletStep - 1
-        : currentCreateWalletStep + 1;
-    this.createWalletShowAbortConfirmation = false;
-  };
-  @action
-  _createWalletClose = () => {
-    this.createWalletStep = null;
-    this.createWalletShowAbortConfirmation = false;
-  };
-  @action
-  _createWalletAbort = () => {
-    this.createWalletShowAbortConfirmation = true;
   };
   @action
   _restoreWalletBegin = () => {
