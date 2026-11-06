@@ -5,6 +5,7 @@
 ### Fixes
 
 - Windows: the update installer keeps running after Daedalus quits, so "Quit Daedalus and start the installation" installs the update instead of closing Daedalus without installing it ([PR #3457](https://github.com/input-output-hk/daedalus/pull/3457)).
+- Update: use an installer already in the update download folder when its SHA-256 matches the newsfeed hash instead of downloading it again, and keep the downloaded installer when the newsfeed cannot be fetched or verified ([PR #3459](https://github.com/input-output-hk/daedalus/pull/3459)).
 
 ## 11.6.1
 
