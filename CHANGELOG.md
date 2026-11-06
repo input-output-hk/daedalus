@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Windows: the update installer keeps running after Daedalus quits, so "Quit Daedalus and start the installation" installs the update instead of closing Daedalus without installing it ([PR #3457](https://github.com/input-output-hk/daedalus/pull/3457)).
+
 ## 11.6.1
 
 ### Features
