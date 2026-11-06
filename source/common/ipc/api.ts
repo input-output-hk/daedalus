@@ -44,6 +44,8 @@ import type {
   DownloadsLocalDataResponse,
   ResumeDownloadRequest,
   ResumeDownloadResponse,
+  ReuseExistingDownloadRequest,
+  ReuseExistingDownloadResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 import type { DataSignature } from '../cip30/wire';
@@ -600,6 +602,14 @@ export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 export const CHECK_FILE_EXISTS = 'CHECK_FILE_EXISTS';
 export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
 export type CheckFileExistsMainResponse = boolean;
+
+/**
+ * Channel for adopting an installer that is already in the download
+ * directory when its SHA-256 equals the expected hash
+ */
+export const REUSE_EXISTING_DOWNLOAD = 'REUSE_EXISTING_DOWNLOAD';
+export type ReuseExistingDownloadRendererRequest = ReuseExistingDownloadRequest;
+export type ReuseExistingDownloadMainResponse = ReuseExistingDownloadResponse;
 
 /**
 

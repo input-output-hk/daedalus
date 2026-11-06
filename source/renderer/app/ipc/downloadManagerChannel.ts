@@ -6,6 +6,7 @@ import {
   GET_DOWNLOADS_LOCAL_DATA,
   CLEAR_DOWNLOAD_LOCAL_DATA,
   CHECK_FILE_EXISTS,
+  REUSE_EXISTING_DOWNLOAD,
 } from '../../../common/ipc/api';
 import type {
   DownloadRendererRequest,
@@ -22,6 +23,8 @@ import type {
   ClearDownloadLocalDataMainResponse,
   CheckFileExistsRendererRequest,
   CheckFileExistsMainResponse,
+  ReuseExistingDownloadRendererRequest,
+  ReuseExistingDownloadMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
@@ -56,3 +59,8 @@ RendererIpcChannel<
   CheckFileExistsMainResponse,
   CheckFileExistsRendererRequest
 > = new RendererIpcChannel(CHECK_FILE_EXISTS);
+export const reuseExistingDownloadChannel: // IpcChannel<Incoming, Outgoing>
+RendererIpcChannel<
+  ReuseExistingDownloadMainResponse,
+  ReuseExistingDownloadRendererRequest
+> = new RendererIpcChannel(REUSE_EXISTING_DOWNLOAD);

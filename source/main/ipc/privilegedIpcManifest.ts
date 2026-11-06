@@ -359,6 +359,7 @@ export const privilegedIpcManifest: PrivilegedIpcManifestEntry[] = [
       'GET_DOWNLOADS_LOCAL_DATA',
       'CLEAR_DOWNLOAD_LOCAL_DATA',
       'CHECK_FILE_EXISTS',
+      'REUSE_EXISTING_DOWNLOAD',
     ],
     {
       constructorOwner: 'source/main/ipc/downloadManagerChannel.ts',
