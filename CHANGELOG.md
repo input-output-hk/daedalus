@@ -1,6 +1,6 @@
 # Changelog
 
-## vNext
+## 11.6.2
 
 ### Fixes
 
