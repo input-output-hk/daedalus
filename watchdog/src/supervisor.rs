@@ -134,7 +134,9 @@ fn emit_error(msg: &str) {
 //
 // Windows: children inherit the watchdog's job object, created in
 // init_job_object() with JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE — nothing to do
-// per child.
+// per child. release_job_kill_on_close() clears that limit only after an
+// installer has been started through ShellExecuteEx (the elevation path),
+// because Windows places that process in the caller's job.
 //
 // macOS has no PDEATHSIG equivalent; there the TypeScript driver kills the
 // child PIDs it has been told about before force-killing the watchdog.
@@ -170,14 +172,13 @@ pub(crate) fn tether_to_watchdog(cmd: &mut Command) {
 
 // Put the watchdog into a kill-on-close job object so every child it spawns
 // dies with it, even on TerminateProcess. Called once at startup; the job
-// handle is intentionally leaked — the OS closes it when the watchdog dies,
-// which is exactly the trigger we want.
+// handle is kept in WATCHDOG_JOB for the life of the process, so the OS closes
+// it when the watchdog dies, which is exactly the trigger we want.
 #[cfg(windows)]
 pub(crate) fn init_job_object() {
     use windows_sys::Win32::System::JobObjects::{
         AssignProcessToJobObject, CreateJobObjectW, JOB_OBJECT_LIMIT_BREAKAWAY_OK,
-        JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE, JOBOBJECT_EXTENDED_LIMIT_INFORMATION,
-        JobObjectExtendedLimitInformation, SetInformationJobObject,
+        JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE,
     };
     use windows_sys::Win32::System::Threading::GetCurrentProcess;
     unsafe {
@@ -186,25 +187,64 @@ pub(crate) fn init_job_object() {
             warn!("CreateJobObjectW failed; children may outlive the watchdog");
             return;
         }
-        let mut info: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = std::mem::zeroed();
         // BREAKAWAY_OK lets a process that asks for it (CREATE_BREAKAWAY_FROM_JOB)
-        // leave the job: only the update installer does, so it outlives the
-        // watchdog. Node, wallet and Electron do not ask and stay tethered.
-        info.BasicLimitInformation.LimitFlags =
-            JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE | JOB_OBJECT_LIMIT_BREAKAWAY_OK;
-        if SetInformationJobObject(
+        // leave the job. Node, wallet and Electron do not ask and stay tethered.
+        if !set_job_limit_flags(
+            job,
+            JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE | JOB_OBJECT_LIMIT_BREAKAWAY_OK,
+        ) {
+            warn!("SetInformationJobObject failed; children may outlive the watchdog");
+            return;
+        }
+        let _ = WATCHDOG_JOB.set(job as usize);
+        if AssignProcessToJobObject(job, GetCurrentProcess()) == 0 {
+            warn!("AssignProcessToJobObject failed; children may outlive the watchdog");
+        }
+    }
+}
+
+// The watchdog's job object, as a handle value (a raw handle is not Send).
+#[cfg(windows)]
+static WATCHDOG_JOB: std::sync::OnceLock<usize> = std::sync::OnceLock::new();
+
+// Replaces the limit flags of `job`. Returns false when Windows refuses.
+#[cfg(windows)]
+fn set_job_limit_flags(job: windows_sys::Win32::Foundation::HANDLE, flags: u32) -> bool {
+    use windows_sys::Win32::System::JobObjects::{
+        JOBOBJECT_EXTENDED_LIMIT_INFORMATION, JobObjectExtendedLimitInformation,
+        SetInformationJobObject,
+    };
+    unsafe {
+        let mut info: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = std::mem::zeroed();
+        info.BasicLimitInformation.LimitFlags = flags;
+        SetInformationJobObject(
             job,
             JobObjectExtendedLimitInformation,
             &info as *const _ as *const _,
             std::mem::size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
-        ) == 0
-        {
-            warn!("SetInformationJobObject failed; children may outlive the watchdog");
-            return;
-        }
-        if AssignProcessToJobObject(job, GetCurrentProcess()) == 0 {
-            warn!("AssignProcessToJobObject failed; children may outlive the watchdog");
-        }
+        ) != 0
+    }
+}
+
+// Stops closing the watchdog's job from killing the processes in it. Called
+// only after the update installer has been started through ShellExecuteEx:
+// Windows places that elevated process in the caller's job, so it would
+// otherwise die when the watchdog exits. A failure is logged and does not
+// stop the caller.
+#[cfg(windows)]
+pub(crate) fn release_job_kill_on_close() {
+    use windows_sys::Win32::System::JobObjects::JOB_OBJECT_LIMIT_BREAKAWAY_OK;
+    let Some(&job) = WATCHDOG_JOB.get() else {
+        warn!("no watchdog job object; the job cannot be released");
+        return;
+    };
+    if set_job_limit_flags(job as _, JOB_OBJECT_LIMIT_BREAKAWAY_OK) {
+        info!("watchdog job object no longer kills its processes when closed");
+    } else {
+        warn!(
+            "could not clear kill-on-close on the watchdog job object: {}",
+            std::io::Error::last_os_error()
+        );
     }
 }
 
@@ -2863,6 +2903,39 @@ const WALLET_HEALTH_PATH: &str = "/v2/network/information";
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // ── job object ────────────────────────────────────────────────────────────
+
+    #[cfg(windows)]
+    #[test]
+    fn set_job_limit_flags_replaces_the_limit_flags() {
+        use windows_sys::Win32::Foundation::CloseHandle;
+        use windows_sys::Win32::System::JobObjects::{
+            CreateJobObjectW, JOB_OBJECT_LIMIT_BREAKAWAY_OK, JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE,
+            JOBOBJECT_EXTENDED_LIMIT_INFORMATION, JobObjectExtendedLimitInformation,
+            QueryInformationJobObject,
+        };
+        let limit_flags = |job| unsafe {
+            let mut info: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = std::mem::zeroed();
+            let ok = QueryInformationJobObject(
+                job,
+                JobObjectExtendedLimitInformation,
+                &mut info as *mut _ as *mut _,
+                std::mem::size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32,
+                std::ptr::null_mut(),
+            );
+            assert_ne!(ok, 0);
+            info.BasicLimitInformation.LimitFlags
+        };
+        let job = unsafe { CreateJobObjectW(std::ptr::null(), std::ptr::null()) };
+        assert!(!job.is_null());
+        let both = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE | JOB_OBJECT_LIMIT_BREAKAWAY_OK;
+        assert!(set_job_limit_flags(job, both));
+        assert_eq!(limit_flags(job), both);
+        assert!(set_job_limit_flags(job, JOB_OBJECT_LIMIT_BREAKAWAY_OK));
+        assert_eq!(limit_flags(job), JOB_OBJECT_LIMIT_BREAKAWAY_OK);
+        unsafe { CloseHandle(job) };
+    }
 
     // ── pipe_to_log ───────────────────────────────────────────────────────────
 
