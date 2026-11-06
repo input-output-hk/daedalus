@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Update ws from 8.21.0 to 8.22.1 and remove 14 unneeded dependency resolutions ([PR #3451](https://github.com/input-output-hk/daedalus/pull/3451)).
+
 ## 11.6.1
 
 ### Features
