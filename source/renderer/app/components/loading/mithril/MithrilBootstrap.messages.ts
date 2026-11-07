@@ -102,6 +102,18 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Button label on the Mithril error view that runs Mithril Sync again.',
   },
+  errorReplayLedger: {
+    id: 'loading.mithrilBootstrap.error.replayLedger',
+    defaultMessage: '!!!Keep blocks and replay ledger',
+    description: 'Recovery action after Mithril snapshot conversion fails.',
+  },
+  errorReplayLedgerHint: {
+    id: 'loading.mithrilBootstrap.error.replayLedgerHint',
+    defaultMessage:
+      '!!!The ledger snapshot could not be converted. You can keep the verified downloaded blocks and rebuild the ledger locally. This can take a long time, but does not download the blocks again.',
+    description:
+      'Explain the local ledger replay option after conversion failure.',
+  },
   errorSkip: {
     id: 'loading.mithrilBootstrap.error.skip',
     defaultMessage: '!!!Skip to blockchain sync',
