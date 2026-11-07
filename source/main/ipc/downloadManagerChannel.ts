@@ -19,6 +19,7 @@ import {
   GET_DOWNLOADS_LOCAL_DATA,
   CLEAR_DOWNLOAD_LOCAL_DATA,
   CHECK_FILE_EXISTS,
+  REUSE_EXISTING_DOWNLOAD,
 } from '../../common/ipc/api';
 import {
   DEFAULT_DIRECTORY_NAME,
@@ -42,8 +43,11 @@ import type {
   ClearDownloadLocalDataMainResponse,
   CheckFileExistsMainResponse,
   CheckFileExistsRendererRequest,
+  ReuseExistingDownloadRendererRequest,
+  ReuseExistingDownloadMainResponse,
 } from '../../common/ipc/api';
 import { currentWindowSender } from './lib/currentWindowSender';
+import { getFileSha256 } from '../utils/getFileSha256';
 
 localStorage.setAllPaused();
 
@@ -234,6 +238,93 @@ const checkFileExists = async ({
   return fs.existsSync(filePath);
 };
 
+const reuseExistingDownload = async ({
+  id,
+  fileUrl,
+  hash,
+  destinationDirectoryName = DEFAULT_DIRECTORY_NAME,
+  options: _options,
+}: ReuseExistingDownloadRendererRequest): Promise<ReuseExistingDownloadMainResponse> => {
+  const originalFilename = getOriginalFilename({
+    fileUrl,
+    options: _options,
+  });
+  const downloadId = getIdFromFileName(id || originalFilename);
+  // A download in progress owns the destination file
+  if (downloads[downloadId] || !hash) return null;
+  const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
+  const filePath = `${destinationPath}/${originalFilename}`;
+  let size: number;
+  try {
+    const stats = await fs.promises.stat(filePath);
+    if (!stats.isFile()) return null;
+    size = stats.size;
+  } catch (error) {
+    return null;
+  }
+
+  let fileHash: string;
+  try {
+    fileHash = await getFileSha256(filePath);
+  } catch (error) {
+    logger.error('DownloadManager:reuseExistingDownload could not hash file', {
+      downloadId,
+      error,
+    });
+    return null;
+  }
+
+  if (fileHash !== hash) {
+    logger.info(
+      'DownloadManager:reuseExistingDownload removing mismatched file',
+      {
+        downloadId,
+      }
+    );
+    try {
+      await fs.promises.unlink(filePath);
+    } catch (error) {
+      logger.error('DownloadManager:reuseExistingDownload could not remove', {
+        downloadId,
+        error,
+      });
+    }
+    return null;
+  }
+
+  const temporaryFilename = generateFileNameWithTimestamp(TEMPORARY_FILENAME);
+  const info = {
+    downloadId,
+    fileUrl,
+    destinationPath,
+    destinationDirectoryName,
+    temporaryFilename,
+    originalFilename,
+    options: { ..._options, fileName: temporaryFilename },
+  };
+  await localStorage.setInfo(info, downloadId);
+  const data = await localStorage.setData(
+    {
+      state: DOWNLOAD_STATES.FINISHED,
+      remainingSize: 0,
+      serverFileSize: size,
+      diskFileSize: size,
+      downloadSize: size,
+      progress: 100,
+      speed: 0,
+      incomplete: false,
+    },
+    downloadId
+  );
+  logger.info('DownloadManager:reuseExistingDownload reusing file', {
+    downloadId,
+  });
+  return {
+    info,
+    data,
+  };
+};
+
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<DownloadRendererRequest, DownloadMainResponse> =
   new MainIpcChannel(REQUEST_DOWNLOAD);
@@ -263,6 +354,11 @@ MainIpcChannel<
 const checkFileExistsChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<CheckFileExistsRendererRequest, CheckFileExistsMainResponse> =
   new MainIpcChannel(CHECK_FILE_EXISTS);
+const reuseExistingDownloadChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<
+  ReuseExistingDownloadRendererRequest,
+  ReuseExistingDownloadMainResponse
+> = new MainIpcChannel(REUSE_EXISTING_DOWNLOAD);
 export const downloadManagerChannel = (_window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>
@@ -277,6 +373,7 @@ export const downloadManagerChannel = (_window: BrowserWindow) => {
   getDownloadsLocalDataChannel.onRequest(getDownloadsLocalData);
   clearDownloadLocalDataChannel.onRequest(clearDownloadLocalData);
   checkFileExistsChannel.onRequest(checkFileExists);
+  reuseExistingDownloadChannel.onRequest(reuseExistingDownload);
 };
 export const pauseActiveDownloads = () => {
   forEach(downloads, (download, downloadId) => {

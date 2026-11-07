@@ -12,6 +12,7 @@ import {
   getDownloadLocalDataChannel,
   clearDownloadLocalDataChannel,
   checkFileExistsChannel,
+  reuseExistingDownloadChannel,
 } from '../ipc/downloadManagerChannel';
 import { manageAppUpdateChannel } from '../ipc/manageAppUpdateChannel';
 import type {
@@ -45,6 +46,7 @@ const {
 // when it is available in the update feed, falling back to the x86_64 package.
 const updatePlatformKey = isAppleSilicon ? 'darwin-arm' : platform;
 const { News } = NewsDomains;
+type UpdateNews = Parameters<AppUpdateStore['getUpdateInfo']>[0];
 export default class AppUpdateStore extends Store {
   @observable
   // @ts-ignore ts-migrate(2749) FIXME: 'News' refers to a value, but is being used as a t... Remove this comment to see the full error message
@@ -119,9 +121,12 @@ export default class AppUpdateStore extends Store {
   // ================= REACTIONS ==================
   _watchForNewsfeedUpdates = async () => {
     const { update } = this.stores.newsFeed.newsFeedData;
+    // Read before the first `await` so the reaction tracks it
+    const isNewsFeedUnavailable = this.stores.newsFeed.isLoadingNews;
     if (update) {
       this._checkNewAppUpdate(update);
-    } else {
+    } else if (!isNewsFeedUnavailable) {
+      // Only a fetched, verified newsfeed lacking an update clears the file
       const isFileInDownloads = await this._checkFileExists();
       if (isFileInDownloads && !this.availableUpdate) {
         this._clearDownloads();
@@ -259,7 +264,7 @@ export default class AppUpdateStore extends Store {
       // The download is outdated
       if (info.fileUrl !== url) {
         await this._removeLocalDataInfo();
-        return this._requestUpdateDownload(update);
+        return this._reuseOrRequestUpdateDownload(update);
       }
 
       // The user reopened Daedalus without installing the update
@@ -293,11 +298,45 @@ export default class AppUpdateStore extends Store {
     }
 
     await this._removeLocalDataInfo();
+    return this._reuseOrRequestUpdateDownload(update);
+  };
+
+  _reuseOrRequestUpdateDownload = async (update: UpdateNews) => {
+    if (await this._reuseDownloadedInstaller(update)) return false;
     return this._requestUpdateDownload(update);
   };
 
+  // Adopts an installer in the download directory whose hash matches the feed
+  _reuseDownloadedInstaller = async (update: UpdateNews): Promise<boolean> => {
+    const { url: fileUrl, hash } = this.getUpdateInfo(update);
+    if (!fileUrl || !hash) return false;
+    try {
+      const existing = await reuseExistingDownloadChannel.request({
+        id: APP_UPDATE_DOWNLOAD_ID,
+        fileUrl,
+        hash,
+        options: {
+          progressIsThrottled: false,
+          persistLocalData: true,
+        },
+      });
+      if (!existing) return false;
+      runInAction(() => {
+        this.downloadInfo = existing.info;
+        this.downloadData = existing.data;
+        this.isUpdateDownloaded = true;
+      });
+      return true;
+    } catch (error) {
+      logger.error('AppUpdateStore:_reuseDownloadedInstaller failed', {
+        error,
+      });
+      return false;
+    }
+  };
+
   _removeLocalDataInfo = async () => {
-    clearDownloadLocalDataChannel.request({
+    await clearDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };

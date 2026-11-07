@@ -195,3 +195,14 @@ export type DeleteDownloadedFileResponse = void;
 export type CheckFileExistsRequest = {
   id?: string;
 };
+export type ReuseExistingDownloadRequest = {
+  id?: string;
+  fileUrl: string;
+  hash: string;
+  destinationDirectoryName?: AllowedDownloadDirectoriesValues;
+  options?: DownloadRequestOptions | null | undefined;
+};
+export type ReuseExistingDownloadResponse = {
+  info: DownloadInfo;
+  data: DownloadData;
+} | null;
