@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Update electron from 42.11.18 to 44.9.3, because Electron 42 no longer receives security fixes; Daedalus now requires macOS 13 (Ventura) or later ([PR #3455](https://github.com/input-output-hk/daedalus/pull/3455)).
+
 ## 11.6.2
 
 ### Fixes
