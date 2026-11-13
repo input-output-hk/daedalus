@@ -83,6 +83,21 @@ describe('dApp observability and local privacy', () => {
     expect(output).toContain('[redacted-address]');
   });
 
+  it('logs an error passed as the main log message by name and code only', () => {
+    const failure = Object.assign(
+      new Error(
+        `${diagnosticsUrl} ${transactionCbor} ${address} ${passphrase}`
+      ),
+      { code: 'ENOENT' }
+    );
+
+    expect(() => logger.error(failure as unknown as string)).not.toThrow();
+
+    const output = JSON.stringify((log.error as jest.Mock).mock.calls);
+    expectPrivateValuesAbsent(output);
+    expect(output).toContain('"message":"Error ENOENT"');
+  });
+
   it('redacts forbidden values before analytics are emitted', async () => {
     const environment = {
       analyticsFeatureEnabled: false,

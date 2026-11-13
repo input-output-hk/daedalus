@@ -3,7 +3,7 @@ import { environment } from '../environment';
 import {
   filterLogData,
   formatContext,
-  redactLogText,
+  formatLogMessage,
 } from '../../common/utils/logging';
 import type {
   FormatMessageContextParams,
@@ -27,12 +27,13 @@ const environmentData = {
   version,
 };
 
-const logToLevel = (level: string) => (message: string, data?: object | null) =>
-  log[level](formatContext({ ...messageContext, level }), {
-    message: redactLogText(message),
-    data: data ? filterLogData(toJS(data)) : data,
-    environmentData,
-  });
+const logToLevel =
+  (level: string) => (message: unknown, data?: object | null) =>
+    log[level](formatContext({ ...messageContext, level }), {
+      message: formatLogMessage(message),
+      data: data ? filterLogData(toJS(data)) : data,
+      environmentData,
+    });
 
 export const logger: Logger = {
   debug: logToLevel('debug'),
