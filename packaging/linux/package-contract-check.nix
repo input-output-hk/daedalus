@@ -30,6 +30,7 @@
     test -f "$root/config/product.json"
     test ! -f "$root/config/daedalus-config.json"
     test -x "$root/bin/refuse-live"
+    test -x "$root/libexec/cardano-address"
     test ! -e "$format/opt/daedalus/mainnet"
     test ! -e "$format/usr/bin/daedalus-pilot"
     test "$(find "$root/libexec" -type f -name chrome-sandbox | wc -l)" -eq 1
@@ -37,6 +38,7 @@
     for profile in preview preprod mainnet-flight; do
       test -x "$format/usr/bin/daedalus-$profile"
       test -x "$root/bin/daedalus-$profile"
+      grep -F "export PATH='/opt/daedalus/pilot/libexec'" "$root/bin/daedalus-$profile"
       test -f "$root/config/profiles/$profile/daedalus-config.json"
       test ! -e "$format/opt/daedalus/$profile"
       desktop-file-validate "$format/usr/share/applications/Daedalus-$profile.desktop"
