@@ -2,6 +2,10 @@
 
 ## vNext
 
+### Fixes
+
+- Linux: the Send form shows the amount field after a receiving address is entered, instead of a fee spinner that never stops, when Daedalus is installed from the `.deb`, `.rpm` or Arch package or the Pilot packages. The package launchers put the bundled `cardano-address` on `PATH`, and an error logged during the address check no longer stops the check from finishing ([PR #3463](https://github.com/input-output-hk/daedalus/pull/3463)).
+
 ### Chores
 
 - Remove renderer components that nothing renders, with their stories, styles and messages: the wallet file import dialog, the legacy staking chart, the decentralization progress panel, the token amount lists in transaction confirmations, unused form widgets, and the step-by-step wallet creation dialogs and store actions ([PR #3453](https://github.com/input-output-hk/daedalus/pull/3453)).
