@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Chores
+
+- Remove renderer components that nothing renders, with their stories, styles and messages: the wallet file import dialog, the legacy staking chart, the decentralization progress panel, the token amount lists in transaction confirmations, unused form widgets, and the step-by-step wallet creation dialogs and store actions ([PR #3453](https://github.com/input-output-hk/daedalus/pull/3453)).
+
 ## 11.6.2
 
 ### Fixes

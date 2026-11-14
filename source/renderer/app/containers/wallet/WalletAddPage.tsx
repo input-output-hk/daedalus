@@ -3,13 +3,11 @@ import { inject, observer } from 'mobx-react';
 import WalletAdd from '../../components/wallet/WalletAdd';
 import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
 import WalletBackupDialogContainer from './dialogs/WalletBackupDialogContainer';
-import WalletCreateDialogContainer from './dialogs/WalletCreateDialogContainer';
 import WalletRestoreDialogContainer from './dialogs/WalletRestoreDialogContainer';
 import WalletConnectDialog from '../../components/wallet/WalletConnectDialog';
 import WalletConnectDialogContainer from './dialogs/WalletConnectDialogContainer';
 import Layout from '../MainLayout';
 import type { InjectedProps } from '../../types/injectedPropsType';
-// TODO: Remove once the new wallet creation process is ready
 import WalletCreateDialogContainerOld from './dialogs/WalletCreateDialogContainerOld';
 import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 // TODO: Remove once the new wallet restoration process is ready
@@ -37,22 +35,15 @@ class WalletAddPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { wallets, walletMigration, uiDialogs } = stores;
-    const {
-      createWalletStep,
-      createWalletUseNewProcess,
-      restoreWalletStep,
-      restoreWalletUseNewProcess,
-      environment,
-    } = wallets;
+    const { restoreWalletStep, restoreWalletUseNewProcess, environment } =
+      wallets;
     const { walletMigrationStep } = walletMigration;
     const { isMainnet, isTestnet, isPreprod, isPreview, isProduction } =
       environment;
-    const onCreateWallet = createWalletUseNewProcess
-      ? () => actions.wallets.createWalletBegin.trigger() // TODO: Remove once the new wallet creation process is ready
-      : () =>
-          actions.dialogs.open.trigger({
-            dialog: WalletCreateDialog,
-          });
+    const onCreateWallet = () =>
+      actions.dialogs.open.trigger({
+        dialog: WalletCreateDialog,
+      });
     const onRestoreWallet = restoreWalletUseNewProcess
       ? () => actions.wallets.restoreWalletBegin.trigger() // TODO: Remove once the new wallet restoration process is ready
       : () =>
@@ -72,12 +63,8 @@ class WalletAddPage extends Component<Props> {
 
     let activeDialog = null;
 
-    // TODO: Remove once the new wallet creation process is ready
     if (uiDialogs.isOpen(WalletCreateDialog)) {
       activeDialog = <WalletCreateDialogContainerOld onClose={this.onClose} />;
-    } else if (createWalletStep !== null) {
-      // @ts-ignore ts-migrate(2769) FIXME: No overload matches this call.
-      activeDialog = <WalletCreateDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletBackupDialog)) {
       activeDialog = <WalletBackupDialogContainer onClose={this.onClose} />;
     } else if (uiDialogs.isOpen(WalletRestoreDialog)) {
