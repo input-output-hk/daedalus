@@ -141,7 +141,7 @@ export const filterLogData = (data: object): Record<string, unknown> => {
   return redact(data);
 };
 export const stringifyData = (data: unknown) => JSON.stringify(data, null, 2);
-export const stringifyError = (error: unknown) => {
+const summarizeError = (error: unknown): { name: string; code?: string } => {
   const errorRecord =
     error !== null && typeof error === 'object' ? error : undefined;
   const name =
@@ -158,7 +158,23 @@ export const stringifyError = (error: unknown) => {
     /^[A-Z0-9_]+$/u.test(errorRecord.code)
       ? errorRecord.code
       : undefined;
-  return JSON.stringify({ name, ...(code ? { code } : {}) }, null, 2);
+  return { name, ...(code ? { code } : {}) };
+};
+export const stringifyError = (error: unknown) =>
+  JSON.stringify(summarizeError(error), null, 2);
+// Callers pass caught errors as the message. An object is reduced to its name
+// and code, as stringifyError does, so its message and stack stay out of logs.
+export const formatLogMessage = (message: unknown): string => {
+  if (typeof message === 'string') {
+    return redactLogText(message);
+  }
+
+  if (message !== null && typeof message === 'object') {
+    const { name, code } = summarizeError(message);
+    return code ? `${name} ${code}` : name;
+  }
+
+  return redactLogText(String(message));
 };
 export const formatContext = (context: FormatMessageContextParams): string => {
   const { appName, electronProcess, level, network } = context;

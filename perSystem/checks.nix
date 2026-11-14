@@ -94,6 +94,8 @@
           test -f "extracted/usr/share/icons/hicolor/512x512/apps/$icon.png"
           grep -Fx "export DAEDALUS_WINDOW_ICON='/usr/share/icons/hicolor/512x512/apps/$icon.png'" "$root/libexec/daedalus-frontend"
         grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" "$root/bin/daedalus"
+        grep -F "export PATH='/opt/daedalus/mainnet/libexec'" "$root/bin/daedalus"
+        test -x "$root/libexec/cardano-address"
         grep -F 'abort-upgrade' control/preinst
         grep -F 'install)' control/preinst
         grep -F 'upgrade)' control/preinst
@@ -309,6 +311,8 @@
           extracted/usr/share/applications/Daedalus-mainnet.desktop
         grep -F "export CHROME_DEVEL_SANDBOX='/opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/chrome-sandbox'" \
           "$root/bin/daedalus"
+        grep -F "export PATH='/opt/daedalus/mainnet/libexec'" "$root/bin/daedalus"
+        test -x "$root/libexec/cardano-address"
         if grep -E -- '--no-sandbox|--disable-setuid-sandbox|ELECTRON_DISABLE_SANDBOX' \
           "$root/bin/daedalus" "$root/libexec/daedalus-frontend" \
           "$root/libexec/electron" "$scripts"; then
@@ -352,6 +356,8 @@
         test -x "$root/libexec/daedalus-frontend"
         test -x "$root/libexec/electron"
         test -f "$root/libexec/daedalus-js/main/dapp.js"
+        grep -F "export PATH='/opt/daedalus/mainnet/libexec'" "$root/bin/daedalus"
+        test -x "$root/libexec/cardano-address"
         test -f "$helper" -a ! -L "$helper"
         test "$(stat -c %a "$helper")" = 755
         test "$(patchelf --print-interpreter "$electron")" = /opt/daedalus/mainnet/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2

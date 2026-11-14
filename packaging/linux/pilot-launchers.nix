@@ -46,6 +46,7 @@
       ''}
       export CLUSTER='${profile}'
       export ENTRYPOINT_DIR='${installRoot}'
+      export PATH='${installRoot}/libexec'"''${PATH:+:$PATH}"
       export DAEDALUS_CONFIG='${installRoot}/config/profiles/${profile}'
       export CHROME_DEVEL_SANDBOX='${sandboxHelper}'
       export XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"

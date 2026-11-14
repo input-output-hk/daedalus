@@ -13,6 +13,7 @@
         mkdir -p "$out"/{bin,share,libexec/daedalus-js/main,libexec/bundle-electron/lib/electron}
         cp ${pkgs.hello}/bin/hello "$out/libexec/bundle-electron/lib/electron/electron"
         cp ${pkgs.hello}/bin/hello "$out/libexec/bundle-electron/lib/electron/chrome-sandbox"
+        cp ${pkgs.hello}/bin/hello "$out/libexec/cardano-address"
         cp -L ${pkgs.stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 "$out/libexec/bundle-electron/lib/electron/ld-linux-x86-64.so.2"
         printf 'fixture\n' > "$out/libexec/daedalus-js/main/dapp.js"
         cp -r ${config.packages.pilot-profile-configs} "$out/config"
@@ -64,13 +65,16 @@
             --replace-fail /opt/daedalus/pilot "$root"
           cat >"$root/libexec/cardano-watchdog" <<'WATCHDOG'
           #!/bin/sh
-          printf '%s\n' "$PWD" "$CLUSTER" "$DAEDALUS_CONFIG" "$ENTRYPOINT_DIR" "$@" > "$CAPTURE"
+          printf '%s\n' "$PWD" "$CLUSTER" "$DAEDALUS_CONFIG" "$ENTRYPOINT_DIR" "$@" "address-tool=$(command -v cardano-address)" > "$CAPTURE"
           WATCHDOG
           cat >"$root/libexec/electron" <<'ELECTRON'
           #!/bin/sh
           printf '%s\n' "$DAEDALUS_WINDOW_ICON" "$@" > "$CAPTURE"
           ELECTRON
-          chmod +x "$root/libexec/cardano-watchdog" "$root/libexec/electron"
+          cat >"$root/libexec/cardano-address" <<'ADDRESS'
+          #!/bin/sh
+          ADDRESS
+          chmod +x "$root/libexec/cardano-watchdog" "$root/libexec/electron" "$root/libexec/cardano-address"
           export XDG_DATA_HOME="$TMPDIR/data with spaces"
           export CAPTURE="$TMPDIR/arguments"
           for profile in preview preprod mainnet-flight; do
@@ -80,6 +84,7 @@
             test "$(sed -n '3p' "$CAPTURE")" = "$root/config/profiles/$profile"
             grep -Fx "$root/config/profiles/$profile/daedalus-config.json" "$CAPTURE"
             grep -Fx "$XDG_DATA_HOME/Daedalus/$profile/tls" "$CAPTURE"
+            grep -Fx "address-tool=$root/libexec/cardano-address" "$CAPTURE"
             CLUSTER="$profile" "$root/libexec/daedalus-frontend"
             grep -Fx "/usr/share/icons/hicolor/512x512/apps/daedalus-$profile.png" "$CAPTURE"
             grep -Fx -- "--class=Daedalus-$profile" "$CAPTURE"

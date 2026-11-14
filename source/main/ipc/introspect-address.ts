@@ -14,13 +14,17 @@ export const handleAddressIntrospectionRequests = () => {
   introspectAddressChannel.onReceive(
     ({ input }: IntrospectAddressRendererRequest) =>
       new Promise((resolve, reject) => {
-        const { stdout, stderr } = spawnSync(
+        const { error, stdout, stderr } = spawnSync(
           'cardano-address',
           ['address', 'inspect'],
           {
             input,
           }
         );
+
+        if (error) {
+          return reject(error);
+        }
 
         if (stderr.toString() !== '') {
           if (stderr.toString().match(/user error/g) !== null) {

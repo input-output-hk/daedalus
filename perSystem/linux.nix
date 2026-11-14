@@ -147,6 +147,7 @@
           export CLUSTER='${cluster}'
           export DAEDALUS_CONFIG='${installRoot}/config'
           export ENTRYPOINT_DIR='${installRoot}'
+          export PATH='${installRoot}/libexec'"''${PATH:+:$PATH}"
           export CHROME_DEVEL_SANDBOX='${installRoot}/libexec/bundle-electron/lib/electron/chrome-sandbox'
           export XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
           export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
@@ -404,6 +405,7 @@
           export CLUSTER='${cluster}'
           export DAEDALUS_CONFIG='${installRoot}/config'
           export ENTRYPOINT_DIR='${installRoot}'
+          export PATH='${installRoot}/libexec'"''${PATH:+:$PATH}"
           export CHROME_DEVEL_SANDBOX='${installRoot}/libexec/bundle-electron/lib/electron/chrome-sandbox'
           export XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
           export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
@@ -650,6 +652,7 @@
           export CLUSTER='${cluster}'
           export DAEDALUS_CONFIG='${installRoot}/config'
           export ENTRYPOINT_DIR='${installRoot}'
+          export PATH='${installRoot}/libexec'"''${PATH:+:$PATH}"
           export CHROME_DEVEL_SANDBOX='${installRoot}/libexec/bundle-electron/lib/electron/chrome-sandbox'
           export XDG_DATA_HOME="''${XDG_DATA_HOME:-''${HOME}/.local/share}"
           export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
