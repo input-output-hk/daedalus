@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Windows: the installer and uninstaller no longer delete the files of a Daedalus that is still running. They wait for the app and its backend to stop, ask you to quit Daedalus (Retry or Cancel) if it is still open, and ask before ending cardano-node, cardano-wallet or other programs left running from the installation folder when Daedalus itself is closed. A silent install or uninstall stops instead of asking, and if the check cannot run, you are asked to confirm that Daedalus is closed ([PR #3465](https://github.com/input-output-hk/daedalus/pull/3465)).
 - Linux: the Send form shows the amount field after a receiving address is entered, instead of a fee spinner that never stops, when Daedalus is installed from the `.deb`, `.rpm` or Arch package or the Pilot packages. The package launchers put the bundled `cardano-address` on `PATH`, and an error logged during the address check no longer stops the check from finishing ([PR #3463](https://github.com/input-output-hk/daedalus/pull/3463)).
 
 ### Chores
