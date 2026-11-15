@@ -26,6 +26,8 @@ import type {
   BackendStopProgress,
   ChainDamage,
   RequestedRestart,
+  WalletDbDamage,
+  WalletDbRepairView,
   WalletUnresponsive,
 } from '../../../common/types/watchdog.types';
 
@@ -135,6 +137,15 @@ export default class BackendStore extends Store {
   // restarts. Main keeps it as well, so the poll restores it after a reload
   // of the window.
   @observable _chainDamageDismissed = false;
+  // Wallet databases an older Daedalus changed so that they cannot be
+  // opened, and the state of their repair
+  @observable walletDbDamage: WalletDbDamage | null = null;
+  // Set by "Back up and repair" until the poll reports the request, so the
+  // repair shows at once
+  @observable _walletDbRepairRequested = false;
+  // Set by "Not now" or "Continue" on the wallet repair screen until the poll
+  // reports it; main keeps it until Daedalus restarts
+  @observable _walletDbDismissed = false;
   // Set from the Mithril error view to choose another chain storage location;
   // the picker shows until a location is confirmed
   @observable _chainStoragePickerRequested = false;
@@ -280,6 +291,7 @@ export default class BackendStore extends Store {
         // A dismissal not yet reported back by main stays in effect
         this._chainDamageDismissed =
           this._chainDamageDismissed || state.chainDamageDismissed === true;
+        this.walletDbDamage = state.walletDbDamage ?? null;
         this._dismissedSilenceEpisode = Math.max(
           this._dismissedSilenceEpisode,
           state.dismissedSilenceEpisode ?? 0
@@ -453,6 +465,20 @@ export default class BackendStore extends Store {
     );
   }
 
+  // The wallet repair screen to show, if any: the offer while damaged wallet
+  // databases are reported, the repair once it is asked for, then its
+  // results, until "Not now" or "Continue"
+  @computed
+  get walletDbRepairView(): WalletDbRepairView | null {
+    const damage = this.walletDbDamage;
+    if (this._walletDbDismissed || damage?.dismissed) return null;
+    if (damage?.repair === 'done') return 'done';
+    if (damage?.repair === 'requested' || this._walletDbRepairRequested) {
+      return 'repairing';
+    }
+    return damage != null && damage.files.length > 0 ? 'offer' : null;
+  }
+
   // The Mithril error is one the user can resolve by choosing another
   // chain storage location as well as by retrying
   @computed
@@ -529,6 +555,16 @@ export default class BackendStore extends Store {
     ) {
       return 'chain-damaged';
     }
+    // Wallet databases an older Daedalus changed: the offer to repair them,
+    // and its results, over a ready wallet as well. A running Mithril
+    // pipeline keeps its screen. The repair while it runs is further down.
+    if (
+      (this.walletDbRepairView === 'offer' ||
+        this.walletDbRepairView === 'done') &&
+      !this._mithrilActive
+    ) {
+      return 'wallet-db-damaged';
+    }
     // Retry after a rebuild failed on the storage location: pick another one
     if (this._chainStoragePickerRequested) {
       return 'chain-storage-setup';
@@ -566,6 +602,12 @@ export default class BackendStore extends Store {
     // Wallet not yet ready
     if (this.walletPort === null) {
       return 'node-starting';
+    }
+    // The repair runs while Cardano wallet is stopped. Its screen offers
+    // nothing to do, so every state above wins over it: a node that exits
+    // meanwhile shows its error and Retry, or its start, instead.
+    if (this.walletDbRepairView === 'repairing') {
+      return 'wallet-db-damaged';
     }
     // Wallet ready
     return 'ready';
@@ -676,6 +718,26 @@ export default class BackendStore extends Store {
   dismissChainDamage = () => {
     this._chainDamageDismissed = true;
     mithrilCommandChannel.send({ cmd: 'dismiss_chain_damage' });
+  };
+
+  // "Back up and repair" on the wallet repair screen. The watchdog stops
+  // Cardano wallet, backs up and repairs the files, and starts it again. It
+  // is sent once: a second repair would find nothing left to repair and
+  // replace the results of the first.
+  @action
+  repairWalletDatabases = () => {
+    if (this._walletDbRepairRequested) return;
+    this._walletDbRepairRequested = true;
+    mithrilCommandChannel.send({ cmd: 'repair_wallet_databases' });
+  };
+
+  // "Not now" on the offer, or "Continue" after the results: the screen stays
+  // hidden until Daedalus restarts. Main records it, so a reload of the
+  // window does not show it again.
+  @action
+  dismissWalletDbDamage = () => {
+    this._walletDbDismissed = true;
+    mithrilCommandChannel.send({ cmd: 'dismiss_wallet_db_damage' });
   };
 
   @action

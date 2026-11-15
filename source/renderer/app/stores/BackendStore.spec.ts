@@ -1669,3 +1669,144 @@ describe('BackendStore wallet connection', () => {
     expect(setRequestConfig).toHaveBeenCalledWith(configuredFor(8090));
   });
 });
+
+describe('BackendStore wallet database repair', () => {
+  beforeEach(() => {
+    (mithrilCommandChannel.send as jest.Mock).mockClear();
+  });
+
+  const damage = (overrides: Record<string, unknown> = {}) => ({
+    files: ['she.1178ad68993ea595a93adc6fac3ec554b0ab7a33.sqlite'],
+    repair: 'none',
+    results: [],
+    backupDir: null,
+    dismissed: false,
+    ...overrides,
+  });
+
+  const polled = (walletDbDamage: unknown) => ({
+    hasChain: true,
+    walletPort: 8090,
+    blockSyncProgress: {
+      replayedBlock: 0,
+      validatingChunk: 0,
+      pushingLedger: 0,
+    },
+    mithrilPhase: null,
+    chainDamage: null,
+    walletDbDamage,
+  });
+
+  const pollWith = async (store: BackendStore, walletDbDamage: unknown) => {
+    (getCachedBackendStatusChannel.request as jest.Mock).mockResolvedValue(
+      polled(walletDbDamage)
+    );
+    await store._pollBackendStatus();
+  };
+
+  it('shows nothing while no damaged wallet database is reported', async () => {
+    const store = makeStore();
+    await pollWith(store, null);
+    expect(store.walletDbRepairView).toBeNull();
+    expect(store.loadingPhase).toBe('ready');
+    await pollWith(store, damage({ files: [] }));
+    expect(store.loadingPhase).toBe('ready');
+  });
+
+  it('offers the repair over a ready wallet when damaged files are reported', async () => {
+    const store = makeStore();
+    await pollWith(store, damage());
+    expect(store.walletDbRepairView).toBe('offer');
+    expect(store.loadingPhase).toBe('wallet-db-damaged');
+  });
+
+  it('sends the repair once and shows it running at once', async () => {
+    const store = makeStore();
+    await pollWith(store, damage());
+    store.repairWalletDatabases();
+    store.repairWalletDatabases();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledTimes(1);
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'repair_wallet_databases',
+    });
+    expect(store.walletDbRepairView).toBe('repairing');
+    await pollWith(store, damage({ repair: 'requested' }));
+    expect(store.walletDbRepairView).toBe('repairing');
+  });
+
+  it('shows the results once the repair is done, until Continue', async () => {
+    const store = makeStore();
+    await pollWith(
+      store,
+      damage({
+        files: [],
+        repair: 'done',
+        results: [{ file: 'she.a.sqlite', outcome: 'repaired', detail: '' }],
+        backupDir: '/state/wallet-db-backups/20261115T093000Z',
+      })
+    );
+    expect(store.walletDbRepairView).toBe('done');
+    store.dismissWalletDbDamage();
+    expect(mithrilCommandChannel.send).toHaveBeenCalledWith({
+      cmd: 'dismiss_wallet_db_damage',
+    });
+    expect(store.loadingPhase).toBe('ready');
+  });
+
+  it('leaves the wallet as it is after Not now, also after a reload', async () => {
+    const store = makeStore();
+    await pollWith(store, damage());
+    store.dismissWalletDbDamage();
+    expect(store.loadingPhase).toBe('ready');
+    // Main has not reported the dismissal yet
+    await pollWith(store, damage());
+    expect(store.loadingPhase).toBe('ready');
+    const reloaded = makeStore();
+    await pollWith(reloaded, damage({ dismissed: true }));
+    expect(reloaded.loadingPhase).toBe('ready');
+  });
+
+  it('gives way to damaged blockchain data and to a running Mithril sync', async () => {
+    const store = makeStore();
+    await pollWith(store, damage());
+    (store as any).chainDamage = {
+      kind: 'ledger_point_missing',
+      slot: 1,
+      lastGoodSlot: null,
+      detectedAt: '2026-11-15T09:30:00.000Z',
+    };
+    expect(store.loadingPhase).toBe('chain-damaged');
+    (store as any).chainDamage = null;
+    (store as any).mithrilPhase = 'downloading';
+    expect(store.loadingPhase).toBe('mithril-syncing');
+  });
+
+  it('lets a node error and its retry win over the running repair', async () => {
+    const store = makeStore();
+    await pollWith(store, damage({ repair: 'requested' }));
+    expect(store.loadingPhase).toBe('wallet-db-damaged');
+    // cardano-node exited while the wallet was stopped for the repair, and
+    // the watchdog gave up on it
+    (store as any).nodeUnrecoverable = true;
+    expect(store.loadingPhase).toBe('error');
+  });
+
+  it('shows the node starting instead of the running repair', async () => {
+    const store = makeStore();
+    await pollWith(store, damage({ repair: 'requested' }));
+    // A new node start clears the wallet port until the wallet is ready
+    (store as any).walletPort = null;
+    expect(store.loadingPhase).toBe('node-starting');
+    // The results still show once the repair has run
+    await pollWith(store, { ...damage({ repair: 'done' }), files: [] });
+    (store as any).walletPort = null;
+    expect(store.loadingPhase).toBe('wallet-db-damaged');
+  });
+
+  it('shows over an unrecoverable wallet, whose retry the repair is', async () => {
+    const store = makeStore();
+    await pollWith(store, damage());
+    (store as any).walletUnrecoverable = true;
+    expect(store.loadingPhase).toBe('wallet-db-damaged');
+  });
+});

@@ -7,6 +7,7 @@ import SyncingConnectingPage from './SyncingConnectingPage';
 import MithrilSyncContainer from './MithrilSyncContainer';
 import ChainStorageContainer from './ChainStorageContainer';
 import ChainDamageContainer from './ChainDamageContainer';
+import WalletDbDamageContainer from './WalletDbDamageContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import styles from '../../components/loading/mithril/MithrilBootstrap.scss';
 
@@ -81,6 +82,27 @@ class LoadingPage extends Component<InjectedProps> {
           }}
         >
           <ChainDamageContainer />
+        </div>
+      );
+    }
+
+    if (loadingPhase === 'wallet-db-damaged') {
+      return (
+        <div
+          style={{
+            alignItems: 'center',
+            backgroundColor:
+              'var(--theme-mithril-overlay-backdrop-start, rgba(24, 37, 55, 1))',
+            bottom: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            left: 0,
+            position: 'fixed',
+            right: 0,
+            top: 0,
+          }}
+        >
+          <WalletDbDamageContainer />
         </div>
       );
     }

@@ -136,6 +136,9 @@
             # src/supervisor.rs reads this node output with include_str!.
             ../watchdog/tests/fixtures/node_immutable_file_missing.txt
             ../watchdog/src
+            # The Linux and macOS builds run the unit tests, and those in
+            # src/wallet_db.rs read these SQL fixtures with include_str!.
+            ../watchdog/tests/fixtures/wallet_db
           ];
         };
         fenixPkgs = inputs.fenix.packages.${pkgs.stdenv.hostPlatform.system};
@@ -187,6 +190,10 @@
               strictDeps = true;
               CARGO_BUILD_TARGET = "x86_64-unknown-linux-musl";
               CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER = "${pkgs.pkgsStatic.stdenv.cc}/bin/${pkgs.pkgsStatic.stdenv.cc.targetPrefix}cc";
+              # C sources, such as the SQLite that rusqlite bundles, are compiled
+              # against musl's headers. Compiled against glibc's, they call
+              # symbols the static musl libc does not have (open64, fcntl64).
+              CC_x86_64_unknown_linux_musl = "${pkgs.pkgsStatic.stdenv.cc}/bin/${pkgs.pkgsStatic.stdenv.cc.targetPrefix}cc";
               cargoExtraArgs = "--bin cardano-watchdog";
             }
         else let

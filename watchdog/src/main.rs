@@ -19,6 +19,7 @@ mod state;
 mod supervisor;
 mod tls;
 mod topology;
+mod wallet_db;
 
 use anyhow::Result;
 use clap::Parser;
@@ -782,6 +783,8 @@ const ELECTRON_EXIT_GRACE_AFTER_INSTALLER_FAILURE: std::time::Duration =
 /// Passes a command from the client on to the supervisor. `install_update` is
 /// recorded here and passed on as `stop`: the installer starts only once the
 /// supervisor has stopped cardano-wallet and cardano-node and returned.
+/// `repair_wallet_databases` is recorded here and passed on, so that a running
+/// wallet is stopped for it.
 async fn forward_command(
     cmd: protocol::Command,
     tx: &mpsc::Sender<protocol::Command>,
@@ -791,6 +794,12 @@ async fn forward_command(
         protocol::Command::InstallUpdate { path, args } => {
             installer::request(installer_request, installer::UpdateInstaller { path, args });
             tx.send(protocol::Command::Stop).await
+        }
+        // Recorded here, so that the repair runs before the next wallet start
+        // whatever the supervisor is doing when the command reaches it.
+        cmd @ protocol::Command::RepairWalletDatabases => {
+            wallet_db::request_repair();
+            tx.send(cmd).await
         }
         cmd => tx.send(cmd).await,
     }
