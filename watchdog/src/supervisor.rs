@@ -37,7 +37,23 @@ enum RunResult {
     Stopped,
     NodeCrashed,
     RestartRequested,
-    StartMithril { force: bool, wipe_chain: bool },
+    StartMithril {
+        force: bool,
+        wipe_chain: bool,
+    },
+    /// The node's database closed under it, and the node has been stopped. The
+    /// watchdog reports the damage and waits, as it does when it holds back a
+    /// node that would stop on a missing ledger point.
+    ChainDamaged(Detection),
+}
+
+/// What a node that has exited leaves to do: report the damage that made it
+/// stop, when its output named one, or count a crash.
+fn node_gone(damage_rx: &mut mpsc::UnboundedReceiver<Detection>) -> RunResult {
+    match damage_rx.try_recv() {
+        Ok(detection) => RunResult::ChainDamaged(detection),
+        Err(_) => RunResult::NodeCrashed,
+    }
 }
 
 /// How the Mithril pipeline before a node start ended, when the renderer has
@@ -1587,6 +1603,7 @@ pub async fn run(
                         kind: ChainDamageKind::LedgerPointMissing,
                         slot: Some(slot),
                         last_good_slot: None,
+                        chunk: None,
                     }
                     .report_held();
                     let held = wait_for_retry(
@@ -1661,6 +1678,26 @@ pub async fn run(
                 .await;
                 next = held.instead();
                 // otherwise the loop restarts node+wallet
+            }
+            RunResult::ChainDamaged(detection) => {
+                // The node is stopped, so the screen the report brings up has
+                // nothing running behind it. Only a rebuild, a retry or a
+                // stop leaves this wait.
+                detection.report_held();
+                let held = wait_for_retry(
+                    &mut cmd_rx,
+                    &mut Settings {
+                        config: &mut config,
+                        base_node_args: &base_node_args,
+                        wstate: &mut wstate,
+                    },
+                )
+                .await;
+                next = held.instead();
+                if next.is_none() {
+                    info!("retrying cardano-node after chain damage");
+                }
+                crashes.clear();
             }
             RunResult::RestartRequested => {
                 info!("user-initiated node restart");
@@ -1909,7 +1946,9 @@ async fn run_node_wallet(
 
     // One detector and one output count per node process, shared by both
     // output streams.
-    let node_damage: SharedDetector = Arc::new(Mutex::new(ChainDamageDetector::node()));
+    let (damage_tx, mut damage_rx) = mpsc::unbounded_channel::<Detection>();
+    let node_damage: SharedDetector =
+        Arc::new(Mutex::new(ChainDamageDetector::node_stopping(damage_tx)));
     let node_output: OutputCount = Arc::new(AtomicU64::new(0));
 
     // Forward node logs
@@ -1968,7 +2007,7 @@ async fn run_node_wallet(
             code: exit.0,
             signal: exit.1,
         });
-        return Ok(RunResult::NodeCrashed);
+        return Ok(node_gone(&mut damage_rx));
     }
 
     // State machine: NodeStarting → (chainDbReady) → WalletStarting
@@ -2026,11 +2065,28 @@ async fn run_node_wallet(
                     }
                 };
             }
+            Some(detection) = damage_rx.recv() => {
+                warn!("the node reported an ImmutableDB file it cannot read; stopping it");
+                let held = stop_node(
+                    "chain data damaged",
+                    &mut shutdown_pipe,
+                    &node_rx_socket,
+                    &mut node_kill_tx,
+                    cmd_rx,
+                    &mut Settings {
+                        config: &mut *config,
+                        base_node_args,
+                        wstate: &mut *wstate,
+                    },
+                )
+                .await;
+                return Ok(held.after(RunResult::ChainDamaged(detection)));
+            }
             _ = node_rx_socket.changed() => {
                 let exit = node_rx_socket.borrow().clone().unwrap_or((None, None));
                 warn!("cardano-node exited before socket was ready (code={:?}, signal={:?})", exit.0, exit.1);
                 emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
-                return Ok(RunResult::NodeCrashed);
+                return Ok(node_gone(&mut damage_rx));
             }
             Some(cmd) = cmd_rx.recv() => {
                 match cmd {
@@ -2220,12 +2276,29 @@ async fn run_node_wallet(
                 code: exit.0,
                 signal: exit.1,
             });
-            return Ok(RunResult::NodeCrashed);
+            return Ok(node_gone(&mut damage_rx));
         }
 
         while wallet_failed {
             tokio::select! {
                 _ = node_rx.changed() => continue 'supervisor,
+                Some(detection) = damage_rx.recv() => {
+                    warn!("the node reported an ImmutableDB file it cannot read; stopping it");
+                    let held = stop_node(
+                        "chain data damaged",
+                        &mut shutdown_pipe,
+                        &node_rx,
+                        &mut node_kill_tx,
+                        cmd_rx,
+                        &mut Settings {
+                            config: &mut *config,
+                            base_node_args,
+                            wstate: &mut *wstate,
+                        },
+                    )
+                    .await;
+                    return Ok(held.after(RunResult::ChainDamaged(detection)));
+                }
                 cmd = cmd_rx.recv() => match cmd {
                     Some(Cmd::RestartWallet) => {
                         info!("retrying cardano-wallet after it was unrecoverable");
@@ -2367,13 +2440,32 @@ async fn run_node_wallet(
                     sleep(Duration::from_millis(wallet_cfg.restart_delay_ms)).await;
                     continue 'supervisor;
                 }
+                Some(detection) = damage_rx.recv() => {
+                    warn!("the node reported an ImmutableDB file it cannot read; stopping it");
+                    info!("stopping wallet (chain data damaged)");
+                    stop_wallet(&mut wallet, &mut wallet_stdin, restart_stop_bound).await;
+                    let held = stop_node(
+                        "chain data damaged",
+                        &mut shutdown_pipe,
+                        &node_rx,
+                        &mut node_kill_tx,
+                        cmd_rx,
+                        &mut Settings {
+                            config: &mut *config,
+                            base_node_args,
+                            wstate: &mut *wstate,
+                        },
+                    )
+                    .await;
+                    return Ok(held.after(RunResult::ChainDamaged(detection)));
+                }
                 _ = node_rx.changed() => {
                     let exit = node_rx.borrow().clone().unwrap_or((None, None));
                     warn!("cardano-node exited during wallet startup (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
                     stop_wallet(&mut wallet, &mut wallet_stdin, restart_stop_bound).await;
-                    return Ok(RunResult::NodeCrashed);
+                    return Ok(node_gone(&mut damage_rx));
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
@@ -2592,13 +2684,32 @@ async fn run_node_wallet(
                     sleep(Duration::from_millis(wallet_cfg.restart_delay_ms)).await;
                     continue 'supervisor;
                 }
+                Some(detection) = damage_rx.recv() => {
+                    warn!("the node reported an ImmutableDB file it cannot read; stopping it");
+                    info!("stopping wallet (chain data damaged)");
+                    stop_wallet(&mut wallet, &mut wallet_stdin, restart_stop_bound).await;
+                    let held = stop_node(
+                        "chain data damaged",
+                        &mut shutdown_pipe,
+                        &node_rx,
+                        &mut node_kill_tx,
+                        cmd_rx,
+                        &mut Settings {
+                            config: &mut *config,
+                            base_node_args,
+                            wstate: &mut *wstate,
+                        },
+                    )
+                    .await;
+                    return Ok(held.after(RunResult::ChainDamaged(detection)));
+                }
                 _ = node_rx.changed() => {
                     let exit = node_rx.borrow().clone().unwrap_or((None, None));
                     warn!("cardano-node exited (code={:?}, signal={:?})", exit.0, exit.1);
                     emit(&Event::NodeExited { code: exit.0, signal: exit.1 });
                     info!("stopping wallet (node exited)");
                     stop_wallet(&mut wallet, &mut wallet_stdin, restart_stop_bound).await;
-                    return Ok(RunResult::NodeCrashed);
+                    return Ok(node_gone(&mut damage_rx));
                 }
                 Some(cmd) = cmd_rx.recv() => {
                     match cmd {
@@ -2903,6 +3014,31 @@ const WALLET_HEALTH_PATH: &str = "/v2/network/information";
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn missing_chunk() -> Detection {
+        Detection {
+            kind: ChainDamageKind::ImmutableFileMissing,
+            slot: None,
+            last_good_slot: None,
+            chunk: None,
+        }
+    }
+
+    #[test]
+    fn a_node_that_is_gone_reports_the_damage_queued_for_it() {
+        let (tx, mut rx) = mpsc::unbounded_channel();
+        tx.send(missing_chunk()).unwrap();
+        assert!(matches!(
+            node_gone(&mut rx),
+            RunResult::ChainDamaged(d) if d == missing_chunk()
+        ));
+    }
+
+    #[test]
+    fn a_node_that_is_gone_with_no_damage_queued_crashed() {
+        let (_tx, mut rx) = mpsc::unbounded_channel::<Detection>();
+        assert!(matches!(node_gone(&mut rx), RunResult::NodeCrashed));
+    }
 
     // ── job object ────────────────────────────────────────────────────────────
 

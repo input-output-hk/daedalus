@@ -29,6 +29,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Explanation shown when a wallet stops syncing because blockchain data on this computer is missing',
   },
+  symptomImmutableFileMissing: {
+    id: 'loading.chainDamage.symptom.immutableFileMissing',
+    defaultMessage:
+      '!!!Cardano node stopped because a file of the blockchain data stored on this computer is missing.',
+    description:
+      'Explanation shown when the node stops because it cannot read a file of the blockchain data on this computer',
+  },
   body: {
     id: 'loading.chainDamage.body',
     defaultMessage:
@@ -47,6 +54,12 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     defaultMessage: '!!!Detected: {kind}',
     description:
       'Technical detail line naming the kind of damage when no slot is known, for quoting in a support request',
+  },
+  detailFile: {
+    id: 'loading.chainDamage.detailFile',
+    defaultMessage: '!!!Detected: {kind}, file {file}',
+    description:
+      'Technical detail line naming the kind of damage and the blockchain data file, for quoting in a support request',
   },
   rebuild: {
     id: 'loading.chainDamage.rebuild',

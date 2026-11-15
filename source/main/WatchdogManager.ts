@@ -73,8 +73,9 @@ export interface WatchdogState {
   // chainDamage it survives a node start, and clears only when the chain it
   // was found in is gone or a rebuild has replaced it
   lastChainDamage: ChainDamage | null;
-  // True when the watchdog found chainDamage before starting the node and
-  // does not start it; cleared when a node starts or a Mithril sync begins
+  // True when the watchdog found chainDamage before starting the node, or
+  // stopped the node because of it, and does not start it; cleared when a node
+  // starts or a Mithril sync begins
   nodeHeld: boolean;
   // True when lastError came from a rebuild, so Retry repeats the rebuild
   lastErrorRebuild: boolean;
@@ -647,6 +648,8 @@ class WatchdogManager {
           slot: (event.slot as number | null | undefined) ?? null,
           lastGoodSlot:
             (event.last_good_slot as number | null | undefined) ?? null,
+          chunk: (event.chunk as number | null | undefined) ?? null,
+          file: (event.file as string | null | undefined) ?? null,
           detectedAt: new Date().toISOString(),
         };
         s.lastChainDamage = s.chainDamage;

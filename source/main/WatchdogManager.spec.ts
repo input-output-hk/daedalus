@@ -317,6 +317,26 @@ describe('WatchdogManager chain damage', () => {
     expect(Date.parse(found!.detectedAt)).toBeGreaterThanOrEqual(before);
   });
 
+  it('keeps the chunk number and file name of a missing immutable file', () => {
+    const { manager, emit } = makeManager();
+    emit({
+      event: 'chain_damage',
+      kind: 'immutable_file_missing',
+      slot: null,
+      last_good_slot: null,
+      chunk: 4929,
+      file: '04929.primary',
+      node_held: true,
+    });
+    expect(manager.getState().chainDamage).toMatchObject({
+      kind: 'immutable_file_missing',
+      slot: null,
+      chunk: 4929,
+      file: '04929.primary',
+    });
+    expect(manager.getState().nodeHeld).toBe(true);
+  });
+
   it('keeps null slots as null', () => {
     const { manager, emit } = makeManager();
     emit({

@@ -1,0 +1,3 @@
+[2026-11-15 01:20:38.4643Z][daedalus:Net.Mux.Local.ExceptionExit](Notice,234) With mux bearer ConnectionId LocalAddress "\\\\.\\pipe\\cardano-node-mainnet" LocalAddress "\\\\.\\pipe\\cardano-node-mainnet@2". Miniprotocol (MiniProtocolNum 5) ResponderDir terminated with exception ApiMisuse ClosedDBError CallStack (from HasCallStack):
+[2026-11-15 01:20:38.5166Z][daedalus:Net.Server.Local.Stopped](Notice,50) TrServerStopped
+[2026-11-15 01:20:38.6983Z][daedalus:Startup.DiffusionInit.DiffusionErrored](Critical,19) {"data":{"error":"ExceptionInLinkedThread \"ThreadId 32\" (ApiMisuse ClosedDBError CallStack (from HasCallStack)"}}

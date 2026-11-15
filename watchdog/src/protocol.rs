@@ -93,6 +93,9 @@ pub enum ChainDamageKind {
     LedgerPointMissing,
     /// The wallet is given a chain that does not continue from its checkpoint.
     WalletChainDiscontinuity,
+    /// A file of the ImmutableDB is missing or cut short, and the node failed
+    /// when it read it.
+    ImmutableFileMissing,
 }
 
 impl ChainDamageKind {
@@ -102,6 +105,7 @@ impl ChainDamageKind {
             ChainDamageKind::NodeRejectsCanonicalBlock => "node_rejects_canonical_block",
             ChainDamageKind::LedgerPointMissing => "ledger_point_missing",
             ChainDamageKind::WalletChainDiscontinuity => "wallet_chain_discontinuity",
+            ChainDamageKind::ImmutableFileMissing => "immutable_file_missing",
         }
     }
 }
@@ -300,11 +304,17 @@ pub enum Event {
     /// gap). `last_good_slot` is the wallet's last slot before the gap and is
     /// set only for `wallet_chain_discontinuity`. `node_held` is true when the
     /// damage was found before the node started: the watchdog does not start
-    /// it, and waits for a Mithril sync, a retry or a stop.
+    /// it, and waits for a Mithril sync, a retry or a stop. `chunk` and `file`
+    /// name the ImmutableDB file and are set only for `immutable_file_missing`;
+    /// the node was stopped before the event, so `node_held` is true.
     ChainDamage {
         kind: ChainDamageKind,
         slot: Option<u64>,
         last_good_slot: Option<u64>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        chunk: Option<u64>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        file: Option<String>,
         node_held: bool,
     },
     /// cardano-node has written nothing on either output stream for
@@ -875,6 +885,8 @@ mod tests {
             kind: ChainDamageKind::LedgerPointMissing,
             slot: Some(200_102_375),
             last_good_slot: None,
+            chunk: None,
+            file: None,
             node_held: false,
         })
         .unwrap();
@@ -890,6 +902,8 @@ mod tests {
             kind: ChainDamageKind::LedgerPointMissing,
             slot: Some(136_771_192),
             last_good_slot: None,
+            chunk: None,
+            file: None,
             node_held: true,
         });
         assert_eq!(j["kind"], "ledger_point_missing");
@@ -903,6 +917,8 @@ mod tests {
             kind: ChainDamageKind::WalletChainDiscontinuity,
             slot: Some(200_102_408),
             last_good_slot: Some(200_080_892),
+            chunk: None,
+            file: None,
             node_held: false,
         });
         assert_eq!(j["kind"], "wallet_chain_discontinuity");
@@ -922,16 +938,38 @@ mod tests {
                 ChainDamageKind::WalletChainDiscontinuity,
                 "wallet_chain_discontinuity",
             ),
+            (
+                ChainDamageKind::ImmutableFileMissing,
+                "immutable_file_missing",
+            ),
         ];
         for (kind, expected) in kinds {
             let j = to_json(&Event::ChainDamage {
                 kind,
                 slot: None,
                 last_good_slot: None,
+                chunk: None,
+                file: None,
                 node_held: false,
             });
             assert_eq!(j["kind"], expected);
         }
+    }
+
+    #[test]
+    fn chain_damage_names_the_immutable_file() {
+        let j = to_json(&Event::ChainDamage {
+            kind: ChainDamageKind::ImmutableFileMissing,
+            slot: None,
+            last_good_slot: None,
+            chunk: Some(4929),
+            file: Some("04929.primary".to_string()),
+            node_held: true,
+        });
+        assert_eq!(j["kind"], "immutable_file_missing");
+        assert_eq!(j["chunk"], 4929);
+        assert_eq!(j["file"], "04929.primary");
+        assert_eq!(j["node_held"], true);
     }
 
     #[test]
