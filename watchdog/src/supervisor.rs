@@ -2259,7 +2259,26 @@ async fn run_node_wallet(
     // caller is responsible for having it in wallet.args already.
     let (wallet_port, inject_port_flag) = match wallet_cfg.api_port {
         Some(p) => (p, false),
-        None => (pick_free_port()?, true),
+        None => match pick_free_port() {
+            Ok(port) => (port, true),
+            Err(e) => {
+                emit_error(&format!("failed to pick a wallet port: {e}"));
+                stop_node(
+                    "wallet port unavailable",
+                    &mut shutdown_pipe,
+                    &node_rx,
+                    &mut node_kill_tx,
+                    cmd_rx,
+                    &mut Settings {
+                        config: &mut *config,
+                        base_node_args,
+                        wstate: &mut *wstate,
+                    },
+                )
+                .await;
+                return Err(e);
+            }
+        },
     };
 
     // Set once the wallet is unrecoverable: it stays stopped, the node keeps
@@ -2384,6 +2403,21 @@ async fn run_node_wallet(
             Ok(c) => c,
             Err(e) => {
                 emit_error(&format!("failed to spawn wallet: {e}"));
+                // Without the shutdown request the node dies with this
+                // function, killed, and its next start checks every chunk.
+                stop_node(
+                    "wallet failed to start",
+                    &mut shutdown_pipe,
+                    &node_rx,
+                    &mut node_kill_tx,
+                    cmd_rx,
+                    &mut Settings {
+                        config: &mut *config,
+                        base_node_args,
+                        wstate: &mut *wstate,
+                    },
+                )
+                .await;
                 return Err(e.into());
             }
         };

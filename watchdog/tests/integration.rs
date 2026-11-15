@@ -1305,6 +1305,23 @@ fn chain_damage_missing_immutable_file_after_the_wallet_failed() {
     let _ = child.wait();
 }
 
+/// A wallet that cannot be started does not leave the node to be killed: the
+/// node gets the normal shutdown request first.
+#[test]
+fn wallet_spawn_failure_stops_the_node_cleanly() {
+    let dir = TempDir::new("wallet-spawn-failure");
+    dir.populate_chain();
+    let missing_wallet = dir.path().join("no-such-wallet");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, missing_wallet.to_str().unwrap()).build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "node_started");
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert_eq!(shutdown["force_killed"], false, "{shutdown}");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── Tests: Mithril download waiting for the network ──────────────────────────
 
 /// A download that stalls while mithril-client cannot reach the aggregator
