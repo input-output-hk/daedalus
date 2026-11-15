@@ -68,5 +68,26 @@
           test -s tempinstaller.exe
           touch "$out"
         '';
+      checks.windows-installer-nsis =
+        pkgs.runCommand "windows-installer-nsis-check" {
+          nativeBuildInputs = [pkgs.nsis];
+        } ''
+          set -eu
+          mkdir -p work/installers
+          cd work/installers
+          ln -s ${../installers/nsis_plugins} nsis_plugins
+          cp ${config.packages.windows-mainnet-nsis}/*.nsi .
+          # Compile the mainnet installer and uninstaller templates against empty
+          # stand-ins for every file they embed. No installer is executed here.
+          grep -oP '^\s*File (/nonfatal )?"\K[^"]+' daedalus.nsi | while IFS= read -r f; do
+            [ -e "$f" ] || touch "$f"
+          done
+          payload=$(grep -oP 'File /r "\.\.\\release\\win32-x64\\\K[^\\]+' daedalus.nsi)
+          mkdir -p "../release/win32-x64/$payload"
+          touch "../release/win32-x64/$payload/fixture"
+          makensis uninstaller.nsi > uninstaller.log
+          makensis daedalus.nsi > installer.log
+          touch "$out"
+        '';
     };
 }

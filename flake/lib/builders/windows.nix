@@ -475,6 +475,115 @@
             if builtins.length verParts == 4
             then builtins.elemAt verParts 1
             else "0";
+          # PowerShell that lists the processes running from $INSTDIR in $l, except the
+          # installer that started it, with the backend executable names in $b.
+          # Dollar signs are doubled for NSIS.
+          psFilter = "$$p = $$env:DAEDALUS_INSTDIR.TrimEnd('\\') + '\\'; $$b = 'cardano-node.exe','cardano-wallet.exe','cardano-cli.exe','cardano-address.exe','mithril-client.exe','snapshot-converter.exe'; $$a = @(Get-CimInstance Win32_Process -ErrorAction Stop); $$n = ($$a | Where-Object { $$_.ProcessId -eq $$PID }).ParentProcessId; $$l = @($$a | Where-Object { $$_.ExecutablePath -and $$_.ExecutablePath.StartsWith($$p, [StringComparison]::OrdinalIgnoreCase) -and $$_.ProcessId -ne $$n });";
+          guardStrings = ''
+            ; The Japanese slots hold the English text.
+            LangString AppRunning ''${LANG_ENGLISH} "${ic.spacedName} is still running. Quit ${ic.spacedName}, then click Retry. Cancel stops without changing anything."
+            LangString AppRunning ''${LANG_JAPANESE} "${ic.spacedName} is still running. Quit ${ic.spacedName}, then click Retry. Cancel stops without changing anything."
+            LangString BackendLeft ''${LANG_ENGLISH} "Programs of the installed version are still running, but ${ic.spacedName} is not, for example cardano-wallet.exe or cardano-node.exe. They must end before continuing. End them now? Ending cardano-node.exe this way can make ${ic.spacedName} verify the whole blockchain database the next time it starts."
+            LangString BackendLeft ''${LANG_JAPANESE} "Programs of the installed version are still running, but ${ic.spacedName} is not, for example cardano-wallet.exe or cardano-node.exe. They must end before continuing. End them now? Ending cardano-node.exe this way can make ${ic.spacedName} verify the whole blockchain database the next time it starts."
+            LangString StillRunning ''${LANG_ENGLISH} "${ic.spacedName} or programs of the installed version are still running. Nothing was changed. Quit them and try again."
+            LangString StillRunning ''${LANG_JAPANESE} "${ic.spacedName} or programs of the installed version are still running. Nothing was changed. Quit them and try again."
+            LangString CheckFailed ''${LANG_ENGLISH} "Could not check whether ${ic.spacedName} is running. Nothing was changed. Quit ${ic.spacedName} and try again."
+            LangString CheckWarning ''${LANG_ENGLISH} "Could not check whether ${ic.spacedName} is still running. Make sure ${ic.spacedName} is closed, then select OK to continue. Cancel stops without changing anything."
+            LangString CheckWarning ''${LANG_JAPANESE} "Could not check whether ${ic.spacedName} is still running. Make sure ${ic.spacedName} is closed, then select OK to continue. Cancel stops without changing anything."
+            LangString CheckFailed ''${LANG_JAPANESE} "Could not check whether ${ic.spacedName} is running. Nothing was changed. Quit ${ic.spacedName} and try again."
+          '';
+          guardFunctions = prefix: ''
+            ; Exit code of ${prefix}ProbeInstall: 0 nothing from $INSTDIR is running, 10 something
+            ; other than the backend executables is (the app, its helpers, the watchdog),
+            ; 11 only backend executables are, 20 the check itself failed. The installer
+            ; that runs the check is not counted. PowerShell is the 64-bit one when the
+            ; installer runs as a 32-bit process on 64-bit Windows.
+            Function ${prefix}ProbeInstall
+              System::Call 'Kernel32::SetEnvironmentVariableW(t "DAEDALUS_INSTDIR", t "$INSTDIR") i .r0'
+              StrCpy $R8 "$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe"
+              IfFileExists $R8 havePs
+              StrCpy $R8 "$SYSDIR\WindowsPowerShell\v1.0\powershell.exe"
+            havePs:
+              nsExec::Exec `"$R8" -NoProfile -NonInteractive -Command "try { ${psFilter} if (-not $$l.Count) { exit 0 }; if (@($$l | Where-Object { $$b -notcontains $$_.Name }).Count) { exit 10 }; exit 11 } catch { exit 20 }"`
+              Pop $R9
+              StrCmp $R9 0 probeDone
+              StrCmp $R9 10 probeDone
+              StrCmp $R9 11 probeDone
+              StrCpy $R9 20
+            probeDone:
+            FunctionEnd
+
+            ; Ends the backend executables running from $INSTDIR. Returns 10 without ending
+            ; anything when a program that is not a backend executable runs from there.
+            Function ${prefix}StopLeftovers
+              System::Call 'Kernel32::SetEnvironmentVariableW(t "DAEDALUS_INSTDIR", t "$INSTDIR") i .r0'
+              StrCpy $R8 "$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe"
+              IfFileExists $R8 havePs
+              StrCpy $R8 "$SYSDIR\WindowsPowerShell\v1.0\powershell.exe"
+            havePs:
+              nsExec::Exec `"$R8" -NoProfile -NonInteractive -Command "try { ${psFilter} if (@($$l | Where-Object { $$b -notcontains $$_.Name }).Count) { exit 10 }; $$l | ForEach-Object { Stop-Process -Id $$_.ProcessId -Force -ErrorAction SilentlyContinue }; exit 0 } catch { exit 20 }"`
+              Pop $R9
+              StrCmp $R9 0 stopDone
+              StrCmp $R9 10 stopDone
+              StrCpy $R9 20
+            stopDone:
+            FunctionEnd
+
+            ; Stops unless nothing runs from $INSTDIR. The app and its backend get 30
+            ; checks, about a minute, to exit, as when the watchdog starts the installer
+            ; for an update. After that the user quits the app (Retry or Cancel), or agrees
+            ; to end backend programs left without it. When the check cannot run, the user
+            ; may continue after confirming that the app is closed. A silent run cannot
+            ; ask and stops instead.
+            Function ${prefix}CheckInstallStopped
+              IfFileExists "$INSTDIR\*.*" 0 stoppedOk
+              StrCpy $R0 0
+            waitLoop:
+              Call ${prefix}ProbeInstall
+              StrCmp $R9 0 stoppedOk
+              StrCmp $R9 20 decide
+              IntOp $R0 $R0 + 1
+              IntCmp $R0 30 decide 0 decide
+              DetailPrint "Waiting for ${ic.spacedName} to stop ($R0/30)..."
+              Sleep 1000
+              Goto waitLoop
+            decide:
+              StrCmp $R9 0 stoppedOk
+              StrCmp $R9 20 checkFailed
+              StrCmp $R9 11 backendOnly
+              IfSilent stillRunning
+              MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "$(AppRunning)" IDRETRY retry
+              Goto stillRunning
+            retry:
+              Call ${prefix}ProbeInstall
+              Goto decide
+            backendOnly:
+              IfSilent stillRunning
+              MessageBox MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2 "$(BackendLeft)" IDYES endBackend
+              Goto stillRunning
+            endBackend:
+              DetailPrint "Ending programs of the installed version"
+              Call ${prefix}StopLeftovers
+              StrCmp $R9 10 decide
+              Sleep 2000
+              Call ${prefix}ProbeInstall
+              StrCmp $R9 0 stoppedOk
+              Goto decide
+            checkFailed:
+              IfSilent silentCheckFailed
+              MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION|MB_DEFBUTTON2 "$(CheckWarning)" IDOK stoppedOk
+              SetErrorLevel 2
+              Abort "$(CheckFailed)"
+            silentCheckFailed:
+              SetErrorLevel 2
+              Abort "$(CheckFailed)"
+            stillRunning:
+              SetErrorLevel 2
+              Abort "$(StillRunning)"
+            stoppedOk:
+            FunctionEnd
+
+          '';
           packageFileName = "${ic.uglyName}-${ver}-${toString sourceLib.buildCounter}-${cluster}-${sourceLib.buildRevShort}-x86_64-windows.exe";
 
           uninstallerNsi = pkgs.writeText "uninstaller.nsi" ''
@@ -487,12 +596,16 @@
             LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
             LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
 
+            ${guardStrings}
+
+            ${guardFunctions "un."}
             Section ""
               SectionIn RO
               WriteUninstaller "c:\uninstall.exe"
             SectionEnd
 
             Section "un."
+              Call un.CheckInstallStopped
               DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${ic.spacedName}"
               DeleteRegKey HKLM "Software\${ic.spacedName}"
               RMDir /r /REBOOTOK "$INSTDIR"
@@ -525,8 +638,7 @@
             LoadLanguageFile "''${NSISDIR}\Contrib\Language files\English.nlf"
             LoadLanguageFile "''${NSISDIR}\Contrib\Language files\Japanese.nlf"
 
-            LangString AlreadyRunning ''${LANG_ENGLISH} "is running. It needs to be fully shut down before running the installer!"
-            LangString AlreadyRunning ''${LANG_JAPANESE} "が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！"
+            ${guardStrings}
             LangString TooOld ''${LANG_ENGLISH} "This version of Windows is not supported. Windows 8.1 or above required."
             LangString TooOld ''${LANG_JAPANESE} "このWindowsバージョンはサポートされていません。Windows 8.1以降が必要です。"
 
@@ -546,41 +658,19 @@
               Abort
             FunctionEnd
 
+            ${guardFunctions ""}
             Page directory DirectoryPre
             Page instfiles
 
             Section ""
               SectionIn RO
+              Call CheckInstallStopped
               SetOutPath "$INSTDIR"
               AllowSkipFiles off
               WriteRegStr HKLM "Software\${ic.spacedName}" "Install_Dir" "$INSTDIR"
               CreateDirectory "$APPDATA\${ic.installDirectory}\Secrets-1.0"
               CreateDirectory "$APPDATA\${ic.installDirectory}\Logs"
               CreateDirectory "$APPDATA\${ic.installDirectory}\Logs\pub"
-
-              ; Wait up to 30 s for the app to release its lockfile before installing
-              StrCpy $R0 0
-              StrCpy $R1 "false"
-            lockfileLoop:
-              IntCmp $R0 30 lockfileDone 0 lockfileDone
-              StrCmp $R1 "true" lockfileDone 0
-              DetailPrint "Checking if ${ic.spacedName} is not running ($R0/30)..."
-              StrCpy $R1 "true"
-              ClearErrors
-              Delete "$APPDATA\${ic.installDirectory}\${ic.uglyName}_lockfile"
-              IfErrors lockfileNotDeleted lockfileDeleted
-            lockfileNotDeleted:
-              StrCpy $R1 "false"
-            lockfileDeleted:
-              StrCmp $R1 "true" lockfileSkipSleep 0
-              Sleep 1000
-            lockfileSkipSleep:
-              IntOp $R0 $R0 + 1
-              Goto lockfileLoop
-            lockfileDone:
-              StrCmp $R1 "true" lockfileOk 0
-              Abort "${ic.installDirectory} $(AlreadyRunning)"
-            lockfileOk:
 
               IfFileExists "$INSTDIR\*.*" 0 +2
                 RMDir /r "$INSTDIR"
@@ -887,6 +977,7 @@
 
         inherit nativeModulesZip;
         pilotConfigs = nsisFiles.pilot;
+        inherit nsisFiles;
       };
     in {
       _module.args.windowsBuild = windowsBuild;
