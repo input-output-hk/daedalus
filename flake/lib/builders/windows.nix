@@ -731,7 +731,7 @@
 
             Section "Start Menu Shortcuts"
               CreateDirectory "$SMPROGRAMS\${ic.spacedName}"
-              CreateShortcut "$SMPROGRAMS\${ic.spacedName}\Uninstall ${ic.spacedName}.lnk" "$INSTDIR/uninstall.exe" "" "$INSTDIR/uninstall.exe" 0
+              CreateShortcut "$SMPROGRAMS\${ic.spacedName}\Uninstall ${ic.spacedName}.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
               CreateShortcut "$SMPROGRAMS\${ic.spacedName}\${ic.spacedName}.lnk" "$INSTDIR\cardano-watchdog.exe" "--config $\"$INSTDIR\daedalus-config.json$\"" "$INSTDIR\${ic.installDirectory}.exe" 0 SW_SHOWMINIMIZED
             SectionEnd
           '';
