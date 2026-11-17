@@ -1070,6 +1070,7 @@
         // {
           nixos-package-pilot = nixosPilot;
           windows-pilot-configs = windowsBuild.pilotConfigs;
+          windows-mainnet-nsis = windowsBuild.nsisFiles.mainnet;
           daedalus-x86_64-windows-pilot = windowsBuild.package.pilot;
           installer-x86_64-windows-pilot = windowsBuild.unsignedInstaller.pilot;
           makeSignedInstaller-x86_64-windows-pilot = windowsBuild.makeSignedInstaller.pilot;
