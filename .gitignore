@@ -142,3 +142,8 @@ yalc.lock
 
 # Generated tool outputs
 review_output.json
+
+# Quetzal development experiment
+/state-quetzal-*/
+/result-quetzal-*
+/result-watchdog

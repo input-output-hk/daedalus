@@ -28,9 +28,9 @@
         stable.rustfmt
       ];
 
-    mkDaedalusShell = cluster: let
+    mkDaedalusShell = cluster: quetzal: let
       daedalusConfigs = common.mkDaedalusConfigs {
-        inherit cluster;
+        inherit cluster quetzal;
         devShell = true;
       };
     in
@@ -59,6 +59,7 @@
             shellcheck
             config.treefmt.build.wrapper
           ]
+          ++ lib.optional quetzal config.packages.quetzal
           ++ (
             if pkgs.stdenv.hostPlatform.isDarwin
             then [
@@ -74,7 +75,10 @@
           );
         buildCommand = "export >$out";
         CARDANO_NODE_VERSION = common.cardanoNodeVersion;
-        CARDANO_WALLET_VERSION = common.cardanoWalletVersion cluster;
+        CARDANO_WALLET_VERSION =
+          if quetzal
+          then config.packages.quetzal.version
+          else common.cardanoWalletVersion cluster;
         DAEDALUS_CLUSTER = daedalusConfigs.daedalusConfig.cluster;
         DAEDALUS_NETWORK_NAME = daedalusConfigs.daedalusConfig.networkName;
         DAEDALUS_IS_FLIGHT =
@@ -86,7 +90,10 @@
         DAEDALUS_DIR = DAEDALUS_INSTALL_DIRECTORY;
         CLUSTER = cluster;
         NETWORK = cluster;
-        NODE_EXE = "cardano-wallet";
+        NODE_EXE =
+          if quetzal
+          then "quetzal"
+          else "cardano-wallet";
         CLI_EXE = "cardano-cli";
         NODE_IMPLEMENTATION = "cardano";
         BUILDTYPE = "Debug";
@@ -155,9 +162,15 @@
         '';
       };
 
-    daedalusShells = pkgs.lib.genAttrs installerClusters mkDaedalusShell;
+    daedalusShells = pkgs.lib.genAttrs installerClusters (cluster: mkDaedalusShell cluster false);
   in {
-    devShells = daedalusShells // {default = daedalusShells.mainnet;};
+    devShells =
+      daedalusShells
+      // {default = daedalusShells.mainnet;}
+      // lib.optionalAttrs (system == "x86_64-linux") {
+        quetzal-preview = mkDaedalusShell "preview" true;
+        quetzal-preprod = mkDaedalusShell "preprod" true;
+      };
     # Exposed as a package so `nix run .#patch-electron-rebuild` works from
     # rebuild-native-modules.sh without going through self.internal.
     packages.patch-electron-rebuild = common.patchElectronRebuild;

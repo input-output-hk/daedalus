@@ -262,6 +262,23 @@
         "type": "github"
       }
     },
+    "quetzal": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794934103,
+        "narHash": "sha256-1pHiy0uUs3dKi/MXIIM2DEdRl6aVw2IcreKpRV5y6/M=",
+        "owner": "se7en-labs-inc",
+        "repo": "quetzal",
+        "rev": "84f2f4d691df3a32928766733def609164888475",
+        "type": "github"
+      },
+      "original": {
+        "owner": "se7en-labs-inc",
+        "repo": "quetzal",
+        "rev": "84f2f4d691df3a32928766733def609164888475",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "cardano-node": "cardano-node",
@@ -276,6 +293,7 @@
         "mithril": "mithril",
         "nix-bundle-exe": "nix-bundle-exe",
         "nixpkgs": "nixpkgs",
+        "quetzal": "quetzal",
         "treefmt-nix": "treefmt-nix_2",
         "tullia": "tullia",
         "yarn2nix-moretea": "yarn2nix-moretea"

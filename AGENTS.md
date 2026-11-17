@@ -140,3 +140,10 @@ yarn prettier:check       # Prettier check
 - Never commit secrets or private keys
 - Daedalus stores wallet data in user's app data directory
 - Hardware wallet signing happens on device, not in Daedalus
+
+## Feature specifications
+
+Use the `speckit` skill for new feature work. The project constitution is
+[`.specify/memory/constitution.md`](.specify/memory/constitution.md); feature
+artifacts live under `specs/`. The Quetzal experiment's commands and evidence
+are in [`specs/002-quetzal-wallet/quickstart.md`](specs/002-quetzal-wallet/quickstart.md).
