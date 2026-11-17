@@ -137,10 +137,13 @@ it.each([
   ['mainnet', false, 'mainnet'],
   ['selfnode', false, 'selfnode'],
   ['preprod', true, 'preprod'],
+  ['preprod', false, 'preprod'],
   ['preview', true, 'preview'],
+  ['preview', false, 'preview'],
   ['mainnet-flight', true, 'mainnet'],
+  ['mainnet-flight', false, 'mainnet'],
 ])(
-  'requires the package capability for %s independently of launcher availability',
+  'accepts the package capability %s/%s independently of launcher availability',
   (dappSandboxPackageCluster, cip30Enabled, cluster) => {
     (readFileSync as jest.Mock).mockReturnValue(
       JSON.stringify({
@@ -180,9 +183,6 @@ it.each([undefined, null, 0, 1, '', 'true', 'false', [], {}])(
 it.each([
   ['mainnet', true, 'mainnet'],
   ['selfnode', true, 'selfnode'],
-  ['preprod', false, 'preprod'],
-  ['preview', false, 'preview'],
-  ['mainnet-flight', false, 'mainnet'],
 ])(
   'rejects a contradictory CIP-30 capability for %s',
   (dappSandboxPackageCluster, cip30Enabled, cluster) => {
