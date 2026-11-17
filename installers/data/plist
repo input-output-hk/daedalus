@@ -2,11 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- Must equal LSMinimumSystemVersion of the bundled Electron. productbuild has no upper bound, so every version at or above this value installs. -->
     <key>os</key>
     <array>
-      <string>10.10</string>
-      <string>10.11</string>
-      <string>10.12</string>
+      <string>13.0</string>
     </array>
 </dict>
 </plist>
