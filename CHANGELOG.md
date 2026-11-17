@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Windows: the "Uninstall" shortcut in the Start menu folder opens the uninstaller instead of pointing at a file that does not exist ([PR #3477](https://github.com/input-output-hk/daedalus/pull/3477)).
 - macOS: the Daedalus Pilot installer now applies the same minimum macOS version as the Mainnet, Flight, Pre-Prod and Preview installers ([PR #3475](https://github.com/input-output-hk/daedalus/pull/3475)).
 - macOS: the Daedalus Mainnet, Flight, Pre-Prod and Preview installers do not allow installation on macOS versions older than 13 (Ventura), the minimum that Daedalus requires ([PR #3474](https://github.com/input-output-hk/daedalus/pull/3474)).
 - Daedalus finds wallets that an older version of Daedalus changed so that they can no longer be opened or restored, and offers to back up their files and repair them ([PR #3469](https://github.com/input-output-hk/daedalus/pull/3469)).
