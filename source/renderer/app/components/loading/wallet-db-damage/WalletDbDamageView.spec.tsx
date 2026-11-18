@@ -50,18 +50,21 @@ describe('WalletDbDamageView', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        '4 wallets were changed by an older version of Daedalus, so Daedalus cannot open them. Your funds are safe. These files hold wallet data only.'
+        '4 wallets were changed by an older version of Daedalus, so Daedalus cannot open them. Your funds are safe: they are on the blockchain, not in these wallet files.'
       )
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Daedalus can save a copy of the wallet files, then repair them. Until then, these wallets do not show in Daedalus.'
+        'Daedalus can save a copy of the wallet files, then repair them. Until then, these wallets will not appear in Daedalus.'
       )
     ).toBeInTheDocument();
   });
 
   it('says wallet and it for one wallet', () => {
     renderView('offer', { damagedCount: 1 });
+    expect(
+      screen.getByRole('heading', { name: 'A wallet cannot be opened' })
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
         /^1 wallet was changed by an older version of Daedalus, so Daedalus cannot open it\./
@@ -84,7 +87,7 @@ describe('WalletDbDamageView', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Daedalus is stopping Cardano wallet, saving a copy of the wallet files and repairing them. Then Cardano wallet starts again. Please wait.'
+        'Daedalus is saving a copy of the wallet files and repairing them. Please wait.'
       )
     ).toBeInTheDocument();
     expect(screen.queryByRole('button')).toBeNull();
@@ -101,7 +104,7 @@ describe('WalletDbDamageView', () => {
     });
     expect(screen.getByText('2 wallets were repaired.')).toBeInTheDocument();
     expect(
-      screen.getByText('1 wallet could not be repaired. It was not changed.')
+      screen.getByText('1 wallet could not be repaired and is unchanged.')
     ).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -110,7 +113,7 @@ describe('WalletDbDamageView', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'she.c.sqlite: the file has other changes, so Daedalus did not touch it.'
+        'she.c.sqlite: this file differs in ways Daedalus cannot repair. The file is unchanged.'
       )
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
@@ -132,28 +135,26 @@ describe('WalletDbDamageView', () => {
       backupDir: null,
     });
     expect(
+      screen.getByText('4 wallets could not be repaired and are unchanged.')
+    ).toBeInTheDocument();
+    expect(
       screen.getByText(
-        '4 wallets could not be repaired. They were not changed.'
+        'she.c.sqlite: this file differs in ways Daedalus cannot repair. The file is unchanged.'
       )
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'she.c.sqlite: the file has other changes, so Daedalus did not touch it.'
+        'she.d.sqlite: Daedalus could not save a copy. The file is unchanged.'
       )
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'she.d.sqlite: Daedalus could not save a copy, so it did not touch the file.'
+        'she.e.sqlite: the repair did not complete. The file is unchanged.'
       )
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'she.e.sqlite: the repair did not complete; the file is unchanged.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'she.f.sqlite: Daedalus did not repair the file, and it is unchanged.'
+        'she.f.sqlite: Daedalus did not repair this file. The file is unchanged.'
       )
     ).toBeInTheDocument();
     expect(
@@ -164,9 +165,7 @@ describe('WalletDbDamageView', () => {
 
   it('says so when no wallet needed the repair', () => {
     renderView('done', { results: [] });
-    expect(
-      screen.getByText('No wallet needed to be repaired.')
-    ).toBeInTheDocument();
+    expect(screen.getByText('No wallets needed repair.')).toBeInTheDocument();
     expect(screen.queryByText(/were repaired/)).toBeNull();
   });
 });

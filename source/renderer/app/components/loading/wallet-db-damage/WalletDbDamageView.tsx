@@ -44,7 +44,7 @@ export default class WalletDbDamageView extends Component<Props> {
     return (
       <div className={styles.root}>
         <div className={styles.header}>
-          <h1>{intl.formatMessage(messages.title)}</h1>
+          <h1>{intl.formatMessage(messages.title, { count: damagedCount })}</h1>
           <p>{intl.formatMessage(messages.body, { count: damagedCount })}</p>
           <p>{intl.formatMessage(messages.offer)}</p>
         </div>
