@@ -30,6 +30,15 @@ const walletDiscontinuity: ChainDamage = {
   detectedAt,
 };
 
+const immutableFileMissing: ChainDamage = {
+  kind: 'immutable_file_missing',
+  slot: null,
+  lastGoodSlot: null,
+  chunk: 4929,
+  file: '04929.primary',
+  detectedAt,
+};
+
 const renderView = (
   damage: ChainDamage,
   initialView: 'choice' | 'confirm' = 'choice'
@@ -57,6 +66,12 @@ storiesOf('Loading / Chain Damage', module)
     />
   ))
   .add('Wallet Chain Discontinuity', () => renderView(walletDiscontinuity))
+  .add('Immutable File Missing', () => (
+    <ChainDamageView
+      damage={immutableFileMissing}
+      onRebuild={action('onRebuild')}
+    />
+  ))
   .add('Detection Without Slot', () =>
     renderView({ ...ledgerPointMissing, slot: null })
   )

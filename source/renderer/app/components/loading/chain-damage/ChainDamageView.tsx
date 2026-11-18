@@ -14,6 +14,7 @@ const SYMPTOM_BY_KIND: Record<ChainDamageKind, string> = {
   node_rejects_canonical_block: 'symptomNodeRejectsCanonicalBlock',
   ledger_point_missing: 'symptomLedgerPointMissing',
   wallet_chain_discontinuity: 'symptomWalletChainDiscontinuity',
+  immutable_file_missing: 'symptomImmutableFileMissing',
 };
 
 type Props = {
@@ -46,6 +47,24 @@ export default class ChainDamageView extends Component<Props, State> {
     this.setState({ view: 'choice' });
   };
 
+  renderDetail() {
+    const { damage } = this.props;
+    const { intl } = this.context;
+    if (damage.file != null) {
+      return intl.formatMessage(messages.detailFile, {
+        kind: damage.kind,
+        file: damage.file,
+      });
+    }
+    if (damage.slot == null) {
+      return intl.formatMessage(messages.detailNoSlot, { kind: damage.kind });
+    }
+    return intl.formatMessage(messages.detail, {
+      kind: damage.kind,
+      slot: damage.slot,
+    });
+  }
+
   renderChoiceView() {
     const { damage, onDismiss } = this.props;
     const { intl } = this.context;
@@ -58,14 +77,7 @@ export default class ChainDamageView extends Component<Props, State> {
           {symptom && <p>{intl.formatMessage(symptom)}</p>}
           <p>{intl.formatMessage(messages.body)}</p>
         </div>
-        <div className={styles.detail}>
-          {damage.slot == null
-            ? intl.formatMessage(messages.detailNoSlot, { kind: damage.kind })
-            : intl.formatMessage(messages.detail, {
-                kind: damage.kind,
-                slot: damage.slot,
-              })}
-        </div>
+        <div className={styles.detail}>{this.renderDetail()}</div>
         <div className={styles.actions}>
           {onDismiss && (
             <Button

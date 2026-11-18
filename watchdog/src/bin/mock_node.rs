@@ -15,6 +15,9 @@
 // newline, and hangs there until the shutdown pipe closes, so a test can
 // leave a line unterminated while the node runs. Once a file named
 // <socket_path>.finish exists, it writes the newline and keeps hanging.
+// With MOCK_NODE_LATE_LINES=<file> it prints that file's contents to stdout
+// once a file named <socket_path>.late exists, and keeps running, so a test
+// can inject log lines after the wallet is ready.
 //
 // Given --topology <file>, it prints the path and, on one line, the contents of
 // that file, so a test can assert on the topology the node was started with.
@@ -53,6 +56,9 @@ fn main() {
     }
     std::io::stdout().flush().unwrap();
     std::fs::File::create(&socket_path).expect("create socket file");
+    if let Some(file) = std::env::var_os("MOCK_NODE_LATE_LINES") {
+        print_when_triggered(&socket_path, &file);
+    }
 
     if let Some(ms) = std::env::var("MOCK_NODE_CRASH_AFTER_READY_MS")
         .ok()
@@ -75,6 +81,20 @@ fn main() {
             std::thread::sleep(std::time::Duration::from_secs(3600));
         }
     }
+}
+
+/// Print `file` to stdout once `<socket_path>.late` exists.
+fn print_when_triggered(socket_path: &str, file: &std::ffi::OsStr) {
+    let text = std::fs::read_to_string(file).expect("read MOCK_NODE_LATE_LINES");
+    let trigger = std::path::PathBuf::from(format!("{socket_path}.late"));
+    std::thread::spawn(move || {
+        while !trigger.exists() {
+            std::thread::sleep(std::time::Duration::from_millis(20));
+        }
+        let mut out = std::io::stdout();
+        out.write_all(text.as_bytes()).unwrap();
+        out.flush().unwrap();
+    });
 }
 
 /// Print the path given as `--topology` and the compact JSON in that file.

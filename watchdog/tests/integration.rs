@@ -1182,6 +1182,146 @@ fn chain_damage_signatures_are_read_from_their_own_process() {
     assert!(events.is_empty(), "{events:?}");
 }
 
+/// Lines the node writes after its database closed under a failed read, sent
+/// once the wallet is ready, as in the field: the node stays alive, its
+/// network is gone, and the wallet cannot reach it. The node is stopped with
+/// the normal request, before the damage is reported, the wallet is stopped
+/// with it and is not restarted, and nothing starts again until the user acts.
+#[test]
+fn chain_damage_missing_immutable_file_stops_the_node_then_reports() {
+    let dir = TempDir::new("damage-immutable-file");
+    dir.populate_chain();
+    let cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET);
+    let late = PathBuf::from(format!("{}.late", cfg.socket_path.display()));
+    let (cfg, _port) = cfg.build();
+    let lines = fixture("node_immutable_file_missing.txt");
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_LATE_LINES", lines.as_str())]);
+
+    expect(&rx, "wallet_ready");
+    std::fs::write(&late, b"").unwrap();
+
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert_eq!(shutdown["force_killed"], false, "{shutdown}");
+    let damage = expect(&rx, "chain_damage");
+    assert_eq!(damage["kind"], "immutable_file_missing", "{damage}");
+    assert_eq!(damage["chunk"], 4929, "{damage}");
+    assert_eq!(damage["file"], "04929.primary", "{damage}");
+    assert_eq!(damage["node_held"], true, "{damage}");
+    assert!(damage["slot"].is_null(), "{damage}");
+
+    // Nothing restarts the wallet or the node, and the damage is reported once.
+    expect_none_of(
+        &rx,
+        &[
+            "chain_damage",
+            "node_started",
+            "wallet_started",
+            "wallet_unresponsive",
+            "wallet_restarting",
+            "node_exited",
+        ],
+        1500,
+    );
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A closed database with no file named before it is not taken for damage.
+#[test]
+fn chain_damage_closed_database_without_a_file_is_not_reported() {
+    let lines = fixture("node_closed_db_without_path.txt");
+    let events = chain_damage_events("damage-closed-db", &[("MOCK_NODE_EXTRA_LINES", &lines)]);
+    assert!(events.is_empty(), "{events:?}");
+}
+
+/// Damage lines written while the node is still opening its ledger database
+/// stop the node before any wallet starts, and are reported once it has
+/// stopped. The mock holds in that state until the shutdown request arrives.
+#[test]
+fn chain_damage_missing_immutable_file_while_starting_stops_the_node() {
+    let dir = TempDir::new("damage-immutable-starting");
+    dir.populate_chain();
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET).build();
+    let lines = fixture("node_immutable_file_missing.txt");
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_UNTERMINATED_LINE", lines.as_str())]);
+
+    let mut order = Vec::new();
+    let damage = loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .expect("no chain_damage while the node starts");
+        order.push(v["event"].as_str().unwrap_or_default().to_string());
+        assert_ne!(v["event"], "wallet_started", "{order:?}");
+        if v["event"] == "node_shutdown_ms" {
+            assert_eq!(v["force_killed"], false, "{v}");
+        }
+        if v["event"] == "chain_damage" {
+            break v;
+        }
+    };
+    assert!(order.contains(&"node_shutdown_ms".to_string()), "{order:?}");
+    assert_eq!(damage["kind"], "immutable_file_missing", "{damage}");
+    assert_eq!(damage["node_held"], true, "{damage}");
+    expect_none_of(&rx, &["wallet_started", "node_started"], 800);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// Damage that appears after the wallet was given up on stops the node too.
+#[test]
+fn chain_damage_missing_immutable_file_after_the_wallet_failed() {
+    let dir = TempDir::new("damage-immutable-wallet-failed");
+    dir.populate_chain();
+    let cfg = Cfg::new(&dir, MOCK_NODE, MOCK_WALLET_CRASH)
+        .max_restarts(2)
+        .restart_delay(0);
+    let late = PathBuf::from(format!("{}.late", cfg.socket_path.display()));
+    let (cfg, _port) = cfg.build();
+    let lines = fixture("node_immutable_file_missing.txt");
+    let (mut child, mut stdin, rx) =
+        spawn_watchdog_with_env(&cfg, &[("MOCK_NODE_LATE_LINES", lines.as_str())]);
+
+    expect(&rx, "wallet_unrecoverable");
+    std::fs::write(&late, b"").unwrap();
+
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert_eq!(shutdown["force_killed"], false, "{shutdown}");
+    let damage = expect(&rx, "chain_damage");
+    assert_eq!(damage["kind"], "immutable_file_missing", "{damage}");
+    assert_eq!(damage["node_held"], true, "{damage}");
+    expect_none_of(&rx, &["wallet_started", "node_started"], 800);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A wallet that cannot be started does not leave the node to be killed: the
+/// node gets the normal shutdown request first.
+#[test]
+fn wallet_spawn_failure_stops_the_node_cleanly() {
+    let dir = TempDir::new("wallet-spawn-failure");
+    dir.populate_chain();
+    let missing_wallet = dir.path().join("no-such-wallet");
+    let (cfg, _port) = Cfg::new(&dir, MOCK_NODE, missing_wallet.to_str().unwrap()).build();
+    let (mut child, stdin, rx) = spawn_watchdog(&cfg);
+
+    expect(&rx, "node_started");
+    let shutdown = expect(&rx, "node_shutdown_ms");
+    assert_eq!(shutdown["force_killed"], false, "{shutdown}");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── Tests: Mithril download waiting for the network ──────────────────────────
 
 /// A download that stalls while mithril-client cannot reach the aggregator

@@ -4242,6 +4242,11 @@
         "id": "loading.chainDamage.symptom.walletChainDiscontinuity"
       },
       {
+        "defaultMessage": "!!!Cardano node stopped because a file of the blockchain data stored on this computer is missing.",
+        "description": "Explanation shown when the node stops because it cannot read a file of the blockchain data on this computer",
+        "id": "loading.chainDamage.symptom.immutableFileMissing"
+      },
+      {
         "defaultMessage": "!!!Your wallets and funds are safe, and you do not need your recovery phrase. Daedalus can rebuild the blockchain data by downloading a verified copy with Mithril.",
         "description": "Reassurance and description of the rebuild on the screen that offers to rebuild the blockchain data",
         "id": "loading.chainDamage.body"
@@ -4255,6 +4260,11 @@
         "defaultMessage": "!!!Detected: {kind}",
         "description": "Technical detail line naming the kind of damage when no slot is known, for quoting in a support request",
         "id": "loading.chainDamage.detailNoSlot"
+      },
+      {
+        "defaultMessage": "!!!Detected: {kind}, file {file}",
+        "description": "Technical detail line naming the kind of damage and the blockchain data file, for quoting in a support request",
+        "id": "loading.chainDamage.detailFile"
       },
       {
         "defaultMessage": "!!!Rebuild blockchain data",

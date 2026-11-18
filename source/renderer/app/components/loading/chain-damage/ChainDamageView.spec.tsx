@@ -48,6 +48,10 @@ describe('ChainDamageView', () => {
       'wallet_chain_discontinuity',
       'A wallet cannot finish syncing because part of the blockchain data stored on this computer is missing.',
     ],
+    [
+      'immutable_file_missing',
+      'Cardano node stopped because a file of the blockchain data stored on this computer is missing.',
+    ],
   ])('shows the symptom for %s', (kind, symptom) => {
     renderView(damage({ kind: kind as ChainDamage['kind'] }));
     expect(
@@ -63,6 +67,20 @@ describe('ChainDamageView', () => {
     renderView(damage({ kind: 'wallet_chain_discontinuity', slot: 200102408 }));
     expect(
       screen.getByText('Detected: wallet_chain_discontinuity at slot 200102408')
+    ).toBeInTheDocument();
+  });
+
+  it('shows the kind and the file for a missing blockchain data file', () => {
+    renderView(
+      damage({
+        kind: 'immutable_file_missing',
+        slot: null,
+        chunk: 4929,
+        file: '04929.primary',
+      })
+    );
+    expect(
+      screen.getByText('Detected: immutable_file_missing, file 04929.primary')
     ).toBeInTheDocument();
   });
 

@@ -104,8 +104,9 @@ export default class BackendStore extends Store {
   // chainDamage, and clears only when the chain it was found in is gone or a
   // rebuild has replaced it
   @observable lastChainDamage: ChainDamage | null = null;
-  // True when the watchdog found chainDamage before starting the node and
-  // does not start it, so no node runs behind the damaged data screen
+  // True when the watchdog found chainDamage before starting the node, or
+  // stopped the node because of it, and does not start it, so no node runs
+  // behind the damaged data screen
   @observable nodeHeld = false;
   @observable walletUnrecoverable = false;
   @observable nodeUnrecoverable = false;

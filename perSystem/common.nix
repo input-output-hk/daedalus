@@ -132,6 +132,9 @@
           fileset = pkgs.lib.fileset.unions [
             ../watchdog/Cargo.toml
             ../watchdog/Cargo.lock
+            # The Linux and macOS builds run the unit tests, and one in
+            # src/supervisor.rs reads this node output with include_str!.
+            ../watchdog/tests/fixtures/node_immutable_file_missing.txt
             ../watchdog/src
           ];
         };

@@ -34,8 +34,9 @@ export interface WatchdogState {
   // chainDamage it survives a node start, and clears only when the chain it
   // was found in is gone or a rebuild has replaced it
   lastChainDamage: ChainDamage | null;
-  // True when the watchdog found chainDamage before starting the node and
-  // does not start it; cleared when a node starts or a Mithril sync begins
+  // True when the watchdog found chainDamage before starting the node, or
+  // stopped the node because of it, and does not start it; cleared when a node
+  // starts or a Mithril sync begins
   nodeHeld: boolean;
   // True when lastError came from a rebuild, so Retry repeats the rebuild
   lastErrorRebuild: boolean;
@@ -123,17 +124,21 @@ export type RequestedRestart = 'node' | 'wallet';
 export type ChainDamageKind =
   | 'node_rejects_canonical_block'
   | 'ledger_point_missing'
-  | 'wallet_chain_discontinuity';
+  | 'wallet_chain_discontinuity'
+  | 'immutable_file_missing';
 
 // ChainDamageEvent — a chain_damage event as the watchdog writes it.
-// last_good_slot is set only for wallet_chain_discontinuity. node_held is true
-// when the damage was found before the node started, and the watchdog then
-// does not start it.
+// last_good_slot is set only for wallet_chain_discontinuity. chunk and file name
+// the ImmutableDB file and are set only for immutable_file_missing. node_held
+// is true when the damage was found before the node started, or the node was
+// stopped because of it, and the watchdog then does not start it.
 export type ChainDamageEvent = {
   event: 'chain_damage';
   kind: ChainDamageKind;
   slot: number | null;
   last_good_slot: number | null;
+  chunk?: number | null;
+  file?: string | null;
   node_held: boolean;
 };
 
@@ -143,6 +148,10 @@ export type ChainDamage = {
   kind: ChainDamageKind;
   slot: number | null;
   lastGoodSlot: number | null;
+  // Set only for immutable_file_missing: the chunk number and the file name
+  // in the chain's immutable folder, such as 04929.primary
+  chunk?: number | null;
+  file?: string | null;
   detectedAt: string;
 };
 
