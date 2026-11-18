@@ -38,8 +38,9 @@ const KINDS: [&str; 4] = ["rnd", "ica", "she", "sha"];
 const FIRST_VERSION_WITH_CHANGE_ADDR_MODE: i64 = 4;
 
 /// The schema version of the databases cardano-wallet v2026-10-07 writes,
-/// which `CURRENT_TABLES` describes. A newer version may have changed the
-/// schema in ways the repair does not know, so such a file is refused.
+/// which `CURRENT_TABLES` describes. A file recorded at a newer version is left
+/// alone: `CURRENT_TABLES` does not describe it, so it is neither reported as
+/// damaged nor repaired.
 const CURRENT_SCHEMA_VERSION: i64 = 5;
 
 /// Free space the backup leaves on its disk beyond the copies, so that the
@@ -396,7 +397,9 @@ fn is_wallet_db_name(name: &str) -> bool {
 }
 
 /// The names of the wallet databases in `dir` that an older wallet changed,
-/// sorted. A file that cannot be read is logged and not reported.
+/// sorted. A file that cannot be read, or that has the damage `classify`
+/// describes at a schema version newer than `CURRENT_SCHEMA_VERSION`, is
+/// logged and not reported.
 fn scan(dir: &Path) -> Vec<String> {
     let entries = match fs::read_dir(dir) {
         Ok(entries) => entries,
@@ -418,8 +421,12 @@ fn scan(dir: &Path) -> Vec<String> {
     let mut damaged = Vec::new();
     for name in &names {
         match check_file(&dir.join(name)) {
-            Ok(true) => damaged.push(name.clone()),
-            Ok(false) => {}
+            Ok(Finding::Damaged) => damaged.push(name.clone()),
+            Ok(Finding::Newer(version)) => info!(
+                "wallet database check: {name} is at schema version {version}, newer than \
+                 {CURRENT_SCHEMA_VERSION}; it is left alone"
+            ),
+            Ok(Finding::Intact) => {}
             Err(e) => warn!("wallet database check: {name} cannot be read: {e}"),
         }
     }
@@ -439,10 +446,22 @@ fn scan(dir: &Path) -> Vec<String> {
     damaged
 }
 
-/// Whether the database at `path` is one an older wallet changed so that the
-/// current one cannot open it. Opening it changes nothing on disk.
-fn check_file(path: &Path) -> rusqlite::Result<bool> {
-    is_damaged(&open_read_only(path)?)
+/// What the check finds in the database at `path`. Opening it changes nothing
+/// on disk.
+fn check_file(path: &Path) -> rusqlite::Result<Finding> {
+    classify(&open_read_only(path)?)
+}
+
+/// What the check finds in a database.
+#[derive(Debug, PartialEq)]
+enum Finding {
+    /// Nothing an older wallet changed.
+    Intact,
+    /// The damage `classify` describes, in a file the repair knows.
+    Damaged,
+    /// The same damage, in a file recorded at this schema version, newer than
+    /// `CURRENT_SCHEMA_VERSION`, so not described by `CURRENT_TABLES`.
+    Newer(i64),
 }
 
 /// The damage: the schema version is one at which the current wallet expects
@@ -451,21 +470,35 @@ fn check_file(path: &Path) -> rusqlite::Result<bool> {
 /// keeps no row there and does not read the table, so it opens. A shared
 /// wallet reads `shared_state`, which an older wallet changes the same way,
 /// but keeps no row in `seq_state`, so this check does not report it;
-/// Daedalus does not create shared wallets.
-fn is_damaged(conn: &Connection) -> rusqlite::Result<bool> {
+/// Daedalus does not create shared wallets. A file with this damage recorded at
+/// a version above `CURRENT_SCHEMA_VERSION` is `Finding::Newer`, not damaged.
+fn classify(conn: &Connection) -> rusqlite::Result<Finding> {
     if !table_exists(conn, "seq_state")? {
-        return Ok(false);
+        return Ok(Finding::Intact);
     }
-    let version = schema_version(conn)?;
-    if version.is_none_or(|v| v < FIRST_VERSION_WITH_CHANGE_ADDR_MODE)
-        || columns(conn, "seq_state")?
-            .iter()
-            .any(|c| c.eq_ignore_ascii_case("change_addr_mode"))
+    let Some(version) = schema_version(conn)?.filter(|v| *v >= FIRST_VERSION_WITH_CHANGE_ADDR_MODE)
+    else {
+        return Ok(Finding::Intact);
+    };
+    if columns(conn, "seq_state")?
+        .iter()
+        .any(|c| c.eq_ignore_ascii_case("change_addr_mode"))
     {
-        return Ok(false);
+        return Ok(Finding::Intact);
     }
     let rows: i64 = conn.query_row("SELECT count(*) FROM seq_state", [], |r| r.get(0))?;
-    Ok(rows > 0)
+    Ok(if rows == 0 {
+        Finding::Intact
+    } else if version > CURRENT_SCHEMA_VERSION {
+        Finding::Newer(version)
+    } else {
+        Finding::Damaged
+    })
+}
+
+/// Whether `classify` finds damage the repair can address.
+fn is_damaged(conn: &Connection) -> rusqlite::Result<bool> {
+    Ok(classify(conn)? == Finding::Damaged)
 }
 
 /// The file's `database_schema_version`, None when it records none.
@@ -887,6 +920,7 @@ fn sync_dir(dir: &Path) -> io::Result<()> {
     Ok(())
 }
 
+#[derive(Debug)]
 enum NotRepaired {
     /// The file is not in the state the repair is for.
     Refused(String),
@@ -900,22 +934,15 @@ impl From<rusqlite::Error> for NotRepaired {
 }
 
 /// Checks, without opening it for writing, that the database at `path` is in
-/// exactly the state an older wallet leaves: the damage `is_damaged` finds, a
-/// schema version no newer than `CURRENT_SCHEMA_VERSION`, no column missing
-/// beyond `DROPPED_COLUMNS`, and a clean `quick_check`. Returns the columns
-/// to add, as (table, column); a file in any other state is refused.
+/// exactly the state an older wallet leaves: the damage `is_damaged` finds, no
+/// column missing beyond `DROPPED_COLUMNS`, and a clean `quick_check`. Returns
+/// the columns to add, as (table, column); a file in any other state is refused.
 fn check_repairable(path: &Path) -> Result<Vec<(String, String)>, NotRepaired> {
     let conn = open_read_only(path)?;
     if !is_damaged(&conn)? {
         return Err(NotRepaired::Refused(
             "the file is not in the state an older wallet leaves".to_string(),
         ));
-    }
-    if let Some(version) = schema_version(&conn)?.filter(|v| *v > CURRENT_SCHEMA_VERSION) {
-        return Err(NotRepaired::Refused(format!(
-            "the database is at schema version {version}, newer than {CURRENT_SCHEMA_VERSION}, \
-             the version this repair knows"
-        )));
     }
     let missing = missing_columns(&conn)?;
     let other: Vec<String> = missing
@@ -969,10 +996,7 @@ fn add_columns(
     let tx = conn.transaction_with_behavior(TransactionBehavior::Immediate)?;
     // Read again under the write lock: the file must be as the checks before
     // the backup found it.
-    if missing_columns(&tx)? != missing
-        || !is_damaged(&tx)?
-        || schema_version(&tx)?.is_none_or(|v| v > CURRENT_SCHEMA_VERSION)
-    {
+    if missing_columns(&tx)? != missing || !is_damaged(&tx)? {
         return Err(NotRepaired::Failed(
             "the file changed while it was being repaired".to_string(),
         ));
@@ -1407,29 +1431,62 @@ mod tests {
     }
 
     #[test]
-    fn a_database_newer_than_the_repair_knows_is_refused_and_not_copied() {
+    fn a_database_newer_than_the_repair_knows_is_not_flagged_or_touched() {
         let dir = TempDir::new("newer");
         let db = dir.path().join("wallets");
         fs::create_dir(&db).unwrap();
         let path = db.join(db_name(WALLET_ID));
         create_damaged(&path, 6, true);
         let before = snapshot(&path);
-        // The check before a wallet start still reports it.
-        assert_eq!(scan(&db), vec![db_name(WALLET_ID)]);
+        assert_eq!(check_file(&path).unwrap(), Finding::Newer(6));
+        assert!(scan(&db).is_empty());
+        assert!(matches!(
+            check_repairable(&path),
+            Err(NotRepaired::Refused(_))
+        ));
 
         let report = repair_all(&db, &dir.path().join(BACKUP_FOLDER), "stamp", &plenty);
 
-        assert_eq!(report.results.len(), 1);
-        assert_eq!(report.results[0].outcome, WalletDbRepairOutcome::Refused);
-        assert!(
-            report.results[0]
-                .detail
-                .starts_with("the database is at schema version 6, newer than 5"),
-            "{}",
-            report.results[0].detail
-        );
+        assert!(report.results.is_empty());
         assert_eq!(report.backup_dir, None);
+        assert!(!dir.path().join(BACKUP_FOLDER).exists());
         assert_eq!(snapshot(&path), before);
+    }
+
+    #[test]
+    fn a_file_raised_above_the_known_version_before_the_repair_is_left_as_it_was() {
+        let dir = TempDir::new("raised");
+        let live_path = dir.path().join(db_name(OTHER_ID));
+        create_damaged(&live_path, 5, true);
+        // What the checks before the backup found, at version 5.
+        let missing = check_repairable(&live_path).unwrap();
+        // The wallet then migrates the file. As after an unclean stop, so that
+        // closing a connection that wrote would change the files.
+        let live = Connection::open(&live_path).unwrap();
+        live.query_row("PRAGMA wal_autocheckpoint = 0", [], |_| Ok(()))
+            .unwrap();
+        let path = dir.path().join(db_name(WALLET_ID));
+        live.execute("UPDATE database_schema_version SET version = 6", [])
+            .unwrap();
+        for suffix in ["", "-wal", "-shm"] {
+            fs::copy(sidecar(&live_path, suffix), sidecar(&path, suffix)).unwrap();
+        }
+        drop(live);
+        assert_eq!(
+            schema_version(&open_read_only(&path).unwrap()).unwrap(),
+            Some(6)
+        );
+        let before = snapshot(&path);
+
+        let result = write_columns(&path, &missing);
+
+        assert!(matches!(
+            result,
+            Err(NotRepaired::Failed(ref reason)) if reason == "the file changed while it was being repaired"
+        ));
+        assert_eq!(snapshot(&path), before);
+        let conn = open_read_only(&path).unwrap();
+        assert_eq!(missing_columns(&conn).unwrap(), missing);
     }
 
     #[test]
@@ -1525,7 +1582,7 @@ mod tests {
             Err(NotRepaired::Failed(ref reason)) if reason == "the file changed while it was being repaired"
         ));
         assert_eq!(snapshot(&path), before);
-        assert!(check_file(&path).unwrap());
+        assert_eq!(check_file(&path).unwrap(), Finding::Damaged);
     }
 
     #[test]
