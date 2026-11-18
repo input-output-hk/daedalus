@@ -152,3 +152,122 @@ describe('WalletsStore dApp routes', () => {
     expect(store.active).toBeNull();
   });
 });
+
+describe('WalletsStore wallet polling', () => {
+  const originalCapability = global.cip30Enabled;
+  const syncedWallet = Object.assign(wallet('wallet-a'), {
+    syncState: { status: WalletSyncStateStatuses.READY },
+  });
+  const restoredWallet = Object.assign(wallet('wallet-b'), {
+    syncState: { status: WalletSyncStateStatuses.RESTORING },
+  });
+  let store: WalletsStore;
+
+  const flush = () =>
+    new Promise((resolve) => {
+      setTimeout(resolve, 0);
+    });
+
+  const createPollingStore = () => {
+    let finishRestore: (restored: Wallet) => void;
+    const restoreResult = new Promise<Wallet>((resolve) => {
+      finishRestore = resolve;
+    });
+    const getWallets = jest.fn(async () => [syncedWallet]);
+    const restoreWallet = jest.fn(() => restoreResult);
+    const ada = new Proxy(
+      { getWallets, restoreWallet },
+      { get: (methods, name) => methods[name] || jest.fn() }
+    );
+    // Every action is a stub, so setup() can attach its listeners
+    const action = { listen: jest.fn(), trigger: jest.fn() };
+    const actionNamespace = new Proxy({}, { get: () => action });
+    const actions = new Proxy(
+      {},
+      { get: () => actionNamespace }
+    ) as unknown as ActionsMap;
+    const analytics = { sendEvent: jest.fn() } as unknown as AnalyticsTracker;
+    store = new WalletsStore({ ada } as unknown as Api, actions, analytics);
+    store.configure({
+      app: { currentRoute: '/wallets/add' },
+      networkStatus: { isConnected: true },
+      addresses: {
+        lastGeneratedAddress: null,
+        _getAddressesAllRequest: jest.fn(),
+        _refreshAddresses: jest.fn(),
+      },
+      transactions: {
+        _getTransactionsRecentRequest: jest.fn(),
+        _getTransactionsAllRequest: jest.fn(),
+        _getWithdrawalsRequest: jest.fn(),
+        _refreshTransactionData: jest.fn(),
+      },
+    } as unknown as StoresMap);
+    store.initialize();
+
+    return { finishRestore, getWallets, restoreWallet };
+  };
+
+  beforeEach(() => {
+    global.cip30Enabled = false;
+    // The test drives polling itself, so setup() starts no interval
+    jest.spyOn(global, 'setInterval').mockReturnValue(undefined);
+  });
+  afterEach(() => {
+    store.teardown();
+    jest.restoreAllMocks();
+    global.cip30Enabled = originalCapability;
+  });
+
+  it('requests the wallet list after a reconnection while the restored wallet dialog is open', async () => {
+    const { finishRestore, getWallets } = createPollingStore();
+    await store.refreshWalletsData();
+    store._restoreWalletBegin();
+    finishRestore(restoredWallet);
+    await store._restore();
+    expect(store.restoreWalletStep).toBe(3);
+    getWallets.mockClear();
+
+    // The connection to the wallet backend is restored
+    store.resetWalletsData();
+    await store._pollRefresh();
+
+    expect(getWallets).toHaveBeenCalledTimes(1);
+    expect(store.hasLoadedWallets).toBe(true);
+  });
+
+  it('resumes polling after a reconnection once the restore request has ended', async () => {
+    const { finishRestore, getWallets, restoreWallet } = createPollingStore();
+    await store.refreshWalletsData();
+    store._restoreWalletBegin();
+    const restoring = store._restore();
+    await flush();
+    expect(restoreWallet).toHaveBeenCalledTimes(1);
+    getWallets.mockClear();
+
+    store.resetWalletsData();
+    await store._pollRefresh();
+    expect(getWallets).not.toHaveBeenCalled();
+
+    finishRestore(restoredWallet);
+    await restoring;
+    await store._pollRefresh();
+    expect(getWallets).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps polling paused while the restored wallet dialog is open until it is closed', async () => {
+    const { finishRestore, getWallets } = createPollingStore();
+    await store.refreshWalletsData();
+    store._restoreWalletBegin();
+    finishRestore(restoredWallet);
+    await store._restore();
+    getWallets.mockClear();
+
+    await store._pollRefresh();
+    expect(getWallets).not.toHaveBeenCalled();
+
+    await store._restoreWalletEnd();
+    expect(getWallets).toHaveBeenCalledTimes(1);
+    expect(store.restoreWalletStep).toBeNull();
+  });
+});
