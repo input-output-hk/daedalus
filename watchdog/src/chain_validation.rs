@@ -91,7 +91,7 @@ pub fn is_same_path(a: &Path, b: &Path) -> bool {
 }
 
 #[cfg(unix)]
-fn free_space_bytes_sync(path: &Path) -> std::io::Result<u64> {
+pub(crate) fn free_space_bytes_sync(path: &Path) -> std::io::Result<u64> {
     use std::ffi::CString;
     use std::os::unix::ffi::OsStrExt;
 
@@ -109,7 +109,7 @@ fn free_space_bytes_sync(path: &Path) -> std::io::Result<u64> {
 }
 
 #[cfg(windows)]
-fn free_space_bytes_sync(path: &Path) -> std::io::Result<u64> {
+pub(crate) fn free_space_bytes_sync(path: &Path) -> std::io::Result<u64> {
     use std::os::windows::ffi::OsStrExt;
     use windows_sys::Win32::Storage::FileSystem::GetDiskFreeSpaceExW;
 
@@ -131,7 +131,7 @@ fn free_space_bytes_sync(path: &Path) -> std::io::Result<u64> {
 }
 
 #[cfg(not(any(unix, windows)))]
-fn free_space_bytes_sync(_path: &Path) -> std::io::Result<u64> {
+pub(crate) fn free_space_bytes_sync(_path: &Path) -> std::io::Result<u64> {
     Err(std::io::Error::new(
         ErrorKind::Unsupported,
         "disk space check not supported on this platform",

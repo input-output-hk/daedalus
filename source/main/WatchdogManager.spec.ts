@@ -991,3 +991,82 @@ describe('WatchdogManager update installer', () => {
     expect(manager.getInstallResult()).toBeNull();
   });
 });
+
+describe('WatchdogManager wallet database damage', () => {
+  const FILE = 'she.1178ad68993ea595a93adc6fac3ec554b0ab7a33.sqlite';
+  const OTHER = 'she.2c1d0b3a4f5e6d7c8b9a0f1e2d3c4b5a69788796.sqlite';
+
+  it('starts with no wallet database damage', () => {
+    const { manager } = makeManager();
+    expect(manager.getState().walletDbDamage).toBeNull();
+  });
+
+  it('records the files a wallet_db_damaged event reports', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'wallet_db_damaged', files: [FILE, OTHER] });
+    expect(manager.getState().walletDbDamage).toEqual({
+      files: [FILE, OTHER],
+      repair: 'none',
+      results: [],
+      backupDir: null,
+      dismissed: false,
+    });
+  });
+
+  it('forwards the repair and records it as requested', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    const { socket } = manager as any;
+    emit({ event: 'wallet_db_damaged', files: [FILE] });
+    manager.sendCommand({ cmd: 'repair_wallet_databases' });
+    expect(socket.write).toHaveBeenCalledWith(
+      '{"cmd":"repair_wallet_databases"}\n'
+    );
+    expect(manager.getState().walletDbDamage).toMatchObject({
+      files: [FILE],
+      repair: 'requested',
+    });
+  });
+
+  it('records the results, and keeps only the files not repaired', () => {
+    const { manager, emit } = makeManager();
+    emit({ event: 'wallet_db_damaged', files: [FILE, OTHER] });
+    const results = [
+      {
+        file: FILE,
+        outcome: 'repaired',
+        detail: 'added seq_state.policy_xpub',
+      },
+      { file: OTHER, outcome: 'refused', detail: 'wallet.name is missing' },
+    ];
+    emit({
+      event: 'wallet_db_repair',
+      backup_dir: '/state/wallet-db-backups/20261115T093000Z',
+      results,
+    });
+    expect(manager.getState().walletDbDamage).toEqual({
+      files: [OTHER],
+      repair: 'done',
+      results,
+      backupDir: '/state/wallet-db-backups/20261115T093000Z',
+      dismissed: false,
+    });
+    // The check before the next wallet start reports the refused file again.
+    emit({ event: 'wallet_db_damaged', files: [OTHER] });
+    expect(manager.getState().walletDbDamage).toMatchObject({
+      files: [OTHER],
+      repair: 'done',
+      results,
+    });
+  });
+
+  it('keeps Not now in main without forwarding it, through later checks', () => {
+    const { manager, emit } = makeManagerWithSocket();
+    const { socket } = manager as any;
+    emit({ event: 'wallet_db_damaged', files: [FILE] });
+    manager.sendCommand({ cmd: 'dismiss_wallet_db_damage' });
+    expect(socket.write).not.toHaveBeenCalled();
+    expect(manager.getState().walletDbDamage?.dismissed).toBe(true);
+    emit({ event: 'wallet_db_damaged', files: [FILE] });
+    expect(manager.getState().walletDbDamage?.dismissed).toBe(true);
+  });
+});

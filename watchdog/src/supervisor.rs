@@ -30,6 +30,7 @@ use crate::mithril;
 use crate::protocol::{ChainDamageKind, Command as Cmd, ElectronRestartPayload, Event, emit};
 use crate::state;
 use crate::topology;
+use crate::wallet_db;
 
 type ExitInfo = (Option<i32>, Option<String>);
 
@@ -479,6 +480,8 @@ impl HeldRequests {
             }
             // Sent periodically by the UI; there is no running node to probe for.
             Cmd::ProbeMithril => {}
+            // Recorded when it arrived; it runs before the wallet starts again.
+            Cmd::RepairWalletDatabases => {}
             other => info!("ignoring {other:?} while the node is stopped or stopping"),
         }
     }
@@ -2345,6 +2348,15 @@ async fn run_node_wallet(
                         crashes.wallet_health.clear();
                         wallet_failed = false;
                     }
+                    // The repair runs before the wallet starts, so it is a
+                    // retry as well.
+                    Some(Cmd::RepairWalletDatabases) => {
+                        info!("retrying cardano-wallet after it was unrecoverable, with the wallet database repair first");
+                        attempt = 0;
+                        crashes.wallet_window.clear();
+                        crashes.wallet_health.clear();
+                        wallet_failed = false;
+                    }
                     Some(Cmd::RestartNode | Cmd::StartNode) => {
                         let held = stop_node(
                             "node restart requested",
@@ -2393,6 +2405,10 @@ async fn run_node_wallet(
                 },
             }
         }
+
+        // No wallet process runs here: a repair the user asked for runs now,
+        // and then the check of the wallet databases.
+        wallet_db::before_wallet_start(&wallet_cfg.args, &wallet_cfg.state_dir).await;
 
         let wallet_log = open_log(&wallet_log_path);
 
@@ -2601,6 +2617,14 @@ async fn run_node_wallet(
                                 last_exit_code: None,
                                 last_exit_signal: None,
                             });
+                            continue 'supervisor;
+                        }
+                        // The repair runs once the wallet has stopped, before
+                        // it starts again. A request already carried out is
+                        // not acted on again.
+                        Cmd::RepairWalletDatabases if wallet_db::repair_requested() => {
+                            info!("stopping wallet (wallet database repair requested)");
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             continue 'supervisor;
                         }
                         Cmd::SetChainPath { path } => {
@@ -2845,6 +2869,14 @@ async fn run_node_wallet(
                                 last_exit_code: None,
                                 last_exit_signal: None,
                             });
+                            continue 'supervisor;
+                        }
+                        // The repair runs once the wallet has stopped, before
+                        // it starts again. A request already carried out is
+                        // not acted on again.
+                        Cmd::RepairWalletDatabases if wallet_db::repair_requested() => {
+                            info!("stopping wallet (wallet database repair requested)");
+                            stop_wallet(&mut wallet, &mut wallet_stdin, wallet_stop_bound).await;
                             continue 'supervisor;
                         }
                         Cmd::SetChainPath { path } => {

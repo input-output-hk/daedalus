@@ -7,6 +7,8 @@ import type {
   ChainDamage,
   ChainDamageKind,
   RequestedRestart,
+  WalletDbDamage,
+  WalletDbRepairResult,
   WalletUnresponsive,
 } from '../common/types/watchdog.types';
 
@@ -124,7 +126,21 @@ export interface WatchdogState {
   // kept here, not in the renderer, so a reload of the window does not show
   // the screen again
   chainDamageDismissed: boolean;
+  // Wallet databases an older Daedalus changed so that they cannot be opened,
+  // and the state of their repair; null until the check finds one. Kept here,
+  // not in the renderer, so a reload of the window keeps Not now and the
+  // results.
+  walletDbDamage: WalletDbDamage | null;
 }
+
+// No wallet database damage reported yet, and no repair asked for
+const NO_WALLET_DB_DAMAGE: WalletDbDamage = {
+  files: [],
+  repair: 'none',
+  results: [],
+  backupDir: null,
+  dismissed: false,
+};
 
 type EventHandler = (event: Record<string, unknown>) => void;
 
@@ -224,6 +240,7 @@ class WatchdogManager {
       dismissedSilenceEpisode: 0,
       requestedRestart: null,
       chainDamageDismissed: false,
+      walletDbDamage: null,
     };
   }
 
@@ -318,6 +335,7 @@ class WatchdogManager {
       this.socket.write(line);
       this._noteRequestedRestart(cmd);
       this._noteMithrilCommand(cmd);
+      this._noteWalletDbRepair(cmd);
       return;
     }
     if (!process.stdout.writable) {
@@ -330,6 +348,7 @@ class WatchdogManager {
     process.stdout.write(line);
     this._noteRequestedRestart(cmd);
     this._noteMithrilCommand(cmd);
+    this._noteWalletDbRepair(cmd);
   }
 
   // Commands that main answers itself and does not send to the watchdog.
@@ -340,6 +359,15 @@ class WatchdogManager {
     const { cmd: name, episode } = cmd as { cmd?: string; episode?: unknown };
     if (name === 'dismiss_chain_damage') {
       this.state.chainDamageDismissed = true;
+      return true;
+    }
+    if (name === 'dismiss_wallet_db_damage') {
+      if (this.state.walletDbDamage) {
+        this.state.walletDbDamage = {
+          ...this.state.walletDbDamage,
+          dismissed: true,
+        };
+      }
       return true;
     }
     if (name !== 'dismiss_node_silence') return false;
@@ -368,6 +396,16 @@ class WatchdogManager {
       this.state.mithrilPhase = null;
       this.state.mithrilProgress = null;
     }
+  }
+
+  // The repair runs before the wallet next starts; the watchdog reports it
+  // with wallet_db_repair.
+  private _noteWalletDbRepair(cmd: object): void {
+    if ((cmd as { cmd?: string }).cmd !== 'repair_wallet_databases') return;
+    this.state.walletDbDamage = {
+      ...(this.state.walletDbDamage ?? NO_WALLET_DB_DAMAGE),
+      repair: 'requested',
+    };
   }
 
   // Commands that make the watchdog stop and start a running process again.
@@ -658,6 +696,31 @@ class WatchdogManager {
         // the watchdog holds back the new one.
         if (s.nodeHeld) s.requestedRestart = null;
         break;
+
+      case 'wallet_db_damaged':
+        // A repair asked for, its results and Not now are kept: the check
+        // runs before every wallet start, and reports a file the repair
+        // refused again.
+        s.walletDbDamage = {
+          ...(s.walletDbDamage ?? NO_WALLET_DB_DAMAGE),
+          files: (event.files as Array<string> | undefined) ?? [],
+        };
+        break;
+
+      case 'wallet_db_repair': {
+        const results =
+          (event.results as Array<WalletDbRepairResult> | undefined) ?? [];
+        s.walletDbDamage = {
+          ...(s.walletDbDamage ?? NO_WALLET_DB_DAMAGE),
+          files: results
+            .filter((result) => result.outcome !== 'repaired')
+            .map((result) => result.file),
+          repair: 'done',
+          results,
+          backupDir: (event.backup_dir as string | null | undefined) ?? null,
+        };
+        break;
+      }
 
       case 'mithril_status':
         s.mithrilPhase = event.phase as string;

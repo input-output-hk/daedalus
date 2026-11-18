@@ -80,6 +80,10 @@ pub enum Command {
         #[serde(default)]
         args: Vec<String>,
     },
+    /// Back up and repair the wallet databases reported in `wallet_db_damaged`.
+    /// The watchdog stops cardano-wallet if it is running, and repairs them
+    /// before it starts the wallet again, reporting `wallet_db_repair`.
+    RepairWalletDatabases,
 }
 
 /// Which log signature identified the damage.
@@ -333,6 +337,55 @@ pub enum Event {
     UpdateInstallerFailed {
         message: String,
     },
+    /// The check before a start of cardano-wallet found wallet databases that
+    /// an older cardano-wallet changed, so that this one cannot open them.
+    /// `files` are their names in the wallet's database directory. The wallet
+    /// is started as usual; `repair_wallet_databases` repairs them.
+    WalletDbDamaged {
+        files: Vec<String>,
+    },
+    /// What `repair_wallet_databases` did to each file, emitted before
+    /// cardano-wallet starts again. `backup_dir` is the folder that holds the
+    /// copies made before any change; it is absent when nothing needed one.
+    WalletDbRepair {
+        backup_dir: Option<String>,
+        results: Vec<WalletDbRepairResult>,
+    },
+}
+
+/// What the repair did to one wallet database.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WalletDbRepairOutcome {
+    /// The dropped columns were added back.
+    Repaired,
+    /// The file is not in the state the repair is for, and was not changed.
+    Refused,
+    /// The file could not be backed up, and was not changed.
+    BackupFailed,
+    /// The repair did not complete, and the file was not changed.
+    RepairFailed,
+}
+
+impl WalletDbRepairOutcome {
+    /// The name used on the wire and in `watchdog.log`.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            WalletDbRepairOutcome::Repaired => "repaired",
+            WalletDbRepairOutcome::Refused => "refused",
+            WalletDbRepairOutcome::BackupFailed => "backup_failed",
+            WalletDbRepairOutcome::RepairFailed => "repair_failed",
+        }
+    }
+}
+
+/// The repair's result for one file of `wallet_db_repair`. `detail` names the
+/// columns added, or says why the file was refused or what failed.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct WalletDbRepairResult {
+    pub file: String,
+    pub outcome: WalletDbRepairOutcome,
+    pub detail: String,
 }
 
 /// Payload sent through the Electron restart channel when SetElectronFlags fires.
@@ -1055,5 +1108,85 @@ mod tests {
     fn migrate_state_saved_event() {
         let j = to_json(&Event::MigrateStateSaved);
         assert_eq!(j["event"], "migrate_state_saved");
+    }
+
+    #[test]
+    fn repair_wallet_databases_command() {
+        let cmd: Command = serde_json::from_str(r#"{"cmd":"repair_wallet_databases"}"#).unwrap();
+        assert!(matches!(cmd, Command::RepairWalletDatabases));
+    }
+
+    #[test]
+    fn wallet_db_damaged_event() {
+        let line = serde_json::to_string(&Event::WalletDbDamaged {
+            files: vec!["she.0123456789abcdef0123456789abcdef01234567.sqlite".to_string()],
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"wallet_db_damaged","files":["she.0123456789abcdef0123456789abcdef01234567.sqlite"]}"#
+        );
+    }
+
+    #[test]
+    fn wallet_db_repair_event() {
+        let j = to_json(&Event::WalletDbRepair {
+            backup_dir: Some("/state/wallet-db-backups/20261115T093000Z".to_string()),
+            results: vec![
+                WalletDbRepairResult {
+                    file: "she.a.sqlite".to_string(),
+                    outcome: WalletDbRepairOutcome::Repaired,
+                    detail: "added seq_state.change_addr_mode".to_string(),
+                },
+                WalletDbRepairResult {
+                    file: "she.b.sqlite".to_string(),
+                    outcome: WalletDbRepairOutcome::Refused,
+                    detail: "wallet.name is missing".to_string(),
+                },
+                WalletDbRepairResult {
+                    file: "she.c.sqlite".to_string(),
+                    outcome: WalletDbRepairOutcome::BackupFailed,
+                    detail: "disk full".to_string(),
+                },
+                WalletDbRepairResult {
+                    file: "she.d.sqlite".to_string(),
+                    outcome: WalletDbRepairOutcome::RepairFailed,
+                    detail: "database is locked".to_string(),
+                },
+            ],
+        });
+        assert_eq!(j["event"], "wallet_db_repair");
+        assert_eq!(j["backup_dir"], "/state/wallet-db-backups/20261115T093000Z");
+        assert_eq!(j["results"][0]["file"], "she.a.sqlite");
+        assert_eq!(j["results"][0]["outcome"], "repaired");
+        assert_eq!(j["results"][1]["outcome"], "refused");
+        assert_eq!(j["results"][2]["outcome"], "backup_failed");
+        assert_eq!(j["results"][2]["detail"], "disk full");
+        assert_eq!(j["results"][3]["outcome"], "repair_failed");
+    }
+
+    #[test]
+    fn wallet_db_repair_outcomes_log_as_they_are_sent() {
+        for outcome in [
+            WalletDbRepairOutcome::Repaired,
+            WalletDbRepairOutcome::Refused,
+            WalletDbRepairOutcome::BackupFailed,
+            WalletDbRepairOutcome::RepairFailed,
+        ] {
+            assert_eq!(serde_json::to_value(outcome).unwrap(), outcome.as_str());
+        }
+    }
+
+    #[test]
+    fn wallet_db_repair_event_without_a_backup() {
+        let line = serde_json::to_string(&Event::WalletDbRepair {
+            backup_dir: None,
+            results: vec![],
+        })
+        .unwrap();
+        assert_eq!(
+            line,
+            r#"{"event":"wallet_db_repair","backup_dir":null,"results":[]}"#
+        );
     }
 }

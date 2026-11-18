@@ -93,7 +93,48 @@ export interface WatchdogState {
   // kept here, not in the renderer, so a reload of the window does not show
   // the screen again
   chainDamageDismissed: boolean;
+  // Wallet databases an older Daedalus changed so that they cannot be opened,
+  // and the state of their repair; null until the check finds one
+  walletDbDamage: WalletDbDamage | null;
 }
+
+// WalletDbRepairOutcome — what the repair did to one wallet database file:
+// repaired it; refused it, as it is not in the state the repair is for; or
+// left it unchanged because its backup or the repair failed.
+export type WalletDbRepairOutcome =
+  | 'repaired'
+  | 'refused'
+  | 'backup_failed'
+  | 'repair_failed';
+
+// WalletDbRepairResult — the repair's result for one wallet database file,
+// from a wallet_db_repair event. detail names the columns added, or says why
+// the file was refused or what failed. watchdog.log records the same; the
+// screen does not show it.
+export type WalletDbRepairResult = {
+  file: string;
+  outcome: WalletDbRepairOutcome;
+  detail: string;
+};
+
+// WalletDbDamage — wallet database files that an older Daedalus changed so
+// that Cardano wallet cannot open them, from wallet_db_damaged events, and
+// their repair: 'requested' once the repair is sent, 'done' with its results
+// and backup folder once the watchdog reports it. files then lists only the
+// files the repair did not repair. dismissed is set by Not now, or by
+// Continue after the results, and lasts until Daedalus restarts.
+export type WalletDbDamage = {
+  files: Array<string>;
+  repair: 'none' | 'requested' | 'done';
+  results: Array<WalletDbRepairResult>;
+  backupDir: string | null;
+  dismissed: boolean;
+};
+
+// WalletDbRepairView — what the wallet repair screen shows: the offer to
+// repair the wallet databases an older Daedalus changed, the repair while it
+// runs, or its results.
+export type WalletDbRepairView = 'offer' | 'repairing' | 'done';
 
 // WalletUnresponsive — the latest wallet_unresponsive event, with the time
 // Daedalus received it.
@@ -174,6 +215,7 @@ export type LoadingPhase =
   | 'bootstrap-decision'
   | 'mithril-syncing'
   | 'chain-damaged'
+  | 'wallet-db-damaged'
   | 'node-starting'
   | 'ready'
   | 'error'
@@ -197,6 +239,10 @@ export type MithrilCommand =
   // Kept by main, which records Not now on the damaged data screen and does
   // not forward it
   | { cmd: 'dismiss_chain_damage' }
+  | { cmd: 'repair_wallet_databases' }
+  // Kept by main, which records Not now or Continue on the wallet repair
+  // screen and does not forward it
+  | { cmd: 'dismiss_wallet_db_damage' }
   | {
       cmd: 'migrate_state';
       chain_path: string | null;

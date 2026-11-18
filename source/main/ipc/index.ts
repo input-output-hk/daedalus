@@ -121,6 +121,7 @@ export default (window: BrowserWindow) => {
         dismissedSilenceEpisode: 0,
         requestedRestart: null,
         chainDamageDismissed: false,
+        walletDbDamage: null,
       }
     )
   );

@@ -1446,6 +1446,189 @@ fn startup_silence_is_reported_once_and_ends_with_output() {
     let _ = child.wait();
 }
 
+// ── Tests: wallet databases an older wallet changed ──────────────────────────
+
+const DAMAGED_WALLET: &str = "she.1178ad68993ea595a93adc6fac3ec554b0ab7a33.sqlite";
+const HEALTHY_WALLET: &str = "she.2c1d0b3a4f5e6d7c8b9a0f1e2d3c4b5a69788796.sqlite";
+
+/// A wallet database with the schema `schema` at version 5, its wallet row,
+/// and one row in `seq_state` holding only the columns that schema has.
+fn write_wallet_db(path: &Path, schema: &str) {
+    let conn = rusqlite::Connection::open(path).unwrap();
+    conn.query_row("PRAGMA journal_mode = WAL", [], |_| Ok(()))
+        .unwrap();
+    conn.execute_batch(schema).unwrap();
+    conn.execute_batch(
+        "INSERT INTO database_schema_version (name, version) VALUES ('schema', 5);
+         INSERT INTO wallet VALUES ('1178ad68993ea595a93adc6fac3ec554b0ab7a33',
+           '2026-11-15 09:30:00', 'test', NULL, NULL, 'genesis', '2022-06-01 00:00:00');",
+    )
+    .unwrap();
+    let columns: Vec<String> = conn
+        .prepare("SELECT name FROM pragma_table_info('seq_state')")
+        .unwrap()
+        .query_map([], |r| r.get(0))
+        .unwrap()
+        .map(Result::unwrap)
+        .collect();
+    let value = |c: &str| match c {
+        "wallet_id" => "'1178ad68993ea595a93adc6fac3ec554b0ab7a33'",
+        "external_gap" | "internal_gap" => "20",
+        "derivation_prefix" => "'2147485500/2147485463/2147483648'",
+        "change_addr_mode" => "'increasing'",
+        _ => "x'0102'",
+    };
+    conn.execute_batch(&format!(
+        "INSERT INTO seq_state ({}) VALUES ({});",
+        columns.join(", "),
+        columns
+            .iter()
+            .map(|c| value(c))
+            .collect::<Vec<_>>()
+            .join(", ")
+    ))
+    .unwrap();
+}
+
+/// `<state_dir>/wallets` with a database cardano-wallet v2026-10-07 created
+/// and one that v2021-11-11 has since opened, as the watchdog finds them.
+fn populate_wallets(dir: &TempDir) -> PathBuf {
+    let wallets = dir.path().join("wallets");
+    std::fs::create_dir_all(&wallets).unwrap();
+    write_wallet_db(
+        &wallets.join(DAMAGED_WALLET),
+        include_str!("fixtures/wallet_db/after_v2021_11_11.sql"),
+    );
+    write_wallet_db(
+        &wallets.join(HEALTHY_WALLET),
+        include_str!("fixtures/wallet_db/fresh_v2026_10_07.sql"),
+    );
+    wallets
+}
+
+fn has_change_addr_mode(path: &Path) -> bool {
+    rusqlite::Connection::open(path)
+        .unwrap()
+        .prepare("SELECT 1 FROM pragma_table_info('seq_state') WHERE name = 'change_addr_mode'")
+        .unwrap()
+        .exists([])
+        .unwrap()
+}
+
+/// Every event up to and including the first named `name`, in order; panics
+/// when none arrives for 15 s.
+fn events_until(rx: &mpsc::Receiver<Value>, name: &str) -> Vec<Value> {
+    let mut events = Vec::new();
+    loop {
+        let v = rx
+            .recv_timeout(Duration::from_secs(15))
+            .unwrap_or_else(|_| panic!("timeout waiting for '{name}' after {events:?}"));
+        let done = v["event"] == name;
+        events.push(v);
+        if done {
+            return events;
+        }
+    }
+}
+
+fn position(events: &[Value], name: &str) -> Option<usize> {
+    events.iter().position(|v| v["event"] == name)
+}
+
+fn wallet_db_config(dir: &TempDir) -> Value {
+    let mut cfg = Cfg::new(dir, MOCK_NODE, MOCK_WALLET);
+    cfg.wallet_args
+        .extend(["--database".to_string(), "wallets".to_string()]);
+    cfg.build().0
+}
+
+/// The check before a wallet start reports the damaged database and starts
+/// the wallet as usual, changing nothing. A requested repair stops the
+/// wallet, backs the file up, repairs it and starts the wallet again; the
+/// healthy database is not touched.
+#[test]
+fn damaged_wallet_db_is_reported_then_repaired_on_request() {
+    let dir = TempDir::new("wallet-db-repair");
+    dir.populate_chain();
+    let wallets = populate_wallets(&dir);
+    let damaged = wallets.join(DAMAGED_WALLET);
+    let healthy = wallets.join(HEALTHY_WALLET);
+    let damaged_before = std::fs::read(&damaged).unwrap();
+    let healthy_before = std::fs::read(&healthy).unwrap();
+    let (mut child, mut stdin, rx) = spawn_watchdog(&wallet_db_config(&dir));
+
+    let started = events_until(&rx, "wallet_ready");
+    let found = &started[position(&started, "wallet_db_damaged").expect("wallet_db_damaged")];
+    assert_eq!(found["files"], json!([DAMAGED_WALLET]));
+    assert!(position(&started, "wallet_db_damaged") < position(&started, "wallet_started"));
+    // Without a request the wallet runs as before and the file stays as it is.
+    assert_eq!(std::fs::read(&damaged).unwrap(), damaged_before);
+
+    send(&mut stdin, json!({"cmd": "repair_wallet_databases"}));
+    let repaired = events_until(&rx, "wallet_ready");
+    let stopping = position(&repaired, "backend_stop_progress").expect("the wallet is stopped");
+    assert_eq!(repaired[stopping]["stage"], "stopping_wallet");
+    let report = position(&repaired, "wallet_db_repair").expect("wallet_db_repair");
+    assert!(stopping < report);
+    assert!(Some(report) < position(&repaired, "wallet_started"));
+    assert_eq!(position(&repaired, "wallet_db_damaged"), None);
+    assert_eq!(position(&repaired, "node_started"), None);
+    let report = &repaired[report];
+    assert_eq!(report["results"][0]["file"], DAMAGED_WALLET);
+    assert_eq!(report["results"][0]["outcome"], "repaired");
+    assert_eq!(report["results"].as_array().unwrap().len(), 1);
+
+    let backup_dir = PathBuf::from(report["backup_dir"].as_str().unwrap());
+    assert_eq!(
+        backup_dir.parent().unwrap(),
+        dir.path().join("wallet-db-backups")
+    );
+    assert_eq!(
+        std::fs::read(backup_dir.join(DAMAGED_WALLET)).unwrap(),
+        damaged_before
+    );
+    assert!(has_change_addr_mode(&damaged));
+    assert_eq!(std::fs::read(&healthy).unwrap(), healthy_before);
+    assert!(!backup_dir.join(HEALTHY_WALLET).exists());
+
+    // Started again on the repaired file, the check finds nothing.
+    send(&mut stdin, json!({"cmd": "restart_wallet"}));
+    let restarted = events_until(&rx, "wallet_ready");
+    assert_eq!(position(&restarted, "wallet_db_damaged"), None);
+    assert_eq!(position(&restarted, "wallet_db_repair"), None);
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
+/// A repair asked for while no wallet runs, here while the watchdog waits for
+/// the choice between Mithril and a sync from genesis, runs before the wallet
+/// first starts.
+#[test]
+fn wallet_db_repair_asked_for_before_the_wallet_starts_runs_first() {
+    let dir = TempDir::new("wallet-db-repair-early");
+    let wallets = populate_wallets(&dir);
+    let (mut child, mut stdin, rx) = spawn_watchdog(&wallet_db_config(&dir));
+
+    let cs = expect(&rx, "chain_status");
+    assert_eq!(cs["has_chain"], false);
+    send(&mut stdin, json!({"cmd": "repair_wallet_databases"}));
+    send(&mut stdin, json!({"cmd": "start_node"}));
+    let events = events_until(&rx, "wallet_ready");
+    let report = position(&events, "wallet_db_repair").expect("wallet_db_repair");
+    assert!(Some(report) < position(&events, "wallet_started"));
+    assert_eq!(position(&events, "wallet_db_damaged"), None);
+    assert_eq!(events[report]["results"][0]["outcome"], "repaired");
+    assert!(has_change_addr_mode(&wallets.join(DAMAGED_WALLET)));
+
+    stop(&mut stdin);
+    expect(&rx, "stopped");
+    drop(stdin);
+    let _ = child.wait();
+}
+
 // ── Tests: ledger snapshot check before a node start ─────────────────────────
 
 /// CRC-32 as zlib computes it, which the node's chunk and snapshot checksums

@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Daedalus finds wallets that an older version of Daedalus changed so that they can no longer be opened or restored, and offers to back up their files and repair them ([PR #3469](https://github.com/input-output-hk/daedalus/pull/3469)).
 - Daedalus offers to rebuild the blockchain data when a chunk file in the chain's `immutable` folder is missing. The node is stopped, and the wallet is no longer restarted in a loop while it cannot connect. When the wallet cannot be started, the node is now stopped with the normal shutdown request, so the next start does not validate every chunk ([PR #3467](https://github.com/input-output-hk/daedalus/pull/3467)).
 - Wallet restore: when the connection to the wallet backend returns while the "Wallet Restored" dialog is open, for example after the node stops and starts again, the wallet list loads instead of staying on "Loading wallet data" until Daedalus is restarted ([PR #3479](https://github.com/input-output-hk/daedalus/pull/3479)).
 - Windows: the installer and uninstaller no longer delete the files of a Daedalus that is still running. They wait for the app and its backend to stop, ask you to quit Daedalus (Retry or Cancel) if it is still open, and ask before ending cardano-node, cardano-wallet or other programs left running from the installation folder when Daedalus itself is closed. A silent install or uninstall stops instead of asking, and if the check cannot run, you are asked to confirm that Daedalus is closed ([PR #3465](https://github.com/input-output-hk/daedalus/pull/3465)).

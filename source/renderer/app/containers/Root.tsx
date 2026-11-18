@@ -67,11 +67,12 @@ class Root extends Component<Props> {
     // for all the screens except of the "Network status" screen.
     const isNodeInStoppingSequence = backend.loadingPhase === 'stopping';
     // Those phases replace every page, including the ones that are otherwise
-    // shown without a connected node, and so does the location picker asked
-    // for from the Mithril error view. The picker of a first run follows the
-    // setup pages.
+    // shown without a connected node, and so do the repair of wallet
+    // databases and the location picker asked for from the Mithril error
+    // view. The picker of a first run follows the setup pages.
     const isChainRecoveryShown =
       CHAIN_RECOVERY_PHASES.has(backend.loadingPhase) ||
+      backend.loadingPhase === 'wallet-db-damaged' ||
       (backend.loadingPhase === 'chain-storage-setup' &&
         backend.chainStoragePickerRequested);
 
