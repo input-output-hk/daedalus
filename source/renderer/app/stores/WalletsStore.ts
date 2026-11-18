@@ -264,7 +264,10 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
-    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
+    this.registerReactions([
+      this._updateActiveWalletOnRouteChanges,
+      this._resumePollingAfterWalletsReset,
+    ]);
     const {
       router,
       walletBackup,
@@ -1575,6 +1578,18 @@ export default class WalletsStore extends Store {
   @action
   _resumePolling = () => {
     this._pollingBlocked = false;
+  };
+  // A reconnection resets the wallet list, and the loading screen then hides
+  // the restore dialog whose close would resume polling, so resume it here
+  // once no restore request is in flight
+  _resumePollingAfterWalletsReset = () => {
+    if (
+      !this.hasLoadedWallets &&
+      this.restoreWalletStep !== null &&
+      !this.isRestoring
+    ) {
+      this._resumePolling();
+    }
   };
 
   /**
