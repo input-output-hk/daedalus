@@ -152,7 +152,12 @@
           /usr/bin/plutil -convert xml1 -o components.plist fixed-components.json
           /usr/bin/pkgbuild --root stage --component-plist components.plist --scripts scripts --identifier org.daedalus.pilot.prototype \
             --version ${common.originalPackageJson.version} --install-location / \
+            component.pkg
+          # Wrap the component in a product archive so Installer applies the same minimum macOS version as the other macOS installers.
+          /usr/bin/productbuild --product ${../installers/data/plist} \
+            --package component.pkg \
             "$out/daedalus-pilot-prototype-${system}.pkg"
+          rm component.pkg
           mkdir -p "$out/nix-support"
           printf 'file binary-dist "%s"\n' "$out/daedalus-pilot-prototype-${system}.pkg" > "$out/nix-support/hydra-build-products"
         '';
@@ -171,7 +176,11 @@
           nativeBuildInputs = [pkgs.diffutils];
         } ''
           cp -R ${layout}/Applications expected
-          /usr/sbin/pkgutil --expand-full ${installer}/daedalus-pilot-prototype-${system}.pkg expanded
+          /usr/sbin/pkgutil --expand-full ${installer}/daedalus-pilot-prototype-${system}.pkg product
+          # The product archive nests the component package beside its Distribution file.
+          test -f product/Distribution
+          test "$(printf '%s\n' product/*.pkg | wc -l)" = 1
+          mv product/*.pkg expanded
           if [ "$(/usr/bin/xmllint --xpath 'count(/pkg-info/relocate/bundle)' expanded/PackageInfo)" != 0 ]; then
             echo 'Pilot bundles must not be relocated outside the product directory.' >&2
             exit 1
