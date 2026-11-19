@@ -1,6 +1,8 @@
 # Changelog
 
-## vNext
+## 11.6.3
+
+**Daedalus 11.6.3 requires macOS 13 (Ventura) or later.**
 
 ### Fixes
 
