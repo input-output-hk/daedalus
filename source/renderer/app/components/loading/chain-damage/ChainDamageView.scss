@@ -35,6 +35,37 @@
   text-align: left;
 }
 
+.support {
+  margin-bottom: 24px;
+  text-align: left;
+
+  p {
+    color: var(--theme-mithril-body-text-color);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+}
+
+.supportActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.downloadLogs {
+  color: var(--theme-mithril-button-secondary-text-color) !important;
+  font-family: var(--font-regular);
+  font-size: 14px;
+
+  &.disabled {
+    cursor: default;
+    opacity: 0.5;
+    text-decoration: none;
+  }
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

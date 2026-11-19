@@ -32,7 +32,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   symptomImmutableFileMissing: {
     id: 'loading.chainDamage.symptom.immutableFileMissing',
     defaultMessage:
-      '!!!Cardano node stopped because a file of the blockchain data stored on this computer is missing.',
+      '!!!Cardano node stopped because part of the blockchain data stored on this computer is missing.',
     description:
       'Explanation shown when the node stops because it cannot read a file of the blockchain data on this computer',
   },

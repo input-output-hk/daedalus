@@ -1,9 +1,12 @@
 # Changelog
 
-## vNext
+## 11.6.3
+
+**Daedalus 11.6.3 requires macOS 13 (Ventura) or later.**
 
 ### Fixes
 
+- Windows: the wallet in mainnet packages reconnects to the node after an aborted named pipe read instead of shutting down, because it is built from commit `e0c5ba176` of `cardano-foundation/cardano-wallet` (upstream `master`) ([PR #3471](https://github.com/input-output-hk/daedalus/pull/3471)).
 - Windows: the "Uninstall" shortcut in the Start menu folder opens the uninstaller instead of pointing at a file that does not exist ([PR #3477](https://github.com/input-output-hk/daedalus/pull/3477)).
 - macOS: the Daedalus Pilot installer now applies the same minimum macOS version as the Mainnet, Flight, Pre-Prod and Preview installers ([PR #3475](https://github.com/input-output-hk/daedalus/pull/3475)).
 - macOS: the Daedalus Mainnet, Flight, Pre-Prod and Preview installers do not allow installation on macOS versions older than 13 (Ventura), the minimum that Daedalus requires ([PR #3474](https://github.com/input-output-hk/daedalus/pull/3474)).

@@ -12,7 +12,7 @@ import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import { getSupportUrl } from '../../../../../common/utils/reporting';
 import globalMessages from '../../../i18n/global-messages';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   reportConnectingIssueText: {
     id: 'loading.screen.reportIssue.connecting.text',
     defaultMessage: '!!!Having trouble connecting to network?',

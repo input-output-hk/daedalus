@@ -50,7 +50,7 @@ describe('ChainDamageView', () => {
     ],
     [
       'immutable_file_missing',
-      'Cardano node stopped because a file of the blockchain data stored on this computer is missing.',
+      'Cardano node stopped because part of the blockchain data stored on this computer is missing.',
     ],
   ])('shows the symptom for %s', (kind, symptom) => {
     renderView(damage({ kind: kind as ChainDamage['kind'] }));
