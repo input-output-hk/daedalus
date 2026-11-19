@@ -18,9 +18,15 @@ const renderView = (
     damagedCount: number;
     results: Array<WalletDbRepairResult>;
     backupDir: string | null;
+    disableDownloadLogs: boolean;
   }> = {}
 ) => {
-  const handlers = { onRepair: jest.fn(), onDismiss: jest.fn() };
+  const handlers = {
+    onRepair: jest.fn(),
+    onDismiss: jest.fn(),
+    onIssueClick: jest.fn(),
+    onDownloadLogs: jest.fn(),
+  };
   render(
     <IntlProvider locale="en-US" messages={translations}>
       <WalletDbDamageView
@@ -28,6 +34,7 @@ const renderView = (
         damagedCount={props.damagedCount ?? 1}
         results={props.results ?? []}
         backupDir={props.backupDir ?? null}
+        disableDownloadLogs={props.disableDownloadLogs ?? false}
         {...handlers}
       />
     </IntlProvider>
@@ -167,5 +174,47 @@ describe('WalletDbDamageView', () => {
     renderView('done', { results: [] });
     expect(screen.getByText('No wallets needed repair.')).toBeInTheDocument();
     expect(screen.queryByText(/were repaired/)).toBeNull();
+  });
+
+  it('points to a support ticket and the logs when a wallet was not repaired', () => {
+    const { onIssueClick, onDownloadLogs } = renderView('done', {
+      results: [
+        result('she.a.sqlite', 'repaired'),
+        result('she.c.sqlite', 'refused'),
+      ],
+    });
+    expect(
+      screen.getByText(
+        'For a wallet that was not repaired, download your logs and open a support ticket. The logs record the reason.'
+      )
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Open support ticket' })
+    );
+    expect(onIssueClick).toHaveBeenCalledTimes(1);
+    expect(onIssueClick).toHaveBeenCalledWith(expect.stringMatching(/^https:/));
+    fireEvent.click(screen.getByText('Download logs'));
+    expect(onDownloadLogs).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not download the logs while a download is in progress', () => {
+    const { onDownloadLogs } = renderView('done', {
+      results: [result('she.c.sqlite', 'refused')],
+      disableDownloadLogs: true,
+    });
+    fireEvent.click(screen.getByText('Download logs'));
+    expect(onDownloadLogs).not.toHaveBeenCalled();
+  });
+
+  it('offers no support step when every wallet was repaired or none needed repair', () => {
+    renderView('done', { results: [result('she.a.sqlite', 'repaired')] });
+    expect(screen.queryByText(/open a support ticket/)).toBeNull();
+    expect(screen.queryByText('Open support ticket')).toBeNull();
+    expect(screen.queryByText('Download logs')).toBeNull();
+    cleanup();
+    renderView('done', { results: [] });
+    expect(screen.queryByText(/open a support ticket/)).toBeNull();
+    expect(screen.queryByText('Open support ticket')).toBeNull();
+    expect(screen.queryByText('Download logs')).toBeNull();
   });
 });

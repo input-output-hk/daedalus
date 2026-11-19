@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { intlShape } from 'react-intl';
+import classNames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import type {
   WalletDbRepairOutcome,
   WalletDbRepairResult,
   WalletDbRepairView,
 } from '../../../../../common/types/watchdog.types';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
+import { getSupportUrl } from '../../../../../common/utils/reporting';
+import { messages as reportIssueMessages } from '../syncing-connecting/ReportIssue';
 import messages from './WalletDbDamage.messages';
 import styles from '../chain-damage/ChainDamageView.scss';
 
@@ -28,6 +33,10 @@ type Props = {
   // What the repair did to each file, once it has run
   results: Array<WalletDbRepairResult>;
   backupDir: string | null;
+  // Where a failed repair points the user: the support ticket and the logs
+  onIssueClick: (supportUrl: string) => void;
+  onDownloadLogs: () => void;
+  disableDownloadLogs: boolean;
   onRepair: () => void;
   // Not now on the offer, Continue after the results
   onDismiss: () => void;
@@ -79,7 +88,14 @@ export default class WalletDbDamageView extends Component<Props> {
   }
 
   renderDone() {
-    const { results, backupDir, onDismiss } = this.props;
+    const {
+      results,
+      backupDir,
+      onDismiss,
+      onIssueClick,
+      onDownloadLogs,
+      disableDownloadLogs,
+    } = this.props;
     const { intl } = this.context;
     const repaired = results.filter((r) => r.outcome === 'repaired').length;
     const notRepaired = results.filter((r) => r.outcome !== 'repaired');
@@ -118,6 +134,33 @@ export default class WalletDbDamageView extends Component<Props> {
                 )}
               </p>
             ))}
+          </div>
+        )}
+        {notRepaired.length > 0 && (
+          <div className={styles.support}>
+            <p>{intl.formatMessage(messages.contactSupport)}</p>
+            <div className={styles.supportActions}>
+              <Button
+                className={styles.secondaryAction}
+                skin={ButtonSkin}
+                label={intl.formatMessage(
+                  reportIssueMessages.reportIssueButtonLabel
+                )}
+                onClick={() => onIssueClick(getSupportUrl(intl.locale))}
+              />
+              <Link
+                className={classNames([
+                  styles.downloadLogs,
+                  disableDownloadLogs ? styles.disabled : null,
+                ])}
+                onClick={!disableDownloadLogs ? onDownloadLogs : null}
+                hasIconAfter={false}
+                label={intl.formatMessage(
+                  reportIssueMessages.reportIssueDownloadLogsLinkLabel
+                )}
+                skin={LinkSkin}
+              />
+            </div>
           </div>
         )}
         <div className={styles.actions}>

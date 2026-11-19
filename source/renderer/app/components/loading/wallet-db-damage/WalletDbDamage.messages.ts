@@ -105,6 +105,13 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
     description:
       'Shown for a wallet data file ({file} is its name) the repair did not repair, for a reason this version of Daedalus does not name',
   },
+  contactSupport: {
+    id: 'loading.walletDbDamage.done.contactSupport',
+    defaultMessage:
+      '!!!For a wallet that was not repaired, download your logs and open a support ticket. The logs record the reason.',
+    description:
+      'Next step on the wallet repair results when a wallet was not repaired: download the logs and open a support ticket',
+  },
   continue: {
     id: 'loading.walletDbDamage.done.continue',
     defaultMessage: '!!!Continue',

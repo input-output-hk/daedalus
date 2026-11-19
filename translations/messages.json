@@ -5362,6 +5362,11 @@
         "id": "loading.walletDbDamage.done.reason.other"
       },
       {
+        "defaultMessage": "!!!For a wallet that was not repaired, download your logs and open a support ticket. The logs record the reason.",
+        "description": "Next step on the wallet repair results when a wallet was not repaired: download the logs and open a support ticket",
+        "id": "loading.walletDbDamage.done.contactSupport"
+      },
+      {
         "defaultMessage": "!!!Continue",
         "description": "Button label that closes the wallet repair results",
         "id": "loading.walletDbDamage.done.continue"

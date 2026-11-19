@@ -670,6 +670,7 @@
   "loading.screen.validatingChunkDescription": "ブロックチェーンのハッシュ計算の整合性を検証します",
   "loading.walletDbDamage.body": "!!!{count, plural, one {# wallet was} other {# wallets were}} changed by an older version of Daedalus, so Daedalus cannot open {count, plural, one {it} other {them}}. Your funds are safe: they are on the blockchain, not in these wallet files.",
   "loading.walletDbDamage.done.backupLocation": "!!!A copy of the wallet files from before the repair is saved in this folder: {folder}",
+  "loading.walletDbDamage.done.contactSupport": "!!!For a wallet that was not repaired, download your logs and open a support ticket. The logs record the reason.",
   "loading.walletDbDamage.done.continue": "!!!Continue",
   "loading.walletDbDamage.done.notRepaired": "!!!{count, plural, one {# wallet could not be repaired and is unchanged.} other {# wallets could not be repaired and are unchanged.}}",
   "loading.walletDbDamage.done.nothingToRepair": "!!!No wallets needed repair.",
