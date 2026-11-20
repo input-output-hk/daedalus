@@ -2,6 +2,7 @@
 # Provides _module.args.common and _module.args.mkCommon for all perSystem modules.
 {inputs, ...}: {
   perSystem = {
+    config,
     pkgs,
     system,
     lib,
@@ -289,6 +290,7 @@
         devShell ? false,
         cluster,
         product ? null,
+        quetzal ? false,
       }: let
         network = cluster;
         os =
@@ -456,21 +458,30 @@
           base = ../installers/icons + "/${network'}";
         };
 
-        dataDir = let
-          path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
-          path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
-          path.macos64-arm = "\${HOME}/Library/Application Support/${spacedName}";
-          path.windows = "\${APPDATA}\\${spacedName}";
-        in
-          path.${os};
+        dataDir =
+          if quetzal
+          then
+            if devShell
+            then "\${DAEDALUS_DEV_ROOT}/state-quetzal-${network}"
+            else "\${DAEDALUS_DIR}/${network}"
+          else let
+            path.linux = "\${XDG_DATA_HOME}/Daedalus/${network}";
+            path.macos64 = "\${HOME}/Library/Application Support/${spacedName}";
+            path.macos64-arm = "\${HOME}/Library/Application Support/${spacedName}";
+            path.windows = "\${APPDATA}\\${spacedName}";
+          in
+            path.${os};
 
-        legacyDataDir = let
-          path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
-          path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
-          path.macos64-arm = "\${HOME}/Library/Application Support/Daedalus";
-          path.windows = "\${APPDATA}\\Daedalus";
-        in
-          path.${os};
+        legacyDataDir =
+          if quetzal && devShell
+          then "${dataDir}/legacy-unused"
+          else let
+            path.linux = "\${XDG_DATA_HOME}/Daedalus/mainnet";
+            path.macos64 = "\${HOME}/Library/Application Support/Daedalus";
+            path.macos64-arm = "\${HOME}/Library/Application Support/Daedalus";
+            path.windows = "\${APPDATA}\\Daedalus";
+          in
+            path.${os};
 
         logsPrefix = let
           path.linux = "${dataDir}/Logs";
@@ -558,7 +569,7 @@
 
           wStateDir =
             if devShell
-            then "\${DAEDALUS_DEV_ROOT}/state-${network}"
+            then "\${DAEDALUS_DEV_ROOT}/state-${lib.optionalString quetzal "quetzal-"}${network}"
             else if isLinux
             then "\${DAEDALUS_DIR}/${network}"
             else dataDir;
@@ -569,14 +580,19 @@
             else "${wStateDir}/cardano-node.socket";
 
           wChainPath = "${wStateDir}${dirSep}chain";
-          wWalletDbPath = "${wStateDir}${dirSep}wallets";
+          wWalletDbPath = "${wStateDir}${dirSep}wallets${lib.optionalString quetzal "${dirSep}quetzal.sled"}";
 
           wNodeBin =
             if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/libexec/cardano-node"
             else mkBinPath "cardano-node";
           wWalletBin =
-            if isLinux && !devShell
+            if quetzal
+            then
+              if devShell
+              then "${config.packages.quetzal}/bin/quetzal"
+              else "\${ENTRYPOINT_DIR}/libexec/quetzal"
+            else if isLinux && !devShell
             then "\${ENTRYPOINT_DIR}/libexec/cardano-wallet"
             else mkBinPath "cardano-wallet";
           wMithrilBin =
@@ -590,7 +606,13 @@
 
           wConfigYaml = mkConfigPath nodeConfigFiles "config.yaml";
           wTopologyYaml = mkConfigPath nodeConfigFiles "topology.yaml";
-          wByronGenesisPath = mkConfigPath nodeConfigFiles "genesis-byron.json";
+          # Development configs use nodeConfigFiles directly, whose Byron file
+          # is genesis.json. Packaged configFiles also supplies the named alias.
+          wByronGenesisPath = mkConfigPath nodeConfigFiles (
+            if devShell
+            then "genesis.json"
+            else "genesis-byron.json"
+          );
           wNetworkMagicArgs =
             if (envCfg.nodeConfig.RequiresNetworkMagic or "RequiresMagic") == "RequiresNoMagic"
             then ["--mainnet"]
@@ -605,7 +627,7 @@
 
           wElectronArgs =
             if devShell
-            then ["\${DAEDALUS_DEV_ROOT}"]
+            then ["\${DAEDALUS_DEV_ROOT}"] ++ lib.optional quetzal "--user-data-dir=${wStateDir}/frontend"
             else
               lib.optional (product != null) (
                 "--user-data-dir="
@@ -740,7 +762,11 @@
             then config
             else builtins.removeAttrs config ["hasPrometheus" "hasEKG"];
           cardanoAddressBin = mkBinPath "cardano-address";
-          walletBin = mkBinPath "cardano-wallet";
+          walletBin = mkBinPath (
+            if quetzal
+            then "quetzal"
+            else "cardano-wallet"
+          );
           nodeBin = mkBinPath "cardano-node";
           cliBin = mkBinPath "cardano-cli";
           watchdogBin = mkBinPath "cardano-watchdog";
@@ -891,8 +917,11 @@
               mithrilConverterConfig = mkConfigPath nodeConfigFiles "config.yaml";
             });
           dappRuntimeConfig = {
-            cardanoWalletSourceRevision = (walletBackendForCluster cluster).sourceRevision;
-            cip30Enabled = builtins.elem cluster cip30PackageClusters;
+            cardanoWalletSourceRevision =
+              if quetzal
+              then inputs.quetzal.rev
+              else (walletBackendForCluster cluster).sourceRevision;
+            cip30Enabled = !quetzal && builtins.elem cluster cip30PackageClusters;
             dappBrowserPolicy = {
               revision = 1;
               globalEnabled = dappRuntimeConfig.cip30Enabled;
@@ -952,11 +981,15 @@
         devShell ? false,
         cluster,
         product ? null,
+        quetzal ? false,
       }:
+        assert lib.assertMsg
+        (!quetzal || (product == null && targetSystem == "x86_64-linux" && builtins.elem cluster ["preview" "preprod"]))
+        "Quetzal is supported only in x86_64-linux preview/preprod experiments";
         assert lib.assertMsg
         (product == null || (builtins.hasAttr product installerProducts && builtins.elem cluster installerProducts.${product}.profiles))
         "Unsupported Daedalus installer product/profile combination";
-          mkDaedalusConfigsImpl {inherit devShell cluster product;};
+          mkDaedalusConfigsImpl {inherit devShell cluster product quetzal;};
 
       daedalusConfigs = pkgs.lib.genAttrs sourceLib.installerClusters (cluster:
         mkDaedalusConfigs {

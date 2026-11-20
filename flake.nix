@@ -18,6 +18,8 @@
     cardano-wallet.flake = false; # otherwise, +10k quadratic dependencies in flake.lock…
     cardano-wallet-cip30.url = "github:se7en-labs-inc/cardano-wallet?ref=integration/20261030-2";
     cardano-wallet-cip30.flake = false;
+    quetzal.url = "github:se7en-labs-inc/quetzal/84f2f4d691df3a32928766733def609164888475";
+    quetzal.flake = false;
     cardano-node.url = "github:IntersectMBO/cardano-node/11.1.3";
     cardano-node.flake = false;
     cardano-playground.url = "github:input-output-hk/cardano-playground/node-11.1.3-config";

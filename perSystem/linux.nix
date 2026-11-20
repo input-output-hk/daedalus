@@ -813,7 +813,22 @@
       archInstaller = genClusters (cluster: mkArchInstaller (commonPackagingArgs cluster));
       archInstallerDev = genClusters (cluster: mkArchInstaller ((commonPackagingArgs cluster) // {zstdLevel = 1;}));
 
-      nixosPackage = genClusters (cluster: let
+      mkNixosPackage = cluster: quetzal: let
+        packageCluster = cluster + lib.optionalString quetzal "-quetzal";
+        selectedConfigs =
+          if quetzal
+          then
+            common.mkDaedalusConfigs {
+              inherit cluster quetzal;
+            }
+          else daedalusConfigs.${cluster};
+        selectedJs =
+          if quetzal
+          then
+            daedalusJs.${cluster}.overrideAttrs {
+              CARDANO_WALLET_VERSION = config.packages.quetzal.version;
+            }
+          else daedalusJs.${cluster};
         nixosElectronBin = "${common.electron}/libexec/electron/electron";
         helperSha256 = builtins.hashFile "sha256" "${common.electron}/libexec/electron/chrome-sandbox";
         manifest = pkgs.writeText "sandbox-identity-${cluster}.json" (builtins.toJSON {
@@ -838,34 +853,37 @@
         });
       in
         pkgs.stdenv.mkDerivation {
-          name = "daedalus-nixos-${cluster}";
-          meta.mainProgram = "daedalus-${cluster}";
+          name = "daedalus-nixos-${packageCluster}";
+          meta.mainProgram = "daedalus-${packageCluster}";
           dontUnpack = true;
           buildCommand = ''
             mkdir -p $out/{bin,libexec,config,share/applications,share/icons/hicolor/512x512/apps}
 
-            cp -r ${daedalusConfigs.${cluster}.configFiles}/. $out/config/
+            cp -r ${selectedConfigs.configFiles}/. $out/config/
 
             # daedalus-bridge is a static musl binary — no nix-bundle-exe needed on NixOS.
             ln -sf ${common.daedalus-bridge.${cluster}} $out/libexec/bundle-daedalus-bridge
             ( cd $out/libexec/ && ln -sf bundle-daedalus-bridge/bin/* ./ ; )
+            ${lib.optionalString quetzal ''
+              ln -s ${config.packages.quetzal}/bin/quetzal $out/libexec/quetzal
+            ''}
 
-            ln -sf ${daedalusJs.${cluster}}/share/daedalus $out/libexec/daedalus-js
-            cat >$out/share/applications/Daedalus-${cluster}.desktop <<EOF
+            ln -sf ${selectedJs}/share/daedalus $out/libexec/daedalus-js
+            cat >$out/share/applications/Daedalus-${packageCluster}.desktop <<EOF
             [Desktop Entry]
             Type=Application
-            Name=Daedalus ${cluster}
+            Name=Daedalus ${cluster}${lib.optionalString quetzal " (Quetzal)"}
             GenericName=Crypto-Currency Wallet
-            Exec=$out/bin/daedalus-${cluster}
-            Icon=daedalus-${cluster}
+            Exec=$out/bin/daedalus-${packageCluster}
+            Icon=daedalus-${packageCluster}
             Categories=Application;Network;
-            StartupWMClass=Daedalus-${cluster}
+            StartupWMClass=Daedalus-${packageCluster}
             Terminal=false
             EOF
-            install -m 0644 ${daedalusConfigs.${cluster}.installerConfig.iconPath.base}/512x512.png \
-              $out/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png
+            install -m 0644 ${selectedConfigs.installerConfig.iconPath.base}/512x512.png \
+              $out/share/icons/hicolor/512x512/apps/daedalus-${packageCluster}.png
 
-            cp ${pkgs.writeText "daedalus-${cluster}-launcher" ''
+            cp ${pkgs.writeText "daedalus-${packageCluster}-launcher" ''
               #!/bin/sh
               set -e
 
@@ -895,12 +913,12 @@
                 --config "$ENTRYPOINT_DIR/config/daedalus-config.json" \
                 --pub-logs-dir "''${DAEDALUS_DIR}/${cluster}/Logs/pub" \
                 --tls-dir "''${DAEDALUS_DIR}/${cluster}/tls"
-            ''} $out/bin/daedalus-${cluster}
+            ''} $out/bin/daedalus-${packageCluster}
 
-            cp ${pkgs.writeText "daedalus-frontend-nixos-${cluster}" ''
+            cp ${pkgs.writeText "daedalus-frontend-nixos-${packageCluster}" ''
               #!/bin/sh
               set -xe
-              export DAEDALUS_WINDOW_ICON="$ENTRYPOINT_DIR/share/icons/hicolor/512x512/apps/daedalus-${cluster}.png"
+              export DAEDALUS_WINDOW_ICON="$ENTRYPOINT_DIR/share/icons/hicolor/512x512/apps/daedalus-${packageCluster}.png"
               # daedalus-frontend execs the real electron binary directly so
               # process.execPath matches manifest.launch.electron exactly.
               # shellcheck disable=SC2086
@@ -914,7 +932,9 @@
             cp ${manifest} $out/share/sandbox-identity.json
             cp ${common.electron}/libexec/electron/chrome-sandbox $out/share/chrome-sandbox
           '';
-        });
+        };
+      nixosPackage = genClusters (cluster: mkNixosPackage cluster false);
+      quetzalNixosPackages = lib.genAttrs ["preview" "preprod"] (cluster: mkNixosPackage cluster true);
 
       nixosPilot = pkgs.stdenv.mkDerivation {
         name = "daedalus-nixos-pilot";
@@ -1069,6 +1089,8 @@
           clusters)
         // {
           nixos-package-pilot = nixosPilot;
+          nixos-package-preview-quetzal = quetzalNixosPackages.preview;
+          nixos-package-preprod-quetzal = quetzalNixosPackages.preprod;
           windows-pilot-configs = windowsBuild.pilotConfigs;
           windows-mainnet-nsis = windowsBuild.nsisFiles.mainnet;
           daedalus-x86_64-windows-pilot = windowsBuild.package.pilot;

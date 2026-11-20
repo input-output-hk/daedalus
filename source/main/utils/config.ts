@@ -59,14 +59,13 @@ export const readDappRuntimeConfig = (
       throw new Error('invalid identity');
     const trustedPackageCluster = packageCluster as DappPackageCluster;
     const cip30Enabled = config.cip30Enabled;
-    const expectedCip30Enabled =
+    // Supported networks may ship wallet-only builds, including Quetzal.
+    // The network restricts enabling CIP-30; it does not require enabling it.
+    const supportsCip30 =
       trustedPackageCluster === 'preprod' ||
       trustedPackageCluster === 'preview' ||
       trustedPackageCluster === 'mainnet-flight';
-    if (
-      typeof cip30Enabled !== 'boolean' ||
-      cip30Enabled !== expectedCip30Enabled
-    )
+    if (typeof cip30Enabled !== 'boolean' || (cip30Enabled && !supportsCip30))
       throw new Error('invalid CIP-30 capability');
     const networkIdentity = network as Partial<{
       cluster: unknown;
