@@ -5287,13 +5287,13 @@
         "id": "loading.walletDbDamage.title"
       },
       {
-        "defaultMessage": "!!!{count, plural, one {# wallet was} other {# wallets were}} changed by an older version of Daedalus, so Daedalus cannot open {count, plural, one {it} other {them}}. Your funds are safe: they are on the blockchain, not in these wallet files.",
+        "defaultMessage": "!!!{count, plural, one {# wallet was} other {# wallets were}} changed by an older version of Daedalus, so Daedalus cannot open {count, plural, one {it} other {them}}. Your funds are safe: they are on the blockchain, not in {count, plural, one {this wallet file} other {these wallet files}}.",
         "description": "Explanation on the wallet repair offer: how many wallets Daedalus cannot open ({count}) and why, and that funds are not affected",
         "id": "loading.walletDbDamage.body"
       },
       {
-        "defaultMessage": "!!!Daedalus can save a copy of the wallet files, then repair them. Until then, these wallets will not appear in Daedalus.",
-        "description": "What the repair does, and that the wallets stay missing without it, on the wallet repair offer",
+        "defaultMessage": "!!!{count, plural, one {Daedalus can save a copy of the wallet file, then repair it. Until then, this wallet will not appear in Daedalus.} other {Daedalus can save a copy of the wallet files, then repair them. Until then, these wallets will not appear in Daedalus.}}",
+        "description": "What the repair does, and that the wallets ({count} is how many) stay missing without it, on the wallet repair offer",
         "id": "loading.walletDbDamage.offer"
       },
       {
@@ -5307,13 +5307,13 @@
         "id": "loading.walletDbDamage.notNow"
       },
       {
-        "defaultMessage": "!!!Repairing wallets",
-        "description": "Headline of the wallet repair screen while the repair runs",
+        "defaultMessage": "!!!{count, plural, one {Repairing wallet} other {Repairing wallets}}",
+        "description": "Headline of the wallet repair screen while the repair runs ({count} is how many wallets are repaired)",
         "id": "loading.walletDbDamage.repairing.title"
       },
       {
-        "defaultMessage": "!!!Daedalus is saving a copy of the wallet files and repairing them. Please wait.",
-        "description": "What happens while the wallet repair runs",
+        "defaultMessage": "!!!{count, plural, one {Daedalus is saving a copy of the wallet file and repairing it. Please wait.} other {Daedalus is saving a copy of the wallet files and repairing them. Please wait.}}",
+        "description": "What happens while the wallet repair runs ({count} is how many wallets are repaired)",
         "id": "loading.walletDbDamage.repairing.body"
       },
       {
@@ -5337,7 +5337,7 @@
         "id": "loading.walletDbDamage.done.nothingToRepair"
       },
       {
-        "defaultMessage": "!!!A copy of the wallet files from before the repair is saved in this folder: {folder}",
+        "defaultMessage": "!!!The copy Daedalus saved before the repair is in this folder: {folder}",
         "description": "Where the copy of the wallet data files made before the repair is ({folder} is a folder path)",
         "id": "loading.walletDbDamage.done.backupLocation"
       },
