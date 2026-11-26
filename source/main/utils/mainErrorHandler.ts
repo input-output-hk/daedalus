@@ -8,9 +8,14 @@ export default (onError?: (...args: Array<any>) => any) => {
 
   const handleError = (title: string, error: any) => {
     const err = `${stringifyError(error)}`;
-    logger.error(title, {
-      error,
-    });
+    try {
+      logger.error(title, {
+        error,
+      });
+    } catch (loggerError) {
+      // eslint-disable-next-line no-console
+      console.error(title, err, loggerError);
+    }
     if (typeof onError === 'function') onError(err);
   };
 

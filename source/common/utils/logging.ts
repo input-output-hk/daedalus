@@ -211,11 +211,81 @@ export const constructMessageBody = (
     thread,
   };
 };
-export const formatMessage = (loggerMessage: ElectronLoggerMessage): string => {
+type LogEnvironmentData = Record<
+  'network' | 'os' | 'platformVersion' | 'version',
+  string
+>;
+type DaedalusMessageData = {
+  message: string;
+  data?: MessageBody['data'];
+  environmentData: LogEnvironmentData;
+};
+const isDaedalusMessageData = (value: unknown): value is DaedalusMessageData =>
+  value !== null &&
+  typeof value === 'object' &&
+  'environmentData' in value &&
+  value.environmentData !== null &&
+  typeof value.environmentData === 'object';
+// Text that electron-log writes about itself, for example "Could not rotate
+// log" with the error that caused it, does not carry Daedalus's message shape.
+const toLibraryMessage = (
+  text: unknown,
+  detail: Array<unknown>
+): { message: string } => {
+  const parts = [formatLogMessage(text), ...detail.map(formatLogMessage)];
+  return { message: parts.join(': ') };
+};
+const DEFAULT_ENVIRONMENT_DATA: LogEnvironmentData = {
+  network: 'unknown',
+  os: 'unknown',
+  platformVersion: 'unknown',
+  version: 'unknown',
+};
+const splitLoggerMessage = (
+  loggerMessage: ElectronLoggerMessage,
+  fallbackEnvironmentData: LogEnvironmentData
+): { context: unknown; messageData: DaedalusMessageData } => {
+  const [first, second, ...rest] =
+    loggerMessage.data as unknown as Array<unknown>;
+  if (isDaedalusMessageData(second)) {
+    return { context: first, messageData: second };
+  }
+  return {
+    context: '[electron-log]',
+    messageData: {
+      ...toLibraryMessage(first, second === undefined ? [] : [second, ...rest]),
+      environmentData: fallbackEnvironmentData,
+    },
+  };
+};
+export const formatRendererConsoleMessage = (
+  loggerMessage: ElectronLoggerMessage
+): string => {
+  const [year, time] = loggerMessage.date.toISOString().split('T');
+  const { context, messageData } = splitLoggerMessage(
+    loggerMessage,
+    DEFAULT_ENVIRONMENT_DATA
+  );
+  const { message: msg, data = {} } = messageData;
+  // log minimal message body in the renderer console
+  const messageBody = {
+    msg,
+    data: typeof data === 'string' ? { response: data } : data,
+  };
+  return `[${year}T${time.slice(0, -1)}Z] ${String(context)} ${stringifyData(
+    messageBody
+  )}`;
+};
+export const formatMessage = (
+  loggerMessage: ElectronLoggerMessage,
+  fallbackEnvironmentData: LogEnvironmentData = DEFAULT_ENVIRONMENT_DATA
+): string => {
   const at = loggerMessage.date.toISOString();
-  // @ts-ignore ts-migrate(2488) FIXME: Type 'LogSystemInfoParams' must have a '[Symbol.it... Remove this comment to see the full error message
-  const [context, messageData] = loggerMessage.data;
   const { level } = loggerMessage;
+  const { context, messageData } = splitLoggerMessage(
+    loggerMessage,
+    fallbackEnvironmentData
+  );
   const { message: msg, environmentData } = messageData;
   const { network, os, platformVersion, version } = environmentData;
   const messageBodyParams: ConstructMessageBodyParams = {

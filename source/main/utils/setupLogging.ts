@@ -8,11 +8,12 @@ import { environment } from '../environment';
 import {
   constructMessageBody,
   formatMessage,
-  stringifyData,
+  formatRendererConsoleMessage,
 } from '../../common/utils/logging';
 import { isFileNameWithTimestamp } from '../../common/utils/files';
 import type {
   ConstructMessageBodyParams,
+  ElectronLoggerMessage,
   MessageBody,
   LogSystemInfoParams,
   StateSnapshotLogParams,
@@ -36,45 +37,25 @@ export const setupLogging = () => {
   log.transports.file.timeStampPostfixFormat = '{y}{m}{d}{h}{i}{s}';
   log.transports.file.file = logFilePath;
 
+  const { network, os, platformVersion, version } = environment;
+  const environmentData = { network, os, platformVersion, version };
+
   log.transports.console.format = (message: Record<string, any>): string =>
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type 'Record<string, any>' is not assi... Remove this comment to see the full error message
-    formatMessage(message);
+    formatMessage(message, environmentData);
 
   log.transports.file.format = (message: Record<string, any>): string => {
     // Debug level logging is recorded as "info" in Daedalus log files
     // but at the same time we do not want to output it to console or terminal window
     const level = message.level === 'debug' ? 'info' : message.level;
     // @ts-ignore ts-migrate(2345) FIXME: Argument of type '{ level: any; }' is not assignab... Remove this comment to see the full error message
-    return formatMessage({ ...message, level });
+    return formatMessage({ ...message, level }, environmentData);
   };
 
   log.transports.rendererConsole.format = (
     message: Record<string, any>
-  ): string => {
-    // deconstruct message data
-    const date = message.date.toISOString();
-    const [year, time] = date.split('T');
-    const [context, messageData] = message.data;
-    const { message: msg, data = {} } = messageData;
-    // log minimal message body in the renderer console
-    let messageBody = {
-      msg,
-      data,
-    };
-
-    if (typeof data === 'string') {
-      messageBody = {
-        ...messageBody,
-        data: {
-          response: data,
-        },
-      };
-    }
-
-    return `[${year}T${time.slice(0, -1)}Z] ${context} ${stringifyData(
-      messageBody
-    )}`;
-  };
+  ): string =>
+    formatRendererConsoleMessage(message as unknown as ElectronLoggerMessage);
 
   // Removes existing compressed logs
   fs.readdir(appLogsFolderPath, (err, files) => {
