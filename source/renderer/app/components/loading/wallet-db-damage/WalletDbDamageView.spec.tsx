@@ -67,16 +67,22 @@ describe('WalletDbDamageView', () => {
     ).toBeInTheDocument();
   });
 
-  it('says wallet and it for one wallet', () => {
+  it('says wallet, it and this wallet file for one wallet', () => {
     renderView('offer', { damagedCount: 1 });
     expect(
       screen.getByRole('heading', { name: 'A wallet cannot be opened' })
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        /^1 wallet was changed by an older version of Daedalus, so Daedalus cannot open it\./
+        '1 wallet was changed by an older version of Daedalus, so Daedalus cannot open it. Your funds are safe: they are on the blockchain, not in this wallet file.'
       )
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Daedalus can save a copy of the wallet file, then repair it. Until then, this wallet will not appear in Daedalus.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/these wallet/)).toBeNull();
   });
 
   it('repairs on Back up and repair, and leaves the wallets on Not now', () => {
@@ -88,7 +94,7 @@ describe('WalletDbDamageView', () => {
   });
 
   it('shows the repair running, with nothing to press', () => {
-    renderView('repairing');
+    renderView('repairing', { damagedCount: 3 });
     expect(
       screen.getByRole('heading', { name: 'Repairing wallets' })
     ).toBeInTheDocument();
@@ -98,6 +104,18 @@ describe('WalletDbDamageView', () => {
       )
     ).toBeInTheDocument();
     expect(screen.queryByRole('button')).toBeNull();
+  });
+
+  it('says wallet, file and it while the repair runs for one wallet', () => {
+    renderView('repairing', { damagedCount: 1 });
+    expect(
+      screen.getByRole('heading', { name: 'Repairing wallet' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Daedalus is saving a copy of the wallet file and repairing it. Please wait.'
+      )
+    ).toBeInTheDocument();
   });
 
   it('reports the results, the backup folder and why a file was not repaired', () => {
@@ -115,7 +133,7 @@ describe('WalletDbDamageView', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        `A copy of the wallet files from before the repair is saved in this folder: ${BACKUP}`
+        `The copy Daedalus saved before the repair is in this folder: ${BACKUP}`
       )
     ).toBeInTheDocument();
     expect(
@@ -167,7 +185,7 @@ describe('WalletDbDamageView', () => {
     expect(
       screen.queryByText(/refused|backup_failed|repair_failed|locked/)
     ).toBeNull();
-    expect(screen.queryByText(/saved in this folder/)).toBeNull();
+    expect(screen.queryByText(/in this folder/)).toBeNull();
   });
 
   it('says so when no wallet needed the repair', () => {

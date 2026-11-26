@@ -55,7 +55,7 @@ export default class WalletDbDamageView extends Component<Props> {
         <div className={styles.header}>
           <h1>{intl.formatMessage(messages.title, { count: damagedCount })}</h1>
           <p>{intl.formatMessage(messages.body, { count: damagedCount })}</p>
-          <p>{intl.formatMessage(messages.offer)}</p>
+          <p>{intl.formatMessage(messages.offer, { count: damagedCount })}</p>
         </div>
         <div className={styles.actions}>
           <Button
@@ -76,12 +76,21 @@ export default class WalletDbDamageView extends Component<Props> {
   }
 
   renderRepairing() {
+    const { damagedCount } = this.props;
     const { intl } = this.context;
     return (
       <div className={styles.root}>
         <div className={styles.header}>
-          <h1>{intl.formatMessage(messages.repairingTitle)}</h1>
-          <p>{intl.formatMessage(messages.repairingBody)}</p>
+          <h1>
+            {intl.formatMessage(messages.repairingTitle, {
+              count: damagedCount,
+            })}
+          </h1>
+          <p>
+            {intl.formatMessage(messages.repairingBody, {
+              count: damagedCount,
+            })}
+          </p>
         </div>
       </div>
     );

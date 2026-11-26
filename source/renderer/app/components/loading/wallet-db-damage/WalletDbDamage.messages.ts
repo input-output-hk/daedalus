@@ -12,16 +12,16 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   body: {
     id: 'loading.walletDbDamage.body',
     defaultMessage:
-      '!!!{count, plural, one {# wallet was} other {# wallets were}} changed by an older version of Daedalus, so Daedalus cannot open {count, plural, one {it} other {them}}. Your funds are safe: they are on the blockchain, not in these wallet files.',
+      '!!!{count, plural, one {# wallet was} other {# wallets were}} changed by an older version of Daedalus, so Daedalus cannot open {count, plural, one {it} other {them}}. Your funds are safe: they are on the blockchain, not in {count, plural, one {this wallet file} other {these wallet files}}.',
     description:
       'Explanation on the wallet repair offer: how many wallets Daedalus cannot open ({count}) and why, and that funds are not affected',
   },
   offer: {
     id: 'loading.walletDbDamage.offer',
     defaultMessage:
-      '!!!Daedalus can save a copy of the wallet files, then repair them. Until then, these wallets will not appear in Daedalus.',
+      '!!!{count, plural, one {Daedalus can save a copy of the wallet file, then repair it. Until then, this wallet will not appear in Daedalus.} other {Daedalus can save a copy of the wallet files, then repair them. Until then, these wallets will not appear in Daedalus.}}',
     description:
-      'What the repair does, and that the wallets stay missing without it, on the wallet repair offer',
+      'What the repair does, and that the wallets ({count} is how many) stay missing without it, on the wallet repair offer',
   },
   repair: {
     id: 'loading.walletDbDamage.repair',
@@ -37,14 +37,17 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   },
   repairingTitle: {
     id: 'loading.walletDbDamage.repairing.title',
-    defaultMessage: '!!!Repairing wallets',
-    description: 'Headline of the wallet repair screen while the repair runs',
+    defaultMessage:
+      '!!!{count, plural, one {Repairing wallet} other {Repairing wallets}}',
+    description:
+      'Headline of the wallet repair screen while the repair runs ({count} is how many wallets are repaired)',
   },
   repairingBody: {
     id: 'loading.walletDbDamage.repairing.body',
     defaultMessage:
-      '!!!Daedalus is saving a copy of the wallet files and repairing them. Please wait.',
-    description: 'What happens while the wallet repair runs',
+      '!!!{count, plural, one {Daedalus is saving a copy of the wallet file and repairing it. Please wait.} other {Daedalus is saving a copy of the wallet files and repairing them. Please wait.}}',
+    description:
+      'What happens while the wallet repair runs ({count} is how many wallets are repaired)',
   },
   doneTitle: {
     id: 'loading.walletDbDamage.done.title',
@@ -73,7 +76,7 @@ const messages: Record<string, ReactIntlMessage> = defineMessages({
   backupLocation: {
     id: 'loading.walletDbDamage.done.backupLocation',
     defaultMessage:
-      '!!!A copy of the wallet files from before the repair is saved in this folder: {folder}',
+      '!!!The copy Daedalus saved before the repair is in this folder: {folder}',
     description:
       'Where the copy of the wallet data files made before the repair is ({folder} is a folder path)',
   },
