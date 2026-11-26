@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Daedalus keeps the app log of the previous session in the `Logs/pub` folder, as `Daedalus.json-<date and time>`, instead of deleting it at start, so the logs downloaded after a restart include it. At most four app log files are kept ([PR #3484](https://github.com/input-output-hk/daedalus/pull/3484)).
+
 ## 11.6.3
 
 **Daedalus 11.6.3 requires macOS 13 (Ventura) or later.**
