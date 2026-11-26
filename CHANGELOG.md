@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Windows: Daedalus keeps running when another program holds the log file `Daedalus.json` open while the log rotates, for example a PowerShell session following the log ([PR #3482](https://github.com/input-output-hk/daedalus/pull/3482)).
+
 ## 11.6.3
 
 **Daedalus 11.6.3 requires macOS 13 (Ventura) or later.**
