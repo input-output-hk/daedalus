@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import log from 'electron-log-daedalus';
-import rimraf from 'rimraf';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath } from '../config';
 import { environment } from '../environment';
@@ -21,17 +20,50 @@ import type {
 
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
+const APP_LOG_FILE_NAME = 'Daedalus.json';
+const APP_LOG_MAX_ITEMS = 4;
+const ROTATED_APP_LOG = /^Daedalus\.json-\d{14}$/;
+
+// Moves the previous session's app log aside as Daedalus.json-<yyyymmddhhmmss>,
+// the name the logs download looks for, and keeps at most maxItems - 1 of them
+// so that, with the active file, the folder never holds more than maxItems.
+const rotatePreviousAppLog = (folderPath: string, maxItems: number) => {
+  try {
+    const activePath = path.join(folderPath, APP_LOG_FILE_NAME);
+
+    if (fs.existsSync(activePath)) {
+      const { size, mtime } = fs.statSync(activePath);
+
+      if (size > 0) {
+        const stamp = mtime.toISOString().replace(/\D/g, '').slice(0, 14);
+        fs.renameSync(activePath, `${activePath}-${stamp}`);
+      }
+    }
+
+    const rotated = fs
+      .readdirSync(folderPath)
+      .filter((fileName) => ROTATED_APP_LOG.test(fileName))
+      .sort();
+    rotated
+      .slice(0, Math.max(0, rotated.length - (maxItems - 1)))
+      .forEach((fileName) => fs.unlinkSync(path.join(folderPath, fileName)));
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`App log rotation failed: ${error}`);
+  }
+};
+
 export const setupLogging = () => {
-  const logFilePath = path.join(pubLogsFolderPath, 'Daedalus.json');
+  const logFilePath = path.join(pubLogsFolderPath, APP_LOG_FILE_NAME);
   ensureDirectoryExists(pubLogsFolderPath);
-  rimraf.sync(path.join(pubLogsFolderPath, './Daedalus.*'));
+  rotatePreviousAppLog(pubLogsFolderPath, APP_LOG_MAX_ITEMS);
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
   log.transports.file.level = 'debug';
   log.transports.file.maxSize = 5 * 1024 * 1024; // 5MB, unit bytes
 
   // @ts-ignore ts-migrate(2339) FIXME: Property 'maxItems' does not exist on type 'IFileT... Remove this comment to see the full error message
-  log.transports.file.maxItems = 4;
+  log.transports.file.maxItems = APP_LOG_MAX_ITEMS;
   // @ts-ignore ts-migrate(2339) FIXME: Property 'timeStampPostfixFormat' does not exist o... Remove this comment to see the full error message
   log.transports.file.timeStampPostfixFormat = '{y}{m}{d}{h}{i}{s}';
   log.transports.file.file = logFilePath;
