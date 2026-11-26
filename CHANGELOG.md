@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Use the singular on the wallet repair screens when one wallet needs repair: "this wallet file", "this wallet will not appear in Daedalus", "Repairing wallet" and "saving a copy of the wallet file and repairing it" replace the plural wording, and the repair results say "The copy Daedalus saved before the repair is in this folder" ([PR #3486](https://github.com/input-output-hk/daedalus/pull/3486)).
+
 ## 11.6.3
 
 **Daedalus 11.6.3 requires macOS 13 (Ventura) or later.**
