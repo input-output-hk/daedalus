@@ -333,6 +333,33 @@ const restoreExactTransaction = (
   return Object.freeze({ ...exact, transaction });
 };
 
+type TrezorTransportErrorDetails = {
+  apiType?: string;
+  error?: string;
+  code?: string;
+};
+
+type TrezorTransportErrorState = {
+  key: string;
+  details: TrezorTransportErrorDetails;
+  firstAt: number;
+  lastAt: number;
+  suppressed: number;
+};
+
+const describeTrezorTransportError = (
+  payload: unknown
+): TrezorTransportErrorDetails => {
+  const apiType = get(payload, ['apiType']);
+  const error = get(payload, ['error']);
+  const code = get(payload, ['code']);
+  return {
+    apiType: typeof apiType === 'string' ? apiType : undefined,
+    error: typeof error === 'string' && error ? error : undefined,
+    code: typeof code === 'string' ? code : undefined,
+  };
+};
+
 export class HardwareWalletService {
   private devicesMemo: Record<string, LedgerConnection> = {};
   private generations = new Map<string, number>();
@@ -341,6 +368,7 @@ export class HardwareWalletService {
   private trezorGeneration = 0;
   private activeTrezorGenerations = new Map<number, number>();
   private trezorInvalidations = new Map<number, OperationInvalidation>();
+  private trezorTransportError: TrezorTransportErrorState | null = null;
   private detectorUnsubscribe: (() => void) | null = null;
   private disposed = false;
 
@@ -787,6 +815,60 @@ export class HardwareWalletService {
     );
   };
 
+  // While Trezor Connect cannot reach a Trezor Bridge it retries and raises the
+  // same error each time. An error cancels the active operation when it differs
+  // from the previous one, so two alternating errors cancel on each change.
+  private handleTrezorTransportError = (
+    payload: unknown,
+    notifyRenderer: () => void
+  ): void => {
+    const details = describeTrezorTransportError(payload);
+    const key = JSON.stringify([details.apiType, details.error, details.code]);
+    const now = Date.now();
+    const previous = this.trezorTransportError;
+    if (previous && previous.key === key) {
+      previous.suppressed += 1;
+      previous.lastAt = now;
+      return;
+    }
+    this.flushTrezorTransportError('the error changed', false);
+    this.trezorTransportError = {
+      key,
+      details,
+      firstAt: now,
+      lastAt: now,
+      suppressed: 0,
+    };
+    logger.info(
+      `[TREZOR-CONNECT] Received TRANSPORT_EVENT: transport-error: ${
+        details.error ?? 'no error text reported'
+      }`,
+      { apiType: details.apiType, code: details.code }
+    );
+    if (details.error !== 'Network request failed')
+      this.cancelTrezorOperation('device');
+    notifyRenderer();
+  };
+
+  private flushTrezorTransportError = (
+    reason: string,
+    logWithoutRepeats: boolean
+  ): void => {
+    const state = this.trezorTransportError;
+    if (!state) return;
+    this.trezorTransportError = null;
+    if (!state.suppressed && !logWithoutRepeats) return;
+    const seconds = Math.round((state.lastAt - state.firstAt) / 1000);
+    logger.info(
+      `[TREZOR-CONNECT] transport-error repeated ${
+        state.suppressed
+      } more times over ${seconds}s, ended because ${reason}: ${
+        state.details.error ?? 'no error text reported'
+      }`,
+      { apiType: state.details.apiType, code: state.details.code }
+    );
+  };
+
   public cancelTrezorOperation = (
     reason: OperationInvalidation = 'host'
   ): void => {
@@ -803,6 +885,7 @@ export class HardwareWalletService {
     this.detectorUnsubscribe?.();
     this.detectorUnsubscribe = null;
     TrezorConnect.removeAllListeners();
+    this.flushTrezorTransportError('Daedalus is closing', false);
     this.cancelTrezorOperation();
     await this.cancelLedgerOperation();
   };
@@ -899,6 +982,7 @@ export class HardwareWalletService {
     const resetTrezorListeners = () => {
       // Remove all listeners if exist - e.g. on app refresh
       TrezorConnect.removeAllListeners();
+      this.flushTrezorTransportError('the Trezor listeners were reset', false);
       // Initialize new device listeners
       TrezorConnect.on(UI_EVENT, (event) => {
         logger.info('[TREZOR-CONNECT] Received UI_EVENT: ' + event.type);
@@ -923,29 +1007,23 @@ export class HardwareWalletService {
       });
       TrezorConnect.on(TRANSPORT_EVENT, (event) => {
         if (event.type === TRANSPORT.ERROR) {
-          const isNoDevicePollingNoise =
-            get(event, ['payload', 'apiType']) === 'usb' &&
-            get(event, ['payload', 'error']) === 'Network request failed';
-
-          logger[isNoDevicePollingNoise ? 'debug' : 'info'](
-            '[TREZOR-CONNECT] Received TRANSPORT_EVENT: transport-error',
-            event.payload
-          );
-          if (!isNoDevicePollingNoise) this.cancelTrezorOperation('device');
-
-          // Send Transport error to Renderer
-          consumeIpcResponse(
-            getHardwareWalletConnectionChannel.send(
-              {
-                deviceType: 'trezor',
-                error: {
-                  payload: event.payload,
+          this.handleTrezorTransportError(event.payload, () =>
+            // Send Transport error to Renderer
+            consumeIpcResponse(
+              getHardwareWalletConnectionChannel.send(
+                {
+                  deviceType: 'trezor',
+                  error: {
+                    payload: event.payload,
+                  },
                 },
-              },
-              currentWindowSender.sender
-            ),
-            'GET_HARDWARE_WALLET_CONNECTION_CHANNEL'
+                currentWindowSender.sender
+              ),
+              'GET_HARDWARE_WALLET_CONNECTION_CHANNEL'
+            )
           );
+        } else if (event.type === TRANSPORT.START) {
+          this.flushTrezorTransportError('the transport started', true);
         }
       });
       TrezorConnect.on(DEVICE_EVENT, (event) => {
