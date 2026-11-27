@@ -349,7 +349,7 @@ export default class HardwareWalletsStore extends Store {
   );
   @observable
   sendMoneyRequest: Request<CreateExternalTransactionResponse> = new Request(
-    this.api.ada.createExternalTransaction
+    this.api.ada.submitHardwareTransaction
   );
   // @TODO - improve types
   getPublicKeyRequest: Request<any> = new Request(this.api.ada.getPublicKey);
@@ -1348,7 +1348,8 @@ export default class HardwareWalletsStore extends Store {
       this.setTransactionPendingState(true);
       try {
         transaction = await (this.sendMoneyRequest.execute({
-          signedTransactionBlob: Buffer.from(this.signedTx, 'hex'),
+          walletId,
+          signedTransaction: this.signedTx,
         }) as unknown as Promise<CreateExternalTransactionResponse>);
       } catch (error) {
         this.setTransactionPendingState(false);

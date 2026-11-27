@@ -22,7 +22,6 @@ import { i18nContext } from '../utils/i18nContext';
 import type { PathRoleIdentityType } from '../utils/hardwareWalletUtils';
 import type {
   GetTransactionRequest,
-  Transaction,
   VotingMetadataType,
 } from '../api/transactions/types';
 import type { CatalystFund } from '../api/voting/types';
@@ -157,14 +156,14 @@ export default class VotingStore extends Store {
     this.api.ada.getWalletPublicKey
   );
   @observable
-  createVotingRegistrationTransactionRequest: Request<WalletTransaction> =
+  createVotingRegistrationTransactionRequest: Request<{ id: string }> =
     new Request(this.api.ada.createVotingRegistrationTransaction);
   @observable
   signMetadataRequest: Request<Buffer> = new Request(
     this.api.ada.createWalletSignature
   );
   @observable
-  delegateVotesRequest: Request<Transaction> = new Request(
+  delegateVotesRequest: Request<{ id: string }> = new Request(
     this.api.ada.delegateVotes
   );
   @observable
@@ -598,19 +597,26 @@ export default class VotingStore extends Store {
           index,
           absoluteSlotNumber,
         });
-        transaction =
-          // @ts-ignore ts-migrate(1320) FIXME: Type of 'await' operand must either be a valid pro... Remove this comment to see the full error message
-          await this.createVotingRegistrationTransactionRequest.execute({
-            address: address.id,
-            addressHex,
-            amount,
-            passphrase,
-            walletId,
-            votingKey,
-            stakeKey,
-            signature: signature.toString('hex'),
-            absoluteSlotNumber,
-          });
+        const registration = {
+          address: address.id,
+          addressHex,
+          amount,
+          passphrase,
+          walletId,
+          votingKey,
+          stakeKey,
+          signature: signature.toString('hex'),
+          absoluteSlotNumber,
+        };
+        const sendRegistration = () =>
+          this.createVotingRegistrationTransactionRequest.execute(registration)
+            .promise;
+        transaction = global.cip30Enabled
+          ? await sendRegistration()
+          : await this.stores.transactions.withWalletSendLock(
+              walletId,
+              sendRegistration
+            );
       }
 
       this._setTransactionId(transaction.id);

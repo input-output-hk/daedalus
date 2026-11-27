@@ -33,7 +33,7 @@ const createStore = () => {
     {
       ada: {
         selectCoins: request,
-        createExternalTransaction: request,
+        submitHardwareTransaction: request,
         getPublicKey: request,
         constructAddress: request,
       },

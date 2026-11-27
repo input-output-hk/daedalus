@@ -81,7 +81,7 @@ function mountSend(isHardwareWallet: boolean, isLegacy = false) {
   const selectCoins = jest.fn().mockResolvedValue(selection);
   const submitExternal = jest.fn();
   const api = {
-    ada: { selectCoins, createExternalTransaction: submitExternal },
+    ada: { selectCoins, submitHardwareTransaction: submitExternal },
     localStorage: {},
   } as unknown as Api;
   const softwareSend = jest.fn();
@@ -323,7 +323,8 @@ it('keeps an authorized hardware submission locked after its Send page unmounts 
   );
   await waitFor(() =>
     expect(fixture.submitExternal).toHaveBeenCalledWith({
-      signedTransactionBlob: Buffer.from('84a0a0f5f6', 'hex'),
+      walletId: 'wallet',
+      signedTransaction: '84a0a0f5f6',
     })
   );
   let entered = false;

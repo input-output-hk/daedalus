@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as https from 'https';
 import { URL } from 'url';
+import { TextEncoder } from 'util';
 import type { AddressInfo } from 'net';
 import HardwareWalletsStore from './HardwareWalletsStore';
 import TransactionsStore from './TransactionsStore';
@@ -23,6 +24,7 @@ jest.mock('../utils/logging', () => ({
 
 // Only TLS is replaced: the real API, request serializer and HTTP body are used.
 // The server is an isolated loopback fixture, never a wallet backend.
+global.TextEncoder = TextEncoder;
 const originalHttps = global.https;
 global.https = https;
 const AdaApi = require('../api/api').default as typeof AdaApiClass;
@@ -52,7 +54,7 @@ afterAll(() => {
 });
 
 it.each([202, 400])(
-  'submits verified hardware hex as exact bytes and releases the wallet after HTTP %s',
+  'submits verified hardware hex through the wallet submit route and releases the wallet after HTTP %s',
   async (statusCode) => {
     const received: Array<{
       method: string;
@@ -143,13 +145,12 @@ it.each([202, 400])(
     expect(received).toEqual([
       {
         method: 'POST',
-        path: '/v2/proxy/transactions',
+        path: '/v2/wallets/wallet/transactions-submit',
         headers: expect.objectContaining({
-          'content-type': 'application/octet-stream',
-          'content-length': String(signedTransaction.length / 2),
+          'content-type': 'application/json',
           accept: 'application/json',
         }),
-        body: Buffer.from(signedTransaction, 'hex'),
+        body: Buffer.from(JSON.stringify({ transaction: signedTransaction })),
       },
     ]);
     const next = await transactions.acquireWalletSendLock('wallet');

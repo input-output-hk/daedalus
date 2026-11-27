@@ -101,7 +101,7 @@ function mountFlow(
   };
   const submit = jest.fn().mockResolvedValue({ id: 'transaction' });
   const api = {
-    ada: { selectCoins: select, createExternalTransaction: submit },
+    ada: { selectCoins: select, submitHardwareTransaction: submit },
     localStorage: {},
   } as unknown as Api;
   const actions = {

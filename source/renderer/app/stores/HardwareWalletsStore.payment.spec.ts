@@ -452,7 +452,7 @@ describe('HardwareWalletsStore payment construction', () => {
       {
         ada: {
           selectCoins: request,
-          createExternalTransaction: request,
+          submitHardwareTransaction: request,
           getPublicKey: request,
           constructAddress: request,
           constructTransaction,
@@ -588,7 +588,7 @@ describe('HardwareWalletsStore payment construction', () => {
       {
         ada: {
           selectCoins: request,
-          createExternalTransaction: request,
+          submitHardwareTransaction: request,
           getPublicKey: request,
           constructAddress: request,
           constructTransaction: request,
@@ -664,7 +664,7 @@ describe('HardwareWalletsStore payment construction', () => {
       {
         ada: {
           selectCoins: request,
-          createExternalTransaction: request,
+          submitHardwareTransaction: request,
           getPublicKey: request,
           constructAddress: request,
           constructTransaction: request,
@@ -1240,7 +1240,7 @@ describe('HardwareWalletsStore upstream payment lifetime', () => {
           constructTransaction: construct,
           getDappTransactionContext: context,
           submitDappTransaction: submitDapp,
-          createExternalTransaction: submit,
+          submitHardwareTransaction: submit,
         },
         localStorage: {},
       } as unknown as Api,
@@ -1328,7 +1328,8 @@ describe('HardwareWalletsStore upstream payment lifetime', () => {
     store.signedTx = '84a0a0f5f6';
     const sending = store._sendMoney();
     expect(submit).toHaveBeenCalledWith({
-      signedTransactionBlob: Buffer.from('84a0a0f5f6', 'hex'),
+      walletId: 'wallet',
+      signedTransaction: '84a0a0f5f6',
     });
     await store._resetTransaction({ cancelDeviceAction: false });
     expect(release).not.toHaveBeenCalled();

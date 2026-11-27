@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- Sending: a transaction the node refuses at submission is reported as an error and no longer stays listed as pending with its amount deducted and its inputs held until it expires. Payments, Catalyst registration, stake pool delegation and undelegation, and DRep vote delegation from software wallets in mainnet packages now use the wallet's submit route. Ledger and Trezor sends use it too, so they also get a pending entry, an input hold and resubmission ([PR #3488](https://github.com/input-output-hk/daedalus/pull/3488)).
+
 ## 11.6.3
 
 **Daedalus 11.6.3 requires macOS 13 (Ventura) or later.**
