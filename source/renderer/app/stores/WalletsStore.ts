@@ -8,7 +8,6 @@ import Wallet, {
   WalletUnits,
 } from '../domains/Wallet';
 import WalletAddress from '../domains/WalletAddress';
-import { WalletTransaction } from '../domains/WalletTransaction';
 import {
   MAX_ADA_WALLETS_COUNT,
   LOVELACES_PER_ADA,
@@ -108,7 +107,7 @@ export default class WalletsStore extends Store {
     this.api.ada.deleteWallet
   );
   @observable
-  sendMoneyRequest: Request<WalletTransaction> = new Request(
+  sendMoneyRequest: Request<{ id: string }> = new Request(
     this.api.ada.createTransaction
   );
   @observable

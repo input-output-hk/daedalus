@@ -28,7 +28,6 @@ import type {
   QuitStakePoolRequest,
   PoolMetadataSource,
 } from '../api/staking/types';
-import type { Transaction } from '../api/transactions/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -154,12 +153,12 @@ export default class StakingStore extends Store {
 
   // REQUESTS
   @observable
-  joinStakePoolRequest: Request<Transaction> = new Request(
+  joinStakePoolRequest: Request<{ id: string }> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.joinStakePool
   );
   @observable
-  quitStakePoolRequest: Request<Transaction> = new Request(
+  quitStakePoolRequest: Request<{ id: string }> = new Request(
     // @ts-ignore ts-migrate(2339) FIXME: Property 'api' does not exist on type 'StakingStor... Remove this comment to see the full error message
     this.api.ada.quitStakePool
   );
@@ -378,7 +377,12 @@ export default class StakingStore extends Store {
             })
           : await this.stores.transactions.withWalletSendLock(
               walletId,
-              () => this.joinStakePoolRequest.execute(request).promise
+              () =>
+                this.joinStakePoolRequest.execute({
+                  ...request,
+                  voteAbstain:
+                    !this.stores.wallets.getWalletById(walletId)?.isVoting,
+                }).promise
             );
       } else if (isHardwareWallet) {
         joinTransaction =

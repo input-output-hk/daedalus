@@ -10,7 +10,6 @@ import { createTransaction } from '../api/transactions/requests/createTransactio
 import { constructTransaction } from '../api/transactions/requests/constructTransaction';
 import { getTransactionFee } from '../api/transactions/requests/getTransactionFee';
 import { selectCoins } from '../api/transactions/requests/selectCoins';
-import { joinStakePool } from '../api/staking/requests/joinStakePool';
 import { quitStakePool } from '../api/staking/requests/quitStakePool';
 import { getDelegationFee } from '../api/staking/requests/getDelegationFee';
 import type Wallet from '../domains/Wallet';
@@ -67,6 +66,25 @@ const backendTransaction = {
   withdrawals: [],
   status: 'pending',
 };
+
+const wrongPassphrase = {
+  code: 'wrong_encryption_passphrase',
+  message: 'Wrong passphrase',
+};
+const nodeRefusal = {
+  code: 'created_invalid_transaction',
+  message: 'The submitted transaction was rejected by the local node.',
+};
+const respondToSubmission = () =>
+  http.mockImplementation(async ({ path }: { path: string }) => {
+    if (path.endsWith('/transactions-construct'))
+      return { transaction: 'constructed' };
+    if (path.endsWith('/transactions-sign')) return { transaction: 'signed' };
+    if (path.endsWith('/transactions-submit')) return { id: transactionId };
+    return backendTransaction;
+  });
+const steps = () =>
+  http.mock.calls.map(([options]) => options.path.split('/').pop());
 
 const createStores = (isLegacy = false) => {
   // These stores only consume the ADA API, dialog close action, and analytics event boundary.
@@ -142,13 +160,6 @@ describe('upstream native backend compatibility', () => {
       `/v2/wallets/${walletId}/coin-selections/random`,
     ],
     [
-      'delegate',
-      joinStakePool,
-      { walletId, stakePoolId: 'pool1', passphrase: 'approved-password' },
-      'PUT',
-      `/v2/stake-pools/pool1/wallets/${walletId}`,
-    ],
-    [
       'undelegate',
       quitStakePool,
       { walletId, passphrase: 'approved-password' },
@@ -180,58 +191,90 @@ describe('upstream native backend compatibility', () => {
     }
   );
 
-  it.each([false, true])(
-    'submits approved software Send with the correct Shelley/Byron contract (legacy=%s)',
-    async (isLegacy) => {
-      http.mockResolvedValue(backendTransaction);
-      const { wallets, transactions, actions } = createStores(isLegacy);
-      const lease = await transactions.acquireWalletSendLock(walletId);
-      // Send reads the asset identity; metadata loading is outside this HTTP contract.
-      const asset = {
-        policyId: 'ef'.repeat(28),
-        assetName: '01',
-      } as AssetToken;
-      const send = wallets._sendMoney({
-        receiver: payment.address,
-        amount: '2000000',
-        passphrase: 'approved-password',
-        assets: [asset],
-        assetsAmounts: ['7'],
-      });
-      await Promise.resolve();
-      expect(http).not.toHaveBeenCalled();
-      expect(actions.dialogs.closeActiveDialog.trigger).not.toHaveBeenCalled();
-      lease.release();
-      await send;
-      expect(http).toHaveBeenCalledTimes(1);
-      const [options, , body] = http.mock.calls[0];
-      expect(options).toEqual({
-        method: 'POST',
-        path: `/v2/${isLegacy ? 'byron-wallets' : 'wallets'}/${walletId}/transactions/`,
-        ...config,
-      });
-      expect(body.passphrase).toBe('approved-password');
-      expect(body.payments[0].amount).toEqual({
-        quantity: 2000000,
-        unit: 'lovelace',
-      });
-      expect(body.payments[0].assets[0].quantity.toFixed()).toBe('7');
-      expect(body).not.toHaveProperty('preferred_collateral');
-      expect(collateral).not.toHaveBeenCalled();
-      expect(wallets.refreshWalletsData).toHaveBeenCalledTimes(1);
-      expect(actions.dialogs.closeActiveDialog.trigger).toHaveBeenCalledTimes(
-        1
-      );
-    }
-  );
+  const sendWithAsset = async (isLegacy: boolean) => {
+    respondToSubmission();
+    const { wallets, transactions, actions } = createStores(isLegacy);
+    const lease = await transactions.acquireWalletSendLock(walletId);
+    // Send reads the asset identity; metadata loading is outside this HTTP contract.
+    const asset = {
+      policyId: 'ef'.repeat(28),
+      assetName: '01',
+    } as AssetToken;
+    const send = wallets._sendMoney({
+      receiver: payment.address,
+      amount: '2000000',
+      passphrase: 'approved-password',
+      assets: [asset],
+      assetsAmounts: ['7'],
+    });
+    await Promise.resolve();
+    expect(http).not.toHaveBeenCalled();
+    expect(actions.dialogs.closeActiveDialog.trigger).not.toHaveBeenCalled();
+    lease.release();
+    await send;
+    return { wallets, actions };
+  };
+  const paymentAmount = { quantity: 2000000, unit: 'lovelace' };
+
+  it('submits approved Shelley software Send through construct, sign and submit', async () => {
+    const { wallets, actions } = await sendWithAsset(false);
+    expect(steps()).toEqual([
+      'transactions-construct',
+      'transactions-sign',
+      'transactions-submit',
+    ]);
+    const [construct, sign, submit] = http.mock.calls;
+    expect(construct[0]).toEqual({
+      method: 'POST',
+      path: `/v2/wallets/${walletId}/transactions-construct`,
+      ...config,
+    });
+    expect(construct[2].encoding).toBe('base16');
+    expect(construct[2].withdrawal).toBe('self');
+    expect(construct[2]).not.toHaveProperty('passphrase');
+    expect(construct[2].payments[0].amount).toEqual(paymentAmount);
+    expect(construct[2].payments[0].assets[0].quantity.toFixed()).toBe('7');
+    expect(construct[2]).not.toHaveProperty('preferred_collateral');
+    expect(sign[2]).toEqual({
+      transaction: 'constructed',
+      passphrase: 'approved-password',
+      encoding: 'base16',
+    });
+    expect(submit[2]).toEqual({ transaction: 'signed' });
+    expect(collateral).not.toHaveBeenCalled();
+    expect(wallets.refreshWalletsData).toHaveBeenCalledTimes(1);
+    expect(actions.dialogs.closeActiveDialog.trigger).toHaveBeenCalledTimes(1);
+  });
+
+  it('submits approved Byron software Send with the one-shot contract', async () => {
+    const { wallets, actions } = await sendWithAsset(true);
+    expect(http).toHaveBeenCalledTimes(1);
+    const [options, , body] = http.mock.calls[0];
+    expect(options).toEqual({
+      method: 'POST',
+      path: `/v2/byron-wallets/${walletId}/transactions/`,
+      ...config,
+    });
+    expect(body.passphrase).toBe('approved-password');
+    expect(body.payments[0].amount).toEqual(paymentAmount);
+    expect(body.payments[0].assets[0].quantity.toFixed()).toBe('7');
+    expect(body).not.toHaveProperty('preferred_collateral');
+    expect(collateral).not.toHaveBeenCalled();
+    expect(wallets.refreshWalletsData).toHaveBeenCalledTimes(1);
+    expect(actions.dialogs.closeActiveDialog.trigger).toHaveBeenCalledTimes(1);
+  });
 
   it('keeps a rejected password recoverable and releases the wallet queue', async () => {
-    http
-      .mockRejectedValueOnce({
-        code: 'wrong_encryption_passphrase',
-        message: 'Wrong passphrase',
-      })
-      .mockResolvedValue(backendTransaction);
+    respondToSubmission();
+    const respond = http.getMockImplementation();
+    http.mockImplementation(async (options: { path: string }) => {
+      if (
+        options.path.endsWith('/transactions-sign') &&
+        http.mock.calls.length <= 2
+      )
+        throw wrongPassphrase;
+      return respond(options);
+    });
     const { wallets, transactions, actions } = createStores();
     await expect(
       wallets._sendMoney({
@@ -240,6 +283,7 @@ describe('upstream native backend compatibility', () => {
         passphrase: 'wrong-password',
       })
     ).rejects.toBeDefined();
+    expect(steps()).toEqual(['transactions-construct', 'transactions-sign']);
     expect(actions.dialogs.closeActiveDialog.trigger).not.toHaveBeenCalled();
     const lease = await transactions.acquireWalletSendLock(walletId);
     lease.release();
@@ -248,9 +292,41 @@ describe('upstream native backend compatibility', () => {
       amount: '2000000',
       passphrase: 'approved-password',
     });
-    expect(http).toHaveBeenCalledTimes(2);
-    expect(http.mock.calls[1][2].passphrase).toBe('approved-password');
+    expect(steps()).toEqual([
+      'transactions-construct',
+      'transactions-sign',
+      'transactions-construct',
+      'transactions-sign',
+      'transactions-submit',
+    ]);
+    expect(http.mock.calls[3][2].passphrase).toBe('approved-password');
     expect(actions.dialogs.closeActiveDialog.trigger).toHaveBeenCalledTimes(1);
+  });
+
+  it('leaves the wallet queue free after the node refuses the submission', async () => {
+    respondToSubmission();
+    const respond = http.getMockImplementation();
+    http.mockImplementation(async (options: { path: string }) => {
+      if (options.path.endsWith('/transactions-submit')) throw nodeRefusal;
+      return respond(options);
+    });
+    const { wallets, transactions, actions } = createStores();
+    await expect(
+      wallets._sendMoney({
+        receiver: payment.address,
+        amount: '2000000',
+        passphrase: 'approved-password',
+      })
+    ).rejects.toBeDefined();
+    expect(steps()).toEqual([
+      'transactions-construct',
+      'transactions-sign',
+      'transactions-submit',
+    ]);
+    expect(wallets.refreshWalletsData).not.toHaveBeenCalled();
+    expect(actions.dialogs.closeActiveDialog.trigger).not.toHaveBeenCalled();
+    const lease = await transactions.acquireWalletSendLock(walletId);
+    lease.release();
   });
 
   it('rejects direct exact execution before any backend access', async () => {
@@ -278,7 +354,7 @@ describe('upstream native backend compatibility', () => {
       const unapproved = await voting.delegateVotes({ wallet, chosenOption });
       expect(unapproved.success).toBe(false);
       expect(http).not.toHaveBeenCalled();
-      http.mockResolvedValue(backendTransaction);
+      respondToSubmission();
       const lease = await transactions.acquireWalletSendLock(walletId);
       const submitted = voting.delegateVotes({
         wallet,
@@ -289,14 +365,16 @@ describe('upstream native backend compatibility', () => {
       expect(http).not.toHaveBeenCalled();
       lease.release();
       await expect(submitted).resolves.toEqual({ success: true });
-      expect(http).toHaveBeenCalledTimes(1);
-      expect(http.mock.calls[0][0]).toMatchObject({
-        method: 'PUT',
-        path: `/v2/dreps/${chosenOption}/wallets/${walletId}`,
-      });
+      expect(steps()).toEqual([
+        'transactions-construct',
+        'transactions-sign',
+        'transactions-submit',
+      ]);
       expect(http.mock.calls[0][2]).toEqual({
-        passphrase: 'approved-password',
+        encoding: 'base16',
+        vote: chosenOption,
       });
+      expect(http.mock.calls[1][2].passphrase).toBe('approved-password');
       expect(collateral).not.toHaveBeenCalled();
     }
   );
@@ -358,7 +436,7 @@ describe('upstream native backend compatibility', () => {
             jest.advanceTimersByTime(2);
           }
         };
-        http.mockResolvedValueOnce(backendTransaction);
+        respondToSubmission();
         const lease = await transactions.acquireWalletSendLock(walletId);
         const params = {
           walletId,
@@ -375,13 +453,20 @@ describe('upstream native backend compatibility', () => {
         lease.release();
         await flush();
         await submitted;
-        expect(http.mock.calls[0][0]).toMatchObject({
-          method: operation === 'undelegate' ? 'DELETE' : 'PUT',
-          path: `/v2/stake-pools/${operation === 'undelegate' ? '*' : params.stakePoolId}/wallets/${walletId}`,
-        });
-        expect(http.mock.calls[0][2]).toEqual({
-          passphrase: 'approved-password',
-        });
+        expect(steps()).toEqual([
+          'transactions-construct',
+          'transactions-sign',
+          'transactions-submit',
+        ]);
+        expect(http.mock.calls[0][2].delegations).toEqual(
+          operation === 'undelegate'
+            ? [{ quit: { stake_key_index: '0H' } }]
+            : [{ join: { pool: params.stakePoolId, stake_key_index: '0H' } }]
+        );
+        expect(http.mock.calls[0][2].vote).toBe(
+          operation === 'undelegate' ? undefined : 'abstain'
+        );
+        expect(http.mock.calls[1][2].passphrase).toBe('approved-password');
         expect(staking.isDelegationTransactionPending).toBe(true);
         http.mockResolvedValueOnce([
           {
@@ -406,6 +491,33 @@ describe('upstream native backend compatibility', () => {
       }
     }
   );
+
+  it('keeps the existing vote when a voting wallet joins a pool', async () => {
+    respondToSubmission();
+    const { wallets, staking } = createStores();
+    Object.assign(wallets.active, { isVoting: true });
+    jest.useFakeTimers();
+    try {
+      const joined = staking._joinStakePool({
+        walletId,
+        stakePoolId: 'pool-first',
+        passphrase: 'approved-password',
+        isHardwareWallet: false,
+      });
+      for (let phase = 0; phase < 15; phase += 1) {
+        await Promise.resolve();
+        jest.advanceTimersByTime(2);
+      }
+      await joined;
+      expect(http.mock.calls[0][2]).toEqual({
+        encoding: 'base16',
+        delegations: [{ join: { pool: 'pool-first', stake_key_index: '0H' } }],
+      });
+    } finally {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+    }
+  });
 
   it.each([undefined, [{ quantity: 2000000, unit: 'lovelace' }]])(
     'displays the upstream undelegation refund without requiring returned-deposit fields (%s)',

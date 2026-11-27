@@ -89,12 +89,34 @@ describe('upstream staking transaction dispatch', () => {
       await pending;
       const mutation =
         operation === 'join' ? fixture.joinStakePool : fixture.quitStakePool;
-      expect(mutation).toHaveBeenCalledWith(request);
+      expect(mutation).toHaveBeenCalledWith(
+        operation === 'join' ? { ...request, voteAbstain: true } : request
+      );
       expect(fixture.exactSoftware).not.toHaveBeenCalled();
       expect(fixture.exactHardware).not.toHaveBeenCalled();
       expect(fixture.store.isDelegationTransactionPending).toBe(true);
     }
   );
+
+  it('leaves the vote alone when the wallet already has one', async () => {
+    const fixture = buildStore();
+    fixture.release();
+    fixture.store.stores.wallets.getWalletById = () =>
+      ({ isDelegating: false, isVoting: true }) as never;
+    const request = {
+      walletId: 'wallet',
+      stakePoolId: 'pool',
+      passphrase: 'collected-password',
+      isHardwareWallet: false,
+    };
+    const pending = fixture.store._joinStakePool(request);
+    await flushRequestTimers();
+    await pending;
+    expect(fixture.joinStakePool).toHaveBeenCalledWith({
+      ...request,
+      voteAbstain: false,
+    });
+  });
 
   it('keeps a wrong-password failure recoverable and never retries through an exact endpoint', async () => {
     const fixture = buildStore();
@@ -122,6 +144,7 @@ describe('upstream staking transaction dispatch', () => {
     expect(fixture.joinStakePool).toHaveBeenLastCalledWith({
       ...request,
       passphrase: 'correct',
+      voteAbstain: true,
     });
     expect(fixture.exactSoftware).not.toHaveBeenCalled();
   });

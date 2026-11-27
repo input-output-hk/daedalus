@@ -132,7 +132,7 @@ function mountRegistration(hardware = true, pilot = false) {
       selectCoins,
       getWalletPublicKey: publicKey,
       constructTransaction,
-      createExternalTransaction: externalSubmit,
+      submitHardwareTransaction: externalSubmit,
       createVotingRegistrationTransaction: softwareSubmit,
       calculateTransactionFee: calculateFee,
       getCatalystFund: () => new Promise(() => {}),

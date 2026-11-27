@@ -81,6 +81,7 @@ export type JoinStakePoolRequest = {
   stakePoolId: string;
   passphrase: string | null | undefined;
   isHardwareWallet?: boolean;
+  voteAbstain?: boolean;
 };
 export type GetDelegationFeeRequest = {
   walletId: string;

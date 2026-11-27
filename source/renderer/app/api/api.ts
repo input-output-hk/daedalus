@@ -66,7 +66,6 @@ import type {
 } from './transactions/dappBackend';
 // Voting requests
 import { createWalletSignature } from './voting/requests/createWalletSignature';
-import { delegateVotes } from './voting/requests/delegateVotes';
 import { getCatalystFund } from './voting/requests/getCatalystFund';
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -101,9 +100,8 @@ import StakePool from '../domains/StakePool';
 import { getNews, newsUrl } from './news/requests/getNews';
 // Stake Pools request
 import { getStakePools } from './staking/requests/getStakePools';
-import { getDelegationFee } from './staking/requests/getDelegationFee';
-import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
+import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { getSmashSettings } from './staking/requests/getSmashSettings';
 import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
 import { updateSmashSettings } from './staking/requests/updateSmashSettings';
@@ -996,11 +994,39 @@ export default class AdaApi {
       throw new ApiError(error);
     }
   };
+  /**
+   * Builds, signs and submits a transaction of a Shelley wallet. The node's
+   * answer to the submission is returned to the caller before the wallet
+   * records anything, so a refused transaction leaves no pending entry.
+   */
+  submitSoftwareTransaction = async ({
+    walletId,
+    data,
+    passphrase,
+  }: {
+    walletId: string;
+    data: ConstructTransactionData['data'];
+    passphrase: string;
+  }): Promise<{ id: string }> => {
+    const { transaction } = await constructTransaction(this.config, {
+      walletId,
+      data,
+    });
+    const signed = await signFrozenTransaction(this.config, {
+      walletId,
+      transaction,
+      passphrase,
+    });
+    return submitFrozenTransaction(this.config, {
+      walletId,
+      transaction: signed.transaction,
+    });
+  };
   createTransaction = async (
     request: CreateTransactionRequest & {
       hasAssetsRemainingAfterTransaction: boolean;
     }
-  ): Promise<WalletTransaction> => {
+  ): Promise<WalletTransaction | { id: string }> => {
     logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
@@ -1030,6 +1056,28 @@ export default class AdaApi {
         passphrase,
       };
       let response: Transaction;
+
+      if (!isLegacy && !global.cip30Enabled) {
+        const submitted = await this.submitSoftwareTransaction({
+          walletId,
+          passphrase,
+          data: {
+            encoding: 'base16',
+            payments: [
+              {
+                address,
+                amount: data.payments[0].amount,
+                ...(assets?.length ? { assets } : {}),
+              },
+            ],
+            withdrawal: TransactionWithdrawal,
+          },
+        });
+        logger.debug('AdaApi::createTransaction success', {
+          transaction: submitted,
+        });
+        return submitted;
+      }
 
       if (isLegacy) {
         response = await createByronWalletTransaction(this.config, {
@@ -1403,6 +1451,32 @@ export default class AdaApi {
       return await submitFrozenTransaction(this.config, params);
     } catch (error) {
       throw new ApiError(error).result();
+    }
+  };
+
+  submitHardwareTransaction = async ({
+    walletId,
+    signedTransaction,
+  }: {
+    walletId: string;
+    signedTransaction: string;
+  }): Promise<CreateExternalTransactionResponse> => {
+    try {
+      return await submitFrozenTransaction(this.config, {
+        walletId,
+        transaction: signedTransaction,
+      });
+    } catch (error) {
+      logger.error('AdaApi::submitHardwareTransaction error', {
+        error,
+      });
+
+      const apiError = new ApiError(error)
+        .set('conwayWalletNotDelegatedToDRep')
+        .where('code', 'created_invalid_transaction')
+        .inc('message', 'ConwayWdrlNotDelegatedToDRep');
+
+      throw apiError.result();
     }
   };
 
@@ -2277,17 +2351,30 @@ export default class AdaApi {
   };
   quitStakePool = async (
     request: QuitStakePoolRequest
-  ): Promise<Transaction> => {
+  ): Promise<{ id: string }> => {
     logger.debug('AdaApi::quitStakePool called', {
       parameters: filterLogData(request),
     });
     const { walletId, passphrase } = request;
 
     try {
-      const result = await quitStakePool(this.config, {
-        walletId,
-        passphrase,
-      });
+      let result: { id: string };
+
+      try {
+        result = await this.submitSoftwareTransaction({
+          walletId,
+          passphrase,
+          data: {
+            encoding: 'base16',
+            delegations: [{ quit: { stake_key_index: '0H' } }],
+            withdrawal: TransactionWithdrawal,
+          },
+        });
+      } catch (constructError) {
+        // Rewards too small for the wallet to withdraw are withdrawn by the quit route.
+        if (constructError?.code !== 'non_null_rewards') throw constructError;
+        result = await quitStakePool(this.config, { walletId, passphrase });
+      }
       logger.debug('AdaApi::quitStakePool success', {
         result,
       });
@@ -2893,17 +2980,21 @@ export default class AdaApi {
   };
   joinStakePool = async (
     request: JoinStakePoolRequest
-  ): Promise<Transaction> => {
+  ): Promise<{ id: string }> => {
     logger.debug('AdaApi::joinStakePool called', {
       parameters: filterLogData(request),
     });
-    const { walletId, stakePoolId, passphrase } = request;
+    const { walletId, stakePoolId, passphrase, voteAbstain } = request;
 
     try {
-      const response = await joinStakePool(this.config, {
+      const response = await this.submitSoftwareTransaction({
         walletId,
-        stakePoolId,
-        passphrase,
+        passphrase: passphrase || '',
+        data: {
+          encoding: 'base16',
+          delegations: [{ join: { pool: stakePoolId, stake_key_index: '0H' } }],
+          ...(voteAbstain ? { vote: 'abstain' } : {}),
+        },
       });
       logger.debug('AdaApi::joinStakePool success', {
         stakePool: response,
@@ -2997,9 +3088,18 @@ export default class AdaApi {
     }
   };
 
-  delegateVotes = async (params: DelegateVotesParams): Promise<Transaction> => {
+  delegateVotes = async ({
+    dRepId,
+    passphrase,
+    walletId,
+  }: DelegateVotesParams): Promise<{ id: string }> => {
     try {
-      return await delegateVotes(this.config, params);
+      // No `withdrawal: 'self'`: with `vote` the wallet drops the certificate.
+      return await this.submitSoftwareTransaction({
+        walletId,
+        passphrase,
+        data: { encoding: 'base16', vote: dRepId },
+      });
     } catch (error) {
       throw new ApiError(error).result();
     }
@@ -3007,7 +3107,7 @@ export default class AdaApi {
 
   createVotingRegistrationTransaction = async (
     request: CreateVotingRegistrationRequest
-  ): Promise<WalletTransaction> => {
+  ): Promise<WalletTransaction | { id: string }> => {
     logger.debug('AdaApi::createVotingRegistrationTransaction called', {
       parameters: filterLogData(request),
     });
@@ -3086,6 +3186,18 @@ export default class AdaApi {
           },
         },
       };
+      if (!global.cip30Enabled) {
+        const { passphrase: spendingPassword, ...constructData } = data;
+        const submitted = await this.submitSoftwareTransaction({
+          walletId,
+          passphrase: spendingPassword,
+          data: { encoding: 'base16', ...constructData },
+        });
+        logger.debug('AdaApi::createVotingRegistrationTransaction success', {
+          transaction: submitted,
+        });
+        return submitted;
+      }
       const response: Transaction = await createTransaction(this.config, {
         walletId,
         data: { ...data },
