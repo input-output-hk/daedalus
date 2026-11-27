@@ -1,5 +1,11 @@
 # Changelog
 
+## vNext
+
+### Fixes
+
+- A Trezor transport error that repeats while Trezor Connect cannot reach a Trezor Bridge is logged once with its error text, then summarized in one line with the number of repeats, instead of every second. It no longer cancels a pending Trezor operation again on each repeat ([PR #3489](https://github.com/input-output-hk/daedalus/pull/3489)).
+
 ## 11.6.3
 
 **Daedalus 11.6.3 requires macOS 13 (Ventura) or later.**
